@@ -1,3 +1,4 @@
 rootProject.name = 'simplecloud-v2'
 include 'simplecloud-launcher'
+include 'simplecloud-network'
 
