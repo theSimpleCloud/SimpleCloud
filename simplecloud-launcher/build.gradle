@@ -15,6 +15,7 @@ repositories {
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    compile group: 'org.fusesource.jansi', name: 'jansi', version: '1.18'
 }
 compileKotlin {
     kotlinOptions {
