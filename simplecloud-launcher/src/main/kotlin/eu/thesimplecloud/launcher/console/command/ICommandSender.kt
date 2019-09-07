@@ -1,0 +1,13 @@
+package eu.thesimplecloud.launcher.console.command
+
+/**
+ * Created by IntelliJ IDEA.
+ * User: Philipp.Eistrach
+ * Date: 07.09.2019
+ * Time: 14:33
+ */
+interface ICommandSender {
+
+    fun sendMessage(message: String)
+
+}

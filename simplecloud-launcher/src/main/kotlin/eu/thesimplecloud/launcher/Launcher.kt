@@ -1,7 +1,8 @@
 package eu.thesimplecloud.launcher
 
-import eu.thesimplecloud.launcher.application.CloudApplication
+import eu.thesimplecloud.launcher.application.ICloudApplication
 import eu.thesimplecloud.launcher.console.ConsoleManager
+import eu.thesimplecloud.launcher.console.command.CommandManager
 import eu.thesimplecloud.launcher.logger.LoggerProvider
 
 /**
@@ -10,7 +11,7 @@ import eu.thesimplecloud.launcher.logger.LoggerProvider
  * Date: 06.09.2019
  * Time: 21:31
  */
-class Launcher : CloudApplication {
+class Launcher : ICloudApplication {
 
     companion object {
         lateinit var instance: Launcher
@@ -18,20 +19,15 @@ class Launcher : CloudApplication {
 
     private var running = true
     val logger = LoggerProvider(this)
-    val consoleManager = ConsoleManager(this)
+    val commandManager = CommandManager(this)
+    val consoleManager = ConsoleManager(this, commandManager)
 
     override fun start() {
         instance = this
-
         System.setProperty("user.language", "en")
-        consoleManager.start()
 
-        logger.success("begin")
-        logger.info("begin")
-        logger.warning("begin")
-        logger.severe("begin")
-        logger.console("begin")
-        logger.empty("begin")
+        commandManager.registerAllCommands("eu.thesimplecloud.launcher.commands")
+        consoleManager.start()
     }
 
     override fun shutdown() {

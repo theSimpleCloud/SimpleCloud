@@ -1,7 +1,6 @@
 package eu.thesimplecloud.launcher.logger
 
-import eu.thesimplecloud.launcher.Launcher
-import eu.thesimplecloud.launcher.application.CloudApplication
+import eu.thesimplecloud.launcher.application.ICloudApplication
 import java.io.File
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
@@ -20,7 +19,7 @@ import java.util.logging.SimpleFormatter
  * Time: 17:02
  */
 @Suppress("NON_EXHAUSTIVE_WHEN")
-class LoggerProvider(var application: CloudApplication) : Logger("SimpleCloudLogger", null) {
+class LoggerProvider(var application: ICloudApplication) : Logger("SimpleCloudLogger", null) {
 
     val dataFormat = SimpleDateFormat("[HH:mm:ss]")
 
@@ -125,7 +124,7 @@ class LoggerProvider(var application: CloudApplication) : Logger("SimpleCloudLog
         print ("\r$promt ")
     }
 
-    fun changeApplication(application: CloudApplication) {
+    fun changeApplication(application: ICloudApplication) {
         this.application = application
     }
 

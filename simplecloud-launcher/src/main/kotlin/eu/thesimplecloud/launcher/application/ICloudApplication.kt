@@ -6,7 +6,7 @@ package eu.thesimplecloud.launcher.application
  * Date: 06.09.2019
  * Time: 22:10
  */
-interface CloudApplication {
+interface ICloudApplication {
 
     fun start()
     fun shutdown()
