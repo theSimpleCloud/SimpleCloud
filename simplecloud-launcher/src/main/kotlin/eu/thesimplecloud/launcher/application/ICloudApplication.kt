@@ -8,6 +8,8 @@ package eu.thesimplecloud.launcher.application
  */
 interface ICloudApplication {
 
+    //TODO comment these methods
+
     fun start()
     fun shutdown()
     fun getApplicationName(): String
