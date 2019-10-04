@@ -21,9 +21,17 @@ class HelpCommand(application: ICloudApplication): ICommandHandler {
         sender.sendMessage("Help | See all commands (" + (Launcher.instance.commandManager.commands.map { it.path.split(" ")[0] }.toSet().size - 1) + ")")
         Launcher.instance.commandManager.commands.forEach {
             if (!it.path.trim().split(" ")[0].equals("help", true)) {
-                sender.sendMessage(">> " + it.path.trim() + " (" + it.commandDescription + ")")
+                sender.sendMessage("commands.help.command", ">> %COMMAND_NAME%", it.path.trim(), " (%COMMAND_DESCRIPTION%", it.commandDescription, ")")
             }
         }
     }
 
 }
+
+/*
+* {
+* "launger-allcommands-command": ">> a (aaaa)",
+* }
+*
+*
+* */
