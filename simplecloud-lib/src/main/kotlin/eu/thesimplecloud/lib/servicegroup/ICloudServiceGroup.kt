@@ -35,9 +35,19 @@ interface ICloudServiceGroup {
     fun getMaxMemory(): Int
 
     /**
+     * Sets maximum amount of RAM for the services of this service group in MB
+     */
+    fun setMaxMemory(memory: Int)
+
+    /**
      * Returns the maximum amount of players for the services of this service group
      */
     fun getMaxPlayers(): Int
+
+    /**
+     * Sets the maximum amount of players for the services of this service group
+     */
+    fun setMaxPlayers(maxPlayers: Int)
 
     /**
      * Returns the minimum amount of services that should be simultaneously in LOBBY state
@@ -45,14 +55,29 @@ interface ICloudServiceGroup {
     fun getMinimumOnlineServiceCount(): Int
 
     /**
+     * Sets the minimum amount of services that should be simultaneously in LOBBY state
+     */
+    fun setMinimumOnlineServiceCount(count: Int)
+
+    /**
      * Returns the maximum amount of services that should be simultaneously in LOBBY state
      */
     fun getMaximumOnlineServiceCount(): Int
 
     /**
+     * Sets the maximum amount of services that should be simultaneously in LOBBY state
+     */
+    fun setMaximumOnlineServiceCount(count: Int)
+
+    /**
      * Returns whether this service group is in maintenance
      */
     fun isInMaintenance(): Boolean
+
+    /**
+     * Sets the maintenance state of this service group
+     */
+    fun setMaintenance(maintenance: Boolean)
 
     /**
      * Returns whether this service is static.
@@ -65,6 +90,11 @@ interface ICloudServiceGroup {
     fun getPercentToStartNewService(): Int
 
     /**
+     * Sets the percent of online players that a service must reach until a new service starts.
+     */
+    fun setPercentToStartNewService(): Int
+
+    /**
      * Returns the wrapper where all service of this group should run and null if there is no specified wrapper.
      */
     fun getWrapperName(): String?
@@ -73,6 +103,11 @@ interface ICloudServiceGroup {
      * Returns a list of module names that should be copied in the plugins folder of a service of this service group before it starts.
      */
     fun getModuleNamesToCopy(): List<String>
+
+    /**
+     * Sets the list of module names that should be copied in the plugins folder of a service of this service group before it starts.
+     */
+    fun setModuleNamesToCopy(list: List<String>)
 
     /**
      * Starts a new service by this group

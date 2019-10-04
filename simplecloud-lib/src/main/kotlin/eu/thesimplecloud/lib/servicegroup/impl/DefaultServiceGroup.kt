@@ -34,8 +34,7 @@ abstract class DefaultServiceGroup(
 
     override fun isInMaintenance(): Boolean = this.maintenance
 
-    override fun isStatic(): Boolean {
-    }
+    override fun isStatic(): Boolean = this.static
 
     override fun getPercentToStartNewService(): Int {
     }
