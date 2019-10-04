@@ -32,6 +32,10 @@ class EventManager : IEventManager {
         }
     }
 
+    override fun unregisterAll() {
+        this.listeners.clear()
+    }
+
     /**
      * Gets all methods that have the [CloudEventHandler] annotation and only one parameter
      *
@@ -67,11 +71,6 @@ class EventManager : IEventManager {
      */
     private fun removeMethodData(parameterType: Class<out IEvent>, method: Method) {
         this.listeners[parameterType]?.removeIf { methodData -> methodData.method == method }
-    }
-
-
-    override fun unregisterAll() {
-        this.listeners.clear()
     }
 
     data class MethodData(val listener: IListener, val method: Method)

@@ -8,7 +8,8 @@ package eu.thesimplecloud.launcher.application
  */
 interface ICloudApplication {
 
-    //TODO comment these methods
+    //TODO replace with ICloudBootstrap.
+    //Launcher must not be a CloudApplication
 
     fun start()
     fun shutdown()

@@ -1,9 +1,13 @@
 package eu.thesimplecloud.lib.service
 
+import eu.thesimplecloud.lib.bootstrap.ICloudBootstrapGetter
 import eu.thesimplecloud.lib.servicegroup.ICloudServiceGroup
+import eu.thesimplecloud.lib.utils.IAuthenticatable
+import eu.thesimplecloud.lib.wrapper.IWrapperInfo
+import java.lang.IllegalStateException
 import java.util.*
 
-interface ICloudService {
+interface ICloudService : IAuthenticatable, ICloudBootstrapGetter {
 
     /**
      * Starts this service
@@ -23,7 +27,7 @@ interface ICloudService {
     /**
      * Returns the type of this service
      */
-    fun getServiceType(): ServiceType
+    fun getServiceType(): ServiceType = getServiceGroup().getServiceType()
 
     /**
      * Returns the Unique Id of this service
@@ -57,7 +61,7 @@ interface ICloudService {
     /**
      * Returns the service group of this service
      */
-    fun getServiceGroup(): ICloudServiceGroup
+    fun getServiceGroup(): ICloudServiceGroup = getCloudBootstrap().getCloudServiceGroupManager().getGroup(getGroupName()) ?: throw IllegalStateException("Can't find the service group of an registered service.")
 
     /**
      * Returns the amount of players that are currently on this service
@@ -80,19 +84,19 @@ interface ICloudService {
     fun getWrapperName(): String
 
     /**
+     * Returns the wrapper this service is running on
+     */
+    fun getWrapper(): IWrapperInfo = getCloudBootstrap().getWrapperManager().getWrapperByName(getWrapperName()) ?: throw IllegalStateException("Can't find the wrapper where the service ${getName()} is running on.")
+
+    /**
      * Returns the host of this service
      */
-    fun getHost(): String
+    fun getHost(): String = getWrapper().getHost()
 
     /**
      * Returns the port this service is bound to
      */
     fun getPort(): Int
-
-    /**
-     * Returns whether this service is logged in to the manager
-     */
-    fun isLoggedIn(): Boolean
 
     /**
      * Return whether the process of this service is alive

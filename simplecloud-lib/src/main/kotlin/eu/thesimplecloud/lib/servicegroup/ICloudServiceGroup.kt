@@ -1,10 +1,11 @@
 package eu.thesimplecloud.lib.servicegroup
 
 import eu.thesimplecloud.clientserverapi.lib.packet.connectionpromise.IConnectionPromise
+import eu.thesimplecloud.lib.bootstrap.ICloudBootstrapGetter
 import eu.thesimplecloud.lib.service.ICloudService
 import eu.thesimplecloud.lib.service.ServiceType
 
-interface ICloudServiceGroup {
+interface ICloudServiceGroup : ICloudBootstrapGetter {
 
     /**
      * Returns the name of this service group

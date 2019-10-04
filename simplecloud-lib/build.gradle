@@ -20,7 +20,7 @@ dependencies {
     // https://mvnrepository.com/artifact/org.mockito/mockito-core
     testCompile group: 'org.mockito', name: 'mockito-core', version: '2.1.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    compile(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: '1.0.4-SNAPSHOT')
+    compile(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: '1.0.6-SNAPSHOT')
 }
 
 compileKotlin {
