@@ -1,13 +1,13 @@
 package eu.thesimplecloud.lib.servicegroup
 
 import eu.thesimplecloud.clientserverapi.lib.packet.connectionpromise.IConnectionPromise
-import eu.thesimplecloud.lib.bootstrap.ICloudBootstrapGetter
+import eu.thesimplecloud.lib.service.ICloudService
 import eu.thesimplecloud.lib.service.ServiceType
 import eu.thesimplecloud.lib.servicegroup.grouptype.ICloudLobbyGroup
 import eu.thesimplecloud.lib.servicegroup.grouptype.ICloudProxyGroup
 import eu.thesimplecloud.lib.servicegroup.grouptype.ICloudServerGroup
 
-interface ICloudServiceGroupManager : ICloudBootstrapGetter {
+interface ICloudServiceGroupManager {
 
     /**
      * Updates or adds a [ICloudServiceGroup]
@@ -114,4 +114,13 @@ interface ICloudServiceGroupManager : ICloudBootstrapGetter {
      */
     fun clearCache()
 
+    /**
+     * Starts a new service by the specified group
+     */
+    fun startNewService(cloudServiceGroup: ICloudServiceGroup): IConnectionPromise<ICloudService>
+
+    /**
+     * Deletes the specified service group from the cloud
+     */
+    fun deleteServiceGroup(cloudServiceGroup: ICloudServiceGroup): IConnectionPromise<Unit>
 }

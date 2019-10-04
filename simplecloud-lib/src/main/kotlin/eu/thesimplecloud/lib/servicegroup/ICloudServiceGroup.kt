@@ -1,11 +1,11 @@
 package eu.thesimplecloud.lib.servicegroup
 
 import eu.thesimplecloud.clientserverapi.lib.packet.connectionpromise.IConnectionPromise
-import eu.thesimplecloud.lib.bootstrap.ICloudBootstrapGetter
+import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.service.ICloudService
 import eu.thesimplecloud.lib.service.ServiceType
 
-interface ICloudServiceGroup : ICloudBootstrapGetter {
+interface ICloudServiceGroup {
 
     /**
      * Returns the name of this service group
@@ -18,6 +18,11 @@ interface ICloudServiceGroup : ICloudBootstrapGetter {
      * e.g. Lobby
      */
     fun getTemplateName(): String
+
+    /**
+     * Sets the name of the template for this service group
+     */
+    fun setTemplateName(name: String)
 
     /**
      * Returns the type of this service group
@@ -73,7 +78,7 @@ interface ICloudServiceGroup : ICloudBootstrapGetter {
      * Starts a new service by this group
      * @return a promise which is called when the new service was registered.
      */
-    fun startNewService(): IConnectionPromise<ICloudService>
+    fun startNewService(): IConnectionPromise<ICloudService> = CloudLib.instance.getCloudServiceGroupManager().startNewService(this)
 
     /**
      * Returns a list of all registered services by this group
@@ -83,11 +88,11 @@ interface ICloudServiceGroup : ICloudBootstrapGetter {
     /**
      * Stops all services by this group.
      */
-    fun stopAllRunningServices()
+    fun stopAllRunningServices() = getAllServices().forEach { it.shutdown() }
 
     /**
      * Deletes this service group from the cloud
      */
-    fun delete(): IConnectionPromise<Unit>
+    fun delete(): IConnectionPromise<Unit> = CloudLib.instance.getCloudServiceGroupManager().deleteServiceGroup(this)
 
 }

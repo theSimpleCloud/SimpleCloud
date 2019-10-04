@@ -1,8 +1,6 @@
 package eu.thesimplecloud.lib.service
 
-import eu.thesimplecloud.lib.bootstrap.ICloudBootstrapGetter
-
-interface ICloudServiceManager : ICloudBootstrapGetter {
+interface ICloudServiceManager {
 
     /**
      * Updates or adds a [ICloudService]

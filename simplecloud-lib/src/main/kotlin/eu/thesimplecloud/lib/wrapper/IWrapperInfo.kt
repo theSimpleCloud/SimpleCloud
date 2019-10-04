@@ -1,10 +1,9 @@
 package eu.thesimplecloud.lib.wrapper
 
-import eu.thesimplecloud.lib.bootstrap.ICloudBootstrapGetter
 import eu.thesimplecloud.lib.utils.IAuthenticatable
 
 
-interface IWrapperInfo : IAuthenticatable, ICloudBootstrapGetter {
+interface IWrapperInfo : IAuthenticatable {
 
     /**
      * Returns the name of this wrapper.
