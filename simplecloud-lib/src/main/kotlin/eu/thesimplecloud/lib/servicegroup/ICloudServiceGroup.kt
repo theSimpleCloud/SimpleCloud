@@ -92,7 +92,7 @@ interface ICloudServiceGroup {
     /**
      * Sets the percent of online players that a service must reach until a new service starts.
      */
-    fun setPercentToStartNewService(): Int
+    fun setPercentToStartNewService(percentage: Int)
 
     /**
      * Returns the wrapper where all service of this group should run and null if there is no specified wrapper.
@@ -118,7 +118,7 @@ interface ICloudServiceGroup {
     /**
      * Returns a list of all registered services by this group
      */
-    fun getAllServices(): List<ICloudService>
+    fun getAllServices(): List<ICloudService> = CloudLib.instance.getCloudServiceManger().getCloudServicesByGroupName(getName())
 
     /**
      * Stops all services by this group.
