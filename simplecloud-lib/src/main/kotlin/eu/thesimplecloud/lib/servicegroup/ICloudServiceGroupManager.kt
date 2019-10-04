@@ -26,9 +26,49 @@ interface ICloudServiceGroupManager : ICloudBootstrapGetter {
 
 
     /**
-     * Creates a new [ICloudServiceGroup] by the specified parameters
+     * Creates a new [ICloudServerGroup] by the specified parameters
      */
-    fun createNewGroup(
+    fun createNewServerGroup(
+            groupName: String,
+            templateName: String,
+            serviceType: ServiceType,
+            memory: Int,
+            maxPlayers: Int,
+            minimumOnlineServiceCount: Int,
+            maximumOnlineServiceCount: Int,
+            maintenance: Boolean,
+            static: Boolean,
+            percentToStartNewService: Int,
+            wrapperName: String?,
+            modulesToCopy: List<String> = emptyList(),
+            hiddenAtProxyGroups: List<String> = emptyList()
+    ): IConnectionPromise<ICloudServerGroup>
+
+    /**
+     * Creates a new [ICloudLobbyGroup] by the specified parameters
+     */
+    fun createNewLobbyGroup(
+            groupName: String,
+            templateName: String,
+            serviceType: ServiceType,
+            memory: Int,
+            maxPlayers: Int,
+            minimumOnlineServiceCount: Int,
+            maximumOnlineServiceCount: Int,
+            maintenance: Boolean,
+            static: Boolean,
+            percentToStartNewService: Int,
+            wrapperName: String?,
+            priority: Int,
+            permission: String,
+            modulesToCopy: List<String> = emptyList(),
+            hiddenAtProxyGroups: List<String> = emptyList()
+    ): IConnectionPromise<ICloudLobbyGroup>
+
+    /**
+     * Creates a new [ICloudProxyGroup] by the specified parameters
+     */
+    fun createNewProxyGroup(
             groupName: String,
             templateName: String,
             serviceType: ServiceType,
@@ -40,8 +80,9 @@ interface ICloudServiceGroupManager : ICloudBootstrapGetter {
             static: Boolean,
             percentToStartNewService: Int,
             wrapperName: String,
+            startPort: Int,
             modulesToCopy: List<String> = emptyList()
-    ): IConnectionPromise<ICloudServiceGroup>
+    ): IConnectionPromise<ICloudProxyGroup>
 
     /**
      * Returns a list of all registered [ICloudServiceGroup]
