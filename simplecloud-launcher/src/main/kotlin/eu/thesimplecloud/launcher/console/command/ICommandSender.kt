@@ -8,6 +8,9 @@ package eu.thesimplecloud.launcher.console.command
  */
 interface ICommandSender {
 
+    /**
+     * Sends a message to this [ICommandSender]
+     */
     fun sendMessage(message: String)
     fun sendMessage(property: String, vararg messages: String)
 
