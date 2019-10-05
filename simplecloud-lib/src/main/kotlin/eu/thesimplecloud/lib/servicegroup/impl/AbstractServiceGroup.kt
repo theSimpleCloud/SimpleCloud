@@ -4,10 +4,9 @@ import eu.thesimplecloud.lib.service.ICloudService
 import eu.thesimplecloud.lib.service.ServiceType
 import eu.thesimplecloud.lib.servicegroup.ICloudServiceGroup
 
-abstract class DefaultServiceGroup(
+abstract class AbstractServiceGroup(
         private val name: String,
         private var templateName: String,
-        private val serviceType: ServiceType,
         private var maxMemory: Int,
         private var maxPlayers: Int,
         private var minimumOnlineServiceCount: Int,
@@ -18,6 +17,7 @@ abstract class DefaultServiceGroup(
         private val wrapperName: String?,
         private var moduleNamesToCopy: List<String> = emptyList()
 ) : ICloudServiceGroup {
+
     override fun getName(): String = this.name
 
     override fun getTemplateName(): String = this.templateName
@@ -25,8 +25,6 @@ abstract class DefaultServiceGroup(
     override fun setTemplateName(name: String) {
         this.templateName = name
     }
-
-    override fun getServiceType(): ServiceType = this.serviceType
 
     override fun getMaxMemory(): Int = this.maxMemory
 

@@ -1,5 +1,7 @@
 package eu.thesimplecloud.lib.service
 
+import eu.thesimplecloud.clientserverapi.lib.packet.connectionpromise.IConnectionPromise
+
 interface ICloudServiceManager {
 
     /**
@@ -8,9 +10,9 @@ interface ICloudServiceManager {
     fun updateCloudService(cloudService: ICloudService)
 
     /**
-     * Removes the specified [ICloudService]
+     * Removes the [ICloudService] found by the specified name
      */
-    fun removeCloudService(cloudService: ICloudService)
+    fun removeCloudService(name: String)
 
     /**
      * Returns all registered [ICloudService]s
@@ -41,4 +43,14 @@ interface ICloudServiceManager {
      * Returns a list of all services running on the specified wrapper
      */
     fun getServicesRunningOnWrapper(wrapperName: String): List<ICloudService> = getAllCloudServices().filter { it.getWrapperName().equals(wrapperName, true) }
+
+    /**
+     * Starts the specified service
+     */
+    fun startServices(cloudService: ICloudService): Unit = throw UnsupportedOperationException("Can not start a service here.")
+
+    /**
+     * Stops the specified service
+     */
+    fun stopServices(cloudService: ICloudService)
 }

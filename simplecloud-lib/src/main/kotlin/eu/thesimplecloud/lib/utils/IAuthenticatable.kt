@@ -12,6 +12,6 @@ interface IAuthenticatable : IConnectedClientValue {
     /**
      * Sets this [IConnectedClientValue] authenticated
      */
-    fun setAuthenticated(boolean: Boolean)
+    fun setAuthenticated(authenticated: Boolean)
 
 }

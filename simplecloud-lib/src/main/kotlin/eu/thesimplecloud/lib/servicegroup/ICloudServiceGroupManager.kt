@@ -6,6 +6,9 @@ import eu.thesimplecloud.lib.service.ServiceType
 import eu.thesimplecloud.lib.servicegroup.grouptype.ICloudLobbyGroup
 import eu.thesimplecloud.lib.servicegroup.grouptype.ICloudProxyGroup
 import eu.thesimplecloud.lib.servicegroup.grouptype.ICloudServerGroup
+import eu.thesimplecloud.lib.servicegroup.impl.DefaultLobbyGroup
+import eu.thesimplecloud.lib.servicegroup.impl.DefaultProxyGroup
+import eu.thesimplecloud.lib.servicegroup.impl.DefaultServerGroup
 
 interface ICloudServiceGroupManager {
 
@@ -13,11 +16,6 @@ interface ICloudServiceGroupManager {
      * Updates or adds a [ICloudServiceGroup]
      */
     fun updateGroup(cloudServiceGroup: ICloudServiceGroup)
-
-    /**
-     * Removes a [ICloudServiceGroup]
-     */
-    fun removeGroup(cloudServiceGroup: ICloudServiceGroup)
 
     /**
      * Removes the [ICloudServiceGroup] found by the specified name
@@ -28,10 +26,9 @@ interface ICloudServiceGroupManager {
     /**
      * Creates a new [ICloudServerGroup] by the specified parameters
      */
-    fun createNewServerGroup(
+    fun createServerGroup(
             groupName: String,
             templateName: String,
-            serviceType: ServiceType,
             memory: Int,
             maxPlayers: Int,
             minimumOnlineServiceCount: Int,
@@ -42,15 +39,28 @@ interface ICloudServiceGroupManager {
             wrapperName: String?,
             modulesToCopy: List<String> = emptyList(),
             hiddenAtProxyGroups: List<String> = emptyList()
-    ): IConnectionPromise<ICloudServerGroup>
+    ): IConnectionPromise<ICloudServerGroup> =
+            createServiceGroup(DefaultServerGroup(
+                    groupName,
+                    templateName,
+                    memory,
+                    maxPlayers,
+                    minimumOnlineServiceCount,
+                    maximumOnlineServiceCount,
+                    maintenance,
+                    static,
+                    percentToStartNewService,
+                    wrapperName,
+                    modulesToCopy,
+                    hiddenAtProxyGroups
+            )) as IConnectionPromise<ICloudServerGroup>
 
     /**
      * Creates a new [ICloudLobbyGroup] by the specified parameters
      */
-    fun createNewLobbyGroup(
+    fun createLobbyGroup(
             groupName: String,
             templateName: String,
-            serviceType: ServiceType,
             memory: Int,
             maxPlayers: Int,
             minimumOnlineServiceCount: Int,
@@ -63,15 +73,30 @@ interface ICloudServiceGroupManager {
             permission: String,
             modulesToCopy: List<String> = emptyList(),
             hiddenAtProxyGroups: List<String> = emptyList()
-    ): IConnectionPromise<ICloudLobbyGroup>
+    ): IConnectionPromise<ICloudLobbyGroup> =
+            createServiceGroup(DefaultLobbyGroup(
+                    groupName,
+                    templateName,
+                    memory,
+                    maxPlayers,
+                    minimumOnlineServiceCount,
+                    maximumOnlineServiceCount,
+                    maintenance,
+                    static,
+                    percentToStartNewService,
+                    wrapperName,
+                    priority,
+                    permission,
+                    modulesToCopy,
+                    hiddenAtProxyGroups
+            )) as IConnectionPromise<ICloudLobbyGroup>
 
     /**
      * Creates a new [ICloudProxyGroup] by the specified parameters
      */
-    fun createNewProxyGroup(
+    fun createProxyGroup(
             groupName: String,
             templateName: String,
-            serviceType: ServiceType,
             memory: Int,
             maxPlayers: Int,
             minimumOnlineServiceCount: Int,
@@ -82,7 +107,26 @@ interface ICloudServiceGroupManager {
             wrapperName: String,
             startPort: Int,
             modulesToCopy: List<String> = emptyList()
-    ): IConnectionPromise<ICloudProxyGroup>
+    ): IConnectionPromise<ICloudProxyGroup> =
+            createServiceGroup(DefaultProxyGroup(
+                    groupName,
+                    templateName,
+                    memory,
+                    maxPlayers,
+                    minimumOnlineServiceCount,
+                    maximumOnlineServiceCount,
+                    maintenance,
+                    static,
+                    percentToStartNewService,
+                    wrapperName,
+                    startPort,
+                    modulesToCopy
+            )) as IConnectionPromise<ICloudProxyGroup>
+
+    /**
+     * Creates a service group
+     */
+    fun createServiceGroup(cloudServiceGroup: ICloudServiceGroup): IConnectionPromise<ICloudServiceGroup>
 
     /**
      * Returns a list of all registered [ICloudServiceGroup]
@@ -123,4 +167,5 @@ interface ICloudServiceGroupManager {
      * Deletes the specified service group from the cloud
      */
     fun deleteServiceGroup(cloudServiceGroup: ICloudServiceGroup): IConnectionPromise<Unit>
+
 }

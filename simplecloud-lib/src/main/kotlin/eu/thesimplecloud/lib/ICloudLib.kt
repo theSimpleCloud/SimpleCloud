@@ -29,29 +29,4 @@ interface ICloudLib {
      * Returns the [ICloudServiceManager] to manage services
      */
     fun getCloudServiceManger(): ICloudServiceManager
-
-    /**
-     * Returns the implementation class of the [ICloudService]
-     */
-    fun getCloudServiceImplementationClass(): Class<out ICloudService>
-
-    /**
-     * Returns the implementation class of the [ICloudLobbyGroup]
-     */
-    fun getCloudLobbyGroupImplementationClass(): Class<out ICloudLobbyGroup>
-
-    /**
-     * Returns the implementation class of the [ICloudServerGroup]
-     */
-    fun getCloudServerGroupImplementationClass(): Class<out ICloudServerGroup>
-
-    /**
-     * Returns the implementation class of the [ICloudProxyGroup]
-     */
-    fun getCloudProxyGroupImplementationClass(): Class<out ICloudProxyGroup>
-
-    /**
-     *
-     */
-    fun getStartNewServiceFunction(): (ICloudServerGroup) -> Unit
 }

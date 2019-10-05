@@ -4,7 +4,7 @@ import eu.thesimplecloud.lib.service.ICloudService
 import eu.thesimplecloud.lib.service.ICloudServiceManager
 import eu.thesimplecloud.lib.wrapper.IWritableWrapperInfo
 
-class DefaultCloudServiceManager : ICloudServiceManager {
+abstract class AbstractCloudServiceManager : ICloudServiceManager {
 
     private val services = ArrayList<ICloudService>()
 
@@ -20,8 +20,8 @@ class DefaultCloudServiceManager : ICloudServiceManager {
         cashedService.setAuthenticated(cloudService.isAuthenticated())
     }
 
-    override fun removeCloudService(cloudService: ICloudService) {
-        this.services.remove(cloudService)
+    override fun removeCloudService(name: String) {
+        getCloudService(name)?.let { this.services.remove(it) }
     }
 
     override fun getAllCloudServices(): List<ICloudService> = this.services

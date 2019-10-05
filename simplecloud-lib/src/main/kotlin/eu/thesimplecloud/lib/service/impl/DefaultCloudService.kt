@@ -1,11 +1,12 @@
 package eu.thesimplecloud.lib.service.impl
 
+import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.service.ICloudService
 import eu.thesimplecloud.lib.service.ServiceState
 import java.lang.UnsupportedOperationException
 import java.util.*
 
-abstract class AbstractCloudService(
+class DefaultCloudService(
         private val groupName: String,
         private val serviceNumber: Int,
         private val uniqueId: UUID,
@@ -55,7 +56,9 @@ abstract class AbstractCloudService(
         this.authenticated = authenticated
     }
 
-    override fun start() = throw UnsupportedOperationException("Can not start a service here.")
+    override fun start() = CloudLib.instance.getCloudServiceManger().startServices(this)
+
+    override fun shutdown() = CloudLib.instance.getCloudServiceManger().stopServices(this)
 
 
 }
