@@ -14,11 +14,11 @@ import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
  * Time: 16:07
  */
 @Command("help", false)
-class HelpCommand(application: ICloudApplication): ICommandHandler {
+class HelpCommand(application: ICloudApplication) : ICommandHandler {
 
     @CommandSubPath
     fun handleCommand(sender: ICommandSender) {
-        sender.sendMessage("Help | See all commands (" + (Launcher.instance.commandManager.commands.map { it.path.split(" ")[0] }.toSet().size - 1) + ")")
+        sender.sendMessage("commands.help.header", "Help | See all commands (%COMMAND_SIZE%", (Launcher.instance.commandManager.commands.map { it.path.split(" ")[0] }.toSet().size - 1).toString(), ")")
         Launcher.instance.commandManager.commands.forEach {
             if (!it.path.trim().split(" ")[0].equals("help", true)) {
                 sender.sendMessage("commands.help.command", ">> %COMMAND_NAME%", it.path.trim(), " (%COMMAND_DESCRIPTION%", it.commandDescription, ")")

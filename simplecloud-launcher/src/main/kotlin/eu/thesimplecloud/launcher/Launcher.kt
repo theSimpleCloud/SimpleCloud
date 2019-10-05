@@ -5,18 +5,9 @@ import eu.thesimplecloud.launcher.console.ConsoleManager
 import eu.thesimplecloud.launcher.console.command.CommandManager
 import eu.thesimplecloud.launcher.console.setup.SetupManager
 import eu.thesimplecloud.launcher.logger.LoggerProvider
-import com.google.common.collect.ComparisonChain.start
-import com.mongodb.BasicDBObject
-import com.mongodb.MongoClient
-import de.flapdoodle.embed.mongo.MongodExecutable
-import de.flapdoodle.embed.mongo.MongodStarter
-import de.flapdoodle.embed.mongo.config.MongodConfigBuilder
-import de.flapdoodle.embed.mongo.config.Net
-import de.flapdoodle.embed.mongo.distribution.Version
-import de.flapdoodle.embed.process.runtime.Network
-import org.reflections.util.ConfigurationBuilder.build
-import java.util.*
-
+import eu.thesimplecloud.lib.directorypaths.DirectoryPathManager
+import eu.thesimplecloud.lib.directorypaths.DirectoryPaths
+import eu.thesimplecloud.lib.language.LanguageManager
 
 
 /**
@@ -36,10 +27,13 @@ class Launcher(val args: Array<String>): ICloudApplication {
     val commandManager = CommandManager(this)
     val setupManager = SetupManager(this)
     val consoleManager = ConsoleManager(this, commandManager)
+    val languageManager = LanguageManager("en_EN")
 
     override fun start() {
         instance = this
         System.setProperty("user.language", "en")
+        DirectoryPathManager()
+        languageManager.loadFile()
 
         commandManager.registerAllCommands("eu.thesimplecloud.launcher.commands")
         consoleManager.start()

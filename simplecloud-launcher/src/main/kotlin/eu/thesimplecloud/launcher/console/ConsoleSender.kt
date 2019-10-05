@@ -31,7 +31,8 @@ class ConsoleSender : ICommandSender {
             val percentPart = getPercentPart(rawMessage)
             replacements.put(percentPart,  nextString)
         }
-        var buildedString = fullRawMessageStringBuilder.toString()
+        var buildedString = Launcher.instance.languageManager.getMessage(property, fullRawMessageStringBuilder.toString())
+
         replacements.forEach{
             buildedString = buildedString.replace(it.key, it.value)
         }
