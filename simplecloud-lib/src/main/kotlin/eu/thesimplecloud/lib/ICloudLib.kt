@@ -1,15 +1,19 @@
-package eu.thesimplecloud.lib.bootstrap
+package eu.thesimplecloud.lib
 
 import eu.thesimplecloud.clientserverapi.lib.bootstrap.IBootstrap
+import eu.thesimplecloud.lib.service.ICloudService
 import eu.thesimplecloud.lib.service.ICloudServiceManager
 import eu.thesimplecloud.lib.servicegroup.ICloudServiceGroupManager
+import eu.thesimplecloud.lib.servicegroup.grouptype.ICloudLobbyGroup
+import eu.thesimplecloud.lib.servicegroup.grouptype.ICloudProxyGroup
+import eu.thesimplecloud.lib.servicegroup.grouptype.ICloudServerGroup
 import eu.thesimplecloud.lib.wrapper.IWrapperManager
 
 /**
  * It represents the main part of a cloud part
  * The Wrapper, Manager and CloudPlugin should implement this interface.
  */
-interface ICloudBootstrap : IBootstrap {
+interface ICloudLib {
 
     /**
      * Returns the [IWrapperManager] to manage wrapper
@@ -25,5 +29,4 @@ interface ICloudBootstrap : IBootstrap {
      * Returns the [ICloudServiceManager] to manage services
      */
     fun getCloudServiceManger(): ICloudServiceManager
-
 }

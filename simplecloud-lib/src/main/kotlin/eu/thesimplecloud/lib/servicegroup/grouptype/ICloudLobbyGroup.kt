@@ -1,5 +1,7 @@
 package eu.thesimplecloud.lib.servicegroup.grouptype
 
+import eu.thesimplecloud.lib.service.ServiceType
+
 interface ICloudLobbyGroup : ICloudServerGroup {
 
     /**
@@ -9,8 +11,20 @@ interface ICloudLobbyGroup : ICloudServerGroup {
     fun getPriority(): Int
 
     /**
+     * Sets the priority of this lobby group.
+     */
+    fun setPriority(priority: Int)
+
+    /**
      * Returns the permission a player needs to join a service of this group
      */
     fun getPermission(): String
+
+    /**
+     * Sets the permission a player needs to join a service of this group
+     */
+    fun setPermission(permission: String)
+
+    override fun getServiceType(): ServiceType = ServiceType.LOBBY
 
 }

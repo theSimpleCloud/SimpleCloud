@@ -1,9 +1,7 @@
 package eu.thesimplecloud.lib.wrapper
-
-import eu.thesimplecloud.lib.bootstrap.ICloudBootstrapGetter
 import eu.thesimplecloud.lib.service.ICloudService
 
-interface IWrapperManager : ICloudBootstrapGetter {
+interface IWrapperManager {
 
     /**
      * Updates or adds a [IWrapperInfo]

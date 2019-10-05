@@ -9,4 +9,9 @@ interface IAuthenticatable : IConnectedClientValue {
      */
     fun isAuthenticated(): Boolean
 
+    /**
+     * Sets this [IConnectedClientValue] authenticated
+     */
+    fun setAuthenticated(authenticated: Boolean)
+
 }
