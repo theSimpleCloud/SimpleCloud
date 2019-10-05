@@ -73,3 +73,5 @@ nb-configuration.xml
 ## SimpleCloud
 ##########################
 logs/
+launcher.json
+storage/

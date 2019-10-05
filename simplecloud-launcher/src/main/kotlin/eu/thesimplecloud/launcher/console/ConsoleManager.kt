@@ -19,6 +19,17 @@ class ConsoleManager(val commandManager: CommandManager) : IConsoleManager {
         thread = Thread {
             while (true) {
                 val readLine = readLine() ?: continue
+
+                val setup = Launcher.instance.setupManager.currentSetup
+                if (setup != null) {
+                    if (readLine.equals("exit") && !(application is Launcher)) {
+                        Launcher.instance.setupManager.cancelSetup()
+                        continue
+                    }
+
+                    Launcher.instance.setupManager.onResponse(readLine)
+                    continue
+                }
                 commandManager.handleCommand(readLine, consoleSender)
             }
         }

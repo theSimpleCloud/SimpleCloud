@@ -1,5 +1,6 @@
 package eu.thesimplecloud.launcher.logger
 
+import eu.thesimplecloud.launcher.Launcher
 import eu.thesimplecloud.launcher.application.ICloudApplication
 import java.io.File
 import java.nio.charset.StandardCharsets
@@ -115,6 +116,9 @@ class LoggerProvider(var applicationName: String) : Logger("SimpleCloudLogger", 
 
     fun updatePromt(newLine: Boolean) {
         var promt = getColoredString("§c${applicationName}§f@§eSimpleCloud§f>", LogType.EMPTY);
+        if (Launcher.instance.setupManager.currentSetup != null) {
+            promt = Launcher.instance.setupManager.currentQuestion?.questionName() + ":"
+        }
         if (newLine)
             println("")
                     
