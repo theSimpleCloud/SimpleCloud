@@ -14,12 +14,12 @@ import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
  * Time: 14:15
  */
 @Command("stop", true)
-class StopCommand(val application: ICloudApplication): ICommandHandler {
+class StopCommand(): ICommandHandler {
 
     @CommandSubPath(description = "Stops the cloud")
     fun handleCommand(sender: ICommandSender) {
-        application.shutdown()
         sender.sendMessage("Stopping the cloud...")
+        Launcher.instance.shutdown()
     }
 
 }

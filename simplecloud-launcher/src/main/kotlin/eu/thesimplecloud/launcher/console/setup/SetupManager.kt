@@ -1,7 +1,6 @@
 package eu.thesimplecloud.launcher.console.setup
 
 import eu.thesimplecloud.launcher.Launcher
-import eu.thesimplecloud.launcher.console.setu.ISetup
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,20 +16,20 @@ class SetupManager(val launcher: Launcher) {
     var currentQuestionIndex: Int = 0
 
     fun startSetup(setup: ISetup) {
-        currentSetup = setup;
-        currentQuestion = setup.questions().get(0)
-        logger.info("Setup started." + if (launcher.consoleManager.application is Launcher) "" else " You can quit the setup by writing \"exit\"!" )
+        currentSetup = setup
+        currentQuestion = setup.questions()[0]
+        logger.info("Setup started. You can quit the setup by writing \"exit\"!" )
     }
 
     fun cancelSetup() {
-        currentSetup = null;
+        currentSetup = null
         logger.warning("Setup canceled")
     }
 
     fun finishSetup() {
         logger.success("Setup completed")
         currentSetup?.onFinish()
-        currentSetup = null;
+        currentSetup = null
     }
 
     fun onResponse(message: String) {
@@ -45,9 +44,7 @@ class SetupManager(val launcher: Launcher) {
     }
 
     fun nextQuestion() {
-        val activeSetup = currentSetup
-        if (activeSetup == null)
-            return
+        val activeSetup = currentSetup ?: return
         if (!hasNextQuestion()) {
             finishSetup()
             return
@@ -58,9 +55,7 @@ class SetupManager(val launcher: Launcher) {
     }
 
     fun hasNextQuestion(): Boolean {
-        val activeSetup = currentSetup
-        if (activeSetup == null)
-            return false
+        val activeSetup = currentSetup ?: return false
         return activeSetup.questions().size > currentQuestionIndex + 1
     }
 

@@ -10,9 +10,9 @@ import eu.thesimplecloud.launcher.application.ICloudApplication
  * Date: 06.09.2019
  * Time: 21:29
  */
-class ConsoleManager(val commandManager: CommandManager) : IConsoleManager {
+class ConsoleManager(val commandManager: CommandManager, private val consoleSender: ConsoleSender) : IConsoleManager {
 
-    val consoleSender = ConsoleSender()
+
     var thread: Thread? = null
 
     override fun startThread() {

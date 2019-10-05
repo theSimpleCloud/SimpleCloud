@@ -15,12 +15,12 @@ class ConsoleSender : ICommandSender {
     override fun sendMessage(property: String, vararg messages: String) {
         val fullRawMessageStringBuilder = StringBuilder()
 
-        if (messages.size == 0) {
+        if (messages.isEmpty()) {
             sendMessage(property)
             return
         }
         val replacements = HashMap<String, String>()
-        for (i in 0..messages.size step 2) {
+        for (i in messages.indices step 2) {
             val rawMessage = messages[i]
             fullRawMessageStringBuilder.append(rawMessage)
             if (!rawMessage.contains("%")) continue
@@ -29,7 +29,7 @@ class ConsoleSender : ICommandSender {
             }
             val nextString = messages[i + 1]
             val percentPart = getPercentPart(rawMessage)
-            replacements.put(percentPart,  nextString)
+            replacements[percentPart] = nextString
         }
         var buildedString = Launcher.instance.languageManager.getMessage(property, fullRawMessageStringBuilder.toString())
 

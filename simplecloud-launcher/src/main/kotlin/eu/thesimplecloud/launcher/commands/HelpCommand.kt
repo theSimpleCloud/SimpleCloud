@@ -14,7 +14,7 @@ import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
  * Time: 16:07
  */
 @Command("help", false)
-class HelpCommand(application: ICloudApplication) : ICommandHandler {
+class HelpCommand() : ICommandHandler {
 
     @CommandSubPath
     fun handleCommand(sender: ICommandSender) {

@@ -1,7 +1,7 @@
 package eu.thesimplecloud.launcher.setups
 
 import eu.thesimplecloud.launcher.Launcher
-import eu.thesimplecloud.launcher.console.setu.ISetup
+import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.ISetupQuestion
 
 class StartSetup : ISetup {

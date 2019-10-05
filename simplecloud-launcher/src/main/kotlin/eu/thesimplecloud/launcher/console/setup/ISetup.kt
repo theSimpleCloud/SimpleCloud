@@ -1,4 +1,4 @@
-package eu.thesimplecloud.launcher.console.setu
+package eu.thesimplecloud.launcher.console.setup
 
 import eu.thesimplecloud.launcher.Launcher
 import eu.thesimplecloud.launcher.console.setup.ISetupQuestion
