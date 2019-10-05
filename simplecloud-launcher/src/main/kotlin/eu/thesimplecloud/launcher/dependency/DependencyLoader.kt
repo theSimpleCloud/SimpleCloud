@@ -18,7 +18,7 @@ class DependencyLoader(val repositories: List<String>) {
                 if (!dependency.getDownloadedFile().exists()) {
                     try {
                         dependency.download(repoUrl)
-                        Launcher.instance.consoleSender.sendMessage("launcher.dependency.downloaded", "Downloaded dependency %DEPENDENCY%", dependency.getDownloadURL(repoUrl))
+                        println("Downloaded dependency ${dependency.getDownloadURL(repoUrl)}")
                     } catch (ex: FileNotFoundException) {
 
                     }
@@ -26,7 +26,7 @@ class DependencyLoader(val repositories: List<String>) {
             }
         }
         dependencies.filter { !it.getDownloadedFile().exists() }
-                .forEach {  Launcher.instance.consoleSender.sendMessage("launcher.dependency.download-failed", "Failed to download dependency %DEPENDENCY%", "${it.groupId}:${it.artifactId}:${it.version}") }
+                .forEach {  println("Failed to download dependency ${it.groupId}:${it.artifactId}:${it.version}") }
         if (dependencies.any { !it.getDownloadedFile().exists() }) throw DependencyException("Failed to load all dependencies.")
 
         val urlClassLoader = ClassLoader.getSystemClassLoader() as URLClassLoader
@@ -34,7 +34,7 @@ class DependencyLoader(val repositories: List<String>) {
         method.isAccessible = true
 
         dependencies.forEach { method.invoke(urlClassLoader, it.getDownloadedFile().toURI().toURL()) }
-        Launcher.instance.consoleSender.sendMessage("launcher.dependency.all-installed", "Installed all dependencies successfully.")
+        println("Installed all dependencies successfully.")
     }
 
 }

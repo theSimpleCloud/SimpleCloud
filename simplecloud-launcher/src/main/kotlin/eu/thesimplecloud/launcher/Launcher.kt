@@ -5,6 +5,7 @@ import eu.thesimplecloud.launcher.console.ConsoleManager
 import eu.thesimplecloud.launcher.console.ConsoleSender
 import eu.thesimplecloud.launcher.console.command.CommandManager
 import eu.thesimplecloud.launcher.console.setup.SetupManager
+import eu.thesimplecloud.launcher.dependency.LauncherDependencyLoader
 import eu.thesimplecloud.launcher.logger.LoggerProvider
 import eu.thesimplecloud.lib.directorypaths.DirectoryPathManager
 import eu.thesimplecloud.lib.directorypaths.DirectoryPaths
@@ -26,17 +27,25 @@ class Launcher(val args: Array<String>) {
 
     val activeApplication: ICloudApplication? = null
     val logger = LoggerProvider("Launcher")
-    val commandManager = CommandManager()
+    val commandManager: CommandManager
     val consoleSender = ConsoleSender()
-    val consoleManager = ConsoleManager(commandManager, consoleSender)
+    val consoleManager: ConsoleManager
     val setupManager = SetupManager(this)
     val languageManager = LanguageManager("en_EN")
 
-    fun start() {
+    init {
         instance = this
         System.setProperty("user.language", "en")
+        LauncherDependencyLoader().loadLauncherDependencies()
         DirectoryPathManager()
         languageManager.loadFile()
+        commandManager = CommandManager()
+        consoleManager = ConsoleManager(commandManager, consoleSender)
+    }
+
+    fun start() {
+
+
 
         commandManager.registerAllCommands("eu.thesimplecloud.launcher.commands")
         consoleManager.startThread()

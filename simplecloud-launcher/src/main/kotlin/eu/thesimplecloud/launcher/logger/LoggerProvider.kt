@@ -1,7 +1,6 @@
 package eu.thesimplecloud.launcher.logger
 
 import eu.thesimplecloud.launcher.Launcher
-import eu.thesimplecloud.launcher.application.ICloudApplication
 import java.io.File
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
@@ -105,10 +104,10 @@ class LoggerProvider(var applicationName: String) : Logger("SimpleCloudLogger", 
 
         }
 
-        var message = "§r" + text + "§r";
-        if (!type.equals(LogType.EMPTY)) {
-            val time = dataFormat.format(Calendar.getInstance().getTime())
-            message = "$time " + logType + ":" + " §r" + text + "§r";
+        var message = "§r$text§r";
+        if (type != LogType.EMPTY) {
+            val time = dataFormat.format(Calendar.getInstance().time)
+            message = "$time $logType: §r$text§r"
         }
 
         return AnsiColorHelper.toColoredString(message)
