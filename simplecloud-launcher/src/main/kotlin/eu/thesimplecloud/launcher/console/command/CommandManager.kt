@@ -19,7 +19,7 @@ import kotlin.collections.ArrayList
  * Date: 30.08.2019
  * Time: 17:41
  */
-class CommandManager(private val application: ICloudApplication) {
+class CommandManager() {
 
     val GSON = GsonBuilder().serializeNulls().create()
 
@@ -114,7 +114,7 @@ class CommandManager(private val application: ICloudApplication) {
             val reflection = Reflections(it)
             reflection.getSubTypesOf(ICommandHandler::class.java).forEach {
                 try {
-                    registerCommand(it.getDeclaredConstructor(ICloudApplication::class.java).newInstance(application))
+                    registerCommand(it.getDeclaredConstructor().newInstance())
                 } catch (e: InstantiationException) {
                     e.printStackTrace()
                 } catch (e: IllegalAccessException) {

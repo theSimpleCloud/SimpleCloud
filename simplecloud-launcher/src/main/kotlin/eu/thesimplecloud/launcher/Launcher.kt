@@ -11,33 +11,23 @@ import eu.thesimplecloud.launcher.logger.LoggerProvider
  * Date: 06.09.2019
  * Time: 21:31
  */
-class Launcher : ICloudApplication {
+class Launcher {
 
     companion object {
         lateinit var instance: Launcher
     }
 
-    private var running = true
-    val logger = LoggerProvider(this)
-    val commandManager = CommandManager(this)
-    val consoleManager = ConsoleManager(this, commandManager)
+    val logger = LoggerProvider("Launcher")
+    val commandManager = CommandManager()
+    val consoleManager = ConsoleManager(commandManager)
 
-    override fun start() {
+    fun start() {
         instance = this
         System.setProperty("user.language", "en")
 
         commandManager.registerAllCommands("eu.thesimplecloud.launcher.commands")
-        consoleManager.start()
+        consoleManager.startThread()
     }
-
-    override fun shutdown() {
-        running = false
-    }
-
-    override fun getApplicationName(): String = "Launcher"
-
-
-    override fun isRunning(): Boolean = running
 
 
 }

@@ -19,7 +19,7 @@ import java.util.logging.SimpleFormatter
  * Time: 17:02
  */
 @Suppress("NON_EXHAUSTIVE_WHEN")
-class LoggerProvider(var application: ICloudApplication) : Logger("SimpleCloudLogger", null) {
+class LoggerProvider(var applicationName: String) : Logger("SimpleCloudLogger", null) {
 
     val dataFormat = SimpleDateFormat("[HH:mm:ss]")
 
@@ -114,18 +114,11 @@ class LoggerProvider(var application: ICloudApplication) : Logger("SimpleCloudLo
     }
 
     fun updatePromt(newLine: Boolean) {
-        if (!application.isRunning())
-            return
-
-        var promt = getColoredString("§c${application.getApplicationName()}§f@§eSimpleCloud§f>", LogType.EMPTY);
+        var promt = getColoredString("§c${applicationName}§f@§eSimpleCloud§f>", LogType.EMPTY);
         if (newLine)
             println("")
                     
         print ("\r$promt ")
-    }
-
-    fun changeApplication(application: ICloudApplication) {
-        this.application = application
     }
 
 }
