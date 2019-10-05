@@ -28,7 +28,7 @@ class Launcher(val args: Array<String>) {
     val setupManager = SetupManager(this)
     val languageManager = LanguageManager("en_EN")
 
-    override fun start() {
+    fun start() {
         instance = this
         System.setProperty("user.language", "en")
         DirectoryPathManager()

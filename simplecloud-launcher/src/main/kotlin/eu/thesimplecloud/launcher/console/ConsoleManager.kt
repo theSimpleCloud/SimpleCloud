@@ -22,7 +22,7 @@ class ConsoleManager(val commandManager: CommandManager) : IConsoleManager {
 
                 val setup = Launcher.instance.setupManager.currentSetup
                 if (setup != null) {
-                    if (readLine.equals("exit") && !(application is Launcher)) {
+                    if (readLine.equals("exit")) {
                         Launcher.instance.setupManager.cancelSetup()
                         continue
                     }
