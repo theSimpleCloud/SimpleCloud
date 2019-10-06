@@ -24,7 +24,6 @@ class LanguageSetup : ISetup {
                 }
                 return false
             }
-
         })
 
         return list

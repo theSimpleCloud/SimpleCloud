@@ -42,6 +42,7 @@ class Launcher(val startArguments: StartArguments) {
 
     init {
         instance = this
+        Thread.setDefaultUncaughtExceptionHandler { t, cause -> logger.exception(cause) }
         System.setProperty("user.language", "en")
         DirectoryPathManager()
         commandManager = CommandManager()

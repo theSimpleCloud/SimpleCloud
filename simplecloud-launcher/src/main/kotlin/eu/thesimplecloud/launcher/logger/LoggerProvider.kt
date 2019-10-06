@@ -11,6 +11,10 @@ import java.util.logging.FileHandler
 import java.util.logging.Level
 import java.util.logging.Logger
 import java.util.logging.SimpleFormatter
+import java.io.PrintWriter
+import java.io.StringWriter
+
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -122,6 +126,14 @@ class LoggerProvider(var applicationName: String) : Logger("SimpleCloudLogger", 
             println("")
                     
         print ("\r$prompt ")
+    }
+
+    fun exception(cause: Throwable) {
+        val sw = StringWriter()
+        val pw = PrintWriter(sw, true)
+        cause.printStackTrace(pw)
+        val stackTraceMessage = sw.buffer.toString()
+        this.severe(stackTraceMessage)
     }
 
 }
