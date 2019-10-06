@@ -34,7 +34,7 @@ class DependencyLoader(val repositories: List<String>) {
         method.isAccessible = true
 
         dependencies.forEach { method.invoke(urlClassLoader, it.getDownloadedFile().toURI().toURL()) }
-        Launcher.instance.logger.success("Installed all dependencies successfully.")
+        println("Installed all dependencies successfully.")
     }
 
 }

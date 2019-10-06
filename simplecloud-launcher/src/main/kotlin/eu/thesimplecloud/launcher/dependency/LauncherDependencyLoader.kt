@@ -14,7 +14,8 @@ class LauncherDependencyLoader {
                 Dependency("com.google.code.gson", "gson", "2.8.5"),
                 Dependency("com.google.guava", "guava", "18.0"),
                 Dependency("org.javassist", "javassist", "3.18.2-GA"),
-                Dependency("com.google.code.findbugs", "annotations", "2.0.1")))
+                Dependency("com.google.code.findbugs", "annotations", "2.0.1"),
+                Dependency("com.github.ajalt", "clikt", "2.2.0")))
     }
 
 }

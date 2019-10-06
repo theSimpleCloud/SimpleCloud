@@ -1,5 +1,7 @@
 package eu.thesimplecloud.launcher.startup
 
+import eu.thesimplecloud.launcher.application.CloudApplicationStarter
+import eu.thesimplecloud.launcher.application.CloudApplicationType
 import eu.thesimplecloud.launcher.application.ICloudApplication
 import eu.thesimplecloud.launcher.console.ConsoleManager
 import eu.thesimplecloud.launcher.console.ConsoleSender
@@ -41,7 +43,6 @@ class Launcher(val startArguments: StartArguments) {
     init {
         instance = this
         System.setProperty("user.language", "en")
-        LauncherDependencyLoader().loadLauncherDependencies()
         DirectoryPathManager()
         commandManager = CommandManager()
         consoleManager = ConsoleManager(commandManager, consoleSender)
@@ -53,12 +54,18 @@ class Launcher(val startArguments: StartArguments) {
         commandManager.registerAllCommands("eu.thesimplecloud.launcher.commands")
         consoleManager.startThread()
         if (!languageManager.doesFileExist())
-            setupManager.startSetup(LanguageSetup())
+            setupManager.queueSetup(LanguageSetup())
         if (startArguments.startApplication == null)
-            setupManager.startSetup(StartSetup())
+            setupManager.queueSetup(StartSetup())
 
         languageManager.loadFile()
-        logger.updatePromt(false)
+        logger.updatePrompt(false)
+    }
+
+    fun startApplication(cloudApplicationType: CloudApplicationType){
+        ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor()
+        logger.info("Starting ${cloudApplicationType.name}...")
+        CloudApplicationStarter().startCloudApplication(cloudApplicationType)
     }
 
     fun shutdown(){

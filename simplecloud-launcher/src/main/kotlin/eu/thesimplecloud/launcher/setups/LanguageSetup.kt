@@ -11,7 +11,7 @@ class LanguageSetup : ISetup {
     private var cloudApplicationType: CloudApplicationType? = null
 
     override fun questions(): List<ISetupQuestion> {
-        val supportedLanguages = listOf("end", "de")
+        val supportedLanguages = listOf("en", "de")
         val list = ArrayList<ISetupQuestion>()
         list.add(object : ISetupQuestion {
             override fun questionName(): String = "Which language do you want to use? (${supportedLanguages.joinToString()})"

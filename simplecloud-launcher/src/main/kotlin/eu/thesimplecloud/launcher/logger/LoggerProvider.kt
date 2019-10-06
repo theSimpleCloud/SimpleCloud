@@ -46,37 +46,37 @@ class LoggerProvider(var applicationName: String) : Logger("SimpleCloudLogger", 
     fun success(msg: String) {
         super.info(msg)
         print("\r" + getColoredString(msg, LogType.SUCCESS))
-        updatePromt(true)
+        updatePrompt(true)
     }
 
     override fun info(msg: String) {
         super.info(msg)
         print("\r" + getColoredString(msg, LogType.INFO))
-        updatePromt(true)
+        updatePrompt(true)
     }
 
     override fun warning(msg: String) {
         super.warning(msg)
         print("\r" + getColoredString(msg, LogType.WARNING))
-        updatePromt(true)
+        updatePrompt(true)
     }
 
     override fun severe(msg: String) {
         super.severe(msg)
         print("\r" + getColoredString(msg, LogType.ERROR))
-        updatePromt(true)
+        updatePrompt(true)
     }
 
     fun console(msg: String) {
         super.info(msg)
         print("\r" + getColoredString(msg, LogType.CONSOLE))
-        updatePromt(true)
+        updatePrompt(true)
     }
 
     fun empty(msg: String) {
         super.info(msg)
         print("\r" + getColoredString(msg, LogType.EMPTY))
-        updatePromt(true)
+        updatePrompt(true)
     }
 
     fun getColoredString(text: String, type: LogType): String {
@@ -113,15 +113,15 @@ class LoggerProvider(var applicationName: String) : Logger("SimpleCloudLogger", 
         return AnsiColorHelper.toColoredString(message)
     }
 
-    fun updatePromt(newLine: Boolean) {
-        var promt = getColoredString("§c${applicationName}§f@§eSimpleCloud§f>", LogType.EMPTY);
+    fun updatePrompt(newLine: Boolean) {
+        var prompt = getColoredString("§c${applicationName}§f@§eSimpleCloud§f>", LogType.EMPTY);
         if (Launcher.instance.setupManager.currentSetup != null) {
-            promt = Launcher.instance.setupManager.currentQuestion?.questionName() + ":"
+            prompt = Launcher.instance.setupManager.currentQuestion?.questionName() + ":"
         }
         if (newLine)
             println("")
                     
-        print ("\r$promt ")
+        print ("\r$prompt ")
     }
 
 }

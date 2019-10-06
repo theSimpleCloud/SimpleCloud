@@ -5,6 +5,7 @@ import eu.thesimplecloud.launcher.application.CloudApplicationStarter
 import eu.thesimplecloud.launcher.application.CloudApplicationType
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.ISetupQuestion
+import java.lang.IllegalStateException
 
 class StartSetup : ISetup {
 
@@ -17,7 +18,7 @@ class StartSetup : ISetup {
 
             override fun onResponseReceived(answer: String): Boolean {
                 if (answer.equals("manager", true) || answer.equals("wrapper", true)) {
-                    cloudApplicationType = CloudApplicationType.valueOf(answer)
+                    cloudApplicationType = CloudApplicationType.valueOf(answer.toUpperCase())
                     return cloudApplicationType != null
                 }
                 return false
@@ -29,8 +30,8 @@ class StartSetup : ISetup {
     }
 
     override fun onFinish() {
-        ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor()
-        Launcher.instance.logger.info("Starting ${cloudApplicationType?.name}...")
-        CloudApplicationStarter().startCloudApplication(cloudApplicationType!!)
+        val cloudApplicationType = this.cloudApplicationType
+        checkNotNull(cloudApplicationType) { "Cloud application type was null after start setup." }
+        Launcher.instance.startApplication(cloudApplicationType)
     }
 }
