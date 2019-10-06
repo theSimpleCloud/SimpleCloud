@@ -1,7 +1,8 @@
-package eu.thesimplecloud.lib.directorypaths
+package eu.thesimplecloud.launcher.directorypaths
 
 import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.launcher.config.LauncherConfig
+import eu.thesimplecloud.lib.directorypaths.DirectoryPaths
 import java.io.File
 
 class DirectoryPathManager {

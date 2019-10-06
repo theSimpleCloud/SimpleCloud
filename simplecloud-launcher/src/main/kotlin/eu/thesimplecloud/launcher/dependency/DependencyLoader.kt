@@ -1,6 +1,7 @@
 package eu.thesimplecloud.launcher.dependency
 
 import eu.thesimplecloud.launcher.exception.DependencyException
+import eu.thesimplecloud.launcher.startup.Launcher
 import java.io.File
 import java.io.FileNotFoundException
 import java.net.URL
@@ -33,7 +34,7 @@ class DependencyLoader(val repositories: List<String>) {
         method.isAccessible = true
 
         dependencies.forEach { method.invoke(urlClassLoader, it.getDownloadedFile().toURI().toURL()) }
-        println("Installed all dependencies successfully.")
+        Launcher.instance.logger.success("Installed all dependencies successfully.")
     }
 
 }

@@ -7,11 +7,9 @@ import java.io.File
 class LanguageManager(var language: String) {
 
     private lateinit var languageFile: LanguageFile
-    private lateinit var file: File
+    private val file = File(DirectoryPaths.paths.languagesPath, "$language.json")
 
     fun loadFile() {
-        file = File(DirectoryPaths.paths.languagesPath, "$language.json")
-
         if (!file.exists()) {
             languageFile = LanguageFile()
 
@@ -42,5 +40,7 @@ class LanguageManager(var language: String) {
             JsonData.fromObject(languageFile).saveAsFile(file)
         }
     }
+
+    fun doesFileExist() = file.exists()
 
 }

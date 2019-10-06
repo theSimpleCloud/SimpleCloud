@@ -7,7 +7,9 @@ import eu.thesimplecloud.launcher.console.command.CommandManager
 import eu.thesimplecloud.launcher.console.setup.SetupManager
 import eu.thesimplecloud.launcher.dependency.LauncherDependencyLoader
 import eu.thesimplecloud.launcher.logger.LoggerProvider
-import eu.thesimplecloud.lib.directorypaths.DirectoryPathManager
+import eu.thesimplecloud.launcher.setups.LanguageSetup
+import eu.thesimplecloud.launcher.setups.StartSetup
+import eu.thesimplecloud.launcher.directorypaths.DirectoryPathManager
 import eu.thesimplecloud.lib.language.LanguageManager
 import kotlin.system.exitProcess
 
@@ -18,7 +20,7 @@ import kotlin.system.exitProcess
  * Date: 06.09.2019
  * Time: 21:31
  */
-class Launcher(val args: Array<String>) {
+class Launcher(val startArguments: StartArguments) {
 
     companion object {
         lateinit var instance: Launcher
@@ -34,28 +36,28 @@ class Launcher(val args: Array<String>) {
     val consoleSender = ConsoleSender()
     val consoleManager: ConsoleManager
     val setupManager = SetupManager(this)
-    val languageManager = LanguageManager("en_EN")
+    val languageManager: LanguageManager
 
     init {
         instance = this
         System.setProperty("user.language", "en")
         LauncherDependencyLoader().loadLauncherDependencies()
         DirectoryPathManager()
-        languageManager.loadFile()
         commandManager = CommandManager()
         consoleManager = ConsoleManager(commandManager, consoleSender)
+        languageManager = LanguageManager("en_EN")
     }
 
     fun start() {
 
-
-
         commandManager.registerAllCommands("eu.thesimplecloud.launcher.commands")
         consoleManager.startThread()
-        if (args.isEmpty()) {
-            //setupManager.startSetup(eu.thesimplecloud.launcher.setups.StartSetup())
-        }
+        if (!languageManager.doesFileExist())
+            setupManager.startSetup(LanguageSetup())
+        if (startArguments.startApplication == null)
+            setupManager.startSetup(StartSetup())
 
+        languageManager.loadFile()
         logger.updatePromt(false)
     }
 
