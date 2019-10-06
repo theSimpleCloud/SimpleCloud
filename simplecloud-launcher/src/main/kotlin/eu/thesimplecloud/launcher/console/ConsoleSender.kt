@@ -1,6 +1,6 @@
 package eu.thesimplecloud.launcher.console
 
-import eu.thesimplecloud.launcher.Launcher
+import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.launcher.console.command.ICommandSender
 import java.lang.IllegalArgumentException
 import kotlin.text.StringBuilder

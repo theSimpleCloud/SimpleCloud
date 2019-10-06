@@ -1,5 +1,9 @@
 package eu.thesimplecloud.launcher
 
+import eu.thesimplecloud.launcher.startup.Launcher
+import eu.thesimplecloud.launcher.startup.LauncherArgs
+
 fun main(args: Array<String>) {
-    Launcher(args).start()
+    LauncherArgs().main(args)
+    //Launcher(args).start()
 }

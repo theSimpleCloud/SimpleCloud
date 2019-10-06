@@ -8,7 +8,6 @@ class LauncherDependencyLoader {
         dependencyLoader.installDependencies(listOf(
                 Dependency("io.netty", "netty-all", "4.1.4.Final"),
                 Dependency("eu.thesimplecloud.clientserverapi", "clientserverapi", "1.0.8-SNAPSHOT"),
-                Dependency("org.jetbrains.kotlin", "kotlin-stdlib", "1.3.50"),
                 Dependency("org.mongodb", "mongo-java-driver", "3.11.0"),
                 Dependency("de.flapdoodle.embed", "de.flapdoodle.embed.mongo", "2.1.2"),
                 Dependency("org.reflections", "reflections", "0.9.10"),

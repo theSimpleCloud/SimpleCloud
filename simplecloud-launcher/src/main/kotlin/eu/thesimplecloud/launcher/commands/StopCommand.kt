@@ -1,8 +1,7 @@
 package eu.thesimplecloud.launcher.commands
 
 import eu.thesimplecloud.launcher.console.command.annotations.Command
-import eu.thesimplecloud.launcher.Launcher
-import eu.thesimplecloud.launcher.application.ICloudApplication
+import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.launcher.console.command.ICommandHandler
 import eu.thesimplecloud.launcher.console.command.ICommandSender
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath

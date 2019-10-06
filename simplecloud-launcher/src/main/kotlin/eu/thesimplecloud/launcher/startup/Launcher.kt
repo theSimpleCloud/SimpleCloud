@@ -1,4 +1,4 @@
-package eu.thesimplecloud.launcher
+package eu.thesimplecloud.launcher.startup
 
 import eu.thesimplecloud.launcher.application.ICloudApplication
 import eu.thesimplecloud.launcher.console.ConsoleManager
@@ -8,7 +8,6 @@ import eu.thesimplecloud.launcher.console.setup.SetupManager
 import eu.thesimplecloud.launcher.dependency.LauncherDependencyLoader
 import eu.thesimplecloud.launcher.logger.LoggerProvider
 import eu.thesimplecloud.lib.directorypaths.DirectoryPathManager
-import eu.thesimplecloud.lib.directorypaths.DirectoryPaths
 import eu.thesimplecloud.lib.language.LanguageManager
 import kotlin.system.exitProcess
 
@@ -25,7 +24,11 @@ class Launcher(val args: Array<String>) {
         lateinit var instance: Launcher
     }
 
-    val activeApplication: ICloudApplication? = null
+    var activeApplication: ICloudApplication? = null
+    set(value) {
+        field = value
+        logger.applicationName = value?.getApplicationName().toString()
+    }
     val logger = LoggerProvider("Launcher")
     val commandManager: CommandManager
     val consoleSender = ConsoleSender()

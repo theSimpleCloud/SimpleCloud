@@ -1,6 +1,6 @@
 package eu.thesimplecloud.launcher.logger
 
-import eu.thesimplecloud.launcher.Launcher
+import eu.thesimplecloud.launcher.startup.Launcher
 import java.io.File
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files

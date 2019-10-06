@@ -3,8 +3,7 @@ package eu.thesimplecloud.launcher.console.command
 import com.google.gson.GsonBuilder
 import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
-import eu.thesimplecloud.launcher.Launcher
-import eu.thesimplecloud.launcher.application.ICloudApplication
+import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.exception.CommandRegistrationException
 import eu.thesimplecloud.launcher.invoker.MethodInvokeHelper

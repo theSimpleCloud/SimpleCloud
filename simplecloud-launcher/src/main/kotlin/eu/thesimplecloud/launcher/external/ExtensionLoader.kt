@@ -8,7 +8,7 @@ import java.net.URLClassLoader
 
 class ExtensionLoader<C> {
 
-    fun LoadClass(jar: File, classpath: String, parentClass: Class<C>): C? {
+    fun loadClass(jar: File, classpath: String, parentClass: Class<C>): C {
 
         val urlClassLoader = URLClassLoader(arrayOf(jar.toURI().toURL()), javaClass.classLoader)
         val clazz = Class.forName(classpath, true, urlClassLoader)

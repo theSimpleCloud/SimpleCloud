@@ -1,8 +1,7 @@
 package eu.thesimplecloud.launcher.console
 
 import eu.thesimplecloud.launcher.console.command.CommandManager
-import eu.thesimplecloud.launcher.Launcher
-import eu.thesimplecloud.launcher.application.ICloudApplication
+import eu.thesimplecloud.launcher.startup.Launcher
 
 /**
  * Created by IntelliJ IDEA.

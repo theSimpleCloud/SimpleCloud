@@ -1,6 +1,6 @@
 package eu.thesimplecloud.launcher.console.setup
 
-import eu.thesimplecloud.launcher.Launcher
+import eu.thesimplecloud.launcher.startup.Launcher
 
 /**
  * Created by IntelliJ IDEA.

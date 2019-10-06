@@ -1,8 +1,5 @@
 package eu.thesimplecloud.launcher.console.setup
 
-import eu.thesimplecloud.launcher.Launcher
-import eu.thesimplecloud.launcher.console.setup.ISetupQuestion
-
 /**
  * Created by IntelliJ IDEA.
  * User: Philipp.Eistrach
@@ -11,7 +8,15 @@ import eu.thesimplecloud.launcher.console.setup.ISetupQuestion
  */
 interface ISetup {
 
+    /**
+     * Returns a list of all SetupQuestions.
+     * The questions will be asked in the lists order
+     */
     fun questions(): List<ISetupQuestion>
+
+    /**
+     * Called when the setup is completed.
+     */
     fun onFinish()
 
 }

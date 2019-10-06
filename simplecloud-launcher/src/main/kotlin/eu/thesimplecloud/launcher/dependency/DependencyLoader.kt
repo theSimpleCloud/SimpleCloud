@@ -1,6 +1,5 @@
 package eu.thesimplecloud.launcher.dependency
 
-import eu.thesimplecloud.launcher.Launcher
 import eu.thesimplecloud.launcher.exception.DependencyException
 import java.io.File
 import java.io.FileNotFoundException

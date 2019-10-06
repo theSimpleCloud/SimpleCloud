@@ -1,20 +1,23 @@
 package eu.thesimplecloud.launcher.setups
 
-import eu.thesimplecloud.launcher.Launcher
+import eu.thesimplecloud.launcher.startup.Launcher
+import eu.thesimplecloud.launcher.application.CloudApplicationStarter
+import eu.thesimplecloud.launcher.application.CloudApplicationType
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.ISetupQuestion
 
 class StartSetup : ISetup {
-    var startOption: String = ""
+
+    private var cloudApplicationType: CloudApplicationType? = null
 
     override fun questions(): List<ISetupQuestion> {
+        val supportedLanguages = listOf("end", "de")
         val list = ArrayList<ISetupQuestion>()
         list.add(object : ISetupQuestion {
-            override fun questionName(): String = "Wich language do you want to use? (en, de)"
+            override fun questionName(): String = "Which language do you want to use? (${supportedLanguages.joinToString()})"
 
             override fun onResponseReceived(answer: String): Boolean {
-                if (answer.equals("en", true) || answer.equals("de", true)) {
-                    startOption = answer
+                if (supportedLanguages.contains(answer.toLowerCase())) {
                     Launcher.instance.languageManager.language = "${answer.toLowerCase()}_${answer.toUpperCase()}"
                     Launcher.instance.languageManager.loadFile()
                     return true
@@ -28,8 +31,8 @@ class StartSetup : ISetup {
 
             override fun onResponseReceived(answer: String): Boolean {
                 if (answer.equals("manager", true) || answer.equals("wrapper", true)) {
-                    startOption = answer
-                    return true
+                    cloudApplicationType = CloudApplicationType.valueOf(answer)
+                    return cloudApplicationType != null
                 }
                 return false
             }
@@ -41,6 +44,7 @@ class StartSetup : ISetup {
 
     override fun onFinish() {
         ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor()
-        Launcher.instance.logger.info("Starting ${startOption.toLowerCase()}...")
+        Launcher.instance.logger.info("Starting ${cloudApplicationType?.name}...")
+        CloudApplicationStarter().startCloudApplication(cloudApplicationType!!)
     }
 }
