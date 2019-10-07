@@ -1,7 +1,7 @@
 package eu.thesimplecloud.launcher.console.setup
 
 import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.launcher.logger.LoggerProvider
+import eu.thesimplecloud.launcher.logging.LoggerProvider
 import java.util.concurrent.LinkedBlockingQueue
 
 /**
@@ -20,7 +20,7 @@ class SetupManager(val launcher: Launcher) {
 
     /**
      * Queues a setup.
-     * Note: The question will be printed as prompt in [LoggerProvider]
+     * Note: The question will be printed as prompt in [LoggerProvider.updatePrompt]
      */
     fun queueSetup(setup: ISetup) {
         if (this.currentSetup == null) {
@@ -59,7 +59,7 @@ class SetupManager(val launcher: Launcher) {
     }
 
     private fun checkForNextSetup() {
-        if (!setupQueue.isEmpty()) {
+        if (setupQueue.isNotEmpty()) {
             startSetup(this.setupQueue.poll())
         }
     }

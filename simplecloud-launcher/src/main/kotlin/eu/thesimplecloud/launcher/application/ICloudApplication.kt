@@ -10,9 +10,5 @@ import eu.thesimplecloud.clientserverapi.lib.bootstrap.IBootstrap
  */
 interface ICloudApplication : IBootstrap {
 
-    /**
-     * Returns the name of this application
-     */
-    fun getApplicationName(): String
 
 }

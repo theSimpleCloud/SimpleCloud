@@ -71,7 +71,7 @@ interface ICloudService : IAuthenticatable, IBootstrap {
     /**
      * Returns whether this service is static.
      */
-    fun isServiceStatic(): Boolean = getServiceGroup().isStatic()
+    fun isStatic(): Boolean = getServiceGroup().isStatic()
 
     /**
      * Returns the percentage of occupied slots

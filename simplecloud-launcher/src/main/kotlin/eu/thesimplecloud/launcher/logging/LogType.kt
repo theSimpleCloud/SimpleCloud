@@ -1,4 +1,4 @@
-package eu.thesimplecloud.launcher.logger
+package eu.thesimplecloud.launcher.logging
 
 /**
  * Created by IntelliJ IDEA.

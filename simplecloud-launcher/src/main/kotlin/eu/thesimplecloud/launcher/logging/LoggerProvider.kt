@@ -1,4 +1,4 @@
-package eu.thesimplecloud.launcher.logger
+package eu.thesimplecloud.launcher.logging
 
 import eu.thesimplecloud.launcher.startup.Launcher
 import java.io.File
