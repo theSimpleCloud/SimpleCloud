@@ -1,5 +1,6 @@
 package eu.thesimplecloud.lib.service.impl
 
+import eu.thesimplecloud.clientserverapi.lib.json.GsonExclude
 import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.service.ICloudService
 import eu.thesimplecloud.lib.service.ServiceState
@@ -20,6 +21,8 @@ class DefaultCloudService(
     private var serviceState = ServiceState.PREPARED
     private var onlinePlayers = 0
     private var authenticated = false
+    @GsonExclude
+    private var lastUpdate = System.currentTimeMillis()
 
     override fun getGroupName(): String = this.groupName
 
@@ -62,5 +65,11 @@ class DefaultCloudService(
     override fun shutdown() = CloudLib.instance.getCloudServiceManger().stopServices(this)
 
     override fun getMaxMemory(): Int = this.maxMemory
+
+    override fun getLastUpdate(): Long = this.lastUpdate
+
+    override fun setLastUpdate(timeStamp: Long) {
+        this.lastUpdate = timeStamp
+    }
 
 }

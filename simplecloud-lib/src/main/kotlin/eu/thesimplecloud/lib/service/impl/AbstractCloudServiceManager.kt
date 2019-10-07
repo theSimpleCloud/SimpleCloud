@@ -24,6 +24,7 @@ abstract class AbstractCloudServiceManager : ICloudServiceManager {
         cashedService.setOnlinePlayers(cloudService.getOnlinePlayers())
         cashedService.setState(cloudService.getState())
         cashedService.setAuthenticated(cloudService.isAuthenticated())
+        cashedService.setLastUpdate(System.currentTimeMillis())
 
         CloudLib.instance.getEventManager().call(CloudServiceUpdatedEvent(cashedService))
         if (nowStarting) CloudLib.instance.getEventManager().call(CloudServiceStartingEvent(cashedService))

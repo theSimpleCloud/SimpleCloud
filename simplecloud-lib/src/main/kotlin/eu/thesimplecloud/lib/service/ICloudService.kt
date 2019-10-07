@@ -87,6 +87,16 @@ interface ICloudService : IAuthenticatable, IBootstrap {
     fun getName(): String = getGroupName() + "-" + getServiceNumber()
 
     /**
+     * Returns the last time stamp the service was updated.
+     */
+    fun getLastUpdate(): Long
+
+    /**
+     * Sets the last time stamp the service was updated.
+     */
+    fun setLastUpdate(timeStamp: Long)
+
+    /**
      * Returns the state of this service.
      */
     fun getState(): ServiceState
