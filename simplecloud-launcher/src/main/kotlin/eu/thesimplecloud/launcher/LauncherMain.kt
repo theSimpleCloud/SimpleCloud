@@ -1,9 +1,9 @@
 package eu.thesimplecloud.launcher
 
 import eu.thesimplecloud.launcher.dependency.LauncherDependencyLoader
-import eu.thesimplecloud.launcher.startup.StartArguments
+import eu.thesimplecloud.launcher.startup.LauncherStartArguments
 
 fun main(args: Array<String>) {
     LauncherDependencyLoader().loadLauncherDependencies()
-    StartArguments().main(args)
+    LauncherStartArguments().main(args)
 }

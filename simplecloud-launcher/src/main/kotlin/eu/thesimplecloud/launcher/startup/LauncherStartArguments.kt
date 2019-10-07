@@ -8,7 +8,7 @@ import com.github.ajalt.clikt.parameters.types.choice
 import com.github.ajalt.clikt.parameters.types.enum
 import eu.thesimplecloud.launcher.application.CloudApplicationType
 
-class StartArguments() : CliktCommand() {
+class LauncherStartArguments() : CliktCommand() {
 
     val checkForUpdates: Boolean by option(help = "Checks for updates.").flag()
     val startApplication: CloudApplicationType? by option(help = "Starts an application directly.").enum<CloudApplicationType>()

@@ -37,18 +37,29 @@ class SetupManager(val launcher: Launcher) {
     }
 
     fun cancelSetup() {
-        currentSetup = null
-        this.logger.warning("Setup canceled")
+        val currentSetupReference = this.currentSetup
+        resetSetup()
+        currentSetupReference?.onCancel()
+        this.logger.warning("Setup cancelled.")
+        checkForNextSetup()
     }
 
     private fun finishSetup() {
         val currentSetupReference = this.currentSetup
+        resetSetup()
+        currentSetupReference?.onFinish()
+        this.logger.success("Setup completed.")
+        checkForNextSetup()
+    }
+
+    private fun resetSetup() {
         this.currentSetup = null
         this.currentQuestion = null
         this.currentQuestionIndex = 0
-        currentSetupReference?.onFinish()
-        this.logger.success("Setup completed")
-        if (!setupQueue.isEmpty()){
+    }
+
+    private fun checkForNextSetup() {
+        if (!setupQueue.isEmpty()) {
             startSetup(this.setupQueue.poll())
         }
     }

@@ -19,4 +19,8 @@ interface ISetup {
      */
     fun onFinish()
 
+    /**
+     * Called when this setup was cancelled
+     */
+    fun onCancel()
 }

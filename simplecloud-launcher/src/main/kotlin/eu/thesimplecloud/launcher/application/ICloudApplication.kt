@@ -8,7 +8,7 @@ import eu.thesimplecloud.clientserverapi.lib.bootstrap.IBootstrap
  * Date: 06.09.2019
  * Time: 22:10
  */
-interface ICloudApplication: IBootstrap {
+interface ICloudApplication : IBootstrap {
 
     /**
      * Returns the name of this application

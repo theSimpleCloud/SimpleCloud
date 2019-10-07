@@ -31,4 +31,7 @@ class LanguageSetup : ISetup {
 
     override fun onFinish() {
     }
+
+    override fun onCancel() {
+    }
 }

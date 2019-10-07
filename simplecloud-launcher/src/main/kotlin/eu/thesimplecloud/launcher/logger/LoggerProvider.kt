@@ -108,7 +108,7 @@ class LoggerProvider(var applicationName: String) : Logger("SimpleCloudLogger", 
 
         }
 
-        var message = "§r$text§r";
+        var message = "§r$text§r"
         if (type != LogType.EMPTY) {
             val time = dataFormat.format(Calendar.getInstance().time)
             message = "$time $logType: §r$text§r"

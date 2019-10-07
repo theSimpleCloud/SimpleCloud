@@ -34,4 +34,8 @@ class StartSetup : ISetup {
         checkNotNull(cloudApplicationType) { "Cloud application type was null after start setup." }
         Launcher.instance.startApplication(cloudApplicationType)
     }
+
+    override fun onCancel() {
+        Launcher.instance.shutdown()
+    }
 }

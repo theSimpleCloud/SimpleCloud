@@ -7,7 +7,6 @@ import eu.thesimplecloud.launcher.console.ConsoleManager
 import eu.thesimplecloud.launcher.console.ConsoleSender
 import eu.thesimplecloud.launcher.console.command.CommandManager
 import eu.thesimplecloud.launcher.console.setup.SetupManager
-import eu.thesimplecloud.launcher.dependency.LauncherDependencyLoader
 import eu.thesimplecloud.launcher.logger.LoggerProvider
 import eu.thesimplecloud.launcher.setups.LanguageSetup
 import eu.thesimplecloud.launcher.setups.StartSetup
@@ -22,7 +21,7 @@ import kotlin.system.exitProcess
  * Date: 06.09.2019
  * Time: 21:31
  */
-class Launcher(val startArguments: StartArguments) {
+class Launcher(val launcherStartArguments: LauncherStartArguments) {
 
     companion object {
         lateinit var instance: Launcher
@@ -42,7 +41,7 @@ class Launcher(val startArguments: StartArguments) {
 
     init {
         instance = this
-        Thread.setDefaultUncaughtExceptionHandler { t, cause -> logger.exception(cause) }
+        Thread.setDefaultUncaughtExceptionHandler { thread, cause -> logger.exception(cause) }
         System.setProperty("user.language", "en")
         DirectoryPathManager()
         commandManager = CommandManager()
@@ -56,7 +55,7 @@ class Launcher(val startArguments: StartArguments) {
         consoleManager.startThread()
         if (!languageManager.doesFileExist())
             setupManager.queueSetup(LanguageSetup())
-        if (startArguments.startApplication == null)
+        if (launcherStartArguments.startApplication == null)
             setupManager.queueSetup(StartSetup())
 
         languageManager.loadFile()

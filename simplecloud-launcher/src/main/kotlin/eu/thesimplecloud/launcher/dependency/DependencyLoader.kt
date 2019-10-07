@@ -11,7 +11,6 @@ class DependencyLoader(val repositories: List<String>) {
 
     fun installDependencies(dependencies: List<Dependency>) {
         val file = File("dependencies/")
-        println(file.absolutePath)
         file.mkdirs()
         repositories.forEach { repoUrl ->
             dependencies.forEach { dependency ->
