@@ -1,5 +1,6 @@
 package eu.thesimplecloud.launcher.startup
 
+import eu.thesimplecloud.clientserverapi.lib.bootstrap.IBootstrap
 import eu.thesimplecloud.launcher.application.CloudApplicationStarter
 import eu.thesimplecloud.launcher.application.CloudApplicationType
 import eu.thesimplecloud.launcher.application.ICloudApplication
@@ -21,7 +22,7 @@ import kotlin.system.exitProcess
  * Date: 06.09.2019
  * Time: 21:31
  */
-class Launcher(val launcherStartArguments: LauncherStartArguments) {
+class Launcher(val launcherStartArguments: LauncherStartArguments) : IBootstrap {
 
     companion object {
         lateinit var instance: Launcher
@@ -45,7 +46,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
         languageManager = LanguageManager("en_EN")
     }
 
-    fun start() {
+    override fun start() {
 
         commandManager.registerAllCommands("eu.thesimplecloud.launcher.commands")
         consoleManager.startThread()
@@ -65,10 +66,12 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
         CloudApplicationStarter().startCloudApplication(cloudApplicationType)
     }
 
-    fun shutdown(){
+    override fun shutdown(){
         activeApplication?.shutdown()
         exitProcess(0)
     }
+
+    override fun isActive(): Boolean = true
 
 
 }

@@ -18,6 +18,6 @@ class LauncherUpdater : IUpdater {
     }
 
     override fun executeJar() {
-        //Its not necessary to execute the jar here.
+        //TODO execute updater
     }
 }
