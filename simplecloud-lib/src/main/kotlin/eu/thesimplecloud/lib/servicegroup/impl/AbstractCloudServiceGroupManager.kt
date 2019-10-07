@@ -10,6 +10,19 @@ abstract class AbstractCloudServiceGroupManager : ICloudServiceGroupManager {
     private val serviceGroups = ArrayList<ICloudServiceGroup>()
 
     override fun updateGroup(cloudServiceGroup: ICloudServiceGroup) {
+        val cashedGroup = getGroup(cloudServiceGroup.getName())
+        if (cashedGroup == null) {
+            this.serviceGroups.add(cloudServiceGroup)
+            return
+        }
+        cashedGroup.setMaintenance(cloudServiceGroup.isInMaintenance())
+        cashedGroup.setMaxMemory(cloudServiceGroup.getMaxMemory())
+        cashedGroup.setMaxPlayers(cloudServiceGroup.getMaxPlayers())
+        cashedGroup.setMaximumOnlineServiceCount(cloudServiceGroup.getMaximumOnlineServiceCount())
+        cashedGroup.setMinimumOnlineServiceCount(cloudServiceGroup.getMinimumOnlineServiceCount())
+        cashedGroup.setModuleNamesToCopy(cloudServiceGroup.getModuleNamesToCopy())
+        cashedGroup.setPercentToStartNewService(cloudServiceGroup.getPercentToStartNewService())
+        cashedGroup.setTemplateName(cloudServiceGroup.getTemplateName())
     }
 
     override fun removeGroup(name: String) {

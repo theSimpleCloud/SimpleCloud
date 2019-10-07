@@ -1,6 +1,7 @@
 package eu.thesimplecloud.lib
 
 import eu.thesimplecloud.clientserverapi.lib.bootstrap.IBootstrap
+import eu.thesimplecloud.lib.eventapi.IEventManager
 import eu.thesimplecloud.lib.service.ICloudService
 import eu.thesimplecloud.lib.service.ICloudServiceManager
 import eu.thesimplecloud.lib.servicegroup.ICloudServiceGroupManager
@@ -29,4 +30,9 @@ interface ICloudLib {
      * Returns the [ICloudServiceManager] to manage services
      */
     fun getCloudServiceManger(): ICloudServiceManager
+
+    /**
+     * Returns the [IEventManager] to manage and call events
+     */
+    fun getEventManager(): IEventManager
 }

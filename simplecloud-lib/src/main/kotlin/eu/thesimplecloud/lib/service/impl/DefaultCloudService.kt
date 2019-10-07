@@ -13,6 +13,7 @@ class DefaultCloudService(
         private val templateName: String,
         private val wrapperName: String,
         private val port: Int,
+        private val maxMemory: Int,
         private var motd: String
 ) : ICloudService {
 
@@ -60,5 +61,6 @@ class DefaultCloudService(
 
     override fun shutdown() = CloudLib.instance.getCloudServiceManger().stopServices(this)
 
+    override fun getMaxMemory(): Int = this.maxMemory
 
 }

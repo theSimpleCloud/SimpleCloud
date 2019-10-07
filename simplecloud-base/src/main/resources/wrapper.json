@@ -1,0 +1,14 @@
+{
+  "mainClass": "de.test.TestKt",
+  "repositories": [
+    "repo1",
+    "repo2"
+  ],
+  "dependencies": [
+    {
+      "groupId": "io.netty",
+      "artifactId": "netty-all",
+      "version": "4.1.4.Final"
+    }
+  ]
+}

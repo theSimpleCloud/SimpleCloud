@@ -46,7 +46,7 @@ interface ICloudService : IAuthenticatable, IBootstrap {
     /**
      * Returns the maximum amount of RAM for this service in MB
      */
-    fun getMaxMemory(): Int = getServiceGroup().getMaxMemory()
+    fun getMaxMemory(): Int
 
     /**
      * Returns the name of the wrapper this service is running on
@@ -122,5 +122,7 @@ interface ICloudService : IAuthenticatable, IBootstrap {
     fun setMOTD(motd: String)
 
     override fun isActive(): Boolean = getState() != ServiceState.PREPARED && getState() != ServiceState.CLOSED
+
+    fun isJoinable() = this == ServiceState.LOBBY || this == ServiceState.INGAME
 
 }
