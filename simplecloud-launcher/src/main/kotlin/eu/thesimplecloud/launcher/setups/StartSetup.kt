@@ -14,7 +14,7 @@ class StartSetup : ISetup {
     private var cloudApplicationType: CloudApplicationType? = null
 
 
-    @SetupQuestion("launcher.setup.start.question", "Do you want do start the Manager or the Wrapper")
+    @SetupQuestion("launcher.setup.start.question", "Do you want do start the MANAGER or the WRAPPER (upper case needed)")
     fun setup(cloudApplicationType: CloudApplicationType){
         this.cloudApplicationType = cloudApplicationType
     }

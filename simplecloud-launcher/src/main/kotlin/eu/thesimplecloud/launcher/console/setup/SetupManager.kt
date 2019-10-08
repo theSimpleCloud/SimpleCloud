@@ -6,6 +6,8 @@ import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.lib.stringparser.StringParser
 import org.jetbrains.annotations.NotNull
+import java.lang.IllegalArgumentException
+import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import java.lang.reflect.Parameter
 import java.util.concurrent.LinkedBlockingQueue
@@ -57,7 +59,12 @@ class SetupManager(val launcher: Launcher) {
             this.launcher.consoleSender.sendMessage("launcher.setup.not-exist", "No value was available for the specified response.")
             return
         }
-        val invokeResponse = currentQuestion.method.invoke(this.currentSetup!!.source, parsedValue)
+        val invokeResponse = try {
+            currentQuestion.method.invoke(this.currentSetup!!.source, parsedValue)
+        } catch (e: InvocationTargetException) {
+            this.launcher.consoleSender.sendMessage("launcher.setup.invalid-response", "Invalid response.")
+            return
+        }
         if (invokeResponse is Boolean && invokeResponse == false) {
             this.launcher.consoleSender.sendMessage("launcher.setup.invalid-response", "Invalid response.")
             return
