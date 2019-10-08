@@ -13,6 +13,7 @@ import eu.thesimplecloud.launcher.setups.LanguageSetup
 import eu.thesimplecloud.launcher.setups.StartSetup
 import eu.thesimplecloud.launcher.directorypaths.DirectoryPathManager
 import eu.thesimplecloud.lib.language.LanguageManager
+import java.util.function.Consumer
 import kotlin.system.exitProcess
 
 
@@ -55,16 +56,16 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) : IBootstrap 
         if (launcherStartArguments.startApplication == null)
             setupManager.queueSetup(StartSetup())
         logger.updatePrompt(false)
-        this.launcherStartArguments.startApplication?.let { startApplication(it) }
+        setupManager.onAllSetupsCompleted(Consumer { this.launcherStartArguments.startApplication?.let { startApplication(it) } })
     }
 
-    fun startApplication(cloudApplicationType: CloudApplicationType){
+    fun startApplication(cloudApplicationType: CloudApplicationType) {
         ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor()
         logger.info("Starting ${cloudApplicationType.getApplicationName()}...")
         CloudApplicationStarter().startCloudApplication(cloudApplicationType)
     }
 
-    override fun shutdown(){
+    override fun shutdown() {
         activeApplication?.shutdown()
         exitProcess(0)
     }

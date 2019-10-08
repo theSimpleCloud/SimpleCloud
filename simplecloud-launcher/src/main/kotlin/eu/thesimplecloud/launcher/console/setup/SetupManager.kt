@@ -6,11 +6,11 @@ import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.lib.stringparser.StringParser
 import org.jetbrains.annotations.NotNull
-import java.lang.IllegalArgumentException
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import java.lang.reflect.Parameter
 import java.util.concurrent.LinkedBlockingQueue
+import java.util.function.Consumer
 
 class SetupManager(val launcher: Launcher) {
 
@@ -20,6 +20,8 @@ class SetupManager(val launcher: Launcher) {
     var currentQuestion: SetupQuestionData? = null
         private set
     private var currentQuestionIndex = 0
+
+    private val allSetupsCompletedCallbacks = ArrayList<Consumer<Unit>>()
 
     fun queueSetup(setup: ISetup) {
         val questions = ArrayList<SetupQuestionData>()
@@ -39,7 +41,7 @@ class SetupManager(val launcher: Launcher) {
         cancelledMethod?.let { check(it.parameters.isEmpty()) { "The function marked with SetupFinished must have 0 parameters." } }
 
         val setupData = SetupData(setup, cancelledMethod, finishedMethod, questions)
-        if (this.currentSetup == null){
+        if (this.currentSetup == null) {
             startSetup(setupData)
             return
         }
@@ -55,10 +57,6 @@ class SetupManager(val launcher: Launcher) {
     fun onResponse(response: String) {
         val currentQuestion = this.currentQuestion ?: return
         val parsedValue = StringParser().parserString(response, currentQuestion.prameter.type)
-        if (currentQuestion.prameter.isAnnotationPresent(NotNull::class.java) && parsedValue == null) {
-            this.launcher.consoleSender.sendMessage("launcher.setup.not-exist", "No value was available for the specified response.")
-            return
-        }
         val invokeResponse = try {
             currentQuestion.method.invoke(this.currentSetup!!.source, parsedValue)
         } catch (e: InvocationTargetException) {
@@ -72,9 +70,17 @@ class SetupManager(val launcher: Launcher) {
         nextQuestion()
     }
 
+    fun onAllSetupsCompleted(consumer: Consumer<Unit>) {
+        if (this.currentSetup == null){
+            consumer.accept(Unit)
+            return
+        }
+        allSetupsCompletedCallbacks.add(consumer)
+    }
+
     private fun nextQuestion() {
         val activeSetup = this.currentSetup ?: return
-        if (!hasNextQuestion(activeSetup)){
+        if (!hasNextQuestion(activeSetup)) {
             finishCurrentSetup()
             return
         }
@@ -100,6 +106,9 @@ class SetupManager(val launcher: Launcher) {
     }
 
     private fun checkForNextSetup() {
+        if (this.setupQueue.isEmpty()){
+            this.allSetupsCompletedCallbacks.forEach { it.accept(Unit) }
+        }
         if (this.setupQueue.isNotEmpty()) {
             startSetup(this.setupQueue.poll())
         }
@@ -114,13 +123,13 @@ class SetupManager(val launcher: Launcher) {
     private fun hasNextQuestion(setupData: SetupData) = this.currentQuestionIndex + 1 in setupData.questions.indices
 
 
-    class SetupData(val source: ISetup, val cancelledMethod: Method?, val finishedMethod: Method?, val questions: List<SetupQuestionData>){
+    class SetupData(val source: ISetup, val cancelledMethod: Method?, val finishedMethod: Method?, val questions: List<SetupQuestionData>) {
 
-        fun callFinishedMethod(){
+        fun callFinishedMethod() {
             finishedMethod?.invoke(source)
         }
 
-        fun callCancelledMethod(){
+        fun callCancelledMethod() {
             cancelledMethod?.invoke(source)
         }
 
