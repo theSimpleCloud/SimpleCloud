@@ -1,7 +1,5 @@
 package eu.thesimplecloud.lib.servicegroup.impl
 
-import eu.thesimplecloud.clientserverapi.lib.packet.connectionpromise.IConnectionPromise
-import eu.thesimplecloud.lib.service.ICloudService
 import eu.thesimplecloud.lib.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.lib.servicegroup.ICloudServiceGroupManager
 
@@ -10,7 +8,7 @@ abstract class AbstractCloudServiceGroupManager : ICloudServiceGroupManager {
     private val serviceGroups = ArrayList<ICloudServiceGroup>()
 
     override fun updateGroup(cloudServiceGroup: ICloudServiceGroup) {
-        val cashedGroup = getGroup(cloudServiceGroup.getName())
+        val cashedGroup = getServiceGroup(cloudServiceGroup.getName())
         if (cashedGroup == null) {
             this.serviceGroups.add(cloudServiceGroup)
             return
@@ -26,7 +24,7 @@ abstract class AbstractCloudServiceGroupManager : ICloudServiceGroupManager {
     }
 
     override fun removeGroup(name: String) {
-        getGroup(name)?.let { this.serviceGroups.remove(it) }
+        getServiceGroup(name)?.let { this.serviceGroups.remove(it) }
     }
 
     override fun getAllGroups(): List<ICloudServiceGroup> = this.serviceGroups

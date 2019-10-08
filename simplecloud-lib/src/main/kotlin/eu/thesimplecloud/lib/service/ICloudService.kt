@@ -42,7 +42,7 @@ interface ICloudService : IAuthenticatable, IBootstrap, ICommandExecutable {
     /**
      * Returns the service group of this service
      */
-    fun getServiceGroup(): ICloudServiceGroup = CloudLib.instance.getCloudServiceGroupManager().getGroup(getGroupName()) ?: throw IllegalStateException("Can't find the service group of an registered service.")
+    fun getServiceGroup(): ICloudServiceGroup = CloudLib.instance.getCloudServiceGroupManager().getServiceGroup(getGroupName()) ?: throw IllegalStateException("Can't find the service group of an registered service.")
 
     /**
      * Returns the maximum amount of RAM for this service in MB

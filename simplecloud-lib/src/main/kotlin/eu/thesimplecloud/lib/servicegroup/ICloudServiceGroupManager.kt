@@ -136,7 +136,22 @@ interface ICloudServiceGroupManager {
     /**
      * Returns the [ICloudServiceGroup] found by the specified name
      */
-    fun getGroup(name: String): ICloudServiceGroup? = getAllGroups().firstOrNull { it.getName().equals(name, true) }
+    fun getServiceGroup(name: String): ICloudServiceGroup? = getAllGroups().firstOrNull { it.getName().equals(name, true) }
+
+    /**
+     * Returns the [ICloudServerGroup] found by the specified name
+     */
+    fun getServerGroup(name: String): ICloudServerGroup? = getServerGroups().firstOrNull { it.getName().equals(name, true) }
+
+    /**
+     * Returns the [ICloudLobbyGroup] found by the specified name
+     */
+    fun getLobbyGroup(name: String): ICloudLobbyGroup? = getLobbyGroups().firstOrNull { it.getName().equals(name, true) }
+
+    /**
+     * Returns the [ICloudProxyGroup] found by the specified name
+     */
+    fun getProxyGroup(name: String): ICloudProxyGroup? = getProxyGroups().firstOrNull { it.getName().equals(name, true) }
 
     /**
      * Returns all registered proxy groups
