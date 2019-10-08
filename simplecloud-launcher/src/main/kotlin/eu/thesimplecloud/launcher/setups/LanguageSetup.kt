@@ -1,38 +1,19 @@
 package eu.thesimplecloud.launcher.setups
 
 import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.launcher.application.CloudApplicationStarter
-import eu.thesimplecloud.launcher.application.CloudApplicationType
 import eu.thesimplecloud.launcher.console.setup.ISetup
-import eu.thesimplecloud.launcher.console.setup.ISetupQuestion
-import eu.thesimplecloud.lib.language.LanguageProperty
+import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
 
 class LanguageSetup : ISetup {
 
-    private var cloudApplicationType: CloudApplicationType? = null
+    val allowedLanguages = listOf("en", "de")
 
-    override fun questions(): List<ISetupQuestion> {
-        val supportedLanguages = listOf("en", "de")
-        val list = ArrayList<ISetupQuestion>()
-        list.add(object : ISetupQuestion {
-            override fun questionProperty(): LanguageProperty = LanguageProperty("launcher.setup.language.question", "Which language do you want to use? (${supportedLanguages.joinToString()})")
-
-            override fun onResponseReceived(answer: String): Boolean {
-                if (supportedLanguages.contains(answer.toLowerCase())) {
-                    Launcher.instance.languageManager.language = "${answer.toLowerCase()}_${answer.toUpperCase()}"
-                    Launcher.instance.languageManager.loadFile()
-                    return true
-                }
-                return false
-            }
-        })
-
-        return list
-    }
-
-    override fun onFinish() {
-    }
-
-    override fun onCancel() {
+    @SetupQuestion("launcher.setup.language.question", "Which language do you want to use? (en, de)")
+    fun setup(answer: String): Boolean {
+        if (allowedLanguages.contains(answer)) {
+            Launcher.instance.languageManager.language = "${answer.toLowerCase()}_${answer.toUpperCase()}"
+            Launcher.instance.languageManager.loadFile()
+        }
+        return allowedLanguages.contains(answer)
     }
 }

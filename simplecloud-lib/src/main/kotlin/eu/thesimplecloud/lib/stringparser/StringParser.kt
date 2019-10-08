@@ -8,7 +8,7 @@ import kotlin.reflect.KClass
 
 class StringParser {
 
-    private val parsableTypes = listOf(String::class, Int::class, UUID::class, Boolean::class)
+    private val parsableTypes = listOf(String::class.java, Int::class.java, UUID::class.java, Boolean::class.java)
 
     private val customTypeParsers = mutableListOf(CloudLobbyGroupParser(), CloudProxyGroupParser(), CloudServerGroupParser(), CloudServiceGroupParser(),
             CloudServiceParser(), WrapperInfoParser())
@@ -17,12 +17,12 @@ class StringParser {
         this.customTypeParsers.add(customTypeParser)
     }
 
-    fun <T : Any> parserString(string: String, clazz: KClass<T>): T? {
-        if (clazz.java.isEnum || parsableTypes.contains(clazz)) {
-            return JsonData.fromObject(string).getObject(clazz.java)
+    fun <T : Any> parserString(string: String, clazz: Class<T>): T? {
+        if (clazz.isEnum || parsableTypes.contains(clazz)) {
+            return JsonData.fromObject(string).getObject(clazz)
         }
         val parser = customTypeParsers.firstOrNull { it.allowedTypes().contains(clazz) }
-        parser ?: throw IllegalArgumentException("Can't parse class to ${clazz.java.simpleName}: No parser found.")
+        parser ?: throw IllegalArgumentException("Can't parse class to ${clazz.simpleName}: No parser found.")
         parser as ICustomTypeParser<out T>
         return parser.parse(string)
     }

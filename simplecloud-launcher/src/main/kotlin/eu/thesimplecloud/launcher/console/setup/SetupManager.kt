@@ -1,55 +1,101 @@
 package eu.thesimplecloud.launcher.console.setup
 
+import eu.thesimplecloud.launcher.console.setup.annotations.SetupCancelled
+import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished
+import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
 import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.launcher.logging.LoggerProvider
+import eu.thesimplecloud.lib.stringparser.StringParser
+import org.jetbrains.annotations.NotNull
+import java.lang.reflect.Method
+import java.lang.reflect.Parameter
 import java.util.concurrent.LinkedBlockingQueue
 
-/**
- * Created by IntelliJ IDEA.
- * User: Philipp.Eistrach
- * Date: 01.09.2019
- * Time: 14:20
- */
 class SetupManager(val launcher: Launcher) {
 
     val logger = launcher.logger
-    val setupQueue = LinkedBlockingQueue<ISetup>()
-    var currentSetup: ISetup? = null
-    var currentQuestion: ISetupQuestion? = null
-    var currentQuestionIndex: Int = 0
+    val setupQueue = LinkedBlockingQueue<SetupData>()
+    var currentSetup: SetupData? = null
+    var currentQuestion: SetupQuestionData? = null
+        private set
+    private var currentQuestionIndex = 0
 
-    /**
-     * Queues a setup.
-     * Note: The question will be printed as prompt in [LoggerProvider.updatePrompt]
-     */
     fun queueSetup(setup: ISetup) {
-        if (this.currentSetup == null) {
-            startSetup(setup)
+        val questions = ArrayList<SetupQuestionData>()
+        val methods = setup::class.java.methods
+        methods.filter { it.isAnnotationPresent(SetupQuestion::class.java) }.forEach { method ->
+            check(method.parameters.size == 1) { "Function marked with SetupQuestion must have one parameter." }
+            questions.add(SetupQuestionData(method.getAnnotation(SetupQuestion::class.java), method, method.parameters[0]))
+        }
+
+        val setupFinishedMethods = methods.filter { it.isAnnotationPresent(SetupFinished::class.java) }
+        val setupCancelledMethods = methods.filter { it.isAnnotationPresent(SetupCancelled::class.java) }
+        check(setupFinishedMethods.size <= 1) { "Only one function in a setup can be marked with SetupFinished." }
+        check(setupCancelledMethods.size <= 1) { "Only one function in a setup can be marked with SetupCancelled." }
+        val finishedMethod = setupFinishedMethods.firstOrNull()
+        val cancelledMethod = setupCancelledMethods.firstOrNull()
+        finishedMethod?.let { check(it.parameters.isEmpty()) { "The function marked with SetupFinished must have 0 parameters." } }
+        cancelledMethod?.let { check(it.parameters.isEmpty()) { "The function marked with SetupFinished must have 0 parameters." } }
+
+        val setupData = SetupData(setup, cancelledMethod, finishedMethod, questions)
+        if (this.currentSetup == null){
+            startSetup(setupData)
             return
         }
-        this.setupQueue.add(setup)
+        this.setupQueue.add(setupData)
     }
 
-    private fun startSetup(setup: ISetup) {
-        this.currentSetup = setup
-        this.currentQuestion = setup.questions()[0]
-        this.logger.info("Setup started. You can quit the setup by writing \"exit\"!")
+    private fun startSetup(setupData: SetupData) {
+        this.currentSetup = setupData
+        this.currentQuestion = setupData.questions[currentQuestionIndex]
+        this.launcher.consoleSender.sendMessage("launcher.setup-started", "Setup started. To abort the setup write \"exit\".")
     }
 
-    fun cancelSetup() {
+    fun onResponse(response: String) {
+        val currentQuestion = this.currentQuestion ?: return
+        val parsedValue = StringParser().parserString(response, currentQuestion.prameter.type)
+        if (currentQuestion.prameter.isAnnotationPresent(NotNull::class.java) && parsedValue == null) {
+            this.launcher.consoleSender.sendMessage("launcher.setup.not-exist", "No value was available for the specified response.")
+            return
+        }
+        val invokeResponse = currentQuestion.method.invoke(this.currentSetup!!.source, parsedValue)
+        if (invokeResponse is Boolean && invokeResponse == false) {
+            this.launcher.consoleSender.sendMessage("launcher.setup.invalid-response", "Invalid response.")
+            return
+        }
+        nextQuestion()
+    }
+
+    private fun nextQuestion() {
+        val activeSetup = this.currentSetup ?: return
+        if (!hasNextQuestion(activeSetup)){
+            finishCurrentSetup()
+            return
+        }
+        this.currentQuestionIndex++
+        this.currentQuestion = activeSetup.questions[currentQuestionIndex]
+        this.logger.updatePrompt(false)
+    }
+
+    private fun finishCurrentSetup() {
         val currentSetupReference = this.currentSetup
         resetSetup()
-        currentSetupReference?.onCancel()
+        currentSetupReference?.callFinishedMethod()
+        this.logger.success("Setup completed.")
+        checkForNextSetup()
+    }
+
+    fun cancelCurrentSetup() {
+        val currentSetupReference = this.currentSetup
+        resetSetup()
+        currentSetupReference?.callCancelledMethod()
         this.logger.warning("Setup cancelled.")
         checkForNextSetup()
     }
 
-    private fun finishSetup() {
-        val currentSetupReference = this.currentSetup
-        resetSetup()
-        currentSetupReference?.onFinish()
-        this.logger.success("Setup completed.")
-        checkForNextSetup()
+    private fun checkForNextSetup() {
+        if (this.setupQueue.isNotEmpty()) {
+            startSetup(this.setupQueue.poll())
+        }
     }
 
     private fun resetSetup() {
@@ -58,37 +104,21 @@ class SetupManager(val launcher: Launcher) {
         this.currentQuestionIndex = 0
     }
 
-    private fun checkForNextSetup() {
-        if (setupQueue.isNotEmpty()) {
-            startSetup(this.setupQueue.poll())
+    private fun hasNextQuestion(setupData: SetupData) = this.currentQuestionIndex + 1 in setupData.questions.indices
+
+
+    class SetupData(val source: ISetup, val cancelledMethod: Method?, val finishedMethod: Method?, val questions: List<SetupQuestionData>){
+
+        fun callFinishedMethod(){
+            finishedMethod?.invoke(source)
         }
+
+        fun callCancelledMethod(){
+            cancelledMethod?.invoke(source)
+        }
+
     }
 
-    fun onResponse(message: String) {
-        val response = this.currentQuestion?.onResponseReceived(message)
-        if (response != null) {
-            if (response) {
-                nextQuestion()
-            } else if (!response) {
-                this.logger.warning("Invalid answer!")
-            }
-        }
-    }
-
-    private fun nextQuestion() {
-        val activeSetup = currentSetup ?: return
-        if (!hasNextQuestion()) {
-            finishSetup()
-            return
-        }
-        this.currentQuestionIndex++
-        this.currentQuestion = activeSetup.questions()[this.currentQuestionIndex]
-        this.logger.updatePrompt(false)
-    }
-
-    private fun hasNextQuestion(): Boolean {
-        val activeSetup = currentSetup ?: return false
-        return activeSetup.questions().size > currentQuestionIndex + 1
-    }
+    class SetupQuestionData(val setupQuestion: SetupQuestion, val method: Method, val prameter: Parameter)
 
 }

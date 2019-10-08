@@ -8,7 +8,7 @@ import kotlin.reflect.KClass
 
 class CloudLobbyGroupParser : ICustomTypeParser<ICloudLobbyGroup> {
 
-    override fun allowedTypes(): List<KClass<out ICloudLobbyGroup>> = listOf(ICloudLobbyGroup::class)
+    override fun allowedTypes(): List<Class<out ICloudLobbyGroup>> = listOf(ICloudLobbyGroup::class.java)
 
     override fun parse(string: String): ICloudLobbyGroup? = CloudLib.instance.getCloudServiceGroupManager().getLobbyGroup(string)
 }

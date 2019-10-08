@@ -119,9 +119,9 @@ class LoggerProvider(var applicationName: String) : Logger("SimpleCloudLogger", 
     fun updatePrompt(newLine: Boolean) {
         var prompt = getColoredString("§c${applicationName}§f@§eSimpleCloud§f>", LogType.EMPTY);
         if (Launcher.instance.setupManager.currentSetup != null) {
-            val questionProperty = Launcher.instance.setupManager.currentQuestion?.questionProperty()
-            if (questionProperty != null) {
-                prompt = Launcher.instance.languageManager.getMessage(questionProperty.property, questionProperty.message) + ":"
+            val setupQuestion = Launcher.instance.setupManager.currentQuestion?.setupQuestion
+            if (setupQuestion != null) {
+                prompt = Launcher.instance.languageManager.getMessage(setupQuestion.property, setupQuestion.question) + ":"
             }
         }
         if (newLine)

@@ -9,7 +9,7 @@ import kotlin.reflect.KClass
 
 class WrapperInfoParser : ICustomTypeParser<IWrapperInfo> {
 
-    override fun allowedTypes(): List<KClass<out IWrapperInfo>> = listOf(IWrapperInfo::class)
+    override fun allowedTypes(): List<Class<out IWrapperInfo>> = listOf(IWrapperInfo::class.java)
 
     override fun parse(string: String): IWrapperInfo? = CloudLib.instance.getWrapperManager().getWrapperByName(string)
 }

@@ -8,7 +8,7 @@ interface ICustomTypeParser<T : Any> {
     /**
      * Returns a list of type this parser can parse
      */
-    fun allowedTypes(): List<KClass<out T>>
+    fun allowedTypes(): List<Class<out T>>
 
     /**
      * Parses a [String] to the type [T]

@@ -7,7 +7,7 @@ import kotlin.reflect.KClass
 
 class CloudServiceGroupParser : ICustomTypeParser<ICloudServiceGroup> {
 
-    override fun allowedTypes(): List<KClass<out ICloudServiceGroup>> = listOf(ICloudServiceGroup::class)
+    override fun allowedTypes(): List<Class<out ICloudServiceGroup>> = listOf(ICloudServiceGroup::class.java)
 
     override fun parse(string: String): ICloudServiceGroup? = CloudLib.instance.getCloudServiceGroupManager().getServiceGroup(string)
 }

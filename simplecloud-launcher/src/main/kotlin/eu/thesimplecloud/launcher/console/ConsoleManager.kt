@@ -22,7 +22,7 @@ class ConsoleManager(val commandManager: CommandManager, private val consoleSend
                 val setup = Launcher.instance.setupManager.currentSetup
                 if (setup != null) {
                     if (readLine == "exit") {
-                        Launcher.instance.setupManager.cancelSetup()
+                        Launcher.instance.setupManager.cancelCurrentSetup()
                         continue
                     }
 
