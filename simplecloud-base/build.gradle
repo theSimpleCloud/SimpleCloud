@@ -12,6 +12,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: '1.0.8-SNAPSHOT')
     implementation project(":simplecloud-lib")
+    implementation project(":simplecloud-launcher")
     implementation("com.github.ajalt:clikt:2.2.0")
 }
 
