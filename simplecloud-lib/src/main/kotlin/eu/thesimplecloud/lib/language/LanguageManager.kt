@@ -8,8 +8,10 @@ class LanguageManager(var language: String) {
 
     private lateinit var languageFile: LanguageFile
     private val file = File(DirectoryPaths.paths.languagesPath, "$language.json")
+    private var fileExistBeforeLoad = false
 
     fun loadFile() {
+        fileExistBeforeLoad = file.exists()
         if (!file.exists()) {
             languageFile = LanguageFile()
 
@@ -41,6 +43,6 @@ class LanguageManager(var language: String) {
         }
     }
 
-    fun doesFileExist() = file.exists()
+    fun fileExistBeforeLoad() = this.fileExistBeforeLoad
 
 }
