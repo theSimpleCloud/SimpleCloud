@@ -20,9 +20,7 @@ class Manager : ICloudApplication {
     override fun shutdown() {
     }
 
-    override fun isActive(): Boolean {
-    }
-
+    override fun isActive(): Boolean = true
 
 
 

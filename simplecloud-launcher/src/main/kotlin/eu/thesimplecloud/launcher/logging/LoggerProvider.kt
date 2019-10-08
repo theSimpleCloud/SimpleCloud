@@ -15,7 +15,6 @@ import java.io.PrintWriter
 import java.io.StringWriter
 
 
-
 /**
  * Created by IntelliJ IDEA.
  * User: Philipp.Eistrach
@@ -120,12 +119,15 @@ class LoggerProvider(var applicationName: String) : Logger("SimpleCloudLogger", 
     fun updatePrompt(newLine: Boolean) {
         var prompt = getColoredString("§c${applicationName}§f@§eSimpleCloud§f>", LogType.EMPTY);
         if (Launcher.instance.setupManager.currentSetup != null) {
-            prompt = Launcher.instance.setupManager.currentQuestion?.questionName() + ":"
+            val questionProperty = Launcher.instance.setupManager.currentQuestion?.questionProperty()
+            if (questionProperty != null) {
+                prompt = Launcher.instance.languageManager.getMessage(questionProperty.property, questionProperty.message) + ":"
+            }
         }
         if (newLine)
             println("")
-                    
-        print ("\r$prompt ")
+
+        print("\r$prompt ")
     }
 
     fun exception(cause: Throwable) {

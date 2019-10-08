@@ -47,15 +47,13 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) : IBootstrap 
     }
 
     override fun start() {
-
+        languageManager.loadFile()
         commandManager.registerAllCommands("eu.thesimplecloud.launcher.commands")
         consoleManager.startThread()
-        if (!languageManager.doesFileExist())
+        if (!languageManager.fileExistBeforeLoad())
             setupManager.queueSetup(LanguageSetup())
         if (launcherStartArguments.startApplication == null)
             setupManager.queueSetup(StartSetup())
-
-        languageManager.loadFile()
         logger.updatePrompt(false)
         this.launcherStartArguments.startApplication?.let { startApplication(it) }
     }

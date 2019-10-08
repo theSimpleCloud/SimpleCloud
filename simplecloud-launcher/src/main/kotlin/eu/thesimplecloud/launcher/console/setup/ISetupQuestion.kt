@@ -1,11 +1,13 @@
 package eu.thesimplecloud.launcher.console.setup
 
+import eu.thesimplecloud.lib.language.LanguageProperty
+
 interface ISetupQuestion {
 
     /**
      * Returns the question
      */
-    fun questionName(): String
+    fun questionProperty(): LanguageProperty
 
     /**
      * Called when the used entered a response for this question.

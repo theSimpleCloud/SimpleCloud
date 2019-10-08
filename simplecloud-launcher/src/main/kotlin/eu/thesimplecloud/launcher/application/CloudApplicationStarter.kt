@@ -12,8 +12,8 @@ class CloudApplicationStarter {
 
     fun startCloudApplication(cloudApplicationType: CloudApplicationType) {
         val cloudApplication = this.loadApplicationClass(File("SimpleCloud.jar"), cloudApplicationType)
-        Launcher.instance.activeApplication = cloudApplication
         Launcher.instance.logger.applicationName = cloudApplicationType.getApplicationName()
+        Launcher.instance.activeApplication = cloudApplication
         cloudApplication.start()
         when (cloudApplicationType) {
             CloudApplicationType.WRAPPER -> {
