@@ -2,13 +2,14 @@ package eu.thesimplecloud.lib.service
 
 import eu.thesimplecloud.clientserverapi.lib.bootstrap.IBootstrap
 import eu.thesimplecloud.lib.CloudLib
+import eu.thesimplecloud.lib.screen.ICommandExecutable
 import eu.thesimplecloud.lib.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.lib.utils.IAuthenticatable
 import eu.thesimplecloud.lib.wrapper.IWrapperInfo
 import java.lang.IllegalStateException
 import java.util.*
 
-interface ICloudService : IAuthenticatable, IBootstrap {
+interface ICloudService : IAuthenticatable, IBootstrap, ICommandExecutable {
 
     /**
      * Returns the service group name of this service
@@ -131,8 +132,8 @@ interface ICloudService : IAuthenticatable, IBootstrap {
      */
     fun setMOTD(motd: String)
 
-    override fun isActive(): Boolean = getState() != ServiceState.PREPARED && getState() != ServiceState.CLOSED
+    fun isJoinable() = getState() == ServiceState.LOBBY || getState() == ServiceState.INGAME
 
-    fun isJoinable() = this == ServiceState.LOBBY || this == ServiceState.INGAME
+    override fun isActive(): Boolean = getState() != ServiceState.PREPARED && getState() != ServiceState.CLOSED
 
 }

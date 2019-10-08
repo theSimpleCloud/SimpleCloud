@@ -1,9 +1,10 @@
 package eu.thesimplecloud.lib.wrapper
 
+import eu.thesimplecloud.lib.screen.ICommandExecutable
 import eu.thesimplecloud.lib.utils.IAuthenticatable
 
 
-interface IWrapperInfo : IAuthenticatable {
+interface IWrapperInfo : IAuthenticatable, ICommandExecutable {
 
     /**
      * Returns the name of this wrapper.

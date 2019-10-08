@@ -1,13 +1,10 @@
 package eu.thesimplecloud.lib
 
-import eu.thesimplecloud.clientserverapi.lib.bootstrap.IBootstrap
 import eu.thesimplecloud.lib.eventapi.IEventManager
-import eu.thesimplecloud.lib.service.ICloudService
+import eu.thesimplecloud.lib.screen.ICommandExecuteManager
+import eu.thesimplecloud.lib.screen.ICommandExecutable
 import eu.thesimplecloud.lib.service.ICloudServiceManager
 import eu.thesimplecloud.lib.servicegroup.ICloudServiceGroupManager
-import eu.thesimplecloud.lib.servicegroup.grouptype.ICloudLobbyGroup
-import eu.thesimplecloud.lib.servicegroup.grouptype.ICloudProxyGroup
-import eu.thesimplecloud.lib.servicegroup.grouptype.ICloudServerGroup
 import eu.thesimplecloud.lib.wrapper.IWrapperManager
 
 /**
@@ -35,4 +32,9 @@ interface ICloudLib {
      * Returns the [IEventManager] to manage and call events
      */
     fun getEventManager(): IEventManager
+
+    /**
+     * Returns the [ICommandExecuteManager] used to execute command on [ICommandExecutable]
+     */
+    fun getCommandExecuteManager(): ICommandExecuteManager
 }
