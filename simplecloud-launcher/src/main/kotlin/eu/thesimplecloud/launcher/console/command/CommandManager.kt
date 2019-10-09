@@ -1,12 +1,14 @@
 package eu.thesimplecloud.launcher.console.command
 
 import com.google.gson.GsonBuilder
+import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.exception.CommandRegistrationException
 import eu.thesimplecloud.launcher.invoker.MethodInvokeHelper
+import eu.thesimplecloud.lib.stringparser.StringParser
 import org.reflections.Reflections
 import java.lang.NullPointerException
 import kotlin.collections.ArrayList
@@ -54,7 +56,7 @@ class CommandManager() {
             val parameterValue = messageArray[indexOfParameter]
 
             val obj = try {
-                GSON.fromJson(parameterValue, parameterData.type)
+                StringParser().parserString(parameterValue, parameterData.type)
             } catch (e: Exception) {
                 commandSender.sendMessage("§cCan't parse parameter at index $indexOfParameter(\"$parameterValue\") to class ${parameterData.type.simpleName}")
                 return

@@ -1,5 +1,6 @@
 package eu.thesimplecloud.lib.servicegroup.impl
 
+import eu.thesimplecloud.clientserverapi.lib.packet.connectionpromise.IConnectionPromise
 import eu.thesimplecloud.lib.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.lib.servicegroup.ICloudServiceGroupManager
 
@@ -23,8 +24,8 @@ abstract class AbstractCloudServiceGroupManager : ICloudServiceGroupManager {
         cashedGroup.setTemplateName(cloudServiceGroup.getTemplateName())
     }
 
-    override fun removeGroup(name: String) {
-        getServiceGroup(name)?.let { this.serviceGroups.remove(it) }
+    protected fun removeGroup(cloudServiceGroup: ICloudServiceGroup){
+        this.serviceGroups.remove(cloudServiceGroup)
     }
 
     override fun getAllGroups(): List<ICloudServiceGroup> = this.serviceGroups

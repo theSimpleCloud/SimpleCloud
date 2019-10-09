@@ -16,10 +16,17 @@ enum class ServiceType {
     LOBBY;
 
     /**
-     * Returns whether this service type is proxy service
+     * Returns whether this service type is a proxy service
      */
     fun isProxy(): Boolean {
         return this == PROXY
+    }
+
+    /**
+     * Returns whether this service type is a server service
+     */
+    fun isServer(): Boolean {
+        return this == SERVER
     }
 
     /**

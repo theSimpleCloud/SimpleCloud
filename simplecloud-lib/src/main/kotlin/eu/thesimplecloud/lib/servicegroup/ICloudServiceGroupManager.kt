@@ -17,14 +17,9 @@ interface ICloudServiceGroupManager {
      */
     fun updateGroup(cloudServiceGroup: ICloudServiceGroup)
 
-    /**
-     * Removes the [ICloudServiceGroup] found by the specified name
-     */
-    fun removeGroup(name: String)
-
 
     /**
-     * Creates a new [ICloudServerGroup] by the specified parameters
+     * Creates a new [ICloudServerGroup] by the specified parameters and returns a promise that is called when the group is registered
      */
     fun createServerGroup(
             groupName: String,
@@ -56,7 +51,7 @@ interface ICloudServiceGroupManager {
             )) as IConnectionPromise<ICloudServerGroup>
 
     /**
-     * Creates a new [ICloudLobbyGroup] by the specified parameters
+     * Creates a new [ICloudLobbyGroup] by the specified parameters and returns a promise that is called when the group is registered
      */
     fun createLobbyGroup(
             groupName: String,
@@ -92,7 +87,7 @@ interface ICloudServiceGroupManager {
             )) as IConnectionPromise<ICloudLobbyGroup>
 
     /**
-     * Creates a new [ICloudProxyGroup] by the specified parameters
+     * Creates a new [ICloudProxyGroup] by the specified parameters and returns a promise that is called when the group is registered
      */
     fun createProxyGroup(
             groupName: String,
@@ -124,7 +119,7 @@ interface ICloudServiceGroupManager {
             )) as IConnectionPromise<ICloudProxyGroup>
 
     /**
-     * Creates a service group
+     * Creates a service group and returns a promise that is called when the group is registered
      */
     fun createServiceGroup(cloudServiceGroup: ICloudServiceGroup): IConnectionPromise<ICloudServiceGroup>
 
