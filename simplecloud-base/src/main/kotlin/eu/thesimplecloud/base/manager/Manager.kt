@@ -12,7 +12,7 @@ class Manager : ICloudApplication {
 
     override fun start() {
         val managerConfigLoader = ManagerConfigLoader()
-        if (!managerConfigLoader.doesFileExist()) {
+        if (!managerConfigLoader.doesConfigFileExist()) {
 
         }
     }

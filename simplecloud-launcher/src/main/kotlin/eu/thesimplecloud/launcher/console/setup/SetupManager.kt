@@ -1,5 +1,6 @@
 package eu.thesimplecloud.launcher.console.setup
 
+import com.google.common.collect.Queues
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupCancelled
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
@@ -9,13 +10,15 @@ import org.jetbrains.annotations.NotNull
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import java.lang.reflect.Parameter
+import java.util.*
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.function.Consumer
+import kotlin.collections.ArrayList
 
 class SetupManager(val launcher: Launcher) {
 
     val logger = launcher.logger
-    val setupQueue = LinkedBlockingQueue<SetupData>()
+    val setupQueue = ArrayList<SetupData>()
     var currentSetup: SetupData? = null
     var currentQuestion: SetupQuestionData? = null
         private set
@@ -23,7 +26,7 @@ class SetupManager(val launcher: Launcher) {
 
     private val allSetupsCompletedCallbacks = ArrayList<Consumer<Unit>>()
 
-    fun queueSetup(setup: ISetup) {
+    fun queueSetup(setup: ISetup, first: Boolean = false) {
         val questions = ArrayList<SetupQuestionData>()
         val methods = setup::class.java.methods
         methods.filter { it.isAnnotationPresent(SetupQuestion::class.java) }.forEach { method ->
@@ -45,7 +48,10 @@ class SetupManager(val launcher: Launcher) {
             startSetup(setupData)
             return
         }
-        this.setupQueue.add(setupData)
+        if (first)
+            this.setupQueue.add(0, setupData)
+        else
+            this.setupQueue.add(setupData)
     }
 
     private fun startSetup(setupData: SetupData) {
@@ -64,14 +70,13 @@ class SetupManager(val launcher: Launcher) {
             return
         }
         if (invokeResponse is Boolean && invokeResponse == false) {
-            this.launcher.consoleSender.sendMessage("launcher.setup.invalid-response", "Invalid response.")
             return
         }
         nextQuestion()
     }
 
     fun onAllSetupsCompleted(consumer: Consumer<Unit>) {
-        if (this.currentSetup == null){
+        if (this.currentSetup == null) {
             consumer.accept(Unit)
             return
         }
@@ -106,11 +111,11 @@ class SetupManager(val launcher: Launcher) {
     }
 
     private fun checkForNextSetup() {
-        if (this.setupQueue.isEmpty()){
+        if (this.setupQueue.isEmpty()) {
             this.allSetupsCompletedCallbacks.forEach { it.accept(Unit) }
         }
         if (this.setupQueue.isNotEmpty()) {
-            startSetup(this.setupQueue.poll())
+            startSetup(this.setupQueue.removeAt(0))
         }
     }
 

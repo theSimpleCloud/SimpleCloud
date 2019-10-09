@@ -8,10 +8,10 @@ import kotlin.reflect.KClass
 
 class StringParser {
 
-    private val parsableTypes = listOf(String::class.java, Int::class.java, UUID::class.java, Boolean::class.java)
+    private val parsableTypes = listOf(String::class.java, Int::class.java, UUID::class.java)
 
     private val customTypeParsers = mutableListOf(CloudLobbyGroupParser(), CloudProxyGroupParser(), CloudServerGroupParser(), CloudServiceGroupParser(),
-            CloudServiceParser(), WrapperInfoParser())
+            CloudServiceParser(), WrapperInfoParser(), BooleanParser())
 
     fun addCustomTypeParser(customTypeParser: ICustomTypeParser<out Any>) {
         this.customTypeParsers.add(customTypeParser)

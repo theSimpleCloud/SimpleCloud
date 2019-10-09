@@ -11,7 +11,9 @@ import eu.thesimplecloud.launcher.console.setup.SetupManager
 import eu.thesimplecloud.launcher.logging.LoggerProvider
 import eu.thesimplecloud.launcher.setups.LanguageSetup
 import eu.thesimplecloud.launcher.setups.StartSetup
-import eu.thesimplecloud.launcher.directorypaths.DirectoryPathManager
+import eu.thesimplecloud.launcher.config.LauncherConfigLoader
+import eu.thesimplecloud.launcher.setups.AutoIpSetup
+import eu.thesimplecloud.lib.directorypaths.DirectoryPaths
 import eu.thesimplecloud.lib.language.LanguageManager
 import java.util.function.Consumer
 import kotlin.system.exitProcess
@@ -36,27 +38,33 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) : IBootstrap 
     val consoleManager: ConsoleManager
     val setupManager = SetupManager(this)
     val languageManager: LanguageManager
+    val launcherConfigLoader = LauncherConfigLoader()
 
     init {
         instance = this
-        Thread.setDefaultUncaughtExceptionHandler { thread, cause -> logger.exception(cause) }
+        Thread.setDefaultUncaughtExceptionHandler { thread, cause -> this.logger.exception(cause) }
         System.setProperty("user.language", "en")
-        DirectoryPathManager()
-        commandManager = CommandManager()
-        consoleManager = ConsoleManager(commandManager, consoleSender)
-        languageManager = LanguageManager("en_EN")
+        val launcherConfig = this.launcherConfigLoader.loadConfig()
+        DirectoryPaths.paths = launcherConfig.directoryPaths
+        this.commandManager = CommandManager()
+        this.consoleManager = ConsoleManager(this.commandManager, this.consoleSender)
+        this.languageManager = LanguageManager("en_EN")
     }
 
     override fun start() {
-        languageManager.loadFile()
-        commandManager.registerAllCommands("eu.thesimplecloud.launcher.commands")
-        consoleManager.startThread()
-        if (!languageManager.fileExistBeforeLoad())
-            setupManager.queueSetup(LanguageSetup())
-        if (launcherStartArguments.startApplication == null)
-            setupManager.queueSetup(StartSetup())
-        logger.updatePrompt(false)
-        setupManager.onAllSetupsCompleted(Consumer { this.launcherStartArguments.startApplication?.let { startApplication(it) } })
+        this.languageManager.loadFile()
+        this.commandManager.registerAllCommands("eu.thesimplecloud.launcher.commands")
+        this.consoleManager.startThread()
+        if (!this.languageManager.fileExistBeforeLoad())
+            this.setupManager.queueSetup(LanguageSetup())
+        if (!this.launcherConfigLoader.doesConfigFileExist())
+            this.setupManager.queueSetup(AutoIpSetup())
+        if (this.launcherStartArguments.startApplication == null)
+            this.setupManager.queueSetup(StartSetup())
+
+
+        this.logger.updatePrompt(false)
+        this.setupManager.onAllSetupsCompleted(Consumer { this.launcherStartArguments.startApplication?.let { startApplication(it) } })
     }
 
     fun startApplication(cloudApplicationType: CloudApplicationType) {
