@@ -15,7 +15,8 @@ class DirectoryPaths(
         val minecraftJarsPath: String = storagePath + "minecraftJars/",
         val languagesPath: String = storagePath + "languages/",
         val modulesPath: String = "modules/",
-        val wrappersPath: String = storagePath + "wrappers/"
+        val wrappersPath: String = storagePath + "wrappers/",
+        val templateFilesPath: String = storagePath + "templates/"
         ) {
     companion object {
         lateinit var paths: DirectoryPaths
