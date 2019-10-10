@@ -8,7 +8,7 @@ import eu.thesimplecloud.lib.packets.service.PacketIOUpdateCloudServiceGroup
 import eu.thesimplecloud.lib.service.ICloudService
 import eu.thesimplecloud.lib.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.lib.servicegroup.impl.AbstractCloudServiceGroupManager
-import java.lang.IllegalStateException
+import java.lang.IllegalArgumentException
 
 class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
 
@@ -16,8 +16,12 @@ class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
 
     override fun createServiceGroup(cloudServiceGroup: ICloudServiceGroup): IConnectionPromise<ICloudServiceGroup> {
         val promise = Manager.instance.nettyServer.newPromise<ICloudServiceGroup>()
-        updateGroup(cloudServiceGroup)
-        promise.trySuccess(cloudServiceGroup)
+        if (getServiceGroup(cloudServiceGroup.getName()) == null){
+            updateGroup(cloudServiceGroup)
+            promise.trySuccess(cloudServiceGroup)
+        } else {
+            promise.setFailure(IllegalArgumentException("Name of the specified group is already in use."))
+        }
         return promise
     }
 

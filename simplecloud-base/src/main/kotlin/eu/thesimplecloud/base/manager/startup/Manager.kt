@@ -28,7 +28,9 @@ class Manager : ICloudApplication {
         CloudLibImpl()
         val launcherConfig = Launcher.instance.launcherConfigLoader.loadConfig()
         this.nettyServer = NettyServer<ICommandExecutable>(launcherConfig.host, launcherConfig.port, ConnectionHandlerImpl())
+        this.nettyServer.start()
         val managerConfigLoader = ManagerConfigLoader()
+        MinecraftJars().checkJars()
         if (!managerConfigLoader.doesConfigFileExist()) {
 
         }
