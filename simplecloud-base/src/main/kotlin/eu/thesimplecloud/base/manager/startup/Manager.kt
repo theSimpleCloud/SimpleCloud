@@ -11,6 +11,8 @@ import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.directorypaths.DirectoryPaths
 import eu.thesimplecloud.lib.screen.ICommandExecutable
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.File
 
 class Manager : ICloudApplication {
@@ -36,7 +38,9 @@ class Manager : ICloudApplication {
         val launcherConfig = Launcher.instance.launcherConfigLoader.loadConfig()
         Launcher.instance.commandManager.registerAllCommands("eu.thesimplecloud.base.manager.commands")
         this.nettyServer = NettyServer<ICommandExecutable>(launcherConfig.host, launcherConfig.port, ConnectionHandlerImpl())
-        this.nettyServer.start()
+        GlobalScope.launch {
+            nettyServer.start()
+        }
         MinecraftJars().checkJars()
         wrapperFileHandler.loadAll().forEach { CloudLib.instance.getWrapperManager().updateWrapper(it) }
         templatesFileHandler.loadConfig().list.forEach { CloudLib.instance.getTemplateManager().addTemplate(it) }
@@ -47,7 +51,7 @@ class Manager : ICloudApplication {
         val directoryPathsClass = DirectoryPaths::class.java
         val fields = directoryPathsClass.declaredFields
         fields.forEach { it.isAccessible = true }
-        fields.map { it.get(DirectoryPaths.paths) }.map { it as String }.map { File(it).mkdirs() }
+        fields.map { it.get(DirectoryPaths.paths) }.filterIsInstance<String>().map { File(it).mkdirs() }
     }
 
     override fun shutdown() {

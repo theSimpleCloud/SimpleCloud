@@ -31,8 +31,7 @@ class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
         Manager.instance.cloudServiceGroupFileHandler.save(cloudServiceGroup)
     }
 
-    override fun startNewService(cloudServiceGroup: ICloudServiceGroup): IConnectionPromise<ICloudService> {
-    }
+    override fun startNewService(cloudServiceGroup: ICloudServiceGroup): IConnectionPromise<ICloudService> = TODO()
 
     override fun deleteServiceGroup(cloudServiceGroup: ICloudServiceGroup): IConnectionPromise<Unit> {
         check(CloudLib.instance.getCloudServiceManger().getCloudServicesByGroupName(cloudServiceGroup.getName()).isEmpty()) { "Can not delete CloudServiceGroup while services of this group are registered." }

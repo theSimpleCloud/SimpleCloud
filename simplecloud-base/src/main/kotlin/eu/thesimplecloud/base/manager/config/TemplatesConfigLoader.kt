@@ -11,7 +11,7 @@ class TemplatesConfigLoader : IConfigLoader<TemplatesConfig> {
 
     val file = File(DirectoryPaths.paths.storagePath + "templates.json")
 
-    override fun loadConfig(): TemplatesConfig = JsonData.fromJsonFile(file).getObject(TemplatesConfig::class.java) ?: TemplatesConfig(emptyList())
+    override fun loadConfig(): TemplatesConfig = JsonData.fromJsonFile(file).getObjectOrNull(TemplatesConfig::class.java) ?: TemplatesConfig(emptyList())
 
     override fun saveConfig(value: TemplatesConfig) {
         JsonData.fromObject(value).saveAsFile(file)

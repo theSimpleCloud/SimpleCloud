@@ -9,6 +9,7 @@ import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.exception.CommandRegistrationException
 import eu.thesimplecloud.launcher.invoker.MethodInvokeHelper
 import eu.thesimplecloud.lib.stringparser.StringParser
+import eu.thesimplecloud.lib.utils.getEnumValues
 import org.reflections.Reflections
 import java.lang.NullPointerException
 import kotlin.collections.ArrayList
@@ -65,7 +66,8 @@ class CommandManager() {
             if (obj == null) {
                 commandSender.sendMessage("§cCan't parse parameter at index $indexOfParameter(\"$parameterValue\") to class ${parameterData.type.simpleName}")
                 if (parameterData.type.isEnum) {
-                    val enumValues = getEnumValues(parameterData.type as Class<out Enum<*>>)
+                    val clazz = parameterData.type as Class<out Enum<*>>
+                    val enumValues = clazz.getEnumValues()
                     commandSender.sendMessage("Allowed are: " + enumValues.joinToString(", "))
                 }
                 return
@@ -75,11 +77,7 @@ class CommandManager() {
         MethodInvokeHelper.invoke(matchingCommandData.method, matchingCommandData.source, list.toArray())
     }
 
-    fun getEnumValues(clazz: Class<out Enum<*>>): List<String> {
-        val method = clazz.getMethod("values")
-        val values = method.invoke(null) as Array<Enum<*>>
-        return values.map { it.name }
-    }
+
 
     fun getMatchingCommandData(message: String): CommandData? {
         val messageArray = message.split(" ")

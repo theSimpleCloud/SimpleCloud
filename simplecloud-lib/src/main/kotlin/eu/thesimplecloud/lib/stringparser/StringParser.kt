@@ -1,10 +1,12 @@
 package eu.thesimplecloud.lib.stringparser
 
 import eu.thesimplecloud.clientserverapi.lib.json.JsonData
+import eu.thesimplecloud.lib.service.ServiceVersion
 import eu.thesimplecloud.lib.stringparser.customparser.*
+import eu.thesimplecloud.lib.utils.getEnumValues
+import eu.thesimplecloud.lib.utils.enumValueOf
 import java.lang.IllegalArgumentException
 import java.util.*
-import kotlin.reflect.KClass
 
 class StringParser {
 
@@ -18,7 +20,15 @@ class StringParser {
     }
 
     fun <T : Any> parserString(string: String, clazz: Class<T>): T? {
-        if (clazz.isEnum || parsableTypes.contains(clazz)) {
+        if (clazz.isEnum) {
+            clazz as Class<out Enum<*>>
+            val enumValues = clazz.getEnumValues()
+            val indexOf = enumValues.map { it.toLowerCase() }.indexOf(string.toLowerCase())
+            if (indexOf == -1)
+                return null
+            return clazz.enumValueOf(enumValues[indexOf]) as T
+        }
+        if (parsableTypes.contains(clazz)) {
             return JsonData.fromObject(string).getObject(clazz)
         }
         val parser = customTypeParsers.firstOrNull { it.allowedTypes().contains(clazz) }
