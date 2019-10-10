@@ -2,6 +2,8 @@ package eu.thesimplecloud.base.manager.startup
 
 import eu.thesimplecloud.base.manager.config.ManagerConfigLoader
 import eu.thesimplecloud.base.manager.filehandler.CloudServiceGroupFileHandler
+import eu.thesimplecloud.base.manager.filehandler.TemplatesFileHandler
+import eu.thesimplecloud.base.manager.filehandler.WrapperFileHandler
 import eu.thesimplecloud.base.manager.impl.CloudLibImpl
 import eu.thesimplecloud.clientserverapi.server.INettyServer
 import eu.thesimplecloud.clientserverapi.server.NettyServer
@@ -12,6 +14,8 @@ import eu.thesimplecloud.lib.screen.ICommandExecutable
 class Manager : ICloudApplication {
 
     val cloudServiceGroupFileHandler = CloudServiceGroupFileHandler()
+    val wrapperFileHandler = WrapperFileHandler()
+    val templatesFileHandler = TemplatesFileHandler()
 
     companion object {
         lateinit var instance: Manager
@@ -29,11 +33,8 @@ class Manager : ICloudApplication {
         val launcherConfig = Launcher.instance.launcherConfigLoader.loadConfig()
         this.nettyServer = NettyServer<ICommandExecutable>(launcherConfig.host, launcherConfig.port, ConnectionHandlerImpl())
         this.nettyServer.start()
-        val managerConfigLoader = ManagerConfigLoader()
         MinecraftJars().checkJars()
-        if (!managerConfigLoader.doesConfigFileExist()) {
-
-        }
+        
     }
 
     override fun shutdown() {

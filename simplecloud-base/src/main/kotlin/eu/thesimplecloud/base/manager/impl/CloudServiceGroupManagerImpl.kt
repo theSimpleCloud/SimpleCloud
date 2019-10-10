@@ -28,7 +28,7 @@ class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
     override fun updateGroup(cloudServiceGroup: ICloudServiceGroup) {
         super.updateGroup(cloudServiceGroup)
         Manager.instance.nettyServer.getClientManager().sendPacketToAllClients(PacketIOUpdateCloudServiceGroup(cloudServiceGroup))
-        Manager.instance.cloudServiceGroupFileHandler.saveGroup(cloudServiceGroup)
+        Manager.instance.cloudServiceGroupFileHandler.save(cloudServiceGroup)
     }
 
     override fun startNewService(cloudServiceGroup: ICloudServiceGroup): IConnectionPromise<ICloudService> {
