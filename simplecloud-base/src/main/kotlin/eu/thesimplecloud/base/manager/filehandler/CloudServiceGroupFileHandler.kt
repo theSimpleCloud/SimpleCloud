@@ -1,6 +1,7 @@
-package eu.thesimplecloud.base.manager.groups
+package eu.thesimplecloud.base.manager.filehandler
 
 import eu.thesimplecloud.clientserverapi.lib.json.JsonData
+import eu.thesimplecloud.lib.config.IFileHandler
 import eu.thesimplecloud.lib.directorypaths.DirectoryPaths
 import eu.thesimplecloud.lib.service.ServiceType
 import eu.thesimplecloud.lib.servicegroup.ICloudServiceGroup
@@ -9,19 +10,19 @@ import eu.thesimplecloud.lib.servicegroup.impl.DefaultProxyGroup
 import eu.thesimplecloud.lib.servicegroup.impl.DefaultServerGroup
 import java.io.File
 
-class CloudServiceGroupFileHandler : ICloudServiceGroupFileHandler {
+class CloudServiceGroupFileHandler : IFileHandler<ICloudServiceGroup> {
 
 
-    override fun saveGroup(cloudServiceGroup: ICloudServiceGroup) {
-        val file = getJsonFileForGroup(cloudServiceGroup)
-        JsonData.fromObject(cloudServiceGroup).saveAsFile(file)
+    override fun save(value: ICloudServiceGroup) {
+        val file = getJsonFileForGroup(value)
+        JsonData.fromObject(value).saveAsFile(file)
     }
 
-    override fun deleteGroup(cloudServiceGroup: ICloudServiceGroup) {
-        getJsonFileForGroup(cloudServiceGroup).delete()
+    override fun delete(value: ICloudServiceGroup) {
+        getJsonFileForGroup(value).delete()
     }
 
-    override fun loadGroups(): Set<ICloudServiceGroup> {
+    override fun loadAll(): Set<ICloudServiceGroup> {
         val proxyGroups = getAllFilesInDirectoryParsedAs(File(DirectoryPaths.paths.proxyGroupsPath), DefaultProxyGroup::class.java)
         val lobbyGroups = getAllFilesInDirectoryParsedAs(File(DirectoryPaths.paths.lobbyGroupsPath), DefaultLobbyGroup::class.java)
         val serverGroups = getAllFilesInDirectoryParsedAs(File(DirectoryPaths.paths.serverGroupsPath), DefaultServerGroup::class.java)

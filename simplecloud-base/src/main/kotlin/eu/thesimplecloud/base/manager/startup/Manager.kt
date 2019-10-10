@@ -1,7 +1,7 @@
 package eu.thesimplecloud.base.manager.startup
 
 import eu.thesimplecloud.base.manager.config.ManagerConfigLoader
-import eu.thesimplecloud.base.manager.groups.CloudServiceGroupFileHandler
+import eu.thesimplecloud.base.manager.filehandler.CloudServiceGroupFileHandler
 import eu.thesimplecloud.base.manager.impl.CloudLibImpl
 import eu.thesimplecloud.clientserverapi.server.INettyServer
 import eu.thesimplecloud.clientserverapi.server.NettyServer
