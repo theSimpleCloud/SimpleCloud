@@ -1,6 +1,6 @@
 package eu.thesimplecloud.lib.config
 
-interface IConfigLoader<T : IConfig> {
+interface IConfigLoader<T : Any> {
 
     /**
      * Load the config form the file.

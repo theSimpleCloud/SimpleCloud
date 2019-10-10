@@ -1,22 +1,25 @@
 package eu.thesimplecloud.lib.template.impl
 
-import eu.thesimplecloud.lib.template.ITemplateGroup
+import eu.thesimplecloud.lib.template.ITemplate
 import eu.thesimplecloud.lib.template.ITemplateManager
 
 class DefaultTemplateManager : ITemplateManager {
 
-    private val noneTemplate = DefaultTemplateGroup("")
-    private val templateGroups = ArrayList<ITemplateGroup>()
+    private val templates = ArrayList<ITemplate>()
 
-    override fun getNoneTemplateGroup(): ITemplateGroup = this.noneTemplate
-
-    override fun getTemplateGroups(): List<ITemplateGroup> = this.templateGroups
-
-    override fun addTemplateGroup(templateGroup: ITemplateGroup) {
-        this.templateGroups.add(templateGroup)
+    override fun addTemplate(template: ITemplate) {
+        this.templates.add(template)
     }
 
-    override fun deleteTemplateGroup(templateGroup: ITemplateGroup) {
-        this.templateGroups.remove(templateGroup)
+    override fun removeTemplate(name: String) {
+        this.templates.remove(getTemplate(name))
     }
+
+    override fun getAllTemplates(): List<ITemplate> = this.templates
+
+    override fun clearCache() {
+        this.templates.clear()
+    }
+
+
 }

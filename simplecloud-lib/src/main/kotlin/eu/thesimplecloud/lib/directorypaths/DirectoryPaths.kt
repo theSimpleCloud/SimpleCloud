@@ -7,16 +7,13 @@ class DirectoryPaths(
         val lobbyGroupsPath: String = groupsPath + "lobbies/",
         val storagePath: String = "storage/",
         val configurationsPath: String = "configurations/",
-        val managerConfigurationsPath: String =  configurationsPath + "manager/",
-        val wrapperConfigurationsPath: String = configurationsPath + "wrapper/",
         val templatesPath: String = "templates/",
         val tempPath: String = "tmp/",
         val staticPath: String = "static/",
         val minecraftJarsPath: String = storagePath + "minecraftJars/",
         val languagesPath: String = storagePath + "languages/",
         val modulesPath: String = "modules/",
-        val wrappersPath: String = storagePath + "wrappers/",
-        val templateFilesPath: String = storagePath + "templates/"
+        val wrappersPath: String = storagePath + "wrappers/"
         ) {
     companion object {
         lateinit var paths: DirectoryPaths

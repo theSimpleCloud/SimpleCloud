@@ -1,9 +1,11 @@
 package eu.thesimplecloud.lib.template
 
+import eu.thesimplecloud.lib.config.IConfig
+import eu.thesimplecloud.lib.config.IConfigLoader
 import eu.thesimplecloud.lib.directorypaths.DirectoryPaths
 import java.io.File
 
-interface ITemplate {
+interface ITemplate : IConfig {
 
     /**
      * Returns the name of this template.
@@ -11,13 +13,8 @@ interface ITemplate {
     fun getName(): String
 
     /**
-     * Returns the [ITemplateGroup] this template belongs to
-     */
-    fun getTemplateGroup(): ITemplateGroup
-
-    /**
      * Returns the directory of this template.
      */
-    fun getDirectory(): File = File(DirectoryPaths.paths.templatesPath + getTemplateGroup().getName() + "/" + getName())
+    fun getDirectory(): File = File(DirectoryPaths.paths.templatesPath + getName() + "/")
 
 }

@@ -1,5 +1,5 @@
 {
-  "mainClass": "eu.thesimplecloud.base.manager.Manager",
+  "mainClass": "eu.thesimplecloud.base.manager.startup.Manager",
   "repositories": [
     "repo1",
     "repo2"

@@ -4,29 +4,28 @@ package eu.thesimplecloud.lib.template
 interface ITemplateManager {
 
     /**
-     * Returns the none template group
+     * Adds the specified template
      */
-    fun getNoneTemplateGroup() : ITemplateGroup
+    fun addTemplate(template: ITemplate)
 
     /**
-     * Returns a list containing all registered [ITemplateGroup]s except the [getNoneTemplateGroup]
+     * Removes the template found by the specified name
      */
-    fun getTemplateGroups(): List<ITemplateGroup>
+    fun removeTemplate(name: String)
 
     /**
-     * Adds a [ITemplateGroup]
+     * Returns a list containing all registered templates
      */
-    fun addTemplateGroup(templateGroup: ITemplateGroup)
+    fun getAllTemplates() : List<ITemplate>
 
     /**
-     * Deletes a [ITemplateGroup]
+     * Returns the first template found by the specified name
      */
-    fun deleteTemplateGroup(templateGroup: ITemplateGroup)
+    fun getTemplate(name: String): ITemplate? = getAllTemplates().firstOrNull { it.getName().equals(name, true) }
 
     /**
-     *  Returns the first template found by the specified name
+     * Clears the cache
      */
-    fun getTemplateByName(name: String) : ITemplate? = getTemplateGroups().map { it.getTemplates() }.flatten().firstOrNull { it.getName().equals(name, true) }
-
+    fun clearCache()
 
 }
