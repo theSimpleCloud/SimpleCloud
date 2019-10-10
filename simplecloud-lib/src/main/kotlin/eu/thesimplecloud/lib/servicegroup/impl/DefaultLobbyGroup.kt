@@ -14,7 +14,7 @@ class DefaultLobbyGroup(
         percentToStartNewService: Int,
         wrapperName: String?,
         private var priority: Int,
-        private var permission: String,
+        private var permission: String?,
         moduleNamesToCopy: List<String> = emptyList(),
         hiddenAtProxyGroups: List<String> = emptyList()
 ) : DefaultServerGroup(
@@ -34,7 +34,7 @@ class DefaultLobbyGroup(
 
     override fun getPriority(): Int = this.priority
 
-    override fun getPermission(): String = this.permission
+    override fun getPermission(): String? = this.permission
 
     override fun setPriority(priority: Int) {
         this.priority = priority

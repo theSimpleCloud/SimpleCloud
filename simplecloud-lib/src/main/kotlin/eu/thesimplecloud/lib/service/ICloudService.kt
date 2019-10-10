@@ -4,6 +4,7 @@ import eu.thesimplecloud.clientserverapi.lib.bootstrap.IBootstrap
 import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.screen.ICommandExecutable
 import eu.thesimplecloud.lib.servicegroup.ICloudServiceGroup
+import eu.thesimplecloud.lib.template.ITemplate
 import eu.thesimplecloud.lib.utils.IAuthenticatable
 import eu.thesimplecloud.lib.wrapper.IWrapperInfo
 import java.lang.IllegalStateException
@@ -34,10 +35,16 @@ interface ICloudService : IAuthenticatable, IBootstrap, ICommandExecutable {
     fun getServiceType(): ServiceType = getServiceGroup().getServiceType()
 
     /**
-     * Returns the template that this service uses
+     * Returns the name of the template that this service uses
      * e.g. Lobby
      */
     fun getTemplateName(): String
+
+    /**
+     * Returns the template that this service uses
+     * e.g. Lobby
+     */
+    fun getTemplate(): ITemplate = CloudLib.instance.getTemplateManager().getTemplate(getTemplateName()) ?: throw IllegalStateException("Template of registered service is null")
 
     /**
      * Returns the service group of this service

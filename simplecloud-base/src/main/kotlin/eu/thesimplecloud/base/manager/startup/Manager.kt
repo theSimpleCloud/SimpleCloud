@@ -34,6 +34,7 @@ class Manager : ICloudApplication {
         CloudLibImpl()
         createDirectories()
         val launcherConfig = Launcher.instance.launcherConfigLoader.loadConfig()
+        Launcher.instance.commandManager.registerAllCommands("eu.thesimplecloud.base.manager.commands")
         this.nettyServer = NettyServer<ICommandExecutable>(launcherConfig.host, launcherConfig.port, ConnectionHandlerImpl())
         this.nettyServer.start()
         MinecraftJars().checkJars()

@@ -16,9 +16,9 @@ interface ICloudLobbyGroup : ICloudServerGroup {
     fun setPriority(priority: Int)
 
     /**
-     * Returns the permission a player needs to join a service of this group
+     * Returns the permission a player needs to join a service of this group or null if there is no permission set.
      */
-    fun getPermission(): String
+    fun getPermission(): String?
 
     /**
      * Sets the permission a player needs to join a service of this group

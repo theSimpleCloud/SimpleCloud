@@ -8,5 +8,5 @@ class TemplateParser : ICustomTypeParser<ITemplate> {
 
     override fun allowedTypes(): List<Class<out ITemplate>> = listOf(ITemplate::class.java)
 
-    override fun parse(string: String): ITemplate? = CloudLib.instance.getTemplateManager().getTemplateByName(string)
+    override fun parse(string: String): ITemplate? = CloudLib.instance.getTemplateManager().getTemplate(string)
 }

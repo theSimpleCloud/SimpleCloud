@@ -66,7 +66,7 @@ interface ICloudServiceGroupManager {
             percentToStartNewService: Int,
             wrapperName: String?,
             priority: Int,
-            permission: String,
+            permission: String?,
             modulesToCopy: List<String> = emptyList(),
             hiddenAtProxyGroups: List<String> = emptyList()
     ): IConnectionPromise<ICloudLobbyGroup> =

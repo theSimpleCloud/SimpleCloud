@@ -6,10 +6,13 @@ import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.template.ITemplate
+import eu.thesimplecloud.lib.wrapper.IWrapperInfo
 import kotlin.properties.Delegates
 
-class ServerGroupSetup : ISetup {
+class ProxyGroupSetup : ISetup {
 
+    private lateinit var wrapperName: String
+    private var startPort by Delegates.notNull<Int>()
     private var percent by Delegates.notNull<Int>()
     private var static by Delegates.notNull<Boolean>()
     private var maximumOnlineServices by Delegates.notNull<Int>()
@@ -97,9 +100,27 @@ class ServerGroupSetup : ISetup {
         return true
     }
 
+    @SetupQuestion("manager.setup.proxy-group.question.wrapper", "On which wrapper should services of this poxy group start")
+    fun wrapperQuestion(wrapper: IWrapperInfo): Boolean {
+        Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.wrapper.success", "Wrapper set.")
+        this.wrapperName = wrapper.getName()
+        return true
+    }
+
+    @SetupQuestion("manager.setup.proxy-group.question.start-port", "Please provide the start port of this proxy group")
+    fun startPortQuestion(startPort: Int): Boolean {
+        if (startPort < 100 || startPort > 65535) {
+            Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.port.out-of-range", "The specified port is out of range.")
+            return false
+        }
+        Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.port.success", "Start-Port set.")
+        this.startPort = startPort
+        return true
+    }
+
     @SetupFinished
     fun finished(){
-        CloudLib.instance.getCloudServiceGroupManager().createServerGroup(name, templateName, memory, maxPlayers, minimumOnlineServices, maximumOnlineServices, true, static, percent, null)
+        CloudLib.instance.getCloudServiceGroupManager().createProxyGroup(name, templateName, memory, maxPlayers, minimumOnlineServices, maximumOnlineServices, true, static, percent, wrapperName, startPort)
         Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.finished", "Group created.")
     }
 
