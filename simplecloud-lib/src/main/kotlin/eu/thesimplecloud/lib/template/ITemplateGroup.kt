@@ -24,21 +24,15 @@ interface ITemplateGroup {
      */
     fun getTemplateByName(name: String) = getTemplates().firstOrNull { it.getName().equals(name, true) }
 
-    companion object {
-        val NONE = object : ITemplateGroup {
-            override fun getEveryTemplate(): ITemplate {
-            }
+    /**
+     * Adds the specified template to this group
+     */
+    fun addTemplate(template: ITemplate)
 
-            override fun getTemplates(): List<ITemplate> {
-            }
+    /**
+     * Removes the specified template to this group
+     */
+    fun removeTemplate(template: ITemplate)
 
-            override fun getName(): String = ""
-        }
-        val SPIGOT_GLOBAL_TEMPLATE = object : ITemplate {
-            override fun getDirectory(): File = File("SPIGOT_GLOBAL")
-
-            override fun getName(): String = "SPIGOT_GLOBAL"
-        }
-    }
 
 }

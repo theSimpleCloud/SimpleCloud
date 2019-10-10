@@ -18,6 +18,6 @@ interface ITemplate {
     /**
      * Returns the directory of this template.
      */
-    fun getDirectory(): File = DirectoryPaths.paths.tem getTemplateGroup().getName()
+    fun getDirectory(): File = File(DirectoryPaths.paths.templatesPath + getTemplateGroup().getName() + "/" + getName())
 
 }
