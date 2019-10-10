@@ -5,7 +5,7 @@ import eu.thesimplecloud.lib.template.ITemplateGroup
 
 class DefaultTemplateGroup(private val name: String) : ITemplateGroup {
 
-    private val everyTemplate = DefaultTemplate(name, this)
+    private val everyTemplate = DefaultTemplate("EVERY", this)
     private val templates = ArrayList<ITemplate>()
 
     override fun getName(): String = this.name
