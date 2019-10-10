@@ -11,7 +11,7 @@ class StringParser {
     private val parsableTypes = listOf(String::class.java, Int::class.java, UUID::class.java)
 
     private val customTypeParsers = mutableListOf(CloudLobbyGroupParser(), CloudProxyGroupParser(), CloudServerGroupParser(), CloudServiceGroupParser(),
-            CloudServiceParser(), WrapperInfoParser(), BooleanParser())
+            CloudServiceParser(), WrapperInfoParser(), BooleanParser(), TemplateParser())
 
     fun addCustomTypeParser(customTypeParser: ICustomTypeParser<out Any>) {
         this.customTypeParsers.add(customTypeParser)

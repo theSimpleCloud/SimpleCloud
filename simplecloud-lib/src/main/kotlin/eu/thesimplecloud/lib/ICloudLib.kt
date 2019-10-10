@@ -5,6 +5,7 @@ import eu.thesimplecloud.lib.screen.ICommandExecuteManager
 import eu.thesimplecloud.lib.screen.ICommandExecutable
 import eu.thesimplecloud.lib.service.ICloudServiceManager
 import eu.thesimplecloud.lib.servicegroup.ICloudServiceGroupManager
+import eu.thesimplecloud.lib.template.ITemplateManager
 import eu.thesimplecloud.lib.wrapper.IWrapperManager
 
 /**
@@ -37,4 +38,9 @@ interface ICloudLib {
      * Returns the [ICommandExecuteManager] used to execute command on [ICommandExecutable]
      */
     fun getCommandExecuteManager(): ICommandExecuteManager
+
+    /**
+     * Returns the [ITemplateManager] used to manage the templates
+     */
+    fun getTemplateManager(): ITemplateManager
 }

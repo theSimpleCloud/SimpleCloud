@@ -1,6 +1,5 @@
 package eu.thesimplecloud.lib.template
 
-import eu.thesimplecloud.lib.template.impl.DefaultTemplateGroup
 
 interface ITemplateManager {
 
@@ -23,6 +22,11 @@ interface ITemplateManager {
      * Deletes a [ITemplateGroup]
      */
     fun deleteTemplateGroup(templateGroup: ITemplateGroup)
+
+    /**
+     *  Returns the first template found by the specified name
+     */
+    fun getTemplateByName(name: String) : ITemplate? = getTemplateGroups().map { it.getTemplates() }.flatten().firstOrNull { it.getName().equals(name, true) }
 
 
 }
