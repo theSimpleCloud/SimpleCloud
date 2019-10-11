@@ -8,9 +8,9 @@ import eu.thesimplecloud.launcher.startup.Launcher
 import java.util.concurrent.TimeUnit
 
 @Command("servergroup", true)
-class ServerGroupCommand : ICommandHandler {
+class ServerGroupCommand() : ICommandHandler {
 
-    @CommandSubPath("create")
+    @CommandSubPath("create", "Creates a server group")
     fun create(){
         Launcher.instance.setupManager.queueSetup(ServerGroupSetup())
     }

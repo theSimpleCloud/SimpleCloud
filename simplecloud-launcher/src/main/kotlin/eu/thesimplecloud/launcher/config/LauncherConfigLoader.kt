@@ -13,7 +13,7 @@ class LauncherConfigLoader : IConfigLoader<LauncherConfig> {
 
     override fun loadConfig(): LauncherConfig {
         if (!file.exists()) return LauncherConfig("127.0.0.1", 1900, DirectoryPaths())
-        return JsonData.fromJsonFile(file).getObject(LauncherConfig::class.java) ?: throw IllegalStateException("Error while loading manager config: Couldn't parse file.")
+        return JsonData.fromJsonFile(file)?.getObjectOrNull(LauncherConfig::class.java) ?: throw IllegalStateException("Error while loading manager config: Couldn't parse file.")
     }
 
     override fun saveConfig(value: LauncherConfig) {

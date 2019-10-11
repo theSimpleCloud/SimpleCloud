@@ -6,7 +6,6 @@ class DirectoryPaths(
         val serverGroupsPath: String = groupsPath + "servers/",
         val lobbyGroupsPath: String = groupsPath + "lobbies/",
         val storagePath: String = "storage/",
-        val configurationsPath: String = "configurations/",
         val templatesPath: String = "templates/",
         val tempPath: String = "tmp/",
         val staticPath: String = "static/",

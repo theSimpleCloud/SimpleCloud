@@ -28,7 +28,7 @@ class SetupManager(val launcher: Launcher) {
 
     fun queueSetup(setup: ISetup, first: Boolean = false) {
         val questions = ArrayList<SetupQuestionData>()
-        val methods = setup::class.java.methods
+        val methods = setup::class.java.declaredMethods
         methods.filter { it.isAnnotationPresent(SetupQuestion::class.java) }.forEach { method ->
             check(method.parameters.size == 1) { "Function marked with SetupQuestion must have one parameter." }
             questions.add(SetupQuestionData(method.getAnnotation(SetupQuestion::class.java), method, method.parameters[0]))
@@ -43,7 +43,7 @@ class SetupManager(val launcher: Launcher) {
         finishedMethod?.let { check(it.parameters.isEmpty()) { "The function marked with SetupFinished must have 0 parameters." } }
         cancelledMethod?.let { check(it.parameters.isEmpty()) { "The function marked with SetupFinished must have 0 parameters." } }
 
-        val setupData = SetupData(setup, cancelledMethod, finishedMethod, questions)
+        val setupData = SetupData(setup, cancelledMethod, finishedMethod, questions.sortedBy { it.setupQuestion.number })
         if (this.currentSetup == null) {
             startSetup(setupData)
             return
@@ -58,6 +58,11 @@ class SetupManager(val launcher: Launcher) {
         this.currentSetup = setupData
         this.currentQuestion = setupData.questions[currentQuestionIndex]
         this.launcher.consoleSender.sendMessage("launcher.setup-started", "Setup started. To abort the setup write \"exit\".")
+        printCurrentQuestion()
+    }
+
+    private fun printCurrentQuestion() {
+        this.currentQuestion?.let { launcher.consoleSender.sendMessage(it.setupQuestion.property, it.setupQuestion.question) }
     }
 
     fun onResponse(response: String) {
@@ -91,7 +96,8 @@ class SetupManager(val launcher: Launcher) {
         }
         this.currentQuestionIndex++
         this.currentQuestion = activeSetup.questions[currentQuestionIndex]
-        this.logger.updatePrompt(false)
+        //this.logger.updatePrompt(false)
+        printCurrentQuestion()
     }
 
     private fun finishCurrentSetup() {

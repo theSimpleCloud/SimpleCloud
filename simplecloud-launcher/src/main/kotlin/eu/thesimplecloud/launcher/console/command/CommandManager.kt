@@ -109,8 +109,8 @@ class CommandManager() {
     fun getCommandDataByArgumentLength(length: Int) = this.commands.filter { it.path.trim().split(" ").size == length }
 
     fun registerAllCommands(vararg packages: String) {
-        packages.forEach {
-            val reflection = Reflections(it)
+        packages.forEach {pack ->
+            val reflection = Reflections(pack)
             reflection.getSubTypesOf(ICommandHandler::class.java).forEach {
                 try {
                     registerCommand(it.getDeclaredConstructor().newInstance())
@@ -122,7 +122,7 @@ class CommandManager() {
             }
         }
 
-        val size = commands.map { it.path.split(" ")[0] }.toSet().size;
+        val size = commands.map { it.path.split(" ")[0] }.toSet().size
         Launcher.instance.logger.success("Loaded $size command" + (if (size == 1) "" else "s"))
 
     }
@@ -150,6 +150,7 @@ class CommandManager() {
                 commands.add(commandData)
             }
         } catch (e: Exception) {
+            throw e
         }
 
     }

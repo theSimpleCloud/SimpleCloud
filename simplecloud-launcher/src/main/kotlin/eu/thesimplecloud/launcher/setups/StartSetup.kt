@@ -8,14 +8,15 @@ import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
 import eu.thesimplecloud.lib.language.LanguageProperty
 import java.lang.IllegalStateException
+import kotlin.concurrent.thread
 
 class StartSetup : ISetup {
 
     private var cloudApplicationType: CloudApplicationType? = null
 
 
-    @SetupQuestion("launcher.setup.start.question", "Do you want do start the MANAGER or the WRAPPER")
-    fun setup(cloudApplicationType: CloudApplicationType){
+    @SetupQuestion(0, "launcher.setup.start.question", "Do you want do start the MANAGER or the WRAPPER")
+    fun setup(cloudApplicationType: CloudApplicationType) {
         this.cloudApplicationType = cloudApplicationType
     }
 
@@ -23,7 +24,9 @@ class StartSetup : ISetup {
     fun onFinish() {
         val cloudApplicationType = this.cloudApplicationType
         checkNotNull(cloudApplicationType) { "Cloud application type was null after start setup." }
-        Launcher.instance.startApplication(cloudApplicationType)
+        thread {
+            Launcher.instance.startApplication(cloudApplicationType)
+        }
     }
 
     @SetupCancelled

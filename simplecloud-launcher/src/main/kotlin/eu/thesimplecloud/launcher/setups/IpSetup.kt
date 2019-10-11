@@ -9,7 +9,7 @@ import eu.thesimplecloud.launcher.utils.IpValidator
 class IpSetup : ISetup {
 
 
-    @SetupQuestion("manager.setup.ip.question", "Please enter the ip of the manager")
+    @SetupQuestion(0, "manager.setup.ip.question", "Please enter the ip of the manager")
     fun setup(string: String): Boolean {
         if (!IpValidator().validate(string)) {
             Launcher.instance.consoleSender.sendMessage("launcher.setup.ip.ip-invalid", "The entered ip is invalid.")

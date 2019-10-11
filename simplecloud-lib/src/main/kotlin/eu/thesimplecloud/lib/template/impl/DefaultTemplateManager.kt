@@ -3,7 +3,7 @@ package eu.thesimplecloud.lib.template.impl
 import eu.thesimplecloud.lib.template.ITemplate
 import eu.thesimplecloud.lib.template.ITemplateManager
 
-class DefaultTemplateManager : ITemplateManager {
+open class DefaultTemplateManager : ITemplateManager {
 
     private val templates = ArrayList<ITemplate>()
 

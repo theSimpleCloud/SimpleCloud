@@ -10,7 +10,7 @@ import eu.thesimplecloud.launcher.utils.WebsiteContentLoader
 
 class AutoIpSetup : ISetup {
 
-    @SetupQuestion("manager.setup.auto-ip.question", "Do you want to automatically set up your ip via \"ipify.org\" (yes / no)")
+    @SetupQuestion(0, "manager.setup.auto-ip.question", "Do you want to automatically set up your ip via \"ipify.org\" (yes / no)")
     fun setup(boolean: Boolean): Boolean {
         if (!boolean) {
             Launcher.instance.setupManager.queueSetup(IpSetup(), true)
@@ -24,7 +24,7 @@ class AutoIpSetup : ISetup {
             Launcher.instance.logger.warning("Unable to connect to \"ipify.org\".")
             return false
         }
-        if (ip == null || !IpValidator().validate(ip)){
+        if (ip == null || !IpValidator().validate(ip)) {
             Launcher.instance.logger.warning("Received response can not be parsed to an ip.")
             return false
         }

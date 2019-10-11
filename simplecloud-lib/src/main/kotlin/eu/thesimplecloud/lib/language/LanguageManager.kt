@@ -18,7 +18,7 @@ class LanguageManager(var language: String) {
             file.parentFile.mkdirs()
             JsonData.fromObject(languageFile).saveAsFile(file)
         } else {
-            val languageFile = JsonData.fromJsonFile(file).getObject(LanguageFile::class.java)
+            val languageFile = JsonData.fromJsonFile(file)?.getObjectOrNull(LanguageFile::class.java)
             if (languageFile != null) {
                 this.languageFile = languageFile
             }

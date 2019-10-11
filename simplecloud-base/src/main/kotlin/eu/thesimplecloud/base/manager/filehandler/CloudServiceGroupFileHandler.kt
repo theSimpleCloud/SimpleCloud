@@ -30,16 +30,15 @@ class CloudServiceGroupFileHandler : IFileHandler<ICloudServiceGroup> {
     }
 
     private fun <T : Any> getAllFilesInDirectoryParsedAs(directory: File, clazz: Class<T>) : List<T> {
-        val list = directory.listFiles()?.map { JsonData.fromJsonFile(it).getObject(clazz) } ?: emptyList<T>()
+        val list = directory.listFiles()?.map { JsonData.fromJsonFile(it)?.getObjectOrNull(clazz) } ?: emptyList<T>()
         return list.filterNotNull()
     }
 
     private fun getJsonFileForGroup(cloudServiceGroup: ICloudServiceGroup): File {
-        val file = when (cloudServiceGroup.getServiceType()) {
+        return when (cloudServiceGroup.getServiceType()) {
             ServiceType.PROXY -> File(DirectoryPaths.paths.proxyGroupsPath, cloudServiceGroup.getName() + ".json")
             ServiceType.LOBBY -> File(DirectoryPaths.paths.lobbyGroupsPath, cloudServiceGroup.getName() + ".json")
             ServiceType.SERVER -> File(DirectoryPaths.paths.serverGroupsPath, cloudServiceGroup.getName() + ".json")
         }
-        return file
     }
 }

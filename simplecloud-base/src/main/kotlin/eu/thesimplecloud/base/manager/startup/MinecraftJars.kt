@@ -12,8 +12,10 @@ class MinecraftJars {
         File(DirectoryPaths.paths.minecraftJarsPath).mkdirs()
         val serverFile = File(DirectoryPaths.paths.minecraftJarsPath, "server.jar")
         val proxyFile = File(DirectoryPaths.paths.minecraftJarsPath, "proxy.jar")
-        Launcher.instance.setupManager.queueSetup(ProxyJarSetup(proxyFile))
-        Launcher.instance.setupManager.queueSetup(ServerJarSetup(serverFile))
+        if (!proxyFile.exists())
+            Launcher.instance.setupManager.queueSetup(ProxyJarSetup(proxyFile))
+        if (!serverFile.exists())
+            Launcher.instance.setupManager.queueSetup(ServerJarSetup(serverFile))
     }
 
 }

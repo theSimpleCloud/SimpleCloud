@@ -10,6 +10,12 @@ import java.net.URLClassLoader
 class DependencyLoader(val repositories: List<String>) {
 
     fun installDependencies(dependencies: List<Dependency>) {
+        val loggerAvailable = try {
+            Launcher.instance.logger
+            true
+        } catch (ex: Exception) {
+            false
+        }
         val file = File("dependencies/")
         file.mkdirs()
         repositories.forEach { repoUrl ->
@@ -17,7 +23,10 @@ class DependencyLoader(val repositories: List<String>) {
                 if (!dependency.getDownloadedFile().exists()) {
                     try {
                         dependency.download(repoUrl)
-                        println("Downloaded dependency ${dependency.getDownloadURL(repoUrl)}")
+                        if (loggerAvailable)
+                            Launcher.instance.logger.console("Downloaded dependency ${dependency.getDownloadURL(repoUrl)}")
+                        else
+                            println("Downloaded dependency ${dependency.getDownloadURL(repoUrl)}")
                     } catch (ex: FileNotFoundException) {
 
                     }
@@ -25,7 +34,12 @@ class DependencyLoader(val repositories: List<String>) {
             }
         }
         dependencies.filter { !it.getDownloadedFile().exists() }
-                .forEach {  println("Failed to download dependency ${it.groupId}:${it.artifactId}:${it.version}") }
+                .forEach {
+                    if (loggerAvailable)
+                        Launcher.instance.logger.warning("Failed to download dependency ${it.groupId}:${it.artifactId}:${it.version}")
+                    else
+                        println("Failed to download dependency ${it.groupId}:${it.artifactId}:${it.version}")
+                }
         if (dependencies.any { !it.getDownloadedFile().exists() }) throw DependencyException("Failed to load all dependencies.")
 
         val urlClassLoader = ClassLoader.getSystemClassLoader() as URLClassLoader
@@ -33,7 +47,11 @@ class DependencyLoader(val repositories: List<String>) {
         method.isAccessible = true
 
         dependencies.forEach { method.invoke(urlClassLoader, it.getDownloadedFile().toURI().toURL()) }
-        println("Installed all dependencies successfully.")
+
+        if (loggerAvailable)
+            Launcher.instance.logger.success("Installed all dependencies successfully.")
+        else
+            println("Installed all dependencies successfully.")
     }
 
 }
