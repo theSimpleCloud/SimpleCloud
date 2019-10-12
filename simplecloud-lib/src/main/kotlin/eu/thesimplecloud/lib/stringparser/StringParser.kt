@@ -29,7 +29,7 @@ class StringParser {
             return clazz.enumValueOf(enumValues[indexOf]) as T
         }
         if (parsableTypes.contains(clazz)) {
-            return JsonData.fromObject(string).getObject(clazz)
+            return JsonData.fromObject(string).getObjectOrNull(clazz)
         }
         val parser = customTypeParsers.firstOrNull { it.allowedTypes().contains(clazz) }
         parser ?: throw IllegalArgumentException("Can't parse class to ${clazz.simpleName}: No parser found.")

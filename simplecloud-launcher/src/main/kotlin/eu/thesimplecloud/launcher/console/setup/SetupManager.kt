@@ -70,7 +70,7 @@ class SetupManager(val launcher: Launcher) {
         val parsedValue = StringParser().parserString(response, currentQuestion.prameter.type)
         val invokeResponse = try {
             currentQuestion.method.invoke(this.currentSetup!!.source, parsedValue)
-        } catch (e: InvocationTargetException) {
+        } catch (e: Exception) {
             this.launcher.consoleSender.sendMessage("launcher.setup.invalid-response", "Invalid response.")
             return
         }
