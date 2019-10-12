@@ -15,4 +15,9 @@ interface ITemplate {
      */
     fun getDirectory(): File = File(DirectoryPaths.paths.templatesPath + getName() + "/")
 
+    /**
+     * Returns the every directory of this template.
+     */
+    fun getEveryDirectory(): File = File(DirectoryPaths.paths.templatesPath + getName() + "/EVERY/")
+
 }

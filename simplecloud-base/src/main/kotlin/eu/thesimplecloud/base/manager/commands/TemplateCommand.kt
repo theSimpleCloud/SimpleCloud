@@ -29,6 +29,9 @@ class TemplateCommand() : ICommandHandler {
         templateManager.addTemplate(template)
         Manager.instance.nettyServer.getClientManager().sendPacketToAllClients(PacketIOAddTemplate(template))
         Launcher.instance.consoleSender.sendMessage("manager.command.template.create.success", "Template %NAME%", name, " was registered")
+
+        //---create directories
+        template.getEveryDirectory().mkdirs()
     }
 
     @CommandSubPath("delete <name>", "Deletes a template")

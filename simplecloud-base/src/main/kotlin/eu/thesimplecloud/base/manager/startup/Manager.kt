@@ -62,7 +62,10 @@ class Manager : ICloudApplication {
                 File(DirectoryPaths.paths.proxyGroupsPath),
                 File(DirectoryPaths.paths.languagesPath),
                 File(DirectoryPaths.paths.modulesPath),
-                File(DirectoryPaths.paths.templatesPath)
+                File(DirectoryPaths.paths.templatesPath),
+                File(DirectoryPaths.paths.templatesPath + "EVERY"),
+                File(DirectoryPaths.paths.templatesPath + "SERVER_EVERY"),
+                File(DirectoryPaths.paths.templatesPath + "PROXY_EVERY")
         )) {
             file.mkdirs()
         }

@@ -11,6 +11,8 @@ class TemplateManagerImpl : DefaultTemplateManager() {
     override fun addTemplate(template: ITemplate) {
         super.addTemplate(template)
         val templateConfig = this.templatesConfigLoader.loadConfig()
+        if (templateConfig.templates.contains(template.getName()))
+            return
         templateConfig.templates.add(template.getName())
         templatesConfigLoader.saveConfig(templateConfig)
     }

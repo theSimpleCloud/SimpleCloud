@@ -1,4 +1,4 @@
-package eu.thesimplecloud.base.manager.setup
+package eu.thesimplecloud.base.manager.setup.groups
 
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished
@@ -6,12 +6,14 @@ import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.template.ITemplate
+import eu.thesimplecloud.lib.wrapper.IWrapperInfo
+import java.io.File
 import kotlin.properties.Delegates
 
-class LobbyGroupSetup : ISetup {
+class ProxyGroupSetup : ISetup {
 
-    private var permission: String? = null
-    private var priority by Delegates.notNull<Int>()
+    private lateinit var wrapperName: String
+    private var startPort by Delegates.notNull<Int>()
     private var percent by Delegates.notNull<Int>()
     private var static by Delegates.notNull<Boolean>()
     private var maximumOnlineServices by Delegates.notNull<Int>()
@@ -99,27 +101,28 @@ class LobbyGroupSetup : ISetup {
         return true
     }
 
-    @SetupQuestion(8, "manager.setup.service-group.question.priority", "Which priority should this lobby group have (0 = default)")
-    fun priorityQuestion(priority: Int): Boolean {
-        if (priority < 0) {
-            Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.priority.too-low", "The specified number is too low.")
-            return false
-        }
-        Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.priority.success", "Priority set.")
-        this.priority = priority
+    @SetupQuestion(8, "manager.setup.proxy-group.question.wrapper", "On which wrapper should services of this poxy group start")
+    fun wrapperQuestion(wrapper: IWrapperInfo): Boolean {
+        Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.wrapper.success", "Wrapper set.")
+        this.wrapperName = wrapper.getName()
         return true
     }
 
-    @SetupQuestion(9, "manager.setup.service-group.question.permission", "Which permission should a player need to join this group (leave it empty for no permission)")
-    fun permissionQuestion(permission: String) {
-        Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.permission.success", "Permission set.")
-        if (!permission.isNotBlank())
-            this.permission = permission
+    @SetupQuestion(9, "manager.setup.proxy-group.question.start-port", "Please provide the start port of this proxy group")
+    fun startPortQuestion(startPort: Int): Boolean {
+        if (startPort < 100 || startPort > 65535) {
+            Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.port.out-of-range", "The specified port is out of range.")
+            return false
+        }
+        Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.port.success", "Start-Port set.")
+        this.startPort = startPort
+        return true
     }
 
     @SetupFinished
     fun finished() {
-        CloudLib.instance.getCloudServiceGroupManager().createLobbyGroup(name, templateName, memory, maxPlayers, minimumOnlineServices, maximumOnlineServices, true, static, percent, null, priority, permission)
+        CloudLib.instance.getCloudServiceGroupManager().createProxyGroup(name, templateName, memory, maxPlayers, minimumOnlineServices, maximumOnlineServices, true, static, percent, wrapperName, startPort)
+        File(CloudLib.instance.getTemplateManager().getTemplate(this.templateName)!!.getDirectory(), name).mkdirs()
         Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.finished", "Group created.")
     }
 

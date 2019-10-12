@@ -1,4 +1,4 @@
-package eu.thesimplecloud.base.manager.setup
+package eu.thesimplecloud.base.manager.setup.groups
 
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished
@@ -6,11 +6,13 @@ import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.template.ITemplate
+import java.io.File
 import kotlin.properties.Delegates
-import kotlin.reflect.KFunction1
 
-class ServerGroupSetup : ISetup {
+class LobbyGroupSetup : ISetup {
 
+    private var permission: String? = null
+    private var priority by Delegates.notNull<Int>()
     private var percent by Delegates.notNull<Int>()
     private var static by Delegates.notNull<Boolean>()
     private var maximumOnlineServices by Delegates.notNull<Int>()
@@ -19,7 +21,6 @@ class ServerGroupSetup : ISetup {
     private var memory by Delegates.notNull<Int>()
     private lateinit var name: String
     private lateinit var templateName: String
-
 
     @SetupQuestion(0, "manager.setup.service-group.question.name", "Which name should the group have")
     fun nameQuestion(name: String): Boolean {
@@ -99,9 +100,28 @@ class ServerGroupSetup : ISetup {
         return true
     }
 
+    @SetupQuestion(8, "manager.setup.service-group.question.priority", "Which priority should this lobby group have (0 = default)")
+    fun priorityQuestion(priority: Int): Boolean {
+        if (priority < 0) {
+            Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.priority.too-low", "The specified number is too low.")
+            return false
+        }
+        Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.priority.success", "Priority set.")
+        this.priority = priority
+        return true
+    }
+
+    @SetupQuestion(9, "manager.setup.service-group.question.permission", "Which permission should a player need to join this group (leave it empty for no permission)")
+    fun permissionQuestion(permission: String) {
+        Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.permission.success", "Permission set.")
+        if (!permission.isNotBlank())
+            this.permission = permission
+    }
+
     @SetupFinished
     fun finished() {
-        CloudLib.instance.getCloudServiceGroupManager().createServerGroup(name, templateName, memory, maxPlayers, minimumOnlineServices, maximumOnlineServices, true, static, percent, null)
+        CloudLib.instance.getCloudServiceGroupManager().createLobbyGroup(name, templateName, memory, maxPlayers, minimumOnlineServices, maximumOnlineServices, true, static, percent, null, priority, permission)
+        File(CloudLib.instance.getTemplateManager().getTemplate(this.templateName)!!.getDirectory(), name).mkdirs()
         Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.finished", "Group created.")
     }
 
