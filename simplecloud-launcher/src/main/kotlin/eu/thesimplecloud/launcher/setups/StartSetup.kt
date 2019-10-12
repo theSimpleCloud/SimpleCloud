@@ -6,8 +6,6 @@ import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupCancelled
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
-import eu.thesimplecloud.lib.language.LanguageProperty
-import java.lang.IllegalStateException
 import kotlin.concurrent.thread
 
 class StartSetup : ISetup {

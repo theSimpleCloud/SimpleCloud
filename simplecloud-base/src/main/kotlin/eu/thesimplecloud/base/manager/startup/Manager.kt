@@ -34,11 +34,11 @@ class Manager : ICloudApplication {
         instance = this
     }
 
-    override fun start() {
+    override fun onEnable() {
         CloudLibImpl()
         createDirectories()
         val launcherConfig = Launcher.instance.launcherConfigLoader.loadConfig()
-        Launcher.instance.commandManager.registerAllCommands("eu.thesimplecloud.base.manager.commands")
+        Launcher.instance.commandManager.registerAllCommands(this, "eu.thesimplecloud.base.manager.commands")
         this.nettyServer = NettyServer<ICommandExecutable>(launcherConfig.host, launcherConfig.port, ConnectionHandlerImpl())
         GlobalScope.launch {
             nettyServer.start()
@@ -71,10 +71,8 @@ class Manager : ICloudApplication {
         }
     }
 
-    override fun shutdown() {
+    override fun onDisable() {
     }
-
-    override fun isActive(): Boolean = true
 
 
 }

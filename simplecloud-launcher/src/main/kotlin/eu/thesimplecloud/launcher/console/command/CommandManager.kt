@@ -8,6 +8,7 @@ import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.exception.CommandRegistrationException
 import eu.thesimplecloud.launcher.invoker.MethodInvokeHelper
+import eu.thesimplecloud.lib.external.ICloudModule
 import eu.thesimplecloud.lib.stringparser.StringParser
 import eu.thesimplecloud.lib.utils.getEnumValues
 import org.reflections.Reflections
@@ -78,7 +79,6 @@ class CommandManager() {
     }
 
 
-
     fun getMatchingCommandData(message: String): CommandData? {
         val messageArray = message.split(" ")
         val commandDataList = getCommandDataByArgumentLength(messageArray.size)
@@ -108,12 +108,12 @@ class CommandManager() {
 
     fun getCommandDataByArgumentLength(length: Int) = this.commands.filter { it.path.trim().split(" ").size == length }
 
-    fun registerAllCommands(vararg packages: String) {
-        packages.forEach {pack ->
+    fun registerAllCommands(cloudModule: ICloudModule, vararg packages: String) {
+        packages.forEach { pack ->
             val reflection = Reflections(pack)
             reflection.getSubTypesOf(ICommandHandler::class.java).forEach {
                 try {
-                    registerCommand(it.getDeclaredConstructor().newInstance())
+                    registerCommand(cloudModule, it.getDeclaredConstructor().newInstance())
                 } catch (e: InstantiationException) {
                     e.printStackTrace()
                 } catch (e: IllegalAccessException) {
@@ -127,7 +127,7 @@ class CommandManager() {
 
     }
 
-    fun registerCommand(command: ICommandHandler) {
+    fun registerCommand(cloudModule: ICloudModule, command: ICommandHandler) {
         val commandClass = command::class.java
         val classAnnotation = commandClass.getAnnotation(Command::class.java)
         classAnnotation ?: throw NullPointerException()
@@ -137,7 +137,7 @@ class CommandManager() {
                 val commandSubPath = method.getAnnotation(CommandSubPath::class.java)
                 commandSubPath ?: continue
 
-                val commandData = CommandData(classAnnotation.name + " " + commandSubPath.path, commandSubPath.description, command, method)
+                val commandData = CommandData(cloudModule, classAnnotation.name + " " + commandSubPath.path, commandSubPath.description, command, method)
                 for (parameter in method.parameters) {
                     val commandArgument = parameter.getAnnotation(CommandArgument::class.java)
                     if (commandArgument == null) {

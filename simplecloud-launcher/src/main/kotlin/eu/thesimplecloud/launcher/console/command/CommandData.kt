@@ -1,5 +1,6 @@
 package eu.thesimplecloud.launcher.console.command
 
+import eu.thesimplecloud.lib.external.ICloudModule
 import java.lang.reflect.Method
 
 /**
@@ -9,6 +10,7 @@ import java.lang.reflect.Method
  * Time: 20:10
  */
 class CommandData(
+        val cloudModule: ICloudModule,
         val path: String,
         val commandDescription: String,
         val source: ICommandHandler,

@@ -73,9 +73,9 @@ class LobbyGroupSetup : ISetup {
         return true
     }
 
-    @SetupQuestion(5, "manager.setup.service-group.question.maximum-online", "How much services should be online at most (LOBBY state)")
+    @SetupQuestion(5, "manager.setup.service-group.question.maximum-online", "How much services should be online at most  (unlimited = -1)")
     fun maximumOnlineQuestion(maximumOnlineServices: Int): Boolean {
-        if (maximumOnlineServices < 0) {
+        if (maximumOnlineServices < -1) {
             Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.maximum-online.too-low", "The specified number is too low.")
             return false
         }
@@ -114,7 +114,7 @@ class LobbyGroupSetup : ISetup {
     @SetupQuestion(9, "manager.setup.service-group.question.permission", "Which permission should a player need to join this group (leave it empty for no permission)")
     fun permissionQuestion(permission: String) {
         Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.permission.success", "Permission set.")
-        if (!permission.isNotBlank())
+        if (permission.isNotBlank())
             this.permission = permission
     }
 

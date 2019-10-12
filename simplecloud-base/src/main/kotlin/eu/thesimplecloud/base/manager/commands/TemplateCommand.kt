@@ -40,6 +40,10 @@ class TemplateCommand() : ICommandHandler {
             Launcher.instance.consoleSender.sendMessage("manager.command.template.delete.not-exist", "Template %NAME%", name, " does not exist.")
             return
         }
+        if (CloudLib.instance.getCloudServiceGroupManager().getAllGroups().any { it.getTemplateName().equals(name, true) }) {
+            Launcher.instance.consoleSender.sendMessage("manager.command.template.delete.in-use", "Template %NAME%", name, " is in use by registered service groups. Delete them first.")
+            return
+        }
         templateManager.removeTemplate(name)
         Manager.instance.nettyServer.getClientManager().sendPacketToAllClients(PacketIODeleteTemplate(name))
         Launcher.instance.consoleSender.sendMessage("manager.command.template.delete.success", "Template %NAME%", name, " was deleted.")

@@ -1,5 +1,7 @@
 package eu.thesimplecloud.lib.eventapi
 
+import eu.thesimplecloud.lib.external.ICloudModule
+
 interface IEventManager {
 
     /**
@@ -7,7 +9,7 @@ interface IEventManager {
      *
      * @param listener the listener object from which the methods should be registered.
      */
-    fun registerListener(listener: IListener)
+    fun registerListener(cloudModule: ICloudModule, listener: IListener)
 
     /**
      * Unregisters all methods from the specified object that has the [CloudEventHandler] annotation.
@@ -22,6 +24,11 @@ interface IEventManager {
      * @param event the event which should be called.
      */
     fun call(event: IEvent)
+
+    /**
+     * Unregisters all listeners registered with the specified [ICloudModule].
+     */
+    fun unregisterAllListenersByCloudModule(cloudModule: ICloudModule)
 
     /**
      * Unregisters all listeners.

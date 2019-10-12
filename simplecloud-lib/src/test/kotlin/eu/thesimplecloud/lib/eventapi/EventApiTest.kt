@@ -1,5 +1,6 @@
 package eu.thesimplecloud.lib.eventapi
 
+import eu.thesimplecloud.lib.external.ICloudModule
 import org.junit.Assert
 import org.junit.Test
 import org.mockito.Mockito
@@ -7,13 +8,21 @@ import org.mockito.Mockito
 class EventApiTest {
 
     val eventManager = EventManager()
+    val cloudModule = object: ICloudModule {
+        override fun onEnable() {
+        }
+
+        override fun onDisable() {
+        }
+
+    }
 
 
 
     @Test
     fun testListenerCall(){
         val testListener = TestListener()
-        eventManager.registerListener(testListener)
+        eventManager.registerListener(cloudModule, testListener)
         val testEvent = TestEvent("test123")
         eventManager.call(testEvent)
         Assert.assertEquals("test123", testListener.testString)
@@ -22,7 +31,7 @@ class EventApiTest {
     @Test
     fun testUnregister(){
         val testListener = TestListener()
-        eventManager.registerListener(testListener)
+        eventManager.registerListener(cloudModule, testListener)
         eventManager.unregisterListener(testListener)
         val testEvent = TestEvent("12test")
         eventManager.call(testEvent)
@@ -33,7 +42,7 @@ class EventApiTest {
     fun testUnregisterAll(){
         val testListener = TestListener()
         val testEvent = TestEvent("12test")
-        eventManager.registerListener(testListener)
+        eventManager.registerListener(cloudModule, testListener)
         eventManager.unregisterAll()
         eventManager.call(testEvent)
         Assert.assertEquals(null, testListener.testString)

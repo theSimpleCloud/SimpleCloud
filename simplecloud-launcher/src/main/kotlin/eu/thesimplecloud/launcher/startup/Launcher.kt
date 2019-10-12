@@ -1,7 +1,8 @@
 package eu.thesimplecloud.launcher.startup
 
 import eu.thesimplecloud.clientserverapi.lib.bootstrap.IBootstrap
-import eu.thesimplecloud.launcher.application.CloudApplicationStarter
+import eu.thesimplecloud.launcher.application.ApplicationStarter
+import eu.thesimplecloud.launcher.module.CloudModuleLoader
 import eu.thesimplecloud.launcher.application.CloudApplicationType
 import eu.thesimplecloud.launcher.application.ICloudApplication
 import eu.thesimplecloud.launcher.console.ConsoleManager
@@ -14,6 +15,7 @@ import eu.thesimplecloud.launcher.setups.StartSetup
 import eu.thesimplecloud.launcher.config.LauncherConfigLoader
 import eu.thesimplecloud.launcher.setups.AutoIpSetup
 import eu.thesimplecloud.lib.directorypaths.DirectoryPaths
+import eu.thesimplecloud.lib.external.ICloudModule
 import eu.thesimplecloud.lib.language.LanguageManager
 import java.util.function.Consumer
 import kotlin.system.exitProcess
@@ -31,6 +33,13 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) : IBootstrap 
         lateinit var instance: Launcher
     }
 
+    val launcherCloudModule = object : ICloudModule {
+        override fun onEnable() {
+        }
+
+        override fun onDisable() {
+        }
+    }
     var activeApplication: ICloudApplication? = null
     val logger = LoggerProvider("Launcher")
     val commandManager: CommandManager
@@ -53,7 +62,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) : IBootstrap 
 
     override fun start() {
         this.languageManager.loadFile()
-        this.commandManager.registerAllCommands("eu.thesimplecloud.launcher.commands")
+        this.commandManager.registerAllCommands(launcherCloudModule, "eu.thesimplecloud.launcher.commands")
         this.consoleManager.startThread()
         if (!this.languageManager.fileExistBeforeLoad())
             this.setupManager.queueSetup(LanguageSetup())
@@ -70,11 +79,11 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) : IBootstrap 
     fun startApplication(cloudApplicationType: CloudApplicationType) {
         ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor()
         logger.info("Starting ${cloudApplicationType.getApplicationName()}...")
-        CloudApplicationStarter().startCloudApplication(cloudApplicationType)
+        ApplicationStarter().startApplication(cloudApplicationType)
     }
 
     override fun shutdown() {
-        activeApplication?.shutdown()
+        activeApplication?.onDisable()
         exitProcess(0)
     }
 

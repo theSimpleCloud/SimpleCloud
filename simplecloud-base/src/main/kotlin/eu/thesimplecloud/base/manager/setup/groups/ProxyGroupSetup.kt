@@ -74,9 +74,9 @@ class ProxyGroupSetup : ISetup {
         return true
     }
 
-    @SetupQuestion(5, "manager.setup.service-group.question.maximum-online", "How much services should be online at most (LOBBY state)")
+    @SetupQuestion(5, "manager.setup.service-group.question.maximum-online", "How much services should be online at most  (unlimited = -1)")
     fun maximumOnlineQuestion(maximumOnlineServices: Int): Boolean {
-        if (maximumOnlineServices < 0) {
+        if (maximumOnlineServices < -1) {
             Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.maximum-online.too-low", "The specified number is too low.")
             return false
         }
