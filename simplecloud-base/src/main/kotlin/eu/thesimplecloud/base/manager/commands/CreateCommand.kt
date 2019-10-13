@@ -1,5 +1,6 @@
 package eu.thesimplecloud.base.manager.commands
 
+import eu.thesimplecloud.base.manager.setup.WrapperSetup
 import eu.thesimplecloud.base.manager.setup.groups.LobbyGroupSetup
 import eu.thesimplecloud.base.manager.setup.groups.ProxyGroupSetup
 import eu.thesimplecloud.base.manager.setup.groups.ServerGroupSetup
@@ -34,6 +35,11 @@ class CreateCommand : ICommandHandler {
         Launcher.instance.setupManager.queueSetup(ServerGroupSetup())
     }
 
+    @CommandSubPath("wrapper", "Creates a wrapper")
+    fun createWrapper(){
+        Launcher.instance.setupManager.queueSetup(WrapperSetup())
+    }
+
     @CommandSubPath("template <name>", "Creates a template")
     fun createTemplate(@CommandArgument("name") name: String) {
         if (name.length > 16) {
@@ -46,7 +52,7 @@ class CreateCommand : ICommandHandler {
         val template = DefaultTemplate(name)
         templateManager.addTemplate(template)
         Manager.instance.nettyServer.getClientManager().sendPacketToAllClients(PacketIOAddTemplate(template))
-        Launcher.instance.consoleSender.sendMessage("manager.command.create.template.success", "Template %NAME%", name, " was registered")
+        Launcher.instance.consoleSender.sendMessage("manager.command.create.template.success", "Template %NAME%", name, " created")
 
         //---create directories
         template.getEveryDirectory().mkdirs()

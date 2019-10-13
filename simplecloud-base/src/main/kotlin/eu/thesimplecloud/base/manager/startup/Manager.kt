@@ -48,6 +48,22 @@ class Manager : ICloudApplication {
             wrapperFileHandler.loadAll().forEach { CloudLib.instance.getWrapperManager().updateWrapper(it) }
             cloudServiceGroupFileHandler.loadAll().forEach { CloudLib.instance.getCloudServiceGroupManager().updateGroup(it) }
             templatesFileHandler.loadConfig().templates.forEach { CloudLib.instance.getTemplateManager().addTemplate(DefaultTemplate(it)) }
+
+            if (CloudLib.instance.getWrapperManager().getAllWrappers().isNotEmpty()) {
+                Launcher.instance.consoleSender.sendMessage("manager.startup.loaded.wrappers", "Loaded following wrappers:")
+                CloudLib.instance.getWrapperManager().getAllWrappers().forEach { Launcher.instance.consoleSender.sendMessage("- ${it.getName()}") }
+            }
+
+            if (CloudLib.instance.getTemplateManager().getAllTemplates().isNotEmpty()){
+                Launcher.instance.consoleSender.sendMessage("manager.startup.loaded.templates", "Loaded following templates:")
+                CloudLib.instance.getTemplateManager().getAllTemplates().forEach { Launcher.instance.consoleSender.sendMessage("- ${it.getName()}") }
+            }
+
+            if (CloudLib.instance.getCloudServiceGroupManager().getAllGroups().isNotEmpty()){
+                Launcher.instance.consoleSender.sendMessage("manager.startup.loaded.groups", "Loaded following groups:")
+                CloudLib.instance.getCloudServiceGroupManager().getAllGroups().forEach { Launcher.instance.consoleSender.sendMessage("- ${it.getName()}") }
+            }
+
         })
     }
 

@@ -1,5 +1,6 @@
 package eu.thesimplecloud.lib.wrapper.impl
 
+import eu.thesimplecloud.clientserverapi.lib.json.GsonExclude
 import eu.thesimplecloud.lib.wrapper.IWrapperInfo
 import eu.thesimplecloud.lib.wrapper.IWritableWrapperInfo
 
@@ -7,11 +8,14 @@ data class DefaultWrapperInfo(
         private val name: String,
         private val host: String,
         private var maxSimultaneouslyStartingServices: Int,
-        private var maxMemory: Int,
-        private var usedMemory: Int
+        private var maxMemory: Int
 ) : IWritableWrapperInfo {
 
+    @GsonExclude
     private var authenticated = false
+
+    @GsonExclude
+    private var usedMemory: Int = 0
 
     override fun setUsedMemory(memory: Int) {
         this.usedMemory = memory

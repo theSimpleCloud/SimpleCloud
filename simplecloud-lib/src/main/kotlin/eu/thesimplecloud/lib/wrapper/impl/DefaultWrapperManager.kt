@@ -4,7 +4,7 @@ import eu.thesimplecloud.lib.wrapper.IWrapperInfo
 import eu.thesimplecloud.lib.wrapper.IWrapperManager
 import eu.thesimplecloud.lib.wrapper.IWritableWrapperInfo
 
-class DefaultWrapperManager : IWrapperManager {
+open class DefaultWrapperManager : IWrapperManager {
 
     private val wrappers = ArrayList<IWrapperInfo>()
 

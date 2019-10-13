@@ -5,6 +5,7 @@ import eu.thesimplecloud.lib.screen.ICommandExecuteManager
 import eu.thesimplecloud.lib.service.ICloudServiceManager
 import eu.thesimplecloud.lib.servicegroup.ICloudServiceGroupManager
 import eu.thesimplecloud.lib.template.ITemplateManager
+import eu.thesimplecloud.lib.wrapper.IWrapperManager
 
 class CloudLibImpl : CloudLib() {
 
@@ -12,6 +13,7 @@ class CloudLibImpl : CloudLib() {
     private val cloudServiceManager = CloudServiceManagerImpl()
     private val commandExecuteManager = CommandExecuteManagerImpl()
     private val templateManager = TemplateManagerImpl()
+    private val wrapperManager = WrapperManagerImpl()
 
 
     override fun getCloudServiceGroupManager(): ICloudServiceGroupManager = this.cloudServiceGroupManager
@@ -21,6 +23,8 @@ class CloudLibImpl : CloudLib() {
     override fun getCommandExecuteManager(): ICommandExecuteManager = this.commandExecuteManager
 
     override fun getTemplateManager(): ITemplateManager = this.templateManager
+
+    override fun getWrapperManager(): IWrapperManager = this.wrapperManager
 
 
 }
