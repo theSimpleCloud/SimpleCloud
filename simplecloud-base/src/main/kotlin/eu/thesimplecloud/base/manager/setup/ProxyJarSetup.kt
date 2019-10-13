@@ -10,7 +10,7 @@ import java.io.File
 
 class ProxyJarSetup(val proxyFile: File) : ISetup {
 
-    @SetupQuestion(0, "manager.setup.proxy-jar.question", "Which proxy version do you want to use (Bungeecord, Waterfall, Travertine, Hexacord)")
+    @SetupQuestion(0, "manager.setup.proxy-jar.question", "Which proxy version do you want to use? (Bungeecord, Waterfall, Travertine, Hexacord)")
     fun setup(answer: String): Boolean {
         val serviceVersion = JsonData.fromObject(answer.toUpperCase()).getObjectOrNull(ServiceVersion::class.java)
         if (serviceVersion == null) {

@@ -37,6 +37,7 @@ class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
         check(CloudLib.instance.getCloudServiceManger().getCloudServicesByGroupName(cloudServiceGroup.getName()).isEmpty()) { "Can not delete CloudServiceGroup while services of this group are registered." }
         this.removeGroup(cloudServiceGroup)
         Manager.instance.nettyServer.getClientManager().sendPacketToAllClients(PacketIORemoveCloudServiceGroup(cloudServiceGroup.getName()))
+        Manager.instance.cloudServiceGroupFileHandler.delete(cloudServiceGroup)
         return Manager.instance.nettyServer.newSucceededPromise(Unit)
     }
 

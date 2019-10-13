@@ -22,7 +22,7 @@ class ServerGroupSetup : ISetup {
     private lateinit var templateName: String
 
 
-    @SetupQuestion(0, "manager.setup.service-group.question.name", "Which name should the group have")
+    @SetupQuestion(0, "manager.setup.service-group.question.name", "Which name should the group have?")
     fun nameQuestion(name: String): Boolean {
         this.name = name
         if (name.length > 16) {
@@ -33,13 +33,13 @@ class ServerGroupSetup : ISetup {
         return true
     }
 
-    @SetupQuestion(1, "manager.setup.service-group.question.template", "Which template should the group have")
+    @SetupQuestion(1, "manager.setup.service-group.question.template", "Which template should the group use?")
     fun templateQuestion(template: ITemplate) {
         this.templateName = template.getName()
         Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.template.success", "Template set.")
     }
 
-    @SetupQuestion(2, "manager.setup.service-group.question.memory", "How much memory should the server group have")
+    @SetupQuestion(2, "manager.setup.service-group.question.memory", "How much memory should the server group have?")
     fun memoryQuestion(memory: Int): Boolean {
         if (memory < 128) {
             Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.memory.too-low", "The specified amount of memory is too low.")
@@ -50,7 +50,7 @@ class ServerGroupSetup : ISetup {
         return true
     }
 
-    @SetupQuestion(3, "manager.setup.service-group.question.max-players", "How much players should be able to join the server at most.")
+    @SetupQuestion(3, "manager.setup.service-group.question.max-players", "How much players should be able to join the server at most?")
     fun maxPlayersQuestion(maxPlayers: Int): Boolean {
         if (maxPlayers < 0) {
             Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.max-players.too-low", "The specified amount of players is too low.")
@@ -62,7 +62,7 @@ class ServerGroupSetup : ISetup {
     }
 
 
-    @SetupQuestion(4, "manager.setup.service-group.question.minimum-online", "How much services should always be online (in LOBBY state)")
+    @SetupQuestion(4, "manager.setup.service-group.question.minimum-online", "How much services should always be online? (in LOBBY state)")
     fun minimumOnlineQuestion(minimumOnlineServices: Int): Boolean {
         if (minimumOnlineServices < 0) {
             Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.minimum-online.too-low", "The specified number is too low.")
@@ -73,7 +73,7 @@ class ServerGroupSetup : ISetup {
         return true
     }
 
-    @SetupQuestion(5, "manager.setup.service-group.question.maximum-online", "How much services should be online at most  (unlimited = -1)")
+    @SetupQuestion(5, "manager.setup.service-group.question.maximum-online", "How much services should be online at most? (unlimited = -1)")
     fun maximumOnlineQuestion(maximumOnlineServices: Int): Boolean {
         if (maximumOnlineServices < -1) {
             Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.maximum-online.too-low", "The specified number is too low.")
@@ -84,12 +84,12 @@ class ServerGroupSetup : ISetup {
         return true
     }
 
-    @SetupQuestion(6, "manager.setup.service-group.question.static", "Should this server group be static (yes / no)")
+    @SetupQuestion(6, "manager.setup.service-group.question.static", "Should this server group be static? (yes / no)")
     fun staticQuestion(static: Boolean) {
         this.static = static
     }
 
-    @SetupQuestion(7, "manager.setup.service-group.question.percent", "How full should a service of this server group be until a new service starts (in percent)")
+    @SetupQuestion(7, "manager.setup.service-group.question.percent", "How full should a service of this server group be until a new service starts? (in percent)")
     fun percentQuestion(percent: Int): Boolean {
         if (percent < 1 || percent > 100) {
             Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.percent.out-of-range", "The specified number is out of range.")

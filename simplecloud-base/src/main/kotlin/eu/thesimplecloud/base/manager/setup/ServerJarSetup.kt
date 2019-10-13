@@ -12,13 +12,17 @@ class ServerJarSetup(val serverJar: File) : ISetup {
 
     private var spigotType: String = ""
 
-    @SetupQuestion(0, "manager.setup.server-jar.type.question", "Which server version do you want to use (Spigot, Paper)")
+    @SetupQuestion(0, "manager.setup.server-jar.type.question", "Which server version do you want to use? (Spigot, Paper)")
     fun setup(answer: String): Boolean {
         this.spigotType = answer.toUpperCase()
-        return spigotType == "SPIGOT" || spigotType == "PAPER"
+        if (!(spigotType == "SPIGOT" || spigotType == "PAPER")) {
+            Launcher.instance.consoleSender.sendMessage("manager.setup.server-jar.type.invalid", "The specified type is invalid.")
+            return false
+        }
+        return true
     }
 
-    @SetupQuestion(1, "manager.setup.server-jar.version.question", "Which version to you want to use (1.7.10, 1.8.8, 1.9.4, 1.10.2, 1.11.2, 1.12.2, 1.13.2, 1.14.4)")
+    @SetupQuestion(1, "manager.setup.server-jar.version.question", "Which version to you want to use? (1.7.10, 1.8.8, 1.9.4, 1.10.2, 1.11.2, 1.12.2, 1.13.2, 1.14.4)")
     fun versionSetup(answer: String) : Boolean {
         val version = answer.replace(".", "_")
         val serviceVersion = JsonData.fromObject(spigotType + "_" + version).getObjectOrNull(ServiceVersion::class.java)
