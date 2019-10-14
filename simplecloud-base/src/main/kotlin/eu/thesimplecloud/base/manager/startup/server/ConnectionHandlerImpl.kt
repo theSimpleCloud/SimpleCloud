@@ -9,7 +9,7 @@ import java.net.InetSocketAddress
 class ConnectionHandlerImpl : IConnectionHandler {
 
     override fun onConnectionActive(connection: IConnection) {
-        val host = (connection.getChannel()!!.remoteAddress() as InetSocketAddress).hostString
+        val host = connection.getHost()!!
         val wrapperByHost = CloudLib.instance.getWrapperManager().getWrapperByHost(host)
         if (wrapperByHost == null) {
             Launcher.instance.consoleSender.sendMessage("manager.connection.unknown-host", "A client connected from an unknown host: %HOST%", host)

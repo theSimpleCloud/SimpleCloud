@@ -13,6 +13,7 @@ dependencies {
     implementation(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion)
     implementation project(":simplecloud-lib")
     implementation project(":simplecloud-launcher")
+    compile project(":simplecloud-client")
     implementation("com.github.ajalt:clikt:2.2.0")
     // https://mvnrepository.com/artifact/commons-io/commons-io
     implementation group: 'commons-io', name: 'commons-io', version: '2.6'

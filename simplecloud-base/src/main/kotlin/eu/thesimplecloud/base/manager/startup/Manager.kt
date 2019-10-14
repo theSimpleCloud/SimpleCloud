@@ -36,17 +36,18 @@ class Manager : ICloudApplication {
 
     init {
         instance = this
+        val launcherConfig = Launcher.instance.launcherConfigLoader.loadConfig()
+        this.communicationServer = NettyServer<ICommandExecutable>(launcherConfig.host, launcherConfig.port, ConnectionHandlerImpl(), ServerHandlerImpl())
+        this.templateServer = NettyServer<ICommandExecutable>(launcherConfig.host, launcherConfig.port + 1, ConnectionHandlerImpl(), ServerHandlerImpl())
+        this.communicationServer.addPacketsByPackage("eu.thesimplecloud.lib.packets")
+        GlobalScope.launch { communicationServer.start() }
+        GlobalScope.launch { templateServer.start() }
     }
 
     override fun onEnable() {
         CloudLibImpl()
         createDirectories()
-        val launcherConfig = Launcher.instance.launcherConfigLoader.loadConfig()
         Launcher.instance.commandManager.registerAllCommands(this, "eu.thesimplecloud.base.manager.commands")
-        this.communicationServer = NettyServer<ICommandExecutable>(launcherConfig.host, launcherConfig.port, ConnectionHandlerImpl(), ServerHandlerImpl())
-        this.templateServer = NettyServer<ICommandExecutable>(launcherConfig.host, launcherConfig.port + 1, ConnectionHandlerImpl(), ServerHandlerImpl())
-        GlobalScope.launch { communicationServer.start() }
-        GlobalScope.launch { templateServer.start() }
         MinecraftJars().checkJars()
         Launcher.instance.setupManager.onAllSetupsCompleted(Consumer {
             wrapperFileHandler.loadAll().forEach { CloudLib.instance.getWrapperManager().updateWrapper(it) }
