@@ -122,7 +122,7 @@ class CommandManager() {
             }
         }
 
-        val size = commands.map { it.path.split(" ")[0] }.toSet().size
+        val size = commands.size
         Launcher.instance.logger.success("Loaded $size command" + (if (size == 1) "" else "s"))
 
     }

@@ -1,4 +1,4 @@
-package eu.thesimplecloud.base.manager.startup
+package eu.thesimplecloud.base.manager.startup.server
 
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.handler.IConnectionHandler

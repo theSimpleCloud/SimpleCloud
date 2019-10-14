@@ -51,7 +51,7 @@ class CreateCommand : ICommandHandler {
         }
         val template = DefaultTemplate(name)
         templateManager.addTemplate(template)
-        Manager.instance.nettyServer.getClientManager().sendPacketToAllClients(PacketIOAddTemplate(template))
+        Manager.instance.communicationServer.getClientManager().sendPacketToAllClients(PacketIOAddTemplate(template))
         Launcher.instance.consoleSender.sendMessage("manager.command.create.template.success", "Template %NAME%", name, " created")
 
         //---create directories

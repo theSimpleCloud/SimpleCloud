@@ -25,7 +25,7 @@ class DeleteCommand : ICommandHandler {
             return
         }
         templateManager.removeTemplate(name)
-        Manager.instance.nettyServer.getClientManager().sendPacketToAllClients(PacketIODeleteTemplate(name))
+        Manager.instance.communicationServer.getClientManager().sendPacketToAllClients(PacketIODeleteTemplate(name))
         Launcher.instance.consoleSender.sendMessage("manager.command.delete.template.success", "Template %NAME%", name, " was deleted.")
     }
 

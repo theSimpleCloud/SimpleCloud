@@ -15,7 +15,7 @@ class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
 
 
     override fun createServiceGroup(cloudServiceGroup: ICloudServiceGroup): IConnectionPromise<ICloudServiceGroup> {
-        val promise = Manager.instance.nettyServer.newPromise<ICloudServiceGroup>()
+        val promise = Manager.instance.communicationServer.newPromise<ICloudServiceGroup>()
         if (getServiceGroup(cloudServiceGroup.getName()) == null){
             updateGroup(cloudServiceGroup)
             promise.trySuccess(cloudServiceGroup)
@@ -27,7 +27,7 @@ class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
 
     override fun updateGroup(cloudServiceGroup: ICloudServiceGroup) {
         super.updateGroup(cloudServiceGroup)
-        Manager.instance.nettyServer.getClientManager().sendPacketToAllClients(PacketIOUpdateCloudServiceGroup(cloudServiceGroup))
+        Manager.instance.communicationServer.getClientManager().sendPacketToAllClients(PacketIOUpdateCloudServiceGroup(cloudServiceGroup))
         Manager.instance.cloudServiceGroupFileHandler.save(cloudServiceGroup)
     }
 
@@ -36,9 +36,9 @@ class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
     override fun deleteServiceGroup(cloudServiceGroup: ICloudServiceGroup): IConnectionPromise<Unit> {
         check(CloudLib.instance.getCloudServiceManger().getCloudServicesByGroupName(cloudServiceGroup.getName()).isEmpty()) { "Can not delete CloudServiceGroup while services of this group are registered." }
         this.removeGroup(cloudServiceGroup)
-        Manager.instance.nettyServer.getClientManager().sendPacketToAllClients(PacketIORemoveCloudServiceGroup(cloudServiceGroup.getName()))
+        Manager.instance.communicationServer.getClientManager().sendPacketToAllClients(PacketIORemoveCloudServiceGroup(cloudServiceGroup.getName()))
         Manager.instance.cloudServiceGroupFileHandler.delete(cloudServiceGroup)
-        return Manager.instance.nettyServer.newSucceededPromise(Unit)
+        return Manager.instance.communicationServer.newSucceededPromise(Unit)
     }
 
 }

@@ -28,7 +28,7 @@ allprojects {
     }
 
     project.ext {
-        depedencyClientServerAPIVersion = '1.1.4-SNAPSHOT'
+        depedencyClientServerAPIVersion = '1.1.5-SNAPSHOT'
         kotlinVersion = '1.3.50'
     }
 }

@@ -17,6 +17,7 @@ import eu.thesimplecloud.launcher.setups.AutoIpSetup
 import eu.thesimplecloud.lib.directorypaths.DirectoryPaths
 import eu.thesimplecloud.lib.external.ICloudModule
 import eu.thesimplecloud.lib.language.LanguageManager
+import java.util.concurrent.Executors
 import java.util.function.Consumer
 import kotlin.system.exitProcess
 
@@ -48,6 +49,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) : IBootstrap 
     val setupManager = SetupManager(this)
     val languageManager: LanguageManager
     val launcherConfigLoader = LauncherConfigLoader()
+    val scheduler = Executors.newScheduledThreadPool(1)
 
     init {
         instance = this

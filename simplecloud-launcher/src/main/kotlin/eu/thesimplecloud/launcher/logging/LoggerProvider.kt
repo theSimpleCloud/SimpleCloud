@@ -13,6 +13,7 @@ import java.util.logging.Logger
 import java.util.logging.SimpleFormatter
 import java.io.PrintWriter
 import java.io.StringWriter
+import java.util.logging.Formatter
 
 
 /**
@@ -46,36 +47,42 @@ class LoggerProvider(var applicationName: String) : Logger("SimpleCloudLogger", 
         addHandler(fileHandler)
     }
 
+    @Synchronized
     fun success(msg: String) {
         super.info(msg)
         print("\r" + getColoredString(msg, LogType.SUCCESS))
         updatePrompt(true)
     }
 
+    @Synchronized
     override fun info(msg: String) {
         super.info(msg)
         print("\r" + getColoredString(msg, LogType.INFO))
         updatePrompt(true)
     }
 
+    @Synchronized
     override fun warning(msg: String) {
         super.warning(msg)
         print("\r" + getColoredString(msg, LogType.WARNING))
         updatePrompt(true)
     }
 
+    @Synchronized
     override fun severe(msg: String) {
         super.severe(msg)
         print("\r" + getColoredString(msg, LogType.ERROR))
         updatePrompt(true)
     }
 
+    @Synchronized
     fun console(msg: String) {
         super.info(msg)
         print("\r" + getColoredString(msg, LogType.CONSOLE))
         updatePrompt(true)
     }
 
+    @Synchronized
     fun empty(msg: String) {
         super.info(msg)
         print("\r" + getColoredString(msg, LogType.EMPTY))
@@ -116,6 +123,7 @@ class LoggerProvider(var applicationName: String) : Logger("SimpleCloudLogger", 
         return AnsiColorHelper.toColoredString(message)
     }
 
+    @Synchronized
     fun updatePrompt(newLine: Boolean) {
         var prompt = getColoredString("§c${applicationName}§f@§eSimpleCloud§f>", LogType.EMPTY);
         /*
@@ -132,6 +140,7 @@ class LoggerProvider(var applicationName: String) : Logger("SimpleCloudLogger", 
         print("\r$prompt ")
     }
 
+    @Synchronized
     fun exception(cause: Throwable) {
         val sw = StringWriter()
         val pw = PrintWriter(sw, true)

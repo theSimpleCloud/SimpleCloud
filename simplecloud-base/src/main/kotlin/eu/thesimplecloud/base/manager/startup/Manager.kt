@@ -4,6 +4,8 @@ import eu.thesimplecloud.base.manager.filehandler.CloudServiceGroupFileHandler
 import eu.thesimplecloud.base.manager.config.TemplatesConfigLoader
 import eu.thesimplecloud.base.manager.filehandler.WrapperFileHandler
 import eu.thesimplecloud.base.manager.impl.CloudLibImpl
+import eu.thesimplecloud.base.manager.startup.server.ConnectionHandlerImpl
+import eu.thesimplecloud.base.manager.startup.server.ServerHandlerImpl
 import eu.thesimplecloud.clientserverapi.server.INettyServer
 import eu.thesimplecloud.clientserverapi.server.NettyServer
 import eu.thesimplecloud.launcher.application.ICloudApplication
@@ -27,7 +29,9 @@ class Manager : ICloudApplication {
         lateinit var instance: Manager
     }
 
-    lateinit var nettyServer: INettyServer<ICommandExecutable>
+    lateinit var communicationServer: INettyServer<ICommandExecutable>
+        private set
+    lateinit var templateServer: INettyServer<ICommandExecutable>
         private set
 
     init {
@@ -39,10 +43,10 @@ class Manager : ICloudApplication {
         createDirectories()
         val launcherConfig = Launcher.instance.launcherConfigLoader.loadConfig()
         Launcher.instance.commandManager.registerAllCommands(this, "eu.thesimplecloud.base.manager.commands")
-        this.nettyServer = NettyServer<ICommandExecutable>(launcherConfig.host, launcherConfig.port, ConnectionHandlerImpl())
-        GlobalScope.launch {
-            nettyServer.start()
-        }
+        this.communicationServer = NettyServer<ICommandExecutable>(launcherConfig.host, launcherConfig.port, ConnectionHandlerImpl(), ServerHandlerImpl())
+        this.templateServer = NettyServer<ICommandExecutable>(launcherConfig.host, launcherConfig.port + 1, ConnectionHandlerImpl(), ServerHandlerImpl())
+        GlobalScope.launch { communicationServer.start() }
+        GlobalScope.launch { templateServer.start() }
         MinecraftJars().checkJars()
         Launcher.instance.setupManager.onAllSetupsCompleted(Consumer {
             wrapperFileHandler.loadAll().forEach { CloudLib.instance.getWrapperManager().updateWrapper(it) }
