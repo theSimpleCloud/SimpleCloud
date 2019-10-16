@@ -1,4 +1,4 @@
-package eu.thessimplecloud.client.packets
+package eu.thesimplecloud.client.packets
 
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.IPacket

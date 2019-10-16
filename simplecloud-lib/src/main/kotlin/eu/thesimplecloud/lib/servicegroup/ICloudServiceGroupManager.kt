@@ -1,6 +1,6 @@
 package eu.thesimplecloud.lib.servicegroup
 
-import eu.thesimplecloud.clientserverapi.lib.packet.connectionpromise.IConnectionPromise
+import eu.thesimplecloud.clientserverapi.lib.packet.communicationpromise.ICommunicationPromise
 import eu.thesimplecloud.lib.manager.ICacheManager
 import eu.thesimplecloud.lib.service.ICloudService
 import eu.thesimplecloud.lib.service.ServiceType
@@ -35,7 +35,7 @@ interface ICloudServiceGroupManager {
             wrapperName: String?,
             modulesToCopy: List<String> = emptyList(),
             hiddenAtProxyGroups: List<String> = emptyList()
-    ): IConnectionPromise<ICloudServerGroup> =
+    ): ICommunicationPromise<ICloudServerGroup> =
             createServiceGroup(DefaultServerGroup(
                     groupName,
                     templateName,
@@ -49,7 +49,7 @@ interface ICloudServiceGroupManager {
                     wrapperName,
                     modulesToCopy,
                     hiddenAtProxyGroups
-            )) as IConnectionPromise<ICloudServerGroup>
+            )) as ICommunicationPromise<ICloudServerGroup>
 
     /**
      * Creates a new [ICloudLobbyGroup] by the specified parameters and returns a promise that is called when the group is registered
@@ -69,7 +69,7 @@ interface ICloudServiceGroupManager {
             permission: String?,
             modulesToCopy: List<String> = emptyList(),
             hiddenAtProxyGroups: List<String> = emptyList()
-    ): IConnectionPromise<ICloudLobbyGroup> =
+    ): ICommunicationPromise<ICloudLobbyGroup> =
             createServiceGroup(DefaultLobbyGroup(
                     groupName,
                     templateName,
@@ -85,7 +85,7 @@ interface ICloudServiceGroupManager {
                     permission,
                     modulesToCopy,
                     hiddenAtProxyGroups
-            )) as IConnectionPromise<ICloudLobbyGroup>
+            )) as ICommunicationPromise<ICloudLobbyGroup>
 
     /**
      * Creates a new [ICloudProxyGroup] by the specified parameters and returns a promise that is called when the group is registered
@@ -103,7 +103,7 @@ interface ICloudServiceGroupManager {
             wrapperName: String,
             startPort: Int,
             modulesToCopy: List<String> = emptyList()
-    ): IConnectionPromise<ICloudProxyGroup> =
+    ): ICommunicationPromise<ICloudProxyGroup> =
             createServiceGroup(DefaultProxyGroup(
                     groupName,
                     templateName,
@@ -117,12 +117,12 @@ interface ICloudServiceGroupManager {
                     wrapperName,
                     startPort,
                     modulesToCopy
-            )) as IConnectionPromise<ICloudProxyGroup>
+            )) as ICommunicationPromise<ICloudProxyGroup>
 
     /**
      * Creates a service group and returns a promise that is called when the group is registered
      */
-    fun createServiceGroup(cloudServiceGroup: ICloudServiceGroup): IConnectionPromise<ICloudServiceGroup>
+    fun createServiceGroup(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<ICloudServiceGroup>
 
     /**
      * Returns a list of all registered [ICloudServiceGroup]
@@ -172,11 +172,11 @@ interface ICloudServiceGroupManager {
     /**
      * Starts a new service by the specified group
      */
-    fun startNewService(cloudServiceGroup: ICloudServiceGroup): IConnectionPromise<ICloudService>
+    fun startNewService(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<ICloudService>
 
     /**
      * Deletes the specified service group from the cloud
      */
-    fun deleteServiceGroup(cloudServiceGroup: ICloudServiceGroup): IConnectionPromise<Unit>
+    fun deleteServiceGroup(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<Unit>
 
 }

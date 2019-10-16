@@ -6,6 +6,9 @@ import eu.thesimplecloud.base.manager.filehandler.WrapperFileHandler
 import eu.thesimplecloud.base.manager.impl.CloudLibImpl
 import eu.thesimplecloud.base.manager.startup.server.ConnectionHandlerImpl
 import eu.thesimplecloud.base.manager.startup.server.ServerHandlerImpl
+import eu.thesimplecloud.clientserverapi.lib.packet.IPacket
+import eu.thesimplecloud.clientserverapi.lib.packet.packettype.BytePacket
+import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
 import eu.thesimplecloud.clientserverapi.server.INettyServer
 import eu.thesimplecloud.clientserverapi.server.NettyServer
 import eu.thesimplecloud.launcher.application.ICloudApplication
@@ -16,6 +19,7 @@ import eu.thesimplecloud.lib.screen.ICommandExecutable
 import eu.thesimplecloud.lib.template.impl.DefaultTemplate
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.reflections.Reflections
 import java.io.File
 import java.util.function.Consumer
 
@@ -29,10 +33,8 @@ class Manager : ICloudApplication {
         lateinit var instance: Manager
     }
 
-    lateinit var communicationServer: INettyServer<ICommandExecutable>
-        private set
-    lateinit var templateServer: INettyServer<ICommandExecutable>
-        private set
+    val communicationServer: INettyServer<ICommandExecutable>
+    val templateServer: INettyServer<ICommandExecutable>
 
     init {
         instance = this
@@ -40,6 +42,7 @@ class Manager : ICloudApplication {
         this.communicationServer = NettyServer<ICommandExecutable>(launcherConfig.host, launcherConfig.port, ConnectionHandlerImpl(), ServerHandlerImpl())
         this.templateServer = NettyServer<ICommandExecutable>(launcherConfig.host, launcherConfig.port + 1, ConnectionHandlerImpl(), ServerHandlerImpl())
         this.communicationServer.addPacketsByPackage("eu.thesimplecloud.lib.packets")
+        this.communicationServer.addPacketsByPackage("eu.thesimplecloud.base.manager.network.packets")
         GlobalScope.launch { communicationServer.start() }
         GlobalScope.launch { templateServer.start() }
     }

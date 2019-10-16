@@ -1,6 +1,5 @@
 package eu.thesimplecloud.lib.servicegroup.impl
 
-import eu.thesimplecloud.clientserverapi.lib.packet.connectionpromise.IConnectionPromise
 import eu.thesimplecloud.lib.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.lib.servicegroup.ICloudServiceGroupManager
 

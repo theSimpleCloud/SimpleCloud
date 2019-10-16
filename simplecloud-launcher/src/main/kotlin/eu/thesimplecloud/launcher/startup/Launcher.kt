@@ -17,6 +17,7 @@ import eu.thesimplecloud.launcher.setups.AutoIpSetup
 import eu.thesimplecloud.lib.directorypaths.DirectoryPaths
 import eu.thesimplecloud.lib.external.ICloudModule
 import eu.thesimplecloud.lib.language.LanguageManager
+import java.io.File
 import java.util.concurrent.Executors
 import java.util.function.Consumer
 import kotlin.system.exitProcess
@@ -28,7 +29,7 @@ import kotlin.system.exitProcess
  * Date: 06.09.2019
  * Time: 21:31
  */
-class Launcher(val launcherStartArguments: LauncherStartArguments) : IBootstrap {
+class Launcher(val launcherStartArguments: LauncherStartArguments) {
 
     companion object {
         lateinit var instance: Launcher
@@ -62,7 +63,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) : IBootstrap 
         this.languageManager = LanguageManager("en_EN")
     }
 
-    override fun start() {
+    fun start() {
         this.languageManager.loadFile()
         this.commandManager.registerAllCommands(launcherCloudModule, "eu.thesimplecloud.launcher.commands")
         this.consoleManager.startThread()
@@ -84,12 +85,10 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) : IBootstrap 
         ApplicationStarter().startApplication(cloudApplicationType)
     }
 
-    override fun shutdown() {
+    fun shutdown() {
         activeApplication?.onDisable()
         exitProcess(0)
     }
-
-    override fun isActive(): Boolean = true
 
 
 }

@@ -6,6 +6,7 @@ import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.ObjectPacket
 import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnectedClient
 import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnectedClientValue
+import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.client.CloudClientType
 import eu.thesimplecloud.lib.packets.service.PacketIORemoveCloudServiceGroup
@@ -14,23 +15,27 @@ import eu.thesimplecloud.lib.packets.service.PacketIOUpdateCloudServiceGroup
 import eu.thesimplecloud.lib.packets.template.PacketIOAddTemplate
 import eu.thesimplecloud.lib.packets.wrapper.PacketIOWrapperInfo
 
-class PacketInCloudClientLogin : JsonPacket() {
+class PacketInCloudClientLogin() : JsonPacket() {
 
     override suspend fun handle(connection: IConnection): IPacket? {
+        println("login received")
         val host = connection.getHost()!!
-        val cloudClientType = this.jsonData.getObjectOrNull(CloudClientType::class.java) ?: return ObjectPacket.getNewObjectPacketWithContent(false)
-        val name = this.jsonData.getString("name") ?: return ObjectPacket.getNewObjectPacketWithContent(false)
+        println(this.jsonData.getAsJsonString())
+        val cloudClientType = this.jsonData.getObject("cloudClientType", CloudClientType::class.java) ?: return ObjectPacket.getNewObjectPacketWithContent(false)
         connection as IConnectedClient<IConnectedClientValue>
         when (cloudClientType) {
             CloudClientType.SERVICE -> {
+                val name = this.jsonData.getString("name") ?: return ObjectPacket.getNewObjectPacketWithContent(false)
                 val cloudService = CloudLib.instance.getCloudServiceManger().getCloudService(name) ?: return ObjectPacket.getNewObjectPacketWithContent(false)
                 connection.setClientValue(cloudService)
                 cloudService.setAuthenticated(true)
+                Launcher.instance.consoleSender.sendMessage("manager.login.service", "Service ${cloudService.getName()} logged in.")
             }
             CloudClientType.WRAPPER -> {
                 val wrapperInfo = CloudLib.instance.getWrapperManager().getWrapperByHost(host) ?: return ObjectPacket.getNewObjectPacketWithContent(false)
                 connection.setClientValue(wrapperInfo)
                 wrapperInfo.setAuthenticated(true)
+                Launcher.instance.consoleSender.sendMessage("manager.login.wrapper", "Wrapper ${wrapperInfo.getName()} logged in.")
             }
         }
         CloudLib.instance.getWrapperManager().getAllWrappers().forEach { connection.sendQuery(PacketIOWrapperInfo(it)) }

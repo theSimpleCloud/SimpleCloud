@@ -1,7 +1,7 @@
 package eu.thesimplecloud.base.manager.impl
 
 import eu.thesimplecloud.base.manager.startup.Manager
-import eu.thesimplecloud.clientserverapi.lib.packet.connectionpromise.IConnectionPromise
+import eu.thesimplecloud.clientserverapi.lib.packet.communicationpromise.ICommunicationPromise
 import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.packets.service.PacketIORemoveCloudServiceGroup
 import eu.thesimplecloud.lib.packets.service.PacketIOUpdateCloudServiceGroup
@@ -13,10 +13,9 @@ import java.lang.IllegalArgumentException
 class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
 
 
-
-    override fun createServiceGroup(cloudServiceGroup: ICloudServiceGroup): IConnectionPromise<ICloudServiceGroup> {
+    override fun createServiceGroup(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<ICloudServiceGroup> {
         val promise = Manager.instance.communicationServer.newPromise<ICloudServiceGroup>()
-        if (getServiceGroup(cloudServiceGroup.getName()) == null){
+        if (getServiceGroup(cloudServiceGroup.getName()) == null) {
             updateGroup(cloudServiceGroup)
             promise.trySuccess(cloudServiceGroup)
         } else {
@@ -31,9 +30,9 @@ class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
         Manager.instance.cloudServiceGroupFileHandler.save(cloudServiceGroup)
     }
 
-    override fun startNewService(cloudServiceGroup: ICloudServiceGroup): IConnectionPromise<ICloudService> = TODO()
+    override fun startNewService(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<ICloudService> = TODO()
 
-    override fun deleteServiceGroup(cloudServiceGroup: ICloudServiceGroup): IConnectionPromise<Unit> {
+    override fun deleteServiceGroup(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<Unit> {
         check(CloudLib.instance.getCloudServiceManger().getCloudServicesByGroupName(cloudServiceGroup.getName()).isEmpty()) { "Can not delete CloudServiceGroup while services of this group are registered." }
         this.removeGroup(cloudServiceGroup)
         Manager.instance.communicationServer.getClientManager().sendPacketToAllClients(PacketIORemoveCloudServiceGroup(cloudServiceGroup.getName()))

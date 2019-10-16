@@ -1,6 +1,5 @@
 package eu.thesimplecloud.lib.servicegroup
-
-import eu.thesimplecloud.clientserverapi.lib.packet.connectionpromise.IConnectionPromise
+import eu.thesimplecloud.clientserverapi.lib.packet.communicationpromise.ICommunicationPromise
 import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.service.ICloudService
 import eu.thesimplecloud.lib.service.ServiceType
@@ -113,7 +112,7 @@ interface ICloudServiceGroup {
      * Starts a new service by this group
      * @return a promise which is called when the new service was registered.
      */
-    fun startNewService(): IConnectionPromise<ICloudService> = CloudLib.instance.getCloudServiceGroupManager().startNewService(this)
+    fun startNewService(): ICommunicationPromise<ICloudService> = CloudLib.instance.getCloudServiceGroupManager().startNewService(this)
 
     /**
      * Returns a list of all registered services by this group
@@ -128,6 +127,6 @@ interface ICloudServiceGroup {
     /**
      * Deletes this service group from the cloud
      */
-    fun delete(): IConnectionPromise<Unit> = CloudLib.instance.getCloudServiceGroupManager().deleteServiceGroup(this)
+    fun delete(): ICommunicationPromise<Unit> = CloudLib.instance.getCloudServiceGroupManager().deleteServiceGroup(this)
 
 }

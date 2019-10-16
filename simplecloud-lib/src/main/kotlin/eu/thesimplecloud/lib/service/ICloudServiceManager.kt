@@ -1,7 +1,5 @@
 package eu.thesimplecloud.lib.service
 
-import eu.thesimplecloud.clientserverapi.lib.packet.connectionpromise.IConnectionPromise
-
 interface ICloudServiceManager {
 
     /**

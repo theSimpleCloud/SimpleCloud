@@ -5,6 +5,7 @@ import eu.thesimplecloud.launcher.dependency.DependencyLoader
 import eu.thesimplecloud.launcher.exception.CloudModuleLoadException
 import eu.thesimplecloud.launcher.external.ExtensionLoader
 import eu.thesimplecloud.launcher.external.ResourceFinder
+import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.lib.external.ICloudModule
 import java.io.File
 import java.net.URL
@@ -17,9 +18,9 @@ class CloudModuleLoader {
         try {
             val cloudModuleFileContent = loadModuleFileContent(file, moduleFileName)
             addModuleAsDependency(file)
-            val cloudModule = this.loadModuleClass(file, cloudModuleFileContent.mainClass)
             val dependencyLoader = DependencyLoader(cloudModuleFileContent.repositories)
             dependencyLoader.installDependencies(cloudModuleFileContent.dependencies)
+            val cloudModule = this.loadModuleClass(file, cloudModuleFileContent.mainClass)
             cloudModule.onEnable()
             return cloudModule
         } catch (ex: Exception) {
