@@ -1,11 +1,10 @@
-package eu.thesimplecloud.lib.stringparser.customparser
+package eu.thesimplecloud.lib.parser.string.typeparser
 
 import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.servicegroup.grouptype.ICloudServerGroup
-import eu.thesimplecloud.lib.stringparser.ICustomTypeParser
-import kotlin.reflect.KClass
+import eu.thesimplecloud.lib.parser.string.IStringTypeParser
 
-class CloudServerGroupParser : ICustomTypeParser<ICloudServerGroup> {
+class CloudServerGroupParser : IStringTypeParser<ICloudServerGroup> {
 
     override fun allowedTypes(): List<Class<out ICloudServerGroup>> = listOf(ICloudServerGroup::class.java)
 

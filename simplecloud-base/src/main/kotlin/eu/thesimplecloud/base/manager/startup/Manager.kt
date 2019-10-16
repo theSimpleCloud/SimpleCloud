@@ -41,7 +41,7 @@ class Manager : ICloudApplication {
         val launcherConfig = Launcher.instance.launcherConfigLoader.loadConfig()
         this.communicationServer = NettyServer<ICommandExecutable>(launcherConfig.host, launcherConfig.port, ConnectionHandlerImpl(), ServerHandlerImpl())
         this.templateServer = NettyServer<ICommandExecutable>(launcherConfig.host, launcherConfig.port + 1, ConnectionHandlerImpl(), ServerHandlerImpl())
-        this.communicationServer.addPacketsByPackage("eu.thesimplecloud.lib.packets")
+        this.communicationServer.addPacketsByPackage("eu.thesimplecloud.lib.network.packets")
         this.communicationServer.addPacketsByPackage("eu.thesimplecloud.base.manager.network.packets")
         GlobalScope.launch { communicationServer.start() }
         GlobalScope.launch { templateServer.start() }

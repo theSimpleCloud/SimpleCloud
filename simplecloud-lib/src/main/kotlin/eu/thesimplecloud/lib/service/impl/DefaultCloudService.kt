@@ -4,7 +4,6 @@ import eu.thesimplecloud.clientserverapi.lib.json.GsonExclude
 import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.service.ICloudService
 import eu.thesimplecloud.lib.service.ServiceState
-import java.lang.UnsupportedOperationException
 import java.util.*
 
 class DefaultCloudService(
@@ -60,9 +59,9 @@ class DefaultCloudService(
         this.authenticated = authenticated
     }
 
-    override fun start() = CloudLib.instance.getCloudServiceManger().startServices(this)
+    override fun start() = CloudLib.instance.getCloudServiceManger().startService(this)
 
-    override fun shutdown() = CloudLib.instance.getCloudServiceManger().stopServices(this)
+    override fun shutdown() = CloudLib.instance.getCloudServiceManger().stopService(this)
 
     override fun getMaxMemory(): Int = this.maxMemory
 

@@ -45,10 +45,10 @@ interface ICloudServiceManager {
     /**
      * Starts the specified service
      */
-    fun startServices(cloudService: ICloudService): Unit = throw UnsupportedOperationException("Can not start a service here.")
+    fun startService(cloudService: ICloudService): Unit = throw UnsupportedOperationException("Can not start a service here.")
 
     /**
      * Stops the specified service
      */
-    fun stopServices(cloudService: ICloudService)
+    fun stopService(cloudService: ICloudService)
 }

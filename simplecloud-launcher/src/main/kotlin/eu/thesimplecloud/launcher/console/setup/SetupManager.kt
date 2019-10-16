@@ -5,7 +5,7 @@ import eu.thesimplecloud.launcher.console.setup.annotations.SetupCancelled
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
 import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.lib.stringparser.StringParser
+import eu.thesimplecloud.lib.parser.string.StringParser
 import org.jetbrains.annotations.NotNull
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method

@@ -25,7 +25,7 @@ class Wrapper : ICloudApplication {
         val launcherConfig = Launcher.instance.launcherConfigLoader.loadConfig()
         this.communicationClient = NettyClient(launcherConfig.host, launcherConfig.port, ConnectionHandlerImpl())
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.client.packets")
-        this.communicationClient.addPacketsByPackage("eu.thesimplecloud.lib.packets")
+        this.communicationClient.addPacketsByPackage("eu.thesimplecloud.lib.network.packets")
         GlobalScope.launch { communicationClient.start() }
         if (isStartedInManagerDirectory()) {
             Launcher.instance.consoleSender.sendMessage("wrapper.startup.template-client.not-activated", "Detected that a manager is running in this directory. Using templates in this folder.")

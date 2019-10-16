@@ -9,7 +9,7 @@ import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.exception.CommandRegistrationException
 import eu.thesimplecloud.launcher.invoker.MethodInvokeHelper
 import eu.thesimplecloud.lib.external.ICloudModule
-import eu.thesimplecloud.lib.stringparser.StringParser
+import eu.thesimplecloud.lib.parser.string.StringParser
 import eu.thesimplecloud.lib.utils.getEnumValues
 import org.reflections.Reflections
 import java.lang.NullPointerException

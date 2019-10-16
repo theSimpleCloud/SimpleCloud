@@ -9,11 +9,10 @@ import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnecte
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.client.CloudClientType
-import eu.thesimplecloud.lib.packets.service.PacketIORemoveCloudServiceGroup
-import eu.thesimplecloud.lib.packets.service.PacketIOUpdateCloudService
-import eu.thesimplecloud.lib.packets.service.PacketIOUpdateCloudServiceGroup
-import eu.thesimplecloud.lib.packets.template.PacketIOAddTemplate
-import eu.thesimplecloud.lib.packets.wrapper.PacketIOWrapperInfo
+import eu.thesimplecloud.lib.network.packets.service.PacketIOUpdateCloudService
+import eu.thesimplecloud.lib.network.packets.servicegroup.PacketIOUpdateCloudServiceGroup
+import eu.thesimplecloud.lib.network.packets.template.PacketIOAddTemplate
+import eu.thesimplecloud.lib.network.packets.wrapper.PacketIOWrapperInfo
 
 class PacketInCloudClientLogin() : JsonPacket() {
 

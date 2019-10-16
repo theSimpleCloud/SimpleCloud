@@ -7,7 +7,7 @@ import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.lib.CloudLib
-import eu.thesimplecloud.lib.packets.template.PacketIODeleteTemplate
+import eu.thesimplecloud.lib.network.packets.template.PacketIODeleteTemplate
 
 @Command("delete", true)
 class DeleteCommand : ICommandHandler {

@@ -5,6 +5,6 @@ import eu.thesimplecloud.lib.service.impl.AbstractCloudServiceManager
 
 class CloudServiceManagerImpl : AbstractCloudServiceManager() {
 
-    override fun stopServices(cloudService: ICloudService) {
+    override fun stopService(cloudService: ICloudService) {
     }
 }

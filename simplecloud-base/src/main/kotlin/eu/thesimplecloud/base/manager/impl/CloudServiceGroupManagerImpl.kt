@@ -3,12 +3,13 @@ package eu.thesimplecloud.base.manager.impl
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.clientserverapi.lib.packet.communicationpromise.ICommunicationPromise
 import eu.thesimplecloud.lib.CloudLib
-import eu.thesimplecloud.lib.packets.service.PacketIORemoveCloudServiceGroup
-import eu.thesimplecloud.lib.packets.service.PacketIOUpdateCloudServiceGroup
+import eu.thesimplecloud.lib.network.packets.servicegroup.PacketIORemoveCloudServiceGroup
+import eu.thesimplecloud.lib.network.packets.servicegroup.PacketIOUpdateCloudServiceGroup
 import eu.thesimplecloud.lib.service.ICloudService
 import eu.thesimplecloud.lib.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.lib.servicegroup.impl.AbstractCloudServiceGroupManager
 import java.lang.IllegalArgumentException
+import java.lang.IllegalStateException
 
 class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
 
@@ -33,11 +34,12 @@ class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
     override fun startNewService(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<ICloudService> = TODO()
 
     override fun deleteServiceGroup(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<Unit> {
-        check(CloudLib.instance.getCloudServiceManger().getCloudServicesByGroupName(cloudServiceGroup.getName()).isEmpty()) { "Can not delete CloudServiceGroup while services of this group are registered." }
+        if (CloudLib.instance.getCloudServiceManger().getCloudServicesByGroupName(cloudServiceGroup.getName()).isNotEmpty())
+            return Manager.instance.communicationServer.newFailedUnitPromise(IllegalStateException("Can not delete CloudServiceGroup while services of this group are registered."))
         this.removeGroup(cloudServiceGroup)
         Manager.instance.communicationServer.getClientManager().sendPacketToAllClients(PacketIORemoveCloudServiceGroup(cloudServiceGroup.getName()))
         Manager.instance.cloudServiceGroupFileHandler.delete(cloudServiceGroup)
-        return Manager.instance.communicationServer.newSucceededPromise(Unit)
+        return Manager.instance.communicationServer.newSucceededUnitPromise()
     }
 
 }

@@ -175,7 +175,8 @@ interface ICloudServiceGroupManager {
     fun startNewService(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<ICloudService>
 
     /**
-     * Deletes the specified service group from the cloud
+     * Deletes the specified service group from the cloud.
+     * The promise will be called when the operation is completed. [ICommunicationPromise.isSuccess] indicate whether the operation was successful.
      */
     fun deleteServiceGroup(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<Unit>
 

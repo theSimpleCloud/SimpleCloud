@@ -1,4 +1,4 @@
-package eu.thesimplecloud.lib.packets.service
+package eu.thesimplecloud.lib.network.packets.servicegroup
 
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.IPacket

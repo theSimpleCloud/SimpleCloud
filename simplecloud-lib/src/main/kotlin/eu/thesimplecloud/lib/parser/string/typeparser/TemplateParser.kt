@@ -1,10 +1,10 @@
-package eu.thesimplecloud.lib.stringparser.customparser
+package eu.thesimplecloud.lib.parser.string.typeparser
 
 import eu.thesimplecloud.lib.CloudLib
-import eu.thesimplecloud.lib.stringparser.ICustomTypeParser
+import eu.thesimplecloud.lib.parser.string.IStringTypeParser
 import eu.thesimplecloud.lib.template.ITemplate
 
-class TemplateParser : ICustomTypeParser<ITemplate> {
+class TemplateParser : IStringTypeParser<ITemplate> {
 
     override fun allowedTypes(): List<Class<out ITemplate>> = listOf(ITemplate::class.java)
 

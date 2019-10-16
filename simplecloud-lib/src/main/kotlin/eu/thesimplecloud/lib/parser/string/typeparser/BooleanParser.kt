@@ -1,8 +1,8 @@
-package eu.thesimplecloud.lib.stringparser.customparser
+package eu.thesimplecloud.lib.parser.string.typeparser
 
-import eu.thesimplecloud.lib.stringparser.ICustomTypeParser
+import eu.thesimplecloud.lib.parser.string.IStringTypeParser
 
-class BooleanParser : ICustomTypeParser<Boolean> {
+class BooleanParser : IStringTypeParser<Boolean> {
 
     override fun allowedTypes(): List<Class<out Boolean>> = listOf(Boolean::class.java)
 

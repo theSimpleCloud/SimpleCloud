@@ -1,39 +1,37 @@
-package eu.thesimplecloud.lib.stringparser
+package eu.thesimplecloud.lib.parser.string
 
 import eu.thesimplecloud.clientserverapi.lib.json.JsonData
-import eu.thesimplecloud.lib.service.ServiceVersion
-import eu.thesimplecloud.lib.stringparser.customparser.*
+import eu.thesimplecloud.lib.parser.ITypeFromClassParser
+import eu.thesimplecloud.lib.parser.string.typeparser.*
 import eu.thesimplecloud.lib.utils.getEnumValues
 import eu.thesimplecloud.lib.utils.enumValueOf
 import java.lang.IllegalArgumentException
 import java.util.*
 
-class StringParser {
+class StringParser : ITypeFromClassParser<String>{
 
     private val parsableTypes = listOf(String::class.java, Int::class.java, UUID::class.java)
 
     private val customTypeParsers = mutableListOf(CloudLobbyGroupParser(), CloudProxyGroupParser(), CloudServerGroupParser(), CloudServiceGroupParser(),
             CloudServiceParser(), WrapperInfoParser(), BooleanParser(), TemplateParser())
 
-    fun addCustomTypeParser(customTypeParser: ICustomTypeParser<out Any>) {
-        this.customTypeParsers.add(customTypeParser)
-    }
+    override fun supportedTypes(): Set<Class<out Any>> = customTypeParsers.map { it.allowedTypes() }.flatten().union(parsableTypes)
 
-    fun <T : Any> parserString(string: String, clazz: Class<T>): T? {
+    override fun <R : Any> parseToObject(string: String, clazz: Class<R>): R? {
         if (clazz.isEnum) {
             clazz as Class<out Enum<*>>
             val enumValues = clazz.getEnumValues()
             val indexOf = enumValues.map { it.toLowerCase() }.indexOf(string.toLowerCase())
             if (indexOf == -1)
                 return null
-            return clazz.enumValueOf(enumValues[indexOf]) as T
+            return clazz.enumValueOf(enumValues[indexOf]) as R
         }
         if (parsableTypes.contains(clazz)) {
             return JsonData.fromObject(string).getObjectOrNull(clazz)
         }
         val parser = customTypeParsers.firstOrNull { it.allowedTypes().contains(clazz) }
         parser ?: throw IllegalArgumentException("Can't parse class to ${clazz.simpleName}: No parser found.")
-        parser as ICustomTypeParser<out T>
+        parser as IStringTypeParser<out R>
         return parser.parse(string)
     }
 

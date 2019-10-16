@@ -8,7 +8,7 @@ import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.lib.CloudLib
-import eu.thesimplecloud.lib.stringparser.StringParser
+import eu.thesimplecloud.lib.parser.string.StringParser
 import eu.thesimplecloud.lib.utils.getAllFieldsFromClassAndSubClasses
 import java.lang.reflect.Field
 
