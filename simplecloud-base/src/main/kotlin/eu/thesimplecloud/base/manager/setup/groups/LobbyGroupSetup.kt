@@ -121,7 +121,6 @@ class LobbyGroupSetup : ISetup {
     @SetupFinished
     fun finished() {
         CloudLib.instance.getCloudServiceGroupManager().createLobbyGroup(name, templateName, memory, maxPlayers, minimumOnlineServices, maximumOnlineServices, true, static, percent, null, priority, permission)
-        File(CloudLib.instance.getTemplateManager().getTemplate(this.templateName)!!.getDirectory(), name).mkdirs()
         Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.finished", "Group %NAME%", name, " created.")
     }
 
