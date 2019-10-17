@@ -176,7 +176,7 @@ interface ICloudServiceGroupManager {
 
     /**
      * Deletes the specified service group from the cloud.
-     * The promise will be called when the operation is completed. [ICommunicationPromise.isSuccess] indicate whether the operation was successful.
+     * The promise will be called when the operation is completed. [ICommunicationPromise.isSuccess] indicates whether the operation was successful.
      */
     fun deleteServiceGroup(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<Unit>
 

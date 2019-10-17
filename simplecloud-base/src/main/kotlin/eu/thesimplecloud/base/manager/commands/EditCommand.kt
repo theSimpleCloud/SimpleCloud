@@ -27,7 +27,7 @@ class EditCommand : ICommandHandler {
         if (lowerCaseFieldNames.contains(parameter.toLowerCase())) {
             val field = fields[lowerCaseFieldNames.indexOf(parameter.toLowerCase())]
             field.isAccessible = true
-            val type = StringParser().parserString(value, field.type)
+            val type = StringParser().parseToObject(value, field.type)
             if (type == null) {
                 commandSender.sendMessage("manager.command.edit.group.invalid-value", "Invalid value. Expected type: %TYPE%", field.type.simpleName)
                 return
