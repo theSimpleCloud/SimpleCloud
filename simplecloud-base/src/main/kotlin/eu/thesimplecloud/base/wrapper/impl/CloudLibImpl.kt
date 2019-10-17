@@ -7,12 +7,13 @@ import eu.thesimplecloud.lib.servicegroup.ICloudServiceGroupManager
 
 class CloudLibImpl : CloudLib() {
 
-    override fun getCloudServiceGroupManager(): ICloudServiceGroupManager {
-    }
+    private val cloudServiceGroupManager = CloudServiceGroupManagerImpl()
+    private val cloudServiceManager = CloudServiceManagerImpl()
+    private val commandExecuteManager = CommandExecuteManagerImpl()
 
-    override fun getCloudServiceManger(): ICloudServiceManager {
-    }
+    override fun getCloudServiceGroupManager(): ICloudServiceGroupManager = this.cloudServiceGroupManager
 
-    override fun getCommandExecuteManager(): ICommandExecuteManager {
-    }
+    override fun getCloudServiceManger(): ICloudServiceManager = this.cloudServiceManager
+
+    override fun getCommandExecuteManager(): ICommandExecuteManager = this.commandExecuteManager
 }

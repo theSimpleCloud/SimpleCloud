@@ -1,6 +1,5 @@
 package eu.thesimplecloud.base.manager.commands
 
-import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.launcher.console.command.ICommandHandler
 import eu.thesimplecloud.launcher.console.command.ICommandSender
 import eu.thesimplecloud.launcher.console.command.annotations.Command
@@ -9,6 +8,7 @@ import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.parser.string.StringParser
+import eu.thesimplecloud.lib.template.ITemplate
 import eu.thesimplecloud.lib.utils.getAllFieldsFromClassAndSubClasses
 import java.lang.reflect.Field
 
@@ -48,6 +48,32 @@ class EditCommand : ICommandHandler {
     fun sendAllParameters(commandSender: ICommandSender, fields: List<Field>){
         commandSender.sendMessage("manager.command.edit.group.allowed-parameters", "Allowed parameters are:")
         commandSender.sendMessage(fields.joinToString { it.name })
+    }
+
+    @CommandSubPath("template <name> inheritance add <otherTemplate>", "Adds a inheritance to a template")
+    fun addInheritTemplate(commandSender: ICommandSender, @CommandArgument("name") template: ITemplate, @CommandArgument("otherTemplate") otherTemplate: ITemplate) {
+        if (template == otherTemplate){
+            commandSender.sendMessage("manager.command.edit.template.inheritance.add.both-equal", "Cannot add a template as inheritance to itself.")
+            return
+        }
+        if (template.getInheritedTemplateNames().contains(otherTemplate.getName().toLowerCase())){
+            commandSender.sendMessage("manager.command.edit.template.inheritance.add.already-added", "Template %NAME%", template.getName(), " is already inheriting from %OTHER_NAME%", otherTemplate.getName())
+            return
+        }
+        template.addInheritanceTemplate(otherTemplate)
+        CloudLib.instance.getTemplateManager().updateTemplate(template)
+        commandSender.sendMessage("manager.command.edit.template.inheritance.add.success", "Template %NAME%", template.getName(), " is now inheriting from %OTHER_NAME%", otherTemplate.getName())
+    }
+
+    @CommandSubPath("template <name> inheritance remove <otherTemplate>", "Removes a inheritance from a template")
+    fun removeInheritTemplate(commandSender: ICommandSender, @CommandArgument("name") template: ITemplate, @CommandArgument("otherTemplate") otherTemplate: ITemplate) {
+        if (!template.getInheritedTemplateNames().contains(otherTemplate.getName().toLowerCase())){
+            commandSender.sendMessage("manager.command.edit.template.inheritance.remove.not-added", "Template %NAME%", template.getName(), " is not inheriting from %OTHER_NAME%", otherTemplate.getName())
+            return
+        }
+        template.removeInheritanceTemplate(otherTemplate)
+        CloudLib.instance.getTemplateManager().updateTemplate(template)
+        commandSender.sendMessage("manager.command.edit.template.inheritance.remove.success", "Template %NAME%", template.getName(), " is no longer inheriting from %OTHER_NAME%", otherTemplate.getName())
     }
 
 }

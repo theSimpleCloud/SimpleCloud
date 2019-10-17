@@ -35,6 +35,11 @@ interface ICloudService : IAuthenticatable, IBootstrap, ICommandExecutable {
     fun getServiceType(): ServiceType = getServiceGroup().getServiceType()
 
     /**
+     * Returns the version, this service is running on
+     */
+    fun getServiceVersion(): ServiceVersion = getServiceGroup().getServiceVersion()
+
+    /**
      * Returns the name of the template that this service uses
      * e.g. Lobby
      */

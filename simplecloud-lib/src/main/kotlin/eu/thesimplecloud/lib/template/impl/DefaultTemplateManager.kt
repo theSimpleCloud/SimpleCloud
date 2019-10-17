@@ -5,17 +5,23 @@ import eu.thesimplecloud.lib.template.ITemplateManager
 
 open class DefaultTemplateManager : ITemplateManager {
 
-    private val templates = ArrayList<ITemplate>()
+    private val templates = HashSet<ITemplate>()
 
-    override fun addTemplate(template: ITemplate) {
-        this.templates.add(template)
+    override fun updateTemplate(template: ITemplate) {
+        val cachedTemplate = getTemplate(template.getName())
+        if (cachedTemplate == null){
+            this.templates.add(template)
+            return
+        }
+        cachedTemplate as DefaultTemplate
+        cachedTemplate.setInheritedTemplateNames(template.getInheritedTemplateNames())
     }
 
     override fun removeTemplate(name: String) {
         this.templates.remove(getTemplate(name))
     }
 
-    override fun getAllTemplates(): List<ITemplate> = this.templates
+    override fun getAllTemplates(): Set<ITemplate> = this.templates
 
     override fun clearCache() {
         this.templates.clear()

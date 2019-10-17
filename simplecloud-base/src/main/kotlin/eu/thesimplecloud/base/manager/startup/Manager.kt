@@ -27,7 +27,7 @@ class Manager : ICloudApplication {
 
     val cloudServiceGroupFileHandler = CloudServiceGroupFileHandler()
     val wrapperFileHandler = WrapperFileHandler()
-    val templatesFileHandler = TemplatesConfigLoader()
+    val templatesConfigLoader = TemplatesConfigLoader()
 
     companion object {
         lateinit var instance: Manager
@@ -55,7 +55,7 @@ class Manager : ICloudApplication {
         Launcher.instance.setupManager.onAllSetupsCompleted(Consumer {
             wrapperFileHandler.loadAll().forEach { CloudLib.instance.getWrapperManager().updateWrapper(it) }
             cloudServiceGroupFileHandler.loadAll().forEach { CloudLib.instance.getCloudServiceGroupManager().updateGroup(it) }
-            templatesFileHandler.loadConfig().templates.forEach { CloudLib.instance.getTemplateManager().addTemplate(DefaultTemplate(it)) }
+            templatesConfigLoader.loadConfig().templates.forEach { CloudLib.instance.getTemplateManager().updateTemplate(it) }
 
             if (CloudLib.instance.getWrapperManager().getAllWrappers().isNotEmpty()) {
                 Launcher.instance.consoleSender.sendMessage("manager.startup.loaded.wrappers", "Loaded following wrappers:")

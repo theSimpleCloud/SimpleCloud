@@ -58,7 +58,7 @@ class CommandManager() {
             val parameterValue = messageArray[indexOfParameter]
 
             val obj = try {
-                StringParser().parserString(parameterValue, parameterData.type)
+                StringParser().parseToObject(parameterValue, parameterData.type)
             } catch (e: Exception) {
                 commandSender.sendMessage("§cCan't parse parameter at index $indexOfParameter(\"$parameterValue\") to class ${parameterData.type.simpleName}")
                 return

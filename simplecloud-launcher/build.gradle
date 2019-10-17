@@ -12,6 +12,7 @@ dependencies {
     implementation group: 'org.mongodb', name: 'mongo-java-driver', version: '3.11.0'
     compile( project(":simplecloud-lib")) {
         exclude group: 'eu.thesimplecloud.clientserverapi'
+        exclude group: 'io.netty'
     }
     implementation(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion)
     // https://mvnrepository.com/artifact/com.github.ajalt/clikt

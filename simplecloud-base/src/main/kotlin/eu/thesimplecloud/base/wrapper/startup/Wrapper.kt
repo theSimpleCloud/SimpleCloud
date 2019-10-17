@@ -1,6 +1,7 @@
 package eu.thesimplecloud.base.wrapper.startup
 
 import eu.thesimplecloud.base.manager.startup.Manager
+import eu.thesimplecloud.base.wrapper.impl.CloudLibImpl
 import eu.thesimplecloud.clientserverapi.client.INettyClient
 import eu.thesimplecloud.clientserverapi.client.NettyClient
 import eu.thesimplecloud.launcher.application.ICloudApplication
@@ -22,6 +23,7 @@ class Wrapper : ICloudApplication {
 
     init {
         instance = this
+        CloudLibImpl()
         val launcherConfig = Launcher.instance.launcherConfigLoader.loadConfig()
         this.communicationClient = NettyClient(launcherConfig.host, launcherConfig.port, ConnectionHandlerImpl())
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.client.packets")

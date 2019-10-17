@@ -3,10 +3,11 @@ package eu.thesimplecloud.lib.template
 
 interface ITemplateManager {
 
+
     /**
-     * Adds the specified template
+     * Adds or updates the specified template
      */
-    fun addTemplate(template: ITemplate)
+    fun updateTemplate(template: ITemplate)
 
     /**
      * Removes the template found by the specified name
@@ -16,7 +17,7 @@ interface ITemplateManager {
     /**
      * Returns a list containing all registered templates
      */
-    fun getAllTemplates() : List<ITemplate>
+    fun getAllTemplates() : Set<ITemplate>
 
     /**
      * Returns the first template found by the specified name

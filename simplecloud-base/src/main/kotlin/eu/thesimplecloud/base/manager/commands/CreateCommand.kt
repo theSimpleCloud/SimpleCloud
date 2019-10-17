@@ -11,7 +11,7 @@ import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.lib.CloudLib
-import eu.thesimplecloud.lib.network.packets.template.PacketIOAddTemplate
+import eu.thesimplecloud.lib.network.packets.template.PacketIOUpdateTemplate
 import eu.thesimplecloud.lib.template.impl.DefaultTemplate
 
 @Command("create", true)
@@ -50,12 +50,12 @@ class CreateCommand : ICommandHandler {
             return
         }
         val template = DefaultTemplate(name)
-        templateManager.addTemplate(template)
-        Manager.instance.communicationServer.getClientManager().sendPacketToAllClients(PacketIOAddTemplate(template))
+        templateManager.updateTemplate(template)
+        Manager.instance.communicationServer.getClientManager().sendPacketToAllClients(PacketIOUpdateTemplate(template))
         Launcher.instance.consoleSender.sendMessage("manager.command.create.template.success", "Template %NAME%", name, " created")
 
         //---create directories
-        template.getEveryDirectory().mkdirs()
+        template.getDirectory().mkdirs()
     }
 
 

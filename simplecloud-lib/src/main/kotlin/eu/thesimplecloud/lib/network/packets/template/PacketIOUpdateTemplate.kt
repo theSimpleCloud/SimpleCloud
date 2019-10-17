@@ -7,14 +7,14 @@ import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.template.ITemplate
 import eu.thesimplecloud.lib.template.impl.DefaultTemplate
 
-class PacketIOAddTemplate() : ObjectPacket<ITemplate>(DefaultTemplate::class.java) {
+class PacketIOUpdateTemplate() : ObjectPacket<ITemplate>(DefaultTemplate::class.java) {
 
     constructor(template: ITemplate) : this() {
         this.value = template
     }
 
     override suspend fun handle(connection: IConnection): IPacket? {
-        this.value?.let { CloudLib.instance.getTemplateManager().addTemplate(it) }
+        this.value?.let { CloudLib.instance.getTemplateManager().updateTemplate(it) }
         return null
     }
 }

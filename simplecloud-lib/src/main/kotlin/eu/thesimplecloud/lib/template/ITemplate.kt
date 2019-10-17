@@ -1,5 +1,5 @@
 package eu.thesimplecloud.lib.template
-import eu.thesimplecloud.lib.config.IConfigLoader
+import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.directorypaths.DirectoryPaths
 import java.io.File
 
@@ -16,8 +16,22 @@ interface ITemplate {
     fun getDirectory(): File = File(DirectoryPaths.paths.templatesPath + getName() + "/")
 
     /**
-     * Returns the every directory of this template.
+     * Returns the names of all templates this group inherits from.
      */
-    fun getEveryDirectory(): File = File(DirectoryPaths.paths.templatesPath + getName() + "/EVERY/")
+    fun getInheritedTemplateNames(): Set<String>
 
+    /**
+     * Adds a template as inherited
+     */
+    fun addInheritanceTemplate(template: ITemplate)
+
+    /**
+     * Removes a template from the list of inherited templates
+     */
+    fun removeInheritanceTemplate(template: ITemplate)
+
+    /**
+     * Returns all templates this group inherits from.
+     */
+    fun inheritedTemplates(): List<ITemplate> = getInheritedTemplateNames().mapNotNull { CloudLib.instance.getTemplateManager().getTemplate(it) }
 }

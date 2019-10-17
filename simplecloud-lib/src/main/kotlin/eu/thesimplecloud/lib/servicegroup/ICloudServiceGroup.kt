@@ -3,6 +3,7 @@ import eu.thesimplecloud.clientserverapi.lib.packet.communicationpromise.ICommun
 import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.service.ICloudService
 import eu.thesimplecloud.lib.service.ServiceType
+import eu.thesimplecloud.lib.service.ServiceVersion
 
 interface ICloudServiceGroup {
 
@@ -27,6 +28,11 @@ interface ICloudServiceGroup {
      * Returns the type of this service group
      */
     fun getServiceType(): ServiceType
+
+    /**
+     * Returns the version, services of this group are running on
+     */
+    fun getServiceVersion(): ServiceVersion
 
     /**
      * Returns the maximum amount of RAM for the services of this service group in MB
@@ -97,16 +103,6 @@ interface ICloudServiceGroup {
      * Returns the wrapper where all service of this group should run and null if there is no specified wrapper.
      */
     fun getWrapperName(): String?
-
-    /**
-     * Returns a list of module names that should be copied in the plugins folder of a service of this service group before it starts.
-     */
-    fun getModuleNamesToCopy(): List<String>
-
-    /**
-     * Sets the list of module names that should be copied in the plugins folder of a service of this service group before it starts.
-     */
-    fun setModuleNamesToCopy(list: List<String>)
 
     /**
      * Starts a new service by this group

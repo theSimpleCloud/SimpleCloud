@@ -67,7 +67,7 @@ class SetupManager(val launcher: Launcher) {
 
     fun onResponse(response: String) {
         val currentQuestion = this.currentQuestion ?: return
-        val parsedValue = StringParser().parserString(response, currentQuestion.prameter.type)
+        val parsedValue = StringParser().parseToObject(response, currentQuestion.prameter.type)
         val invokeResponse = try {
             currentQuestion.method.invoke(this.currentSetup!!.source, parsedValue)
         } catch (e: Exception) {
