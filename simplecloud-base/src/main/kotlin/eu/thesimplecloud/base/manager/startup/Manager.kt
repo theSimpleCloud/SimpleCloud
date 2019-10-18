@@ -51,7 +51,6 @@ class Manager : ICloudApplication {
         CloudLibImpl()
         createDirectories()
         Launcher.instance.commandManager.registerAllCommands(this, "eu.thesimplecloud.base.manager.commands")
-        MinecraftJars().checkJars()
         Launcher.instance.setupManager.onAllSetupsCompleted(Consumer {
             wrapperFileHandler.loadAll().forEach { CloudLib.instance.getWrapperManager().updateWrapper(it) }
             cloudServiceGroupFileHandler.loadAll().forEach { CloudLib.instance.getCloudServiceGroupManager().updateGroup(it) }
@@ -88,8 +87,8 @@ class Manager : ICloudApplication {
                 File(DirectoryPaths.paths.modulesPath),
                 File(DirectoryPaths.paths.templatesPath),
                 File(DirectoryPaths.paths.templatesPath + "EVERY"),
-                File(DirectoryPaths.paths.templatesPath + "SERVER_EVERY"),
-                File(DirectoryPaths.paths.templatesPath + "PROXY_EVERY")
+                File(DirectoryPaths.paths.templatesPath + "EVERY_SERVER"),
+                File(DirectoryPaths.paths.templatesPath + "EVERY_PROXY")
         )) {
             file.mkdirs()
         }

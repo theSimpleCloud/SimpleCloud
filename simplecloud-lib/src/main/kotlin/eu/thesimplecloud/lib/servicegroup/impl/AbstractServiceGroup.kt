@@ -2,6 +2,7 @@ package eu.thesimplecloud.lib.servicegroup.impl
 
 import eu.thesimplecloud.lib.service.ICloudService
 import eu.thesimplecloud.lib.service.ServiceType
+import eu.thesimplecloud.lib.service.ServiceVersion
 import eu.thesimplecloud.lib.servicegroup.ICloudServiceGroup
 
 abstract class AbstractServiceGroup(
@@ -15,7 +16,7 @@ abstract class AbstractServiceGroup(
         private val static: Boolean,
         private var percentToStartNewService: Int,
         private val wrapperName: String?,
-        private var moduleNamesToCopy: List<String> = emptyList()
+        private val serviceVersion: ServiceVersion
 ) : ICloudServiceGroup {
 
     override fun getName(): String = this.name
@@ -66,10 +67,6 @@ abstract class AbstractServiceGroup(
 
     override fun getWrapperName(): String? = this.wrapperName
 
-    override fun getModuleNamesToCopy(): List<String> = this.moduleNamesToCopy
-
-    override fun setModuleNamesToCopy(list: List<String>) {
-        this.moduleNamesToCopy = list
-    }
+    override fun getServiceVersion(): ServiceVersion = this.serviceVersion
 
 }

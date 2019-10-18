@@ -56,7 +56,7 @@ class EditCommand : ICommandHandler {
             commandSender.sendMessage("manager.command.edit.template.inheritance.add.both-equal", "Cannot add a template as inheritance to itself.")
             return
         }
-        if (template.getInheritedTemplateNames().contains(otherTemplate.getName().toLowerCase())){
+        if (template.getInheritedTemplateNames().contains(otherTemplate.getName())){
             commandSender.sendMessage("manager.command.edit.template.inheritance.add.already-added", "Template %NAME%", template.getName(), " is already inheriting from %OTHER_NAME%", otherTemplate.getName())
             return
         }
@@ -67,13 +67,36 @@ class EditCommand : ICommandHandler {
 
     @CommandSubPath("template <name> inheritance remove <otherTemplate>", "Removes a inheritance from a template")
     fun removeInheritTemplate(commandSender: ICommandSender, @CommandArgument("name") template: ITemplate, @CommandArgument("otherTemplate") otherTemplate: ITemplate) {
-        if (!template.getInheritedTemplateNames().contains(otherTemplate.getName().toLowerCase())){
+        if (!template.getInheritedTemplateNames().contains(otherTemplate.getName())){
             commandSender.sendMessage("manager.command.edit.template.inheritance.remove.not-added", "Template %NAME%", template.getName(), " is not inheriting from %OTHER_NAME%", otherTemplate.getName())
             return
         }
         template.removeInheritanceTemplate(otherTemplate)
         CloudLib.instance.getTemplateManager().updateTemplate(template)
         commandSender.sendMessage("manager.command.edit.template.inheritance.remove.success", "Template %NAME%", template.getName(), " is no longer inheriting from %OTHER_NAME%", otherTemplate.getName())
+    }
+
+
+    @CommandSubPath("template <name> module add <module>", "Adds a module to a template")
+    fun addModuleNameToCopy(commandSender: ICommandSender, @CommandArgument("name") template: ITemplate, @CommandArgument("module") module: String) {
+        if (template.getModuleNamesToCopy().map { it.toLowerCase() }.contains(module)){
+            commandSender.sendMessage("manager.command.edit.template.modules.add.already-added", "Module %MODULE%", module, " is already added to template %TEMPLATE%", template.getName())
+            return
+        }
+        template.addModuleNameToCopy(module)
+        CloudLib.instance.getTemplateManager().updateTemplate(template)
+        commandSender.sendMessage("manager.command.edit.template.modules.add.success", "Added module %MODULE%", module, " to template %TEMPLATE%", template.getName())
+    }
+
+    @CommandSubPath("template <name> module remove <module>", "Removes a module to a template")
+    fun removeModuleNameToCopy(commandSender: ICommandSender, @CommandArgument("name") template: ITemplate, @CommandArgument("module") module: String) {
+        if (!template.getModuleNamesToCopy().map { it.toLowerCase() }.contains(module)){
+            commandSender.sendMessage("manager.command.edit.template.modules.add.not-added", "Module %MODULE%", module, " was not added to template %TEMPLATE%", template.getName())
+            return
+        }
+        template.removeModuleNameToCopy(module)
+        CloudLib.instance.getTemplateManager().updateTemplate(template)
+        commandSender.sendMessage("manager.command.edit.template.inheritance.remove.success", "Module %MODULE%", module, " was removed from template %TEMPLATE%", template.getName())
     }
 
 }

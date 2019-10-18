@@ -122,6 +122,7 @@ interface ICloudServiceGroup {
 
     /**
      * Deletes this service group from the cloud
+     * Deletes this service group from the cloud
      */
     fun delete(): ICommunicationPromise<Unit> = CloudLib.instance.getCloudServiceGroupManager().deleteServiceGroup(this)
 

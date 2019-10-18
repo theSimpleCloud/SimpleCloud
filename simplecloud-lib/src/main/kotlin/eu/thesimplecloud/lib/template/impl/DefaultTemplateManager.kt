@@ -15,6 +15,7 @@ open class DefaultTemplateManager : ITemplateManager {
         }
         cachedTemplate as DefaultTemplate
         cachedTemplate.setInheritedTemplateNames(template.getInheritedTemplateNames())
+        cachedTemplate.setModuleNamesToCopy(template.getModuleNamesToCopy())
     }
 
     override fun removeTemplate(name: String) {

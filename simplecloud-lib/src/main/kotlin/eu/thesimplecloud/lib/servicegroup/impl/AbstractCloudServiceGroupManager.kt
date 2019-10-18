@@ -18,7 +18,6 @@ abstract class AbstractCloudServiceGroupManager : ICloudServiceGroupManager {
         cashedGroup.setMaxPlayers(cloudServiceGroup.getMaxPlayers())
         cashedGroup.setMaximumOnlineServiceCount(cloudServiceGroup.getMaximumOnlineServiceCount())
         cashedGroup.setMinimumOnlineServiceCount(cloudServiceGroup.getMinimumOnlineServiceCount())
-        cashedGroup.setModuleNamesToCopy(cloudServiceGroup.getModuleNamesToCopy())
         cashedGroup.setPercentToStartNewService(cloudServiceGroup.getPercentToStartNewService())
         cashedGroup.setTemplateName(cloudServiceGroup.getTemplateName())
     }

@@ -1,5 +1,6 @@
 package eu.thesimplecloud.lib.servicegroup.impl
 
+import eu.thesimplecloud.lib.service.ServiceVersion
 import eu.thesimplecloud.lib.servicegroup.grouptype.ICloudServerGroup
 
 open class DefaultServerGroup(
@@ -13,7 +14,7 @@ open class DefaultServerGroup(
         static: Boolean,
         percentToStartNewService: Int,
         wrapperName: String?,
-        moduleNamesToCopy: List<String> = emptyList(),
+        serviceVersion: ServiceVersion,
         private val hiddenAtProxyGroups: List<String> = emptyList()
 ) : AbstractServiceGroup(
         name,
@@ -26,7 +27,7 @@ open class DefaultServerGroup(
         static,
         percentToStartNewService,
         wrapperName,
-        moduleNamesToCopy
+        serviceVersion
 ), ICloudServerGroup {
 
     override fun getHiddenAtProxyGroups(): List<String> = this.hiddenAtProxyGroups

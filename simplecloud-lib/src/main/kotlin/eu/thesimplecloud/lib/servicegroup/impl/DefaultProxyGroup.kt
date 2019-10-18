@@ -1,5 +1,6 @@
 package eu.thesimplecloud.lib.servicegroup.impl
 
+import eu.thesimplecloud.lib.service.ServiceVersion
 import eu.thesimplecloud.lib.servicegroup.grouptype.ICloudProxyGroup
 
 class DefaultProxyGroup(
@@ -14,7 +15,7 @@ class DefaultProxyGroup(
         percentToStartNewService: Int,
         wrapperName: String,
         private var startPort: Int,
-        moduleNamesToCopy: List<String> = emptyList()
+        serviceVersion: ServiceVersion
 ) : AbstractServiceGroup(
         name,
         templateName,
@@ -26,7 +27,7 @@ class DefaultProxyGroup(
         static,
         percentToStartNewService,
         wrapperName,
-        moduleNamesToCopy
+        serviceVersion
 ), ICloudProxyGroup {
 
     override fun getStartPort(): Int = this.startPort

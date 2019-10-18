@@ -4,6 +4,7 @@ import eu.thesimplecloud.clientserverapi.lib.packet.communicationpromise.ICommun
 import eu.thesimplecloud.lib.manager.ICacheManager
 import eu.thesimplecloud.lib.service.ICloudService
 import eu.thesimplecloud.lib.service.ServiceType
+import eu.thesimplecloud.lib.service.ServiceVersion
 import eu.thesimplecloud.lib.servicegroup.grouptype.ICloudLobbyGroup
 import eu.thesimplecloud.lib.servicegroup.grouptype.ICloudProxyGroup
 import eu.thesimplecloud.lib.servicegroup.grouptype.ICloudServerGroup
@@ -33,7 +34,7 @@ interface ICloudServiceGroupManager {
             static: Boolean,
             percentToStartNewService: Int,
             wrapperName: String?,
-            modulesToCopy: List<String> = emptyList(),
+            serviceVersion: ServiceVersion,
             hiddenAtProxyGroups: List<String> = emptyList()
     ): ICommunicationPromise<ICloudServerGroup> =
             createServiceGroup(DefaultServerGroup(
@@ -47,7 +48,7 @@ interface ICloudServiceGroupManager {
                     static,
                     percentToStartNewService,
                     wrapperName,
-                    modulesToCopy,
+                    serviceVersion,
                     hiddenAtProxyGroups
             )) as ICommunicationPromise<ICloudServerGroup>
 
@@ -67,7 +68,7 @@ interface ICloudServiceGroupManager {
             wrapperName: String?,
             priority: Int,
             permission: String?,
-            modulesToCopy: List<String> = emptyList(),
+            serviceVersion: ServiceVersion,
             hiddenAtProxyGroups: List<String> = emptyList()
     ): ICommunicationPromise<ICloudLobbyGroup> =
             createServiceGroup(DefaultLobbyGroup(
@@ -83,7 +84,7 @@ interface ICloudServiceGroupManager {
                     wrapperName,
                     priority,
                     permission,
-                    modulesToCopy,
+                    serviceVersion,
                     hiddenAtProxyGroups
             )) as ICommunicationPromise<ICloudLobbyGroup>
 
@@ -102,7 +103,7 @@ interface ICloudServiceGroupManager {
             percentToStartNewService: Int,
             wrapperName: String,
             startPort: Int,
-            modulesToCopy: List<String> = emptyList()
+            serviceVersion: ServiceVersion
     ): ICommunicationPromise<ICloudProxyGroup> =
             createServiceGroup(DefaultProxyGroup(
                     groupName,
@@ -116,7 +117,7 @@ interface ICloudServiceGroupManager {
                     percentToStartNewService,
                     wrapperName,
                     startPort,
-                    modulesToCopy
+                    serviceVersion
             )) as ICommunicationPromise<ICloudProxyGroup>
 
     /**

@@ -34,4 +34,19 @@ interface ITemplate {
      * Returns all templates this group inherits from.
      */
     fun inheritedTemplates(): List<ITemplate> = getInheritedTemplateNames().mapNotNull { CloudLib.instance.getTemplateManager().getTemplate(it) }
+
+    /**
+     * Adds the specified name to the list of all module names, this template shall copy in the plugins directory of a service.
+     */
+    fun addModuleNameToCopy(name: String)
+
+    /**
+     * Removes the specified name from the list of all module names, this template shall copy in the plugins directory of a service.
+     */
+    fun removeModuleNameToCopy(name: String)
+
+    /**
+     * Returns a list of names of all modules, this template shall copy in the plugins directory of a service.
+     */
+    fun getModuleNamesToCopy(): Set<String>
 }

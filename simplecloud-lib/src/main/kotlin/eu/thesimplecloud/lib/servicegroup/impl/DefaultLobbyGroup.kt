@@ -1,5 +1,6 @@
 package eu.thesimplecloud.lib.servicegroup.impl
 
+import eu.thesimplecloud.lib.service.ServiceVersion
 import eu.thesimplecloud.lib.servicegroup.grouptype.ICloudLobbyGroup
 
 class DefaultLobbyGroup(
@@ -15,7 +16,7 @@ class DefaultLobbyGroup(
         wrapperName: String?,
         private var priority: Int,
         private var permission: String?,
-        moduleNamesToCopy: List<String> = emptyList(),
+        serviceVersion: ServiceVersion,
         hiddenAtProxyGroups: List<String> = emptyList()
 ) : DefaultServerGroup(
         name,
@@ -28,7 +29,7 @@ class DefaultLobbyGroup(
         static,
         percentToStartNewService,
         wrapperName,
-        moduleNamesToCopy,
+        serviceVersion,
         hiddenAtProxyGroups
 ), ICloudLobbyGroup {
 
