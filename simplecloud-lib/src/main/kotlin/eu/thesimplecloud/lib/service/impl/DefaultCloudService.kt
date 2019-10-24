@@ -59,8 +59,6 @@ class DefaultCloudService(
         this.authenticated = authenticated
     }
 
-    override fun start() = CloudLib.instance.getCloudServiceManger().startService(this)
-
     override fun shutdown() = CloudLib.instance.getCloudServiceManger().stopService(this)
 
     override fun getMaxMemory(): Int = this.maxMemory

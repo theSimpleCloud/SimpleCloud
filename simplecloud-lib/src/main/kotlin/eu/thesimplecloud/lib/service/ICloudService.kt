@@ -148,4 +148,6 @@ interface ICloudService : IAuthenticatable, IBootstrap, ICommandExecutable {
 
     override fun isActive(): Boolean = getState() != ServiceState.PREPARED && getState() != ServiceState.CLOSED
 
+    override fun start() = CloudLib.instance.getCloudServiceManger().startService(this)
+
 }

@@ -1,4 +1,4 @@
-package eu.thesimplecloud.base.wrapper.process
+package eu.thesimplecloud.base.wrapper.process.filehandler
 
 import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.directorypaths.DirectoryPaths

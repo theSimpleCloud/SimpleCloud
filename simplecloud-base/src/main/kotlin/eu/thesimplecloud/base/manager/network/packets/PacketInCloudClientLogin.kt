@@ -20,6 +20,10 @@ class PacketInCloudClientLogin() : JsonPacket() {
         val host = connection.getHost()!!
         val cloudClientType = this.jsonData.getObject("cloudClientType", CloudClientType::class.java) ?: return ObjectPacket.getNewObjectPacketWithContent(false)
         connection as IConnectedClient<IConnectedClientValue>
+        CloudLib.instance.getWrapperManager().getAllWrappers().forEach { connection.sendQuery(PacketIOWrapperInfo(it)) }
+        CloudLib.instance.getTemplateManager().getAllTemplates().forEach { connection.sendQuery(PacketIOUpdateTemplate(it)) }
+        CloudLib.instance.getCloudServiceGroupManager().getAllGroups().forEach { connection.sendQuery(PacketIOUpdateCloudServiceGroup(it)) }
+        CloudLib.instance.getCloudServiceManger().getAllCloudServices().forEach { connection.sendQuery(PacketIOUpdateCloudService(it)) }
         when (cloudClientType) {
             CloudClientType.SERVICE -> {
                 val name = this.jsonData.getString("name") ?: return ObjectPacket.getNewObjectPacketWithContent(false)
@@ -32,13 +36,11 @@ class PacketInCloudClientLogin() : JsonPacket() {
                 val wrapperInfo = CloudLib.instance.getWrapperManager().getWrapperByHost(host) ?: return ObjectPacket.getNewObjectPacketWithContent(false)
                 connection.setClientValue(wrapperInfo)
                 wrapperInfo.setAuthenticated(true)
+                connection.sendQuery(PacketOutSetWrapperName(wrapperInfo.getName()))
                 Launcher.instance.consoleSender.sendMessage("manager.login.wrapper", "Wrapper ${wrapperInfo.getName()} logged in.")
             }
         }
-        CloudLib.instance.getWrapperManager().getAllWrappers().forEach { connection.sendQuery(PacketIOWrapperInfo(it)) }
-        CloudLib.instance.getTemplateManager().getAllTemplates().forEach { connection.sendQuery(PacketIOUpdateTemplate(it)) }
-        CloudLib.instance.getCloudServiceGroupManager().getAllGroups().forEach { connection.sendQuery(PacketIOUpdateCloudServiceGroup(it)) }
-        CloudLib.instance.getCloudServiceManger().getAllCloudServices().forEach { connection.sendQuery(PacketIOUpdateCloudService(it)) }
+
         return ObjectPacket.getNewObjectPacketWithContent(true)
     }
 }

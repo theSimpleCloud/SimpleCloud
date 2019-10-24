@@ -2,15 +2,21 @@ package eu.thesimplecloud.base.wrapper.startup
 
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.base.wrapper.impl.CloudLibImpl
+import eu.thesimplecloud.base.wrapper.process.CloudServiceProcessManager
+import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.ServiceConfiguratorManager
 import eu.thesimplecloud.clientserverapi.client.INettyClient
 import eu.thesimplecloud.clientserverapi.client.NettyClient
 import eu.thesimplecloud.launcher.application.ICloudApplication
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.lib.client.CloudClientType
 import eu.thesimplecloud.client.packets.PacketOutCloudClientLogin
+import eu.thesimplecloud.lib.CloudLib
+import eu.thesimplecloud.lib.network.packets.wrapper.PacketIOWrapperInfo
+import eu.thesimplecloud.lib.wrapper.IWrapperInfo
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
+import java.lang.IllegalStateException
 
 class Wrapper : ICloudApplication {
 
@@ -18,6 +24,9 @@ class Wrapper : ICloudApplication {
         lateinit var instance: Wrapper
     }
 
+    lateinit var thisWrapperName: String
+    val serviceConfigurationManager = ServiceConfiguratorManager()
+    val cloudServiceProcessManager = CloudServiceProcessManager()
     val communicationClient: INettyClient
     val templateClient: INettyClient?
 
@@ -27,6 +36,7 @@ class Wrapper : ICloudApplication {
         val launcherConfig = Launcher.instance.launcherConfigLoader.loadConfig()
         this.communicationClient = NettyClient(launcherConfig.host, launcherConfig.port, ConnectionHandlerImpl())
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.client.packets")
+        this.communicationClient.addPacketsByPackage("eu.thesimplecloud.base.wrapper.network.packets")
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.lib.network.packets")
         GlobalScope.launch { communicationClient.start() }
         if (isStartedInManagerDirectory()) {
@@ -39,7 +49,27 @@ class Wrapper : ICloudApplication {
             Launcher.instance.consoleSender.sendMessage("wrapper.startup.template-client.using", "Using an extra client to receive / send templates.")
         }
         this.communicationClient.sendQuery(PacketOutCloudClientLogin(CloudClientType.WRAPPER))
+
+        //shutdown hook
+        Runtime.getRuntime().addShutdownHook(Thread {
+            val wrapperInfo = getThisWrapper()
+            wrapperInfo.setAuthenticated(false)
+            communicationClient.sendQuery(PacketIOWrapperInfo(wrapperInfo))
+            this.cloudServiceProcessManager.stopAllServices()
+            while (this.cloudServiceProcessManager.getAllProcesses().isNotEmpty()) {
+                try {
+                    Thread.sleep(200)
+                } catch (e: InterruptedException) {
+                    e.printStackTrace()
+                }
+
+            }
+            this.communicationClient.shutdown()
+            this.templateClient?.shutdown()
+        })
     }
+
+    private fun getThisWrapper(): IWrapperInfo = CloudLib.instance.getWrapperManager().getWrapperByName(this.thisWrapperName) ?: throw IllegalStateException("Unable to find self wrapper.")
 
     override fun onEnable() {
     }
