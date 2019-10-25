@@ -15,6 +15,7 @@ open class DefaultServerGroup(
         percentToStartNewService: Int,
         wrapperName: String?,
         serviceVersion: ServiceVersion,
+        startPriority: Int,
         private val hiddenAtProxyGroups: List<String> = emptyList()
 ) : AbstractServiceGroup(
         name,
@@ -27,7 +28,8 @@ open class DefaultServerGroup(
         static,
         percentToStartNewService,
         wrapperName,
-        serviceVersion
+        serviceVersion,
+        startPriority
 ), ICloudServerGroup {
 
     override fun getHiddenAtProxyGroups(): List<String> = this.hiddenAtProxyGroups

@@ -105,6 +105,11 @@ interface ICloudServiceGroup {
     fun getWrapperName(): String?
 
     /**
+     * Returns the start priority services of this group will have. Services with higher priority will start first.
+     */
+    fun getStartPriority(): Int
+
+    /**
      * Starts a new service by this group
      * @return a promise which is called when the new service was registered.
      */

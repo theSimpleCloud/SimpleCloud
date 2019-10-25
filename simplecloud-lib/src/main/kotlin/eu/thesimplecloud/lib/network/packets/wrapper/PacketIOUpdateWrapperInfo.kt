@@ -7,7 +7,7 @@ import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.wrapper.IWrapperInfo
 import eu.thesimplecloud.lib.wrapper.impl.DefaultWrapperInfo
 
-class PacketIOWrapperInfo() : ObjectPacket<IWrapperInfo>(DefaultWrapperInfo::class.java) {
+class PacketIOUpdateWrapperInfo() : ObjectPacket<IWrapperInfo>(DefaultWrapperInfo::class.java) {
 
     constructor(wrapperInfo: IWrapperInfo) : this() {
         this.value = wrapperInfo

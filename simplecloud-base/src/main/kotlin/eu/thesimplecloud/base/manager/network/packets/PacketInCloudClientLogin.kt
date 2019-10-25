@@ -1,5 +1,6 @@
 package eu.thesimplecloud.base.manager.network.packets
 
+import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.IPacket
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
@@ -12,7 +13,7 @@ import eu.thesimplecloud.lib.client.CloudClientType
 import eu.thesimplecloud.lib.network.packets.service.PacketIOUpdateCloudService
 import eu.thesimplecloud.lib.network.packets.servicegroup.PacketIOUpdateCloudServiceGroup
 import eu.thesimplecloud.lib.network.packets.template.PacketIOUpdateTemplate
-import eu.thesimplecloud.lib.network.packets.wrapper.PacketIOWrapperInfo
+import eu.thesimplecloud.lib.network.packets.wrapper.PacketIOUpdateWrapperInfo
 
 class PacketInCloudClientLogin() : JsonPacket() {
 
@@ -20,7 +21,7 @@ class PacketInCloudClientLogin() : JsonPacket() {
         val host = connection.getHost()!!
         val cloudClientType = this.jsonData.getObject("cloudClientType", CloudClientType::class.java) ?: return ObjectPacket.getNewObjectPacketWithContent(false)
         connection as IConnectedClient<IConnectedClientValue>
-        CloudLib.instance.getWrapperManager().getAllWrappers().forEach { connection.sendQuery(PacketIOWrapperInfo(it)) }
+        CloudLib.instance.getWrapperManager().getAllWrappers().forEach { connection.sendQuery(PacketIOUpdateWrapperInfo(it)) }
         CloudLib.instance.getTemplateManager().getAllTemplates().forEach { connection.sendQuery(PacketIOUpdateTemplate(it)) }
         CloudLib.instance.getCloudServiceGroupManager().getAllGroups().forEach { connection.sendQuery(PacketIOUpdateCloudServiceGroup(it)) }
         CloudLib.instance.getCloudServiceManger().getAllCloudServices().forEach { connection.sendQuery(PacketIOUpdateCloudService(it)) }
@@ -35,8 +36,9 @@ class PacketInCloudClientLogin() : JsonPacket() {
             CloudClientType.WRAPPER -> {
                 val wrapperInfo = CloudLib.instance.getWrapperManager().getWrapperByHost(host) ?: return ObjectPacket.getNewObjectPacketWithContent(false)
                 connection.setClientValue(wrapperInfo)
-                wrapperInfo.setAuthenticated(true)
                 connection.sendQuery(PacketOutSetWrapperName(wrapperInfo.getName()))
+                Manager.instance.communicationServer.getClientManager().sendPacketToAllClients(PacketIOUpdateWrapperInfo())
+                wrapperInfo.setAuthenticated(true)
                 Launcher.instance.consoleSender.sendMessage("manager.login.wrapper", "Wrapper ${wrapperInfo.getName()} logged in.")
             }
         }

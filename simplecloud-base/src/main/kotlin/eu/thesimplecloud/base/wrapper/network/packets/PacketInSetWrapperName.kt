@@ -10,6 +10,7 @@ class PacketInSetWrapperName : ObjectPacket<String>(String::class.java) {
     override suspend fun handle(connection: IConnection): IPacket? {
         val name = this.value ?: return null
         Wrapper.instance.thisWrapperName = name
+        Wrapper.instance.startProcessQueue()
         return null
     }
 }

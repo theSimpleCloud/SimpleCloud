@@ -1,7 +1,7 @@
 package eu.thesimplecloud.base.manager.impl
 
 import eu.thesimplecloud.base.manager.startup.Manager
-import eu.thesimplecloud.lib.network.packets.service.PacketIOStartService
+import eu.thesimplecloud.lib.network.packets.service.PacketIOWrapperStartService
 import eu.thesimplecloud.lib.service.ICloudService
 import eu.thesimplecloud.lib.service.ServiceState
 import eu.thesimplecloud.lib.service.impl.AbstractCloudServiceManager
@@ -17,6 +17,6 @@ class CloudServiceManagerImpl : AbstractCloudServiceManager() {
         val wrapper = cloudService.getWrapper()
         val wrapperClient = Manager.instance.communicationServer.getClientManager().getClientByClientValue(wrapper)
         check(wrapperClient != null) { "Can not find client of wrapper to start service ${cloudService.getName()} on." }
-        wrapperClient.sendQuery(PacketIOStartService(cloudService.getName()))
+        wrapperClient.sendQuery(PacketIOWrapperStartService(cloudService.getName()))
     }
 }

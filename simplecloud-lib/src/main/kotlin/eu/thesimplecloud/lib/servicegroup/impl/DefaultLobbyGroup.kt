@@ -17,6 +17,7 @@ class DefaultLobbyGroup(
         private var priority: Int,
         private var permission: String?,
         serviceVersion: ServiceVersion,
+        startPriority: Int,
         hiddenAtProxyGroups: List<String> = emptyList()
 ) : DefaultServerGroup(
         name,
@@ -30,6 +31,7 @@ class DefaultLobbyGroup(
         percentToStartNewService,
         wrapperName,
         serviceVersion,
+        startPriority,
         hiddenAtProxyGroups
 ), ICloudLobbyGroup {
 

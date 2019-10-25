@@ -140,7 +140,7 @@ class ProxyGroupSetup : ISetup {
 
     @SetupFinished
     fun finished() {
-        CloudLib.instance.getCloudServiceGroupManager().createProxyGroup(name, templateName, memory, maxPlayers, minimumOnlineServices, maximumOnlineServices, true, static, percent, wrapper.getName(), startPort, serviceVersion)
+        CloudLib.instance.getCloudServiceGroupManager().createProxyGroup(name, templateName, memory, maxPlayers, minimumOnlineServices, maximumOnlineServices, true, static, percent, wrapper.getName(), startPort, serviceVersion, 0)
         Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.finished", "Group %NAME%", name, " created.")
     }
 

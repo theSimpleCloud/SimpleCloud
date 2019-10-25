@@ -16,7 +16,8 @@ abstract class AbstractServiceGroup(
         private val static: Boolean,
         private var percentToStartNewService: Int,
         private val wrapperName: String?,
-        private val serviceVersion: ServiceVersion
+        private val serviceVersion: ServiceVersion,
+        private val startPriority: Int
 ) : ICloudServiceGroup {
 
     override fun getName(): String = this.name
@@ -68,5 +69,7 @@ abstract class AbstractServiceGroup(
     override fun getWrapperName(): String? = this.wrapperName
 
     override fun getServiceVersion(): ServiceVersion = this.serviceVersion
+
+    override fun getStartPriority(): Int = this.startPriority
 
 }

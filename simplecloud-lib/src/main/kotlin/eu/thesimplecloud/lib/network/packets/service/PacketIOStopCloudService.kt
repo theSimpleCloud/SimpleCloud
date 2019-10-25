@@ -15,7 +15,7 @@ class PacketIOStopCloudService() : ObjectPacket<String>(String::class.java) {
         val value = this.value ?: return null
         val cloudServiceManger = CloudLib.instance.getCloudServiceManger()
         val cloudService = cloudServiceManger.getCloudService(value) ?: return null
-        cloudServiceManger.startService(cloudService)
+        cloudServiceManger.stopService(cloudService)
         return null
     }
 }

@@ -27,14 +27,21 @@ abstract class AbstractCloudServiceManager : ICloudServiceManager {
         cashedService.setLastUpdate(System.currentTimeMillis())
 
         CloudLib.instance.getEventManager().call(CloudServiceUpdatedEvent(cashedService))
-        if (nowStarting) CloudLib.instance.getEventManager().call(CloudServiceStartingEvent(cashedService))
-        if (nowOnline) CloudLib.instance.getEventManager().call(CloudServiceStartedEvent(cashedService))
+        if (nowStarting) {
+            CloudLib.instance.getEventManager().call(CloudServiceStartingEvent(cashedService))
+            cashedService.startingPromise().trySuccess(Unit)
+        }
+        if (nowOnline) {
+            CloudLib.instance.getEventManager().call(CloudServiceStartedEvent(cashedService))
+            cashedService.startedPromise().trySuccess(Unit)
+        }
     }
 
     override fun removeCloudService(name: String) {
         getCloudService(name)?.let {
             this.services.remove(it)
             CloudLib.instance.getEventManager().call(CloudServiceUnregisteredEvent(it))
+            it.closedPromise().trySuccess(Unit)
         }
     }
 

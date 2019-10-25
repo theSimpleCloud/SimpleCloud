@@ -35,6 +35,7 @@ interface ICloudServiceGroupManager {
             percentToStartNewService: Int,
             wrapperName: String?,
             serviceVersion: ServiceVersion,
+            startPriority: Int,
             hiddenAtProxyGroups: List<String> = emptyList()
     ): ICommunicationPromise<ICloudServerGroup> =
             createServiceGroup(DefaultServerGroup(
@@ -49,6 +50,7 @@ interface ICloudServiceGroupManager {
                     percentToStartNewService,
                     wrapperName,
                     serviceVersion,
+                    startPriority,
                     hiddenAtProxyGroups
             )) as ICommunicationPromise<ICloudServerGroup>
 
@@ -69,6 +71,7 @@ interface ICloudServiceGroupManager {
             priority: Int,
             permission: String?,
             serviceVersion: ServiceVersion,
+            startPriority: Int,
             hiddenAtProxyGroups: List<String> = emptyList()
     ): ICommunicationPromise<ICloudLobbyGroup> =
             createServiceGroup(DefaultLobbyGroup(
@@ -85,6 +88,7 @@ interface ICloudServiceGroupManager {
                     priority,
                     permission,
                     serviceVersion,
+                    startPriority,
                     hiddenAtProxyGroups
             )) as ICommunicationPromise<ICloudLobbyGroup>
 
@@ -103,7 +107,8 @@ interface ICloudServiceGroupManager {
             percentToStartNewService: Int,
             wrapperName: String,
             startPort: Int,
-            serviceVersion: ServiceVersion
+            serviceVersion: ServiceVersion,
+            startPriority: Int
     ): ICommunicationPromise<ICloudProxyGroup> =
             createServiceGroup(DefaultProxyGroup(
                     groupName,
@@ -117,7 +122,8 @@ interface ICloudServiceGroupManager {
                     percentToStartNewService,
                     wrapperName,
                     startPort,
-                    serviceVersion
+                    serviceVersion,
+                    startPriority
             )) as ICommunicationPromise<ICloudProxyGroup>
 
     /**

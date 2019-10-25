@@ -1,6 +1,7 @@
 package eu.thesimplecloud.lib.service
 
 import eu.thesimplecloud.clientserverapi.lib.bootstrap.IBootstrap
+import eu.thesimplecloud.clientserverapi.lib.packet.communicationpromise.ICommunicationPromise
 import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.screen.ICommandExecutable
 import eu.thesimplecloud.lib.servicegroup.ICloudServiceGroup
@@ -9,6 +10,7 @@ import eu.thesimplecloud.lib.utils.IAuthenticatable
 import eu.thesimplecloud.lib.wrapper.IWrapperInfo
 import java.lang.IllegalStateException
 import java.util.*
+import java.util.function.Consumer
 
 interface ICloudService : IAuthenticatable, IBootstrap, ICommandExecutable {
 
@@ -144,7 +146,26 @@ interface ICloudService : IAuthenticatable, IBootstrap, ICommandExecutable {
      */
     fun setMOTD(motd: String)
 
+    /**
+     * Returns weather this service joinable for players
+     */
     fun isJoinable() = getState() == ServiceState.LOBBY || getState() == ServiceState.INGAME
+
+    /**
+     * Returns the promise that will be called once the service is starting.
+     */
+    fun startingPromise(): ICommunicationPromise<Unit>
+
+    /**
+     * Returns the promise that will be called once the service is closed.
+     */
+    fun closedPromise(): ICommunicationPromise<Unit>
+
+    /**
+     * Returns the promise that will be called once the service is started. (joinable)
+     */
+    fun startedPromise(): ICommunicationPromise<Unit>
+
 
     override fun isActive(): Boolean = getState() != ServiceState.PREPARED && getState() != ServiceState.CLOSED
 

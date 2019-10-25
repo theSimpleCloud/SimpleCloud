@@ -1,8 +1,8 @@
 package eu.thesimplecloud.base.wrapper.startup
 
-import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.base.wrapper.impl.CloudLibImpl
 import eu.thesimplecloud.base.wrapper.process.CloudServiceProcessManager
+import eu.thesimplecloud.base.wrapper.process.queue.CloudServiceProcessQueue
 import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.ServiceConfiguratorManager
 import eu.thesimplecloud.clientserverapi.client.INettyClient
 import eu.thesimplecloud.clientserverapi.client.NettyClient
@@ -11,7 +11,7 @@ import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.lib.client.CloudClientType
 import eu.thesimplecloud.client.packets.PacketOutCloudClientLogin
 import eu.thesimplecloud.lib.CloudLib
-import eu.thesimplecloud.lib.network.packets.wrapper.PacketIOWrapperInfo
+import eu.thesimplecloud.lib.network.packets.wrapper.PacketIOUpdateWrapperInfo
 import eu.thesimplecloud.lib.wrapper.IWrapperInfo
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -25,6 +25,7 @@ class Wrapper : ICloudApplication {
     }
 
     lateinit var thisWrapperName: String
+    var processQueue: CloudServiceProcessQueue? = null
     val serviceConfigurationManager = ServiceConfiguratorManager()
     val cloudServiceProcessManager = CloudServiceProcessManager()
     val communicationClient: INettyClient
@@ -53,8 +54,9 @@ class Wrapper : ICloudApplication {
         //shutdown hook
         Runtime.getRuntime().addShutdownHook(Thread {
             val wrapperInfo = getThisWrapper()
+            //set authenticated to false to prevent service starting
             wrapperInfo.setAuthenticated(false)
-            communicationClient.sendQuery(PacketIOWrapperInfo(wrapperInfo))
+            communicationClient.sendQuery(PacketIOUpdateWrapperInfo(wrapperInfo))
             this.cloudServiceProcessManager.stopAllServices()
             while (this.cloudServiceProcessManager.getAllProcesses().isNotEmpty()) {
                 try {
@@ -78,4 +80,10 @@ class Wrapper : ICloudApplication {
     }
 
     fun isStartedInManagerDirectory(): Boolean = File("storage/wrappers/").exists()
+
+    fun startProcessQueue() {
+        check(processQueue == null) { "Cannot start process queue when it is already running" }
+        this.processQueue = CloudServiceProcessQueue(getThisWrapper().getMaxSimultaneouslyStartingServices())
+        this.processQueue?.startThread()
+    }
 }

@@ -1,9 +1,12 @@
 package eu.thesimplecloud.lib.service.impl
 
 import eu.thesimplecloud.clientserverapi.lib.json.GsonExclude
+import eu.thesimplecloud.clientserverapi.lib.packet.communicationpromise.CommunicationPromise
+import eu.thesimplecloud.clientserverapi.lib.packet.communicationpromise.ICommunicationPromise
 import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.service.ICloudService
 import eu.thesimplecloud.lib.service.ServiceState
+import io.netty.util.concurrent.GlobalEventExecutor
 import java.util.*
 
 class DefaultCloudService(
@@ -16,6 +19,10 @@ class DefaultCloudService(
         private val maxMemory: Int,
         private var motd: String
 ) : ICloudService {
+
+    private val startingPromise = CommunicationPromise<Unit>(GlobalEventExecutor.INSTANCE)
+    private val startedPromise = CommunicationPromise<Unit>(GlobalEventExecutor.INSTANCE)
+    private val closedPromise = CommunicationPromise<Unit>(GlobalEventExecutor.INSTANCE)
 
     private var serviceState = ServiceState.PREPARED
     private var onlinePlayers = 0
@@ -68,5 +75,11 @@ class DefaultCloudService(
     override fun setLastUpdate(timeStamp: Long) {
         this.lastUpdate = timeStamp
     }
+
+    override fun startingPromise(): ICommunicationPromise<Unit> = this.startingPromise
+
+    override fun startedPromise(): ICommunicationPromise<Unit> = this.startedPromise
+
+    override fun closedPromise(): ICommunicationPromise<Unit> = this.closedPromise
 
 }
