@@ -4,6 +4,7 @@ import eu.thesimplecloud.base.manager.filehandler.CloudServiceGroupFileHandler
 import eu.thesimplecloud.base.manager.config.TemplatesConfigLoader
 import eu.thesimplecloud.base.manager.filehandler.WrapperFileHandler
 import eu.thesimplecloud.base.manager.impl.CloudLibImpl
+import eu.thesimplecloud.base.manager.service.ServiceHandler
 import eu.thesimplecloud.base.manager.startup.server.ConnectionHandlerImpl
 import eu.thesimplecloud.base.manager.startup.server.ServerHandlerImpl
 import eu.thesimplecloud.clientserverapi.lib.packet.IPacket
@@ -28,6 +29,7 @@ class Manager : ICloudApplication {
     val cloudServiceGroupFileHandler = CloudServiceGroupFileHandler()
     val wrapperFileHandler = WrapperFileHandler()
     val templatesConfigLoader = TemplatesConfigLoader()
+    val serviceHandler: ServiceHandler = ServiceHandler()
 
     companion object {
         lateinit var instance: Manager
@@ -38,17 +40,18 @@ class Manager : ICloudApplication {
 
     init {
         instance = this
+        CloudLibImpl()
         val launcherConfig = Launcher.instance.launcherConfigLoader.loadConfig()
         this.communicationServer = NettyServer<ICommandExecutable>(launcherConfig.host, launcherConfig.port, ConnectionHandlerImpl(), ServerHandlerImpl())
         this.templateServer = NettyServer<ICommandExecutable>(launcherConfig.host, launcherConfig.port + 1, ConnectionHandlerImpl(), ServerHandlerImpl())
         this.communicationServer.addPacketsByPackage("eu.thesimplecloud.lib.network.packets")
         this.communicationServer.addPacketsByPackage("eu.thesimplecloud.base.manager.network.packets")
+        this.serviceHandler.startThread()
         GlobalScope.launch { communicationServer.start() }
         GlobalScope.launch { templateServer.start() }
     }
 
     override fun onEnable() {
-        CloudLibImpl()
         createDirectories()
         Launcher.instance.commandManager.registerAllCommands(this, "eu.thesimplecloud.base.manager.commands")
         Launcher.instance.setupManager.onAllSetupsCompleted(Consumer {

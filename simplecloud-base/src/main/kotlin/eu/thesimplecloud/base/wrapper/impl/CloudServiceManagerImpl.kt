@@ -5,6 +5,7 @@ import eu.thesimplecloud.base.wrapper.startup.Wrapper
 import eu.thesimplecloud.lib.network.packets.service.PacketIOStopCloudService
 import eu.thesimplecloud.lib.service.ICloudService
 import eu.thesimplecloud.lib.service.impl.AbstractCloudServiceManager
+import java.lang.IllegalStateException
 
 class CloudServiceManagerImpl : AbstractCloudServiceManager() {
 
@@ -13,9 +14,9 @@ class CloudServiceManagerImpl : AbstractCloudServiceManager() {
     }
 
     override fun startService(cloudService: ICloudService) {
-        val cloudServiceProcess = CloudServiceProcess(cloudService)
-        Wrapper.instance.cloudServiceProcessManager.registerServiceProcess(cloudServiceProcess)
-        cloudServiceProcess.start()
+        val processQueue = Wrapper.instance.processQueue
+        checkNotNull(processQueue) { "Process Queue was null while trying to add a service to the queue." }
+        processQueue.addToQueue(cloudService)
     }
 
 }

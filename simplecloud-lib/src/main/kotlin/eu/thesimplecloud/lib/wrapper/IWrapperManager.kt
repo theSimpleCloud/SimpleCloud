@@ -28,6 +28,14 @@ interface IWrapperManager {
      */
     fun getWrapperByHost(host: String): IWrapperInfo? = getAllWrappers().firstOrNull { it.getHost().equals(host, true) }
 
+    /**
+     * Returns the [IWrapperInfo] found by the specified host
+     */
+    fun getWrapperByUnusedMemory(memory: Int): IWrapperInfo? {
+        val wrappers = getAllWrappers().filter { it.isAuthenticated() }.filter { it.hasEnoughMemory(memory) }
+        return wrappers.minBy { it.getUsedMemory().toDouble() / it.getMaxMemory() }
+    }
+
 
 
 }

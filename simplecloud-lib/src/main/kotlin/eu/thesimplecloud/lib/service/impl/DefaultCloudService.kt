@@ -14,7 +14,7 @@ class DefaultCloudService(
         private val serviceNumber: Int,
         private val uniqueId: UUID,
         private val templateName: String,
-        private val wrapperName: String,
+        private var wrapperName: String,
         private val port: Int,
         private val maxMemory: Int,
         private var motd: String
@@ -38,9 +38,13 @@ class DefaultCloudService(
 
     override fun getTemplateName(): String = this.templateName
 
+    override fun getPort(): Int = this.port
+
     override fun getWrapperName(): String = this.wrapperName
 
-    override fun getPort(): Int = this.port
+    fun setWrapperName(wrapperName: String) {
+        this.wrapperName = wrapperName
+    }
 
     override fun getState(): ServiceState = this.serviceState
 
