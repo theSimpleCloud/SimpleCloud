@@ -17,7 +17,7 @@ interface IServiceConfigurator {
      * Copies a file outside this jar
      */
     fun copyFileOutOfJar(fileDestination: File, filePathToCopy: String) {
-        val inputUrl = javaClass.getResource(filePathToCopy)
+        val stream = this.javaClass.getResourceAsStream(filePathToCopy)
         val parent = fileDestination.parentFile
         parent?.mkdirs()
         if (File(filePathToCopy).exists()) {
@@ -25,7 +25,7 @@ interface IServiceConfigurator {
         }
         try {
             fileDestination.createNewFile()
-            FileUtils.copyURLToFile(inputUrl, fileDestination)
+            FileUtils.copyInputStreamToFile(stream, fileDestination)
         } catch (e1: IOException) {
             e1.printStackTrace()
         }

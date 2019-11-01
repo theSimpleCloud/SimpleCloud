@@ -71,7 +71,7 @@ interface ICloudService : IAuthenticatable, IBootstrap, ICommandExecutable {
     /**
      * Returns the wrapper this service is running on
      */
-    fun getWrapper(): IWrapperInfo = CloudLib.instance.getWrapperManager().getWrapperByName(getWrapperName()) ?: throw IllegalStateException("Can't find the wrapper where the service ${getName()} is running on.")
+    fun getWrapper(): IWrapperInfo = CloudLib.instance.getWrapperManager().getWrapperByName(getWrapperName()) ?: throw IllegalStateException("Can't find the wrapper where the service ${getName()} is running on. Wrapper-Name: ${getWrapperName()}")
 
     /**
      * Returns the host of this service
@@ -170,5 +170,7 @@ interface ICloudService : IAuthenticatable, IBootstrap, ICommandExecutable {
     override fun isActive(): Boolean = getState() != ServiceState.PREPARED && getState() != ServiceState.CLOSED
 
     override fun start() = CloudLib.instance.getCloudServiceManger().startService(this)
+
+    override fun shutdown() = CloudLib.instance.getCloudServiceManger().stopService(this)
 
 }

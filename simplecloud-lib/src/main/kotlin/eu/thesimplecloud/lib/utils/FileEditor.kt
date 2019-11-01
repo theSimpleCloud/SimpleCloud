@@ -2,6 +2,11 @@ package eu.thesimplecloud.lib.utils
 
 import java.io.*
 import java.util.ArrayList
+import jdk.nashorn.internal.runtime.ScriptingFunctions.readLine
+import java.io.FileReader
+import java.io.BufferedReader
+import java.nio.charset.Charset
+
 
 class FileEditor(private val file: File) {
 
@@ -20,7 +25,7 @@ class FileEditor(private val file: File) {
 
         }
         lines = ArrayList()
-        readFile(file.absolutePath)
+        readFile(file)
     }
 
     operator fun get(name: String): String? {
@@ -69,8 +74,8 @@ class FileEditor(private val file: File) {
         writer.close()
     }
 
-    private fun readFile(file: String) {
-        this.lines = ArrayList(file.reader().readLines())
+    private fun readFile(file: File) {
+        this.lines = ArrayList(file.readLines(Charset.defaultCharset()))
     }
 
     fun replaceLine(line: String, replace: String) {

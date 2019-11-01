@@ -36,9 +36,9 @@ class PacketInCloudClientLogin() : JsonPacket() {
             CloudClientType.WRAPPER -> {
                 val wrapperInfo = CloudLib.instance.getWrapperManager().getWrapperByHost(host) ?: return ObjectPacket.getNewObjectPacketWithContent(false)
                 connection.setClientValue(wrapperInfo)
-                connection.sendQuery(PacketOutSetWrapperName(wrapperInfo.getName()))
                 wrapperInfo.setAuthenticated(true)
                 Manager.instance.communicationServer.getClientManager().sendPacketToAllClients(PacketIOUpdateWrapperInfo())
+                connection.sendQuery(PacketOutSetWrapperName(wrapperInfo.getName()))
                 Launcher.instance.consoleSender.sendMessage("manager.login.wrapper", "Wrapper ${wrapperInfo.getName()} logged in.")
             }
         }

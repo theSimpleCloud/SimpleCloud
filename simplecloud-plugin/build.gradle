@@ -1,0 +1,35 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm'
+}
+
+repositories {
+    maven {
+        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+    }
+    maven {
+        url = 'https://oss.sonatype.org/content/repositories/snapshots'
+    }
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion)
+    implementation group: 'io.netty', name: 'netty-all', version: '4.1.1.Final'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    compile project(":simplecloud-lib")
+    compile( project(":simplecloud-client")) {
+        exclude group: 'org.jetbrains.kotlin'
+        exclude group: 'eu.thesimplecloud.clientserverapi'
+        exclude module: 'simplecloud-lib'
+    }
+    implementation 'org.spigotmc:spigot:1.14.4-R0.1-SNAPSHOT' // The full Spigot server with no shadowing. Requires mavenLocal.
+    implementation 'net.md-5:bungeecord-api:1.12-SNAPSHOT' // The full Spigot server with no shadowing. Requires mavenLocal.
+}
+
+jar {
+    // This line of code recursively collects and copies all of a project's files
+    // and adds them to the JAR itself. One can extend this task, to skip certain
+    // files or particular types at will
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}

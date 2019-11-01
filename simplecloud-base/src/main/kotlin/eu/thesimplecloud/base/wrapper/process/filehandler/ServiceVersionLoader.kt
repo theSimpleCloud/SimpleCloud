@@ -9,7 +9,8 @@ class ServiceVersionLoader {
 
     fun loadVersionFile(serviceVersion: ServiceVersion): File {
         val file = File(DirectoryPaths.paths.minecraftJarsPath + serviceVersion.name + ".jar")
-        Downloader().userAgentDownload(serviceVersion.downloadLink, file.absolutePath)
+        if (!file.exists())
+            Downloader().userAgentDownload(serviceVersion.downloadLink, file.absolutePath)
         return file
     }
 

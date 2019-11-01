@@ -4,6 +4,7 @@ import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.IPacket
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.ObjectPacket
 import eu.thesimplecloud.lib.CloudLib
+import java.lang.IllegalStateException
 
 class PacketIOWrapperStartService() : ObjectPacket<String>(String::class.java) {
 
@@ -13,7 +14,9 @@ class PacketIOWrapperStartService() : ObjectPacket<String>(String::class.java) {
 
     override suspend fun handle(connection: IConnection): IPacket? {
         val name = this.value ?: return null
-        CloudLib.instance.getCloudServiceManger().getCloudService(name)?.start()
+        val cloudService = CloudLib.instance.getCloudServiceManger().getCloudService(name)
+        cloudService ?: throw IllegalStateException("Service to start was null. Name: $name")
+        cloudService.start()
         return null
     }
 }

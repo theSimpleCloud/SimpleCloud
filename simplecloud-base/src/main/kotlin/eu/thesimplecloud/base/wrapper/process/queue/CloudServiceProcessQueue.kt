@@ -2,9 +2,12 @@ package eu.thesimplecloud.base.wrapper.process.queue
 
 import eu.thesimplecloud.base.wrapper.process.CloudServiceProcess
 import eu.thesimplecloud.base.wrapper.process.ICloudServiceProcess
+import eu.thesimplecloud.base.wrapper.startup.Wrapper
 import eu.thesimplecloud.launcher.startup.Launcher
+import eu.thesimplecloud.lib.network.packets.wrapper.PacketIOUpdateWrapperInfo
 import eu.thesimplecloud.lib.service.ICloudService
 import eu.thesimplecloud.lib.service.ServiceState
+import eu.thesimplecloud.lib.wrapper.IWritableWrapperInfo
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.ArrayList
@@ -18,7 +21,10 @@ class CloudServiceProcessQueue(val maxSimultaneouslyStartingServices: Int) {
 
     fun addToQueue(cloudService: ICloudService) {
         Launcher.instance.consoleSender.sendMessage("wrapper.service.queued", "Service %NAME%", cloudService.getName(), " is now queued.")
-        this.queue.add(CloudServiceProcess(cloudService))
+        val cloudServiceProcess = CloudServiceProcess(cloudService)
+        this.queue.add(cloudServiceProcess)
+        Wrapper.instance.cloudServiceProcessManager.registerServiceProcess(cloudServiceProcess)
+        Wrapper.instance.updateUsedMemory()
     }
 
 

@@ -1,5 +1,8 @@
 package eu.thesimplecloud.base.wrapper.process.filehandler
 
+import eu.thesimplecloud.base.wrapper.startup.Wrapper
+import eu.thesimplecloud.clientserverapi.client.NettyClient
+import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.directorypaths.DirectoryPaths
 import eu.thesimplecloud.lib.service.ICloudService
@@ -14,15 +17,25 @@ class TemplateCopier : ITemplateCopier {
         val everyDir = File(DirectoryPaths.paths.templatesPath + "EVERY")
         val everyTypeDir = if (cloudService.getServiceType() == ServiceType.PROXY) File(DirectoryPaths.paths.templatesPath + "EVERY_PROXY") else File(DirectoryPaths.paths.templatesPath + "EVERY_SERVER")
         val templateDirectories = getDirectoriesOfTemplateAndSubTemplates(template)
-        val serviceTmpDir = if (cloudService.isStatic()) File(DirectoryPaths.paths.staticPath +  cloudService.getName()) else File(DirectoryPaths.paths.tempPath +  cloudService.getName())
+        val serviceTmpDir = if (cloudService.isStatic()) File(DirectoryPaths.paths.staticPath + cloudService.getName()) else File(DirectoryPaths.paths.tempPath + cloudService.getName())
         FileUtils.copyDirectory(everyDir, serviceTmpDir)
         FileUtils.copyDirectory(everyTypeDir, serviceTmpDir)
         templateDirectories.forEach { FileUtils.copyDirectory(it, serviceTmpDir) }
+        generateServiceFile(cloudService, serviceTmpDir)
+    }
+
+    private fun generateServiceFile(cloudService: ICloudService, serviceTmpDir: File) {
+        val communicationClient = Wrapper.instance.communicationClient
+        communicationClient as NettyClient
+        JsonData().append("managerHost", communicationClient.getHost())
+                .append("managerPort", communicationClient.port)
+                .append("serviceName", cloudService.getName())
+                .saveAsFile(File(serviceTmpDir, "SIMPLE-CLOUD.json"))
     }
 
     fun getDirectoriesOfTemplateAndSubTemplates(template: ITemplate): Set<File> {
         val set = HashSet<File>()
-        for (templateName in template.getInheritedTemplateNames()){
+        for (templateName in template.getInheritedTemplateNames()) {
             val subTemplate = CloudLib.instance.getTemplateManager().getTemplate(templateName)
             subTemplate?.let { set.addAll(getDirectoriesOfTemplateAndSubTemplates(it)) }
         }

@@ -25,6 +25,8 @@ abstract class AbstractCloudServiceManager : ICloudServiceManager {
         cashedService.setState(cloudService.getState())
         cashedService.setAuthenticated(cloudService.isAuthenticated())
         cashedService.setLastUpdate(System.currentTimeMillis())
+        cashedService as DefaultCloudService
+        cashedService.setWrapperName(cloudService.getWrapperName())
 
         CloudLib.instance.getEventManager().call(CloudServiceUpdatedEvent(cashedService))
         if (nowStarting) {

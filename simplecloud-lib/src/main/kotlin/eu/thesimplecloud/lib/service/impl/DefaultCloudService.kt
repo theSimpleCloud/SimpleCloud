@@ -15,14 +15,14 @@ class DefaultCloudService(
         private val uniqueId: UUID,
         private val templateName: String,
         private var wrapperName: String,
-        private val port: Int,
+        private var port: Int,
         private val maxMemory: Int,
         private var motd: String
 ) : ICloudService {
 
-    private val startingPromise = CommunicationPromise<Unit>(GlobalEventExecutor.INSTANCE)
-    private val startedPromise = CommunicationPromise<Unit>(GlobalEventExecutor.INSTANCE)
-    private val closedPromise = CommunicationPromise<Unit>(GlobalEventExecutor.INSTANCE)
+    private val startingPromise = CommunicationPromise<Unit>()
+    private val startedPromise = CommunicationPromise<Unit>()
+    private val closedPromise = CommunicationPromise<Unit>()
 
     private var serviceState = ServiceState.PREPARED
     private var onlinePlayers = 0
@@ -39,6 +39,10 @@ class DefaultCloudService(
     override fun getTemplateName(): String = this.templateName
 
     override fun getPort(): Int = this.port
+
+    fun setPort(port: Int) {
+        this.port = port
+    }
 
     override fun getWrapperName(): String = this.wrapperName
 
@@ -69,8 +73,6 @@ class DefaultCloudService(
     override fun setAuthenticated(authenticated: Boolean) {
         this.authenticated = authenticated
     }
-
-    override fun shutdown() = CloudLib.instance.getCloudServiceManger().stopService(this)
 
     override fun getMaxMemory(): Int = this.maxMemory
 

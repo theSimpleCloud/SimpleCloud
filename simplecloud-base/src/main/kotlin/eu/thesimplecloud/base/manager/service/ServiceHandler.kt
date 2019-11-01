@@ -3,6 +3,7 @@ package eu.thesimplecloud.base.manager.service
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.lib.CloudLib
+import eu.thesimplecloud.lib.network.packets.service.PacketIOUpdateCloudService
 import eu.thesimplecloud.lib.network.packets.service.PacketIOWrapperStartService
 import eu.thesimplecloud.lib.service.ICloudService
 import eu.thesimplecloud.lib.service.ServiceState
@@ -22,7 +23,8 @@ class ServiceHandler : IServiceHandler {
         require(count >= 1) { "Count must be positive." }
         val list = ArrayList<ICloudService>()
         for (i in 0 until count) {
-            val service = DefaultCloudService(cloudServiceGroup.getName(), getNumberForNewService(cloudServiceGroup), UUID.randomUUID(), cloudServiceGroup.getTemplateName(), "", -1, cloudServiceGroup.getMaxMemory(), "Cloud service")
+            val service = DefaultCloudService(cloudServiceGroup.getName(), getNumberForNewService(cloudServiceGroup), UUID.randomUUID(), cloudServiceGroup.getTemplateName(), cloudServiceGroup.getWrapperName()
+                    ?: "", -1, cloudServiceGroup.getMaxMemory(), "Cloud service")
             CloudLib.instance.getCloudServiceManger().updateCloudService(service)
             list.add(service)
             addServiceToQueue(service)
@@ -45,7 +47,7 @@ class ServiceHandler : IServiceHandler {
         return number
     }
 
-    fun startMinServices(){
+    fun startMinServices() {
         for (serviceGroup in CloudLib.instance.getCloudServiceGroupManager().getAllGroups()) {
             val allServices = serviceGroup.getAllServices()
             val inLobbyServices = allServices.filter { it.getState() != ServiceState.INGAME && it.getState() != ServiceState.CLOSED }
@@ -54,7 +56,7 @@ class ServiceHandler : IServiceHandler {
             if (serviceGroup.getMaximumOnlineServiceCount() != -1 && newServicesAmount + services.size > serviceGroup.getMaximumOnlineServiceCount())
                 newServicesAmount = serviceGroup.getMaximumOnlineServiceCount() - services.size
             if (newServicesAmount > 0) {
-               startServicesByGroup(serviceGroup, newServicesAmount)
+                startServicesByGroup(serviceGroup, newServicesAmount)
             }
         }
     }
@@ -65,17 +67,18 @@ class ServiceHandler : IServiceHandler {
                 startMinServices()
                 if (serviceQueue.isNotEmpty()) {
                     val service = serviceQueue.poll()
-                    val wrapperInfo = if (service.getWrapperName().isBlank()){
+                    val wrapperInfo = if (service.getWrapperName().isBlank()) {
                         CloudLib.instance.getWrapperManager().getWrapperByUnusedMemory(service.getMaxMemory())
                     } else {
                         //TODO check free ram
                         CloudLib.instance.getWrapperManager().getWrapperByName(service.getWrapperName());
                     }
                     val wrapperClient = wrapperInfo?.let { Manager.instance.communicationServer.getClientManager().getClientByClientValue(it) }
-                    if (wrapperClient != null){
+                    if (wrapperClient != null) {
                         service as DefaultCloudService
                         service.setWrapperName(wrapperInfo.getName())
                         CloudLib.instance.getCloudServiceManger().updateCloudService(service)
+                        wrapperClient.sendQuery(PacketIOUpdateCloudService(service)).syncUninterruptibly()
                         wrapperClient.sendQuery(PacketIOWrapperStartService(service.getName()))
                         Launcher.instance.consoleSender.sendMessage("manager.service.start", "Told Wrapper %WRAPPER%", wrapperInfo.getName(), " to start service %SERVICE%", service.getName())
                     } else {

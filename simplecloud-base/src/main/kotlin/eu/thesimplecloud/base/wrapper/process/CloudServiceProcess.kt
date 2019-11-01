@@ -6,9 +6,12 @@ import eu.thesimplecloud.base.wrapper.startup.Wrapper
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.directorypaths.DirectoryPaths
+import eu.thesimplecloud.lib.network.packets.service.PacketIORemoveCloudService
 import eu.thesimplecloud.lib.network.packets.service.PacketIOUpdateCloudService
 import eu.thesimplecloud.lib.service.ICloudService
 import eu.thesimplecloud.lib.service.ServiceState
+import eu.thesimplecloud.lib.service.impl.DefaultCloudService
+import eu.thesimplecloud.lib.servicegroup.grouptype.ICloudProxyGroup
 import java.io.BufferedReader
 import java.io.File
 import java.io.IOException
@@ -21,7 +24,16 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
     private var process: Process? = null
 
     override fun start() {
+        Wrapper.instance.cloudServiceProcessManager.registerServiceProcess(this)
         Launcher.instance.consoleSender.sendMessage("wrapper.service.starting", "Starting service %NAME%", cloudService.getName(), ".")
+        cloudService as DefaultCloudService
+        if (cloudService.getServiceType().isProxy()) {
+            val proxyGroup = cloudService.getServiceGroup()
+            proxyGroup as ICloudProxyGroup
+            cloudService.setPort(Wrapper.instance.portManager.getUnusedPort(proxyGroup.getStartPort()))
+        } else {
+            cloudService.setPort(Wrapper.instance.portManager.getUnusedPort())
+        }
         cloudService.setState(ServiceState.STARTING)
         CloudLib.instance.getCloudServiceManger().updateCloudService(cloudService)
         val serviceTmpDir = if (cloudService.isStatic()) File(DirectoryPaths.paths.staticPath + cloudService.getName()) else File(DirectoryPaths.paths.tempPath + cloudService.getName())
@@ -47,7 +59,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
                 val s = bufferedReader.readLine() ?: continue
                 if (!s.equals("", ignoreCase = true) && !s.equals(" ", ignoreCase = true) && !s.equals(">", ignoreCase = true)
                         && !s.equals(" >", ignoreCase = true) && !s.contains("InitialHandler has connected")) {
-                    //TODO send message to manager
+                    Launcher.instance.logger.console("[${cloudService.getName()}]$s")
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -55,9 +67,11 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
         }
         Launcher.instance.consoleSender.sendMessage("wrapper.service.stopped", "Service %NAME%", cloudService.getName(), " was stopped.")
         Wrapper.instance.cloudServiceProcessManager.unregisterServiceProcess(this)
+        Wrapper.instance.updateUsedMemory()
         this.cloudService.setOnlinePlayers(0)
         this.cloudService.setState(ServiceState.CLOSED)
         Wrapper.instance.communicationClient.sendQuery(PacketIOUpdateCloudService(this.cloudService))
+        Wrapper.instance.communicationClient.sendQuery(PacketIORemoveCloudService(this.cloudService.getName()))
     }
 
     override fun forceStop() {
@@ -78,16 +92,10 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
                 while (true) {
                     if (!isActive())
                         break
-                    try {
-                        Thread.sleep(200)
-                    } catch (e: InterruptedException) {
-                        e.printStackTrace()
-                    }
 
                     if (startTime + 7000 < System.currentTimeMillis())
-                        if (isActive()) {
-                            forceStop()
-                        }
+                        forceStop()
+                    Thread.sleep(200)
                 }
             }
         }

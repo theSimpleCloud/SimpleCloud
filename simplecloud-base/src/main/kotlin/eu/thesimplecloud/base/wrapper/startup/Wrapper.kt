@@ -13,6 +13,7 @@ import eu.thesimplecloud.client.packets.PacketOutCloudClientLogin
 import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.network.packets.wrapper.PacketIOUpdateWrapperInfo
 import eu.thesimplecloud.lib.wrapper.IWrapperInfo
+import eu.thesimplecloud.lib.wrapper.IWritableWrapperInfo
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
@@ -28,6 +29,7 @@ class Wrapper : ICloudApplication {
     var processQueue: CloudServiceProcessQueue? = null
     val serviceConfigurationManager = ServiceConfiguratorManager()
     val cloudServiceProcessManager = CloudServiceProcessManager()
+    val portManager = PortManager()
     val communicationClient: INettyClient
     val templateClient: INettyClient?
 
@@ -49,14 +51,15 @@ class Wrapper : ICloudApplication {
             GlobalScope.launch { templateClient.start() }
             Launcher.instance.consoleSender.sendMessage("wrapper.startup.template-client.using", "Using an extra client to receive / send templates.")
         }
-        this.communicationClient.sendQuery(PacketOutCloudClientLogin(CloudClientType.WRAPPER))
 
         //shutdown hook
         Runtime.getRuntime().addShutdownHook(Thread {
-            val wrapperInfo = getThisWrapper()
-            //set authenticated to false to prevent service starting
-            wrapperInfo.setAuthenticated(false)
-            communicationClient.sendQuery(PacketIOUpdateWrapperInfo(wrapperInfo))
+            if (this.communicationClient.isOpen()) {
+                val wrapperInfo = getThisWrapper()
+                //set authenticated to false to prevent service starting
+                wrapperInfo.setAuthenticated(false)
+                communicationClient.sendQuery(PacketIOUpdateWrapperInfo(wrapperInfo)).syncUninterruptibly()
+            }
             this.cloudServiceProcessManager.stopAllServices()
             while (this.cloudServiceProcessManager.getAllProcesses().isNotEmpty()) {
                 try {
@@ -69,9 +72,22 @@ class Wrapper : ICloudApplication {
             this.communicationClient.shutdown()
             this.templateClient?.shutdown()
         })
+        this.communicationClient.getPacketIdsSyncPromise().addResultListener { this.communicationClient.sendQuery(PacketOutCloudClientLogin(CloudClientType.WRAPPER)) }
+
     }
 
-    private fun getThisWrapper(): IWrapperInfo = CloudLib.instance.getWrapperManager().getWrapperByName(this.thisWrapperName) ?: throw IllegalStateException("Unable to find self wrapper.")
+    fun getThisWrapper(): IWrapperInfo = CloudLib.instance.getWrapperManager().getWrapperByName(this.thisWrapperName) ?: throw IllegalStateException("Unable to find self wrapper.")
+
+    /**
+     * Updates the memory the wrapper currently uses according to the registered service processes.
+     */
+    fun updateUsedMemory(){
+        val usedMemory = this.cloudServiceProcessManager.getAllProcesses().sumBy { it.getCloudService().getMaxMemory() }
+        val thisWrapper = this.getThisWrapper()
+        thisWrapper as IWritableWrapperInfo
+        thisWrapper.setUsedMemory(usedMemory)
+        this.communicationClient.sendQuery(PacketIOUpdateWrapperInfo(thisWrapper))
+    }
 
     override fun onEnable() {
     }
