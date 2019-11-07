@@ -5,12 +5,10 @@ import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
 import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.launcher.utils.Downloader
 import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.service.ServiceVersion
 import eu.thesimplecloud.lib.template.ITemplate
 import eu.thesimplecloud.lib.wrapper.IWrapperInfo
-import java.util.logging.Logger
 import kotlin.properties.Delegates
 
 class ServerGroupSetup : ISetup {

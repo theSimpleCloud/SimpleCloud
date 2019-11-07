@@ -10,7 +10,7 @@ import eu.thesimplecloud.lib.client.CloudClientType
 
 class PacketOutCloudClientLogin() : JsonPacket() {
 
-    constructor(name: String, cloudClientType: CloudClientType) : this() {
+    constructor(cloudClientType: CloudClientType, name: String) : this() {
         this.jsonData.append("name", name).append("cloudClientType", cloudClientType)
     }
 

@@ -3,16 +3,29 @@ package eu.thesimplecloud.lib.utils
 import java.io.*
 import java.util.ArrayList
 import jdk.nashorn.internal.runtime.ScriptingFunctions.readLine
+import sun.misc.IOUtils
 import java.io.FileReader
 import java.io.BufferedReader
 import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
+import kotlin.streams.toList
 
 
-class FileEditor(private val file: File) {
+class FileEditor() {
 
-    private var lines: MutableList<String>
+    var lines: MutableList<String> = ArrayList<String>()
+        private set
 
-    init {
+    constructor(lines: List<String>) : this() {
+        this.lines = ArrayList(lines)
+    }
+
+    constructor(stream: InputStream) : this() {
+        lines = ArrayList(BufferedReader(InputStreamReader(stream,
+                StandardCharsets.UTF_8)).lines().toList())
+    }
+
+    constructor(file: File) : this() {
         if (!file.exists()) {
             val dir = File(file, "..")
             println()
@@ -30,7 +43,7 @@ class FileEditor(private val file: File) {
 
     operator fun get(name: String): String? {
         for (s in lines) {
-            val array = s.split("=".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            val array = s.split("=".toRegex()).toTypedArray()
             if (array[0].equals(name, ignoreCase = true)) {
                 return array[1]
             }
@@ -62,7 +75,7 @@ class FileEditor(private val file: File) {
     }
 
     @Throws(IOException::class)
-    fun save() {
+    fun save(file: File) {
         var writer: BufferedWriter? = null
 
         writer = BufferedWriter(FileWriter(file))
@@ -88,6 +101,10 @@ class FileEditor(private val file: File) {
             }
 
         }
+    }
+
+    fun replaceInAllLines(old: String, new: String) {
+        lines = ArrayList(lines.map { it.replace(old, new) })
     }
 
 }

@@ -1,4 +1,4 @@
-package eu.thesimplecloud.launcher.utils
+package eu.thesimplecloud.lib.utils
 
 import java.io.IOException
 import java.net.URL

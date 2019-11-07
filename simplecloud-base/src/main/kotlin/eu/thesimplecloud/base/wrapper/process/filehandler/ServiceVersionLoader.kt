@@ -1,6 +1,6 @@
 package eu.thesimplecloud.base.wrapper.process.filehandler
 
-import eu.thesimplecloud.launcher.utils.Downloader
+import eu.thesimplecloud.lib.utils.Downloader
 import eu.thesimplecloud.lib.directorypaths.DirectoryPaths
 import eu.thesimplecloud.lib.service.ServiceVersion
 import java.io.File

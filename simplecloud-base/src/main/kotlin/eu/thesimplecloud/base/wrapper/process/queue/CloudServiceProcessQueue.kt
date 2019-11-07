@@ -29,7 +29,7 @@ class CloudServiceProcessQueue(val maxSimultaneouslyStartingServices: Int) {
 
 
     fun startThread() {
-        GlobalScope.launch {
+        thread(start = true, isDaemon = true) {
             while (true) {
                 startingServices.removeIf { cloudServiceProcess -> cloudServiceProcess.getCloudService().getState() === ServiceState.LOBBY || cloudServiceProcess.getCloudService().getState() === ServiceState.CLOSED }
                 if (queue.isNotEmpty()) {
@@ -42,6 +42,11 @@ class CloudServiceProcessQueue(val maxSimultaneouslyStartingServices: Int) {
                 Thread.sleep(200)
             }
         }
+    }
+
+    fun clearQueue() {
+        queue.forEach { Wrapper.instance.cloudServiceProcessManager.unregisterServiceProcess(it) }
+        queue.clear()
     }
 
 }

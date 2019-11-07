@@ -20,7 +20,6 @@ class CloudServiceManagerImpl : AbstractCloudServiceManager() {
     }
 
     override fun startService(cloudService: ICloudService) {
-        Launcher.instance.consoleSender.sendMessage("Service start wrapper")
         val processQueue = Wrapper.instance.processQueue
         checkNotNull(processQueue) { "Process Queue was null while trying to add a service to the queue." }
         processQueue.addToQueue(cloudService)

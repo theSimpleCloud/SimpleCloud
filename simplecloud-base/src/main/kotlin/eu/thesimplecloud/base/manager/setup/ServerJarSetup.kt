@@ -4,7 +4,7 @@ import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
 import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.launcher.utils.Downloader
+import eu.thesimplecloud.lib.utils.Downloader
 import eu.thesimplecloud.lib.service.ServiceVersion
 import java.io.File
 

@@ -1,6 +1,6 @@
-package eu.thesimplecloud.launcher.dependency
+package eu.thesimplecloud.lib.depedency
 
-import eu.thesimplecloud.launcher.utils.Downloader
+import eu.thesimplecloud.lib.utils.Downloader
 import java.io.File
 import java.io.IOException
 

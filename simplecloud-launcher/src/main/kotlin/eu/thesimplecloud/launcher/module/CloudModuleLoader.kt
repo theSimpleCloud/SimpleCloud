@@ -45,7 +45,7 @@ class CloudModuleLoader {
 
     fun loadModuleFileContent(file: File, moduleFileName: String): CloudModuleFileContent {
         require(file.exists()) { "Specified file to load module from does not exist: ${file.path}" }
-        val fileStream = ResourceFinder().findResource(file, moduleFileName)
+        val fileStream = ResourceFinder.findResource(file, moduleFileName)
                 ?: throw CloudModuleLoadException("Error while loading module ${file.path}: No '$moduleFileName.json' found.")
         val jsonData = JsonData.fromInputStream(fileStream)
         return jsonData.getObjectOrNull(CloudModuleFileContent::class.java)

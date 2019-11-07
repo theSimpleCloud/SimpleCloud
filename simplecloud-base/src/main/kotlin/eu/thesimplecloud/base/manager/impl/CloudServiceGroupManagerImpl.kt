@@ -31,7 +31,10 @@ class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
         Manager.instance.cloudServiceGroupFileHandler.save(cloudServiceGroup)
     }
 
-    override fun startNewService(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<ICloudService> = TODO()
+    override fun startNewService(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<ICloudService> {
+        val services = Manager.instance.serviceHandler.startServicesByGroup(cloudServiceGroup)
+        return Manager.instance.communicationServer.newSucceededPromise(services.first())
+    }
 
     override fun deleteServiceGroup(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<Unit> {
         if (CloudLib.instance.getCloudServiceManger().getCloudServicesByGroupName(cloudServiceGroup.getName()).isNotEmpty())

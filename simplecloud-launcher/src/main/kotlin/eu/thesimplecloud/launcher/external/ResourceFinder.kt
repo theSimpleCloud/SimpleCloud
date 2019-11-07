@@ -8,9 +8,22 @@ import java.net.URLClassLoader
 
 class ResourceFinder {
 
-    @Throws(MalformedURLException::class)
-     fun findResource(file: File, pathToResource: String): InputStream? {
-        return URLClassLoader(arrayOf(file.toURI().toURL())).getResourceAsStream(pathToResource)
-    }
 
+    companion object {
+
+        @Throws(MalformedURLException::class)
+        fun findResource(file: File, pathToResource: String): InputStream? {
+            addToClassPath(file)
+            return ClassLoader.getSystemClassLoader().getResourceAsStream(pathToResource)
+        }
+
+
+        fun addToClassPath(file: File) {
+            val urlClassLoader = ClassLoader.getSystemClassLoader() as URLClassLoader
+            val method = URLClassLoader::class.java.getDeclaredMethod("addURL", URL::class.java)
+            method.isAccessible = true
+            method.invoke(urlClassLoader, file.toURI().toURL())
+        }
+
+    }
 }

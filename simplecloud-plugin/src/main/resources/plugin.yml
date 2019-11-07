@@ -1,0 +1,7 @@
+name: SimpleCloud-Plugin
+version: 1.0
+author: Wetterbericht
+
+main: eu.thesimplecloud.plugin.server.CloudServerPlugin
+
+commands:

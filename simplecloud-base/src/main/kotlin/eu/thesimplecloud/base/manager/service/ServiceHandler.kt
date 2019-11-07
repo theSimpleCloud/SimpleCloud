@@ -73,6 +73,7 @@ class ServiceHandler : IServiceHandler {
                         //TODO check free ram
                         CloudLib.instance.getWrapperManager().getWrapperByName(service.getWrapperName());
                     }
+                    Launcher.instance.consoleSender.sendMessage("Wrapper: " + CloudLib.instance.getWrapperManager().getAllWrappers()[0].toString())
                     val wrapperClient = wrapperInfo?.let { Manager.instance.communicationServer.getClientManager().getClientByClientValue(it) }
                     if (wrapperClient != null) {
                         service as DefaultCloudService
@@ -86,7 +87,7 @@ class ServiceHandler : IServiceHandler {
                     }
                 }
 
-                Thread.sleep(200)
+                Thread.sleep(1000)
             }
         }
     }

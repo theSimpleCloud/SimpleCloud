@@ -60,10 +60,13 @@ class Wrapper : ICloudApplication {
                 wrapperInfo.setAuthenticated(false)
                 communicationClient.sendQuery(PacketIOUpdateWrapperInfo(wrapperInfo)).syncUninterruptibly()
             }
+            this.processQueue?.clearQueue()
             this.cloudServiceProcessManager.stopAllServices()
             while (this.cloudServiceProcessManager.getAllProcesses().isNotEmpty()) {
                 try {
-                    Thread.sleep(200)
+                    Thread.sleep(1000)
+                    println("waiting")
+                    println(this.cloudServiceProcessManager.getAllProcesses())
                 } catch (e: InterruptedException) {
                     e.printStackTrace()
                 }

@@ -7,15 +7,14 @@ import eu.thesimplecloud.lib.CloudLib
 
 class PacketIOStopCloudService() : ObjectPacket<String>(String::class.java) {
 
-    constructor(name: String) : this(){
+    constructor(name: String) : this() {
         this.value = name
     }
 
     override suspend fun handle(connection: IConnection): IPacket? {
-        val value = this.value ?: return null
-        val cloudServiceManger = CloudLib.instance.getCloudServiceManger()
-        val cloudService = cloudServiceManger.getCloudService(value) ?: return null
-        cloudServiceManger.stopService(cloudService)
-        return null
+        val name = this.value ?: return getNewObjectPacketWithContent(false)
+        val cloudService = CloudLib.instance.getCloudServiceManger().getCloudService(name)
+        cloudService?.shutdown()
+        return getNewObjectPacketWithContent(cloudService != null && cloudService.isActive())
     }
 }

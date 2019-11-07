@@ -19,7 +19,8 @@ class PacketInCloudClientLogin() : JsonPacket() {
 
     override suspend fun handle(connection: IConnection): IPacket? {
         val host = connection.getHost()!!
-        val cloudClientType = this.jsonData.getObject("cloudClientType", CloudClientType::class.java) ?: return ObjectPacket.getNewObjectPacketWithContent(false)
+        val cloudClientType = this.jsonData.getObject("cloudClientType", CloudClientType::class.java)
+                ?: return ObjectPacket.getNewObjectPacketWithContent(false)
         connection as IConnectedClient<IConnectedClientValue>
         CloudLib.instance.getWrapperManager().getAllWrappers().forEach { connection.sendQuery(PacketIOUpdateWrapperInfo(it)) }
         CloudLib.instance.getTemplateManager().getAllTemplates().forEach { connection.sendQuery(PacketIOUpdateTemplate(it)) }
@@ -28,18 +29,21 @@ class PacketInCloudClientLogin() : JsonPacket() {
         when (cloudClientType) {
             CloudClientType.SERVICE -> {
                 val name = this.jsonData.getString("name") ?: return ObjectPacket.getNewObjectPacketWithContent(false)
-                val cloudService = CloudLib.instance.getCloudServiceManger().getCloudService(name) ?: return ObjectPacket.getNewObjectPacketWithContent(false)
+                val cloudService = CloudLib.instance.getCloudServiceManger().getCloudService(name)
+                        ?: return ObjectPacket.getNewObjectPacketWithContent(false)
                 connection.setClientValue(cloudService)
                 cloudService.setAuthenticated(true)
-                Launcher.instance.consoleSender.sendMessage("manager.login.service", "Service ${cloudService.getName()} logged in.")
+                CloudLib.instance.getCloudServiceManger().updateCloudService(cloudService)
+                Launcher.instance.consoleSender.sendMessage("manager.login.service", "Service %SERVICE%", cloudService.getName(), " logged in.")
             }
             CloudClientType.WRAPPER -> {
-                val wrapperInfo = CloudLib.instance.getWrapperManager().getWrapperByHost(host) ?: return ObjectPacket.getNewObjectPacketWithContent(false)
+                val wrapperInfo = CloudLib.instance.getWrapperManager().getWrapperByHost(host)
+                        ?: return ObjectPacket.getNewObjectPacketWithContent(false)
                 connection.setClientValue(wrapperInfo)
                 wrapperInfo.setAuthenticated(true)
-                Manager.instance.communicationServer.getClientManager().sendPacketToAllClients(PacketIOUpdateWrapperInfo())
+                CloudLib.instance.getWrapperManager().updateWrapper(wrapperInfo)
                 connection.sendQuery(PacketOutSetWrapperName(wrapperInfo.getName()))
-                Launcher.instance.consoleSender.sendMessage("manager.login.wrapper", "Wrapper ${wrapperInfo.getName()} logged in.")
+                Launcher.instance.consoleSender.sendMessage("manager.login.wrapper", "Wrapper %WRAPPER%", wrapperInfo.getName(), " logged in.")
             }
         }
 

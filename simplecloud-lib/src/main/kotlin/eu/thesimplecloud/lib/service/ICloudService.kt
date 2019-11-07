@@ -51,12 +51,12 @@ interface ICloudService : IAuthenticatable, IBootstrap, ICommandExecutable {
      * Returns the template that this service uses
      * e.g. Lobby
      */
-    fun getTemplate(): ITemplate = CloudLib.instance.getTemplateManager().getTemplate(getTemplateName()) ?: throw IllegalStateException("Template of registered service is null")
+    fun getTemplate(): ITemplate = CloudLib.instance.getTemplateManager().getTemplate(getTemplateName()) ?: throw IllegalStateException("Can't find the template of an registered service")
 
     /**
      * Returns the service group of this service
      */
-    fun getServiceGroup(): ICloudServiceGroup = CloudLib.instance.getCloudServiceGroupManager().getServiceGroup(getGroupName()) ?: throw IllegalStateException("Can't find the service group of an registered service.")
+    fun getServiceGroup(): ICloudServiceGroup = CloudLib.instance.getCloudServiceGroupManager().getServiceGroup(getGroupName()) ?: throw IllegalStateException("Can't find the service group of an registered service")
 
     /**
      * Returns the maximum amount of RAM for this service in MB

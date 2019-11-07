@@ -4,11 +4,13 @@ import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.base.wrapper.startup.Wrapper
 import eu.thesimplecloud.clientserverapi.lib.packet.communicationpromise.ICommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.packet.packetresponse.responsehandler.ObjectPacketResponseHandler
+import eu.thesimplecloud.lib.network.packets.service.PacketIOStartCloudService
 import eu.thesimplecloud.lib.network.packets.servicegroup.PacketIOCreateServiceGroup
 import eu.thesimplecloud.lib.network.packets.servicegroup.PacketIODeleteServiceGroup
 import eu.thesimplecloud.lib.network.packets.servicegroup.PacketIOUpdateCloudServiceGroup
 import eu.thesimplecloud.lib.network.reponsehandler.CloudServiceGroupResponseHandler
 import eu.thesimplecloud.lib.service.ICloudService
+import eu.thesimplecloud.lib.service.impl.DefaultCloudService
 import eu.thesimplecloud.lib.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.lib.servicegroup.impl.AbstractCloudServiceGroupManager
 import java.lang.IllegalStateException
@@ -20,7 +22,9 @@ class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
         return Wrapper.instance.communicationClient.sendQuery(PacketIOCreateServiceGroup(cloudServiceGroup), CloudServiceGroupResponseHandler())
     }
 
-    override fun startNewService(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<ICloudService> = TODO()
+    override fun startNewService(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<ICloudService> {
+        return Wrapper.instance.communicationClient.sendQuery(PacketIOStartCloudService(cloudServiceGroup.getName()), ObjectPacketResponseHandler(DefaultCloudService::class.java)) as ICommunicationPromise<ICloudService>
+    }
 
     override fun deleteServiceGroup(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<Unit> {
         val unitPromise = Wrapper.instance.communicationClient.newPromise<Unit>()

@@ -1,4 +1,6 @@
 package eu.thesimplecloud.plugin.server
 
-interface ICloudServerPlugin {
+import eu.thesimplecloud.plugin.ICloudServicePlugin
+
+interface ICloudServerPlugin : ICloudServicePlugin {
 }

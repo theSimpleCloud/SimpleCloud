@@ -1,7 +1,9 @@
 package eu.thesimplecloud.launcher.dependency
 
 import eu.thesimplecloud.launcher.exception.DependencyException
+import eu.thesimplecloud.launcher.external.ResourceFinder
 import eu.thesimplecloud.launcher.startup.Launcher
+import eu.thesimplecloud.lib.depedency.Dependency
 import java.io.File
 import java.io.FileNotFoundException
 import java.net.URL
@@ -42,16 +44,14 @@ class DependencyLoader(val repositories: List<String>) {
                 }
         if (dependencies.any { !it.getDownloadedFile().exists() }) throw DependencyException("Failed to load all dependencies.")
 
-        val urlClassLoader = ClassLoader.getSystemClassLoader() as URLClassLoader
-        val method = URLClassLoader::class.java.getDeclaredMethod("addURL", URL::class.java)
-        method.isAccessible = true
 
-        dependencies.forEach { method.invoke(urlClassLoader, it.getDownloadedFile().toURI().toURL()) }
+
+        dependencies.forEach { ResourceFinder.addToClassPath(it.getDownloadedFile()) }
 
         if (loggerAvailable)
-            Launcher.instance.logger.success("Installed all dependencies successfully.")
+            Launcher.instance.logger.success("Installed dependencies successfully.")
         else
-            println("Installed all dependencies successfully.")
+            println("Installed dependencies successfully.")
     }
 
 }

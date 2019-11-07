@@ -23,6 +23,8 @@ abstract class CloudLib : ICloudLib {
 
     override fun getTemplateManager(): ITemplateManager = this.templateManager
 
+    fun isWindows(): Boolean = System.getProperty("os.name").toLowerCase().contains("windows")
+
     companion object {
         @JvmStatic
         lateinit var instance: CloudLib

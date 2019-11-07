@@ -1,7 +1,8 @@
 rootProject.name = 'simplecloud-v2'
-include 'simplecloud-launcher'
 include 'simplecloud-lib'
-include 'simplecloud-base'
 include 'simplecloud-client'
+include 'simplecloud-launcher'
 include 'simplecloud-plugin'
+include 'simplecloud-base'
+include 'simplecloud-service-dependency-loader'
 

@@ -12,12 +12,18 @@ import eu.thesimplecloud.lib.service.ICloudService
 import eu.thesimplecloud.lib.service.ServiceState
 import eu.thesimplecloud.lib.service.impl.DefaultCloudService
 import eu.thesimplecloud.lib.servicegroup.grouptype.ICloudProxyGroup
+import eu.thesimplecloud.lib.utils.ManifestLoader
 import java.io.BufferedReader
 import java.io.File
 import java.io.IOException
 import java.io.InputStreamReader
 import java.lang.IllegalStateException
 import kotlin.concurrent.thread
+import java.io.FileInputStream
+import java.util.jar.JarInputStream
+
+
+
 
 class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServiceProcess {
 
@@ -36,18 +42,18 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
         }
         cloudService.setState(ServiceState.STARTING)
         CloudLib.instance.getCloudServiceManger().updateCloudService(cloudService)
+
         val serviceTmpDir = if (cloudService.isStatic()) File(DirectoryPaths.paths.staticPath + cloudService.getName()) else File(DirectoryPaths.paths.tempPath + cloudService.getName())
         if (!cloudService.isStatic() || !serviceTmpDir.exists())
             TemplateCopier().copyTemplate(cloudService, cloudService.getTemplate())
+
         val serviceConfigurator = Wrapper.instance.serviceConfigurationManager.getServiceConfigurator(cloudService.getServiceVersion().serviceVersionType)
         serviceConfigurator
                 ?: throw IllegalStateException("No ServiceConfiguration found by version type: ${cloudService.getServiceVersion().serviceVersionType}")
+
         serviceConfigurator.configureService(cloudService, serviceTmpDir)
         val jarFile = ServiceVersionLoader().loadVersionFile(cloudService.getServiceVersion())
-        val processBuilder = ProcessBuilder("java", "-Dcom.mojang.eula.agree=true", "-XX:+UseConcMarkSweepGC", "-XX:+CMSIncrementalMode",
-                "-XX:-UseAdaptiveSizePolicy", "-Djline.terminal=jline.UnsupportedTerminal",
-                "-Xms" + this.cloudService.getMaxMemory() + "M", "-Xmx" + this.cloudService.getMaxMemory() + "M", "-jar",
-                jarFile.absolutePath)
+        val processBuilder = createProcessBuilder(jarFile)
         processBuilder.directory(serviceTmpDir)
         this.process = processBuilder.start()
         val process = this.process ?: return
@@ -65,6 +71,10 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
                 e.printStackTrace()
             }
         }
+        processStopped()
+    }
+
+    private fun processStopped() {
         Launcher.instance.consoleSender.sendMessage("wrapper.service.stopped", "Service %NAME%", cloudService.getName(), " was stopped.")
         Wrapper.instance.cloudServiceProcessManager.unregisterServiceProcess(this)
         Wrapper.instance.updateUsedMemory()
@@ -72,6 +82,22 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
         this.cloudService.setState(ServiceState.CLOSED)
         Wrapper.instance.communicationClient.sendQuery(PacketIOUpdateCloudService(this.cloudService))
         Wrapper.instance.communicationClient.sendQuery(PacketIORemoveCloudService(this.cloudService.getName()))
+    }
+
+    private fun createProcessBuilder(jarFile: File): ProcessBuilder {
+        val launcherJarPath = File(Launcher::class.java.protectionDomain.codeSource.location.toURI()).path
+        val baseJarPath = File(this::class.java.protectionDomain.codeSource.location.toURI()).path
+        val dependenciesDir = File("dependencies").absolutePath + "/*"
+        val classPathValueList = listOf(jarFile.absolutePath, launcherJarPath, baseJarPath, dependenciesDir)
+        val separator = if (CloudLib.instance.isWindows()) ";" else ":"
+        val classPathValue = "\"" + classPathValueList.joinToString(separator) + "\""
+
+        val processBuilder = ProcessBuilder("java", "-Dcom.mojang.eula.agree=true", "-XX:+UseConcMarkSweepGC", "-XX:+CMSIncrementalMode",
+                "-XX:-UseAdaptiveSizePolicy", "-Djline.terminal=jline.UnsupportedTerminal",
+                "-Xms" + this.cloudService.getMaxMemory() + "M", "-Xmx" + this.cloudService.getMaxMemory() + "M", "-cp", classPathValue,
+                ManifestLoader.getMainClass(jarFile.absolutePath))
+        Launcher.instance.consoleSender.sendMessage(processBuilder.command().joinToString(" "))
+        return processBuilder
     }
 
     override fun forceStop() {
