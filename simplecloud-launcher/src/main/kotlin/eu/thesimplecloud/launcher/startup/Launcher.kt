@@ -85,6 +85,10 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
         ApplicationStarter().startApplication(cloudApplicationType)
     }
 
+    fun executeCommand(command: String) {
+        this.commandManager.handleCommand(command, this.consoleSender)
+    }
+
     fun shutdown() {
         activeApplication?.onDisable()
         exitProcess(0)

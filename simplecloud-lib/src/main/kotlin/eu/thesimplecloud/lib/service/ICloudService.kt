@@ -99,7 +99,7 @@ interface ICloudService : IAuthenticatable, IBootstrap, ICommandExecutable {
      * Returns the name of this service.
      * e.g. Lobby-1
      */
-    fun getName(): String = getGroupName() + "-" + getServiceNumber()
+    override fun getName(): String = getGroupName() + "-" + getServiceNumber()
 
     /**
      * Returns the last time stamp the service was updated.

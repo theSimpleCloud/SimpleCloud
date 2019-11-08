@@ -7,11 +7,6 @@ import eu.thesimplecloud.lib.utils.IAuthenticatable
 interface IWrapperInfo : IAuthenticatable, ICommandExecutable {
 
     /**
-     * Returns the name of this wrapper.
-     */
-    fun getName(): String
-
-    /**
      * Returns the host of this wrapper.
      */
     fun getHost(): String
