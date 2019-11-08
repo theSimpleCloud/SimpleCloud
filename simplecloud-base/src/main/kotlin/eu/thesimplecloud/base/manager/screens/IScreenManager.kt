@@ -8,7 +8,7 @@ interface IScreenManager {
     /**
      * Registers a screen.
      */
-    fun registerScreen(name: String, commandExecutable: ICommandExecutable): IScreen
+    fun registerScreen(commandExecutable: ICommandExecutable): IScreen
 
     /**
      * Returns all registered screens.

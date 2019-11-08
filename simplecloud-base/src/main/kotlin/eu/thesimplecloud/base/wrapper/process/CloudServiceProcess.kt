@@ -3,8 +3,10 @@ package eu.thesimplecloud.base.wrapper.process
 import eu.thesimplecloud.base.wrapper.process.filehandler.ServiceVersionLoader
 import eu.thesimplecloud.base.wrapper.process.filehandler.TemplateCopier
 import eu.thesimplecloud.base.wrapper.startup.Wrapper
+import eu.thesimplecloud.client.packets.PacketOutScreenMessage
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.lib.CloudLib
+import eu.thesimplecloud.lib.client.CloudClientType
 import eu.thesimplecloud.lib.directorypaths.DirectoryPaths
 import eu.thesimplecloud.lib.network.packets.service.PacketIORemoveCloudService
 import eu.thesimplecloud.lib.network.packets.service.PacketIOUpdateCloudService
@@ -66,6 +68,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
                 val s = bufferedReader.readLine() ?: continue
                 if (!s.equals("", ignoreCase = true) && !s.equals(" ", ignoreCase = true) && !s.equals(">", ignoreCase = true)
                         && !s.equals(" >", ignoreCase = true) && !s.contains("InitialHandler has connected")) {
+                    Wrapper.instance.communicationClient.sendQuery(PacketOutScreenMessage(CloudClientType.SERVICE, getCloudService(), s))
                     Launcher.instance.logger.console("[${cloudService.getName()}]$s")
                 }
             } catch (e: IOException) {

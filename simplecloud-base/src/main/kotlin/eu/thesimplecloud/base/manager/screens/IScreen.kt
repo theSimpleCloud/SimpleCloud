@@ -17,4 +17,14 @@ interface IScreen : Nameable {
      */
     fun executeCommand(command: String) = getCommandExecutable().executeCommand(command)
 
+    /**
+     * Adds a message to this screen
+     */
+    fun addMessage(message: String)
+
+    /**
+     * Returns a list of all saved messages.
+     */
+    fun getAllSavedMessages(): List<String>
+
 }

@@ -7,8 +7,8 @@ class ScreenManagerImpl : IScreenManager {
 
     private val screens = CopyOnWriteArraySet<IScreen>()
 
-    override fun registerScreen(name: String, commandExecutable: ICommandExecutable): IScreen {
-        val screen = ScreenImpl(name, commandExecutable)
+    override fun registerScreen(commandExecutable: ICommandExecutable): IScreen {
+        val screen = ScreenImpl(commandExecutable)
         this.screens.add(screen)
         return screen
     }

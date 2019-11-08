@@ -1,6 +1,5 @@
 package eu.thesimplecloud.launcher.logging
 
-import eu.thesimplecloud.launcher.startup.Launcher
 import java.io.File
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
@@ -13,7 +12,7 @@ import java.util.logging.Logger
 import java.util.logging.SimpleFormatter
 import java.io.PrintWriter
 import java.io.StringWriter
-import java.util.logging.Formatter
+import kotlin.collections.ArrayList
 
 
 /**
@@ -26,6 +25,8 @@ import java.util.logging.Formatter
 class LoggerProvider(var applicationName: String) : Logger("SimpleCloudLogger", null) {
 
     val dataFormat = SimpleDateFormat("[HH:mm:ss]")
+
+    private val loggerMessageListeners = ArrayList<ILoggerMessageListener>()
 
     init {
         level = Level.ALL
@@ -47,45 +48,52 @@ class LoggerProvider(var applicationName: String) : Logger("SimpleCloudLogger", 
         addHandler(fileHandler)
     }
 
+    fun addLoggerMessageListener(loggerMessageListener: ILoggerMessageListener) {
+        this.loggerMessageListeners.add(loggerMessageListener)
+    }
+
     @Synchronized
     fun success(msg: String) {
         super.info(msg)
-        print("\r" + getColoredString(msg, LogType.SUCCESS))
+        val coloredMessage = getColoredString(msg, LogType.SUCCESS)
+        this.loggerMessageListeners.forEach { it.success(coloredMessage) }
+        print("\r" + coloredMessage)
         updatePrompt(true)
     }
 
     @Synchronized
     override fun info(msg: String) {
         super.info(msg)
-        print("\r" + getColoredString(msg, LogType.INFO))
+        val coloredMessage = getColoredString(msg, LogType.INFO)
+        this.loggerMessageListeners.forEach { it.info(coloredMessage) }
+        print("\r" + coloredMessage)
         updatePrompt(true)
     }
 
     @Synchronized
     override fun warning(msg: String) {
         super.warning(msg)
-        print("\r" + getColoredString(msg, LogType.WARNING))
+        val coloredMessage = getColoredString(msg, LogType.WARNING)
+        this.loggerMessageListeners.forEach { it.warning(coloredMessage) }
+        print("\r" + coloredMessage)
         updatePrompt(true)
     }
 
     @Synchronized
     override fun severe(msg: String) {
         super.severe(msg)
-        print("\r" + getColoredString(msg, LogType.ERROR))
+        val coloredMessage = getColoredString(msg, LogType.ERROR)
+        this.loggerMessageListeners.forEach { it.severe(coloredMessage) }
+        print("\r" + coloredMessage)
         updatePrompt(true)
     }
 
     @Synchronized
     fun console(msg: String) {
         super.info(msg)
-        print("\r" + getColoredString(msg, LogType.CONSOLE))
-        updatePrompt(true)
-    }
-
-    @Synchronized
-    fun empty(msg: String) {
-        super.info(msg)
-        print("\r" + getColoredString(msg, LogType.EMPTY))
+        val coloredMessage = getColoredString(msg, LogType.CONSOLE)
+        this.loggerMessageListeners.forEach { it.console(coloredMessage) }
+        print("\r" + coloredMessage)
         updatePrompt(true)
     }
 
