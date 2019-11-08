@@ -9,11 +9,12 @@ import eu.thesimplecloud.lib.service.ICloudService
 import eu.thesimplecloud.lib.service.ServiceState
 import eu.thesimplecloud.lib.service.impl.DefaultCloudService
 import eu.thesimplecloud.lib.servicegroup.ICloudServiceGroup
-import kotlinx.coroutines.GlobalScope
+import eu.thesimplecloud.lib.wrapper.IWrapperInfo
 import kotlinx.coroutines.launch
 import java.util.*
 import java.util.concurrent.LinkedBlockingQueue
 import kotlin.collections.ArrayList
+import kotlin.concurrent.thread
 
 class ServiceHandler : IServiceHandler {
 
@@ -62,33 +63,39 @@ class ServiceHandler : IServiceHandler {
     }
 
     fun startThread() {
-        GlobalScope.launch {
+        thread(start = true, isDaemon = true) {
             while (true) {
                 startMinServices()
                 if (serviceQueue.isNotEmpty()) {
                     val service = serviceQueue.poll()
-                    val wrapperInfo = if (service.getWrapperName().isBlank()) {
-                        CloudLib.instance.getWrapperManager().getWrapperByUnusedMemory(service.getMaxMemory())
-                    } else {
-                        //TODO check free ram
-                        CloudLib.instance.getWrapperManager().getWrapperByName(service.getWrapperName());
-                    }
-                    Launcher.instance.consoleSender.sendMessage("Wrapper: " + CloudLib.instance.getWrapperManager().getAllWrappers()[0].toString())
+                    val wrapperInfo = getWrapperForService(service)
                     val wrapperClient = wrapperInfo?.let { Manager.instance.communicationServer.getClientManager().getClientByClientValue(it) }
                     if (wrapperClient != null) {
                         service as DefaultCloudService
                         service.setWrapperName(wrapperInfo.getName())
                         CloudLib.instance.getCloudServiceManger().updateCloudService(service)
                         wrapperClient.sendQuery(PacketIOUpdateCloudService(service)).syncUninterruptibly()
-                        wrapperClient.sendQuery(PacketIOWrapperStartService(service.getName()))
+                        wrapperClient.sendQuery(PacketIOWrapperStartService(service.getName())).syncUninterruptibly()
                         Launcher.instance.consoleSender.sendMessage("manager.service.start", "Told Wrapper %WRAPPER%", wrapperInfo.getName(), " to start service %SERVICE%", service.getName())
                     } else {
                         serviceQueue.add(service)
                     }
                 }
-
-                Thread.sleep(1000)
+                Thread.sleep(100)
             }
+        }
+    }
+
+    private fun getWrapperForService(service: ICloudService): IWrapperInfo? {
+        if (service.getWrapperName().isBlank()) {
+            return CloudLib.instance.getWrapperManager().getWrapperByUnusedMemory(service.getMaxMemory())
+        } else {
+            val requiredWrapper = CloudLib.instance.getWrapperManager().getWrapperByName(service.getWrapperName())
+                    ?: return null
+            if (requiredWrapper.hasEnoughMemory(service.getMaxMemory())) {
+                return requiredWrapper
+            }
+            return null
         }
     }
 

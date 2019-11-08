@@ -17,7 +17,7 @@ interface ICloudServiceProcessManager {
     /**
      * Returns a list of all registered cloud processes
      */
-    fun getAllProcesses(): List<ICloudServiceProcess>
+    fun getAllProcesses(): Set<ICloudServiceProcess>
 
     /**
      * Returns the [ICloudServiceProcess] found by the specified service [name]

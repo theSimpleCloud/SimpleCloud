@@ -2,10 +2,11 @@ package eu.thesimplecloud.lib.servicegroup.impl
 
 import eu.thesimplecloud.lib.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.lib.servicegroup.ICloudServiceGroupManager
+import java.util.concurrent.CopyOnWriteArrayList
 
 abstract class AbstractCloudServiceGroupManager : ICloudServiceGroupManager {
 
-    private val serviceGroups = ArrayList<ICloudServiceGroup>()
+    private val serviceGroups = CopyOnWriteArrayList<ICloudServiceGroup>()
 
     override fun updateGroup(cloudServiceGroup: ICloudServiceGroup) {
         val cashedGroup = getServiceGroup(cloudServiceGroup.getName())

@@ -13,6 +13,7 @@ import eu.thesimplecloud.lib.service.ServiceState
 import eu.thesimplecloud.lib.service.impl.DefaultCloudService
 import eu.thesimplecloud.lib.servicegroup.grouptype.ICloudProxyGroup
 import eu.thesimplecloud.lib.utils.ManifestLoader
+import org.apache.commons.io.FileUtils
 import java.io.BufferedReader
 import java.io.File
 import java.io.IOException
@@ -20,41 +21,41 @@ import java.io.InputStreamReader
 import java.lang.IllegalStateException
 import kotlin.concurrent.thread
 import java.io.FileInputStream
+import java.util.concurrent.TimeUnit
 import java.util.jar.JarInputStream
-
-
 
 
 class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServiceProcess {
 
     private var process: Process? = null
+    private val serviceTmpDir = if (cloudService.isStatic()) File(DirectoryPaths.paths.staticPath + cloudService.getName()) else File(DirectoryPaths.paths.tempPath + cloudService.getName())
 
     override fun start() {
-        Wrapper.instance.cloudServiceProcessManager.registerServiceProcess(this)
         Launcher.instance.consoleSender.sendMessage("wrapper.service.starting", "Starting service %NAME%", cloudService.getName(), ".")
-        cloudService as DefaultCloudService
+        this.cloudService as DefaultCloudService
         if (cloudService.getServiceType().isProxy()) {
             val proxyGroup = cloudService.getServiceGroup()
             proxyGroup as ICloudProxyGroup
-            cloudService.setPort(Wrapper.instance.portManager.getUnusedPort(proxyGroup.getStartPort()))
+            this.cloudService.setPort(Wrapper.instance.portManager.getUnusedPort(proxyGroup.getStartPort()))
         } else {
-            cloudService.setPort(Wrapper.instance.portManager.getUnusedPort())
+            this.cloudService.setPort(Wrapper.instance.portManager.getUnusedPort())
         }
-        cloudService.setState(ServiceState.STARTING)
-        CloudLib.instance.getCloudServiceManger().updateCloudService(cloudService)
+        this.cloudService.setState(ServiceState.STARTING)
+        CloudLib.instance.getCloudServiceManger().updateCloudService(this.cloudService)
+        Wrapper.instance.communicationClient.sendQuery(PacketIOUpdateCloudService(this.cloudService))
 
-        val serviceTmpDir = if (cloudService.isStatic()) File(DirectoryPaths.paths.staticPath + cloudService.getName()) else File(DirectoryPaths.paths.tempPath + cloudService.getName())
-        if (!cloudService.isStatic() || !serviceTmpDir.exists())
+
+        if (!cloudService.isStatic() || !this.serviceTmpDir.exists())
             TemplateCopier().copyTemplate(cloudService, cloudService.getTemplate())
 
         val serviceConfigurator = Wrapper.instance.serviceConfigurationManager.getServiceConfigurator(cloudService.getServiceVersion().serviceVersionType)
         serviceConfigurator
                 ?: throw IllegalStateException("No ServiceConfiguration found by version type: ${cloudService.getServiceVersion().serviceVersionType}")
 
-        serviceConfigurator.configureService(cloudService, serviceTmpDir)
+        serviceConfigurator.configureService(cloudService, this.serviceTmpDir)
         val jarFile = ServiceVersionLoader().loadVersionFile(cloudService.getServiceVersion())
         val processBuilder = createProcessBuilder(jarFile)
-        processBuilder.directory(serviceTmpDir)
+        processBuilder.directory(this.serviceTmpDir)
         this.process = processBuilder.start()
         val process = this.process ?: return
 
@@ -77,11 +78,23 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
     private fun processStopped() {
         Launcher.instance.consoleSender.sendMessage("wrapper.service.stopped", "Service %NAME%", cloudService.getName(), " was stopped.")
         Wrapper.instance.cloudServiceProcessManager.unregisterServiceProcess(this)
-        Wrapper.instance.updateUsedMemory()
         this.cloudService.setOnlinePlayers(0)
         this.cloudService.setState(ServiceState.CLOSED)
-        Wrapper.instance.communicationClient.sendQuery(PacketIOUpdateCloudService(this.cloudService))
-        Wrapper.instance.communicationClient.sendQuery(PacketIORemoveCloudService(this.cloudService.getName()))
+        if (Wrapper.instance.communicationClient.isOpen()) {
+            Wrapper.instance.communicationClient.sendQuery(PacketIOUpdateCloudService(this.cloudService)).syncUninterruptibly()
+            CloudLib.instance.getCloudServiceManger().removeCloudService(this.cloudService.getName())
+            Wrapper.instance.communicationClient.sendQuery(PacketIORemoveCloudService(this.cloudService.getName()))
+            Wrapper.instance.updateUsedMemory()
+        }
+
+        while (true) {
+            try {
+                FileUtils.deleteDirectory(this.serviceTmpDir)
+                break
+            } catch (e: Exception) {
+
+            }
+        }
     }
 
     private fun createProcessBuilder(jarFile: File): ProcessBuilder {
@@ -113,17 +126,10 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
             } else {
                 executeCommand("stop")
             }
-            thread {
-                val startTime = System.currentTimeMillis()
-                while (true) {
-                    if (!isActive())
-                        break
-
-                    if (startTime + 7000 < System.currentTimeMillis())
-                        forceStop()
-                    Thread.sleep(200)
-                }
-            }
+            Launcher.instance.scheduler.schedule({
+                if (isActive())
+                    forceStop()
+            }, 7, TimeUnit.SECONDS)
         }
     }
 

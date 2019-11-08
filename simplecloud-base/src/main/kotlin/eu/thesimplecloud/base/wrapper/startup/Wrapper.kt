@@ -14,10 +14,9 @@ import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.network.packets.wrapper.PacketIOUpdateWrapperInfo
 import eu.thesimplecloud.lib.wrapper.IWrapperInfo
 import eu.thesimplecloud.lib.wrapper.IWritableWrapperInfo
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import java.io.File
 import java.lang.IllegalStateException
+import kotlin.concurrent.thread
 
 class Wrapper : ICloudApplication {
 
@@ -41,14 +40,14 @@ class Wrapper : ICloudApplication {
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.client.packets")
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.base.wrapper.network.packets")
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.lib.network.packets")
-        GlobalScope.launch { communicationClient.start() }
+        thread(start = true, isDaemon = false) { communicationClient.start() }
         if (isStartedInManagerDirectory()) {
             Launcher.instance.consoleSender.sendMessage("wrapper.startup.template-client.not-activated", "Detected that a manager is running in this directory. Using templates in this folder.")
             Launcher.instance.consoleSender.sendMessage("wrapper.startup.template-client.help-message", "If your'e manager is not running in this directory delete the folder \"storage/wrappers\" and restart the wrapper.")
             this.templateClient = null
         } else {
             this.templateClient = NettyClient(launcherConfig.host, launcherConfig.port + 1)
-            GlobalScope.launch { templateClient.start() }
+            thread(start = true, isDaemon = false) { templateClient.start() }
             Launcher.instance.consoleSender.sendMessage("wrapper.startup.template-client.using", "Using an extra client to receive / send templates.")
         }
 
@@ -64,9 +63,7 @@ class Wrapper : ICloudApplication {
             this.cloudServiceProcessManager.stopAllServices()
             while (this.cloudServiceProcessManager.getAllProcesses().isNotEmpty()) {
                 try {
-                    Thread.sleep(1000)
-                    println("waiting")
-                    println(this.cloudServiceProcessManager.getAllProcesses())
+                    Thread.sleep(100)
                 } catch (e: InterruptedException) {
                     e.printStackTrace()
                 }
@@ -79,17 +76,19 @@ class Wrapper : ICloudApplication {
 
     }
 
-    fun getThisWrapper(): IWrapperInfo = CloudLib.instance.getWrapperManager().getWrapperByName(this.thisWrapperName) ?: throw IllegalStateException("Unable to find self wrapper.")
+    fun getThisWrapper(): IWrapperInfo = CloudLib.instance.getWrapperManager().getWrapperByName(this.thisWrapperName)
+            ?: throw IllegalStateException("Unable to find self wrapper.")
 
     /**
      * Updates the memory the wrapper currently uses according to the registered service processes.
      */
-    fun updateUsedMemory(){
+    fun updateUsedMemory() {
         val usedMemory = this.cloudServiceProcessManager.getAllProcesses().sumBy { it.getCloudService().getMaxMemory() }
         val thisWrapper = this.getThisWrapper()
         thisWrapper as IWritableWrapperInfo
         thisWrapper.setUsedMemory(usedMemory)
-        this.communicationClient.sendQuery(PacketIOUpdateWrapperInfo(thisWrapper))
+        if (this.communicationClient.isOpen())
+            this.communicationClient.sendQuery(PacketIOUpdateWrapperInfo(thisWrapper))
     }
 
     override fun onEnable() {

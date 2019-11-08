@@ -5,7 +5,6 @@ import eu.thesimplecloud.clientserverapi.lib.handler.IConnectionHandler
 
 class ConnectionHandlerImpl : IConnectionHandler {
     override fun onConnectionActive(connection: IConnection) {
-        println("[SimpleCloud] Connected to the Manager.")
     }
 
     override fun onConnectionInactive(connection: IConnection) {

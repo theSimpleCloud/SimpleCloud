@@ -2,7 +2,7 @@ package eu.thesimplecloud.base.wrapper.process
 
 class CloudServiceProcessManager : ICloudServiceProcessManager {
 
-    private val registeredProcesses = ArrayList<ICloudServiceProcess>()
+    private val registeredProcesses = HashSet<ICloudServiceProcess>()
 
     override fun registerServiceProcess(cloudServiceProcess: ICloudServiceProcess) {
         this.registeredProcesses.add(cloudServiceProcess)
@@ -12,7 +12,7 @@ class CloudServiceProcessManager : ICloudServiceProcessManager {
         this.registeredProcesses.remove(cloudServiceProcess)
     }
 
-    override fun getAllProcesses(): List<ICloudServiceProcess> = this.registeredProcesses
+    override fun getAllProcesses(): Set<ICloudServiceProcess> = this.registeredProcesses
 
 
 

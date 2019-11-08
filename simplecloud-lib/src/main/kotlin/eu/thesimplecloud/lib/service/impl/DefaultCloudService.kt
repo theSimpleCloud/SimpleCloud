@@ -21,7 +21,8 @@ class DefaultCloudService(
 ) : ICloudService {
 
     private val startingPromise = CommunicationPromise<Unit>()
-    private val startedPromise = CommunicationPromise<Unit>()
+    private val connectedPromise = CommunicationPromise<Unit>()
+    private val joinablePromise = CommunicationPromise<Unit>()
     private val closedPromise = CommunicationPromise<Unit>()
 
     private var serviceState = ServiceState.PREPARED
@@ -84,8 +85,14 @@ class DefaultCloudService(
 
     override fun startingPromise(): ICommunicationPromise<Unit> = this.startingPromise
 
-    override fun startedPromise(): ICommunicationPromise<Unit> = this.startedPromise
+    override fun connectedPromise(): ICommunicationPromise<Unit> = this.connectedPromise
+
+    override fun joinablePromise(): ICommunicationPromise<Unit> = this.joinablePromise
 
     override fun closedPromise(): ICommunicationPromise<Unit> = this.closedPromise
+
+
+
+
 
 }

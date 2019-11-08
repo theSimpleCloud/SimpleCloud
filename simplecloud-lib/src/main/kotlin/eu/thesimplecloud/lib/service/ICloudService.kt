@@ -157,14 +157,20 @@ interface ICloudService : IAuthenticatable, IBootstrap, ICommandExecutable {
     fun startingPromise(): ICommunicationPromise<Unit>
 
     /**
+     * Returns the promise that will be called once the service is connected in to the manager.
+     */
+    fun connectedPromise(): ICommunicationPromise<Unit>
+
+    /**
+     * Returns the promise that will be called once the service is joinable. ([isJoinable] changed to true)
+     */
+    fun joinablePromise(): ICommunicationPromise<Unit>
+
+    /**
      * Returns the promise that will be called once the service is closed.
      */
     fun closedPromise(): ICommunicationPromise<Unit>
 
-    /**
-     * Returns the promise that will be called once the service is started. (joinable)
-     */
-    fun startedPromise(): ICommunicationPromise<Unit>
 
 
     override fun isActive(): Boolean = getState() != ServiceState.PREPARED && getState() != ServiceState.CLOSED

@@ -62,7 +62,7 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) {
         thisServiceName = jsonData.getString("serviceName") ?: return false
         val host = jsonData.getString("managerHost") ?: return false
         val port = jsonData.getInt("managerPort") ?: return false
-        this.communicationClient = NettyClient(host, port)
+        this.communicationClient = NettyClient(host, port, ConnectionHandlerImpl())
         return true
     }
 

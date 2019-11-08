@@ -18,11 +18,11 @@ import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.directorypaths.DirectoryPaths
 import eu.thesimplecloud.lib.screen.ICommandExecutable
 import eu.thesimplecloud.lib.template.impl.DefaultTemplate
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.reflections.Reflections
 import java.io.File
 import java.util.function.Consumer
+import kotlin.concurrent.thread
 
 class Manager : ICloudApplication {
 
@@ -47,8 +47,8 @@ class Manager : ICloudApplication {
         this.communicationServer.addPacketsByPackage("eu.thesimplecloud.lib.network.packets")
         this.communicationServer.addPacketsByPackage("eu.thesimplecloud.base.manager.network.packets")
         this.serviceHandler.startThread()
-        GlobalScope.launch { communicationServer.start() }
-        GlobalScope.launch { templateServer.start() }
+        thread(start = true, isDaemon = false) { communicationServer.start() }
+        thread(start = true, isDaemon = false) { templateServer.start() }
     }
 
     override fun onEnable() {

@@ -2,4 +2,4 @@ package eu.thesimplecloud.lib.events.service
 
 import eu.thesimplecloud.lib.service.ICloudService
 
-class CloudServiceStartedEvent(cloudService: ICloudService) : CloudServiceEvent(cloudService)
+class CloudServiceConnectedEvent(cloudService: ICloudService) : CloudServiceEvent(cloudService)
