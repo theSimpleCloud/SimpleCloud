@@ -9,9 +9,7 @@ import eu.thesimplecloud.base.manager.screens.ScreenManagerImpl
 import eu.thesimplecloud.base.manager.service.ServiceHandler
 import eu.thesimplecloud.base.manager.startup.server.ConnectionHandlerImpl
 import eu.thesimplecloud.base.manager.startup.server.ServerHandlerImpl
-import eu.thesimplecloud.clientserverapi.lib.packet.IPacket
-import eu.thesimplecloud.clientserverapi.lib.packet.packettype.BytePacket
-import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
+import eu.thesimplecloud.base.wrapper.logger.LoggerMessageListenerImpl
 import eu.thesimplecloud.clientserverapi.server.INettyServer
 import eu.thesimplecloud.clientserverapi.server.NettyServer
 import eu.thesimplecloud.launcher.application.ICloudApplication
@@ -19,9 +17,6 @@ import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.directorypaths.DirectoryPaths
 import eu.thesimplecloud.lib.screen.ICommandExecutable
-import eu.thesimplecloud.lib.template.impl.DefaultTemplate
-import kotlinx.coroutines.launch
-import org.reflections.Reflections
 import java.io.File
 import java.util.function.Consumer
 import kotlin.concurrent.thread
@@ -43,6 +38,7 @@ class Manager : ICloudApplication {
 
     init {
         instance = this
+        Launcher.instance.logger.addLoggerMessageListener(LoggerMessageListenerImpl())
         CloudLibImpl()
         val launcherConfig = Launcher.instance.launcherConfigLoader.loadConfig()
         this.communicationServer = NettyServer<ICommandExecutable>(launcherConfig.host, launcherConfig.port, ConnectionHandlerImpl(), ServerHandlerImpl())
