@@ -7,6 +7,7 @@ import java.io.File
 
 class ServiceVersionLoader {
 
+    @Synchronized
     fun loadVersionFile(serviceVersion: ServiceVersion): File {
         val file = File(DirectoryPaths.paths.minecraftJarsPath + serviceVersion.name + ".jar")
         if (!file.exists())

@@ -55,7 +55,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
                 ?: throw IllegalStateException("No ServiceConfiguration found by version type: ${cloudService.getServiceVersion().serviceVersionType}")
 
         serviceConfigurator.configureService(cloudService, this.serviceTmpDir)
-        val jarFile = ServiceVersionLoader().loadVersionFile(cloudService.getServiceVersion())
+        val jarFile = Wrapper.instance.serviceVersionLoader.loadVersionFile(cloudService.getServiceVersion())
         val processBuilder = createProcessBuilder(jarFile)
         processBuilder.directory(this.serviceTmpDir)
         this.process = processBuilder.start()

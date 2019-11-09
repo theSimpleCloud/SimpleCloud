@@ -11,9 +11,14 @@ data class DefaultWrapperInfo(
         private var maxMemory: Int
 ) : IWritableWrapperInfo {
 
+    @GsonExclude
     private var authenticated = false
 
+    @GsonExclude
     private var usedMemory: Int = 0
+
+    @GsonExclude
+    private var templatesReceived = false
 
     override fun setUsedMemory(memory: Int) {
         this.usedMemory = memory
@@ -45,5 +50,11 @@ data class DefaultWrapperInfo(
 
     override fun toString(): String {
         return "DefaultWrapperInfo(name: $name host: $host memory: $maxMemory usedMemory: $usedMemory authenticated: $authenticated maxSimultaneouslyStartingServices: $maxSimultaneouslyStartingServices)"
+    }
+
+    override fun hasTemplatesReceived(): Boolean = this.templatesReceived
+
+    override fun setTemplatesReceived(boolean: Boolean) {
+        this.templatesReceived = boolean
     }
 }

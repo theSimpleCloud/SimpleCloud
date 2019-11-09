@@ -17,4 +17,9 @@ interface IWritableWrapperInfo : IWrapperInfo {
      */
     fun setUsedMemory(memory: Int)
 
+    /**
+     * Sets whether the wrapper has received the templates.
+     */
+    fun setTemplatesReceived(boolean: Boolean)
+
 }

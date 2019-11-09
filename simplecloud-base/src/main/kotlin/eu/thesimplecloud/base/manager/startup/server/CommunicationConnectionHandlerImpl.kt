@@ -10,9 +10,10 @@ import eu.thesimplecloud.lib.screen.ICommandExecutable
 import eu.thesimplecloud.lib.service.ICloudService
 import eu.thesimplecloud.lib.utils.IAuthenticatable
 import eu.thesimplecloud.lib.wrapper.IWrapperInfo
+import eu.thesimplecloud.lib.wrapper.IWritableWrapperInfo
 import java.net.InetSocketAddress
 
-class ConnectionHandlerImpl : IConnectionHandler {
+class CommunicationConnectionHandlerImpl : IConnectionHandler {
 
     override fun onConnectionActive(connection: IConnection) {
         val host = connection.getHost()!!
@@ -30,15 +31,18 @@ class ConnectionHandlerImpl : IConnectionHandler {
         clientValue ?: return
         val activeScreen = Launcher.instance.screenManager.getActiveScreen()
         activeScreen?.let {
-            if (activeScreen.getName().equals(clientValue.getName(), true)){
+            if (activeScreen.getName().equals(clientValue.getName(), true)) {
                 Launcher.instance.screenManager.leaveActiveScreen()
             }
         }
         clientValue as IAuthenticatable
         clientValue.setAuthenticated(false)
 
-        if (clientValue is IWrapperInfo)
+        if (clientValue is IWritableWrapperInfo) {
+            clientValue.setTemplatesReceived(false)
+            clientValue.setUsedMemory(0)
             CloudLib.instance.getWrapperManager().updateWrapper(clientValue)
+        }
 
         if (clientValue is ICloudService)
             CloudLib.instance.getCloudServiceManger().updateCloudService(clientValue)

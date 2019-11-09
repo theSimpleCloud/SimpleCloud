@@ -3,6 +3,7 @@ package eu.thesimplecloud.base.wrapper.startup
 import eu.thesimplecloud.base.wrapper.impl.CloudLibImpl
 import eu.thesimplecloud.base.wrapper.logger.LoggerMessageListenerImpl
 import eu.thesimplecloud.base.wrapper.process.CloudServiceProcessManager
+import eu.thesimplecloud.base.wrapper.process.filehandler.ServiceVersionLoader
 import eu.thesimplecloud.base.wrapper.process.queue.CloudServiceProcessQueue
 import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.ServiceConfiguratorManager
 import eu.thesimplecloud.clientserverapi.client.INettyClient
@@ -32,6 +33,7 @@ class Wrapper : ICloudApplication {
     val portManager = PortManager()
     val communicationClient: INettyClient
     val templateClient: INettyClient?
+    val serviceVersionLoader = ServiceVersionLoader()
 
     init {
         instance = this
@@ -43,6 +45,7 @@ class Wrapper : ICloudApplication {
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.base.wrapper.network.packets")
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.lib.network.packets")
         thread(start = true, isDaemon = false) { communicationClient.start() }
+        this.communicationClient.getPacketIdsSyncPromise().addResultListener { this.communicationClient.sendQuery(PacketOutCloudClientLogin(CloudClientType.WRAPPER)) }
         if (isStartedInManagerDirectory()) {
             Launcher.instance.consoleSender.sendMessage("wrapper.startup.template-client.not-activated", "Detected that a manager is running in this directory. Using templates in this folder.")
             Launcher.instance.consoleSender.sendMessage("wrapper.startup.template-client.help-message", "If your'e manager is not running in this directory delete the folder \"storage/wrappers\" and restart the wrapper.")
@@ -74,7 +77,7 @@ class Wrapper : ICloudApplication {
             this.communicationClient.shutdown()
             this.templateClient?.shutdown()
         })
-        this.communicationClient.getPacketIdsSyncPromise().addResultListener { this.communicationClient.sendQuery(PacketOutCloudClientLogin(CloudClientType.WRAPPER)) }
+
 
     }
 

@@ -92,7 +92,7 @@ class ServiceHandler : IServiceHandler {
         } else {
             val requiredWrapper = CloudLib.instance.getWrapperManager().getWrapperByName(service.getWrapperName())
                     ?: return null
-            if (requiredWrapper.hasEnoughMemory(service.getMaxMemory())) {
+            if (requiredWrapper.hasEnoughMemory(service.getMaxMemory()) && requiredWrapper.isAuthenticated() && requiredWrapper.hasTemplatesReceived()) {
                 return requiredWrapper
             }
             return null

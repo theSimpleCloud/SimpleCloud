@@ -29,10 +29,10 @@ interface IWrapperManager {
     fun getWrapperByHost(host: String): IWrapperInfo? = getAllWrappers().firstOrNull { it.getHost().equals(host, true) }
 
     /**
-     * Returns the [IWrapperInfo] found by the specified host
+     * Returns the [IWrapperInfo] that has enough memory, is authenticated and has received all templates.
      */
     fun getWrapperByUnusedMemory(memory: Int): IWrapperInfo? {
-        val wrappers = getAllWrappers().filter { it.isAuthenticated() }.filter { it.hasEnoughMemory(memory) }
+        val wrappers = getAllWrappers().filter { it.isAuthenticated() }.filter { it.hasTemplatesReceived() }.filter { it.hasEnoughMemory(memory) }
         return wrappers.minBy { it.getUsedMemory().toDouble() / it.getMaxMemory() }
     }
 

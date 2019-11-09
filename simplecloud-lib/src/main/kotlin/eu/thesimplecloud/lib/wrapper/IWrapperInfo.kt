@@ -40,4 +40,9 @@ interface IWrapperInfo : IAuthenticatable, ICommandExecutable {
         return getUnusedMemory() >= memory
     }
 
+    /**
+     * Returns whether the wrapper has received the templates.
+     */
+    fun hasTemplatesReceived(): Boolean
+
 }
