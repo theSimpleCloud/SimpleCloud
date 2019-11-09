@@ -45,7 +45,8 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
         }
     }
     var activeApplication: ICloudApplication? = null
-    val logger = LoggerProvider("Launcher")
+    val screenManager: IScreenManager = ScreenManagerImpl()
+    val logger = LoggerProvider("Launcher", screenManager)
     val commandManager: CommandManager
     val consoleSender = ConsoleSender()
     val consoleManager: ConsoleManager
@@ -53,7 +54,6 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
     val languageManager: LanguageManager
     val launcherConfigLoader = LauncherConfigLoader()
     val scheduler = Executors.newScheduledThreadPool(1)
-    val screenManager: IScreenManager = ScreenManagerImpl()
 
     init {
         instance = this

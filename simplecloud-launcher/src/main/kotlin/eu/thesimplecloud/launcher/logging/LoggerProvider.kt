@@ -1,5 +1,7 @@
 package eu.thesimplecloud.launcher.logging
 
+import eu.thesimplecloud.launcher.screens.IScreenManager
+import eu.thesimplecloud.launcher.startup.Launcher
 import java.io.File
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
@@ -22,12 +24,11 @@ import kotlin.collections.ArrayList
  * Time: 17:02
  */
 @Suppress("NON_EXHAUSTIVE_WHEN")
-class LoggerProvider(var applicationName: String) : Logger("SimpleCloudLogger", null) {
+class LoggerProvider(var applicationName: String, val screenManager: IScreenManager) : Logger("SimpleCloudLogger", null) {
 
     val dataFormat = SimpleDateFormat("[HH:mm:ss]")
 
     private val loggerMessageListeners = ArrayList<ILoggerMessageListener>()
-    var consoleMessagesDisabled = false
 
     init {
         level = Level.ALL
@@ -98,8 +99,8 @@ class LoggerProvider(var applicationName: String) : Logger("SimpleCloudLogger", 
         updatePrompt(true)
     }
 
-    fun isMessageBlocked(logType: LogType): Boolean {
-        return consoleMessagesDisabled && logType != LogType.EMPTY
+    private fun isMessageBlocked(logType: LogType): Boolean {
+        return screenManager.hasActiveScreen() && logType != LogType.EMPTY
     }
 
     fun getColoredString(text: String, type: LogType): String {
