@@ -1,4 +1,4 @@
-package eu.thesimplecloud.base.manager.screens
+package eu.thesimplecloud.launcher.screens
 
 import eu.thesimplecloud.lib.screen.ICommandExecutable
 import eu.thesimplecloud.lib.utils.Nameable
@@ -16,11 +16,6 @@ interface IScreen : Nameable {
      * Executes a command on this screen.
      */
     fun executeCommand(command: String) = getCommandExecutable().executeCommand(command)
-
-    /**
-     * Adds a message to this screen
-     */
-    fun addMessage(message: String)
 
     /**
      * Returns a list of all saved messages.

@@ -1,6 +1,7 @@
 package eu.thesimplecloud.base.wrapper.startup
 
 import eu.thesimplecloud.base.wrapper.impl.CloudLibImpl
+import eu.thesimplecloud.base.wrapper.logger.LoggerMessageListenerImpl
 import eu.thesimplecloud.base.wrapper.process.CloudServiceProcessManager
 import eu.thesimplecloud.base.wrapper.process.queue.CloudServiceProcessQueue
 import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.ServiceConfiguratorManager
@@ -34,6 +35,7 @@ class Wrapper : ICloudApplication {
 
     init {
         instance = this
+        Launcher.instance.logger.addLoggerMessageListener(LoggerMessageListenerImpl())
         CloudLibImpl()
         val launcherConfig = Launcher.instance.launcherConfigLoader.loadConfig()
         this.communicationClient = NettyClient(launcherConfig.host, launcherConfig.port, ConnectionHandlerImpl())

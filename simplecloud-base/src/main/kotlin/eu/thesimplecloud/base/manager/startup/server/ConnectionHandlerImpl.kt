@@ -7,6 +7,8 @@ import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnecte
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.screen.ICommandExecutable
+import eu.thesimplecloud.lib.service.ICloudService
+import eu.thesimplecloud.lib.utils.IAuthenticatable
 import eu.thesimplecloud.lib.wrapper.IWrapperInfo
 import java.net.InetSocketAddress
 
@@ -25,9 +27,16 @@ class ConnectionHandlerImpl : IConnectionHandler {
     override fun onConnectionInactive(connection: IConnection) {
         connection as IConnectedClient<ICommandExecutable>
         val clientValue = connection.getClientValue()
-        if (clientValue !is IWrapperInfo)
-            return
+        clientValue ?: return
+        Launcher.instance.screenManager.unregisterScreen(clientValue.getName())
+        clientValue as IAuthenticatable
         clientValue.setAuthenticated(false)
+
+        if (clientValue is IWrapperInfo)
+            CloudLib.instance.getWrapperManager().updateWrapper(clientValue)
+
+        if (clientValue is ICloudService)
+            CloudLib.instance.getCloudServiceManger().updateCloudService(clientValue)
     }
 
     override fun onFailure(connection: IConnection, ex: Throwable) {

@@ -1,4 +1,4 @@
-package eu.thesimplecloud.base.manager.screens
+package eu.thesimplecloud.launcher.screens
 
 import eu.thesimplecloud.lib.screen.ICommandExecutable
 
@@ -8,9 +8,9 @@ class ScreenImpl(private val commandExecutable: ICommandExecutable) : IScreen {
 
     override fun getCommandExecutable(): ICommandExecutable = this.commandExecutable
 
-    override fun addMessage(message: String) {
+    fun addMessage(message: String) {
         this.messages.add(message)
-        if (this.messages.size > 200) {
+        if (this.messages.size > 100) {
             this.messages.removeAt(0)
         }
     }

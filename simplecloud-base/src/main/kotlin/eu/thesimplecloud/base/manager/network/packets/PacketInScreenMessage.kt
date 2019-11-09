@@ -4,6 +4,7 @@ import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.IPacket
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
+import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.client.CloudClientType
 import eu.thesimplecloud.lib.screen.ICommandExecutable
@@ -21,9 +22,8 @@ class PacketInScreenMessage : JsonPacket() {
         }
         commandExecutable ?: return null
 
-        val screenManager = Manager.instance.screenManager
-        val screen = screenManager.getScreen(name) ?: screenManager.registerScreen(commandExecutable)
-        screen.addMessage(message)
+        val screenManager = Launcher.instance.screenManager
+        screenManager.addScreenMessage(commandExecutable, "[$name]$message")
         return null
     }
 }

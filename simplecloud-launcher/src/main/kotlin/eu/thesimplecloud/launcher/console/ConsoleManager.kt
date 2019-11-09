@@ -19,9 +19,21 @@ class ConsoleManager(val commandManager: CommandManager, private val consoleSend
             while (true) {
                 val readLine = readLine() ?: continue
 
+                val screenManager = Launcher.instance.screenManager
+                if (screenManager.hasActiveScreen()) {
+                    if (readLine.equals("leave", true)){
+                        screenManager.setActiveScreen(null)
+                        Launcher.instance.clearConsole()
+                        Launcher.instance.logger.updatePrompt(false)
+                        continue
+                    }
+                    screenManager.getActiveScreen()?.executeCommand(readLine)
+                    continue
+                }
+
                 val setup = Launcher.instance.setupManager.currentSetup
                 if (setup != null) {
-                    if (readLine == "exit") {
+                    if (readLine.equals("exit", true)) {
                         Launcher.instance.setupManager.cancelCurrentSetup()
                         continue
                     }

@@ -4,8 +4,6 @@ import eu.thesimplecloud.base.manager.filehandler.CloudServiceGroupFileHandler
 import eu.thesimplecloud.base.manager.config.TemplatesConfigLoader
 import eu.thesimplecloud.base.manager.filehandler.WrapperFileHandler
 import eu.thesimplecloud.base.manager.impl.CloudLibImpl
-import eu.thesimplecloud.base.manager.screens.IScreenManager
-import eu.thesimplecloud.base.manager.screens.ScreenManagerImpl
 import eu.thesimplecloud.base.manager.service.ServiceHandler
 import eu.thesimplecloud.base.manager.startup.server.ConnectionHandlerImpl
 import eu.thesimplecloud.base.manager.startup.server.ServerHandlerImpl
@@ -27,7 +25,6 @@ class Manager : ICloudApplication {
     val wrapperFileHandler = WrapperFileHandler()
     val templatesConfigLoader = TemplatesConfigLoader()
     val serviceHandler: ServiceHandler = ServiceHandler()
-    val screenManager: IScreenManager = ScreenManagerImpl()
 
     companion object {
         lateinit var instance: Manager
@@ -38,7 +35,6 @@ class Manager : ICloudApplication {
 
     init {
         instance = this
-        Launcher.instance.logger.addLoggerMessageListener(LoggerMessageListenerImpl())
         CloudLibImpl()
         val launcherConfig = Launcher.instance.launcherConfigLoader.loadConfig()
         this.communicationServer = NettyServer<ICommandExecutable>(launcherConfig.host, launcherConfig.port, ConnectionHandlerImpl(), ServerHandlerImpl())

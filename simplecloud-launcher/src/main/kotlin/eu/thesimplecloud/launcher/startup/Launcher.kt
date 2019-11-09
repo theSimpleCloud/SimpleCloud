@@ -13,6 +13,8 @@ import eu.thesimplecloud.launcher.logging.LoggerProvider
 import eu.thesimplecloud.launcher.setups.LanguageSetup
 import eu.thesimplecloud.launcher.setups.StartSetup
 import eu.thesimplecloud.launcher.config.LauncherConfigLoader
+import eu.thesimplecloud.launcher.screens.IScreenManager
+import eu.thesimplecloud.launcher.screens.ScreenManagerImpl
 import eu.thesimplecloud.launcher.setups.AutoIpSetup
 import eu.thesimplecloud.lib.directorypaths.DirectoryPaths
 import eu.thesimplecloud.lib.external.ICloudModule
@@ -51,6 +53,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
     val languageManager: LanguageManager
     val launcherConfigLoader = LauncherConfigLoader()
     val scheduler = Executors.newScheduledThreadPool(1)
+    val screenManager: IScreenManager = ScreenManagerImpl()
 
     init {
         instance = this
@@ -80,9 +83,13 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
     }
 
     fun startApplication(cloudApplicationType: CloudApplicationType) {
-        ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor()
+        clearConsole()
         logger.info("Starting ${cloudApplicationType.getApplicationName()}...")
         ApplicationStarter().startApplication(cloudApplicationType)
+    }
+
+    fun clearConsole() {
+        ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor()
     }
 
     fun executeCommand(command: String) {

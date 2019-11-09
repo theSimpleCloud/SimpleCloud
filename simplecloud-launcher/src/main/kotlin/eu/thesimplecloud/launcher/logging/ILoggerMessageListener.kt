@@ -8,14 +8,5 @@ interface ILoggerMessageListener {
 
 
 
-    fun success(msg: String)
-
-    fun info(msg: String)
-
-    fun warning(msg: String)
-
-    fun severe(msg: String)
-
-    fun console(msg: String)
-
+    fun message(msg: String, logType: LogType)
 }

@@ -27,6 +27,7 @@ class LoggerProvider(var applicationName: String) : Logger("SimpleCloudLogger", 
     val dataFormat = SimpleDateFormat("[HH:mm:ss]")
 
     private val loggerMessageListeners = ArrayList<ILoggerMessageListener>()
+    var consoleMessagesDisabled = false
 
     init {
         level = Level.ALL
@@ -55,46 +56,50 @@ class LoggerProvider(var applicationName: String) : Logger("SimpleCloudLogger", 
     @Synchronized
     fun success(msg: String) {
         super.info(msg)
-        val coloredMessage = getColoredString(msg, LogType.SUCCESS)
-        this.loggerMessageListeners.forEach { it.success(coloredMessage) }
-        print("\r" + coloredMessage)
-        updatePrompt(true)
+        printMessage(msg, LogType.SUCCESS)
     }
 
     @Synchronized
     override fun info(msg: String) {
         super.info(msg)
-        val coloredMessage = getColoredString(msg, LogType.INFO)
-        this.loggerMessageListeners.forEach { it.info(coloredMessage) }
-        print("\r" + coloredMessage)
-        updatePrompt(true)
+        printMessage(msg, LogType.INFO)
     }
 
     @Synchronized
     override fun warning(msg: String) {
         super.warning(msg)
-        val coloredMessage = getColoredString(msg, LogType.WARNING)
-        this.loggerMessageListeners.forEach { it.warning(coloredMessage) }
-        print("\r" + coloredMessage)
-        updatePrompt(true)
+        printMessage(msg, LogType.WARNING)
     }
 
     @Synchronized
     override fun severe(msg: String) {
         super.severe(msg)
-        val coloredMessage = getColoredString(msg, LogType.ERROR)
-        this.loggerMessageListeners.forEach { it.severe(coloredMessage) }
-        print("\r" + coloredMessage)
-        updatePrompt(true)
+        printMessage(msg, LogType.ERROR)
     }
 
     @Synchronized
     fun console(msg: String) {
         super.info(msg)
-        val coloredMessage = getColoredString(msg, LogType.CONSOLE)
-        this.loggerMessageListeners.forEach { it.console(coloredMessage) }
+        printMessage(msg, LogType.CONSOLE)
+    }
+
+    @Synchronized
+    fun empty(msg: String) {
+        super.info(msg)
+        printMessage(msg, LogType.EMPTY)
+    }
+
+    private fun printMessage(msg: String, logType: LogType) {
+        if (isMessageBlocked(logType))
+            return
+        val coloredMessage = getColoredString(msg, logType)
+        this.loggerMessageListeners.forEach { it.message(msg, logType) }
         print("\r" + coloredMessage)
         updatePrompt(true)
+    }
+
+    fun isMessageBlocked(logType: LogType): Boolean {
+        return consoleMessagesDisabled && logType != LogType.EMPTY
     }
 
     fun getColoredString(text: String, type: LogType): String {

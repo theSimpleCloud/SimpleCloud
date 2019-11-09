@@ -88,7 +88,7 @@ class EditCommand : ICommandHandler {
         commandSender.sendMessage("manager.command.edit.template.modules.add.success", "Added module %MODULE%", module, " to template %TEMPLATE%", template.getName())
     }
 
-    @CommandSubPath("template <name> module remove <module>", "Removes a module to a template")
+    @CommandSubPath("template <name> module remove <module>", "Removes a module from a template")
     fun removeModuleNameToCopy(commandSender: ICommandSender, @CommandArgument("name") template: ITemplate, @CommandArgument("module") module: String) {
         if (!template.getModuleNamesToCopy().map { it.toLowerCase() }.contains(module)){
             commandSender.sendMessage("manager.command.edit.template.modules.add.not-added", "Module %MODULE%", module, " was not added to template %TEMPLATE%", template.getName())

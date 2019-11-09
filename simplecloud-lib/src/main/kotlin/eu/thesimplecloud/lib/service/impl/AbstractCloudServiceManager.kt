@@ -29,6 +29,7 @@ abstract class AbstractCloudServiceManager : ICloudServiceManager {
         cashedService.setLastUpdate(System.currentTimeMillis())
         cashedService as DefaultCloudService
         cashedService.setWrapperName(cloudService.getWrapperName())
+        cashedService.setPort(cloudService.getPort())
 
         CloudLib.instance.getEventManager().call(CloudServiceUpdatedEvent(cashedService))
 
