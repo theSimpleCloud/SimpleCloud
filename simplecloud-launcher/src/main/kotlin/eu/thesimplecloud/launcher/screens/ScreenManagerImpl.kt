@@ -36,4 +36,11 @@ class ScreenManagerImpl : IScreenManager {
     override fun setActiveScreen(screen: IScreen?) {
         this.activeScreen = screen
     }
+
+    override fun leaveActiveScreen() {
+        Launcher.instance.screenManager.setActiveScreen(null)
+        Launcher.instance.clearConsole()
+        Launcher.instance.logger.updatePrompt(false)
+    }
+
 }

@@ -45,4 +45,9 @@ interface IScreenManager {
      */
     fun hasActiveScreen(): Boolean = getActiveScreen() != null
 
+    /**
+     * Leaves the active screen.
+     */
+    fun leaveActiveScreen()
+
 }

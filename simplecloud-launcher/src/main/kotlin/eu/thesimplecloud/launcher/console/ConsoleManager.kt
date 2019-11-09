@@ -22,9 +22,7 @@ class ConsoleManager(val commandManager: CommandManager, private val consoleSend
                 val screenManager = Launcher.instance.screenManager
                 if (screenManager.hasActiveScreen()) {
                     if (readLine.equals("leave", true)){
-                        screenManager.setActiveScreen(null)
-                        Launcher.instance.clearConsole()
-                        Launcher.instance.logger.updatePrompt(false)
+                        Launcher.instance.screenManager.leaveActiveScreen()
                         continue
                     }
                     screenManager.getActiveScreen()?.executeCommand(readLine)

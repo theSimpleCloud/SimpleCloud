@@ -28,7 +28,12 @@ class ConnectionHandlerImpl : IConnectionHandler {
         connection as IConnectedClient<ICommandExecutable>
         val clientValue = connection.getClientValue()
         clientValue ?: return
-        Launcher.instance.screenManager.unregisterScreen(clientValue.getName())
+        val activeScreen = Launcher.instance.screenManager.getActiveScreen()
+        activeScreen?.let {
+            if (activeScreen.getName().equals(clientValue.getName(), true)){
+                Launcher.instance.screenManager.leaveActiveScreen()
+            }
+        }
         clientValue as IAuthenticatable
         clientValue.setAuthenticated(false)
 
