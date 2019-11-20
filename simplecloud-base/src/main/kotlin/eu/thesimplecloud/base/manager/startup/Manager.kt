@@ -8,6 +8,7 @@ import eu.thesimplecloud.base.manager.service.ServiceHandler
 import eu.thesimplecloud.base.manager.startup.server.CommunicationConnectionHandlerImpl
 import eu.thesimplecloud.base.manager.startup.server.ServerHandlerImpl
 import eu.thesimplecloud.base.manager.startup.server.TemplateConnectionHandlerImpl
+import eu.thesimplecloud.clientserverapi.lib.filetransfer.directory.DirectorySyncManager
 import eu.thesimplecloud.clientserverapi.server.INettyServer
 import eu.thesimplecloud.clientserverapi.server.NettyServer
 import eu.thesimplecloud.launcher.application.ICloudApplication
@@ -41,15 +42,16 @@ class Manager : ICloudApplication {
         this.templateServer = NettyServer<ICommandExecutable>(launcherConfig.host, launcherConfig.port + 1, TemplateConnectionHandlerImpl(), ServerHandlerImpl())
         this.communicationServer.addPacketsByPackage("eu.thesimplecloud.lib.network.packets")
         this.communicationServer.addPacketsByPackage("eu.thesimplecloud.base.manager.network.packets")
+        this.templateServer.addPacketsByPackage("eu.thesimplecloud.base.manager.network.packets.template")
         this.serviceHandler.startThread()
         thread(start = true, isDaemon = false) { communicationServer.start() }
         thread(start = true, isDaemon = false) { templateServer.start() }
+        createDirectories()
         this.templateServer.getDirectorySyncManager().createDirectorySync(File(DirectoryPaths.paths.templatesPath), DirectoryPaths.paths.templatesPath)
         this.templateServer.getDirectorySyncManager().createDirectorySync(File(DirectoryPaths.paths.modulesPath), DirectoryPaths.paths.modulesPath)
     }
 
     override fun onEnable() {
-        createDirectories()
         Launcher.instance.commandManager.registerAllCommands(this, "eu.thesimplecloud.base.manager.commands")
         Launcher.instance.setupManager.onAllSetupsCompleted(Consumer {
             wrapperFileHandler.loadAll().forEach { CloudLib.instance.getWrapperManager().updateWrapper(it) }

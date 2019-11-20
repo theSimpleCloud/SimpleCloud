@@ -2,6 +2,7 @@ package eu.thesimplecloud.base.wrapper.startup
 
 import eu.thesimplecloud.base.wrapper.impl.CloudLibImpl
 import eu.thesimplecloud.base.wrapper.logger.LoggerMessageListenerImpl
+import eu.thesimplecloud.base.wrapper.network.packets.template.PacketOutGetTemplates
 import eu.thesimplecloud.base.wrapper.process.CloudServiceProcessManager
 import eu.thesimplecloud.base.wrapper.process.filehandler.ServiceVersionLoader
 import eu.thesimplecloud.base.wrapper.process.queue.CloudServiceProcessQueue
@@ -18,6 +19,7 @@ import eu.thesimplecloud.lib.wrapper.IWrapperInfo
 import eu.thesimplecloud.lib.wrapper.IWritableWrapperInfo
 import java.io.File
 import java.lang.IllegalStateException
+import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 
 class Wrapper : ICloudApplication {
@@ -51,9 +53,11 @@ class Wrapper : ICloudApplication {
             Launcher.instance.consoleSender.sendMessage("wrapper.startup.template-client.help-message", "If your'e manager is not running in this directory delete the folder \"storage/wrappers\" and restart the wrapper.")
             this.templateClient = null
         } else {
-            this.templateClient = NettyClient(launcherConfig.host, launcherConfig.port + 1)
-            thread(start = true, isDaemon = false) { templateClient.start() }
             Launcher.instance.consoleSender.sendMessage("wrapper.startup.template-client.using", "Using an extra client to receive / send templates.")
+            this.templateClient = NettyClient(launcherConfig.host, launcherConfig.port + 1, ConnectionHandlerImpl())
+            this.communicationClient.getPacketIdsSyncPromise().addResultListener {
+                Launcher.instance.scheduler.schedule({ startTemplateClient(this.templateClient) }, 100, TimeUnit.MILLISECONDS)
+            }
         }
 
         //shutdown hook
@@ -79,6 +83,15 @@ class Wrapper : ICloudApplication {
         })
 
 
+    }
+
+    private fun startTemplateClient(templateClient: NettyClient) {
+        templateClient.addPacketsByPackage("eu.thesimplecloud.base.wrapper.network.packets.template")
+        thread(start = true, isDaemon = false) { templateClient.start() }
+        templateClient.getPacketIdsSyncPromise().addResultListener {
+            println("sending request template")
+            templateClient.sendQuery(PacketOutGetTemplates())
+        }
     }
 
     fun getThisWrapper(): IWrapperInfo = CloudLib.instance.getWrapperManager().getWrapperByName(this.thisWrapperName)

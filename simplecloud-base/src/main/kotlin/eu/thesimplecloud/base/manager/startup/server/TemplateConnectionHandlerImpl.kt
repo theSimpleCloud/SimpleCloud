@@ -30,16 +30,6 @@ class TemplateConnectionHandlerImpl : IConnectionHandler {
             connection.closeConnection()
             return
         }
-        val templatesSyncPromise = connection.getCommunicationBootstrap().getDirectorySyncManager().getDirectorySync(File(DirectoryPaths.paths.templatesPath))?.syncDirectory(connection)
-        val modulesSyncPromise = connection.getCommunicationBootstrap().getDirectorySyncManager().getDirectorySync(File(DirectoryPaths.paths.modulesPath))?.syncDirectory(connection)
-        if (templatesSyncPromise == null || modulesSyncPromise == null) {
-            throw IllegalStateException("Failed to send modules and templates to a connected wrapper.")
-        }
-        templatesSyncPromise.syncUninterruptibly()
-        modulesSyncPromise.syncUninterruptibly()
-        wrapperByHost as IWritableWrapperInfo
-        wrapperByHost.setTemplatesReceived(true)
-        CloudLib.instance.getWrapperManager().updateWrapper(wrapperByHost)
     }
 
     override fun onFailure(connection: IConnection, ex: Throwable) {
