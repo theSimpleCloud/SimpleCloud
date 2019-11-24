@@ -43,14 +43,15 @@ class ProxyGroupSetup : ISetup {
     }
 
     @SetupQuestion(2, "manager.setup.proxy-group.question.type", "Which proxy shall the group use? (Bungeecord, Travertine, Waterfall, Hexacord)")
-    fun typeQuestion(string: String) {
+    fun typeQuestion(string: String): Boolean {
         val serviceVersion = JsonData.fromObject(string.toUpperCase()).getObjectOrNull(ServiceVersion::class.java)
         if (serviceVersion == null || serviceVersion.serviceVersionType != ServiceVersion.ServiceVersionType.PROXY_DEFAULT) {
             Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.version.unsupported", "The specified version is not supported.")
-            return
+            return false
         }
         this.serviceVersion = serviceVersion
-        Launcher.instance.consoleSender.sendMessage("manager.setup.proxy-group.question.type.success", "Proxy set.")
+        Launcher.instance.consoleSender.sendMessage("manager.setup.proxy-group.question.type.success", "Proxy version set.")
+        return true
     }
 
     @SetupQuestion(4, "manager.setup.service-group.question.memory", "How much memory shall the server group have?")

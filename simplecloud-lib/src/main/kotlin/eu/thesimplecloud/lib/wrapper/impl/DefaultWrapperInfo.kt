@@ -1,6 +1,7 @@
 package eu.thesimplecloud.lib.wrapper.impl
 
 import eu.thesimplecloud.clientserverapi.lib.json.GsonExclude
+import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.lib.wrapper.IWrapperInfo
 import eu.thesimplecloud.lib.wrapper.IWritableWrapperInfo
 

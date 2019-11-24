@@ -13,6 +13,7 @@ class PortManager {
         while (usedPorts.contains(port)) {
             port++
         }
+        usedPorts.add(port)
         return port
     }
 

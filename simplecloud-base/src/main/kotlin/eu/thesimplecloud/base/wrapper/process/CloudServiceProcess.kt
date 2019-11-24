@@ -98,6 +98,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
 
             }
         }
+        Wrapper.instance.portManager.setPortUnused(this.cloudService.getPort())
     }
 
     private fun createProcessBuilder(jarFile: File): ProcessBuilder {

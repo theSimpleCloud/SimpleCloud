@@ -19,6 +19,7 @@ open class DefaultWrapperManager : IWrapperManager {
         cashedWrapper.setMaxSimultaneouslyStartingServices(wrapper.getMaxSimultaneouslyStartingServices())
         cashedWrapper.setUsedMemory(wrapper.getUsedMemory())
         cashedWrapper.setAuthenticated(wrapper.isAuthenticated())
+        cashedWrapper.setTemplatesReceived(wrapper.hasTemplatesReceived())
     }
 
     override fun removeWrapper(wrapper: IWrapperInfo) {
