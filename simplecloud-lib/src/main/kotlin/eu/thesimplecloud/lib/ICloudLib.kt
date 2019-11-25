@@ -1,6 +1,7 @@
 package eu.thesimplecloud.lib
 
 import eu.thesimplecloud.lib.eventapi.IEventManager
+import eu.thesimplecloud.lib.player.ICloudPlayerManager
 import eu.thesimplecloud.lib.screen.ICommandExecuteManager
 import eu.thesimplecloud.lib.screen.ICommandExecutable
 import eu.thesimplecloud.lib.service.ICloudServiceManager
@@ -28,6 +29,11 @@ interface ICloudLib {
      * Returns the [ICloudServiceManager] to manage services
      */
     fun getCloudServiceManger(): ICloudServiceManager
+
+    /**
+     * Returns the [ICloudPlayerManager] to manage players
+     */
+    fun getCloudPlayerManager(): ICloudPlayerManager
 
     /**
      * Returns the [IEventManager] to manage and call events

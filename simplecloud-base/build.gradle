@@ -5,6 +5,7 @@ plugins {
 
 repositories {
     mavenCentral()
+    maven { url("http://oss.sonatype.org/content/repositories/snapshots") }
 }
 
 dependencies {
@@ -13,7 +14,7 @@ dependencies {
     implementation(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion)
     implementation project(":simplecloud-lib")
     implementation project(":simplecloud-launcher")
-    compile( project(":simplecloud-client")) {
+    compile(project(":simplecloud-client")) {
         exclude group: 'org.jetbrains.kotlin'
         exclude group: 'eu.thesimplecloud.clientserverapi'
         exclude module: 'simplecloud-lib'
@@ -27,6 +28,8 @@ dependencies {
     // https://mvnrepository.com/artifact/org.reflections/reflections
     implementation group: 'org.reflections', name: 'reflections', version: '0.9.10'
 
+    compile group: 'de.flapdoodle.embed', name: 'de.flapdoodle.embed.mongo', version: '2.2.0'
+    compile group: 'org.mongodb', name: 'mongodb-driver', version: '3.6.3'
 }
 
 compileKotlin {
