@@ -4,8 +4,6 @@ import eu.thesimplecloud.clientserverapi.lib.packet.communicationpromise.ICommun
 import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.player.text.CloudText
 import eu.thesimplecloud.lib.service.ICloudService
-import eu.thesimplecloud.lib.utils.Nameable
-import java.util.*
 
 interface ICloudPlayer : IOfflineCloudPlayer {
 
@@ -25,7 +23,6 @@ interface ICloudPlayer : IOfflineCloudPlayer {
      * Sends a message to this player.
      */
     fun sendMessage(message: String) = sendMessage(CloudText(message))
-
 
     /**
      * Sends this player to the specified [cloudService]
@@ -50,6 +47,11 @@ interface ICloudPlayer : IOfflineCloudPlayer {
     fun sendTitle(title: String, subTitle: String, fadeIn: Int, stay: Int, fadeOut: Int) = CloudLib.instance.getCloudPlayerManager().sendTitle(this, title, subTitle, fadeIn, stay, fadeOut)
 
     /**
+     * Sends a action bar to this player
+     */
+    fun sendActionBar(actionbar: String) = CloudLib.instance.getCloudPlayerManager().sendActionbar(this, actionbar)
+
+    /**
      * Returns the name of the proxy the player is connected to.
      */
     fun getConnectedProxyName(): String
@@ -68,5 +70,20 @@ interface ICloudPlayer : IOfflineCloudPlayer {
      * Returns the server this player is connected to.
      */
     fun getConnectedServer(): ICloudService? = getConnectedServerName()?.let { CloudLib.instance.getCloudServiceManger().getCloudService(it) }
+
+    /**
+     * Tells the manager that this client wants to receive updates of this player.
+     */
+    fun enableUpdates() = CloudLib.instance.getCloudPlayerManager().setUpdates(this, true, CloudLib.instance.getThisSidesName())
+
+    /**
+     * Tells the manager that this client no longer wants to receive updates of this player.
+     */
+    fun disableUpdates() = CloudLib.instance.getCloudPlayerManager().setUpdates(this, false, CloudLib.instance.getThisSidesName())
+
+    /**
+     * Lets this player executes the specified [command]
+     */
+    fun forceCommandExecution(command: String) = CloudLib.instance.getCloudPlayerManager().forcePlayerCommandExecution(this, command)
 
 }

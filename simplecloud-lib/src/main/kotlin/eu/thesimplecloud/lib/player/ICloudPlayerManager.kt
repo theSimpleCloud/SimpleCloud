@@ -3,6 +3,7 @@ package eu.thesimplecloud.lib.player
 import eu.thesimplecloud.clientserverapi.lib.packet.communicationpromise.ICommunicationPromise
 import eu.thesimplecloud.lib.player.text.CloudText
 import eu.thesimplecloud.lib.service.ICloudService
+import eu.thesimplecloud.lib.service.exception.UnavailableServiceException
 import java.util.*
 
 interface ICloudPlayerManager {
@@ -34,11 +35,13 @@ interface ICloudPlayerManager {
 
     /**
      * Returns a promise that will be completed with the requested [ICloudPlayer]
+     * If the player can not be found the promise will fail with [NoSuchElementException]
      */
     fun getCloudPlayer(uniqueId: UUID): ICommunicationPromise<ICloudPlayer>
 
     /**
      * Returns a promise that will be completed with the requested [ICloudPlayer]
+     * If the player can not be found the promise will fail with [NoSuchElementException]
      */
     fun getCloudPlayer(name: String): ICommunicationPromise<ICloudPlayer>
 
@@ -51,12 +54,12 @@ interface ICloudPlayerManager {
 
     /**
      * Sends this player to the specified [cloudService]
+     * If the proxy service the player is connected to is not reachable the promise will fail with [UnavailableServiceException]
      * @param cloudPlayer the [ICloudPlayer] to send to the specified service.
      * @param cloudService the service the player shall be sent to.
      * @throws IllegalArgumentException when the specified service is a proxy service.
-     * @return a promise that will be completed when then player is connected to the specified service.
      */
-    fun sendPlayerToService(cloudPlayer: ICloudPlayer, cloudService: ICloudService): ICommunicationPromise<Unit>
+    fun sendPlayerToService(cloudPlayer: ICloudPlayer, cloudService: ICloudService)
 
     /**
      * Kicks the specified player with the specified message from the network.
@@ -75,5 +78,24 @@ interface ICloudPlayerManager {
      * @param fadeOut the amount of ticks the title shall fade out.
      */
     fun sendTitle(cloudPlayer: ICloudPlayer, title: String, subTitle: String, fadeIn: Int, stay: Int, fadeOut: Int)
+
+    /**
+     * Lets the specified [cloudPlayer] executes the specified [command]
+     */
+    fun forcePlayerCommandExecution(cloudPlayer: ICloudPlayer, command: String)
+
+    /**
+     * Sends a action bar to the specified player.
+     * @param cloudPlayer the [ICloudPlayer] that shall receive the [actionbar]
+     * @param actionbar the actionbar content
+     */
+    fun sendActionbar(cloudPlayer: ICloudPlayer, actionbar: String)
+
+    /**
+     * Tells the manager that this instance wants to receive updates of the specified [cloudPlayer]
+     * @param cloudPlayer the player
+     * @param update whether updates shall be sent.
+     */
+    fun setUpdates(cloudPlayer: ICloudPlayer, update: Boolean, serviceName: String)
 
 }

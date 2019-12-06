@@ -6,6 +6,7 @@ class CloudPlayer(
         name: String,
         uniqueId: UUID,
         private val version: Int,
+        firstLogin: Long,
         lastLogin: Long,
         onlineTime: Long,
         private var connectedProxyName: String,
@@ -13,6 +14,7 @@ class CloudPlayer(
 ) : OfflineCloudPlayer(
         name,
         uniqueId,
+        firstLogin,
         lastLogin,
         onlineTime
 ), ICloudPlayer {

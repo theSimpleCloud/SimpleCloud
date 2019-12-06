@@ -25,8 +25,6 @@ class EventManager : IEventManager {
     }
 
     override fun call(event: IEvent) {
-        if (!listeners.containsKey(event::class.java))
-            return
         this.listeners[event::class.java]?.forEach { methodData ->
             methodData.method.invoke(methodData.listener, event)
         }
@@ -60,11 +58,7 @@ class EventManager : IEventManager {
      * @param eventData the [EventData] that should be registered.
      */
     private fun addMethodData(eventClass: Class<out IEvent>, eventData: EventData) {
-        if (this.listeners.containsKey(eventClass)) {
-            this.listeners[eventClass]?.add(eventData)
-            return
-        }
-        this.listeners[eventClass] = mutableListOf(eventData)
+        this.listeners.getOrPut(eventClass, { ArrayList() }).add(eventData)
     }
 
     /**

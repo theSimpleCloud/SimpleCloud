@@ -1,6 +1,8 @@
 package eu.thesimplecloud.lib.player
 
 
+import eu.thesimplecloud.clientserverapi.lib.packet.communicationpromise.CommunicationPromise
+import eu.thesimplecloud.clientserverapi.lib.packet.communicationpromise.ICommunicationPromise
 import kotlin.collections.ArrayList
 
 abstract class AbstractCloudPlayerManager : ICloudPlayerManager {
@@ -24,6 +26,14 @@ abstract class AbstractCloudPlayerManager : ICloudPlayerManager {
 
     override fun getAllCachedCloudPlayers(): List<ICloudPlayer> = this.cachedPlayers
 
+    /**
+     * Creates a [ICommunicationPromise] with the [cloudPlayer]
+     * If the [cloudPlayer] is not null it will returns a promise completed with the player.
+     * If the [cloudPlayer] is null it will return a promise failed with [NoSuchElementException]
+     */
+    fun promiseOfNullablePlayer(cloudPlayer: ICloudPlayer?): ICommunicationPromise<ICloudPlayer> {
+        return CommunicationPromise.ofNullable(cloudPlayer, NoSuchElementException("CloudPlayer not found."))
+    }
 
 
 }

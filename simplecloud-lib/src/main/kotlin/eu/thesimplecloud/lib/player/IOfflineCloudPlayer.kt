@@ -15,6 +15,12 @@ interface IOfflineCloudPlayer : Nameable {
      */
     fun getLastLogin(): Long
 
+
+    /**
+     * Returns the timestamp of the first login.
+     */
+    fun getFirstLogin(): Long
+
     /**
      * Returns the online time of this player in milliseconds
      */

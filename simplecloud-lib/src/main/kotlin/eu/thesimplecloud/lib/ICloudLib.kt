@@ -49,4 +49,10 @@ interface ICloudLib {
      * Returns the [ITemplateManager] used to manage the templates
      */
     fun getTemplateManager(): ITemplateManager
+
+    /**
+     * Returns the name of this side
+     * e.g Manager / Wrapper / Lobby-1
+     */
+    fun getThisSidesName(): String
 }
