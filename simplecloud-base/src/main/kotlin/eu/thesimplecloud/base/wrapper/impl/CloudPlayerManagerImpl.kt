@@ -3,6 +3,7 @@ package eu.thesimplecloud.base.wrapper.impl
 import eu.thesimplecloud.clientserverapi.lib.packet.communicationpromise.ICommunicationPromise
 import eu.thesimplecloud.lib.player.AbstractCloudPlayerManager
 import eu.thesimplecloud.lib.player.ICloudPlayer
+import eu.thesimplecloud.lib.player.IOfflineCloudPlayer
 import eu.thesimplecloud.lib.player.text.CloudText
 import eu.thesimplecloud.lib.service.ICloudService
 import java.util.*
@@ -42,6 +43,14 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
     }
 
     override fun setUpdates(cloudPlayer: ICloudPlayer, update: Boolean, serviceName: String) {
+        throw UnsupportedOperationException("Players are not supported in the wrapper.")
+    }
+
+    override fun getOfflineCloudPlayer(name: String): ICommunicationPromise<IOfflineCloudPlayer> {
+        throw UnsupportedOperationException("Players are not supported in the wrapper.")
+    }
+
+    override fun getOfflineCloudPlayer(uniqueId: UUID): ICommunicationPromise<IOfflineCloudPlayer> {
         throw UnsupportedOperationException("Players are not supported in the wrapper.")
     }
 }

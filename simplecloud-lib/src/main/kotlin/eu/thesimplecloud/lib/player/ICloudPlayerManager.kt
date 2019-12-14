@@ -98,4 +98,17 @@ interface ICloudPlayerManager {
      */
     fun setUpdates(cloudPlayer: ICloudPlayer, update: Boolean, serviceName: String)
 
+    /**
+     * Returns the offline player found by the specified [name]
+     * @return a promise that is completed when the [IOfflineCloudPlayer] is available.
+     */
+    fun getOfflineCloudPlayer(name: String): ICommunicationPromise<IOfflineCloudPlayer>
+
+
+    /**
+     * Returns the offline player found by the specified [uniqueId]
+     * @return a promise that is completed when the [IOfflineCloudPlayer] is available.
+     */
+    fun getOfflineCloudPlayer(uniqueId: UUID): ICommunicationPromise<IOfflineCloudPlayer>
+
 }

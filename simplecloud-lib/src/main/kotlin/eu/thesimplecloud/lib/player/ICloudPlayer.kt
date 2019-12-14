@@ -29,7 +29,7 @@ interface ICloudPlayer : IOfflineCloudPlayer {
      * @throws IllegalArgumentException when the specified service is a proxy service.
      * @return a promise that will be completed when then player is connected to the specified service.
      */
-    fun sendToService(cloudService: ICloudService): ICommunicationPromise<Unit> = CloudLib.instance.getCloudPlayerManager().sendPlayerToService(this, cloudService)
+    fun sendToService(cloudService: ICloudService) = CloudLib.instance.getCloudPlayerManager().sendPlayerToService(this, cloudService)
 
     /**
      * Kicks this player form the network.

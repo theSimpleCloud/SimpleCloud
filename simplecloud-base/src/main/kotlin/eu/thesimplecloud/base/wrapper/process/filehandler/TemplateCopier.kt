@@ -1,7 +1,7 @@
 package eu.thesimplecloud.base.wrapper.process.filehandler
 
 import eu.thesimplecloud.base.wrapper.startup.Wrapper
-import eu.thesimplecloud.base.wrapper.utils.FileCopier
+import eu.thesimplecloud.base.core.utils.FileCopier
 import eu.thesimplecloud.clientserverapi.client.NettyClient
 import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.launcher.dependency.DependencyLoader

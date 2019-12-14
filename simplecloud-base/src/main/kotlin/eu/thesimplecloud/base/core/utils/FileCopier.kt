@@ -1,4 +1,4 @@
-package eu.thesimplecloud.base.wrapper.utils
+package eu.thesimplecloud.base.core.utils
 
 import org.apache.commons.io.FileUtils
 import java.io.File

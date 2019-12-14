@@ -4,10 +4,10 @@ import eu.thesimplecloud.clientserverapi.lib.packet.communicationpromise.Communi
 import eu.thesimplecloud.clientserverapi.lib.packet.communicationpromise.ICommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.packet.packetresponse.responsehandler.ObjectPacketResponseHandler
 import eu.thesimplecloud.lib.network.packets.player.*
-import eu.thesimplecloud.lib.network.packets.screen.PacketIOExecuteCommand
 import eu.thesimplecloud.lib.player.AbstractCloudPlayerManager
 import eu.thesimplecloud.lib.player.CloudPlayer
 import eu.thesimplecloud.lib.player.ICloudPlayer
+import eu.thesimplecloud.lib.player.IOfflineCloudPlayer
 import eu.thesimplecloud.lib.player.text.CloudText
 import eu.thesimplecloud.lib.service.ICloudService
 import eu.thesimplecloud.plugin.proxy.text.CloudTextBuilder
@@ -93,6 +93,10 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
     override fun setUpdates(cloudPlayer: ICloudPlayer, update: Boolean, serviceName: String) {
         CloudPlugin.instance.communicationClient.sendQuery(PacketIOSetCloudPlayerUpdates(cloudPlayer, update, serviceName))
     }
+
+    override fun getOfflineCloudPlayer(name: String): ICommunicationPromise<IOfflineCloudPlayer> = TODO()
+
+    override fun getOfflineCloudPlayer(uniqueId: UUID): ICommunicationPromise<IOfflineCloudPlayer> = TODO()
 
     private fun getProxiedPlayerByCloudPlayer(cloudPlayer: ICloudPlayer): ProxiedPlayer? {
         return ProxyServer.getInstance().getPlayer(cloudPlayer.getUniqueId())

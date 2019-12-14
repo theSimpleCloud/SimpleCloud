@@ -1,10 +1,9 @@
 package eu.thesimplecloud.base.wrapper.process.serviceconfigurator.configurators
 
 import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.IServiceConfigurator
-import eu.thesimplecloud.base.wrapper.utils.FileCopier
+import eu.thesimplecloud.base.core.utils.FileCopier
 import eu.thesimplecloud.lib.service.ICloudService
 import eu.thesimplecloud.lib.utils.FileEditor
-import org.apache.commons.io.FileUtils
 import java.io.File
 
 class DefaultProxyConfigurator : IServiceConfigurator {

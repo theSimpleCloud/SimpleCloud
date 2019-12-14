@@ -8,6 +8,7 @@ import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.network.packets.player.*
 import eu.thesimplecloud.lib.player.AbstractCloudPlayerManager
 import eu.thesimplecloud.lib.player.ICloudPlayer
+import eu.thesimplecloud.lib.player.IOfflineCloudPlayer
 import eu.thesimplecloud.lib.player.text.CloudText
 import eu.thesimplecloud.lib.service.ICloudService
 import eu.thesimplecloud.lib.service.exception.UnavailableServiceException
@@ -78,6 +79,10 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
         val list = playerUpdates.getOrPut(cloudPlayer.getUniqueId()) { ArrayList() }
         if (update) list.add(serviceName) else list.remove(serviceName)
     }
+
+    override fun getOfflineCloudPlayer(name: String): ICommunicationPromise<IOfflineCloudPlayer> = TODO()
+
+    override fun getOfflineCloudPlayer(uniqueId: UUID): ICommunicationPromise<IOfflineCloudPlayer> = TODO()
 
     private fun getProxyClientOfCloudPlayer(cloudPlayer: ICloudPlayer): IConnectedClient<*>? {
         val connectedProxy = cloudPlayer.getConnectedProxy() ?: return null

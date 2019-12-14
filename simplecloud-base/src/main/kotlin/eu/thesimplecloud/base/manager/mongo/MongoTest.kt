@@ -1,7 +1,5 @@
 package eu.thesimplecloud.base.manager.mongo
 
-import com.mongodb.BasicDBObject
-import com.mongodb.MongoClient
 import de.flapdoodle.embed.mongo.Command
 import de.flapdoodle.embed.mongo.MongodExecutable
 import de.flapdoodle.embed.mongo.MongodStarter
@@ -56,7 +54,7 @@ class MongoTest {
         try {
             mongodExecutable = starter.prepare(mongodConfig)
             val mongod = mongodExecutable!!.start()
-
+            /*
             val mongo = MongoClient(bindIp, port)
             val db = mongo.getDB("test")
             val col = db.createCollection("testCol", BasicDBObject())
@@ -65,6 +63,7 @@ class MongoTest {
             while (true) {
 
             }
+            */
         } finally {
             //mongodExecutable?.stop()
         }
