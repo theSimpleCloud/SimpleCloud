@@ -2,6 +2,8 @@ package eu.thesimplecloud.lib.player
 
 import eu.thesimplecloud.clientserverapi.lib.packet.communicationpromise.ICommunicationPromise
 import eu.thesimplecloud.lib.CloudLib
+import eu.thesimplecloud.lib.location.ServiceLocation
+import eu.thesimplecloud.lib.location.SimpleLocation
 import eu.thesimplecloud.lib.player.text.CloudText
 import eu.thesimplecloud.lib.service.ICloudService
 
@@ -29,7 +31,7 @@ interface ICloudPlayer : IOfflineCloudPlayer {
      * @throws IllegalArgumentException when the specified service is a proxy service.
      * @return a promise that will be completed when then player is connected to the specified service.
      */
-    fun sendToService(cloudService: ICloudService) = CloudLib.instance.getCloudPlayerManager().sendPlayerToService(this, cloudService)
+    fun connect(cloudService: ICloudService) = CloudLib.instance.getCloudPlayerManager().connectPlayer(this, cloudService)
 
     /**
      * Kicks this player form the network.
@@ -85,5 +87,22 @@ interface ICloudPlayer : IOfflineCloudPlayer {
      * Lets this player executes the specified [command]
      */
     fun forceCommandExecution(command: String) = CloudLib.instance.getCloudPlayerManager().forcePlayerCommandExecution(this, command)
+
+    /**
+     * Teleports this player to the specified [location]
+     */
+    fun teleport(location: SimpleLocation): Nothing = TODO()
+
+    /**
+     * Teleports this player to the specified [location]
+     * If the player is not connected to the service specified in the [location] he will be sent to the service.
+     */
+    fun teleport(location: ServiceLocation): Nothing = TODO()
+
+    /**
+     * Returns the location the player is on.
+     * @return a promise that is called when the location is available. The promise will fail if the player is not connected to the network or not connected to a server.
+     */
+    fun getLocation(): ICommunicationPromise<ServiceLocation> = TODO()
 
 }

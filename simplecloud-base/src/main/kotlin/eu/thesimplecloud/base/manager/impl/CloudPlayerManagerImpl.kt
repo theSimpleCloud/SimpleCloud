@@ -1,7 +1,6 @@
 package eu.thesimplecloud.base.manager.impl
 
 import eu.thesimplecloud.base.manager.startup.Manager
-import eu.thesimplecloud.clientserverapi.lib.packet.communicationpromise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.packet.communicationpromise.ICommunicationPromise
 import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnectedClient
 import eu.thesimplecloud.lib.CloudLib
@@ -11,7 +10,6 @@ import eu.thesimplecloud.lib.player.ICloudPlayer
 import eu.thesimplecloud.lib.player.IOfflineCloudPlayer
 import eu.thesimplecloud.lib.player.text.CloudText
 import eu.thesimplecloud.lib.service.ICloudService
-import eu.thesimplecloud.lib.service.exception.UnavailableServiceException
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -50,9 +48,9 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
         proxyClient?.sendQuery(PacketIOSendMessageToCloudPlayer(cloudPlayer, cloudText))
     }
 
-    override fun sendPlayerToService(cloudPlayer: ICloudPlayer, cloudService: ICloudService) {
+    override fun connectPlayer(cloudPlayer: ICloudPlayer, cloudService: ICloudService) {
         val proxyClient = getProxyClientOfCloudPlayer(cloudPlayer)
-        proxyClient?.sendQuery(PacketIOSendCloudPlayerToService(cloudPlayer, cloudService))
+        proxyClient?.sendQuery(PacketIOConnectCloudPlayer(cloudPlayer, cloudService))
     }
 
     override fun kickPlayer(cloudPlayer: ICloudPlayer, message: String) {

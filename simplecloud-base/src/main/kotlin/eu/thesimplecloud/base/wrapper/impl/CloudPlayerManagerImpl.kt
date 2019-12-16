@@ -22,7 +22,7 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
         throw UnsupportedOperationException("Players are not supported in the wrapper.")
     }
 
-    override fun sendPlayerToService(cloudPlayer: ICloudPlayer, cloudService: ICloudService) {
+    override fun connectPlayer(cloudPlayer: ICloudPlayer, cloudService: ICloudService) {
         throw UnsupportedOperationException("Players are not supported in the wrapper.")
     }
 

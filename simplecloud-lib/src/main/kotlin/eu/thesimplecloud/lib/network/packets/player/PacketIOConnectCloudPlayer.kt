@@ -8,7 +8,7 @@ import eu.thesimplecloud.lib.player.ICloudPlayer
 import eu.thesimplecloud.lib.service.ICloudService
 import java.util.*
 
-class PacketIOSendCloudPlayerToService() : JsonPacket() {
+class PacketIOConnectCloudPlayer() : JsonPacket() {
 
     constructor(cloudPlayer: ICloudPlayer, service: ICloudService) : this() {
         this.jsonData.append("playerUniqueId", cloudPlayer.getUniqueId()).append("serviceName", service.getName())
@@ -18,7 +18,7 @@ class PacketIOSendCloudPlayerToService() : JsonPacket() {
         val playerUniqueId = this.jsonData.getObject("playerUniqueId", UUID::class.java) ?: return null
         val serviceName = this.jsonData.getString("serviceName") ?: return null
         val cloudService = CloudLib.instance.getCloudServiceManger().getCloudService(serviceName) ?: return null
-        CloudLib.instance.getCloudPlayerManager().getCachedCloudPlayer(playerUniqueId)?.sendToService(cloudService)
+        CloudLib.instance.getCloudPlayerManager().getCachedCloudPlayer(playerUniqueId)?.connect(cloudService)
         return null
     }
 }

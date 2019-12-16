@@ -119,6 +119,7 @@ class SetupManager(val launcher: Launcher) {
     private fun checkForNextSetup() {
         if (this.setupQueue.isEmpty()) {
             this.allSetupsCompletedCallbacks.forEach { it.accept(Unit) }
+            this.allSetupsCompletedCallbacks.clear()
         }
         if (this.setupQueue.isNotEmpty()) {
             startSetup(this.setupQueue.removeAt(0))

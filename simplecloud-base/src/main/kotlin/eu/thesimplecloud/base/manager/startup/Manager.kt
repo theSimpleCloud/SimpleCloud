@@ -1,11 +1,14 @@
 package eu.thesimplecloud.base.manager.startup
 
+import com.mongodb.client.MongoClient
+import eu.thesimplecloud.base.manager.config.MongoDBConfigLoader
 import eu.thesimplecloud.base.manager.filehandler.CloudServiceGroupFileHandler
 import eu.thesimplecloud.base.manager.config.TemplatesConfigLoader
 import eu.thesimplecloud.base.manager.filehandler.WrapperFileHandler
 import eu.thesimplecloud.base.manager.impl.CloudLibImpl
 import eu.thesimplecloud.base.manager.listener.CloudListener
 import eu.thesimplecloud.base.manager.service.ServiceHandler
+import eu.thesimplecloud.base.manager.setup.MongoDBSetup
 import eu.thesimplecloud.base.manager.startup.server.CommunicationConnectionHandlerImpl
 import eu.thesimplecloud.base.manager.startup.server.ServerHandlerImpl
 import eu.thesimplecloud.base.manager.startup.server.TemplateConnectionHandlerImpl
@@ -17,6 +20,7 @@ import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.directorypaths.DirectoryPaths
 import eu.thesimplecloud.lib.screen.ICommandExecutable
+import org.litote.kmongo.KMongo
 import java.io.File
 import java.util.function.Consumer
 import kotlin.concurrent.thread
@@ -27,6 +31,8 @@ class Manager : ICloudApplication {
     val wrapperFileHandler = WrapperFileHandler()
     val templatesConfigLoader = TemplatesConfigLoader()
     val serviceHandler: ServiceHandler = ServiceHandler()
+    val mongoDBConfigLoader = MongoDBConfigLoader()
+    val mongoClient: MongoClient
 
     companion object {
         lateinit var instance: Manager
@@ -45,12 +51,15 @@ class Manager : ICloudApplication {
         this.communicationServer.addPacketsByPackage("eu.thesimplecloud.lib.network.packets")
         this.communicationServer.addPacketsByPackage("eu.thesimplecloud.base.manager.network.packets")
         this.templateServer.addPacketsByPackage("eu.thesimplecloud.base.manager.network.packets.template")
-        this.serviceHandler.startThread()
-        thread(start = true, isDaemon = false) { communicationServer.start() }
-        thread(start = true, isDaemon = false) { templateServer.start() }
         createDirectories()
-        this.templateServer.getDirectorySyncManager().createDirectorySync(File(DirectoryPaths.paths.templatesPath), DirectoryPaths.paths.templatesPath)
-        this.templateServer.getDirectorySyncManager().createDirectorySync(File(DirectoryPaths.paths.modulesPath), DirectoryPaths.paths.modulesPath)
+        Launcher.instance.setupManager.queueSetup(MongoDBSetup())
+        Launcher.instance.setupManager.onAllSetupsCompleted(Consumer {
+            thread(start = true, isDaemon = false) { templateServer.start() }
+            thread(start = true, isDaemon = false) { communicationServer.start() }
+            this.templateServer.getDirectorySyncManager().createDirectorySync(File(DirectoryPaths.paths.templatesPath), DirectoryPaths.paths.templatesPath)
+            this.templateServer.getDirectorySyncManager().createDirectorySync(File(DirectoryPaths.paths.modulesPath), DirectoryPaths.paths.modulesPath)
+            this.serviceHandler.startThread()
+        })
     }
 
     override fun onEnable() {
@@ -65,12 +74,12 @@ class Manager : ICloudApplication {
                 CloudLib.instance.getWrapperManager().getAllWrappers().forEach { Launcher.instance.consoleSender.sendMessage("- ${it.getName()}") }
             }
 
-            if (CloudLib.instance.getTemplateManager().getAllTemplates().isNotEmpty()){
+            if (CloudLib.instance.getTemplateManager().getAllTemplates().isNotEmpty()) {
                 Launcher.instance.consoleSender.sendMessage("manager.startup.loaded.templates", "Loaded following templates:")
                 CloudLib.instance.getTemplateManager().getAllTemplates().forEach { Launcher.instance.consoleSender.sendMessage("- ${it.getName()}") }
             }
 
-            if (CloudLib.instance.getCloudServiceGroupManager().getAllGroups().isNotEmpty()){
+            if (CloudLib.instance.getCloudServiceGroupManager().getAllGroups().isNotEmpty()) {
                 Launcher.instance.consoleSender.sendMessage("manager.startup.loaded.groups", "Loaded following groups:")
                 CloudLib.instance.getCloudServiceGroupManager().getAllGroups().forEach { Launcher.instance.consoleSender.sendMessage("- ${it.getName()}") }
             }

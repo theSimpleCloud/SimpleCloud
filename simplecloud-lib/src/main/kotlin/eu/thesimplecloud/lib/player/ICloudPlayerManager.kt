@@ -59,7 +59,7 @@ interface ICloudPlayerManager {
      * @param cloudService the service the player shall be sent to.
      * @throws IllegalArgumentException when the specified service is a proxy service.
      */
-    fun sendPlayerToService(cloudPlayer: ICloudPlayer, cloudService: ICloudService)
+    fun connectPlayer(cloudPlayer: ICloudPlayer, cloudService: ICloudService)
 
     /**
      * Kicks the specified player with the specified message from the network.
