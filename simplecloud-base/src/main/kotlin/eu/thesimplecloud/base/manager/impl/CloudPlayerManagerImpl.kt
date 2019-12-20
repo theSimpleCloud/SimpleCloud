@@ -1,7 +1,9 @@
 package eu.thesimplecloud.base.manager.impl
 
 import eu.thesimplecloud.base.manager.startup.Manager
+import eu.thesimplecloud.clientserverapi.lib.packet.communicationpromise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.packet.communicationpromise.ICommunicationPromise
+import eu.thesimplecloud.clientserverapi.lib.packet.packetresponse.responsehandler.ObjectPacketResponseHandler
 import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnectedClient
 import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.network.packets.player.*
@@ -10,6 +12,8 @@ import eu.thesimplecloud.lib.player.ICloudPlayer
 import eu.thesimplecloud.lib.player.IOfflineCloudPlayer
 import eu.thesimplecloud.lib.player.text.CloudText
 import eu.thesimplecloud.lib.service.ICloudService
+import eu.thesimplecloud.lib.service.ServiceType
+import java.lang.IllegalStateException
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -48,9 +52,11 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
         proxyClient?.sendQuery(PacketIOSendMessageToCloudPlayer(cloudPlayer, cloudText))
     }
 
-    override fun connectPlayer(cloudPlayer: ICloudPlayer, cloudService: ICloudService) {
+    override fun connectPlayer(cloudPlayer: ICloudPlayer, cloudService: ICloudService): ICommunicationPromise<Boolean> {
+        if (cloudService.getServiceType() == ServiceType.PROXY) throw IllegalArgumentException("Cannot send player to a proxy service")
         val proxyClient = getProxyClientOfCloudPlayer(cloudPlayer)
-        proxyClient?.sendQuery(PacketIOConnectCloudPlayer(cloudPlayer, cloudService))
+        proxyClient ?: return CommunicationPromise.of(false)
+        return proxyClient.sendQuery(PacketIOConnectCloudPlayer(cloudPlayer, cloudService), ObjectPacketResponseHandler.new())
     }
 
     override fun kickPlayer(cloudPlayer: ICloudPlayer, message: String) {

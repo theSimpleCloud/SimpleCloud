@@ -12,11 +12,13 @@ import eu.thesimplecloud.lib.player.text.CloudText
 import eu.thesimplecloud.lib.service.ICloudService
 import eu.thesimplecloud.plugin.proxy.text.CloudTextBuilder
 import eu.thesimplecloud.plugin.startup.CloudPlugin
+import net.md_5.bungee.api.Callback
 import net.md_5.bungee.api.ChatMessageType
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.config.ServerInfo
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import java.util.*
+import java.util.function.Consumer
 
 class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
 
@@ -38,18 +40,23 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
 
     override fun sendMessageToPlayer(cloudPlayer: ICloudPlayer, cloudText: CloudText) {
         if (cloudPlayer.getConnectedProxyName() == CloudPlugin.instance.thisServiceName) {
-                getProxiedPlayerByCloudPlayer(cloudPlayer)?.sendMessage(CloudTextBuilder().build(cloudText))
-                return
+            getProxiedPlayerByCloudPlayer(cloudPlayer)?.sendMessage(CloudTextBuilder().build(cloudText))
+            return
         }
         CloudPlugin.instance.communicationClient.sendQuery(PacketIOSendMessageToCloudPlayer(cloudPlayer, cloudText))
     }
 
-    override fun connectPlayer(cloudPlayer: ICloudPlayer, cloudService: ICloudService) {
+    override fun connectPlayer(cloudPlayer: ICloudPlayer, cloudService: ICloudService): ICommunicationPromise<Boolean> {
         if (cloudPlayer.getConnectedProxyName() == CloudPlugin.instance.thisServiceName) {
-            getServerInfoByCloudService(cloudService)?.let { getProxiedPlayerByCloudPlayer(cloudPlayer)?.connect(it) }
-            return
+            val serverInfo = getServerInfoByCloudService(cloudService)
+            serverInfo ?: return CommunicationPromise.of(false)
+            val proxiedPlayer = getProxiedPlayerByCloudPlayer(cloudPlayer)
+            proxiedPlayer ?: return CommunicationPromise.of(false)
+            val communicationPromise = CommunicationPromise<Boolean>()
+            proxiedPlayer.connect(serverInfo) { boolean, _ -> communicationPromise.trySuccess(boolean) }
+            return communicationPromise
         }
-        CloudPlugin.instance.communicationClient.sendQuery(PacketIOConnectCloudPlayer(cloudPlayer, cloudService))
+        return CloudPlugin.instance.communicationClient.sendQuery(PacketIOConnectCloudPlayer(cloudPlayer, cloudService), ObjectPacketResponseHandler.new())
     }
 
     override fun kickPlayer(cloudPlayer: ICloudPlayer, message: String) {

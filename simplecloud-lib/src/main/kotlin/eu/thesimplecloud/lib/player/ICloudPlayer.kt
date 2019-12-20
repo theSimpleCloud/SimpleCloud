@@ -1,11 +1,14 @@
 package eu.thesimplecloud.lib.player
 
+import eu.thesimplecloud.clientserverapi.lib.packet.communicationpromise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.packet.communicationpromise.ICommunicationPromise
+import eu.thesimplecloud.clientserverapi.lib.packet.communicationpromise.flatten
 import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.location.ServiceLocation
 import eu.thesimplecloud.lib.location.SimpleLocation
 import eu.thesimplecloud.lib.player.text.CloudText
 import eu.thesimplecloud.lib.service.ICloudService
+import eu.thesimplecloud.lib.service.ServiceType
 
 interface ICloudPlayer : IOfflineCloudPlayer {
 
@@ -29,9 +32,11 @@ interface ICloudPlayer : IOfflineCloudPlayer {
     /**
      * Sends this player to the specified [cloudService]
      * @throws IllegalArgumentException when the specified service is a proxy service.
-     * @return a promise that will be completed when then player is connected to the specified service.
+     * @return a promise that is completed when the connection is complete, or
+     * when an exception is encountered. The boolean parameter denotes success
+     * or failure.
      */
-    fun connect(cloudService: ICloudService) = CloudLib.instance.getCloudPlayerManager().connectPlayer(this, cloudService)
+    fun connect(cloudService: ICloudService): ICommunicationPromise<Boolean> = CloudLib.instance.getCloudPlayerManager().connectPlayer(this, cloudService)
 
     /**
      * Kicks this player form the network.
@@ -90,14 +95,23 @@ interface ICloudPlayer : IOfflineCloudPlayer {
 
     /**
      * Teleports this player to the specified [location]
+     * @return a promise that is completed when the teleportation is complete, or
+     * when an exception is encountered. The boolean parameter denotes success
+     * or failure.
      */
-    fun teleport(location: SimpleLocation): Nothing = TODO()
+    fun teleport(location: SimpleLocation): ICommunicationPromise<Boolean> = CloudLib.instance.getCloudPlayerManager().teleport(this, location)
 
     /**
      * Teleports this player to the specified [location]
      * If the player is not connected to the service specified in the [location] he will be sent to the service.
+     * @return a promise that is completed when the teleportation is complete, or
+     * when an exception is encountered. The boolean parameter denotes success
+     * or failure.
      */
-    fun teleport(location: ServiceLocation): Nothing = TODO()
+    fun teleport(location: ServiceLocation): ICommunicationPromise<Boolean> {
+        val locationService = location.getService() ?: return CommunicationPromise.of(false)
+        return this.connect(locationService).then { this.teleport(location) }.flatten().addFailureListener { this.sendMessage("§cTeleportation failed.") }
+    }
 
     /**
      * Returns the location the player is on.

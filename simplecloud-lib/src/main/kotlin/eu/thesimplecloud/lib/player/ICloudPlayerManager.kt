@@ -1,6 +1,8 @@
 package eu.thesimplecloud.lib.player
 
 import eu.thesimplecloud.clientserverapi.lib.packet.communicationpromise.ICommunicationPromise
+import eu.thesimplecloud.lib.location.ServiceLocation
+import eu.thesimplecloud.lib.location.SimpleLocation
 import eu.thesimplecloud.lib.player.text.CloudText
 import eu.thesimplecloud.lib.service.ICloudService
 import eu.thesimplecloud.lib.service.exception.UnavailableServiceException
@@ -58,8 +60,11 @@ interface ICloudPlayerManager {
      * @param cloudPlayer the [ICloudPlayer] to send to the specified service.
      * @param cloudService the service the player shall be sent to.
      * @throws IllegalArgumentException when the specified service is a proxy service.
+     * @return a promise that is completed when the connection is complete, or
+     * when an exception is encountered. The boolean parameter denotes success
+     * or failure.
      */
-    fun connectPlayer(cloudPlayer: ICloudPlayer, cloudService: ICloudService)
+    fun connectPlayer(cloudPlayer: ICloudPlayer, cloudService: ICloudService): ICommunicationPromise<Boolean>
 
     /**
      * Kicks the specified player with the specified message from the network.
@@ -97,6 +102,19 @@ interface ICloudPlayerManager {
      * @param update whether updates shall be sent.
      */
     fun setUpdates(cloudPlayer: ICloudPlayer, update: Boolean, serviceName: String)
+
+    /**
+     * Teleports the specified [cloudPlayer] to the specified [location].
+     * @return a promise that is completed when the teleportation is complete, or
+     * when an exception is encountered. The boolean parameter denotes success
+     * or failure.
+     */
+    fun teleport(cloudPlayer: ICloudPlayer, location: SimpleLocation): ICommunicationPromise<Boolean>
+
+    /**
+     * Returns the current location of the specified [cloudPlayer]
+     */
+    fun getLocationOfPlayer(cloudPlayer: ICloudPlayer): ICommunicationPromise<ServiceLocation>
 
     /**
      * Returns the offline player found by the specified [name]

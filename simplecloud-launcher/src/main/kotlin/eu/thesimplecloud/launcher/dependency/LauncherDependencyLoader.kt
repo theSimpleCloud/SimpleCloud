@@ -10,7 +10,7 @@ class LauncherDependencyLoader {
                 Dependency("org.litote.kmongo", "kmongo", "3.11.1"),
                 Dependency("ru.yandex.qatools.embed", "embedded-services", "1.21"),
                 Dependency("io.netty", "netty-all", "4.1.4.Final"),
-                Dependency("eu.thesimplecloud.clientserverapi", "clientserverapi", "1.1.46-SNAPSHOT"),
+                Dependency("eu.thesimplecloud.clientserverapi", "clientserverapi", "1.1.51-SNAPSHOT"),
                 Dependency("org.mongodb", "mongo-java-driver", "3.11.0"),
                 Dependency("de.flapdoodle.embed", "de.flapdoodle.embed.mongo", "2.1.2"),
                 Dependency("org.reflections", "reflections", "0.9.10"),
