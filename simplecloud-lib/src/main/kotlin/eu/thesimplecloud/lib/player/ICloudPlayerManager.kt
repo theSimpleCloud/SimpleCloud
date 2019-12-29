@@ -1,11 +1,14 @@
 package eu.thesimplecloud.lib.player
 
-import eu.thesimplecloud.clientserverapi.lib.packet.communicationpromise.ICommunicationPromise
+import eu.thesimplecloud.lib.exception.NoSuchWorldException
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.lib.location.ServiceLocation
 import eu.thesimplecloud.lib.location.SimpleLocation
 import eu.thesimplecloud.lib.player.text.CloudText
 import eu.thesimplecloud.lib.service.ICloudService
-import eu.thesimplecloud.lib.service.exception.UnavailableServiceException
+import eu.thesimplecloud.lib.exception.UnavailableServiceException
+import eu.thesimplecloud.lib.exception.NoSuchPlayerException
+import eu.thesimplecloud.lib.exception.PlayerConnectException
 import java.util.*
 
 interface ICloudPlayerManager {
@@ -55,16 +58,19 @@ interface ICloudPlayerManager {
     fun sendMessageToPlayer(cloudPlayer: ICloudPlayer, cloudText: CloudText)
 
     /**
-     * Sends this player to the specified [cloudService]
-     * If the proxy service the player is connected to is not reachable the promise will fail with [UnavailableServiceException]
+     * Sends the [cloudPlayer] to the specified [cloudService]
      * @param cloudPlayer the [ICloudPlayer] to send to the specified service.
      * @param cloudService the service the player shall be sent to.
-     * @throws IllegalArgumentException when the specified service is a proxy service.
      * @return a promise that is completed when the connection is complete, or
-     * when an exception is encountered. The boolean parameter denotes success
+     * when an exception is encountered. [ICommunicationPromise.isSuccess] indicates success
      * or failure.
+     * The promise will fail with:
+     * - [UnavailableServiceException] if the proxy service the player is connected to is not reachable
+     * - [IllegalArgumentException] if the specified [cloudService] is a proxy service.
+     * - [NoSuchPlayerException] if the player cannot be found on the proxy service.
+     * - [PlayerConnectException] if the proxy was unable to connect the player to the service.
      */
-    fun connectPlayer(cloudPlayer: ICloudPlayer, cloudService: ICloudService): ICommunicationPromise<Boolean>
+    fun connectPlayer(cloudPlayer: ICloudPlayer, cloudService: ICloudService): ICommunicationPromise<Unit>
 
     /**
      * Kicks the specified player with the specified message from the network.
@@ -75,7 +81,7 @@ interface ICloudPlayerManager {
 
     /**
      * Sends a tile to the specified player.
-     * @param cloudPlayer the player that shall received the title
+     * @param cloudPlayer the player that shall received the title.
      * @param title the title that shall be send to the player.
      * @param subTitle the subtitle that shall be send to the player.
      * @param fadeIn the amount of ticks the title shall fade in.
@@ -106,26 +112,44 @@ interface ICloudPlayerManager {
     /**
      * Teleports the specified [cloudPlayer] to the specified [location].
      * @return a promise that is completed when the teleportation is complete, or
-     * when an exception is encountered. The boolean parameter denotes success
+     * when an exception is encountered. [ICommunicationPromise.isSuccess] indicates success
      * or failure.
+     * The promise will fail with:
+     * - [UnavailableServiceException] if the minecraft server the player is connected is not reachable
+     * - [NoSuchWorldException] if the world to teleport the player to does not exist or is not loaded.
      */
-    fun teleport(cloudPlayer: ICloudPlayer, location: SimpleLocation): ICommunicationPromise<Boolean>
+    fun teleport(cloudPlayer: ICloudPlayer, location: SimpleLocation): ICommunicationPromise<Unit>
 
     /**
      * Returns the current location of the specified [cloudPlayer]
+     * @return a promise that is completed when the [ServiceLocation] is available, or
+     * when an exception is encountered. [ICommunicationPromise.isSuccess] indicates success
+     * or failure.
+     * The promise will fail with:
+     * - [NoSuchWorldException] if the location of the player was null
+     * - [NoSuchPlayerException] if the player cannot be found on the server
+     * - [UnavailableServiceException] if the minecraft server the player is connected is not reachable
      */
     fun getLocationOfPlayer(cloudPlayer: ICloudPlayer): ICommunicationPromise<ServiceLocation>
 
     /**
-     * Returns the offline player found by the specified [name]
-     * @return a promise that is completed when the [IOfflineCloudPlayer] is available.
+     * Returns the current location of this player
+     * @return a promise that is completed when the [IOfflineCloudPlayer] is available, or
+     * when an exception is encountered. [ICommunicationPromise.isSuccess] indicates success
+     * or failure.
+     * The promise will fail with:
+     * - [NoSuchPlayerException] if the [IOfflineCloudPlayer] cannot be found by the specified [name]
      */
     fun getOfflineCloudPlayer(name: String): ICommunicationPromise<IOfflineCloudPlayer>
 
 
     /**
-     * Returns the offline player found by the specified [uniqueId]
-     * @return a promise that is completed when the [IOfflineCloudPlayer] is available.
+     * Returns the current location of this player
+     * @return a promise that is completed when the [IOfflineCloudPlayer] is available, or
+     * when an exception is encountered. [ICommunicationPromise.isSuccess] indicates success
+     * or failure.
+     * The promise will fail with:
+     * - [NoSuchPlayerException] if the [IOfflineCloudPlayer] cannot be found by the specified [uniqueId]
      */
     fun getOfflineCloudPlayer(uniqueId: UUID): ICommunicationPromise<IOfflineCloudPlayer>
 

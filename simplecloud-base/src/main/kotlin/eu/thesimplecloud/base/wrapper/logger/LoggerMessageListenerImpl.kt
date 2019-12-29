@@ -10,6 +10,6 @@ class LoggerMessageListenerImpl : ILoggerMessageListener {
 
     override fun message(msg: String, logType: LogType) {
         if (Wrapper.instance.communicationClient.isOpen() && Wrapper.instance.communicationClient.getPacketIdsSyncPromise().isSuccess)
-            Wrapper.instance.communicationClient.sendQuery(PacketOutScreenMessage(CloudClientType.WRAPPER, Wrapper.instance.getThisWrapper(), msg))
+            Wrapper.instance.communicationClient.sendUnitQuery(PacketOutScreenMessage(CloudClientType.WRAPPER, Wrapper.instance.getThisWrapper(), msg))
     }
 }

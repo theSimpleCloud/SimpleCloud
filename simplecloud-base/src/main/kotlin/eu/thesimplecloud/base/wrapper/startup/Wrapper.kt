@@ -47,7 +47,7 @@ class Wrapper : ICloudApplication {
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.base.wrapper.network.packets")
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.lib.network.packets")
         thread(start = true, isDaemon = false) { communicationClient.start() }
-        this.communicationClient.getPacketIdsSyncPromise().addResultListener { this.communicationClient.sendQuery(PacketOutCloudClientLogin(CloudClientType.WRAPPER)) }
+        this.communicationClient.getPacketIdsSyncPromise().addResultListener { this.communicationClient.sendUnitQuery(PacketOutCloudClientLogin(CloudClientType.WRAPPER)) }
         if (isStartedInManagerDirectory()) {
             Launcher.instance.consoleSender.sendMessage("wrapper.startup.template-client.not-activated", "Detected that a manager is running in this directory. Using templates in this folder.")
             Launcher.instance.consoleSender.sendMessage("wrapper.startup.template-client.help-message", "If your'e manager is not running in this directory delete the folder \"storage/wrappers\" and restart the wrapper.")
@@ -66,7 +66,7 @@ class Wrapper : ICloudApplication {
                 val wrapperInfo = getThisWrapper()
                 //set authenticated to false to prevent service starting
                 wrapperInfo.setAuthenticated(false)
-                communicationClient.sendQuery(PacketIOUpdateWrapperInfo(wrapperInfo)).syncUninterruptibly()
+                communicationClient.sendUnitQuery(PacketIOUpdateWrapperInfo(wrapperInfo)).syncUninterruptibly()
             }
             this.processQueue?.clearQueue()
             this.cloudServiceProcessManager.stopAllServices()
@@ -90,7 +90,7 @@ class Wrapper : ICloudApplication {
         thread(start = true, isDaemon = false) { templateClient.start() }
         templateClient.getPacketIdsSyncPromise().addResultListener {
             println("sending request template")
-            templateClient.sendQuery(PacketOutGetTemplates())
+            templateClient.sendUnitQuery(PacketOutGetTemplates())
         }
     }
 
@@ -106,7 +106,7 @@ class Wrapper : ICloudApplication {
         thisWrapper as IWritableWrapperInfo
         thisWrapper.setUsedMemory(usedMemory)
         if (this.communicationClient.isOpen())
-            this.communicationClient.sendQuery(PacketIOUpdateWrapperInfo(thisWrapper))
+            this.communicationClient.sendUnitQuery(PacketIOUpdateWrapperInfo(thisWrapper))
     }
 
     override fun onEnable() {

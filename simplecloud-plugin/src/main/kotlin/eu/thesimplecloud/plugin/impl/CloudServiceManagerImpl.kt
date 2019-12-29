@@ -8,6 +8,6 @@ import eu.thesimplecloud.plugin.startup.CloudPlugin
 class CloudServiceManagerImpl : AbstractCloudServiceManager() {
 
     override fun stopService(cloudService: ICloudService) {
-        CloudPlugin.instance.communicationClient.sendQuery(PacketIOStopCloudService(cloudService.getName()))
+        CloudPlugin.instance.communicationClient.sendUnitQuery(PacketIOStopCloudService(cloudService.getName()))
     }
 }

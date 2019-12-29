@@ -31,7 +31,7 @@ dependencies {
         exclude group: 'eu.thesimplecloud.clientserverapi'
         exclude module: 'simplecloud-lib'
     }
-    implementation 'org.spigotmc:spigot-api:1.14.4-R0.1-SNAPSHOT' // The full Spigot server with no shadowing. Requires mavenLocal.
+    implementation 'org.spigotmc:spigot-api:1.15.1-R0.1-SNAPSHOT' // The full Spigot server with no shadowing. Requires mavenLocal.
     implementation 'net.md-5:bungeecord-api:1.12-SNAPSHOT' // The full Spigot server with no shadowing. Requires mavenLocal.
 }
 

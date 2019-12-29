@@ -74,8 +74,8 @@ class ServiceHandler : IServiceHandler {
                         service as DefaultCloudService
                         service.setWrapperName(wrapperInfo.getName())
                         CloudLib.instance.getCloudServiceManger().updateCloudService(service)
-                        wrapperClient.sendQuery(PacketIOUpdateCloudService(service)).syncUninterruptibly()
-                        wrapperClient.sendQuery(PacketIOWrapperStartService(service.getName())).syncUninterruptibly()
+                        wrapperClient.sendUnitQuery(PacketIOUpdateCloudService(service)).syncUninterruptibly()
+                        wrapperClient.sendUnitQuery(PacketIOWrapperStartService(service.getName())).syncUninterruptibly()
                         Launcher.instance.consoleSender.sendMessage("manager.service.start", "Told Wrapper %WRAPPER%", wrapperInfo.getName(), " to start service %SERVICE%", service.getName())
                     } else {
                         serviceQueue.add(service)

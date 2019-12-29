@@ -3,6 +3,7 @@ package eu.thesimplecloud.lib.network.packets.player
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.IPacket
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.player.ICloudPlayer
 import eu.thesimplecloud.lib.service.ICloudService
@@ -19,14 +20,14 @@ class PacketIOSendTitleToCloudPlayer() : JsonPacket() {
                 .append("fadeOut", fadeOut)
     }
 
-    override suspend fun handle(connection: IConnection): IPacket? {
-        val playerUniqueId = this.jsonData.getObject("playerUniqueId", UUID::class.java) ?: return null
-        val title = this.jsonData.getString("title") ?: return null
-        val subTitle = this.jsonData.getString("subTitle") ?: return null
-        val fadeIn = this.jsonData.getInt("fadeIn") ?: return null
-        val stay = this.jsonData.getInt("stay") ?: return null
-        val fadeOut = this.jsonData.getInt("fadeOut") ?: return null
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<Unit> {
+        val playerUniqueId = this.jsonData.getObject("playerUniqueId", UUID::class.java) ?: return contentException("playerUniqueId")
+        val title = this.jsonData.getString("title") ?: return contentException("title")
+        val subTitle = this.jsonData.getString("subTitle") ?: return contentException("subTitle")
+        val fadeIn = this.jsonData.getInt("fadeIn") ?: return contentException("fadeIn")
+        val stay = this.jsonData.getInt("stay") ?: return contentException("stay")
+        val fadeOut = this.jsonData.getInt("fadeOut") ?: return contentException("fadeOut")
         CloudLib.instance.getCloudPlayerManager().getCachedCloudPlayer(playerUniqueId)?.sendTitle(title, subTitle, fadeIn, stay, fadeOut)
-        return null
+        return unit()
     }
 }

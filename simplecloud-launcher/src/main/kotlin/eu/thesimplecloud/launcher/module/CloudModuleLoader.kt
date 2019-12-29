@@ -18,8 +18,10 @@ class CloudModuleLoader {
         try {
             val cloudModuleFileContent = loadModuleFileContent(file, moduleFileName)
             addModuleAsDependency(file)
-            val dependencyLoader = DependencyLoader(cloudModuleFileContent.repositories)
-            dependencyLoader.installDependencies(cloudModuleFileContent.dependencies)
+            val dependencyLoader = DependencyLoader.INSTANCE
+            dependencyLoader.addRepositories(cloudModuleFileContent.repositories)
+            dependencyLoader.addDependencies(cloudModuleFileContent.dependencies)
+            dependencyLoader.installDependencies()
             val cloudModule = this.loadModuleClass(file, cloudModuleFileContent.mainClass)
             cloudModule.onEnable()
             return cloudModule

@@ -9,6 +9,6 @@ interface ITemplateCopier {
 
     fun copyTemplate(cloudService: ICloudService, template: ITemplate)
 
-    fun loadDependenciesAndInstall(serviceTmpDir: File): DependenciesInformation
+    //fun loadDependenciesAndInstall(serviceTmpDir: File)
 
 }

@@ -50,7 +50,7 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) {
         })
         this.communicationClient.getPacketIdsSyncPromise().addResultListener {
             println("<-------- Connection is now set up -------->")
-            this.communicationClient.sendQuery(PacketOutCloudClientLogin(CloudClientType.SERVICE, thisServiceName))
+            this.communicationClient.sendUnitQuery(PacketOutCloudClientLogin(CloudClientType.SERVICE, thisServiceName))
         }
     }
 
@@ -83,10 +83,13 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) {
     }
 
     fun updateThisService() {
-        thisService?.let { this.communicationClient.sendQuery(PacketIOUpdateCloudService(it)) }
+        thisService?.let { this.communicationClient.sendUnitQuery(PacketIOUpdateCloudService(it)) }
     }
 
-    fun disableUpdateState() {
+    /**
+     * Prevents the service from updating its state by itself.
+     */
+    fun disableUpdatingState() {
         this.updateState = false
     }
 

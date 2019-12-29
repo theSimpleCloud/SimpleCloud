@@ -18,7 +18,7 @@ class PacketOutCloudClientLogin() : JsonPacket() {
         this.jsonData.append("cloudClientType", cloudClientType)
     }
 
-    override suspend fun handle(connection: IConnection): IPacket? = null
+    override suspend fun handle(connection: IConnection) = unit()
 
 
 }

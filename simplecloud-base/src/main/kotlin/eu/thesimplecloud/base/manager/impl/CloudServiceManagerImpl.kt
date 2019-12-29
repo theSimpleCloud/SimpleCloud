@@ -19,7 +19,7 @@ class CloudServiceManagerImpl : AbstractCloudServiceManager() {
     override fun stopService(cloudService: ICloudService) {
         val wrapper = cloudService.getWrapper()
         val wrapperClient = Manager.instance.communicationServer.getClientManager().getClientByClientValue(wrapper)
-        wrapperClient?.sendQuery(PacketIOStopCloudService(cloudService.getName()))
+        wrapperClient?.sendUnitQuery(PacketIOStopCloudService(cloudService.getName()))
     }
 
     override fun startService(cloudService: ICloudService) {
@@ -27,6 +27,6 @@ class CloudServiceManagerImpl : AbstractCloudServiceManager() {
         val wrapper = cloudService.getWrapper()
         val wrapperClient = Manager.instance.communicationServer.getClientManager().getClientByClientValue(wrapper)
         check(wrapperClient != null) { "Can not find client of wrapper to start service ${cloudService.getName()} on." }
-        wrapperClient.sendQuery(PacketIOWrapperStartService(cloudService.getName()))
+        wrapperClient.sendUnitQuery(PacketIOWrapperStartService(cloudService.getName()))
     }
 }

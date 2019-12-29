@@ -25,11 +25,12 @@ dependencies {
     implementation group: 'commons-io', name: 'commons-io', version: '2.6'
     implementation group: 'io.netty', name: 'netty-all', version: '4.1.1.Final'
     // https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-core
-    implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: '1.3.2'
+    implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: '1.3.3'
     // https://mvnrepository.com/artifact/org.reflections/reflections
     implementation group: 'org.reflections', name: 'reflections', version: '0.9.10'
-    implementation 'org.litote.kmongo:kmongo:3.11.1'
-    implementation group: 'ru.yandex.qatools.embed', name: 'embedded-services', version: '1.21'
+    implementation 'org.litote.kmongo:kmongo:3.11.2'
+    implementation group: 'de.flapdoodle.embed', name: 'de.flapdoodle.embed.mongo', version: '2.2.0'
+
 
 }
 

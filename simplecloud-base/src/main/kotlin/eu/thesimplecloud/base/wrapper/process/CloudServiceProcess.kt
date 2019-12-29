@@ -44,7 +44,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
         }
         this.cloudService.setState(ServiceState.STARTING)
         CloudLib.instance.getCloudServiceManger().updateCloudService(this.cloudService)
-        Wrapper.instance.communicationClient.sendQuery(PacketIOUpdateCloudService(this.cloudService))
+        Wrapper.instance.communicationClient.sendUnitQuery(PacketIOUpdateCloudService(this.cloudService))
 
 
         if (!cloudService.isStatic() || !this.serviceTmpDir.exists())
@@ -68,7 +68,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
                 val s = bufferedReader.readLine() ?: continue
                 if (!s.equals("", ignoreCase = true) && !s.equals(" ", ignoreCase = true) && !s.equals(">", ignoreCase = true)
                         && !s.equals(" >", ignoreCase = true) && !s.contains("InitialHandler has connected")) {
-                    Wrapper.instance.communicationClient.sendQuery(PacketOutScreenMessage(CloudClientType.SERVICE, getCloudService(), s))
+                    Wrapper.instance.communicationClient.sendUnitQuery(PacketOutScreenMessage(CloudClientType.SERVICE, getCloudService(), s))
                     Launcher.instance.logger.console("[${cloudService.getName()}]$s")
                 }
             } catch (e: IOException) {
@@ -84,9 +84,9 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
         this.cloudService.setOnlinePlayers(0)
         this.cloudService.setState(ServiceState.CLOSED)
         if (Wrapper.instance.communicationClient.isOpen()) {
-            Wrapper.instance.communicationClient.sendQuery(PacketIOUpdateCloudService(this.cloudService)).syncUninterruptibly()
+            Wrapper.instance.communicationClient.sendUnitQuery(PacketIOUpdateCloudService(this.cloudService)).syncUninterruptibly()
             CloudLib.instance.getCloudServiceManger().removeCloudService(this.cloudService.getName())
-            Wrapper.instance.communicationClient.sendQuery(PacketIORemoveCloudService(this.cloudService.getName()))
+            Wrapper.instance.communicationClient.sendUnitQuery(PacketIORemoveCloudService(this.cloudService.getName()))
             Wrapper.instance.updateUsedMemory()
         }
 

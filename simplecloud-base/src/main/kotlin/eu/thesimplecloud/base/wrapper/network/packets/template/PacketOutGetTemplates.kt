@@ -5,7 +5,5 @@ import eu.thesimplecloud.clientserverapi.lib.packet.IPacket
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
 
 class PacketOutGetTemplates : JsonPacket() {
-    override suspend fun handle(connection: IConnection): IPacket? {
-        return null
-    }
+    override suspend fun handle(connection: IConnection) = unit()
 }

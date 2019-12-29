@@ -1,5 +1,5 @@
 package eu.thesimplecloud.lib.servicegroup
-import eu.thesimplecloud.clientserverapi.lib.packet.communicationpromise.ICommunicationPromise
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.service.ICloudService
 import eu.thesimplecloud.lib.service.ServiceType
@@ -112,6 +112,8 @@ interface ICloudServiceGroup {
     /**
      * Starts a new service by this group
      * @return a promise which is called when the new service was registered.
+     * The promise will fail with:
+     * - [NoSuchElementException] if the group does not exist.
      */
     fun startNewService(): ICommunicationPromise<ICloudService> = CloudLib.instance.getCloudServiceGroupManager().startNewService(this)
 

@@ -7,13 +7,30 @@ import java.io.IOException
 
 data class Dependency(val groupId: String, val artifactId: String, val version: String) {
 
+    companion object {
+
+        val DEPENDENCIES_DIR = File("dependencies/")
+
+        val POM_DIR = File("dependencies/poms/")
+    }
+
+
     fun getDownloadURL(repoUrl: String): String {
         return getUrlWithoutExtension(repoUrl) + ".jar"
     }
 
     fun getDownloadedFile(): File {
-        return File("dependencies/$artifactId-$version.jar")
+        return File(DEPENDENCIES_DIR, "$artifactId-$version.jar")
     }
+
+    fun getDownloadedPomFile(): File {
+        return File(POM_DIR, "$groupId-$artifactId.pom")
+    }
+
+    fun getDownloadedLastVersionFile(): File {
+        return File(POM_DIR, "$groupId-$artifactId.lastVersion")
+    }
+
 
     @Throws(IOException::class)
     fun download(repoUrl: String) {
@@ -24,8 +41,16 @@ data class Dependency(val groupId: String, val artifactId: String, val version: 
         return WebContentLoader().loadContent(getUrlWithoutExtension(repoUrl) + ".pom")
     }
 
-    private fun getUrlWithoutExtension(repoUrl: String): String {
-        return repoUrl + groupId.replace("\\.".toRegex(), "/") + "/" + artifactId + "/" + version + "/" + artifactId + "-" + version
+    fun getMetaDataContent(repoUrl: String): String? {
+        return WebContentLoader().loadContent(getMainURL(repoUrl) + "maven-metadata.xml")
+    }
+
+    private fun getMainURL(repoUrl: String): String {
+        return repoUrl + groupId.replace("\\.".toRegex(), "/") + "/" + artifactId + "/"
+    }
+
+    fun getUrlWithoutExtension(repoUrl: String): String {
+        return getMainURL(repoUrl) + version + "/" + artifactId + "-" + version
     }
 
 }

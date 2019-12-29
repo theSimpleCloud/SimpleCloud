@@ -22,7 +22,8 @@ class ResourceFinder {
             val urlClassLoader = ClassLoader.getSystemClassLoader() as URLClassLoader
             val method = URLClassLoader::class.java.getDeclaredMethod("addURL", URL::class.java)
             method.isAccessible = true
-            method.invoke(urlClassLoader, file.toURI().toURL())
+            if (!urlClassLoader.urLs.contains(file.toURI().toURL()))
+                method.invoke(urlClassLoader, file.toURI().toURL())
         }
 
     }

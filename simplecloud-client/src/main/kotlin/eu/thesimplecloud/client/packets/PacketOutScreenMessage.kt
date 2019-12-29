@@ -12,8 +12,6 @@ class PacketOutScreenMessage(cloudClientType: CloudClientType, commandExecutable
         this.jsonData.append("cloudClientType", cloudClientType).append("name", commandExecutable.getName()).append("message", message)
     }
 
-    override suspend fun handle(connection: IConnection): IPacket? {
-        return null
-    }
+    override suspend fun handle(connection: IConnection) = unit()
 
 }

@@ -1,22 +1,22 @@
 package eu.thesimplecloud.launcher.dependency
 
+import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.lib.depedency.Dependency
 
 class LauncherDependencyLoader {
 
     fun loadLauncherDependencies() {
-        val dependencyLoader = DependencyLoader(listOf("https://repo.maven.apache.org/maven2/", "https://repo.thesimplecloud.eu/artifactory/gradle-dev/"))
-        dependencyLoader.installDependencies(listOf(
-                Dependency("org.litote.kmongo", "kmongo", "3.11.1"),
-                Dependency("ru.yandex.qatools.embed", "embedded-services", "1.21"),
+        val dependencyLoader = DependencyLoader.INSTANCE
+        dependencyLoader.addRepositories("https://repo.maven.apache.org/maven2/", "https://repo.thesimplecloud.eu/artifactory/gradle-dev-local/")
+        dependencyLoader.addDependencies(Dependency("org.litote.kmongo", "kmongo", "3.11.2"),
                 Dependency("io.netty", "netty-all", "4.1.4.Final"),
-                Dependency("eu.thesimplecloud.clientserverapi", "clientserverapi", "1.1.51-SNAPSHOT"),
-                Dependency("org.mongodb", "mongo-java-driver", "3.11.0"),
-                Dependency("de.flapdoodle.embed", "de.flapdoodle.embed.mongo", "2.1.2"),
+                Dependency("eu.thesimplecloud.clientserverapi", "clientserverapi", "2.0.5-SNAPSHOT"),
                 Dependency("org.reflections", "reflections", "0.9.10"),
                 Dependency("com.google.code.gson", "gson", "2.8.5"),
                 Dependency("commons-io", "commons-io", "2.6"),
-                Dependency("com.github.ajalt", "clikt", "2.2.0")))
+                Dependency("org.slf4j", "slf4j-simple", "1.7.10"),
+                Dependency("com.github.ajalt", "clikt", "2.2.0"))
+        dependencyLoader.installDependencies()
     }
 
 }

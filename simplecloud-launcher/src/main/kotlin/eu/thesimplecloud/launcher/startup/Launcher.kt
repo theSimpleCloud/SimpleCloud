@@ -1,8 +1,6 @@
 package eu.thesimplecloud.launcher.startup
 
-import eu.thesimplecloud.clientserverapi.lib.bootstrap.IBootstrap
 import eu.thesimplecloud.launcher.application.ApplicationStarter
-import eu.thesimplecloud.launcher.module.CloudModuleLoader
 import eu.thesimplecloud.launcher.application.CloudApplicationType
 import eu.thesimplecloud.launcher.application.ICloudApplication
 import eu.thesimplecloud.launcher.console.ConsoleManager
@@ -13,13 +11,13 @@ import eu.thesimplecloud.launcher.logging.LoggerProvider
 import eu.thesimplecloud.launcher.setups.LanguageSetup
 import eu.thesimplecloud.launcher.setups.StartSetup
 import eu.thesimplecloud.launcher.config.LauncherConfigLoader
+import eu.thesimplecloud.launcher.dependency.DependencyLoader
 import eu.thesimplecloud.launcher.screens.IScreenManager
 import eu.thesimplecloud.launcher.screens.ScreenManagerImpl
 import eu.thesimplecloud.launcher.setups.AutoIpSetup
 import eu.thesimplecloud.lib.directorypaths.DirectoryPaths
 import eu.thesimplecloud.lib.external.ICloudModule
 import eu.thesimplecloud.lib.language.LanguageManager
-import java.io.File
 import java.util.concurrent.Executors
 import java.util.function.Consumer
 import kotlin.system.exitProcess
@@ -79,7 +77,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
 
 
         this.logger.updatePrompt(false)
-        this.setupManager.onAllSetupsCompleted(Consumer { this.launcherStartArguments.startApplication?.let { startApplication(it) } })
+        this.setupManager.setupsCompletedPromise.thenAccept { this.launcherStartArguments.startApplication?.let { startApplication(it) } }
     }
 
     fun startApplication(cloudApplicationType: CloudApplicationType) {

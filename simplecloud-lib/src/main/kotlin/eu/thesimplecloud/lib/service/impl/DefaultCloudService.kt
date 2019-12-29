@@ -1,8 +1,8 @@
 package eu.thesimplecloud.lib.service.impl
 
 import eu.thesimplecloud.clientserverapi.lib.json.GsonExclude
-import eu.thesimplecloud.clientserverapi.lib.packet.communicationpromise.CommunicationPromise
-import eu.thesimplecloud.clientserverapi.lib.packet.communicationpromise.ICommunicationPromise
+import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.service.ICloudService
 import eu.thesimplecloud.lib.service.ServiceState
@@ -20,10 +20,10 @@ class DefaultCloudService(
         private var motd: String
 ) : ICloudService {
 
-    private val startingPromise = CommunicationPromise<Unit>()
-    private val connectedPromise = CommunicationPromise<Unit>()
-    private val joinablePromise = CommunicationPromise<Unit>()
-    private val closedPromise = CommunicationPromise<Unit>()
+    private val startingPromise = CommunicationPromise<Unit>(enableTimeout = false)
+    private val connectedPromise = CommunicationPromise<Unit>(enableTimeout = false)
+    private val joinablePromise = CommunicationPromise<Unit>(enableTimeout = false)
+    private val closedPromise = CommunicationPromise<Unit>(enableTimeout = false)
 
     private var serviceState = ServiceState.PREPARED
     private var onlinePlayers = 0

@@ -9,11 +9,15 @@ class ServiceLocation(
         worldName: String,
         x: Double,
         y: Double,
-        z: Double
-) : SimpleLocation(worldName, x, y, z) {
+        z: Double,
+        yaw: Float,
+        pitch: Float
+) : SimpleLocation(worldName, x, y, z, yaw, pitch) {
 
     val serviceName = service.getName()
     val groupName = service.getGroupName()
+
+    constructor(service: ICloudService, worldName: String, x: Double, y: Double, z: Double) : this(service, worldName, x, y, z, 0F, 0F)
 
     /**
      * Returns this location converted to a [GroupLocation]

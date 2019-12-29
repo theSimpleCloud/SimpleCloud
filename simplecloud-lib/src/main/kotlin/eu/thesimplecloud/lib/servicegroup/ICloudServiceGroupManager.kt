@@ -1,6 +1,6 @@
 package eu.thesimplecloud.lib.servicegroup
 
-import eu.thesimplecloud.clientserverapi.lib.packet.communicationpromise.ICommunicationPromise
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.lib.manager.ICacheManager
 import eu.thesimplecloud.lib.service.ICloudService
 import eu.thesimplecloud.lib.service.ServiceType
@@ -128,8 +128,12 @@ interface ICloudServiceGroupManager {
 
     /**
      * Creates a service group and returns a promise that is called when the group is registered
+     * [ICommunicationPromise.isSuccess] indicates whether the creation was successful
+     * The promise will fail with:
+     * - [IllegalArgumentException] if the group is already registered.
+     * - [NoSuchElementException] if the group is not registered
      */
-    fun createServiceGroup(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<ICloudServiceGroup>
+    fun createServiceGroup(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<Unit>
 
     /**
      * Returns a list of all registered [ICloudServiceGroup]
@@ -178,12 +182,15 @@ interface ICloudServiceGroupManager {
 
     /**
      * Starts a new service by the specified group
+     * Te
      */
     fun startNewService(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<ICloudService>
 
     /**
-     * Deletes the specified service group from the cloud.
-     * The promise will be called when the operation is completed. [ICommunicationPromise.isSuccess] indicates whether the operation was successful.
+     * Deletes the specified [cloudServiceGroup] group from the cloud.
+     * @return a promise that will be completed when the deletion is done or an error occurs. [ICommunicationPromise.isSuccess] indicates whether the deletion was successful.
+     * The promise will fail with
+     * - [IllegalStateException] if services of the specified group are still registered.
      */
     fun deleteServiceGroup(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<Unit>
 

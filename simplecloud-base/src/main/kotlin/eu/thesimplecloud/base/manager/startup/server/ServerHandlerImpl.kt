@@ -11,6 +11,8 @@ class ServerHandlerImpl : IServerHandler<ICommandExecutable> {
     }
 
     override fun onServerStartException(nettyServer: NettyServer<ICommandExecutable>, ex: Throwable) {
+        Launcher.instance.logger.severe("Server start failed.")
+        Launcher.instance.logger.exception(ex)
     }
 
     override fun onServerStarted(nettyServer: NettyServer<ICommandExecutable>) {

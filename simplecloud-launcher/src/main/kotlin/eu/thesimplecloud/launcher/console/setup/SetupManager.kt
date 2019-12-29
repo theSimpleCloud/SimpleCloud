@@ -1,6 +1,7 @@
 package eu.thesimplecloud.launcher.console.setup
 
 import com.google.common.collect.Queues
+import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupCancelled
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
@@ -24,7 +25,8 @@ class SetupManager(val launcher: Launcher) {
         private set
     private var currentQuestionIndex = 0
 
-    private val allSetupsCompletedCallbacks = ArrayList<Consumer<Unit>>()
+    var setupsCompletedPromise = CommunicationPromise<Unit>(enableTimeout = false)
+        private set
 
     fun queueSetup(setup: ISetup, first: Boolean = false) {
         val questions = ArrayList<SetupQuestionData>()
@@ -80,13 +82,6 @@ class SetupManager(val launcher: Launcher) {
         nextQuestion()
     }
 
-    fun onAllSetupsCompleted(consumer: Consumer<Unit>) {
-        if (this.currentSetup == null) {
-            consumer.accept(Unit)
-            return
-        }
-        allSetupsCompletedCallbacks.add(consumer)
-    }
 
     private fun nextQuestion() {
         val activeSetup = this.currentSetup ?: return
@@ -118,8 +113,8 @@ class SetupManager(val launcher: Launcher) {
 
     private fun checkForNextSetup() {
         if (this.setupQueue.isEmpty()) {
-            this.allSetupsCompletedCallbacks.forEach { it.accept(Unit) }
-            this.allSetupsCompletedCallbacks.clear()
+            this.setupsCompletedPromise.trySuccess(Unit)
+            this.setupsCompletedPromise = CommunicationPromise(enableTimeout = false)
         }
         if (this.setupQueue.isNotEmpty()) {
             startSetup(this.setupQueue.removeAt(0))

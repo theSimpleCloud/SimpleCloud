@@ -1,8 +1,8 @@
 package eu.thesimplecloud.lib.player
 
 
-import eu.thesimplecloud.clientserverapi.lib.packet.communicationpromise.CommunicationPromise
-import eu.thesimplecloud.clientserverapi.lib.packet.communicationpromise.ICommunicationPromise
+import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import kotlin.collections.ArrayList
 
 abstract class AbstractCloudPlayerManager : ICloudPlayerManager {

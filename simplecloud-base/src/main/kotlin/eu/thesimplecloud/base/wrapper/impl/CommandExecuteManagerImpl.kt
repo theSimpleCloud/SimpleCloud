@@ -22,6 +22,6 @@ class CommandExecuteManagerImpl : ICommandExecuteManager {
             return
         }
         val cloudClientType = if (commandExecutable is ICloudService) CloudClientType.SERVICE else CloudClientType.WRAPPER
-        Wrapper.instance.communicationClient.sendQuery(PacketIOExecuteCommand(cloudClientType, commandExecutable.getName(), command))
+        Wrapper.instance.communicationClient.sendUnitQuery(PacketIOExecuteCommand(cloudClientType, commandExecutable.getName(), command))
     }
 }

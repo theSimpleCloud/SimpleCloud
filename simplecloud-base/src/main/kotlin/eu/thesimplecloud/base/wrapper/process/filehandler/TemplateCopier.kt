@@ -4,11 +4,10 @@ import eu.thesimplecloud.base.wrapper.startup.Wrapper
 import eu.thesimplecloud.base.core.utils.FileCopier
 import eu.thesimplecloud.clientserverapi.client.NettyClient
 import eu.thesimplecloud.clientserverapi.lib.json.JsonData
-import eu.thesimplecloud.launcher.dependency.DependencyLoader
 import eu.thesimplecloud.launcher.external.ResourceFinder
+import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.depedency.DependenciesInformation
-import eu.thesimplecloud.lib.depedency.Dependency
 import eu.thesimplecloud.lib.directorypaths.DirectoryPaths
 import eu.thesimplecloud.lib.service.ICloudService
 import eu.thesimplecloud.lib.service.ServiceType
@@ -31,29 +30,28 @@ class TemplateCopier : ITemplateCopier {
         generateServiceFile(cloudService, serviceTmpDir)
     }
 
+    /*
     override fun loadDependenciesAndInstall(serviceTmpDir: File): DependenciesInformation {
         val pluginsDir = File(serviceTmpDir, "plugins")
         if (!pluginsDir.exists())
             return DependenciesInformation(emptyList(), emptyList())
-        val repositories = ArrayList<String>()
-        val dependencies = ArrayList<Dependency>()
-        repositories.add("https://repo.maven.apache.org/maven2/")
-        for (file in pluginsDir.listFiles()) {
-            val jsonData = ResourceFinder.findResource(file, "dependencies.json")?.let { JsonData.fromInputStream(it) }
-            val dependenciesFileContent = jsonData?.getObject(DependenciesInformation::class.java)
-            dependenciesFileContent?.let {
-                repositories.addAll(it.repositories)
-                dependencies.addAll(it.dependencies)
-            }
-        }
-        val dependenciesInformation = DependenciesInformation(repositories, dependencies)
-        installDependencies(dependenciesInformation)
+        val dependenciesInformationList = pluginsDir.listFiles()?.mapNotNull { file -> ResourceFinder.findResource(file, "dependencies.json")?.let { JsonData.fromInputStream(it) } }
+                ?.mapNotNull { it.getObjectOrNull(DependenciesInformation::class.java) }
+                ?: return DependenciesInformation(emptyList(), emptyList())
+        val allRepos = dependenciesInformationList.map { it.repositories }.flatten()
+        val allDependencies = dependenciesInformationList.map { it.dependencies }.flatten()
+        val dependenciesInformation = DependenciesInformation(allRepos, allDependencies)
         return dependenciesInformation
     }
 
+
     private fun installDependencies(dependenciesInformation: DependenciesInformation) {
-        DependencyLoader(dependenciesInformation.repositories).installDependencies(dependenciesInformation.dependencies)
+        Launcher.instance.dependencyLoader.addRepositories(allRepos)
+        Launcher.instance.dependencyLoader.addDependencies(allDependencies)
+        Launcher.instance.dependencyLoader.installDependencies()
     }
+
+     */
 
     private fun generateServiceFile(cloudService: ICloudService, serviceTmpDir: File) {
         val communicationClient = Wrapper.instance.communicationClient

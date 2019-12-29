@@ -17,6 +17,6 @@ class CommandExecuteManagerImpl : ICommandExecuteManager {
         } else {
             Manager.instance.communicationServer.getClientManager().getClientByClientValue(commandExecutable)
         }
-        wrapperClient?.sendQuery(PacketIOExecuteCommand(cloudClientType, commandExecutable.getName(), command))
+        wrapperClient?.sendUnitQuery(PacketIOExecuteCommand(cloudClientType, commandExecutable.getName(), command))
     }
 }

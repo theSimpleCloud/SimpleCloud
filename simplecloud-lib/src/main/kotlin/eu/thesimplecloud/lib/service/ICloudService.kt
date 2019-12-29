@@ -1,7 +1,7 @@
 package eu.thesimplecloud.lib.service
 
 import eu.thesimplecloud.clientserverapi.lib.bootstrap.IBootstrap
-import eu.thesimplecloud.clientserverapi.lib.packet.communicationpromise.ICommunicationPromise
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.screen.ICommandExecutable
 import eu.thesimplecloud.lib.servicegroup.ICloudServiceGroup

@@ -1,16 +1,17 @@
 package eu.thesimplecloud.lib.player
 
+import eu.thesimplecloud.lib.player.connection.IPlayerConnection
 import java.util.*
 
 class CloudPlayer(
         name: String,
         uniqueId: UUID,
-        private val version: Int,
         firstLogin: Long,
         lastLogin: Long,
         onlineTime: Long,
         private var connectedProxyName: String,
-        private var connectedServerName: String?
+        private var connectedServerName: String?,
+        private val playerConnection: IPlayerConnection
 ) : OfflineCloudPlayer(
         name,
         uniqueId,
@@ -19,7 +20,7 @@ class CloudPlayer(
         onlineTime
 ), ICloudPlayer {
 
-    override fun getVersion(): Int = this.version
+    override fun getPlayerConnection(): IPlayerConnection = this.playerConnection
 
     override fun getConnectedProxyName(): String = this.connectedProxyName
 
