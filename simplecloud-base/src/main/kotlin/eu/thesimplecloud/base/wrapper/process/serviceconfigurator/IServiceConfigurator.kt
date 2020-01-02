@@ -1,6 +1,6 @@
 package eu.thesimplecloud.base.wrapper.process.serviceconfigurator
 
-import eu.thesimplecloud.lib.service.ICloudService
+import eu.thesimplecloud.api.service.ICloudService
 import java.io.File
 
 interface IServiceConfigurator {

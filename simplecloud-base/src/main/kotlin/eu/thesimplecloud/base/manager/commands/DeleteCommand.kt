@@ -6,13 +6,13 @@ import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.lib.CloudLib
-import eu.thesimplecloud.lib.network.packets.template.PacketIODeleteTemplate
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.network.packets.template.PacketIODeleteTemplate
 
 @Command("delete", true)
 class DeleteCommand : ICommandHandler {
 
-    val templateManager = CloudLib.instance.getTemplateManager()
+    val templateManager = CloudAPI.instance.getTemplateManager()
 
     @CommandSubPath("template <name>", "Deletes a template")
     fun deleteTemplate(@CommandArgument("name") name: String) {
@@ -20,11 +20,11 @@ class DeleteCommand : ICommandHandler {
             Launcher.instance.consoleSender.sendMessage("manager.command.delete.template.not-exist", "Template %NAME%", name, " does not exist.")
             return
         }
-        if (CloudLib.instance.getCloudServiceGroupManager().getAllGroups().any { it.getTemplateName().equals(name, true) }) {
+        if (CloudAPI.instance.getCloudServiceGroupManager().getAllGroups().any { it.getTemplateName().equals(name, true) }) {
             Launcher.instance.consoleSender.sendMessage("manager.command.delete.template.in-use.group", "Template %NAME%", name, " is in use by registered service groups. Delete them first.")
             return
         }
-        if (CloudLib.instance.getCloudServiceManger().getAllCloudServices().any { it.getTemplateName().equals(name, true) }) {
+        if (CloudAPI.instance.getCloudServiceManger().getAllCloudServices().any { it.getTemplateName().equals(name, true) }) {
             Launcher.instance.consoleSender.sendMessage("manager.command.delete.template.in-use.service", "Template %NAME%", name, " is in use by registered services. Stop them first.")
             return
         }
@@ -35,13 +35,13 @@ class DeleteCommand : ICommandHandler {
 
     @CommandSubPath("group <name>", "Deletes a group")
     fun deleteGroup(@CommandArgument("name") name: String) {
-        val serviceGroup = CloudLib.instance.getCloudServiceGroupManager().getServiceGroupByName(name)
+        val serviceGroup = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(name)
         if (serviceGroup == null){
             Launcher.instance.consoleSender.sendMessage("manager.command.delete.group.not-exist", "Group %NAME%", name, " does not exist.")
             return
         }
         try {
-            CloudLib.instance.getCloudServiceGroupManager().deleteServiceGroup(serviceGroup)
+            CloudAPI.instance.getCloudServiceGroupManager().deleteServiceGroup(serviceGroup)
         } catch (e: IllegalStateException) {
             Launcher.instance.consoleSender.sendMessage("manager.command.delete.group.services-running", "Can not delete group %NAME%", name, " while services of this group are running.")
             return

@@ -1,9 +1,8 @@
 package eu.thesimplecloud.base.manager.config
 
-import eu.thesimplecloud.base.manager.mongo.MongoConnectionInformation
 import eu.thesimplecloud.base.manager.mongo.MongoServerInformation
-import eu.thesimplecloud.lib.config.AbstractJsonDataConfigLoader
-import eu.thesimplecloud.lib.directorypaths.DirectoryPaths
+import eu.thesimplecloud.api.config.AbstractJsonDataConfigLoader
+import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import java.io.File
 
 class MongoConfigLoader : AbstractJsonDataConfigLoader<MongoConfig>(

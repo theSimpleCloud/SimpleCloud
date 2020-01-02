@@ -1,7 +1,7 @@
 package eu.thesimplecloud.launcher.screens
 
-import eu.thesimplecloud.lib.screen.ICommandExecutable
-import eu.thesimplecloud.lib.utils.Nameable
+import eu.thesimplecloud.api.screen.ICommandExecutable
+import eu.thesimplecloud.api.utils.Nameable
 
 interface IScreen : Nameable {
 

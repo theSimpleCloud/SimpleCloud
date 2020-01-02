@@ -1,8 +1,8 @@
 package eu.thesimplecloud.base.wrapper.process.filehandler
 
-import eu.thesimplecloud.lib.utils.Downloader
-import eu.thesimplecloud.lib.directorypaths.DirectoryPaths
-import eu.thesimplecloud.lib.service.ServiceVersion
+import eu.thesimplecloud.api.utils.Downloader
+import eu.thesimplecloud.api.directorypaths.DirectoryPaths
+import eu.thesimplecloud.api.service.ServiceVersion
 import java.io.File
 
 class ServiceVersionLoader {

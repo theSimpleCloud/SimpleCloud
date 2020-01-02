@@ -22,7 +22,7 @@ dependencies {
     }
     implementation group: 'io.netty', name: 'netty-all', version: '4.1.1.Final'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    implementation (project(":simplecloud-lib")) {
+    implementation (project(":simplecloud-api")) {
         exclude group: 'io.netty'
         exclude group: 'org.jetbrains.kotlin'
     }

@@ -1,10 +1,10 @@
 package eu.thesimplecloud.plugin.impl
 
-import eu.thesimplecloud.lib.client.CloudClientType
-import eu.thesimplecloud.lib.network.packets.screen.PacketIOExecuteCommand
-import eu.thesimplecloud.lib.screen.ICommandExecutable
-import eu.thesimplecloud.lib.screen.ICommandExecuteManager
-import eu.thesimplecloud.lib.service.ICloudService
+import eu.thesimplecloud.api.client.CloudClientType
+import eu.thesimplecloud.api.network.packets.screen.PacketIOExecuteCommand
+import eu.thesimplecloud.api.screen.ICommandExecutable
+import eu.thesimplecloud.api.screen.ICommandExecuteManager
+import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 
 class CommandExecuteManagerImpl : ICommandExecuteManager {

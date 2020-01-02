@@ -1,7 +1,6 @@
 package eu.thesimplecloud.plugin.proxy
 
-import eu.thesimplecloud.lib.player.connection.IPlayerConnection
-import eu.thesimplecloud.lib.service.ICloudService
+import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.plugin.ICloudServicePlugin
 
 interface ICloudProxyPlugin : ICloudServicePlugin {

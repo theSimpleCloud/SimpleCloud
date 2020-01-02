@@ -4,8 +4,8 @@ import eu.thesimplecloud.base.wrapper.process.CloudServiceProcess
 import eu.thesimplecloud.base.wrapper.process.ICloudServiceProcess
 import eu.thesimplecloud.base.wrapper.startup.Wrapper
 import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.lib.service.ICloudService
-import eu.thesimplecloud.lib.service.ServiceState
+import eu.thesimplecloud.api.service.ICloudService
+import eu.thesimplecloud.api.service.ServiceState
 import java.util.ArrayList
 import java.util.concurrent.LinkedBlockingQueue
 import kotlin.concurrent.thread

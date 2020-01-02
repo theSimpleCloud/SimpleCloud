@@ -1,10 +1,10 @@
 package eu.thesimplecloud.plugin.proxy.listener
 
-import eu.thesimplecloud.lib.CloudLib
-import eu.thesimplecloud.lib.network.packets.player.PacketIORemoveCloudPlayer
-import eu.thesimplecloud.lib.player.connection.DefaultPlayerAddress
-import eu.thesimplecloud.lib.player.connection.DefaultPlayerConnection
-import eu.thesimplecloud.lib.player.text.CloudText
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.network.packets.player.PacketIORemoveCloudPlayer
+import eu.thesimplecloud.api.player.connection.DefaultPlayerAddress
+import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
+import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.plugin.network.packets.PacketOutCreateCloudPlayer
 import eu.thesimplecloud.plugin.network.packets.PacketOutPlayerLoginRequest
 import eu.thesimplecloud.plugin.proxy.text.CloudTextBuilder
@@ -30,8 +30,8 @@ class BungeeListener : Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     fun on(event: PlayerDisconnectEvent) {
         println(event.player.uniqueId)
-        val cloudPlayer = CloudLib.instance.getCloudPlayerManager().getCachedCloudPlayer(event.player.uniqueId)
-        cloudPlayer?.let { CloudLib.instance.getCloudPlayerManager().removeCloudPlayer(it) }
+        val cloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(event.player.uniqueId)
+        cloudPlayer?.let { CloudAPI.instance.getCloudPlayerManager().removeCloudPlayer(it) }
         CloudPlugin.instance.communicationClient.sendUnitQuery(PacketIORemoveCloudPlayer(event.player.uniqueId))
     }
 

@@ -1,8 +1,7 @@
 package eu.thesimplecloud.base.manager.player
 
-import com.sun.deploy.net.offline.OfflineHandler
-import eu.thesimplecloud.lib.player.IOfflineCloudPlayer
-import eu.thesimplecloud.lib.player.OfflineCloudPlayer
+import eu.thesimplecloud.api.player.IOfflineCloudPlayer
+import eu.thesimplecloud.api.player.OfflineCloudPlayer
 import java.util.*
 
 interface IOfflineCloudPlayerHandler {

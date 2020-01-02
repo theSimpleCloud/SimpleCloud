@@ -2,9 +2,8 @@ package eu.thesimplecloud.plugin.network.packets
 
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
-import eu.thesimplecloud.clientserverapi.lib.packet.packettype.ObjectPacket
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
-import eu.thesimplecloud.lib.player.connection.DefaultPlayerConnection
+import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
 
 class PacketOutCreateCloudPlayer() : JsonPacket() {
 

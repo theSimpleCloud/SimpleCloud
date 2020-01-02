@@ -3,13 +3,13 @@ package eu.thesimplecloud.base.wrapper.impl
 import eu.thesimplecloud.base.wrapper.startup.Wrapper
 import eu.thesimplecloud.clientserverapi.lib.packet.packetsender.sendQuery
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
-import eu.thesimplecloud.lib.network.packets.service.PacketIOStartCloudService
-import eu.thesimplecloud.lib.network.packets.servicegroup.PacketIOCreateServiceGroup
-import eu.thesimplecloud.lib.network.packets.servicegroup.PacketIODeleteServiceGroup
-import eu.thesimplecloud.lib.service.ICloudService
-import eu.thesimplecloud.lib.service.impl.DefaultCloudService
-import eu.thesimplecloud.lib.servicegroup.ICloudServiceGroup
-import eu.thesimplecloud.lib.servicegroup.impl.AbstractCloudServiceGroupManager
+import eu.thesimplecloud.api.network.packets.service.PacketIOStartCloudService
+import eu.thesimplecloud.api.network.packets.servicegroup.PacketIOCreateServiceGroup
+import eu.thesimplecloud.api.network.packets.servicegroup.PacketIODeleteServiceGroup
+import eu.thesimplecloud.api.service.ICloudService
+import eu.thesimplecloud.api.service.impl.DefaultCloudService
+import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
+import eu.thesimplecloud.api.servicegroup.impl.AbstractCloudServiceGroupManager
 
 class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
 

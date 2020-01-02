@@ -1,7 +1,7 @@
 package eu.thesimplecloud.launcher.updater
 
-import eu.thesimplecloud.lib.utils.Downloader
-import eu.thesimplecloud.lib.update.IUpdater
+import eu.thesimplecloud.api.utils.Downloader
+import eu.thesimplecloud.api.update.IUpdater
 
 class LauncherUpdater : IUpdater {
 

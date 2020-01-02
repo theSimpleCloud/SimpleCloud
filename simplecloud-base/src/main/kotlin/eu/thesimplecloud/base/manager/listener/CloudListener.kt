@@ -1,9 +1,9 @@
 package eu.thesimplecloud.base.manager.listener
 
 import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.lib.eventapi.CloudEventHandler
-import eu.thesimplecloud.lib.eventapi.IListener
-import eu.thesimplecloud.lib.events.service.CloudServiceUnregisteredEvent
+import eu.thesimplecloud.api.eventapi.CloudEventHandler
+import eu.thesimplecloud.api.eventapi.IListener
+import eu.thesimplecloud.api.events.service.CloudServiceUnregisteredEvent
 
 class CloudListener : IListener {
 

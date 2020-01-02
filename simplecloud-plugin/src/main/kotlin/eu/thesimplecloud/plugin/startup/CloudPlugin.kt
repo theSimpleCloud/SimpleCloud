@@ -3,23 +3,17 @@ package eu.thesimplecloud.plugin.startup
 import eu.thesimplecloud.client.packets.PacketOutCloudClientLogin
 import eu.thesimplecloud.clientserverapi.client.INettyClient
 import eu.thesimplecloud.clientserverapi.client.NettyClient
-import eu.thesimplecloud.clientserverapi.lib.debug.DebugMessage
 import eu.thesimplecloud.clientserverapi.lib.json.JsonData
-import eu.thesimplecloud.clientserverapi.lib.packet.packetsender.sendQuery
 import eu.thesimplecloud.clientserverapi.lib.resource.ResourceFinder
-import eu.thesimplecloud.lib.CloudLib
-import eu.thesimplecloud.lib.client.CloudClientType
-import eu.thesimplecloud.lib.network.packets.PacketIOPing
-import eu.thesimplecloud.lib.network.packets.player.PacketIOConnectCloudPlayer
-import eu.thesimplecloud.lib.network.packets.player.PacketIOSendTitleToCloudPlayer
-import eu.thesimplecloud.lib.network.packets.service.PacketIOUpdateCloudService
-import eu.thesimplecloud.lib.service.ICloudService
-import eu.thesimplecloud.lib.service.ServiceState
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.client.CloudClientType
+import eu.thesimplecloud.api.network.packets.service.PacketIOUpdateCloudService
+import eu.thesimplecloud.api.service.ICloudService
+import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.plugin.ICloudServicePlugin
-import eu.thesimplecloud.plugin.impl.CloudLibImpl
+import eu.thesimplecloud.plugin.impl.CloudAPIImpl
 import java.io.File
 import java.net.URLClassLoader
-import java.util.*
 import kotlin.concurrent.thread
 
 
@@ -41,7 +35,7 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin, val classLoader: 
     init {
         println("<---------- Starting SimpleCloud-Plugin ---------->")
         instance = this
-        CloudLibImpl()
+        CloudAPIImpl()
         if (!loadConfig())
             cloudServicePlugin.shutdown()
         println("<---------- Service-Name: $thisServiceName ---------->")
@@ -81,10 +75,10 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin, val classLoader: 
 
     @Synchronized
     fun thisService(): ICloudService {
-        if (this.thisService == null) this.thisService = CloudLib.instance.getCloudServiceManger().getCloudServiceByName(thisServiceName)
+        if (this.thisService == null) this.thisService = CloudAPI.instance.getCloudServiceManger().getCloudServiceByName(thisServiceName)
         while (this.thisService == null) {
             Thread.sleep(10)
-            this.thisService = CloudLib.instance.getCloudServiceManger().getCloudServiceByName(thisServiceName)
+            this.thisService = CloudAPI.instance.getCloudServiceManger().getCloudServiceByName(thisServiceName)
         }
         return this.thisService!!
     }

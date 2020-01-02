@@ -1,12 +1,12 @@
 package eu.thesimplecloud.base.manager.impl
 
 import eu.thesimplecloud.base.manager.startup.Manager
-import eu.thesimplecloud.lib.network.packets.service.PacketIOStopCloudService
-import eu.thesimplecloud.lib.network.packets.service.PacketIOUpdateCloudService
-import eu.thesimplecloud.lib.network.packets.service.PacketIOWrapperStartService
-import eu.thesimplecloud.lib.service.ICloudService
-import eu.thesimplecloud.lib.service.ServiceState
-import eu.thesimplecloud.lib.service.impl.AbstractCloudServiceManager
+import eu.thesimplecloud.api.network.packets.service.PacketIOStopCloudService
+import eu.thesimplecloud.api.network.packets.service.PacketIOUpdateCloudService
+import eu.thesimplecloud.api.network.packets.service.PacketIOWrapperStartService
+import eu.thesimplecloud.api.service.ICloudService
+import eu.thesimplecloud.api.service.ServiceState
+import eu.thesimplecloud.api.service.impl.AbstractCloudServiceManager
 import java.lang.IllegalStateException
 
 class CloudServiceManagerImpl : AbstractCloudServiceManager() {

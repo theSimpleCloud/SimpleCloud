@@ -7,7 +7,7 @@ import eu.thesimplecloud.base.manager.config.MongoConfigLoader
 import eu.thesimplecloud.base.manager.filehandler.CloudServiceGroupFileHandler
 import eu.thesimplecloud.base.manager.config.TemplatesConfigLoader
 import eu.thesimplecloud.base.manager.filehandler.WrapperFileHandler
-import eu.thesimplecloud.base.manager.impl.CloudLibImpl
+import eu.thesimplecloud.base.manager.impl.CloudAPIImpl
 import eu.thesimplecloud.base.manager.listener.CloudListener
 import eu.thesimplecloud.base.manager.mongo.MongoConnectionInformation
 import eu.thesimplecloud.base.manager.mongo.MongoServerInformation
@@ -18,14 +18,13 @@ import eu.thesimplecloud.base.manager.setup.mongo.MongoDBUseEmbedSetup
 import eu.thesimplecloud.base.manager.startup.server.CommunicationConnectionHandlerImpl
 import eu.thesimplecloud.base.manager.startup.server.ServerHandlerImpl
 import eu.thesimplecloud.base.manager.startup.server.TemplateConnectionHandlerImpl
-import eu.thesimplecloud.clientserverapi.lib.debug.DebugMessage
 import eu.thesimplecloud.clientserverapi.server.INettyServer
 import eu.thesimplecloud.clientserverapi.server.NettyServer
 import eu.thesimplecloud.launcher.application.ICloudApplication
 import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.lib.CloudLib
-import eu.thesimplecloud.lib.directorypaths.DirectoryPaths
-import eu.thesimplecloud.lib.screen.ICommandExecutable
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.directorypaths.DirectoryPaths
+import eu.thesimplecloud.api.screen.ICommandExecutable
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.litote.kmongo.KMongo
@@ -55,8 +54,8 @@ class Manager : ICloudApplication {
     init {
 
         instance = this
-        CloudLibImpl()
-        CloudLib.instance.getEventManager().registerListener(this, CloudListener())
+        CloudAPIImpl()
+        CloudAPI.instance.getEventManager().registerListener(this, CloudListener())
         if (!MongoConfigLoader().doesConfigFileExist()) {
             Launcher.instance.setupManager.queueSetup(MongoDBUseEmbedSetup())
             Launcher.instance.setupManager.waitFroAllSetups()
@@ -107,23 +106,23 @@ class Manager : ICloudApplication {
     override fun onEnable() {
         GlobalScope.launch { Launcher.instance.commandManager.registerAllCommands(instance, "eu.thesimplecloud.base.manager.commands") }
         Launcher.instance.setupManager.waitFroAllSetups()
-        this.wrapperFileHandler.loadAll().forEach { CloudLib.instance.getWrapperManager().updateWrapper(it) }
-        this.cloudServiceGroupFileHandler.loadAll().forEach { CloudLib.instance.getCloudServiceGroupManager().updateGroup(it) }
-        this.templatesConfigLoader.loadConfig().templates.forEach { CloudLib.instance.getTemplateManager().updateTemplate(it) }
+        this.wrapperFileHandler.loadAll().forEach { CloudAPI.instance.getWrapperManager().updateWrapper(it) }
+        this.cloudServiceGroupFileHandler.loadAll().forEach { CloudAPI.instance.getCloudServiceGroupManager().updateGroup(it) }
+        this.templatesConfigLoader.loadConfig().templates.forEach { CloudAPI.instance.getTemplateManager().updateTemplate(it) }
 
-        if (CloudLib.instance.getWrapperManager().getAllWrappers().isNotEmpty()) {
+        if (CloudAPI.instance.getWrapperManager().getAllWrappers().isNotEmpty()) {
             Launcher.instance.consoleSender.sendMessage("manager.startup.loaded.wrappers", "Loaded following wrappers:")
-            CloudLib.instance.getWrapperManager().getAllWrappers().forEach { Launcher.instance.consoleSender.sendMessage("- ${it.getName()}") }
+            CloudAPI.instance.getWrapperManager().getAllWrappers().forEach { Launcher.instance.consoleSender.sendMessage("- ${it.getName()}") }
         }
 
-        if (CloudLib.instance.getTemplateManager().getAllTemplates().isNotEmpty()) {
+        if (CloudAPI.instance.getTemplateManager().getAllTemplates().isNotEmpty()) {
             Launcher.instance.consoleSender.sendMessage("manager.startup.loaded.templates", "Loaded following templates:")
-            CloudLib.instance.getTemplateManager().getAllTemplates().forEach { Launcher.instance.consoleSender.sendMessage("- ${it.getName()}") }
+            CloudAPI.instance.getTemplateManager().getAllTemplates().forEach { Launcher.instance.consoleSender.sendMessage("- ${it.getName()}") }
         }
 
-        if (CloudLib.instance.getCloudServiceGroupManager().getAllGroups().isNotEmpty()) {
+        if (CloudAPI.instance.getCloudServiceGroupManager().getAllGroups().isNotEmpty()) {
             Launcher.instance.consoleSender.sendMessage("manager.startup.loaded.groups", "Loaded following groups:")
-            CloudLib.instance.getCloudServiceGroupManager().getAllGroups().forEach { Launcher.instance.consoleSender.sendMessage("- ${it.getName()}") }
+            CloudAPI.instance.getCloudServiceGroupManager().getAllGroups().forEach { Launcher.instance.consoleSender.sendMessage("- ${it.getName()}") }
         }
     }
 

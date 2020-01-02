@@ -2,11 +2,10 @@ package eu.thesimplecloud.base.wrapper.network.packets
 
 import eu.thesimplecloud.base.wrapper.startup.Wrapper
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
-import eu.thesimplecloud.clientserverapi.lib.packet.IPacket
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.ObjectPacket
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
-import eu.thesimplecloud.lib.network.packets.wrapper.PacketIOUpdateWrapperInfo
-import eu.thesimplecloud.lib.wrapper.IWritableWrapperInfo
+import eu.thesimplecloud.api.network.packets.wrapper.PacketIOUpdateWrapperInfo
+import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
 
 class PacketInSetWrapperName : ObjectPacket<String>() {
 

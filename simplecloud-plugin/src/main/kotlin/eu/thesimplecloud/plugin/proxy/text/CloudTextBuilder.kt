@@ -1,6 +1,6 @@
 package eu.thesimplecloud.plugin.proxy.text
 
-import eu.thesimplecloud.lib.player.text.CloudText
+import eu.thesimplecloud.api.player.text.CloudText
 import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.chat.HoverEvent

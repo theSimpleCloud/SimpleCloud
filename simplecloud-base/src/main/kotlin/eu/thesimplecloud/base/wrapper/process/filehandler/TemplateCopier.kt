@@ -4,11 +4,11 @@ import eu.thesimplecloud.base.wrapper.startup.Wrapper
 import eu.thesimplecloud.base.core.utils.FileCopier
 import eu.thesimplecloud.clientserverapi.client.NettyClient
 import eu.thesimplecloud.clientserverapi.lib.json.JsonData
-import eu.thesimplecloud.lib.CloudLib
-import eu.thesimplecloud.lib.directorypaths.DirectoryPaths
-import eu.thesimplecloud.lib.service.ICloudService
-import eu.thesimplecloud.lib.service.ServiceType
-import eu.thesimplecloud.lib.template.ITemplate
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.directorypaths.DirectoryPaths
+import eu.thesimplecloud.api.service.ICloudService
+import eu.thesimplecloud.api.service.ServiceType
+import eu.thesimplecloud.api.template.ITemplate
 import org.apache.commons.io.FileUtils
 import java.io.File
 
@@ -62,7 +62,7 @@ class TemplateCopier : ITemplateCopier {
     fun getDirectoriesOfTemplateAndSubTemplates(template: ITemplate): Set<File> {
         val set = HashSet<File>()
         for (templateName in template.getInheritedTemplateNames()) {
-            val subTemplate = CloudLib.instance.getTemplateManager().getTemplate(templateName)
+            val subTemplate = CloudAPI.instance.getTemplateManager().getTemplate(templateName)
             subTemplate?.let { set.addAll(getDirectoriesOfTemplateAndSubTemplates(it)) }
         }
         set.add(template.getDirectory())

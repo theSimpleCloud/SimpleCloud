@@ -5,7 +5,7 @@ import eu.thesimplecloud.clientserverapi.lib.resource.ResourceFinder
 import eu.thesimplecloud.launcher.dependency.DependencyLoader
 import eu.thesimplecloud.launcher.exception.CloudModuleLoadException
 import eu.thesimplecloud.launcher.external.ExtensionLoader
-import eu.thesimplecloud.lib.external.ICloudModule
+import eu.thesimplecloud.api.external.ICloudModule
 import java.io.File
 import java.net.URL
 import java.net.URLClassLoader

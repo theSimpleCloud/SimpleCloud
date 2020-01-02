@@ -2,12 +2,11 @@ package eu.thesimplecloud.base.manager.impl
 
 import eu.thesimplecloud.base.manager.config.TemplatesConfigLoader
 import eu.thesimplecloud.base.manager.startup.Manager
-import eu.thesimplecloud.lib.network.packets.servicegroup.PacketIOUpdateCloudServiceGroup
-import eu.thesimplecloud.lib.network.packets.template.PacketIODeleteTemplate
-import eu.thesimplecloud.lib.network.packets.template.PacketIOUpdateTemplate
-import eu.thesimplecloud.lib.template.ITemplate
-import eu.thesimplecloud.lib.template.impl.DefaultTemplate
-import eu.thesimplecloud.lib.template.impl.DefaultTemplateManager
+import eu.thesimplecloud.api.network.packets.template.PacketIODeleteTemplate
+import eu.thesimplecloud.api.network.packets.template.PacketIOUpdateTemplate
+import eu.thesimplecloud.api.template.ITemplate
+import eu.thesimplecloud.api.template.impl.DefaultTemplate
+import eu.thesimplecloud.api.template.impl.DefaultTemplateManager
 
 class TemplateManagerImpl : DefaultTemplateManager() {
 

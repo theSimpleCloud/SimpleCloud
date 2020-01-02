@@ -1,6 +1,6 @@
 package eu.thesimplecloud.launcher.console.command
 
-import eu.thesimplecloud.lib.external.ICloudModule
+import eu.thesimplecloud.api.external.ICloudModule
 import java.lang.reflect.Method
 
 /**

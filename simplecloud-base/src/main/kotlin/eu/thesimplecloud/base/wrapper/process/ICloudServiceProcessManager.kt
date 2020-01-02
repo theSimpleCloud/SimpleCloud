@@ -1,7 +1,5 @@
 package eu.thesimplecloud.base.wrapper.process
 
-import eu.thesimplecloud.lib.service.ICloudService
-
 interface ICloudServiceProcessManager {
 
     /**

@@ -1,14 +1,13 @@
 package eu.thesimplecloud.base.manager.network.packets.player
 
-import eu.thesimplecloud.base.manager.events.CloudPlayerLoginEvent
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
-import eu.thesimplecloud.lib.CloudLib
-import eu.thesimplecloud.lib.player.CloudPlayer
-import eu.thesimplecloud.lib.player.OfflineCloudPlayer
-import eu.thesimplecloud.lib.player.connection.DefaultPlayerConnection
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.player.CloudPlayer
+import eu.thesimplecloud.api.player.OfflineCloudPlayer
+import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
 
 class PacketInCreateCloudPlayer() : JsonPacket() {
 
@@ -22,7 +21,7 @@ class PacketInCreateCloudPlayer() : JsonPacket() {
         } else {
             CloudPlayer(playerConnection.getName(), playerConnection.getUniqueId(), offlinePlayer.getFirstLogin(), System.currentTimeMillis(), offlinePlayer.getOnlineTime(), proxyName, null, playerConnection)
         }
-        CloudLib.instance.getCloudPlayerManager().updateCloudPlayer(cloudPlayer)
+        CloudAPI.instance.getCloudPlayerManager().updateCloudPlayer(cloudPlayer)
         Manager.instance.offlineCloudPlayerLoader.saveCloudPlayer(cloudPlayer.toOfflinePlayer() as OfflineCloudPlayer)
         return unit()
     }

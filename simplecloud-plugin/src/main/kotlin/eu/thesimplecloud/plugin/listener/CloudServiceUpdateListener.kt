@@ -1,9 +1,9 @@
 package eu.thesimplecloud.plugin.listener
 
-import eu.thesimplecloud.lib.eventapi.CloudEventHandler
-import eu.thesimplecloud.lib.eventapi.IListener
-import eu.thesimplecloud.lib.events.service.CloudServiceRegisteredEvent
-import eu.thesimplecloud.lib.events.service.CloudServiceUpdatedEvent
+import eu.thesimplecloud.api.eventapi.CloudEventHandler
+import eu.thesimplecloud.api.eventapi.IListener
+import eu.thesimplecloud.api.events.service.CloudServiceRegisteredEvent
+import eu.thesimplecloud.api.events.service.CloudServiceUpdatedEvent
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import eu.thesimplecloud.plugin.proxy.ICloudProxyPlugin
 

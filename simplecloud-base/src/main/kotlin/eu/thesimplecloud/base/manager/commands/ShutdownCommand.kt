@@ -5,7 +5,7 @@ import eu.thesimplecloud.launcher.console.command.ICommandSender
 import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
-import eu.thesimplecloud.lib.service.ICloudService
+import eu.thesimplecloud.api.service.ICloudService
 
 @Command("shutdown", false)
 class ShutdownCommand : ICommandHandler {

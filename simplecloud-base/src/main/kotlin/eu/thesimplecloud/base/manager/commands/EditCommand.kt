@@ -6,10 +6,10 @@ import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.lib.CloudLib
-import eu.thesimplecloud.lib.parser.string.StringParser
-import eu.thesimplecloud.lib.template.ITemplate
-import eu.thesimplecloud.lib.utils.getAllFieldsFromClassAndSubClasses
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.parser.string.StringParser
+import eu.thesimplecloud.api.template.ITemplate
+import eu.thesimplecloud.api.utils.getAllFieldsFromClassAndSubClasses
 import java.lang.reflect.Field
 
 @Command("edit", false)
@@ -17,7 +17,7 @@ class EditCommand : ICommandHandler {
 
     @CommandSubPath("group <name> <parameter> <value>", "Edits a service group.")
     fun editGroup(commandSender: ICommandSender, @CommandArgument("name") name: String, @CommandArgument("parameter") parameter: String, @CommandArgument("value") value: String){
-        val serviceGroup = CloudLib.instance.getCloudServiceGroupManager().getServiceGroupByName(name)
+        val serviceGroup = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(name)
         if (serviceGroup == null){
             Launcher.instance.consoleSender.sendMessage("manager.command.edit.group.not-exist", "The specified group does not exist.")
             return
@@ -35,7 +35,7 @@ class EditCommand : ICommandHandler {
             try {
                 field.set(serviceGroup, type)
                 commandSender.sendMessage("manager.command.edit.group.success", "Group edited.")
-                CloudLib.instance.getCloudServiceGroupManager().updateGroup(serviceGroup)
+                CloudAPI.instance.getCloudServiceGroupManager().updateGroup(serviceGroup)
             } catch (e: Exception) {
                 commandSender.sendMessage("manager.command.edit.group.invalid-value", "Invalid value. Expected type: %TYPE%", field.type.simpleName)
                 return
@@ -61,7 +61,7 @@ class EditCommand : ICommandHandler {
             return
         }
         template.addInheritanceTemplate(otherTemplate)
-        CloudLib.instance.getTemplateManager().updateTemplate(template)
+        CloudAPI.instance.getTemplateManager().updateTemplate(template)
         commandSender.sendMessage("manager.command.edit.template.inheritance.add.success", "Template %NAME%", template.getName(), " is now inheriting from %OTHER_NAME%", otherTemplate.getName())
     }
 
@@ -72,7 +72,7 @@ class EditCommand : ICommandHandler {
             return
         }
         template.removeInheritanceTemplate(otherTemplate)
-        CloudLib.instance.getTemplateManager().updateTemplate(template)
+        CloudAPI.instance.getTemplateManager().updateTemplate(template)
         commandSender.sendMessage("manager.command.edit.template.inheritance.remove.success", "Template %NAME%", template.getName(), " is no longer inheriting from %OTHER_NAME%", otherTemplate.getName())
     }
 
@@ -84,7 +84,7 @@ class EditCommand : ICommandHandler {
             return
         }
         template.addModuleNameToCopy(module)
-        CloudLib.instance.getTemplateManager().updateTemplate(template)
+        CloudAPI.instance.getTemplateManager().updateTemplate(template)
         commandSender.sendMessage("manager.command.edit.template.modules.add.success", "Added module %MODULE%", module, " to template %TEMPLATE%", template.getName())
     }
 
@@ -95,7 +95,7 @@ class EditCommand : ICommandHandler {
             return
         }
         template.removeModuleNameToCopy(module)
-        CloudLib.instance.getTemplateManager().updateTemplate(template)
+        CloudAPI.instance.getTemplateManager().updateTemplate(template)
         commandSender.sendMessage("manager.command.edit.template.inheritance.remove.success", "Module %MODULE%", module, " was removed from template %TEMPLATE%", template.getName())
     }
 

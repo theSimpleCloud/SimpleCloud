@@ -1,9 +1,9 @@
 package eu.thesimplecloud.plugin.proxy
 
-import eu.thesimplecloud.lib.CloudLib
-import eu.thesimplecloud.lib.service.ICloudService
-import eu.thesimplecloud.lib.service.ServiceState
-import eu.thesimplecloud.lib.servicegroup.grouptype.ICloudServerGroup
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.service.ICloudService
+import eu.thesimplecloud.api.service.ServiceState
+import eu.thesimplecloud.api.servicegroup.grouptype.ICloudServerGroup
 import eu.thesimplecloud.plugin.listener.CloudServiceUpdateListener
 import eu.thesimplecloud.plugin.proxy.listener.BungeeListener
 import eu.thesimplecloud.plugin.startup.CloudPlugin
@@ -45,7 +45,7 @@ class CloudProxyPlugin : Plugin(), ICloudProxyPlugin {
         }
         ProxyServer.getInstance().configurationAdapter.servers.clear()
         CloudPlugin.instance.enable()
-        CloudLib.instance.getEventManager().registerListener(this, CloudServiceUpdateListener())
+        CloudAPI.instance.getEventManager().registerListener(this, CloudServiceUpdateListener())
         ProxyServer.getInstance().pluginManager.registerListener(this, BungeeListener())
 
     }

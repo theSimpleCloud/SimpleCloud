@@ -3,8 +3,8 @@ package eu.thesimplecloud.base.manager.player
 import com.mongodb.client.model.Filters
 import eu.thesimplecloud.base.manager.mongo.MongoConnectionInformation
 import eu.thesimplecloud.base.manager.startup.Manager
-import eu.thesimplecloud.lib.player.IOfflineCloudPlayer
-import eu.thesimplecloud.lib.player.OfflineCloudPlayer
+import eu.thesimplecloud.api.player.IOfflineCloudPlayer
+import eu.thesimplecloud.api.player.OfflineCloudPlayer
 import java.util.*
 import org.litote.kmongo.*
 

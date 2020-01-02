@@ -1,6 +1,6 @@
 package eu.thesimplecloud.launcher.screens
 
-import eu.thesimplecloud.lib.screen.ICommandExecutable
+import eu.thesimplecloud.api.screen.ICommandExecutable
 
 class ScreenImpl(private val commandExecutable: ICommandExecutable) : IScreen {
 

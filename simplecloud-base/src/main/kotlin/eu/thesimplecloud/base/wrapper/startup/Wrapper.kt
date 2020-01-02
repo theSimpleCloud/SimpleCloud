@@ -1,6 +1,6 @@
 package eu.thesimplecloud.base.wrapper.startup
 
-import eu.thesimplecloud.base.wrapper.impl.CloudLibImpl
+import eu.thesimplecloud.base.wrapper.impl.CloudAPIImpl
 import eu.thesimplecloud.base.wrapper.logger.LoggerMessageListenerImpl
 import eu.thesimplecloud.base.wrapper.network.packets.template.PacketOutGetTemplates
 import eu.thesimplecloud.base.wrapper.process.CloudServiceProcessManager
@@ -11,12 +11,12 @@ import eu.thesimplecloud.clientserverapi.client.INettyClient
 import eu.thesimplecloud.clientserverapi.client.NettyClient
 import eu.thesimplecloud.launcher.application.ICloudApplication
 import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.lib.client.CloudClientType
+import eu.thesimplecloud.api.client.CloudClientType
 import eu.thesimplecloud.client.packets.PacketOutCloudClientLogin
-import eu.thesimplecloud.lib.CloudLib
-import eu.thesimplecloud.lib.network.packets.wrapper.PacketIOUpdateWrapperInfo
-import eu.thesimplecloud.lib.wrapper.IWrapperInfo
-import eu.thesimplecloud.lib.wrapper.IWritableWrapperInfo
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.network.packets.wrapper.PacketIOUpdateWrapperInfo
+import eu.thesimplecloud.api.wrapper.IWrapperInfo
+import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
 import java.io.File
 import java.lang.IllegalStateException
 import java.util.concurrent.TimeUnit
@@ -40,7 +40,7 @@ class Wrapper : ICloudApplication {
     init {
         instance = this
         Launcher.instance.logger.addLoggerMessageListener(LoggerMessageListenerImpl())
-        CloudLibImpl()
+        CloudAPIImpl()
         val launcherConfig = Launcher.instance.launcherConfigLoader.loadConfig()
         this.communicationClient = NettyClient(launcherConfig.host, launcherConfig.port, ConnectionHandlerImpl())
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.client.packets")
@@ -94,7 +94,7 @@ class Wrapper : ICloudApplication {
         }
     }
 
-    fun getThisWrapper(): IWrapperInfo = CloudLib.instance.getWrapperManager().getWrapperByName(this.thisWrapperName)
+    fun getThisWrapper(): IWrapperInfo = CloudAPI.instance.getWrapperManager().getWrapperByName(this.thisWrapperName)
             ?: throw IllegalStateException("Unable to find self wrapper.")
 
     /**

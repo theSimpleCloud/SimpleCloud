@@ -4,7 +4,7 @@ import eu.thesimplecloud.base.wrapper.startup.Wrapper
 import eu.thesimplecloud.client.packets.PacketOutScreenMessage
 import eu.thesimplecloud.launcher.logging.ILoggerMessageListener
 import eu.thesimplecloud.launcher.logging.LogType
-import eu.thesimplecloud.lib.client.CloudClientType
+import eu.thesimplecloud.api.client.CloudClientType
 
 class LoggerMessageListenerImpl : ILoggerMessageListener {
 

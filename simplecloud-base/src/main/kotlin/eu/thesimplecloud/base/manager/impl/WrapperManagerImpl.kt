@@ -1,10 +1,9 @@
 package eu.thesimplecloud.base.manager.impl
 
 import eu.thesimplecloud.base.manager.startup.Manager
-import eu.thesimplecloud.lib.network.packets.servicegroup.PacketIOUpdateCloudServiceGroup
-import eu.thesimplecloud.lib.network.packets.wrapper.PacketIOUpdateWrapperInfo
-import eu.thesimplecloud.lib.wrapper.IWrapperInfo
-import eu.thesimplecloud.lib.wrapper.impl.DefaultWrapperManager
+import eu.thesimplecloud.api.network.packets.wrapper.PacketIOUpdateWrapperInfo
+import eu.thesimplecloud.api.wrapper.IWrapperInfo
+import eu.thesimplecloud.api.wrapper.impl.DefaultWrapperManager
 
 class WrapperManagerImpl : DefaultWrapperManager() {
 

@@ -1,30 +1,26 @@
 package eu.thesimplecloud.base.wrapper.process
 
-import eu.thesimplecloud.base.wrapper.process.filehandler.ServiceVersionLoader
 import eu.thesimplecloud.base.wrapper.process.filehandler.TemplateCopier
 import eu.thesimplecloud.base.wrapper.startup.Wrapper
 import eu.thesimplecloud.client.packets.PacketOutScreenMessage
 import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.lib.CloudLib
-import eu.thesimplecloud.lib.client.CloudClientType
-import eu.thesimplecloud.lib.directorypaths.DirectoryPaths
-import eu.thesimplecloud.lib.network.packets.service.PacketIORemoveCloudService
-import eu.thesimplecloud.lib.network.packets.service.PacketIOUpdateCloudService
-import eu.thesimplecloud.lib.service.ICloudService
-import eu.thesimplecloud.lib.service.ServiceState
-import eu.thesimplecloud.lib.service.impl.DefaultCloudService
-import eu.thesimplecloud.lib.servicegroup.grouptype.ICloudProxyGroup
-import eu.thesimplecloud.lib.utils.ManifestLoader
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.client.CloudClientType
+import eu.thesimplecloud.api.directorypaths.DirectoryPaths
+import eu.thesimplecloud.api.network.packets.service.PacketIORemoveCloudService
+import eu.thesimplecloud.api.network.packets.service.PacketIOUpdateCloudService
+import eu.thesimplecloud.api.service.ICloudService
+import eu.thesimplecloud.api.service.ServiceState
+import eu.thesimplecloud.api.service.impl.DefaultCloudService
+import eu.thesimplecloud.api.servicegroup.grouptype.ICloudProxyGroup
+import eu.thesimplecloud.api.utils.ManifestLoader
 import org.apache.commons.io.FileUtils
 import java.io.BufferedReader
 import java.io.File
 import java.io.IOException
 import java.io.InputStreamReader
 import java.lang.IllegalStateException
-import kotlin.concurrent.thread
-import java.io.FileInputStream
 import java.util.concurrent.TimeUnit
-import java.util.jar.JarInputStream
 
 
 class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServiceProcess {
@@ -43,7 +39,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
             this.cloudService.setPort(Wrapper.instance.portManager.getUnusedPort())
         }
         this.cloudService.setState(ServiceState.STARTING)
-        CloudLib.instance.getCloudServiceManger().updateCloudService(this.cloudService)
+        CloudAPI.instance.getCloudServiceManger().updateCloudService(this.cloudService)
         Wrapper.instance.communicationClient.sendUnitQuery(PacketIOUpdateCloudService(this.cloudService))
 
 
@@ -85,7 +81,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
         this.cloudService.setState(ServiceState.CLOSED)
         if (Wrapper.instance.communicationClient.isOpen()) {
             Wrapper.instance.communicationClient.sendUnitQuery(PacketIOUpdateCloudService(this.cloudService)).syncUninterruptibly()
-            CloudLib.instance.getCloudServiceManger().removeCloudService(this.cloudService.getName())
+            CloudAPI.instance.getCloudServiceManger().removeCloudService(this.cloudService.getName())
             Wrapper.instance.communicationClient.sendUnitQuery(PacketIORemoveCloudService(this.cloudService.getName()))
             Wrapper.instance.updateUsedMemory()
         }
@@ -106,7 +102,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
         val baseJarPath = File(this::class.java.protectionDomain.codeSource.location.toURI()).path
         val dependenciesDir = File("dependencies").absolutePath + "/*"
         val classPathValueList = listOf(jarFile.absolutePath, launcherJarPath, baseJarPath, dependenciesDir)
-        val separator = if (CloudLib.instance.isWindows()) ";" else ":"
+        val separator = if (CloudAPI.instance.isWindows()) ";" else ":"
         val classPathValue = "\"" + classPathValueList.joinToString(separator) + "\""
 
         val processBuilder = ProcessBuilder("java", "-Dcom.mojang.eula.agree=true", "-XX:+UseConcMarkSweepGC", "-XX:+CMSIncrementalMode",

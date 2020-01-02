@@ -10,14 +10,14 @@ import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.lib.CloudLib
-import eu.thesimplecloud.lib.network.packets.template.PacketIOUpdateTemplate
-import eu.thesimplecloud.lib.template.impl.DefaultTemplate
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.network.packets.template.PacketIOUpdateTemplate
+import eu.thesimplecloud.api.template.impl.DefaultTemplate
 
 @Command("create", true)
 class CreateCommand : ICommandHandler {
 
-    val templateManager = CloudLib.instance.getTemplateManager()
+    val templateManager = CloudAPI.instance.getTemplateManager()
 
 
     @CommandSubPath("lobbygroup", "Creates a lobby group")

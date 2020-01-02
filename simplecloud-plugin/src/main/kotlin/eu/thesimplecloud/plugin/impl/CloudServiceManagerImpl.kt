@@ -1,8 +1,8 @@
 package eu.thesimplecloud.plugin.impl
 
-import eu.thesimplecloud.lib.network.packets.service.PacketIOStopCloudService
-import eu.thesimplecloud.lib.service.ICloudService
-import eu.thesimplecloud.lib.service.impl.AbstractCloudServiceManager
+import eu.thesimplecloud.api.network.packets.service.PacketIOStopCloudService
+import eu.thesimplecloud.api.service.ICloudService
+import eu.thesimplecloud.api.service.impl.AbstractCloudServiceManager
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 
 class CloudServiceManagerImpl : AbstractCloudServiceManager() {

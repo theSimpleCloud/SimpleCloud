@@ -5,18 +5,18 @@ import eu.thesimplecloud.clientserverapi.lib.packet.packetsender.sendQuery
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnectedClient
-import eu.thesimplecloud.lib.CloudLib
-import eu.thesimplecloud.lib.exception.NoSuchPlayerException
-import eu.thesimplecloud.lib.exception.UnreachableServiceException
-import eu.thesimplecloud.lib.location.ServiceLocation
-import eu.thesimplecloud.lib.location.SimpleLocation
-import eu.thesimplecloud.lib.network.packets.player.*
-import eu.thesimplecloud.lib.player.AbstractCloudPlayerManager
-import eu.thesimplecloud.lib.player.ICloudPlayer
-import eu.thesimplecloud.lib.player.IOfflineCloudPlayer
-import eu.thesimplecloud.lib.player.text.CloudText
-import eu.thesimplecloud.lib.service.ICloudService
-import eu.thesimplecloud.lib.service.ServiceType
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.exception.NoSuchPlayerException
+import eu.thesimplecloud.api.exception.UnreachableServiceException
+import eu.thesimplecloud.api.location.ServiceLocation
+import eu.thesimplecloud.api.location.SimpleLocation
+import eu.thesimplecloud.api.network.packets.player.*
+import eu.thesimplecloud.api.player.AbstractCloudPlayerManager
+import eu.thesimplecloud.api.player.ICloudPlayer
+import eu.thesimplecloud.api.player.IOfflineCloudPlayer
+import eu.thesimplecloud.api.player.text.CloudText
+import eu.thesimplecloud.api.service.ICloudService
+import eu.thesimplecloud.api.service.ServiceType
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -146,7 +146,7 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
     }
 
     private fun getCloudClientByServiceName(serviceName: String): IConnectedClient<*>? {
-        val cloudService = CloudLib.instance.getCloudServiceManger().getCloudServiceByName(serviceName)
+        val cloudService = CloudAPI.instance.getCloudServiceManger().getCloudServiceByName(serviceName)
         return cloudService?.let { Manager.instance.communicationServer.getClientManager().getClientByClientValue(it) }
     }
 

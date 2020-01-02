@@ -5,7 +5,7 @@ import eu.thesimplecloud.launcher.console.command.ICommandSender
 import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
-import eu.thesimplecloud.lib.servicegroup.ICloudServiceGroup
+import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 
 @Command("start", false)
 class StartCommand : ICommandHandler {

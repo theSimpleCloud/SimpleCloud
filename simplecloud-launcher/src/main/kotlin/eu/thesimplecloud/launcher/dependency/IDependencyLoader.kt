@@ -1,6 +1,6 @@
 package eu.thesimplecloud.launcher.dependency
 
-import eu.thesimplecloud.lib.depedency.Dependency
+import eu.thesimplecloud.api.depedency.Dependency
 
 interface IDependencyLoader {
 

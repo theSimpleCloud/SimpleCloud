@@ -1,16 +1,15 @@
 package eu.thesimplecloud.launcher.console.command
 
 import com.google.gson.GsonBuilder
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.exception.CommandRegistrationException
 import eu.thesimplecloud.launcher.invoker.MethodInvokeHelper
-import eu.thesimplecloud.lib.external.ICloudModule
-import eu.thesimplecloud.lib.parser.string.StringParser
-import eu.thesimplecloud.lib.utils.getEnumValues
+import eu.thesimplecloud.api.external.ICloudModule
+import eu.thesimplecloud.api.parser.string.StringParser
+import eu.thesimplecloud.api.utils.getEnumValues
 import org.reflections.Reflections
 import java.lang.NullPointerException
 import kotlin.collections.ArrayList

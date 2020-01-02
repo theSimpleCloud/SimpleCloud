@@ -3,12 +3,12 @@ package eu.thesimplecloud.base.manager.impl
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
-import eu.thesimplecloud.lib.CloudLib
-import eu.thesimplecloud.lib.network.packets.servicegroup.PacketIORemoveCloudServiceGroup
-import eu.thesimplecloud.lib.network.packets.servicegroup.PacketIOUpdateCloudServiceGroup
-import eu.thesimplecloud.lib.service.ICloudService
-import eu.thesimplecloud.lib.servicegroup.ICloudServiceGroup
-import eu.thesimplecloud.lib.servicegroup.impl.AbstractCloudServiceGroupManager
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.network.packets.servicegroup.PacketIORemoveCloudServiceGroup
+import eu.thesimplecloud.api.network.packets.servicegroup.PacketIOUpdateCloudServiceGroup
+import eu.thesimplecloud.api.service.ICloudService
+import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
+import eu.thesimplecloud.api.servicegroup.impl.AbstractCloudServiceGroupManager
 import java.lang.IllegalArgumentException
 import java.lang.IllegalStateException
 
@@ -33,14 +33,14 @@ class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
     }
 
     override fun startNewService(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<ICloudService> {
-        if (CloudLib.instance.getCloudServiceGroupManager().getServiceGroupByName(cloudServiceGroup.getName()) == null)
+        if (CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(cloudServiceGroup.getName()) == null)
             return CommunicationPromise.failed(NoSuchElementException("Group is not registered."))
         val services = Manager.instance.serviceHandler.startServicesByGroup(cloudServiceGroup)
         return CommunicationPromise.of(services.first())
     }
 
     override fun deleteServiceGroup(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<Unit> {
-        if (CloudLib.instance.getCloudServiceManger().getCloudServicesByGroupName(cloudServiceGroup.getName()).isNotEmpty())
+        if (CloudAPI.instance.getCloudServiceManger().getCloudServicesByGroupName(cloudServiceGroup.getName()).isNotEmpty())
             return CommunicationPromise.failed(IllegalStateException("Cannot delete service group while services of this group are registered."))
         this.removeGroup(cloudServiceGroup)
         Manager.instance.communicationServer.getClientManager().sendPacketToAllClients(PacketIORemoveCloudServiceGroup(cloudServiceGroup.getName()))

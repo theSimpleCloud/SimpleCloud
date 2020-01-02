@@ -1,7 +1,7 @@
 package eu.thesimplecloud.base.manager.service
 
-import eu.thesimplecloud.lib.service.ICloudService
-import eu.thesimplecloud.lib.servicegroup.ICloudServiceGroup
+import eu.thesimplecloud.api.service.ICloudService
+import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 
 interface IServiceHandler {
 

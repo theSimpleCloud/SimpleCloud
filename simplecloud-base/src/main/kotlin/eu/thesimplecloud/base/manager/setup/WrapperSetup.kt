@@ -5,8 +5,8 @@ import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.launcher.utils.IpValidator
-import eu.thesimplecloud.lib.CloudLib
-import eu.thesimplecloud.lib.wrapper.impl.DefaultWrapperInfo
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.wrapper.impl.DefaultWrapperInfo
 
 class WrapperSetup : ISetup {
 
@@ -67,7 +67,7 @@ class WrapperSetup : ISetup {
     @SetupFinished
     fun finished(){
         val wrapperInfo = DefaultWrapperInfo(name, host, maxSimultaneouslyStartingServices, memory)
-        CloudLib.instance.getWrapperManager().updateWrapper(wrapperInfo)
+        CloudAPI.instance.getWrapperManager().updateWrapper(wrapperInfo)
         Launcher.instance.consoleSender.sendMessage("manager.setup.wrapper.finished", "Wrapper %NAME%", name, " created.")
     }
 

@@ -1,19 +1,13 @@
 package eu.thesimplecloud.launcher.console.setup
 
-import com.google.common.collect.Queues
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupCancelled
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
 import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.lib.parser.string.StringParser
-import org.jetbrains.annotations.NotNull
-import java.lang.reflect.InvocationTargetException
+import eu.thesimplecloud.api.parser.string.StringParser
 import java.lang.reflect.Method
 import java.lang.reflect.Parameter
-import java.util.*
-import java.util.concurrent.LinkedBlockingQueue
-import java.util.function.Consumer
 import kotlin.collections.ArrayList
 
 class SetupManager(val launcher: Launcher) {

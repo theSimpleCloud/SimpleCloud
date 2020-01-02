@@ -2,14 +2,14 @@ package eu.thesimplecloud.base.manager.service
 
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.lib.CloudLib
-import eu.thesimplecloud.lib.network.packets.service.PacketIOUpdateCloudService
-import eu.thesimplecloud.lib.network.packets.service.PacketIOWrapperStartService
-import eu.thesimplecloud.lib.service.ICloudService
-import eu.thesimplecloud.lib.service.ServiceState
-import eu.thesimplecloud.lib.service.impl.DefaultCloudService
-import eu.thesimplecloud.lib.servicegroup.ICloudServiceGroup
-import eu.thesimplecloud.lib.wrapper.IWrapperInfo
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.network.packets.service.PacketIOUpdateCloudService
+import eu.thesimplecloud.api.network.packets.service.PacketIOWrapperStartService
+import eu.thesimplecloud.api.service.ICloudService
+import eu.thesimplecloud.api.service.ServiceState
+import eu.thesimplecloud.api.service.impl.DefaultCloudService
+import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
+import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import java.util.*
 import java.util.concurrent.LinkedBlockingQueue
 import kotlin.collections.ArrayList
@@ -25,7 +25,7 @@ class ServiceHandler : IServiceHandler {
         for (i in 0 until count) {
             val service = DefaultCloudService(cloudServiceGroup.getName(), getNumberForNewService(cloudServiceGroup), UUID.randomUUID(), cloudServiceGroup.getTemplateName(), cloudServiceGroup.getWrapperName()
                     ?: "", -1, cloudServiceGroup.getMaxMemory(), "Cloud service")
-            CloudLib.instance.getCloudServiceManger().updateCloudService(service)
+            CloudAPI.instance.getCloudServiceManger().updateCloudService(service)
             list.add(service)
             addServiceToQueue(service)
         }
@@ -42,13 +42,13 @@ class ServiceHandler : IServiceHandler {
 
     private fun getNumberForNewService(cloudServiceGroup: ICloudServiceGroup): Int {
         var number = 1
-        while (CloudLib.instance.getCloudServiceManger().getCloudServiceByName(cloudServiceGroup.getName() + "-" + number) != null)
+        while (CloudAPI.instance.getCloudServiceManger().getCloudServiceByName(cloudServiceGroup.getName() + "-" + number) != null)
             number++
         return number
     }
 
     fun startMinServices() {
-        for (serviceGroup in CloudLib.instance.getCloudServiceGroupManager().getAllGroups()) {
+        for (serviceGroup in CloudAPI.instance.getCloudServiceGroupManager().getAllGroups()) {
             val allServices = serviceGroup.getAllRunningServices()
             val inLobbyServices = allServices.filter { it.getState() != ServiceState.INVISIBLE && it.getState() != ServiceState.CLOSED }
             val services = inLobbyServices.filter { it.getOnlinePercentage() < serviceGroup.getPercentToStartNewService().toDouble() / 100 }
@@ -72,7 +72,7 @@ class ServiceHandler : IServiceHandler {
                     if (wrapperClient != null) {
                         service as DefaultCloudService
                         service.setWrapperName(wrapperInfo.getName())
-                        CloudLib.instance.getCloudServiceManger().updateCloudService(service)
+                        CloudAPI.instance.getCloudServiceManger().updateCloudService(service)
                         wrapperClient.sendUnitQuery(PacketIOUpdateCloudService(service)).syncUninterruptibly()
                         wrapperClient.sendUnitQuery(PacketIOWrapperStartService(service.getName())).syncUninterruptibly()
                         Launcher.instance.consoleSender.sendMessage("manager.service.start", "Told Wrapper %WRAPPER%", wrapperInfo.getName(), " to start service %SERVICE%", service.getName())
@@ -87,9 +87,9 @@ class ServiceHandler : IServiceHandler {
 
     private fun getWrapperForService(service: ICloudService): IWrapperInfo? {
         if (service.getWrapperName().isBlank()) {
-            return CloudLib.instance.getWrapperManager().getWrapperByUnusedMemory(service.getMaxMemory())
+            return CloudAPI.instance.getWrapperManager().getWrapperByUnusedMemory(service.getMaxMemory())
         } else {
-            val requiredWrapper = CloudLib.instance.getWrapperManager().getWrapperByName(service.getWrapperName())
+            val requiredWrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(service.getWrapperName())
                     ?: return null
             if (requiredWrapper.hasEnoughMemory(service.getMaxMemory()) && requiredWrapper.isAuthenticated() && requiredWrapper.hasTemplatesReceived()) {
                 return requiredWrapper

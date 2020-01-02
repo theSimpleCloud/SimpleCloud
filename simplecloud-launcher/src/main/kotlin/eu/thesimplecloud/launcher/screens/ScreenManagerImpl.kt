@@ -1,7 +1,7 @@
 package eu.thesimplecloud.launcher.screens
 
 import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.lib.screen.ICommandExecutable
+import eu.thesimplecloud.api.screen.ICommandExecutable
 import java.util.concurrent.CopyOnWriteArraySet
 
 class ScreenManagerImpl : IScreenManager {

@@ -1,7 +1,7 @@
 package eu.thesimplecloud.base.wrapper.process
 
 import eu.thesimplecloud.clientserverapi.lib.bootstrap.IBootstrap
-import eu.thesimplecloud.lib.service.ICloudService
+import eu.thesimplecloud.api.service.ICloudService
 
 interface ICloudServiceProcess : IBootstrap {
 

@@ -1,8 +1,8 @@
 package eu.thesimplecloud.base.manager.events
 
-import eu.thesimplecloud.lib.eventapi.ICancellable
-import eu.thesimplecloud.lib.eventapi.IEvent
-import eu.thesimplecloud.lib.player.ICloudPlayer
+import eu.thesimplecloud.api.eventapi.ICancellable
+import eu.thesimplecloud.api.eventapi.IEvent
+import eu.thesimplecloud.api.player.ICloudPlayer
 
 class CloudPlayerLoginEvent(
         val cloudPlayer: ICloudPlayer

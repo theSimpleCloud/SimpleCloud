@@ -1,11 +1,7 @@
 package eu.thesimplecloud.base.manager.config
 
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
-import eu.thesimplecloud.lib.config.AbstractJsonDataConfigLoader
-import eu.thesimplecloud.lib.config.IConfigLoader
-import eu.thesimplecloud.lib.config.IFileHandler
-import eu.thesimplecloud.lib.directorypaths.DirectoryPaths
-import eu.thesimplecloud.lib.template.ITemplate
+import eu.thesimplecloud.api.config.AbstractJsonDataConfigLoader
+import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import java.io.File
 
 class TemplatesConfigLoader : AbstractJsonDataConfigLoader<TemplatesConfig>(

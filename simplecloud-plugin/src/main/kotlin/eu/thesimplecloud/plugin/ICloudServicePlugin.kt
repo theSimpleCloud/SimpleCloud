@@ -1,6 +1,6 @@
 package eu.thesimplecloud.plugin
 
-import eu.thesimplecloud.lib.external.ICloudModule
+import eu.thesimplecloud.api.external.ICloudModule
 
 interface ICloudServicePlugin : ICloudModule {
 

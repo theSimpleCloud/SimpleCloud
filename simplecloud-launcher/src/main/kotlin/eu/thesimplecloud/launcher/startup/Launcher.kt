@@ -11,15 +11,13 @@ import eu.thesimplecloud.launcher.logging.LoggerProvider
 import eu.thesimplecloud.launcher.setups.LanguageSetup
 import eu.thesimplecloud.launcher.setups.StartSetup
 import eu.thesimplecloud.launcher.config.LauncherConfigLoader
-import eu.thesimplecloud.launcher.dependency.DependencyLoader
 import eu.thesimplecloud.launcher.screens.IScreenManager
 import eu.thesimplecloud.launcher.screens.ScreenManagerImpl
 import eu.thesimplecloud.launcher.setups.AutoIpSetup
-import eu.thesimplecloud.lib.directorypaths.DirectoryPaths
-import eu.thesimplecloud.lib.external.ICloudModule
-import eu.thesimplecloud.lib.language.LanguageManager
+import eu.thesimplecloud.api.directorypaths.DirectoryPaths
+import eu.thesimplecloud.api.external.ICloudModule
+import eu.thesimplecloud.api.language.LanguageManager
 import java.util.concurrent.Executors
-import java.util.function.Consumer
 import kotlin.system.exitProcess
 
 
