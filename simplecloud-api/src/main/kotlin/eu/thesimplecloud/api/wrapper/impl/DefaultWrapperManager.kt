@@ -4,10 +4,11 @@ import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.api.wrapper.IWrapperManager
 import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
 import java.util.*
+import java.util.concurrent.CopyOnWriteArrayList
 
 open class DefaultWrapperManager : IWrapperManager {
 
-    private val wrappers = Collections.synchronizedCollection(ArrayList<IWrapperInfo>())
+    private val wrappers = CopyOnWriteArrayList<IWrapperInfo>()
 
     override fun updateWrapper(wrapper: IWrapperInfo) {
         if (!this.wrappers.contains(wrapper)) {

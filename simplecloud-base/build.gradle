@@ -18,7 +18,7 @@ dependencies {
     compile(project(":simplecloud-client")) {
         exclude group: 'org.jetbrains.kotlin'
         exclude group: 'eu.thesimplecloud.clientserverapi'
-        exclude module: 'simplecloud-lib'
+        exclude module: 'simplecloud-api'
     }
     implementation("com.github.ajalt:clikt:2.2.0")
     // https://mvnrepository.com/artifact/commons-io/commons-io

@@ -45,7 +45,7 @@ class Wrapper : ICloudApplication {
         this.communicationClient = NettyClient(launcherConfig.host, launcherConfig.port, ConnectionHandlerImpl())
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.client.packets")
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.base.wrapper.network.packets")
-        this.communicationClient.addPacketsByPackage("eu.thesimplecloud.lib.network.packets")
+        this.communicationClient.addPacketsByPackage("eu.thesimplecloud.api.network.packets")
         thread(start = true, isDaemon = false) { communicationClient.start() }
         this.communicationClient.getPacketIdsSyncPromise().addResultListener { this.communicationClient.sendUnitQuery(PacketOutCloudClientLogin(CloudClientType.WRAPPER)) }
         if (isStartedInManagerDirectory()) {

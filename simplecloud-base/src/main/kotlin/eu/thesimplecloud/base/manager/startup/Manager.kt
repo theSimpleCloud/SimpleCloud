@@ -25,6 +25,7 @@ import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.screen.ICommandExecutable
+import eu.thesimplecloud.clientserverapi.lib.debug.DebugMessage
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.litote.kmongo.KMongo
@@ -67,7 +68,7 @@ class Manager : ICloudApplication {
         val launcherConfig = Launcher.instance.launcherConfigLoader.loadConfig()
         this.communicationServer = NettyServer<ICommandExecutable>(launcherConfig.host, launcherConfig.port, CommunicationConnectionHandlerImpl(), ServerHandlerImpl())
         this.templateServer = NettyServer<ICommandExecutable>(launcherConfig.host, launcherConfig.port + 1, TemplateConnectionHandlerImpl(), ServerHandlerImpl())
-        this.communicationServer.addPacketsByPackage("eu.thesimplecloud.lib.network.packets")
+        this.communicationServer.addPacketsByPackage("eu.thesimplecloud.api.network.packets")
         this.communicationServer.addPacketsByPackage("eu.thesimplecloud.base.manager.network.packets")
         this.templateServer.addPacketsByPackage("eu.thesimplecloud.base.manager.network.packets.template")
         createDirectories()

@@ -6,10 +6,11 @@ import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ICloudServiceManager
 import eu.thesimplecloud.api.service.ServiceState
 import java.util.*
+import java.util.concurrent.CopyOnWriteArrayList
 
 abstract class AbstractCloudServiceManager : ICloudServiceManager {
 
-    private val services = Collections.synchronizedCollection(ArrayList<ICloudService>())
+    private val services = CopyOnWriteArrayList<ICloudService>()
 
     override fun updateCloudService(cloudService: ICloudService) {
         val cashedService = getCloudServiceByName(cloudService.getName())

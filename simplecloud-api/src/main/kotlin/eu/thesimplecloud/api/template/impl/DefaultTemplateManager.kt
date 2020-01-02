@@ -3,10 +3,11 @@ package eu.thesimplecloud.api.template.impl
 import eu.thesimplecloud.api.template.ITemplate
 import eu.thesimplecloud.api.template.ITemplateManager
 import java.util.*
+import java.util.concurrent.CopyOnWriteArrayList
 
 open class DefaultTemplateManager : ITemplateManager {
 
-    private val templates = Collections.synchronizedCollection(HashSet<ITemplate>())
+    private val templates = CopyOnWriteArrayList<ITemplate>()
 
     override fun updateTemplate(template: ITemplate) {
         val cachedTemplate = getTemplate(template.getName())
