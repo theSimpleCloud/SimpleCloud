@@ -1,5 +1,6 @@
 package eu.thesimplecloud.lib.servicegroup.impl
 
+import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.lib.service.ServiceVersion
 import eu.thesimplecloud.lib.servicegroup.grouptype.ICloudServerGroup
 
@@ -33,4 +34,8 @@ open class DefaultServerGroup(
 ), ICloudServerGroup {
 
     override fun getHiddenAtProxyGroups(): List<String> = this.hiddenAtProxyGroups
+
+    override fun toString(): String {
+        return JsonData.fromObjectWithGsonExclude(this).getAsJsonString()
+    }
 }

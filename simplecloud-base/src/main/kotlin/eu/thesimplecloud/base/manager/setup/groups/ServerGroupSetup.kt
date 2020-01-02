@@ -44,7 +44,7 @@ class ServerGroupSetup : ISetup {
 
     @SetupQuestion(2, "manager.setup.service-group.question.type", "Which spigot shall the group use? (Spigot, Paper)")
     fun typeQuestion(string: String) {
-        if (!string.equals("paper", true) && !type.equals("spigot", true)){
+        if (!string.equals("paper", true) && !string.equals("spigot", true)){
             Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.type.invalid", "Invalid response.")
             return
         }

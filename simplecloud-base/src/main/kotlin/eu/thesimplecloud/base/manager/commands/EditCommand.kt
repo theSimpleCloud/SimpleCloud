@@ -17,7 +17,7 @@ class EditCommand : ICommandHandler {
 
     @CommandSubPath("group <name> <parameter> <value>", "Edits a service group.")
     fun editGroup(commandSender: ICommandSender, @CommandArgument("name") name: String, @CommandArgument("parameter") parameter: String, @CommandArgument("value") value: String){
-        val serviceGroup = CloudLib.instance.getCloudServiceGroupManager().getServiceGroup(name)
+        val serviceGroup = CloudLib.instance.getCloudServiceGroupManager().getServiceGroupByName(name)
         if (serviceGroup == null){
             Launcher.instance.consoleSender.sendMessage("manager.command.edit.group.not-exist", "The specified group does not exist.")
             return

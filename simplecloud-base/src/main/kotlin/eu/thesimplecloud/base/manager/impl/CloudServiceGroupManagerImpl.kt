@@ -17,7 +17,7 @@ class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
 
     override fun createServiceGroup(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<Unit> {
         val promise = CommunicationPromise<Unit>()
-        if (getServiceGroup(cloudServiceGroup.getName()) == null) {
+        if (getServiceGroupByName(cloudServiceGroup.getName()) == null) {
             updateGroup(cloudServiceGroup)
             promise.trySuccess(Unit)
         } else {
@@ -33,6 +33,8 @@ class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
     }
 
     override fun startNewService(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<ICloudService> {
+        if (CloudLib.instance.getCloudServiceGroupManager().getServiceGroupByName(cloudServiceGroup.getName()) == null)
+            return CommunicationPromise.failed(NoSuchElementException("Group is not registered."))
         val services = Manager.instance.serviceHandler.startServicesByGroup(cloudServiceGroup)
         return CommunicationPromise.of(services.first())
     }

@@ -4,6 +4,4 @@ include 'simplecloud-client'
 include 'simplecloud-launcher'
 include 'simplecloud-plugin'
 include 'simplecloud-base'
-include 'simplecloud-service-dependency-loader'
-include 'simplecloud-mongodb-installer'
 

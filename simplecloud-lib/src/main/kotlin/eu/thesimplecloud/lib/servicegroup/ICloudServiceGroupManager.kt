@@ -11,6 +11,7 @@ import eu.thesimplecloud.lib.servicegroup.grouptype.ICloudServerGroup
 import eu.thesimplecloud.lib.servicegroup.impl.DefaultLobbyGroup
 import eu.thesimplecloud.lib.servicegroup.impl.DefaultProxyGroup
 import eu.thesimplecloud.lib.servicegroup.impl.DefaultServerGroup
+import kotlin.NoSuchElementException
 
 interface ICloudServiceGroupManager {
 
@@ -131,34 +132,33 @@ interface ICloudServiceGroupManager {
      * [ICommunicationPromise.isSuccess] indicates whether the creation was successful
      * The promise will fail with:
      * - [IllegalArgumentException] if the group is already registered.
-     * - [NoSuchElementException] if the group is not registered
      */
     fun createServiceGroup(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<Unit>
 
     /**
      * Returns a list of all registered [ICloudServiceGroup]
      */
-    fun getAllGroups(): List<ICloudServiceGroup>
+    fun getAllGroups(): Collection<ICloudServiceGroup>
 
     /**
      * Returns the [ICloudServiceGroup] found by the specified name
      */
-    fun getServiceGroup(name: String): ICloudServiceGroup? = getAllGroups().firstOrNull { it.getName().equals(name, true) }
+    fun getServiceGroupByName(name: String): ICloudServiceGroup? = getAllGroups().firstOrNull { it.getName().equals(name, true) }
 
     /**
      * Returns the [ICloudServerGroup] found by the specified name
      */
-    fun getServerGroup(name: String): ICloudServerGroup? = getServerGroups().firstOrNull { it.getName().equals(name, true) }
+    fun getServerGroupByName(name: String): ICloudServerGroup? = getServerGroups().firstOrNull { it.getName().equals(name, true) }
 
     /**
      * Returns the [ICloudLobbyGroup] found by the specified name
      */
-    fun getLobbyGroup(name: String): ICloudLobbyGroup? = getLobbyGroups().firstOrNull { it.getName().equals(name, true) }
+    fun getLobbyGroupByName(name: String): ICloudLobbyGroup? = getLobbyGroups().firstOrNull { it.getName().equals(name, true) }
 
     /**
      * Returns the [ICloudProxyGroup] found by the specified name
      */
-    fun getProxyGroup(name: String): ICloudProxyGroup? = getProxyGroups().firstOrNull { it.getName().equals(name, true) }
+    fun getProxyGroupByName(name: String): ICloudProxyGroup? = getProxyGroups().firstOrNull { it.getName().equals(name, true) }
 
     /**
      * Returns all registered proxy groups
@@ -182,7 +182,11 @@ interface ICloudServiceGroupManager {
 
     /**
      * Starts a new service by the specified group
-     * Te
+     * @return a promise that is completed when the service was registered, or
+     * when an exception is encountered. [ICommunicationPromise.isSuccess] indicates success
+     * or failure.
+     * The promise will fail with:
+     * - [NoSuchElementException] if the specified group is not registered.
      */
     fun startNewService(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<ICloudService>
 

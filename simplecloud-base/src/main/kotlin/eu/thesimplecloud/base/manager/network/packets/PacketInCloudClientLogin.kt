@@ -3,6 +3,7 @@ package eu.thesimplecloud.base.manager.network.packets
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
+import eu.thesimplecloud.clientserverapi.lib.promise.combineAllPromises
 import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnectedClient
 import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnectedClientValue
 import eu.thesimplecloud.launcher.startup.Launcher
@@ -20,14 +21,19 @@ class PacketInCloudClientLogin() : JsonPacket() {
         val cloudClientType = this.jsonData.getObject("cloudClientType", CloudClientType::class.java)
                 ?: return contentException("cloudClientType")
         connection as IConnectedClient<IConnectedClientValue>
-        CloudLib.instance.getWrapperManager().getAllWrappers().forEach { connection.sendUnitQuery(PacketIOUpdateWrapperInfo(it)) }
-        CloudLib.instance.getTemplateManager().getAllTemplates().forEach { connection.sendUnitQuery(PacketIOUpdateTemplate(it)) }
-        CloudLib.instance.getCloudServiceGroupManager().getAllGroups().forEach { connection.sendUnitQuery(PacketIOUpdateCloudServiceGroup(it)) }
-        CloudLib.instance.getCloudServiceManger().getAllCloudServices().forEach { connection.sendUnitQuery(PacketIOUpdateCloudService(it)) }
+        val wrapperPromises = CloudLib.instance.getWrapperManager().getAllWrappers().map { connection.sendUnitQuery(PacketIOUpdateWrapperInfo(it)) }
+        val templatePromises = CloudLib.instance.getTemplateManager().getAllTemplates().map { connection.sendUnitQuery(PacketIOUpdateTemplate(it)) }
+        val groupPromises = CloudLib.instance.getCloudServiceGroupManager().getAllGroups().map { connection.sendUnitQuery(PacketIOUpdateCloudServiceGroup(it)) }
+        val servicePromises = CloudLib.instance.getCloudServiceManger().getAllCloudServices().map { connection.sendUnitQuery(PacketIOUpdateCloudService(it)) }
+        wrapperPromises.union(templatePromises)
+                .union(groupPromises)
+                .union(servicePromises)
+                .combineAllPromises()
+                .awaitUninterruptibly()
         when (cloudClientType) {
             CloudClientType.SERVICE -> {
                 val name = this.jsonData.getString("name") ?: return contentException("name")
-                val cloudService = CloudLib.instance.getCloudServiceManger().getCloudService(name)
+                val cloudService = CloudLib.instance.getCloudServiceManger().getCloudServiceByName(name)
                         ?: return failure(NoSuchElementException("Service not found"))
                 connection.setClientValue(cloudService)
                 cloudService.setAuthenticated(true)

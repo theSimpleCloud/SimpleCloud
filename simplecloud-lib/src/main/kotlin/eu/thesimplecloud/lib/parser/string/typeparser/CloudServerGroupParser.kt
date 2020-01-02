@@ -8,5 +8,5 @@ class CloudServerGroupParser : IStringTypeParser<ICloudServerGroup> {
 
     override fun allowedTypes(): List<Class<out ICloudServerGroup>> = listOf(ICloudServerGroup::class.java)
 
-    override fun parse(string: String): ICloudServerGroup? = CloudLib.instance.getCloudServiceGroupManager().getServerGroup(string)
+    override fun parse(string: String): ICloudServerGroup? = CloudLib.instance.getCloudServiceGroupManager().getServerGroupByName(string)
 }

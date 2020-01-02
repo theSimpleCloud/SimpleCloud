@@ -4,11 +4,12 @@ import com.sun.media.jfxmediaimpl.platform.java.JavaPlatform
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
+import java.net.URLClassLoader
 
-class CloudServerPlugin : JavaPlugin(), ICloudServerPlugin {
+class CloudSpigotPlugin : JavaPlugin(), ICloudServerPlugin {
 
     override fun onLoad() {
-        CloudPlugin(this)
+        CloudPlugin(this, URLClassLoader(arrayOf(this.file.toURI().toURL())))
     }
 
     override fun onEnable() {

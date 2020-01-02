@@ -16,7 +16,7 @@ interface IWrapperManager {
     /**
      * Returns all registered wrappers
      */
-    fun getAllWrappers(): List<IWrapperInfo>
+    fun getAllWrappers(): Collection<IWrapperInfo>
 
     /**
      * Returns the [IWrapperInfo] found by the specified name

@@ -5,13 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import eu.thesimplecloud.launcher.external.ResourceFinder
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.lib.depedency.Dependency
+import eu.thesimplecloud.lib.external.ResourceFinder
 import org.apache.maven.model.Model
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader
 import java.io.ByteArrayInputStream
-import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
 
@@ -236,7 +235,7 @@ class DependencyLoader : IDependencyLoader {
             downloadDependency(dependency)
         }
         if (!dependency.getDownloadedFile().exists()) throw FileNotFoundException("Failed to download dependency ${dependency.artifactId}-${dependency.version}")
-        ResourceFinder.addToClassPath(dependency.getDownloadedFile())
+        ResourceFinder.addToClassLoader(dependency.getDownloadedFile())
     }
 
     private fun downloadDependency(dependency: Dependency) {

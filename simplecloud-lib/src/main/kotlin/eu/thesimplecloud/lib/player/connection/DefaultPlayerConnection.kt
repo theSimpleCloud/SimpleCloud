@@ -1,17 +1,17 @@
 package eu.thesimplecloud.lib.player.connection
 
-import java.net.InetAddress
+import java.net.InetSocketAddress
 import java.util.*
 
 data class DefaultPlayerConnection(
-        private val address: InetAddress,
+        private val address: DefaultPlayerAddress,
         private val name: String,
         private val uniqueId: UUID,
         private val onlineMode: Boolean,
         private val version: Int
 ) : IPlayerConnection {
 
-    override fun getAddress(): InetAddress = this.address
+    override fun getAddress(): IPlayerAddress = this.address
 
     override fun getUniqueId(): UUID = this.uniqueId
 

@@ -49,13 +49,14 @@ data class DefaultWrapperInfo(
 
     override fun isAuthenticated(): Boolean = this.authenticated
 
-    override fun toString(): String {
-        return "DefaultWrapperInfo(name: $name host: $host memory: $maxMemory usedMemory: $usedMemory authenticated: $authenticated maxSimultaneouslyStartingServices: $maxSimultaneouslyStartingServices)"
-    }
-
     override fun hasTemplatesReceived(): Boolean = this.templatesReceived
 
     override fun setTemplatesReceived(boolean: Boolean) {
         this.templatesReceived = boolean
     }
+
+    override fun toString(): String {
+        return JsonData.fromObjectWithGsonExclude(this).getAsJsonString()
+    }
+
 }

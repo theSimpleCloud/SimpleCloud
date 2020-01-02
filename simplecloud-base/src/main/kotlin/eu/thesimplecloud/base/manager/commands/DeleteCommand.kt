@@ -35,7 +35,7 @@ class DeleteCommand : ICommandHandler {
 
     @CommandSubPath("group <name>", "Deletes a group")
     fun deleteGroup(@CommandArgument("name") name: String) {
-        val serviceGroup = CloudLib.instance.getCloudServiceGroupManager().getServiceGroup(name)
+        val serviceGroup = CloudLib.instance.getCloudServiceGroupManager().getServiceGroupByName(name)
         if (serviceGroup == null){
             Launcher.instance.consoleSender.sendMessage("manager.command.delete.group.not-exist", "Group %NAME%", name, " does not exist.")
             return

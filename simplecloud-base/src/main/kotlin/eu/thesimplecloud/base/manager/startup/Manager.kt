@@ -1,10 +1,8 @@
 package eu.thesimplecloud.base.manager.startup
 
 import com.mongodb.MongoClient
-import com.mongodb.MongoClientURI
 import eu.thesimplecloud.base.MongoBuilder
 import eu.thesimplecloud.base.MongoController
-import eu.thesimplecloud.base.manager.config.MongoConfig
 import eu.thesimplecloud.base.manager.config.MongoConfigLoader
 import eu.thesimplecloud.base.manager.filehandler.CloudServiceGroupFileHandler
 import eu.thesimplecloud.base.manager.config.TemplatesConfigLoader
@@ -13,13 +11,14 @@ import eu.thesimplecloud.base.manager.impl.CloudLibImpl
 import eu.thesimplecloud.base.manager.listener.CloudListener
 import eu.thesimplecloud.base.manager.mongo.MongoConnectionInformation
 import eu.thesimplecloud.base.manager.mongo.MongoServerInformation
-import eu.thesimplecloud.base.manager.player.IOfflineCloudPlayerLoader
-import eu.thesimplecloud.base.manager.player.OfflineCloudPlayerLoader
+import eu.thesimplecloud.base.manager.player.IOfflineCloudPlayerHandler
+import eu.thesimplecloud.base.manager.player.OfflineCloudPlayerHandler
 import eu.thesimplecloud.base.manager.service.ServiceHandler
 import eu.thesimplecloud.base.manager.setup.mongo.MongoDBUseEmbedSetup
 import eu.thesimplecloud.base.manager.startup.server.CommunicationConnectionHandlerImpl
 import eu.thesimplecloud.base.manager.startup.server.ServerHandlerImpl
 import eu.thesimplecloud.base.manager.startup.server.TemplateConnectionHandlerImpl
+import eu.thesimplecloud.clientserverapi.lib.debug.DebugMessage
 import eu.thesimplecloud.clientserverapi.server.INettyServer
 import eu.thesimplecloud.clientserverapi.server.NettyServer
 import eu.thesimplecloud.launcher.application.ICloudApplication
@@ -27,9 +26,10 @@ import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.directorypaths.DirectoryPaths
 import eu.thesimplecloud.lib.screen.ICommandExecutable
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.litote.kmongo.KMongo
 import java.io.File
-import java.util.function.Consumer
 import kotlin.concurrent.thread
 
 class Manager : ICloudApplication {
@@ -43,7 +43,7 @@ class Manager : ICloudApplication {
         private set
     val mongoClient: MongoClient
 
-    val offlineCloudPlayerLoader: IOfflineCloudPlayerLoader
+    val offlineCloudPlayerLoader: IOfflineCloudPlayerHandler
 
     val communicationServer: INettyServer<ICommandExecutable>
     val templateServer: INettyServer<ICommandExecutable>
@@ -59,7 +59,7 @@ class Manager : ICloudApplication {
         CloudLib.instance.getEventManager().registerListener(this, CloudListener())
         if (!MongoConfigLoader().doesConfigFileExist()) {
             Launcher.instance.setupManager.queueSetup(MongoDBUseEmbedSetup())
-            Launcher.instance.setupManager.setupsCompletedPromise.awaitUninterruptibly()
+            Launcher.instance.setupManager.waitFroAllSetups()
         }
         val mongoConfig = MongoConfigLoader().loadConfig()
         if (mongoConfig.embedMongo)
@@ -74,9 +74,10 @@ class Manager : ICloudApplication {
         createDirectories()
         Launcher.instance.logger.console("Waiting for MongoDB...")
         this.mongoController?.startedPromise?.awaitUninterruptibly()
-        this.mongoClient = connectToMongo(mongoConfig.mongoServerInformation)
-        this.offlineCloudPlayerLoader = OfflineCloudPlayerLoader(mongoConfig.mongoServerInformation)
+        mongoClient = connectToMongo(mongoConfig.mongoServerInformation)
         Launcher.instance.logger.console("Connected to MongoDB")
+
+        this.offlineCloudPlayerLoader = OfflineCloudPlayerHandler(mongoConfig.mongoServerInformation)
 
         thread(start = true, isDaemon = false) { templateServer.start() }
         thread(start = true, isDaemon = false) { communicationServer.start() }
@@ -104,8 +105,8 @@ class Manager : ICloudApplication {
     }
 
     override fun onEnable() {
-        Launcher.instance.commandManager.registerAllCommands(this, "eu.thesimplecloud.base.manager.commands")
-        Launcher.instance.setupManager.setupsCompletedPromise.awaitUninterruptibly()
+        GlobalScope.launch { Launcher.instance.commandManager.registerAllCommands(instance, "eu.thesimplecloud.base.manager.commands") }
+        Launcher.instance.setupManager.waitFroAllSetups()
         this.wrapperFileHandler.loadAll().forEach { CloudLib.instance.getWrapperManager().updateWrapper(it) }
         this.cloudServiceGroupFileHandler.loadAll().forEach { CloudLib.instance.getCloudServiceGroupManager().updateGroup(it) }
         this.templatesConfigLoader.loadConfig().templates.forEach { CloudLib.instance.getTemplateManager().updateTemplate(it) }

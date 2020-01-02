@@ -25,8 +25,7 @@ class SetupManager(val launcher: Launcher) {
         private set
     private var currentQuestionIndex = 0
 
-    var setupsCompletedPromise = CommunicationPromise<Unit>(enableTimeout = false)
-        private set
+    private var setupsCompletedPromise = CommunicationPromise<Unit>(enableTimeout = false)
 
     fun queueSetup(setup: ISetup, first: Boolean = false) {
         val questions = ArrayList<SetupQuestionData>()
@@ -128,6 +127,11 @@ class SetupManager(val launcher: Launcher) {
     }
 
     private fun hasNextQuestion(setupData: SetupData) = this.currentQuestionIndex + 1 in setupData.questions.indices
+
+    fun waitFroAllSetups() {
+        if (this.currentSetup != null)
+            this.setupsCompletedPromise.awaitUninterruptibly()
+    }
 
 
     class SetupData(val source: ISetup, val cancelledMethod: Method?, val finishedMethod: Method?, val questions: List<SetupQuestionData>) {

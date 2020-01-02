@@ -77,7 +77,8 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
 
 
         this.logger.updatePrompt(false)
-        this.setupManager.setupsCompletedPromise.thenAccept { this.launcherStartArguments.startApplication?.let { startApplication(it) } }
+        this.setupManager.waitFroAllSetups()
+        this.launcherStartArguments.startApplication?.let { startApplication(it) }
     }
 
     fun startApplication(cloudApplicationType: CloudApplicationType) {

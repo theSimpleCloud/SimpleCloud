@@ -8,11 +8,5 @@ interface ICloudProxyPlugin : ICloudServicePlugin {
 
     fun addServiceToProxy(cloudService: ICloudService)
 
-    /**
-     * Sends a login request to the manager and returns the response synchronously
-     */
-    fun sendLoginRequestAndAwait(playerConnection: IPlayerConnection) {
-
-    }
 
 }

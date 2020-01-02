@@ -3,15 +3,12 @@ package eu.thesimplecloud.plugin.impl
 import eu.thesimplecloud.clientserverapi.lib.packet.packetsender.sendQuery
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
-import eu.thesimplecloud.lib.exception.NoSuchPlayerException
-import eu.thesimplecloud.lib.exception.NoSuchWorldException
-import eu.thesimplecloud.lib.exception.PlayerConnectException
-import eu.thesimplecloud.lib.exception.UnavailableServiceException
+import eu.thesimplecloud.lib.CloudLib
+import eu.thesimplecloud.lib.exception.*
 import eu.thesimplecloud.lib.location.ServiceLocation
 import eu.thesimplecloud.lib.location.SimpleLocation
 import eu.thesimplecloud.lib.network.packets.player.*
 import eu.thesimplecloud.lib.player.AbstractCloudPlayerManager
-import eu.thesimplecloud.lib.player.CloudPlayer
 import eu.thesimplecloud.lib.player.ICloudPlayer
 import eu.thesimplecloud.lib.player.IOfflineCloudPlayer
 import eu.thesimplecloud.lib.player.text.CloudText
@@ -60,7 +57,7 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
         if (cloudPlayer.getConnectedProxyName() == CloudPlugin.instance.thisServiceName) {
             val serverInfo = getServerInfoByCloudService(cloudService)
             serverInfo
-                    ?: return CommunicationPromise.failed(UnavailableServiceException("Service is not registered on player's proxy"))
+                    ?: return CommunicationPromise.failed(UnreachableServiceException("Service is not registered on player's proxy"))
             val proxiedPlayer = getProxiedPlayerByCloudPlayer(cloudPlayer)
             proxiedPlayer
                     ?: return CommunicationPromise.failed(NoSuchElementException("Unable to find the player on the proxy service"))
@@ -115,7 +112,7 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
         CloudPlugin.instance.communicationClient.sendUnitQuery(PacketIOSetCloudPlayerUpdates(cloudPlayer, update, serviceName))
     }
 
-    override fun teleport(cloudPlayer: ICloudPlayer, location: SimpleLocation): ICommunicationPromise<Unit> {
+    override fun teleportPlayer(cloudPlayer: ICloudPlayer, location: SimpleLocation): ICommunicationPromise<Unit> {
         if (CloudPlugin.instance.thisServiceName == cloudPlayer.getConnectedServerName()) {
             val bukkitPlayer = getBukkitPlayerByCloudPlayer(cloudPlayer)
             bukkitPlayer ?: return CommunicationPromise.failed(NoSuchPlayerException("Unable to find the player on the server service"))
@@ -127,15 +124,35 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
         return CloudPlugin.instance.communicationClient.sendUnitQuery(PacketIOTeleportPlayer(cloudPlayer, location))
     }
 
+    override fun hasPermission(cloudPlayer: ICloudPlayer, permission: String): ICommunicationPromise<Boolean> {
+        val proxiedPlayer = getProxiedPlayerByCloudPlayer(cloudPlayer)
+        proxiedPlayer ?: return CommunicationPromise.failed(NoSuchPlayerException("Unable to find bungeecord player"))
+        return CommunicationPromise.of(proxiedPlayer.hasPermission(permission))
+    }
+
     override fun getLocationOfPlayer(cloudPlayer: ICloudPlayer): ICommunicationPromise<ServiceLocation> {
         if (CloudPlugin.instance.thisServiceName == cloudPlayer.getConnectedServerName()) {
             val bukkitPlayer = getBukkitPlayerByCloudPlayer(cloudPlayer)
-            bukkitPlayer ?: return CommunicationPromise.failed(NoSuchPlayerException("Unable to find the player on the server service"))
+            bukkitPlayer ?: return CommunicationPromise.failed(NoSuchPlayerException("Unable to find bukkit player"))
             val playerLocation = bukkitPlayer.location
             playerLocation.world ?: return CommunicationPromise.failed(NoSuchWorldException("The world the player is on is null"))
             return CommunicationPromise.of(ServiceLocation(CloudPlugin.instance.thisService(), playerLocation.world!!.name, playerLocation.x, playerLocation.y, playerLocation.z, playerLocation.yaw, playerLocation.pitch))
         }
         return CloudPlugin.instance.communicationClient.sendQuery(PacketIOGetPlayerLocation(cloudPlayer))
+    }
+
+    override fun sendPlayerToLobby(cloudPlayer: ICloudPlayer): ICommunicationPromise<Unit> {
+        if (CloudPlugin.instance.thisServiceName == cloudPlayer.getConnectedProxyName()) {
+            val proxiedPlayer = getProxiedPlayerByCloudPlayer(cloudPlayer) ?: return CommunicationPromise.failed(NoSuchPlayerException("Unable to find bungeecord player"))
+            val serverInfo = ProxyServer.getInstance().reconnectHandler.getServer(proxiedPlayer)
+            if (serverInfo == null) {
+                proxiedPlayer.disconnect(CloudTextBuilder().build(CloudText("§cNo fallback server found")))
+                return CommunicationPromise.failed(NoSuchServiceException("No fallback server found"))
+            }
+            proxiedPlayer.connect(serverInfo)
+            return CommunicationPromise.of(Unit)
+        }
+        return CloudPlugin.instance.communicationClient.sendQuery(PacketIOSendPlayerToLobby(cloudPlayer.getUniqueId()))
     }
 
     override fun getOfflineCloudPlayer(name: String): ICommunicationPromise<IOfflineCloudPlayer> {

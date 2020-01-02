@@ -3,25 +3,33 @@ package eu.thesimplecloud.plugin.startup
 import eu.thesimplecloud.client.packets.PacketOutCloudClientLogin
 import eu.thesimplecloud.clientserverapi.client.INettyClient
 import eu.thesimplecloud.clientserverapi.client.NettyClient
+import eu.thesimplecloud.clientserverapi.lib.debug.DebugMessage
 import eu.thesimplecloud.clientserverapi.lib.json.JsonData
+import eu.thesimplecloud.clientserverapi.lib.packet.packetsender.sendQuery
+import eu.thesimplecloud.clientserverapi.lib.resource.ResourceFinder
 import eu.thesimplecloud.lib.CloudLib
 import eu.thesimplecloud.lib.client.CloudClientType
+import eu.thesimplecloud.lib.network.packets.PacketIOPing
+import eu.thesimplecloud.lib.network.packets.player.PacketIOConnectCloudPlayer
+import eu.thesimplecloud.lib.network.packets.player.PacketIOSendTitleToCloudPlayer
 import eu.thesimplecloud.lib.network.packets.service.PacketIOUpdateCloudService
 import eu.thesimplecloud.lib.service.ICloudService
 import eu.thesimplecloud.lib.service.ServiceState
 import eu.thesimplecloud.plugin.ICloudServicePlugin
 import eu.thesimplecloud.plugin.impl.CloudLibImpl
 import java.io.File
-import javax.xml.bind.JAXBElement
+import java.net.URLClassLoader
+import java.util.*
 import kotlin.concurrent.thread
 
 
-class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) {
+class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin, val classLoader: URLClassLoader) {
 
     companion object {
         lateinit var instance: CloudPlugin
     }
 
+    @Volatile
     private var thisService: ICloudService? = null
     private var updateState = true
     lateinit var communicationClient: INettyClient
@@ -37,15 +45,20 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) {
         if (!loadConfig())
             cloudServicePlugin.shutdown()
         println("<---------- Service-Name: $thisServiceName ---------->")
+
+        this.communicationClient.addPacketsByPackage("eu.thesimplecloud.plugin.network.packets")
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.client.packets")
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.lib.network.packets")
+        this.communicationClient.addClassLoader(ResourceFinder.getSystemClassLoader(), this.classLoader)
+
         nettyThread = thread {
             this.communicationClient.start()
         }
         Runtime.getRuntime().addShutdownHook(Thread {
             try {
                 this.communicationClient.shutdown()
-            } catch (e: Exception) { }
+            } catch (e: Exception) {
+            }
 
         })
         this.communicationClient.getPacketIdsSyncPromise().addResultListener {
@@ -66,29 +79,31 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) {
         return true
     }
 
+    @Synchronized
     fun thisService(): ICloudService {
-        thisService = CloudLib.instance.getCloudServiceManger().getCloudService(thisServiceName)
-        while (thisService == null) {
-            Thread.sleep(20)
-            thisService = CloudLib.instance.getCloudServiceManger().getCloudService(thisServiceName)
+        if (this.thisService == null) this.thisService = CloudLib.instance.getCloudServiceManger().getCloudServiceByName(thisServiceName)
+        while (this.thisService == null) {
+            Thread.sleep(10)
+            this.thisService = CloudLib.instance.getCloudServiceManger().getCloudServiceByName(thisServiceName)
         }
-        return thisService!!
+        return this.thisService!!
     }
 
     fun enable() {
         if (this.updateState && thisService().getState() == ServiceState.STARTING) {
-            thisService().setState(ServiceState.LOBBY)
+            thisService().setState(ServiceState.VISIBLE)
             updateThisService()
         }
     }
 
     fun updateThisService() {
-        thisService?.let { this.communicationClient.sendUnitQuery(PacketIOUpdateCloudService(it)) }
+        this.communicationClient.sendUnitQuery(PacketIOUpdateCloudService(thisService()))
     }
 
     /**
      * Prevents the service from updating its state by itself.
      */
+    @Synchronized
     fun disableUpdatingState() {
         this.updateState = false
     }

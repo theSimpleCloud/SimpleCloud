@@ -1,5 +1,6 @@
 package eu.thesimplecloud.lib.servicegroup.impl
 
+import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.lib.service.ServiceVersion
 import eu.thesimplecloud.lib.servicegroup.grouptype.ICloudLobbyGroup
 
@@ -45,5 +46,9 @@ class DefaultLobbyGroup(
 
     override fun setPermission(permission: String) {
         this.permission = permission
+    }
+
+    override fun toString(): String {
+        return JsonData.fromObjectWithGsonExclude(this).getAsJsonString()
     }
 }

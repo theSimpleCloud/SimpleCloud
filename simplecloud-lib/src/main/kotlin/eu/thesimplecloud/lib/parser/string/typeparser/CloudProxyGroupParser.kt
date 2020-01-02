@@ -8,5 +8,5 @@ class CloudProxyGroupParser : IStringTypeParser<ICloudProxyGroup> {
 
     override fun allowedTypes(): List<Class<out ICloudProxyGroup>> = listOf(ICloudProxyGroup::class.java)
 
-    override fun parse(string: String): ICloudProxyGroup? = CloudLib.instance.getCloudServiceGroupManager().getProxyGroup(string)
+    override fun parse(string: String): ICloudProxyGroup? = CloudLib.instance.getCloudServiceGroupManager().getProxyGroupByName(string)
 }

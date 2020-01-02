@@ -13,11 +13,11 @@ enum class ServiceState {
     /**
      * The service was started and will now be shown on the cloud signs.
      */
-    LOBBY,
+    VISIBLE,
     /**
      * The service is online and will not be shown on the cloud signs.
      */
-    INGAME,
+    INVISIBLE,
     /**
      * The service was stopped
      */

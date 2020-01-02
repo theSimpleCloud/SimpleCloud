@@ -2,10 +2,11 @@ package eu.thesimplecloud.lib.template.impl
 
 import eu.thesimplecloud.lib.template.ITemplate
 import eu.thesimplecloud.lib.template.ITemplateManager
+import java.util.*
 
 open class DefaultTemplateManager : ITemplateManager {
 
-    private val templates = HashSet<ITemplate>()
+    private val templates = Collections.synchronizedCollection(HashSet<ITemplate>())
 
     override fun updateTemplate(template: ITemplate) {
         val cachedTemplate = getTemplate(template.getName())
@@ -22,7 +23,7 @@ open class DefaultTemplateManager : ITemplateManager {
         this.templates.remove(getTemplate(name))
     }
 
-    override fun getAllTemplates(): Set<ITemplate> = this.templates
+    override fun getAllTemplates(): Collection<ITemplate> = this.templates
 
     override fun clearCache() {
         this.templates.clear()

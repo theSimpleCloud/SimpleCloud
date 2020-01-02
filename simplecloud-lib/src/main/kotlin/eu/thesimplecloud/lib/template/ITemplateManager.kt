@@ -17,7 +17,7 @@ interface ITemplateManager {
     /**
      * Returns a list containing all registered templates
      */
-    fun getAllTemplates() : Set<ITemplate>
+    fun getAllTemplates() : Collection<ITemplate>
 
     /**
      * Returns the first template found by the specified name

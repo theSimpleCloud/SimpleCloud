@@ -9,6 +9,6 @@ import java.io.File
 class MongoConfigLoader : AbstractJsonDataConfigLoader<MongoConfig>(
         MongoConfig::class.java,
         File(DirectoryPaths.paths.storagePath + "mongo.json"),
-        { MongoConfig( false, MongoServerInformation("127.0.0.1", 27017, "cloud", "simplecloud", "cloudpassword", "admin", "admin")) }
+        { MongoConfig( false, MongoServerInformation("127.0.0.1", 45678, "cloud", "simplecloud", "cloudpassword", "admin", "admin")) }
 ) {
 }

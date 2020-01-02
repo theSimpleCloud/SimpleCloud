@@ -1,6 +1,7 @@
 package eu.thesimplecloud.lib.service.impl
 
 import eu.thesimplecloud.clientserverapi.lib.json.GsonExclude
+import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.lib.CloudLib
@@ -9,7 +10,7 @@ import eu.thesimplecloud.lib.service.ServiceState
 import io.netty.util.concurrent.GlobalEventExecutor
 import java.util.*
 
-class DefaultCloudService(
+data class DefaultCloudService(
         private val groupName: String,
         private val serviceNumber: Int,
         private val uniqueId: UUID,
@@ -20,9 +21,13 @@ class DefaultCloudService(
         private var motd: String
 ) : ICloudService {
 
+    @GsonExclude
     private val startingPromise = CommunicationPromise<Unit>(enableTimeout = false)
+    @GsonExclude
     private val connectedPromise = CommunicationPromise<Unit>(enableTimeout = false)
+    @GsonExclude
     private val joinablePromise = CommunicationPromise<Unit>(enableTimeout = false)
+    @GsonExclude
     private val closedPromise = CommunicationPromise<Unit>(enableTimeout = false)
 
     private var serviceState = ServiceState.PREPARED
@@ -92,7 +97,9 @@ class DefaultCloudService(
     override fun closedPromise(): ICommunicationPromise<Unit> = this.closedPromise
 
 
-
+    override fun toString(): String {
+        return JsonData.fromObjectWithGsonExclude(this).getAsJsonString()
+    }
 
 
 }

@@ -15,22 +15,22 @@ interface ICloudServiceManager {
     /**
      * Returns all registered [ICloudService]s
      */
-    fun getAllCloudServices(): List<ICloudService>
+    fun getAllCloudServices(): Collection<ICloudService>
 
     /**
      * Returns the [ICloudService] found by the specified name
      */
-    fun getCloudService(name: String): ICloudService? = getAllCloudServices().firstOrNull { it.getName().equals(name, true) }
+    fun getCloudServiceByName(name: String): ICloudService? = getAllCloudServices().firstOrNull { it.getName().equals(name, true) }
 
     /**
      * Returns a list of all registered services found by this group name
      */
-    fun getCloudServicesByGroupName(groupName: String): List<ICloudService> = getAllCloudServices().filter { it.getGroupName().equals(groupName, true) }
+    fun getCloudServicesByGroupName(groupName: String): List<ICloudService> = getAllCloudServices().filter { it.getGroupName().equals(groupName, true) }.sortedBy { it.getServiceNumber() }
 
     /**
      * Returns a list of services found by the specified group name which are in LOBBY state
      */
-    fun getCloudServicesInLobbyStateByGroupName(groupName: String): List<ICloudService> = getCloudServicesByGroupName(groupName).filter { it.getState() == ServiceState.LOBBY }
+    fun getCloudServicesInLobbyStateByGroupName(groupName: String): List<ICloudService> = getCloudServicesByGroupName(groupName).filter { it.getState() == ServiceState.VISIBLE }
 
     /**
      * Returns a list of services found by the specified group name which are in LOBBY state and are not full

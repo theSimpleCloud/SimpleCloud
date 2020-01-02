@@ -27,6 +27,6 @@ class ServiceLocation(
     /**
      * Returns the service this location is on or null if the service is closed.
      */
-    fun getService() = CloudLib.instance.getCloudServiceManger().getCloudService(serviceName)
+    fun getService() = CloudLib.instance.getCloudServiceManger().getCloudServiceByName(serviceName)
 
 }

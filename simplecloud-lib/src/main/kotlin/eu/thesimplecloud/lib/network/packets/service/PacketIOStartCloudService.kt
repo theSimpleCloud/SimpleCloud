@@ -14,6 +14,6 @@ class PacketIOStartCloudService(): ObjectPacket<String>() {
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<ICloudService> {
         val value = this.value ?: return contentException("value")
-        return CloudLib.instance.getCloudServiceGroupManager().getServiceGroup(value)?.startNewService() ?: failure(NoSuchElementException("Group does not exist"))
+        return CloudLib.instance.getCloudServiceGroupManager().getServiceGroupByName(value)?.startNewService() ?: failure(NoSuchElementException("Group does not exist"))
     }
 }

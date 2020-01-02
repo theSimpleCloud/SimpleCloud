@@ -33,6 +33,9 @@ dependencies {
     }
     implementation 'org.spigotmc:spigot-api:1.15.1-R0.1-SNAPSHOT' // The full Spigot server with no shadowing. Requires mavenLocal.
     implementation 'net.md-5:bungeecord-api:1.12-SNAPSHOT' // The full Spigot server with no shadowing. Requires mavenLocal.
+    // https://mvnrepository.com/artifact/org.reflections/reflections
+    implementation group: 'org.reflections', name: 'reflections', version: '0.9.10'
+
 }
 
 configurations {

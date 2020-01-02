@@ -1,5 +1,6 @@
 package eu.thesimplecloud.lib.servicegroup.impl
 
+import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.lib.service.ServiceVersion
 import eu.thesimplecloud.lib.servicegroup.grouptype.ICloudProxyGroup
 
@@ -36,6 +37,10 @@ class DefaultProxyGroup(
 
     override fun setStartPort(port: Int) {
         this.startPort = port
+    }
+
+    override fun toString(): String {
+        return JsonData.fromObjectWithGsonExclude(this).getAsJsonString()
     }
 
 }

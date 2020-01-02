@@ -3,11 +3,13 @@ package eu.thesimplecloud.lib.player
 
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
+import java.util.*
+import kotlin.NoSuchElementException
 import kotlin.collections.ArrayList
 
 abstract class AbstractCloudPlayerManager : ICloudPlayerManager {
 
-    private val cachedPlayers = ArrayList<ICloudPlayer>()
+    private val cachedPlayers = Collections.synchronizedCollection(ArrayList<ICloudPlayer>())
 
     override fun updateCloudPlayer(cloudPlayer: ICloudPlayer) {
         val cachedCloudPlayer = getCachedCloudPlayer(cloudPlayer.getUniqueId())
@@ -24,7 +26,7 @@ abstract class AbstractCloudPlayerManager : ICloudPlayerManager {
         this.cachedPlayers.removeIf { it.getUniqueId() == cloudPlayer.getUniqueId() }
     }
 
-    override fun getAllCachedCloudPlayers(): List<ICloudPlayer> = this.cachedPlayers
+    override fun getAllCachedCloudPlayers(): Collection<ICloudPlayer> = this.cachedPlayers
 
     /**
      * Creates a [ICommunicationPromise] with the [cloudPlayer]

@@ -10,7 +10,6 @@ import eu.thesimplecloud.lib.utils.IAuthenticatable
 import eu.thesimplecloud.lib.wrapper.IWrapperInfo
 import java.lang.IllegalStateException
 import java.util.*
-import java.util.function.Consumer
 
 interface ICloudService : IAuthenticatable, IBootstrap, ICommandExecutable {
 
@@ -51,12 +50,12 @@ interface ICloudService : IAuthenticatable, IBootstrap, ICommandExecutable {
      * Returns the template that this service uses
      * e.g. Lobby
      */
-    fun getTemplate(): ITemplate = CloudLib.instance.getTemplateManager().getTemplate(getTemplateName()) ?: throw IllegalStateException("Can't find the template of an registered service")
+    fun getTemplate(): ITemplate = CloudLib.instance.getTemplateManager().getTemplate(getTemplateName()) ?: throw IllegalStateException("Can't find the template of an registered service (templates: ${CloudLib.instance.getTemplateManager().getAllTemplates().joinToString { it.getName() }})")
 
     /**
      * Returns the service group of this service
      */
-    fun getServiceGroup(): ICloudServiceGroup = CloudLib.instance.getCloudServiceGroupManager().getServiceGroup(getGroupName()) ?: throw IllegalStateException("Can't find the service group of an registered service")
+    fun getServiceGroup(): ICloudServiceGroup = CloudLib.instance.getCloudServiceGroupManager().getServiceGroupByName(getGroupName()) ?: throw IllegalStateException("Can't find the service group of an registered service")
 
     /**
      * Returns the maximum amount of RAM for this service in MB
@@ -147,9 +146,14 @@ interface ICloudService : IAuthenticatable, IBootstrap, ICommandExecutable {
     fun setMOTD(motd: String)
 
     /**
-     * Returns weather this service joinable for players
+     * Returns weather this service joinable for players.
      */
-    fun isJoinable() = getState() == ServiceState.LOBBY || getState() == ServiceState.INGAME
+    fun isJoinable() = getState() == ServiceState.VISIBLE || getState() == ServiceState.INVISIBLE
+
+    /**
+     * Returns whether this service is full.
+     */
+    fun isFull() = getOnlinePlayers() >= getMaxPlayers()
 
     /**
      * Returns the promise that will be called once the service is starting.

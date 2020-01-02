@@ -5,14 +5,15 @@ import eu.thesimplecloud.lib.events.service.*
 import eu.thesimplecloud.lib.service.ICloudService
 import eu.thesimplecloud.lib.service.ICloudServiceManager
 import eu.thesimplecloud.lib.service.ServiceState
+import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
 
 abstract class AbstractCloudServiceManager : ICloudServiceManager {
 
-    private val services = CopyOnWriteArrayList<ICloudService>()
+    private val services = Collections.synchronizedCollection(ArrayList<ICloudService>())
 
     override fun updateCloudService(cloudService: ICloudService) {
-        val cashedService = getCloudService(cloudService.getName())
+        val cashedService = getCloudServiceByName(cloudService.getName())
         if (cashedService == null){
             this.services.add(cloudService)
             CloudLib.instance.getEventManager().call(CloudServiceRegisteredEvent(cloudService))
@@ -48,12 +49,12 @@ abstract class AbstractCloudServiceManager : ICloudServiceManager {
     }
 
     override fun removeCloudService(name: String) {
-        getCloudService(name)?.let {
+        getCloudServiceByName(name)?.let {
             this.services.remove(it)
             CloudLib.instance.getEventManager().call(CloudServiceUnregisteredEvent(it))
             it.closedPromise().trySuccess(Unit)
         }
     }
 
-    override fun getAllCloudServices(): List<ICloudService> = this.services
+    override fun getAllCloudServices(): Collection<ICloudService> = this.services
 }

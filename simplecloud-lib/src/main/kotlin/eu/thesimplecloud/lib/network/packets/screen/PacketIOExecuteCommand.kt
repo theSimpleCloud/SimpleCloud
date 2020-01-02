@@ -1,7 +1,6 @@
 package eu.thesimplecloud.lib.network.packets.screen
 
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
-import eu.thesimplecloud.clientserverapi.lib.packet.IPacket
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.lib.CloudLib
@@ -23,7 +22,7 @@ class PacketIOExecuteCommand() : JsonPacket() {
                 CloudLib.instance.getWrapperManager().getWrapperByName(serviceName)
             }
             CloudClientType.SERVICE -> {
-                CloudLib.instance.getCloudServiceManger().getCloudService(serviceName)
+                CloudLib.instance.getCloudServiceManger().getCloudServiceByName(serviceName)
             }
         }
         commandExecutable?.executeCommand(command)

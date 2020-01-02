@@ -3,10 +3,11 @@ package eu.thesimplecloud.lib.wrapper.impl
 import eu.thesimplecloud.lib.wrapper.IWrapperInfo
 import eu.thesimplecloud.lib.wrapper.IWrapperManager
 import eu.thesimplecloud.lib.wrapper.IWritableWrapperInfo
+import java.util.*
 
 open class DefaultWrapperManager : IWrapperManager {
 
-    private val wrappers = ArrayList<IWrapperInfo>()
+    private val wrappers = Collections.synchronizedCollection(ArrayList<IWrapperInfo>())
 
     override fun updateWrapper(wrapper: IWrapperInfo) {
         if (!this.wrappers.contains(wrapper)) {
@@ -26,5 +27,5 @@ open class DefaultWrapperManager : IWrapperManager {
         this.wrappers.remove(wrapper)
     }
 
-    override fun getAllWrappers(): List<IWrapperInfo> = this.wrappers
+    override fun getAllWrappers(): Collection<IWrapperInfo> = this.wrappers
 }

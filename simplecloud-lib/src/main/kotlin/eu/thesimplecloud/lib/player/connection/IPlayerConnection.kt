@@ -1,6 +1,6 @@
 package eu.thesimplecloud.lib.player.connection
 
-import java.net.InetAddress
+import java.net.InetSocketAddress
 import java.util.*
 
 interface IPlayerConnection {
@@ -8,7 +8,7 @@ interface IPlayerConnection {
     /**
      * Returns the address of this player.
      */
-    fun getAddress(): InetAddress
+    fun getAddress(): IPlayerAddress
 
     /**
      * Returns the unique id of this player

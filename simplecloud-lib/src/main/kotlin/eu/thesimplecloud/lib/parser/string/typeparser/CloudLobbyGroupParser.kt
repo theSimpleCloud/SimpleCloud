@@ -8,5 +8,5 @@ class CloudLobbyGroupParser : IStringTypeParser<ICloudLobbyGroup> {
 
     override fun allowedTypes(): List<Class<out ICloudLobbyGroup>> = listOf(ICloudLobbyGroup::class.java)
 
-    override fun parse(string: String): ICloudLobbyGroup? = CloudLib.instance.getCloudServiceGroupManager().getLobbyGroup(string)
+    override fun parse(string: String): ICloudLobbyGroup? = CloudLib.instance.getCloudServiceGroupManager().getLobbyGroupByName(string)
 }

@@ -1,5 +1,6 @@
 package eu.thesimplecloud.lib.player
 
+import eu.thesimplecloud.clientserverapi.lib.json.GsonExclude
 import java.util.*
 import kotlin.collections.HashMap
 

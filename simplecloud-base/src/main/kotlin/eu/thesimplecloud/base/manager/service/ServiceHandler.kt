@@ -10,7 +10,6 @@ import eu.thesimplecloud.lib.service.ServiceState
 import eu.thesimplecloud.lib.service.impl.DefaultCloudService
 import eu.thesimplecloud.lib.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.lib.wrapper.IWrapperInfo
-import kotlinx.coroutines.launch
 import java.util.*
 import java.util.concurrent.LinkedBlockingQueue
 import kotlin.collections.ArrayList
@@ -43,15 +42,15 @@ class ServiceHandler : IServiceHandler {
 
     private fun getNumberForNewService(cloudServiceGroup: ICloudServiceGroup): Int {
         var number = 1
-        while (CloudLib.instance.getCloudServiceManger().getCloudService(cloudServiceGroup.getName() + "-" + number) != null)
+        while (CloudLib.instance.getCloudServiceManger().getCloudServiceByName(cloudServiceGroup.getName() + "-" + number) != null)
             number++
         return number
     }
 
     fun startMinServices() {
         for (serviceGroup in CloudLib.instance.getCloudServiceGroupManager().getAllGroups()) {
-            val allServices = serviceGroup.getAllServices()
-            val inLobbyServices = allServices.filter { it.getState() != ServiceState.INGAME && it.getState() != ServiceState.CLOSED }
+            val allServices = serviceGroup.getAllRunningServices()
+            val inLobbyServices = allServices.filter { it.getState() != ServiceState.INVISIBLE && it.getState() != ServiceState.CLOSED }
             val services = inLobbyServices.filter { it.getOnlinePercentage() < serviceGroup.getPercentToStartNewService().toDouble() / 100 }
             var newServicesAmount = serviceGroup.getMinimumOnlineServiceCount() - services.size
             if (serviceGroup.getMaximumOnlineServiceCount() != -1 && newServicesAmount + services.size > serviceGroup.getMaximumOnlineServiceCount())

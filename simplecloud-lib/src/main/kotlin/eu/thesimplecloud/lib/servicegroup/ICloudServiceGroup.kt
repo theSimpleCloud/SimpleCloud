@@ -120,12 +120,12 @@ interface ICloudServiceGroup {
     /**
      * Returns a list of all registered services by this group
      */
-    fun getAllServices(): List<ICloudService> = CloudLib.instance.getCloudServiceManger().getCloudServicesByGroupName(getName())
+    fun getAllRunningServices(): List<ICloudService> = CloudLib.instance.getCloudServiceManger().getCloudServicesByGroupName(getName())
 
     /**
      * Stops all services by this group.
      */
-    fun stopAllRunningServices() = getAllServices().forEach { it.shutdown() }
+    fun stopAllRunningServices() = getAllRunningServices().forEach { it.shutdown() }
 
     /**
      * Deletes this service group from the cloud
