@@ -25,7 +25,6 @@ import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.screen.ICommandExecutable
-import eu.thesimplecloud.clientserverapi.lib.debug.DebugMessage
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.litote.kmongo.KMongo
@@ -43,7 +42,7 @@ class Manager : ICloudApplication {
         private set
     val mongoClient: MongoClient
 
-    val offlineCloudPlayerLoader: IOfflineCloudPlayerHandler
+    val offlineCloudPlayerHandler: IOfflineCloudPlayerHandler
 
     val communicationServer: INettyServer<ICommandExecutable>
     val templateServer: INettyServer<ICommandExecutable>
@@ -78,7 +77,7 @@ class Manager : ICloudApplication {
         mongoClient = connectToMongo(mongoConfig.mongoServerInformation)
         Launcher.instance.logger.console("Connected to MongoDB")
 
-        this.offlineCloudPlayerLoader = OfflineCloudPlayerHandler(mongoConfig.mongoServerInformation)
+        this.offlineCloudPlayerHandler = OfflineCloudPlayerHandler(mongoConfig.mongoServerInformation)
 
         thread(start = true, isDaemon = false) { templateServer.start() }
         thread(start = true, isDaemon = false) { communicationServer.start() }

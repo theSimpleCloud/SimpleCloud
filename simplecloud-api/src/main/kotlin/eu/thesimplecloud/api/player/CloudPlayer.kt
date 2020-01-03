@@ -46,6 +46,11 @@ class CloudPlayer(
         this.connectedServerName = name
     }
 
+
+    override fun getOnlineTime(): Long {
+        return (System.currentTimeMillis() - getLastLogin()) + super.getOnlineTime()
+    }
+
     override fun toString(): String {
         return JsonData.fromObjectWithGsonExclude(this).getAsJsonString()
     }

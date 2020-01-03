@@ -15,12 +15,12 @@ import eu.thesimplecloud.api.network.packets.player.*
 import eu.thesimplecloud.api.player.AbstractCloudPlayerManager
 import eu.thesimplecloud.api.player.ICloudPlayer
 import eu.thesimplecloud.api.player.IOfflineCloudPlayer
+import eu.thesimplecloud.api.player.OfflineCloudPlayer
 import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceType
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
 
@@ -57,6 +57,7 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
         requestedPlayerUpdatesServices?.mapNotNull { getCloudClientByServiceName(it) }?.forEach { it.sendUnitQuery(playerRemovePacket) }
 
         playerUpdates.remove(cloudPlayer.getUniqueId())
+        Manager.instance.offlineCloudPlayerHandler.saveCloudPlayer(cloudPlayer.toOfflinePlayer() as OfflineCloudPlayer)
     }
 
     override fun getCloudPlayer(uniqueId: UUID): ICommunicationPromise<ICloudPlayer> {
@@ -129,12 +130,12 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
     }
 
     override fun getOfflineCloudPlayer(name: String): ICommunicationPromise<IOfflineCloudPlayer> {
-        val offlinePlayer = Manager.instance.offlineCloudPlayerLoader.getOfflinePlayer(name)
+        val offlinePlayer = Manager.instance.offlineCloudPlayerHandler.getOfflinePlayer(name)
         return CommunicationPromise.ofNullable(offlinePlayer, NoSuchPlayerException("Player not found"))
     }
 
     override fun getOfflineCloudPlayer(uniqueId: UUID): ICommunicationPromise<IOfflineCloudPlayer> {
-        val offlinePlayer = Manager.instance.offlineCloudPlayerLoader.getOfflinePlayer(uniqueId)
+        val offlinePlayer = Manager.instance.offlineCloudPlayerHandler.getOfflinePlayer(uniqueId)
         return CommunicationPromise.ofNullable(offlinePlayer, NoSuchPlayerException("Player not found"))
     }
 
