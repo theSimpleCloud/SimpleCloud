@@ -197,4 +197,9 @@ interface ICloudServiceGroupManager {
      */
     fun deleteServiceGroup(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<Unit>
 
+    /**
+     * Updates the specified [cloudServiceGroup] to the network.
+     */
+    fun updateToNetwork(cloudServiceGroup: ICloudServiceGroup)
+
 }

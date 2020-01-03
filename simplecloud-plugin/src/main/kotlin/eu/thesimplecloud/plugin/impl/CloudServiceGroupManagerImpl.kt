@@ -5,6 +5,7 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.api.network.packets.service.PacketIOStartCloudService
 import eu.thesimplecloud.api.network.packets.servicegroup.PacketIOCreateServiceGroup
 import eu.thesimplecloud.api.network.packets.servicegroup.PacketIODeleteServiceGroup
+import eu.thesimplecloud.api.network.packets.servicegroup.PacketIOUpdateCloudServiceGroup
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.api.servicegroup.impl.AbstractCloudServiceGroupManager
@@ -22,6 +23,10 @@ class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
 
     override fun deleteServiceGroup(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<Unit> {
         return CloudPlugin.instance.communicationClient.sendQuery(PacketIODeleteServiceGroup(cloudServiceGroup.getName()))
+    }
+
+    override fun updateToNetwork(cloudServiceGroup: ICloudServiceGroup) {
+        CloudPlugin.instance.communicationClient.sendUnitQuery(PacketIOUpdateCloudServiceGroup(cloudServiceGroup))
     }
 
 }

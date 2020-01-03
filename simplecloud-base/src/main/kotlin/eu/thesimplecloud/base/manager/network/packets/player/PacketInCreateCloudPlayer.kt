@@ -17,15 +17,14 @@ class PacketInCreateCloudPlayer() : JsonPacket() {
         val playerConnection = this.jsonData.getObject("playerConnection", DefaultPlayerConnection::class.java)
                 ?: return contentException("playerConnection")
         val proxyName = this.jsonData.getString("proxyName") ?: return contentException("proxyName")
-        val offlinePlayer = Manager.instance.offlineCloudPlayerHandler.getOfflinePlayer(playerConnection.getUniqueId())
+        val offlinePlayer = Manager.instance.offlineCloudPlayerLoader.getOfflinePlayer(playerConnection.getUniqueId())
         val cloudPlayer = if (offlinePlayer == null) {
             CloudPlayer(playerConnection.getName(), playerConnection.getUniqueId(), System.currentTimeMillis(), System.currentTimeMillis(), 0L, proxyName, null, playerConnection)
         } else {
             CloudPlayer(playerConnection.getName(), playerConnection.getUniqueId(), offlinePlayer.getFirstLogin(), System.currentTimeMillis(), offlinePlayer.getOnlineTime(), proxyName, null, playerConnection)
         }
         CloudAPI.instance.getCloudPlayerManager().updateCloudPlayer(cloudPlayer)
-        Manager.instance.offlineCloudPlayerHandler.saveCloudPlayer(cloudPlayer.toOfflinePlayer() as OfflineCloudPlayer)
-
+        Manager.instance.offlineCloudPlayerLoader.saveCloudPlayer(cloudPlayer.toOfflinePlayer() as OfflineCloudPlayer)
         return unit()
     }
 }

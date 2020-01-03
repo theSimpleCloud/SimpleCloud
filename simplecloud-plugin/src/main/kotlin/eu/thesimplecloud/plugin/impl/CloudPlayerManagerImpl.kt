@@ -13,6 +13,7 @@ import eu.thesimplecloud.api.player.IOfflineCloudPlayer
 import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceType
+import eu.thesimplecloud.plugin.proxy.CloudProxyPlugin
 import eu.thesimplecloud.plugin.proxy.LobbyConnector
 import eu.thesimplecloud.plugin.proxy.text.CloudTextBuilder
 import eu.thesimplecloud.plugin.startup.CloudPlugin
@@ -54,6 +55,7 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
 
     override fun connectPlayer(cloudPlayer: ICloudPlayer, cloudService: ICloudService): ICommunicationPromise<Unit> {
         if (cloudService.getServiceType() == ServiceType.PROXY) return CommunicationPromise.failed(IllegalArgumentException("Cannot send a player to a proxy service"))
+        if (cloudPlayer.getConnectedServerName() == cloudService.getName()) return CommunicationPromise.of(Unit)
         if (cloudPlayer.getConnectedProxyName() == CloudPlugin.instance.thisServiceName) {
             val serverInfo = getServerInfoByCloudService(cloudService)
             serverInfo
@@ -144,7 +146,7 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
     override fun sendPlayerToLobby(cloudPlayer: ICloudPlayer): ICommunicationPromise<Unit> {
         if (CloudPlugin.instance.thisServiceName == cloudPlayer.getConnectedProxyName()) {
             val proxiedPlayer = getProxiedPlayerByCloudPlayer(cloudPlayer) ?: return CommunicationPromise.failed(NoSuchPlayerException("Unable to find bungeecord player"))
-            val serverInfo = LobbyConnector().getLobbyServer(proxiedPlayer)
+            val serverInfo = CloudProxyPlugin.instance.lobbyConnector.getLobbyServer(proxiedPlayer)
             if (serverInfo == null) {
                 proxiedPlayer.disconnect(CloudTextBuilder().build(CloudText("§cNo fallback server found")))
                 return CommunicationPromise.failed(NoSuchServiceException("No fallback server found"))
@@ -161,6 +163,10 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
 
     override fun getOfflineCloudPlayer(uniqueId: UUID): ICommunicationPromise<IOfflineCloudPlayer> {
         return CloudPlugin.instance.communicationClient.sendQuery(PacketIOGetOfflinePlayer(uniqueId))
+    }
+
+    override fun updateToNetwork(cloudPlayer: ICloudPlayer) {
+        CloudPlugin.instance.communicationClient.sendUnitQuery(PacketIOUpdateCloudPlayer(cloudPlayer))
     }
 
 

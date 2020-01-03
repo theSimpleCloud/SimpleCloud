@@ -175,7 +175,20 @@ interface ICloudService : IAuthenticatable, IBootstrap, ICommandExecutable {
      */
     fun closedPromise(): ICommunicationPromise<Unit>
 
+    /**
+     * Returns whether this service is a lobby service.
+     */
+    fun isLobby(): Boolean = getServiceType() == ServiceType.LOBBY
 
+    /**
+     * Returns whether this service is a proxy service.
+     */
+    fun isProxy(): Boolean = getServiceType() == ServiceType.PROXY
+
+    /**
+     * Updates this service to the network
+     */
+    fun update() = CloudAPI.instance.getCloudServiceManger().updateToNetwork(this)
 
     override fun isActive(): Boolean = getState() != ServiceState.PREPARED && getState() != ServiceState.CLOSED
 

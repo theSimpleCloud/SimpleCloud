@@ -3,6 +3,7 @@ package eu.thesimplecloud.plugin.listener
 import eu.thesimplecloud.api.eventapi.CloudEventHandler
 import eu.thesimplecloud.api.eventapi.IListener
 import eu.thesimplecloud.api.events.service.CloudServiceRegisteredEvent
+import eu.thesimplecloud.api.events.service.CloudServiceUnregisteredEvent
 import eu.thesimplecloud.api.events.service.CloudServiceUpdatedEvent
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import eu.thesimplecloud.plugin.proxy.ICloudProxyPlugin
@@ -22,6 +23,14 @@ class CloudServiceUpdateListener : IListener {
         val cloudServicePlugin = CloudPlugin.instance.cloudServicePlugin
         if (cloudServicePlugin is ICloudProxyPlugin) {
             cloudServicePlugin.addServiceToProxy(serviceEvent.cloudService)
+        }
+    }
+
+    @CloudEventHandler
+    fun on(serviceEvent: CloudServiceUnregisteredEvent) {
+        val cloudServicePlugin = CloudPlugin.instance.cloudServicePlugin
+        if (cloudServicePlugin is ICloudProxyPlugin) {
+            cloudServicePlugin.removeServiceFromProxy(serviceEvent.cloudService)
         }
     }
 

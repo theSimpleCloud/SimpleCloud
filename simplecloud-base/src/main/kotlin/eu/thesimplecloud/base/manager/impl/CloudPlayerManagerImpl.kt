@@ -75,6 +75,7 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
 
     override fun connectPlayer(cloudPlayer: ICloudPlayer, cloudService: ICloudService): ICommunicationPromise<Unit> {
         if (cloudService.getServiceType() == ServiceType.PROXY) return CommunicationPromise.failed(IllegalArgumentException("Cannot send player to a proxy service"))
+        if (cloudPlayer.getConnectedServerName() == cloudService.getName()) return CommunicationPromise.of(Unit)
         val proxyClient = getProxyClientOfCloudPlayer(cloudPlayer)
         proxyClient ?: return CommunicationPromise.failed(UnreachableServiceException("Proxy service is unreachable"))
         return proxyClient.sendUnitQuery(PacketIOConnectCloudPlayer(cloudPlayer, cloudService))
@@ -137,6 +138,10 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
     override fun getOfflineCloudPlayer(uniqueId: UUID): ICommunicationPromise<IOfflineCloudPlayer> {
         val offlinePlayer = Manager.instance.offlineCloudPlayerHandler.getOfflinePlayer(uniqueId)
         return CommunicationPromise.ofNullable(offlinePlayer, NoSuchPlayerException("Player not found"))
+    }
+
+    override fun updateToNetwork(cloudPlayer: ICloudPlayer) {
+        updateCloudPlayer(cloudPlayer)
     }
 
     private fun getProxyClientOfCloudPlayer(cloudPlayer: ICloudPlayer): IConnectedClient<*>? {

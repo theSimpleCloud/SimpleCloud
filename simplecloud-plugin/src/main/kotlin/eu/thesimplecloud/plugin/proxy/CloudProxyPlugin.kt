@@ -14,6 +14,17 @@ import java.net.URLClassLoader
 
 class CloudProxyPlugin : Plugin(), ICloudProxyPlugin {
 
+    val lobbyConnector = LobbyConnector()
+
+    companion object {
+        @JvmStatic
+        lateinit var instance: CloudProxyPlugin
+    }
+
+    init {
+        instance = this
+    }
+
     override fun shutdown() {
         ProxyServer.getInstance().stop()
     }
@@ -30,6 +41,10 @@ class CloudProxyPlugin : Plugin(), ICloudProxyPlugin {
         val info = ProxyServer.getInstance().constructServerInfo(cloudService.getName(), socketAddress,
                 cloudService.getUniqueId().toString(), false)
         ProxyServer.getInstance().servers[cloudService.getName()] = info
+    }
+
+    override fun removeServiceFromProxy(cloudService: ICloudService) {
+        ProxyServer.getInstance().servers.remove(cloudService.getName())
     }
 
     override fun onLoad() {
