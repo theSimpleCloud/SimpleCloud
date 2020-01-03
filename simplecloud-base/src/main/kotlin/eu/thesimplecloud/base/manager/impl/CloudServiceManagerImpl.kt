@@ -22,6 +22,10 @@ class CloudServiceManagerImpl : AbstractCloudServiceManager() {
         wrapperClient?.sendUnitQuery(PacketIOStopCloudService(cloudService.getName()))
     }
 
+    override fun updateToNetwork(cloudService: ICloudService) {
+        updateCloudService(cloudService)
+    }
+
     override fun startService(cloudService: ICloudService) {
         if (cloudService.isActive() || cloudService.getState() == ServiceState.CLOSED) throw IllegalStateException("Can not start started service.")
         val wrapper = cloudService.getWrapper()

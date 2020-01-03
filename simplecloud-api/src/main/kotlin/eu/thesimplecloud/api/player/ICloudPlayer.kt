@@ -123,7 +123,7 @@ interface ICloudPlayer : IOfflineCloudPlayer {
     fun teleport(location: ServiceLocation): ICommunicationPromise<Unit> {
         val locationService = location.getService()
                 ?: return CommunicationPromise.failed(UnreachableServiceException("Service not found"))
-        return this.connect(locationService).then { this.teleport(location) }.flatten().addFailureListener { this.sendMessage("§cTeleportation failed.") }
+        return this.connect(locationService).then { this.teleport(location as SimpleLocation) }.flatten().addFailureListener { this.sendMessage("§cTeleportation failed.") }
     }
 
     /**
@@ -168,5 +168,10 @@ interface ICloudPlayer : IOfflineCloudPlayer {
      * Returns whether this player is connected to the network.
      */
     fun isOnline(): Boolean
+
+    /**
+     * Updates this player to the network
+     */
+    fun update() = CloudAPI.instance.getCloudPlayerManager().updateToNetwork(this)
 
 }

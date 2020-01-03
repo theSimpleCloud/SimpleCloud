@@ -14,6 +14,17 @@ import java.net.URLClassLoader
 
 class CloudProxyPlugin : Plugin(), ICloudProxyPlugin {
 
+    val lobbyConnector = LobbyConnector()
+
+    companion object {
+        @JvmStatic
+        lateinit var instance: CloudProxyPlugin
+    }
+
+    init {
+        instance = this
+    }
+
     override fun shutdown() {
         ProxyServer.getInstance().stop()
     }
@@ -32,6 +43,10 @@ class CloudProxyPlugin : Plugin(), ICloudProxyPlugin {
         ProxyServer.getInstance().servers[cloudService.getName()] = info
     }
 
+    override fun removeServiceFromProxy(cloudService: ICloudService) {
+        ProxyServer.getInstance().servers.remove(cloudService.getName())
+    }
+
     override fun onLoad() {
         ProxyServer.getInstance().reconnectHandler = ReconnectHandlerImpl()
         val classLoader = URLClassLoader(arrayOf(this.file.toURI().toURL()))
@@ -39,11 +54,12 @@ class CloudProxyPlugin : Plugin(), ICloudProxyPlugin {
     }
 
     override fun onEnable() {
+        ProxyServer.getInstance().configurationAdapter.servers.clear()
         ProxyServer.getInstance().servers.clear()
         for (info in ProxyServer.getInstance().configurationAdapter.listeners) {
             info.serverPriority.clear()
         }
-        ProxyServer.getInstance().configurationAdapter.servers.clear()
+        CloudAPI.instance.getCloudServiceManger().getAllCloudServices().forEach { addServiceToProxy(it) }
         CloudPlugin.instance.enable()
         CloudAPI.instance.getEventManager().registerListener(this, CloudServiceUpdateListener())
         ProxyServer.getInstance().pluginManager.registerListener(this, BungeeListener())

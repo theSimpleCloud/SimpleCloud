@@ -48,4 +48,8 @@ class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
         return CommunicationPromise.of(Unit)
     }
 
+    override fun updateToNetwork(cloudServiceGroup: ICloudServiceGroup) {
+        updateGroup(cloudServiceGroup)
+    }
+
 }

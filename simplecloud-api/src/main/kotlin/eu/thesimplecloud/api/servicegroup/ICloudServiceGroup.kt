@@ -133,4 +133,9 @@ interface ICloudServiceGroup {
      */
     fun delete(): ICommunicationPromise<Unit> = CloudAPI.instance.getCloudServiceGroupManager().deleteServiceGroup(this)
 
+    /**
+     * Updates the group to the network
+     */
+    fun update() = CloudAPI.instance.getCloudServiceGroupManager().updateToNetwork(this)
+
 }

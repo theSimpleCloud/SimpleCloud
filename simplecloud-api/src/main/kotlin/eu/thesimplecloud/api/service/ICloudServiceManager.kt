@@ -51,4 +51,9 @@ interface ICloudServiceManager {
      * Stops the specified service
      */
     fun stopService(cloudService: ICloudService)
+
+    /**
+     * Updates the specified cloud service to the network
+     */
+    fun updateToNetwork(cloudService: ICloudService)
 }

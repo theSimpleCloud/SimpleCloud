@@ -177,4 +177,9 @@ interface ICloudPlayerManager {
      */
     fun getOfflineCloudPlayer(uniqueId: UUID): ICommunicationPromise<IOfflineCloudPlayer>
 
+    /**
+     * Updates the specified player to the network
+     */
+    fun updateToNetwork(cloudPlayer: ICloudPlayer)
+
 }
