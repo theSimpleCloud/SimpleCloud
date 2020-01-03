@@ -30,6 +30,7 @@ import kotlin.system.exitProcess
 class Launcher(val launcherStartArguments: LauncherStartArguments) {
 
     companion object {
+        @JvmStatic
         lateinit var instance: Launcher
     }
 

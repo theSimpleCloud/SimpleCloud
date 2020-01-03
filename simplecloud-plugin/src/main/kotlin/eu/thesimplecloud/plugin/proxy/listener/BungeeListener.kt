@@ -2,6 +2,8 @@ package eu.thesimplecloud.plugin.proxy.listener
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.network.packets.player.PacketIORemoveCloudPlayer
+import eu.thesimplecloud.api.network.packets.player.PacketIOUpdateCloudPlayer
+import eu.thesimplecloud.api.player.CloudPlayer
 import eu.thesimplecloud.api.player.connection.DefaultPlayerAddress
 import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
 import eu.thesimplecloud.api.player.text.CloudText
@@ -13,6 +15,7 @@ import net.md_5.bungee.api.event.*
 import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.event.EventHandler
 import net.md_5.bungee.event.EventPriority
+import org.bukkit.Bukkit
 
 class BungeeListener : Listener {
 
@@ -24,15 +27,7 @@ class BungeeListener : Listener {
         val playerConnection = DefaultPlayerConnection(playerAddress, connection.name, connection.uniqueId, connection.isOnlineMode, connection.version)
 
         //send login request
-        CloudPlugin.instance.communicationClient.sendUnitQuery(PacketOutCreateCloudPlayer(playerConnection, CloudPlugin.instance.thisServiceName))
-    }
-
-    @EventHandler(priority = EventPriority.HIGHEST)
-    fun on(event: PlayerDisconnectEvent) {
-        println(event.player.uniqueId)
-        val cloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(event.player.uniqueId)
-        cloudPlayer?.let { CloudAPI.instance.getCloudPlayerManager().removeCloudPlayer(it) }
-        CloudPlugin.instance.communicationClient.sendUnitQuery(PacketIORemoveCloudPlayer(event.player.uniqueId))
+        CloudPlugin.instance.communicationClient.sendUnitQuery(PacketOutCreateCloudPlayer(playerConnection, CloudPlugin.instance.thisServiceName)).awaitUninterruptibly()
     }
 
     @EventHandler
@@ -43,5 +38,23 @@ class BungeeListener : Listener {
             proxiedPlayer.disconnect(CloudTextBuilder().build(CloudText("§cLogin failed: " + it.message)))
         }
     }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    fun on(event: PlayerDisconnectEvent) {
+        println(event.player.uniqueId)
+        val cloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(event.player.uniqueId)
+        cloudPlayer?.let {
+            cloudPlayer as CloudPlayer
+            cloudPlayer.setOffline()
+            cloudPlayer.let { CloudAPI.instance.getCloudPlayerManager().removeCloudPlayer(it) }
+            //send update that the player is now offline
+            CloudPlugin.instance.communicationClient.sendUnitQuery(PacketIOUpdateCloudPlayer(cloudPlayer)).addCompleteListener {
+                CloudPlugin.instance.communicationClient.sendUnitQuery(PacketIORemoveCloudPlayer(cloudPlayer.getUniqueId()))
+            }
+        }
+
+    }
+
+
 
 }

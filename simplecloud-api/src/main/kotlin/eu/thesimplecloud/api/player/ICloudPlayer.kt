@@ -164,4 +164,9 @@ interface ICloudPlayer : IOfflineCloudPlayer {
      */
     fun toOfflinePlayer(): IOfflineCloudPlayer
 
+    /**
+     * Returns whether this player is connected to the network.
+     */
+    fun isOnline(): Boolean
+
 }

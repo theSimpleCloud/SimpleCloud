@@ -20,6 +20,7 @@ import kotlin.concurrent.thread
 class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin, val classLoader: URLClassLoader) {
 
     companion object {
+        @JvmStatic
         lateinit var instance: CloudPlugin
     }
 

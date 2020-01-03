@@ -2,6 +2,7 @@ package eu.thesimplecloud.api.player
 
 import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
 import eu.thesimplecloud.api.player.connection.IPlayerConnection
+import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import java.util.*
 
 class CloudPlayer(
@@ -21,6 +22,8 @@ class CloudPlayer(
         onlineTime
 ), ICloudPlayer {
 
+    private var online = true
+
     override fun getPlayerConnection(): IPlayerConnection = this.playerConnection
 
     override fun getConnectedProxyName(): String = this.connectedProxyName
@@ -29,12 +32,22 @@ class CloudPlayer(
 
     override fun toOfflinePlayer(): IOfflineCloudPlayer = OfflineCloudPlayer(getName(), getUniqueId(), getFirstLogin(), getLastLogin(), getOnlineTime())
 
+    override fun isOnline(): Boolean = this.online
+
+    fun setOffline() {
+        this.online = false
+    }
+
     fun setConnectedProxyName(name: String) {
         this.connectedProxyName = name
     }
 
     fun setConnectedServerName(name: String?) {
         this.connectedServerName = name
+    }
+
+    override fun toString(): String {
+        return JsonData.fromObjectWithGsonExclude(this).getAsJsonString()
     }
 
 }

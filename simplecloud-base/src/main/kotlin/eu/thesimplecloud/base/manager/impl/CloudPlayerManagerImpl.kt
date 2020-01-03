@@ -1,5 +1,6 @@
 package eu.thesimplecloud.base.manager.impl
 
+import com.google.common.collect.Maps
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.clientserverapi.lib.packet.packetsender.sendQuery
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
@@ -27,7 +28,7 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
      * This maps contains player unique ids and service names.
      * The uuid is the unique id of the player.
      */
-    val playerUpdates = HashMap<UUID, MutableList<String>>()
+    val playerUpdates = Maps.newConcurrentMap<UUID, MutableList<String>>()
 
     override fun updateCloudPlayer(cloudPlayer: ICloudPlayer) {
         super.updateCloudPlayer(cloudPlayer)

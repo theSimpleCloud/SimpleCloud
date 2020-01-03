@@ -49,6 +49,7 @@ class Manager : ICloudApplication {
     val templateServer: INettyServer<ICommandExecutable>
 
     companion object {
+        @JvmStatic
         lateinit var instance: Manager
     }
 

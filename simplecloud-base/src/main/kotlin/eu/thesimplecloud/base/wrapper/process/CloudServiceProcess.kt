@@ -80,7 +80,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
         this.cloudService.setOnlinePlayers(0)
         this.cloudService.setState(ServiceState.CLOSED)
         if (Wrapper.instance.communicationClient.isOpen()) {
-            Wrapper.instance.communicationClient.sendUnitQuery(PacketIOUpdateCloudService(this.cloudService)).syncUninterruptibly()
+            Wrapper.instance.communicationClient.sendUnitQuery(PacketIOUpdateCloudService(this.cloudService)).awaitUninterruptibly()
             CloudAPI.instance.getCloudServiceManger().removeCloudService(this.cloudService.getName())
             Wrapper.instance.communicationClient.sendUnitQuery(PacketIORemoveCloudService(this.cloudService.getName()))
             Wrapper.instance.updateUsedMemory()

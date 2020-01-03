@@ -5,7 +5,7 @@ import eu.thesimplecloud.api.service.ICloudService
 
 
 class ServiceLocation(
-        service: ICloudService,
+        val serviceName: String,
         worldName: String,
         x: Double,
         y: Double,
@@ -14,8 +14,9 @@ class ServiceLocation(
         pitch: Float
 ) : SimpleLocation(worldName, x, y, z, yaw, pitch) {
 
-    val serviceName = service.getName()
-    val groupName = service.getGroupName()
+    constructor(service: ICloudService, worldName: String, x: Double, y: Double, z: Double, yaw: Float, pitch: Float): this(service.getName(), worldName, x, y, z, yaw, pitch)
+
+    val groupName = serviceName.split("-").dropLast(1).joinToString("-")
 
     constructor(service: ICloudService, worldName: String, x: Double, y: Double, z: Double) : this(service, worldName, x, y, z, 0F, 0F)
 
@@ -28,5 +29,10 @@ class ServiceLocation(
      * Returns the service this location is on or null if the service is closed.
      */
     fun getService() = CloudAPI.instance.getCloudServiceManger().getCloudServiceByName(serviceName)
+
+    override fun add(x: Double, y: Double, z: Double): ServiceLocation {
+        val newSimpleLoc = super.add(x, y, z)
+        return ServiceLocation(serviceName, worldName, newSimpleLoc.x, newSimpleLoc.y, newSimpleLoc.z, newSimpleLoc.yaw, newSimpleLoc.pitch)
+    }
 
 }

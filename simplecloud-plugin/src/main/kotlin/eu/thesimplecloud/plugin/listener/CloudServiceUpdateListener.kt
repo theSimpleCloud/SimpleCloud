@@ -7,12 +7,12 @@ import eu.thesimplecloud.api.events.service.CloudServiceUpdatedEvent
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import eu.thesimplecloud.plugin.proxy.ICloudProxyPlugin
 
-class CloudServiceUpdateListener: IListener {
+class CloudServiceUpdateListener : IListener {
 
     @CloudEventHandler
     fun on(serviceEvent: CloudServiceUpdatedEvent) {
         val cloudServicePlugin = CloudPlugin.instance.cloudServicePlugin
-        if (cloudServicePlugin is ICloudProxyPlugin){
+        if (cloudServicePlugin is ICloudProxyPlugin) {
             cloudServicePlugin.addServiceToProxy(serviceEvent.cloudService)
         }
     }
@@ -20,7 +20,7 @@ class CloudServiceUpdateListener: IListener {
     @CloudEventHandler
     fun on(serviceEvent: CloudServiceRegisteredEvent) {
         val cloudServicePlugin = CloudPlugin.instance.cloudServicePlugin
-        if (cloudServicePlugin is ICloudProxyPlugin){
+        if (cloudServicePlugin is ICloudProxyPlugin) {
             cloudServicePlugin.addServiceToProxy(serviceEvent.cloudService)
         }
     }

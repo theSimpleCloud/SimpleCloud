@@ -13,6 +13,7 @@ import eu.thesimplecloud.api.player.IOfflineCloudPlayer
 import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceType
+import eu.thesimplecloud.plugin.proxy.LobbyConnector
 import eu.thesimplecloud.plugin.proxy.text.CloudTextBuilder
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import net.md_5.bungee.api.ChatMessageType
@@ -143,7 +144,7 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
     override fun sendPlayerToLobby(cloudPlayer: ICloudPlayer): ICommunicationPromise<Unit> {
         if (CloudPlugin.instance.thisServiceName == cloudPlayer.getConnectedProxyName()) {
             val proxiedPlayer = getProxiedPlayerByCloudPlayer(cloudPlayer) ?: return CommunicationPromise.failed(NoSuchPlayerException("Unable to find bungeecord player"))
-            val serverInfo = ProxyServer.getInstance().reconnectHandler.getServer(proxiedPlayer)
+            val serverInfo = LobbyConnector().getLobbyServer(proxiedPlayer)
             if (serverInfo == null) {
                 proxiedPlayer.disconnect(CloudTextBuilder().build(CloudText("§cNo fallback server found")))
                 return CommunicationPromise.failed(NoSuchServiceException("No fallback server found"))

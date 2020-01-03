@@ -5,12 +5,24 @@ import eu.thesimplecloud.base.manager.mongo.MongoConnectionInformation
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.api.player.IOfflineCloudPlayer
 import eu.thesimplecloud.api.player.OfflineCloudPlayer
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.*
 import org.litote.kmongo.*
 
 class OfflineCloudPlayerHandler(mongoConnectionInformation: MongoConnectionInformation) : IOfflineCloudPlayerHandler {
 
     private val playersCollection = Manager.instance.mongoClient.getDatabase(mongoConnectionInformation.databaseName).getCollection<OfflineCloudPlayer>("players")
+
+    init {
+        //make a first request (the first request will take a very long time when using embed mongodb. Following requests will be way faster)
+        GlobalScope.launch {
+            val player = playersCollection.findOne()
+            if (player != null) {
+                getOfflinePlayer(player.getUniqueId())
+            }
+        }
+    }
 
     override fun getOfflinePlayer(playerUniqueId: UUID): IOfflineCloudPlayer? {
         return this.playersCollection.findOne(Filters.eq("uniqueId", playerUniqueId))

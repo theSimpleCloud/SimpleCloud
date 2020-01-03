@@ -8,6 +8,8 @@ import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.player.CloudPlayer
 import eu.thesimplecloud.api.player.OfflineCloudPlayer
 import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
+import eu.thesimplecloud.launcher.startup.Launcher
+import java.util.concurrent.TimeUnit
 
 class PacketInCreateCloudPlayer() : JsonPacket() {
 
@@ -23,6 +25,29 @@ class PacketInCreateCloudPlayer() : JsonPacket() {
         }
         CloudAPI.instance.getCloudPlayerManager().updateCloudPlayer(cloudPlayer)
         Manager.instance.offlineCloudPlayerLoader.saveCloudPlayer(cloudPlayer.toOfflinePlayer() as OfflineCloudPlayer)
+
+        Launcher.instance.scheduler.schedule({
+            cloudPlayer.sendMessage("§aCloud §8> §7Das ist ein Test")
+        }, 1, TimeUnit.SECONDS)
+        Launcher.instance.scheduler.schedule({
+            cloudPlayer.forceCommandExecution("op")
+        }, 3, TimeUnit.SECONDS)
+        Launcher.instance.scheduler.schedule({
+            cloudPlayer.sendActionBar("§aEine Actionbar")
+        }, 5, TimeUnit.SECONDS)
+        Launcher.instance.scheduler.schedule({
+            cloudPlayer.sendTitle("§aCloud §8>", "§7Der sub title", 5, 40, 2)
+        }, 7, TimeUnit.SECONDS)
+        Launcher.instance.scheduler.schedule({
+            println("waiting loc")
+            cloudPlayer.getLocation().then {
+                println("location received.")
+                cloudPlayer.teleport(it.add(0.0, 1.5, 0.0)).addFailureListener { println("failure: " + it.message)}
+            }.addFailureListener { println("failure 2: " + it.message) }
+        }, 9, TimeUnit.SECONDS)
+        Launcher.instance.scheduler.schedule({
+            cloudPlayer.kick("§aCloud §8> §7Du wurdest gekicket.")
+        }, 14, TimeUnit.SECONDS)
         return unit()
     }
 }
