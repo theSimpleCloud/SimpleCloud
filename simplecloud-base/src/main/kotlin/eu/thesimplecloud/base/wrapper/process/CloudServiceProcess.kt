@@ -103,7 +103,8 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
         val dependenciesDir = File("dependencies").absolutePath + "/*"
         val classPathValueList = listOf(jarFile.absolutePath, launcherJarPath, baseJarPath, dependenciesDir)
         val separator = if (CloudAPI.instance.isWindows()) ";" else ":"
-        val classPathValue = "\"" + classPathValueList.joinToString(separator) + "\""
+        val beginAndEnd = if(CloudAPI.instance.isWindows()) "\"" else ""
+        val classPathValue = beginAndEnd + classPathValueList.joinToString(separator) + beginAndEnd
 
         val processBuilder = ProcessBuilder("java", "-Dcom.mojang.eula.agree=true", "-XX:+UseConcMarkSweepGC", "-XX:+CMSIncrementalMode",
                 "-XX:-UseAdaptiveSizePolicy", "-Djline.terminal=jline.UnsupportedTerminal",
