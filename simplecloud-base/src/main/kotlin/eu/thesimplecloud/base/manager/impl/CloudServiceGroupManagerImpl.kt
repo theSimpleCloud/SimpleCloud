@@ -4,6 +4,7 @@ import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.extension.sendPacketToAllAuthenticatedClients
 import eu.thesimplecloud.api.network.packets.servicegroup.PacketIORemoveCloudServiceGroup
 import eu.thesimplecloud.api.network.packets.servicegroup.PacketIOUpdateCloudServiceGroup
 import eu.thesimplecloud.api.service.ICloudService
@@ -28,7 +29,7 @@ class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
 
     override fun updateGroup(cloudServiceGroup: ICloudServiceGroup, fromPacket: Boolean) {
         super.updateGroup(cloudServiceGroup, fromPacket)
-        Manager.instance.communicationServer.getClientManager().sendPacketToAllClients(PacketIOUpdateCloudServiceGroup(cloudServiceGroup))
+        Manager.instance.communicationServer.getClientManager().sendPacketToAllAuthenticatedClients(PacketIOUpdateCloudServiceGroup(cloudServiceGroup))
         Manager.instance.cloudServiceGroupFileHandler.save(cloudServiceGroup)
     }
 
@@ -43,7 +44,7 @@ class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
         if (CloudAPI.instance.getCloudServiceManger().getCloudServicesByGroupName(cloudServiceGroup.getName()).isNotEmpty())
             return CommunicationPromise.failed(IllegalStateException("Cannot delete service group while services of this group are registered."))
         this.removeGroup(cloudServiceGroup)
-        Manager.instance.communicationServer.getClientManager().sendPacketToAllClients(PacketIORemoveCloudServiceGroup(cloudServiceGroup.getName()))
+        Manager.instance.communicationServer.getClientManager().sendPacketToAllAuthenticatedClients(PacketIORemoveCloudServiceGroup(cloudServiceGroup.getName()))
         Manager.instance.cloudServiceGroupFileHandler.delete(cloudServiceGroup)
         return CommunicationPromise.of(Unit)
     }

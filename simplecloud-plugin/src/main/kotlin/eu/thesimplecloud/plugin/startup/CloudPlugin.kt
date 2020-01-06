@@ -47,6 +47,7 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin, val classLoader: 
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.client.packets")
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.api.network.packets")
         this.communicationClient.addClassLoader(ResourceFinder.getSystemClassLoader(), this.classLoader)
+        this.communicationClient.addClassLoader(ResourceFinder.getSystemClassLoader(), this.classLoader)
 
         nettyThread = thread {
             this.communicationClient.start()

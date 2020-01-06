@@ -5,6 +5,7 @@ import eu.thesimplecloud.clientserverapi.lib.packet.packettype.ObjectPacket
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.service.ICloudService
+import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 
 class PacketIOStartCloudService(): ObjectPacket<String>() {
 
@@ -12,8 +13,9 @@ class PacketIOStartCloudService(): ObjectPacket<String>() {
         this.value = groupName
     }
 
-    override suspend fun handle(connection: IConnection): ICommunicationPromise<ICloudService> {
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<String> {
         val value = this.value ?: return contentException("value")
-        return CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(value)?.startNewService() ?: failure(NoSuchElementException("Group does not exist"))
+        val startPromise = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(value)?.startNewService() ?: failure(NoSuchElementException("Group does not exist"))
+        return startPromise.then { it.getName() }
     }
 }

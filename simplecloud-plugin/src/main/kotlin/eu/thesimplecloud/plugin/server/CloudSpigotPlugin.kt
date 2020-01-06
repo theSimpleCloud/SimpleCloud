@@ -6,6 +6,9 @@ import eu.thesimplecloud.plugin.listener.CloudListener
 import eu.thesimplecloud.plugin.proxy.CloudProxyPlugin
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import org.bukkit.Bukkit
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.plugin.java.JavaPlugin
 import java.net.URLClassLoader
 

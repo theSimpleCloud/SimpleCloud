@@ -11,6 +11,7 @@ class ConnectionHandlerImpl : IConnectionHandler {
     }
 
     override fun onFailure(connection: IConnection, ex: Throwable) {
-        CloudPlugin.instance.cloudServicePlugin.shutdown()
+        println("[SimpleCloud] an error occurred:")
+        ex.printStackTrace()
     }
 }

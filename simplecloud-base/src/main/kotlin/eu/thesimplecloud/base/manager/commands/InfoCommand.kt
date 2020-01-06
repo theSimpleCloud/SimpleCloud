@@ -25,7 +25,7 @@ class InfoCommand : ICommandHandler {
     fun service(commandSender: ICommandSender, @CommandArgument("name") name: String) {
         val service = CloudAPI.instance.getCloudServiceManger().getCloudServiceByName(name)
         if (service == null) {
-            commandSender.sendMessage("manager.command.info.service.not-exist", "The specified wrapper does not exist.")
+            commandSender.sendMessage("manager.command.info.service.not-exist", "The specified service does not exist.")
             return
         }
         commandSender.sendMessage(service.toString())
@@ -35,7 +35,7 @@ class InfoCommand : ICommandHandler {
     fun group(commandSender: ICommandSender, @CommandArgument("name") name: String) {
         val group = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(name)
         if (group == null) {
-            commandSender.sendMessage("manager.command.info.group.not-exist", "The specified wrapper does not exist.")
+            commandSender.sendMessage("manager.command.info.group.not-exist", "The specified group does not exist.")
             return
         }
         commandSender.sendMessage(group.toString())

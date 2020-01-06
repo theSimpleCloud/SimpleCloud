@@ -1,5 +1,6 @@
 package eu.thesimplecloud.base.wrapper.impl
 
+import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.base.wrapper.startup.Wrapper
 import eu.thesimplecloud.clientserverapi.lib.packet.packetsender.sendQuery
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
@@ -11,6 +12,7 @@ import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.impl.DefaultCloudService
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.api.servicegroup.impl.AbstractCloudServiceGroupManager
+import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 
 class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
 
@@ -24,7 +26,8 @@ class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
     }
 
     override fun startNewService(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<ICloudService> {
-        return Wrapper.instance.communicationClient.sendQuery<DefaultCloudService>(PacketIOStartCloudService(cloudServiceGroup.getName())) as ICommunicationPromise<ICloudService>
+        val namePromise = Wrapper.instance.communicationClient.sendQuery<String>(PacketIOStartCloudService(cloudServiceGroup.getName()))
+        return namePromise.then { CloudAPI.instance.getCloudServiceManger().getCloudServiceByName(it)!! }
     }
 
     override fun deleteServiceGroup(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<Unit> {

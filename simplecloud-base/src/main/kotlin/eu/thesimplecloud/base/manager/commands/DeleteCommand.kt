@@ -7,6 +7,7 @@ import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.extension.sendPacketToAllAuthenticatedClients
 import eu.thesimplecloud.api.network.packets.template.PacketIODeleteTemplate
 
 @Command("delete", true)
@@ -29,7 +30,7 @@ class DeleteCommand : ICommandHandler {
             return
         }
         templateManager.removeTemplate(name)
-        Manager.instance.communicationServer.getClientManager().sendPacketToAllClients(PacketIODeleteTemplate(name))
+        Manager.instance.communicationServer.getClientManager().sendPacketToAllAuthenticatedClients(PacketIODeleteTemplate(name))
         Launcher.instance.consoleSender.sendMessage("manager.command.delete.template.success", "Template %NAME%", name, " was deleted.")
     }
 

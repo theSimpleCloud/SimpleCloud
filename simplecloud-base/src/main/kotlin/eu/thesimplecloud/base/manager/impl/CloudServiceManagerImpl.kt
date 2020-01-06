@@ -1,5 +1,6 @@
 package eu.thesimplecloud.base.manager.impl
 
+import eu.thesimplecloud.api.extension.sendPacketToAllAuthenticatedClients
 import eu.thesimplecloud.api.network.packets.service.PacketIORemoveCloudService
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.api.network.packets.service.PacketIOStopCloudService
@@ -14,12 +15,12 @@ class CloudServiceManagerImpl : AbstractCloudServiceManager() {
 
     override fun updateCloudService(cloudService: ICloudService, fromPacket: Boolean) {
         super.updateCloudService(cloudService, fromPacket)
-        Manager.instance.communicationServer.getClientManager().sendPacketToAllClients(PacketIOUpdateCloudService(cloudService))
+        Manager.instance.communicationServer.getClientManager().sendPacketToAllAuthenticatedClients(PacketIOUpdateCloudService(cloudService))
     }
 
     override fun removeCloudService(name: String) {
         super.removeCloudService(name)
-        Manager.instance.communicationServer.getClientManager().sendPacketToAllClients(PacketIORemoveCloudService(name))
+        Manager.instance.communicationServer.getClientManager().sendPacketToAllAuthenticatedClients(PacketIORemoveCloudService(name))
     }
 
     override fun stopService(cloudService: ICloudService) {

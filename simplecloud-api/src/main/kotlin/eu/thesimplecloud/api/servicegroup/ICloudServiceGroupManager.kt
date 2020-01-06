@@ -181,7 +181,7 @@ interface ICloudServiceGroupManager {
 
     /**
      * Starts a new service by the specified group
-     * @return a promise that is completed when the service was registered, or
+     * @return a promise that is completed when the service was registered with its name, or
      * when an exception is encountered. [ICommunicationPromise.isSuccess] indicates success
      * or failure.
      * The promise will fail with:
