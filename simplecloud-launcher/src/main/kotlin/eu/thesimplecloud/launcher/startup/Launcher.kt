@@ -1,22 +1,24 @@
 package eu.thesimplecloud.launcher.startup
 
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.directorypaths.DirectoryPaths
+import eu.thesimplecloud.api.external.ICloudModule
+import eu.thesimplecloud.api.language.LanguageManager
 import eu.thesimplecloud.launcher.application.ApplicationStarter
 import eu.thesimplecloud.launcher.application.CloudApplicationType
 import eu.thesimplecloud.launcher.application.ICloudApplication
+import eu.thesimplecloud.launcher.config.LauncherConfigLoader
 import eu.thesimplecloud.launcher.console.ConsoleManager
 import eu.thesimplecloud.launcher.console.ConsoleSender
 import eu.thesimplecloud.launcher.console.command.CommandManager
 import eu.thesimplecloud.launcher.console.setup.SetupManager
 import eu.thesimplecloud.launcher.logging.LoggerProvider
-import eu.thesimplecloud.launcher.setups.LanguageSetup
-import eu.thesimplecloud.launcher.setups.StartSetup
-import eu.thesimplecloud.launcher.config.LauncherConfigLoader
 import eu.thesimplecloud.launcher.screens.IScreenManager
 import eu.thesimplecloud.launcher.screens.ScreenManagerImpl
 import eu.thesimplecloud.launcher.setups.AutoIpSetup
-import eu.thesimplecloud.api.directorypaths.DirectoryPaths
-import eu.thesimplecloud.api.external.ICloudModule
-import eu.thesimplecloud.api.language.LanguageManager
+import eu.thesimplecloud.launcher.setups.LanguageSetup
+import eu.thesimplecloud.launcher.setups.StartSetup
+import java.io.IOException
 import java.util.concurrent.Executors
 import kotlin.system.exitProcess
 
@@ -75,7 +77,6 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
             this.setupManager.queueSetup(StartSetup())
 
 
-        this.logger.updatePrompt(false)
         this.setupManager.waitFroAllSetups()
         this.launcherStartArguments.startApplication?.let { startApplication(it) }
     }
@@ -87,7 +88,18 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
     }
 
     fun clearConsole() {
-        ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor()
+        if (isWindows()) {
+            try {
+                ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            } catch (e: InterruptedException) {
+                e.printStackTrace()
+            }
+        } else {
+            print("\u001b[H\u001b[2J")
+            System.out.flush()
+        }
     }
 
     fun executeCommand(command: String) {
@@ -99,5 +111,6 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
         exitProcess(0)
     }
 
+    fun isWindows(): Boolean = System.getProperty("os.name").toLowerCase().contains("windows")
 
 }

@@ -57,6 +57,8 @@ class SetupManager(val launcher: Launcher) {
     }
 
     private fun printCurrentQuestion() {
+        /*this.currentQuestion?.let { launcher.consoleManager.prompt = it.setupQuestion.question }
+        launcher.logger.updatePrompt()*/
         this.currentQuestion?.let { launcher.consoleSender.sendMessage(it.setupQuestion.property, it.setupQuestion.question) }
     }
 

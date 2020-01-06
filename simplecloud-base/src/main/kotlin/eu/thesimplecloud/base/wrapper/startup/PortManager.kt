@@ -2,7 +2,7 @@ package eu.thesimplecloud.base.wrapper.startup
 
 class PortManager {
 
-    val START_PORT = 60_000
+    val START_PORT = 50_000
 
     private val usedPorts = HashSet<Int>()
 
