@@ -1,7 +1,11 @@
 package eu.thesimplecloud.launcher.console
 
 import eu.thesimplecloud.launcher.console.command.CommandManager
+import eu.thesimplecloud.launcher.logging.LogType
 import eu.thesimplecloud.launcher.startup.Launcher
+import org.jline.reader.LineReader
+import org.jline.reader.LineReaderBuilder
+import org.jline.terminal.TerminalBuilder
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,10 +18,25 @@ class ConsoleManager(val commandManager: CommandManager, private val consoleSend
 
     var thread: Thread? = null
 
+    val lineReader = createLineReader()
+    var prompt = Launcher.instance.logger.getColoredString("§c${Launcher.instance.logger.applicationName}§f@§eSimpleCloud§f> ", LogType.EMPTY)
+
+    private fun createLineReader() : LineReader {
+        val terminal = TerminalBuilder.builder()
+                .system(true)
+                .streams(System.`in`, System.out)
+                .encoding(Charsets.UTF_8)
+                .build()
+
+        return LineReaderBuilder.builder()
+                .terminal(terminal)
+                .build()
+    }
+
     override fun startThread() {
         thread = Thread {
             while (true) {
-                val readLine = readLine() ?: continue
+                val readLine = lineReader.readLine("%{$prompt%}") ?: continue
 
                 val screenManager = Launcher.instance.screenManager
                 if (screenManager.hasActiveScreen()) {
@@ -46,6 +65,7 @@ class ConsoleManager(val commandManager: CommandManager, private val consoleSend
     }
 
     override fun stopThread() {
+        lineReader.terminal.pause()
         thread?.interrupt()
     }
 

@@ -2,6 +2,9 @@ package eu.thesimplecloud.launcher.logging
 
 import eu.thesimplecloud.launcher.screens.IScreenManager
 import eu.thesimplecloud.launcher.startup.Launcher
+import org.jline.reader.LineReader
+import org.jline.reader.LineReaderBuilder
+import org.jline.terminal.TerminalBuilder
 import java.io.File
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
@@ -95,8 +98,20 @@ class LoggerProvider(var applicationName: String, val screenManager: IScreenMana
             return
         val coloredMessage = getColoredString(msg, logType)
         this.loggerMessageListeners.forEach { it.message(msg, logType) }
-        print("\r" + coloredMessage)
-        updatePrompt(true)
+
+        val lineReader = Launcher.instance.consoleManager.lineReader
+        if (lineReader.isReading) {
+            lineReader.callWidget(LineReader.CLEAR)
+            lineReader.terminal.writer().println("\r" + coloredMessage)
+            lineReader.callWidget(LineReader.REDRAW_LINE)
+            lineReader.callWidget(LineReader.REDISPLAY)
+        } else {
+            lineReader.terminal.writer().println(coloredMessage);
+        }
+        lineReader.terminal.flush()
+
+        //print("\r" + coloredMessage)
+        //updatePrompt(true)
     }
 
     private fun isMessageBlocked(logType: LogType): Boolean {
@@ -135,23 +150,6 @@ class LoggerProvider(var applicationName: String, val screenManager: IScreenMana
         }
 
         return AnsiColorHelper.toColoredString(message)
-    }
-
-    @Synchronized
-    fun updatePrompt(newLine: Boolean) {
-        var prompt = getColoredString("§c${applicationName}§f@§eSimpleCloud§f>", LogType.EMPTY);
-        /*
-        if (Launcher.instance.setupManager.currentSetup != null) {
-            val setupQuestion = Launcher.instance.setupManager.currentQuestion?.setupQuestion
-            if (setupQuestion != null) {
-                prompt = Launcher.instance.languageManager.getMessage(setupQuestion.property, setupQuestion.question) + ":"
-            }
-        }
-        */
-        if (newLine)
-            println("")
-
-        print("\r$prompt ")
     }
 
     @Synchronized
