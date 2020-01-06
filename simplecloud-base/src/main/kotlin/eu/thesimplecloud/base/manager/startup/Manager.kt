@@ -25,6 +25,8 @@ import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.screen.ICommandExecutable
+import eu.thesimplecloud.base.manager.packet.IPacketRegistry
+import eu.thesimplecloud.base.manager.packet.PacketRegistry
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.litote.kmongo.KMongo
@@ -46,6 +48,7 @@ class Manager : ICloudApplication {
 
     val communicationServer: INettyServer<ICommandExecutable>
     val templateServer: INettyServer<ICommandExecutable>
+    val packetRegistry: IPacketRegistry = PacketRegistry()
 
     companion object {
         @JvmStatic
