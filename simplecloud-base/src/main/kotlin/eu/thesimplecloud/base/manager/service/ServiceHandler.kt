@@ -49,7 +49,7 @@ class ServiceHandler : IServiceHandler {
 
     fun startMinServices() {
         for (serviceGroup in CloudAPI.instance.getCloudServiceGroupManager().getAllGroups()) {
-            val allServices = serviceGroup.getAllRunningServices()
+            val allServices = serviceGroup.getAllServices()
             val inLobbyServices = allServices.filter { it.getState() != ServiceState.INVISIBLE && it.getState() != ServiceState.CLOSED }
             val services = inLobbyServices.filter { it.getOnlinePercentage() < serviceGroup.getPercentToStartNewService().toDouble() / 100 }
             var newServicesAmount = serviceGroup.getMinimumOnlineServiceCount() - services.size
