@@ -22,8 +22,9 @@ interface IEventManager {
      * Calls all methods which were registered.
      *
      * @param event the event which should be called.
+     * @param fromPacket whether the event shall be synchronized with all components. Only used when the specified [event] is a [ISynchronizedEvent].
      */
-    fun call(event: IEvent)
+    fun call(event: IEvent, fromPacket: Boolean = false)
 
     /**
      * Unregisters all listeners registered with the specified [ICloudModule].

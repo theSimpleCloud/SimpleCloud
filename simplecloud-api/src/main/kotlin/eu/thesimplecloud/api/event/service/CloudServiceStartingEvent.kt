@@ -1,4 +1,4 @@
-package eu.thesimplecloud.api.events.service
+package eu.thesimplecloud.api.event.service
 
 import eu.thesimplecloud.api.service.ICloudService
 

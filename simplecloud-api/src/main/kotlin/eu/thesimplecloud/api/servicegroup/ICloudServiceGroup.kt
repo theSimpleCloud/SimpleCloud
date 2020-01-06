@@ -136,6 +136,6 @@ interface ICloudServiceGroup {
     /**
      * Updates the group to the network
      */
-    fun update() = CloudAPI.instance.getCloudServiceGroupManager().updateToNetwork(this)
+    fun update() = CloudAPI.instance.getCloudServiceGroupManager().updateGroup(this)
 
 }

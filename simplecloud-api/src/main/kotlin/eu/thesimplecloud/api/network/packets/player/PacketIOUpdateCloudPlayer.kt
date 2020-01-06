@@ -13,7 +13,7 @@ class PacketIOUpdateCloudPlayer() : ObjectPacket<ICloudPlayer>() {
     }
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Unit> {
-        this.value?.let { CloudAPI.instance.getCloudPlayerManager().updateCloudPlayer(it) }
+        this.value?.let { CloudAPI.instance.getCloudPlayerManager().updateCloudPlayer(it, fromPacket = true) }
         return unit()
     }
 }

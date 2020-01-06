@@ -30,8 +30,8 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
      */
     val playerUpdates = Maps.newConcurrentMap<UUID, MutableList<String>>()
 
-    override fun updateCloudPlayer(cloudPlayer: ICloudPlayer) {
-        super.updateCloudPlayer(cloudPlayer)
+    override fun updateCloudPlayer(cloudPlayer: ICloudPlayer, fromPacket: Boolean) {
+        super.updateCloudPlayer(cloudPlayer, fromPacket)
 
         val proxyClient = cloudPlayer.getConnectedProxy()?.let { Manager.instance.communicationServer.getClientManager().getClientByClientValue(it) }
         val serverClient = cloudPlayer.getConnectedServer()?.let { Manager.instance.communicationServer.getClientManager().getClientByClientValue(it) }
@@ -138,10 +138,6 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
     override fun getOfflineCloudPlayer(uniqueId: UUID): ICommunicationPromise<IOfflineCloudPlayer> {
         val offlinePlayer = Manager.instance.offlineCloudPlayerHandler.getOfflinePlayer(uniqueId)
         return CommunicationPromise.ofNullable(offlinePlayer, NoSuchPlayerException("Player not found"))
-    }
-
-    override fun updateToNetwork(cloudPlayer: ICloudPlayer) {
-        updateCloudPlayer(cloudPlayer)
     }
 
     private fun getProxyClientOfCloudPlayer(cloudPlayer: ICloudPlayer): IConnectedClient<*>? {

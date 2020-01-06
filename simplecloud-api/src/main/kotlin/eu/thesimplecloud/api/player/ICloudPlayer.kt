@@ -85,6 +85,7 @@ interface ICloudPlayer : IOfflineCloudPlayer {
 
     /**
      * Tells the manager that this client wants to receive updates of this player.
+     * Note, that the proxy and the server the player is connected to automatically receive updates of the player.
      */
     fun enableUpdates() = CloudAPI.instance.getCloudPlayerManager().setUpdates(this, true, CloudAPI.instance.getThisSidesName())
 
@@ -172,6 +173,6 @@ interface ICloudPlayer : IOfflineCloudPlayer {
     /**
      * Updates this player to the network
      */
-    fun update() = CloudAPI.instance.getCloudPlayerManager().updateToNetwork(this)
+    fun update() = CloudAPI.instance.getCloudPlayerManager().updateCloudPlayer(this)
 
 }

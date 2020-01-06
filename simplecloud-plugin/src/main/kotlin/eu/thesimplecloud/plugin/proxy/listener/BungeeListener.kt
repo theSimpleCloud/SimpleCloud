@@ -1,6 +1,8 @@
 package eu.thesimplecloud.plugin.proxy.listener
 
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.event.player.CloudPlayerDisconnectEvent
+import eu.thesimplecloud.api.event.player.CloudPlayerLoginEvent
 import eu.thesimplecloud.api.network.packets.player.PacketIORemoveCloudPlayer
 import eu.thesimplecloud.api.network.packets.player.PacketIOUpdateCloudPlayer
 import eu.thesimplecloud.api.network.packets.service.PacketIOUpdateCloudService
@@ -28,6 +30,10 @@ class BungeeListener : Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     fun on(event: LoginEvent) {
         val connection = event.connection
+        if (!CloudPlugin.instance.communicationClient.isOpen()) {
+            event.setCancelReason(CloudTextBuilder().build(CloudText("§cProxy still starting.")))
+            return
+        }
         val promise = CloudAPI.instance.getCloudPlayerManager().getCloudPlayer(event.connection.uniqueId).awaitUninterruptibly()
         if (promise.isSuccess) {
             event.setCancelReason(CloudTextBuilder().build(CloudText("§cYou are already registered in the network")))
@@ -52,12 +58,18 @@ class BungeeListener : Listener {
         val thisService = CloudPlugin.instance.thisService()
         thisService.setOnlinePlayers(thisService.getOnlinePlayers() + 1)
         thisService.update()
+
+        //call event
+        CloudAPI.instance.getEventManager().call(CloudPlayerLoginEvent(proxiedPlayer.uniqueId, proxiedPlayer.name))
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     fun on(event: PlayerDisconnectEvent) {
-        println(event.player.uniqueId)
-        val cloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(event.player.uniqueId)
+        val proxiedPlayer = event.player
+        //call event
+        CloudAPI.instance.getEventManager().call(CloudPlayerDisconnectEvent(proxiedPlayer.uniqueId, proxiedPlayer.name))
+
+        val cloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(proxiedPlayer.uniqueId)
         cloudPlayer?.let {
             cloudPlayer as CloudPlayer
             cloudPlayer.setOffline()

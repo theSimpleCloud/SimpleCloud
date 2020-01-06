@@ -5,7 +5,7 @@ interface ICloudServiceManager {
     /**
      * Updates or adds a [ICloudService]
      */
-    fun updateCloudService(cloudService: ICloudService)
+    fun updateCloudService(cloudService: ICloudService, fromPacket: Boolean = false)
 
     /**
      * Removes the [ICloudService] found by the specified name
@@ -51,9 +51,4 @@ interface ICloudServiceManager {
      * Stops the specified service
      */
     fun stopService(cloudService: ICloudService)
-
-    /**
-     * Updates the specified cloud service to the network
-     */
-    fun updateToNetwork(cloudService: ICloudService)
 }

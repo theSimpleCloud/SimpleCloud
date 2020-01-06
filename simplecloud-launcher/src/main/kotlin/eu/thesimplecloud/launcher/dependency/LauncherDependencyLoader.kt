@@ -9,7 +9,7 @@ class LauncherDependencyLoader {
         dependencyLoader.addRepositories("https://repo.maven.apache.org/maven2/", "https://repo.thesimplecloud.eu/artifactory/gradle-dev-local/")
         dependencyLoader.addDependencies(Dependency("org.litote.kmongo", "kmongo", "3.11.2"),
                 Dependency("io.netty", "netty-all", "4.1.4.Final"),
-                Dependency("eu.thesimplecloud.clientserverapi", "clientserverapi", "2.0.15-SNAPSHOT"),
+                Dependency("eu.thesimplecloud.clientserverapi", "clientserverapi", "2.0.18-SNAPSHOT"),
                 Dependency("org.reflections", "reflections", "0.9.10"),
                 Dependency("com.google.code.gson", "gson", "2.8.5"),
                 Dependency("commons-io", "commons-io", "2.6"),

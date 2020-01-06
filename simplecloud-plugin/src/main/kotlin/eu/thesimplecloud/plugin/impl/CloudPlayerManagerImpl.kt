@@ -29,6 +29,11 @@ import java.util.*
 
 class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
 
+    override fun updateCloudPlayer(cloudPlayer: ICloudPlayer, fromPacket: Boolean) {
+        super.updateCloudPlayer(cloudPlayer, fromPacket)
+        if (!fromPacket) CloudPlugin.instance.communicationClient.sendUnitQuery(PacketIOUpdateCloudPlayer(cloudPlayer))
+    }
+
     override fun getCloudPlayer(uniqueId: UUID): ICommunicationPromise<ICloudPlayer> {
         val cachedCloudPlayer = getCachedCloudPlayer(uniqueId)
         if (cachedCloudPlayer != null) {
@@ -163,10 +168,6 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
 
     override fun getOfflineCloudPlayer(uniqueId: UUID): ICommunicationPromise<IOfflineCloudPlayer> {
         return CloudPlugin.instance.communicationClient.sendQuery(PacketIOGetOfflinePlayer(uniqueId))
-    }
-
-    override fun updateToNetwork(cloudPlayer: ICloudPlayer) {
-        CloudPlugin.instance.communicationClient.sendUnitQuery(PacketIOUpdateCloudPlayer(cloudPlayer))
     }
 
 

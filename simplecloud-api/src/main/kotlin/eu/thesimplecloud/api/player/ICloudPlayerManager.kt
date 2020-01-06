@@ -17,7 +17,7 @@ interface ICloudPlayerManager {
     /**
      * Updates a [ICloudPlayer].
      */
-    fun updateCloudPlayer(cloudPlayer: ICloudPlayer)
+    fun updateCloudPlayer(cloudPlayer: ICloudPlayer, fromPacket: Boolean = false)
 
     /**
      * Removes a [ICloudPlayer] from the cache.
@@ -176,10 +176,5 @@ interface ICloudPlayerManager {
      * - [NoSuchPlayerException] if the [IOfflineCloudPlayer] cannot be found by the specified [uniqueId]
      */
     fun getOfflineCloudPlayer(uniqueId: UUID): ICommunicationPromise<IOfflineCloudPlayer>
-
-    /**
-     * Updates the specified player to the network
-     */
-    fun updateToNetwork(cloudPlayer: ICloudPlayer)
 
 }

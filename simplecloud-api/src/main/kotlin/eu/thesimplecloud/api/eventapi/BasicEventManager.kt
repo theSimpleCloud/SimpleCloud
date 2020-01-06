@@ -4,7 +4,7 @@ import eu.thesimplecloud.api.external.ICloudModule
 import java.lang.reflect.Method
 import java.util.HashMap
 
-class EventManager : IEventManager {
+open class BasicEventManager : IEventManager {
 
     /**
      * The map with all [IEvent]s and the listener methods.
@@ -23,7 +23,7 @@ class EventManager : IEventManager {
         }
     }
 
-    override fun call(event: IEvent) {
+    override fun call(event: IEvent, fromPacket: Boolean) {
         this.listeners[event::class.java]?.forEach { methodData ->
             methodData.method.invoke(methodData.listener, event)
         }

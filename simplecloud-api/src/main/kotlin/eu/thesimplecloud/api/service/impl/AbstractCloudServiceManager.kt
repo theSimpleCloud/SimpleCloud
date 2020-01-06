@@ -1,22 +1,22 @@
 package eu.thesimplecloud.api.service.impl
 
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.events.service.*
+import eu.thesimplecloud.api.event.service.*
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ICloudServiceManager
 import eu.thesimplecloud.api.service.ServiceState
-import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
 
 abstract class AbstractCloudServiceManager : ICloudServiceManager {
 
     private val services = CopyOnWriteArrayList<ICloudService>()
 
-    override fun updateCloudService(cloudService: ICloudService) {
+    override fun updateCloudService(cloudService: ICloudService, fromPacket: Boolean) {
         val cashedService = getCloudServiceByName(cloudService.getName())
         if (cashedService == null){
             this.services.add(cloudService)
             CloudAPI.instance.getEventManager().call(CloudServiceRegisteredEvent(cloudService))
+            CloudAPI.instance.getEventManager().call(CloudServiceUpdatedEvent(cloudService))
             return
         }
         val nowStarting = cashedService.getState() == ServiceState.PREPARED && cloudService.getState() == ServiceState.STARTING

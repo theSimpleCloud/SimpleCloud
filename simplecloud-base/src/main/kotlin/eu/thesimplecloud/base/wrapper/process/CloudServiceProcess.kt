@@ -63,7 +63,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
             try {
                 val s = bufferedReader.readLine() ?: continue
                 if (!s.equals("", ignoreCase = true) && !s.equals(" ", ignoreCase = true) && !s.equals(">", ignoreCase = true)
-                        && !s.equals(" >", ignoreCase = true) && !s.contains("InitialHandler has connected")) {
+                        && !s.equals(" >", ignoreCase = true) && !s.contains("InitialHandler has pinged")) {
                     Wrapper.instance.communicationClient.sendUnitQuery(PacketOutScreenMessage(CloudClientType.SERVICE, getCloudService(), s))
                     Launcher.instance.logger.console("[${cloudService.getName()}]$s")
                 }

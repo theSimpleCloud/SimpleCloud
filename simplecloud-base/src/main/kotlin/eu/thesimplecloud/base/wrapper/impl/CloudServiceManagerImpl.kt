@@ -8,6 +8,11 @@ import eu.thesimplecloud.api.service.impl.AbstractCloudServiceManager
 
 class CloudServiceManagerImpl : AbstractCloudServiceManager() {
 
+    override fun updateCloudService(cloudService: ICloudService, fromPacket: Boolean) {
+        super.updateCloudService(cloudService, fromPacket)
+        if (!fromPacket) Wrapper.instance.communicationClient.sendUnitQuery(PacketIOUpdateCloudService(cloudService))
+    }
+
     override fun stopService(cloudService: ICloudService) {
         if (cloudService.getWrapperName() == Wrapper.instance.thisWrapperName) {
             val cloudServiceProcess = Wrapper.instance.cloudServiceProcessManager.getCloudServiceProcessByServiceName(cloudService.getName())
@@ -15,10 +20,6 @@ class CloudServiceManagerImpl : AbstractCloudServiceManager() {
         } else {
             Wrapper.instance.communicationClient.sendUnitQuery(PacketIOStopCloudService(cloudService.getName()))
         }
-    }
-
-    override fun updateToNetwork(cloudService: ICloudService) {
-        Wrapper.instance.communicationClient.sendUnitQuery(PacketIOUpdateCloudService(cloudService))
     }
 
     override fun startService(cloudService: ICloudService) {

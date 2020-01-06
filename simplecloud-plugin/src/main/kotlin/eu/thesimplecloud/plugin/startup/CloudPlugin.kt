@@ -7,9 +7,11 @@ import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.clientserverapi.lib.resource.ResourceFinder
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.client.CloudClientType
+import eu.thesimplecloud.api.external.ICloudModule
 import eu.thesimplecloud.api.network.packets.service.PacketIOUpdateCloudService
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
+import eu.thesimplecloud.clientserverapi.lib.debug.DebugMessage
 import eu.thesimplecloud.plugin.ICloudServicePlugin
 import eu.thesimplecloud.plugin.impl.CloudAPIImpl
 import java.io.File
@@ -17,7 +19,7 @@ import java.net.URLClassLoader
 import kotlin.concurrent.thread
 
 
-class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin, val classLoader: URLClassLoader) {
+class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin, val classLoader: URLClassLoader) : ICloudModule {
 
     companion object {
         @JvmStatic
@@ -84,11 +86,14 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin, val classLoader: 
         return this.thisService!!
     }
 
-    fun enable() {
+    override fun onEnable() {
         if (this.updateState && thisService().getState() == ServiceState.STARTING) {
             thisService().setState(ServiceState.VISIBLE)
             updateThisService()
         }
+    }
+
+    override fun onDisable() {
     }
 
     fun updateThisService() {

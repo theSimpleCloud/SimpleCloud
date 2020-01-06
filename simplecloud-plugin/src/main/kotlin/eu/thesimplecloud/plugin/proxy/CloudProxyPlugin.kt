@@ -4,7 +4,7 @@ import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.servicegroup.grouptype.ICloudServerGroup
-import eu.thesimplecloud.plugin.listener.CloudServiceUpdateListener
+import eu.thesimplecloud.plugin.listener.CloudListener
 import eu.thesimplecloud.plugin.proxy.listener.BungeeListener
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import net.md_5.bungee.api.ProxyServer
@@ -60,10 +60,14 @@ class CloudProxyPlugin : Plugin(), ICloudProxyPlugin {
             info.serverPriority.clear()
         }
         CloudAPI.instance.getCloudServiceManger().getAllCloudServices().forEach { addServiceToProxy(it) }
-        CloudPlugin.instance.enable()
-        CloudAPI.instance.getEventManager().registerListener(this, CloudServiceUpdateListener())
+        CloudPlugin.instance.onEnable()
+        CloudAPI.instance.getEventManager().registerListener(CloudPlugin.instance, CloudListener())
         ProxyServer.getInstance().pluginManager.registerListener(this, BungeeListener())
 
+    }
+
+    override fun onDisable() {
+        CloudPlugin.instance.onDisable()
     }
 
 }

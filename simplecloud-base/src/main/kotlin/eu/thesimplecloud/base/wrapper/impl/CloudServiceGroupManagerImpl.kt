@@ -14,6 +14,10 @@ import eu.thesimplecloud.api.servicegroup.impl.AbstractCloudServiceGroupManager
 
 class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
 
+    override fun updateGroup(cloudServiceGroup: ICloudServiceGroup, fromPacket: Boolean) {
+        super.updateGroup(cloudServiceGroup, fromPacket)
+        if (!fromPacket) Wrapper.instance.communicationClient.sendUnitQuery(PacketIOUpdateCloudServiceGroup(cloudServiceGroup))
+    }
 
     override fun createServiceGroup(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<Unit> {
         return Wrapper.instance.communicationClient.sendUnitQuery(PacketIOCreateServiceGroup(cloudServiceGroup))
@@ -25,10 +29,6 @@ class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
 
     override fun deleteServiceGroup(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<Unit> {
         return Wrapper.instance.communicationClient.sendUnitQuery(PacketIODeleteServiceGroup(cloudServiceGroup.getName()))
-    }
-
-    override fun updateToNetwork(cloudServiceGroup: ICloudServiceGroup) {
-        Wrapper.instance.communicationClient.sendUnitQuery(PacketIOUpdateCloudServiceGroup(cloudServiceGroup))
     }
 
 

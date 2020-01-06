@@ -10,7 +10,7 @@ class PacketIOUpdateCloudServiceGroup : PacketIOCloudServiceGroupData {
     constructor(): super()
 
     override fun handleData(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<Unit> {
-        CloudAPI.instance.getCloudServiceGroupManager().updateGroup(cloudServiceGroup)
+        CloudAPI.instance.getCloudServiceGroupManager().updateGroup(cloudServiceGroup, fromPacket = true)
         return unit()
     }
 

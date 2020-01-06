@@ -71,8 +71,4 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
     override fun getOfflineCloudPlayer(uniqueId: UUID): ICommunicationPromise<IOfflineCloudPlayer> {
         throw UnsupportedOperationException("Players are not supported in the wrapper")
     }
-
-    override fun updateToNetwork(cloudPlayer: ICloudPlayer) {
-        throw UnsupportedOperationException("Players are not supported in the wrapper")
-    }
 }

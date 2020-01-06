@@ -17,7 +17,7 @@ interface ICloudServiceGroupManager {
     /**
      * Updates or adds a [ICloudServiceGroup]
      */
-    fun updateGroup(cloudServiceGroup: ICloudServiceGroup)
+    fun updateGroup(cloudServiceGroup: ICloudServiceGroup, fromPacket: Boolean = false)
 
 
     /**
@@ -196,10 +196,5 @@ interface ICloudServiceGroupManager {
      * - [IllegalStateException] if services of the specified group are still registered.
      */
     fun deleteServiceGroup(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<Unit>
-
-    /**
-     * Updates the specified [cloudServiceGroup] to the network.
-     */
-    fun updateToNetwork(cloudServiceGroup: ICloudServiceGroup)
 
 }

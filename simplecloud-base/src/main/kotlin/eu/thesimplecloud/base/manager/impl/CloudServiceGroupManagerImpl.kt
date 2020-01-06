@@ -26,8 +26,8 @@ class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
         return promise
     }
 
-    override fun updateGroup(cloudServiceGroup: ICloudServiceGroup) {
-        super.updateGroup(cloudServiceGroup)
+    override fun updateGroup(cloudServiceGroup: ICloudServiceGroup, fromPacket: Boolean) {
+        super.updateGroup(cloudServiceGroup, fromPacket)
         Manager.instance.communicationServer.getClientManager().sendPacketToAllClients(PacketIOUpdateCloudServiceGroup(cloudServiceGroup))
         Manager.instance.cloudServiceGroupFileHandler.save(cloudServiceGroup)
     }
@@ -46,10 +46,6 @@ class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
         Manager.instance.communicationServer.getClientManager().sendPacketToAllClients(PacketIORemoveCloudServiceGroup(cloudServiceGroup.getName()))
         Manager.instance.cloudServiceGroupFileHandler.delete(cloudServiceGroup)
         return CommunicationPromise.of(Unit)
-    }
-
-    override fun updateToNetwork(cloudServiceGroup: ICloudServiceGroup) {
-        updateGroup(cloudServiceGroup)
     }
 
 }

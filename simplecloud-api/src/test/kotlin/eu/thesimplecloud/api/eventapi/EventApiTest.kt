@@ -6,7 +6,7 @@ import org.junit.Test
 
 class EventApiTest {
 
-    val eventManager = EventManager()
+    val eventManager = BasicEventManager()
     val cloudModule = object: ICloudModule {
         override fun onEnable() {
         }

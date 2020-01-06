@@ -10,7 +10,7 @@ abstract class AbstractCloudServiceGroupManager : ICloudServiceGroupManager {
 
     private val serviceGroups = CopyOnWriteArrayList<ICloudServiceGroup>()
 
-    override fun updateGroup(cloudServiceGroup: ICloudServiceGroup) {
+    override fun updateGroup(cloudServiceGroup: ICloudServiceGroup, fromPacket: Boolean) {
         val cashedGroup = getServiceGroupByName(cloudServiceGroup.getName())
         if (cashedGroup == null) {
             this.serviceGroups.add(cloudServiceGroup)

@@ -1,7 +1,5 @@
 package eu.thesimplecloud.api
 
-import eu.thesimplecloud.api.eventapi.EventManager
-import eu.thesimplecloud.api.eventapi.IEventManager
 import eu.thesimplecloud.api.template.ITemplateManager
 import eu.thesimplecloud.api.template.impl.DefaultTemplateManager
 import eu.thesimplecloud.api.wrapper.IWrapperManager
@@ -14,12 +12,9 @@ abstract class CloudAPI : ICloudAPI {
     }
 
     private val wrapperManager: IWrapperManager = DefaultWrapperManager()
-    private val eventManager: IEventManager = EventManager()
     private val templateManager: ITemplateManager = DefaultTemplateManager()
 
     override fun getWrapperManager(): IWrapperManager = this.wrapperManager
-
-    override fun getEventManager(): IEventManager = this.eventManager
 
     override fun getTemplateManager(): ITemplateManager = this.templateManager
 

@@ -1,5 +1,6 @@
 package eu.thesimplecloud.base.manager.impl
 
+import eu.thesimplecloud.api.network.packets.service.PacketIORemoveCloudService
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.api.network.packets.service.PacketIOStopCloudService
 import eu.thesimplecloud.api.network.packets.service.PacketIOUpdateCloudService
@@ -11,19 +12,20 @@ import java.lang.IllegalStateException
 
 class CloudServiceManagerImpl : AbstractCloudServiceManager() {
 
-    override fun updateCloudService(cloudService: ICloudService) {
-        super.updateCloudService(cloudService)
+    override fun updateCloudService(cloudService: ICloudService, fromPacket: Boolean) {
+        super.updateCloudService(cloudService, fromPacket)
         Manager.instance.communicationServer.getClientManager().sendPacketToAllClients(PacketIOUpdateCloudService(cloudService))
+    }
+
+    override fun removeCloudService(name: String) {
+        super.removeCloudService(name)
+        Manager.instance.communicationServer.getClientManager().sendPacketToAllClients(PacketIORemoveCloudService(name))
     }
 
     override fun stopService(cloudService: ICloudService) {
         val wrapper = cloudService.getWrapper()
         val wrapperClient = Manager.instance.communicationServer.getClientManager().getClientByClientValue(wrapper)
         wrapperClient?.sendUnitQuery(PacketIOStopCloudService(cloudService.getName()))
-    }
-
-    override fun updateToNetwork(cloudService: ICloudService) {
-        updateCloudService(cloudService)
     }
 
     override fun startService(cloudService: ICloudService) {
