@@ -8,6 +8,7 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnectedClient
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.exception.NoSuchPlayerException
+import eu.thesimplecloud.api.exception.NoSuchServiceException
 import eu.thesimplecloud.api.exception.UnreachableServiceException
 import eu.thesimplecloud.api.location.ServiceLocation
 import eu.thesimplecloud.api.location.SimpleLocation
@@ -19,7 +20,10 @@ import eu.thesimplecloud.api.player.OfflineCloudPlayer
 import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceType
+import eu.thesimplecloud.clientserverapi.lib.promise.flatten
+import java.lang.IllegalStateException
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
@@ -110,6 +114,17 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
         val serverClient = getServerClientOfPlayer(cloudPlayer)
         serverClient ?: return CommunicationPromise.failed(UnreachableServiceException("The server the player is connected to is not reachable"))
         return serverClient.sendUnitQuery(PacketIOTeleportPlayer(cloudPlayer, location))
+    }
+
+    override fun teleportPlayer(cloudPlayer: ICloudPlayer, location: ServiceLocation): ICommunicationPromise<Unit> {
+        val service = location.getService() ?: return CommunicationPromise.failed(NoSuchServiceException("Service to connect the player to cannot be found"))
+        return if (service.getName() == cloudPlayer.getConnectedServerName()) {
+            cloudPlayer.teleport(location as SimpleLocation).addFailureListener { cloudPlayer.sendMessage("§cTeleportation failed: " + it.message) }
+        } else {
+            cloudPlayer.connect(service).thenDelayed(500, TimeUnit.MILLISECONDS) {
+                cloudPlayer.teleport(location as SimpleLocation)
+            }.flatten().addFailureListener { cloudPlayer.sendMessage("§cTeleportation failed: " + it.message) }
+        }
     }
 
     override fun hasPermission(cloudPlayer: ICloudPlayer, permission: String): ICommunicationPromise<Boolean> {

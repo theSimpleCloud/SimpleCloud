@@ -38,6 +38,7 @@ class PacketInCloudClientLogin() : JsonPacket() {
                 connection.setClientValue(cloudService)
                 cloudService.setAuthenticated(true)
                 CloudAPI.instance.getCloudServiceManger().updateCloudService(cloudService)
+                connection.sendUnitQuery(PacketIOUpdateCloudService(cloudService)).awaitUninterruptibly()
                 Launcher.instance.consoleSender.sendMessage("manager.login.service", "Service %SERVICE%", cloudService.getName(), " logged in.")
             }
             CloudClientType.WRAPPER -> {

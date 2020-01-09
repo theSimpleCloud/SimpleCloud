@@ -52,6 +52,10 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
         throw UnsupportedOperationException("Players are not supported in the wrapper")
     }
 
+    override fun teleportPlayer(cloudPlayer: ICloudPlayer, location: ServiceLocation): ICommunicationPromise<Unit> {
+        throw UnsupportedOperationException("Players are not supported in the wrapper")
+    }
+
     override fun hasPermission(cloudPlayer: ICloudPlayer, permission: String): ICommunicationPromise<Boolean> {
         throw UnsupportedOperationException("Players are not supported in the wrapper")
     }

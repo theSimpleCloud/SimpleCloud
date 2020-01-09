@@ -13,6 +13,8 @@ import eu.thesimplecloud.api.player.IOfflineCloudPlayer
 import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceType
+import eu.thesimplecloud.plugin.extension.syncBukkit
+import eu.thesimplecloud.plugin.network.packets.PacketOutTeleportOtherService
 import eu.thesimplecloud.plugin.proxy.CloudProxyPlugin
 import eu.thesimplecloud.plugin.proxy.LobbyConnector
 import eu.thesimplecloud.plugin.proxy.text.CloudTextBuilder
@@ -25,7 +27,9 @@ import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import java.lang.IllegalArgumentException
+import java.lang.IllegalStateException
 import java.util.*
+import javax.xml.ws.Service
 
 class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
 
@@ -122,13 +126,20 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
     override fun teleportPlayer(cloudPlayer: ICloudPlayer, location: SimpleLocation): ICommunicationPromise<Unit> {
         if (CloudPlugin.instance.thisServiceName == cloudPlayer.getConnectedServerName()) {
             val bukkitPlayer = getBukkitPlayerByCloudPlayer(cloudPlayer)
-            bukkitPlayer ?: return CommunicationPromise.failed(NoSuchPlayerException("Unable to find the player on the server service"))
+            bukkitPlayer
+                    ?: return CommunicationPromise.failed(NoSuchPlayerException("Unable to find the player on the server service"))
             val bukkitLocation = getBukkitLocationBySimpleLocation(location)
-            bukkitLocation ?: return CommunicationPromise.failed(NoSuchWorldException("Unable to find world: ${location.worldName}"))
-            bukkitPlayer.teleport(bukkitLocation)
+            bukkitLocation
+                    ?: return CommunicationPromise.failed(NoSuchWorldException("Unable to find world: ${location.worldName}"))
+            syncBukkit { bukkitPlayer.teleport(bukkitLocation) }
             return CommunicationPromise.of(Unit)
         }
         return CloudPlugin.instance.communicationClient.sendUnitQuery(PacketIOTeleportPlayer(cloudPlayer, location))
+    }
+
+    override fun teleportPlayer(cloudPlayer: ICloudPlayer, location: ServiceLocation): ICommunicationPromise<Unit> {
+        if (location.getService() == null) return CommunicationPromise.failed(NoSuchServiceException("Service to connect the player to cannot be found."))
+        return CloudPlugin.instance.communicationClient.sendUnitQuery(PacketOutTeleportOtherService(cloudPlayer.getUniqueId(), location.serviceName, location as SimpleLocation))
     }
 
     override fun hasPermission(cloudPlayer: ICloudPlayer, permission: String): ICommunicationPromise<Boolean> {
@@ -142,7 +153,8 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
             val bukkitPlayer = getBukkitPlayerByCloudPlayer(cloudPlayer)
             bukkitPlayer ?: return CommunicationPromise.failed(NoSuchPlayerException("Unable to find bukkit player"))
             val playerLocation = bukkitPlayer.location
-            playerLocation.world ?: return CommunicationPromise.failed(NoSuchWorldException("The world the player is on is null"))
+            playerLocation.world
+                    ?: return CommunicationPromise.failed(NoSuchWorldException("The world the player is on is null"))
             return CommunicationPromise.of(ServiceLocation(CloudPlugin.instance.thisService(), playerLocation.world!!.name, playerLocation.x, playerLocation.y, playerLocation.z, playerLocation.yaw, playerLocation.pitch))
         }
         return CloudPlugin.instance.communicationClient.sendQuery(PacketIOGetPlayerLocation(cloudPlayer))
@@ -150,7 +162,8 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
 
     override fun sendPlayerToLobby(cloudPlayer: ICloudPlayer): ICommunicationPromise<Unit> {
         if (CloudPlugin.instance.thisServiceName == cloudPlayer.getConnectedProxyName()) {
-            val proxiedPlayer = getProxiedPlayerByCloudPlayer(cloudPlayer) ?: return CommunicationPromise.failed(NoSuchPlayerException("Unable to find bungeecord player"))
+            val proxiedPlayer = getProxiedPlayerByCloudPlayer(cloudPlayer)
+                    ?: return CommunicationPromise.failed(NoSuchPlayerException("Unable to find bungeecord player"))
             val serverInfo = CloudProxyPlugin.instance.lobbyConnector.getLobbyServer(proxiedPlayer)
             if (serverInfo == null) {
                 proxiedPlayer.disconnect(CloudTextBuilder().build(CloudText("§cNo fallback server found")))

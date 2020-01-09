@@ -28,7 +28,7 @@ allprojects {
     }
 
     project.ext {
-        depedencyClientServerAPIVersion = '2.0.18-SNAPSHOT'
+        depedencyClientServerAPIVersion = '2.0.21-SNAPSHOT'
     }
 }
 

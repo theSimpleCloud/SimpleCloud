@@ -16,6 +16,6 @@ class ServerHandlerImpl : IServerHandler<ICommandExecutable> {
     }
 
     override fun onServerStarted(nettyServer: NettyServer<ICommandExecutable>) {
-        Launcher.instance.consoleSender.sendMessage("manager.server.listening", "A server is now listening on port %PORT%", nettyServer.port.toString(), "...")
+        Launcher.instance.consoleSender.sendMessage("manager.server.listening", "The cloud is now listening on port %PORT%", nettyServer.port.toString(), "...")
     }
 }

@@ -26,6 +26,8 @@ class DependencyLoader : IDependencyLoader {
 
     private val dependencies = HashSet<Dependency>()
 
+    private val loadedDependencyList = ArrayList<Dependency>()
+
     override fun addRepositories(vararg repositories: String) {
         this.repositories.addAll(repositories)
     }
@@ -60,7 +62,7 @@ class DependencyLoader : IDependencyLoader {
         val allDependencies = ArrayList<Dependency>()
         allDependencies.addAll(this.dependencies)
         this.dependencies.forEach { appendSubDependenciesOfDependency(it, allDependencies, false) }
-        allDependencies.filter { it.groupId != "junit" }.let { dependencies ->  removeAllRedundantDependencies(dependencies).forEach { installDependency(it) }}
+        allDependencies.filter { it.groupId != "junit" }.let { dependencies -> removeAllRedundantDependencies(dependencies).forEach { installDependency(it) } }
 
     }
 
@@ -152,6 +154,14 @@ class DependencyLoader : IDependencyLoader {
     }
 
     private fun appendSubDependenciesOfDependency(dependency: Dependency, dependencyList: MutableList<Dependency>, useWeb: Boolean) {
+        if (useWeb && this.loadedDependencyList.contains(dependency)) return
+        if (useWeb) {
+            if (isLoggerAvailable())
+                Launcher.instance.logger.console("Searching dependencies of ${dependency.artifactId}-${dependency.version}")
+            else
+                println("Searching dependencies of ${dependency.artifactId}-${dependency.version}")
+            loadedDependencyList.add(dependency)
+        }
         for (repoURL in repositories) {
             val pomContent = if (useWeb) dependency.getPomContent(repoURL) else {
                 val downloadedPomFile = dependency.getDownloadedPomFile()
@@ -163,7 +173,7 @@ class DependencyLoader : IDependencyLoader {
             pomContent ?: continue
             val reader = MavenXpp3Reader()
             val model = reader.read(ByteArrayInputStream(pomContent.toByteArray()))
-            for (mavenSubDependency in model.dependencies.filter { it.groupId != "junit" }.filter { it.scope != "test"}.filter { !it.isOptional }) {
+            for (mavenSubDependency in model.dependencies.filter { it.groupId != "junit" }.filter { it.scope != "test" }.filter { !it.isOptional }.filter { it.scope != "provided" }) {
                 if (mavenSubDependency.groupId.contains("$") || mavenSubDependency.artifactId.contains("$")) {
                     continue
                 }

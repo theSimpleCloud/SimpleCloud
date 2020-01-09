@@ -118,8 +118,25 @@ interface ICloudPlayerManager {
      * The promise will fail with:
      * - [UnreachableServiceException] if the minecraft server the player is connected is not reachable.
      * - [NoSuchWorldException] if the world to teleport the player to does not exist or is not loaded.
+     * - [IllegalStateException] if the player is not connected to a server.
      */
     fun teleportPlayer(cloudPlayer: ICloudPlayer, location: SimpleLocation): ICommunicationPromise<Unit>
+
+    /**
+     * Teleports the specified [cloudPlayer] to the specified [location].
+     * @return a promise that is completed when the teleportation is complete, or
+     * when an exception is encountered. [ICommunicationPromise.isSuccess] indicates success
+     * or failure.
+     * The promise will fail with:
+     * - [UnreachableServiceException] if the minecraft server the player is connected is not reachable.
+     * - [NoSuchServiceException] if the service to connect the player to cannot be found.
+     * - [NoSuchWorldException] if the world to teleport the player to does not exist or is not loaded.
+     * - [IllegalStateException] if the player is not connected to a server.
+     * - [IllegalArgumentException] if the service in [ServiceLocation.getService] is a proxy service.
+     * - [NoSuchPlayerException] if the player cannot be found on the proxy or the server service.
+     * - [PlayerConnectException] if the proxy was unable to connect the player to the service.
+     */
+    fun teleportPlayer(cloudPlayer: ICloudPlayer, location: ServiceLocation): ICommunicationPromise<Unit>
 
     /**
      * Checks whether the specified [cloudPlayer] has the specified [permission]

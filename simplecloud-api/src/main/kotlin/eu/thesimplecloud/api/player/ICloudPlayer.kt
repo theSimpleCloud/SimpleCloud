@@ -4,15 +4,14 @@ import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.flatten
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.exception.NoSuchPlayerException
-import eu.thesimplecloud.api.exception.NoSuchServiceException
-import eu.thesimplecloud.api.exception.NoSuchWorldException
-import eu.thesimplecloud.api.exception.UnreachableServiceException
+import eu.thesimplecloud.api.exception.*
 import eu.thesimplecloud.api.location.ServiceLocation
 import eu.thesimplecloud.api.location.SimpleLocation
 import eu.thesimplecloud.api.player.connection.IPlayerConnection
 import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.api.service.ICloudService
+import io.netty.util.concurrent.GlobalEventExecutor
+import java.util.concurrent.TimeUnit
 
 interface ICloudPlayer : IOfflineCloudPlayer {
 
@@ -111,21 +110,20 @@ interface ICloudPlayer : IOfflineCloudPlayer {
     fun teleport(location: SimpleLocation): ICommunicationPromise<Unit> = CloudAPI.instance.getCloudPlayerManager().teleportPlayer(this, location)
 
     /**
-     * Teleports this player to the specified [location]
-     * If the player is not connected to the service specified in the [location] he will be sent to the service.
+     * Teleports this player to the specified [location].
      * @return a promise that is completed when the teleportation is complete, or
      * when an exception is encountered. [ICommunicationPromise.isSuccess] indicates success
      * or failure.
      * The promise will fail with:
-     * - [UnreachableServiceException] if the proxy service or the minecraft server the player is connected to is not reachable
-     * - [IllegalArgumentException] if [ServiceLocation.getService] is a proxy service.
+     * - [UnreachableServiceException] if the minecraft server the player is connected is not reachable.
+     * - [NoSuchServiceException] if the service to connect the player to cannot be found.
      * - [NoSuchWorldException] if the world to teleport the player to does not exist or is not loaded.
+     * - [IllegalStateException] if the player is not connected to a server.
+     * - [IllegalArgumentException] if the service in [ServiceLocation.getService] is a proxy service.
+     * - [NoSuchPlayerException] if the player cannot be found on the proxy or the server service.
+     * - [PlayerConnectException] if the proxy was unable to connect the player to the service.
      */
-    fun teleport(location: ServiceLocation): ICommunicationPromise<Unit> {
-        val locationService = location.getService()
-                ?: return CommunicationPromise.failed(UnreachableServiceException("Service not found"))
-        return this.connect(locationService).then { this.teleport(location as SimpleLocation) }.flatten().addFailureListener { this.sendMessage("§cTeleportation failed.") }
-    }
+    fun teleport(location: ServiceLocation): ICommunicationPromise<Unit> = CloudAPI.instance.getCloudPlayerManager().teleportPlayer(this, location)
 
     /**
      * Checks whether this player has the specified [permission]

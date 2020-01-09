@@ -52,7 +52,7 @@ class ServerGroupSetup : ISetup {
         Launcher.instance.consoleSender.sendMessage("manager.setup.server-group.question.type.success", "Spigot set.")
     }
 
-    @SetupQuestion(3, "manager.setup.service-group.question.version", "Which version to you want to use? (1.7.10, 1.8.8, 1.9.4, 1.10.2, 1.11.2, 1.12.2, 1.13.2, 1.14.4)")
+    @SetupQuestion(3, "manager.setup.service-group.question.version", "Which version to you want to use? (1.7.10, 1.8.8, 1.9.4, 1.10.2, 1.11.2, 1.12.2, 1.13.2, 1.14.4, 1.15.1)")
     fun versionQuestion(answer: String) : Boolean {
         val version = answer.replace(".", "_")
         val serviceVersion = JsonData.fromObject(type.toUpperCase() + "_" + version).getObjectOrNull(ServiceVersion::class.java)

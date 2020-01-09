@@ -23,4 +23,11 @@ open class SimpleLocation(
     open fun setWorldName(worldName: String): SimpleLocation {
         return SimpleLocation(worldName, this.x, this.y, this.z, this.yaw, this.pitch)
     }
+
+    /**
+     * Returns a service location with the specified [serviceName]
+     */
+    fun toServiceLocation(serviceName: String): ServiceLocation {
+        return ServiceLocation(serviceName, worldName, x, y, z, yaw, pitch)
+    }
 }

@@ -2,6 +2,7 @@ package eu.thesimplecloud.plugin.server
 
 import com.sun.media.jfxmediaimpl.platform.java.JavaPlatform
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.plugin.extension.getCloudPlayer
 import eu.thesimplecloud.plugin.listener.CloudListener
 import eu.thesimplecloud.plugin.proxy.CloudProxyPlugin
 import eu.thesimplecloud.plugin.startup.CloudPlugin

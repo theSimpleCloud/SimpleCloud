@@ -14,13 +14,14 @@ data class Dependency(val groupId: String, val artifactId: String, val version: 
         val POM_DIR = File("dependencies/poms/")
     }
 
+    fun getName() = "$artifactId-$version"
 
     fun getDownloadURL(repoUrl: String): String {
         return getUrlWithoutExtension(repoUrl) + ".jar"
     }
 
     fun getDownloadedFile(): File {
-        return File(DEPENDENCIES_DIR, "$artifactId-$version.jar")
+        return File(DEPENDENCIES_DIR, "${getName()}.jar")
     }
 
     fun getDownloadedPomFile(): File {

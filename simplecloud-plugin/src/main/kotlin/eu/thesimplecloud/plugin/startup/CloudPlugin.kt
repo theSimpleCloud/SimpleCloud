@@ -48,7 +48,6 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin, val classLoader: 
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.api.network.packets")
         this.communicationClient.addClassLoader(ResourceFinder.getSystemClassLoader(), this.classLoader)
         this.communicationClient.addClassLoader(ResourceFinder.getSystemClassLoader(), this.classLoader)
-
         nettyThread = thread {
             this.communicationClient.start()
         }
@@ -80,9 +79,10 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin, val classLoader: 
     @Synchronized
     fun thisService(): ICloudService {
         if (this.thisService == null) this.thisService = CloudAPI.instance.getCloudServiceManger().getCloudServiceByName(thisServiceName)
-        while (this.thisService == null) {
+        while (this.thisService == null || !this.thisService!!.isAuthenticated()) {
             Thread.sleep(10)
-            this.thisService = CloudAPI.instance.getCloudServiceManger().getCloudServiceByName(thisServiceName)
+            if (this.thisService == null)
+                this.thisService = CloudAPI.instance.getCloudServiceManger().getCloudServiceByName(thisServiceName)
         }
         return this.thisService!!
     }
@@ -90,6 +90,7 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin, val classLoader: 
     override fun onEnable() {
         if (this.updateState && thisService().getState() == ServiceState.STARTING) {
             thisService().setState(ServiceState.VISIBLE)
+            println("updating " + thisService.toString())
             updateThisService()
         }
     }
