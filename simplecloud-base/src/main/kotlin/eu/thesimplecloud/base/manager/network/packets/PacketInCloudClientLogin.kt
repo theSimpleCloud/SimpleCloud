@@ -24,7 +24,7 @@ class PacketInCloudClientLogin() : JsonPacket() {
         val wrapperPromises = CloudAPI.instance.getWrapperManager().getAllWrappers().map { connection.sendUnitQuery(PacketIOUpdateWrapperInfo(it)) }
         val templatePromises = CloudAPI.instance.getTemplateManager().getAllTemplates().map { connection.sendUnitQuery(PacketIOUpdateTemplate(it)) }
         val groupPromises = CloudAPI.instance.getCloudServiceGroupManager().getAllGroups().map { connection.sendUnitQuery(PacketIOUpdateCloudServiceGroup(it)) }
-        val servicePromises = CloudAPI.instance.getCloudServiceManger().getAllCloudServices().map { connection.sendUnitQuery(PacketIOUpdateCloudService(it)) }
+        val servicePromises = CloudAPI.instance.getCloudServiceManager().getAllCloudServices().map { connection.sendUnitQuery(PacketIOUpdateCloudService(it)) }
         wrapperPromises.union(templatePromises)
                 .union(groupPromises)
                 .union(servicePromises)
@@ -33,11 +33,11 @@ class PacketInCloudClientLogin() : JsonPacket() {
         when (cloudClientType) {
             CloudClientType.SERVICE -> {
                 val name = this.jsonData.getString("name") ?: return contentException("name")
-                val cloudService = CloudAPI.instance.getCloudServiceManger().getCloudServiceByName(name)
+                val cloudService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(name)
                         ?: return failure(NoSuchElementException("Service not found"))
                 connection.setClientValue(cloudService)
                 cloudService.setAuthenticated(true)
-                CloudAPI.instance.getCloudServiceManger().updateCloudService(cloudService)
+                CloudAPI.instance.getCloudServiceManager().updateCloudService(cloudService)
                 connection.sendUnitQuery(PacketIOUpdateCloudService(cloudService)).awaitUninterruptibly()
                 Launcher.instance.consoleSender.sendMessage("manager.login.service", "Service %SERVICE%", cloudService.getName(), " logged in.")
             }

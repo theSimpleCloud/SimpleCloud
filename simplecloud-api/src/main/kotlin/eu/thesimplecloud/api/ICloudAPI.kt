@@ -28,7 +28,7 @@ interface ICloudAPI {
     /**
      * Returns the [ICloudServiceManager] to manage services
      */
-    fun getCloudServiceManger(): ICloudServiceManager
+    fun getCloudServiceManager(): ICloudServiceManager
 
     /**
      * Returns the [ICloudPlayerManager] to manage players

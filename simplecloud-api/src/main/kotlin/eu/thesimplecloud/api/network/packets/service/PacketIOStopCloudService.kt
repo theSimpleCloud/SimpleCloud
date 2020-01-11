@@ -13,7 +13,7 @@ class PacketIOStopCloudService() : ObjectPacket<String>() {
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Unit> {
         val name = this.value ?: return contentException("value")
-        val cloudService = CloudAPI.instance.getCloudServiceManger().getCloudServiceByName(name) ?: return failure(NoSuchElementException("Serve"))
+        val cloudService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(name) ?: return failure(NoSuchElementException("Serve"))
         cloudService.shutdown()
         return unit()
     }

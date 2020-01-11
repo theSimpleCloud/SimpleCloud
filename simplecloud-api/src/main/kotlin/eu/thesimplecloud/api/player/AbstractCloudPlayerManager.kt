@@ -30,7 +30,7 @@ abstract class AbstractCloudPlayerManager : ICloudPlayerManager {
         CloudAPI.instance.getEventManager().call(CloudPlayerUpdatedEvent(cachedCloudPlayer))
 
         if (cachedCloudPlayer.getConnectedServerName() != null && cachedCloudPlayer.getConnectedServerName() != oldServerName) {
-            val oldServer = oldServerName?.let { CloudAPI.instance.getCloudServiceManger().getCloudServiceByName(it) }
+            val oldServer = oldServerName?.let { CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(it) }
             CloudAPI.instance.getEventManager().call(CloudPlayerChangedServerEvent(cachedCloudPlayer, oldServer, cachedCloudPlayer.getConnectedServer()!!))
         }
     }

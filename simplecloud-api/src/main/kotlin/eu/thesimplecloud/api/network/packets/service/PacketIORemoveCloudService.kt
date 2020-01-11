@@ -13,7 +13,7 @@ class PacketIORemoveCloudService() : JsonPacket() {
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Unit> {
         val serviceName = this.jsonData.getString("serviceName") ?: return contentException("serviceName")
-        CloudAPI.instance.getCloudServiceManger().removeCloudService(serviceName)
+        CloudAPI.instance.getCloudServiceManager().removeCloudService(serviceName)
         return unit()
     }
 }

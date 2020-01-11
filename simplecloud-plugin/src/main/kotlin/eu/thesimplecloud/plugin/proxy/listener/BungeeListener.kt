@@ -5,8 +5,6 @@ import eu.thesimplecloud.api.event.player.CloudPlayerDisconnectEvent
 import eu.thesimplecloud.api.event.player.CloudPlayerLoginEvent
 import eu.thesimplecloud.api.network.packets.player.PacketIORemoveCloudPlayer
 import eu.thesimplecloud.api.network.packets.player.PacketIOUpdateCloudPlayer
-import eu.thesimplecloud.api.network.packets.service.PacketIOUpdateCloudService
-import eu.thesimplecloud.api.parser.string.typeparser.CloudLobbyGroupParser
 import eu.thesimplecloud.api.player.CloudPlayer
 import eu.thesimplecloud.api.player.connection.DefaultPlayerAddress
 import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
@@ -19,7 +17,6 @@ import eu.thesimplecloud.plugin.network.packets.PacketOutPlayerLoginRequest
 import eu.thesimplecloud.plugin.proxy.CloudProxyPlugin
 import eu.thesimplecloud.plugin.proxy.text.CloudTextBuilder
 import eu.thesimplecloud.plugin.startup.CloudPlugin
-import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.event.*
 import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.event.EventHandler
@@ -90,7 +87,7 @@ class BungeeListener : Listener {
     fun on(event: ServerConnectEvent) {
         val proxiedPlayer = event.player
         val target = event.target
-        val cloudService = CloudAPI.instance.getCloudServiceManger().getCloudServiceByName(target.name)
+        val cloudService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(target.name)
         if (cloudService == null){
             proxiedPlayer.sendMessage(CloudTextBuilder().build(CloudText("§cServer is not registered in the cloud.")))
             event.isCancelled = true
@@ -112,7 +109,7 @@ class BungeeListener : Listener {
     @EventHandler
     fun on(event: ServerConnectedEvent) {
         val proxiedPlayer = event.player
-        val service = CloudAPI.instance.getCloudServiceManger().getCloudServiceByName(event.server.info.name)
+        val service = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(event.server.info.name)
         if (service == null){
             proxiedPlayer.disconnect(CloudTextBuilder().build(CloudText("§cService does not exist.")))
             return
@@ -129,7 +126,7 @@ class BungeeListener : Listener {
 
     @EventHandler
     fun on(event: ServerDisconnectEvent) {
-        val service = CloudAPI.instance.getCloudServiceManger().getCloudServiceByName(event.target.name) ?: return
+        val service = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(event.target.name) ?: return
         service.setOnlinePlayers(service.getOnlinePlayers() - 1)
         service.update()
     }
@@ -137,7 +134,7 @@ class BungeeListener : Listener {
     @EventHandler
     fun on(event: ServerKickEvent) {
         if (event.kickReasonComponent.isNotEmpty() && event.kickReasonComponent[0].toLegacyText().contains("Outdated server") || event.kickReasonComponent[0].toLegacyText().contains("Outdated client")) {
-            val cloudService = CloudAPI.instance.getCloudServiceManger().getCloudServiceByName(event.kickedFrom.name)
+            val cloudService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(event.kickedFrom.name)
             if (cloudService == null || cloudService.isLobby()) {
                 event.player.disconnect(CloudTextBuilder().build(CloudText("§cYou are using an unsupported version.")))
                 return

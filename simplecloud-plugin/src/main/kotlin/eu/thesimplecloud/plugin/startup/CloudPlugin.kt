@@ -11,7 +11,6 @@ import eu.thesimplecloud.api.external.ICloudModule
 import eu.thesimplecloud.api.network.packets.service.PacketIOUpdateCloudService
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
-import eu.thesimplecloud.clientserverapi.lib.debug.DebugMessage
 import eu.thesimplecloud.plugin.ICloudServicePlugin
 import eu.thesimplecloud.plugin.impl.CloudAPIImpl
 import java.io.File
@@ -78,11 +77,11 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin, val classLoader: 
 
     @Synchronized
     fun thisService(): ICloudService {
-        if (this.thisService == null) this.thisService = CloudAPI.instance.getCloudServiceManger().getCloudServiceByName(thisServiceName)
+        if (this.thisService == null) this.thisService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(thisServiceName)
         while (this.thisService == null || !this.thisService!!.isAuthenticated()) {
             Thread.sleep(10)
             if (this.thisService == null)
-                this.thisService = CloudAPI.instance.getCloudServiceManger().getCloudServiceByName(thisServiceName)
+                this.thisService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(thisServiceName)
         }
         return this.thisService!!
     }
@@ -90,7 +89,6 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin, val classLoader: 
     override fun onEnable() {
         if (this.updateState && thisService().getState() == ServiceState.STARTING) {
             thisService().setState(ServiceState.VISIBLE)
-            println("updating " + thisService.toString())
             updateThisService()
         }
     }

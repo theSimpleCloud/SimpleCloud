@@ -21,7 +21,6 @@ import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceType
 import eu.thesimplecloud.clientserverapi.lib.promise.flatten
-import java.lang.IllegalStateException
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
@@ -164,7 +163,7 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
     }
 
     private fun getCloudClientByServiceName(serviceName: String): IConnectedClient<*>? {
-        val cloudService = CloudAPI.instance.getCloudServiceManger().getCloudServiceByName(serviceName)
+        val cloudService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(serviceName)
         return cloudService?.let { Manager.instance.communicationServer.getClientManager().getClientByClientValue(it) }
     }
 

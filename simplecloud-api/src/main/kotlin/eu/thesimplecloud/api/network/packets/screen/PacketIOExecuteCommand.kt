@@ -22,7 +22,7 @@ class PacketIOExecuteCommand() : JsonPacket() {
                 CloudAPI.instance.getWrapperManager().getWrapperByName(serviceName)
             }
             CloudClientType.SERVICE -> {
-                CloudAPI.instance.getCloudServiceManger().getCloudServiceByName(serviceName)
+                CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(serviceName)
             }
         }
         commandExecutable?.executeCommand(command)

@@ -1,8 +1,6 @@
 package eu.thesimplecloud.api.player
 
-import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
-import eu.thesimplecloud.clientserverapi.lib.promise.flatten
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.exception.*
 import eu.thesimplecloud.api.location.ServiceLocation
@@ -10,8 +8,6 @@ import eu.thesimplecloud.api.location.SimpleLocation
 import eu.thesimplecloud.api.player.connection.IPlayerConnection
 import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.api.service.ICloudService
-import io.netty.util.concurrent.GlobalEventExecutor
-import java.util.concurrent.TimeUnit
 
 interface ICloudPlayer : IOfflineCloudPlayer {
 
@@ -75,12 +71,12 @@ interface ICloudPlayer : IOfflineCloudPlayer {
     /**
      * Returns the proxy this player is connected to.
      */
-    fun getConnectedProxy(): ICloudService? = CloudAPI.instance.getCloudServiceManger().getCloudServiceByName(getConnectedProxyName())
+    fun getConnectedProxy(): ICloudService? = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(getConnectedProxyName())
 
     /**
      * Returns the server this player is connected to.
      */
-    fun getConnectedServer(): ICloudService? = getConnectedServerName()?.let { CloudAPI.instance.getCloudServiceManger().getCloudServiceByName(it) }
+    fun getConnectedServer(): ICloudService? = getConnectedServerName()?.let { CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(it) }
 
     /**
      * Tells the manager that this client wants to receive updates of this player.

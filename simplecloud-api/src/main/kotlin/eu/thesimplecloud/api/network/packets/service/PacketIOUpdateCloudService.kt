@@ -15,7 +15,7 @@ class PacketIOUpdateCloudService() : ObjectPacket<ICloudService>() {
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Unit> {
         val value = this.value ?: return contentException("value")
-        CloudAPI.instance.getCloudServiceManger().updateCloudService(value, fromPacket = true)
+        CloudAPI.instance.getCloudServiceManager().updateCloudService(value, fromPacket = true)
         return unit()
     }
 

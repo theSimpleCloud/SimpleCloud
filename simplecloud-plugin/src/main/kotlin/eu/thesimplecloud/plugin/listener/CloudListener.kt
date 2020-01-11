@@ -1,6 +1,8 @@
 package eu.thesimplecloud.plugin.listener
 
+import eu.thesimplecloud.api.event.player.CloudPlayerChangedServerEvent
 import eu.thesimplecloud.api.event.player.CloudPlayerLoginEvent
+import eu.thesimplecloud.api.event.player.CloudPlayerUnregisteredEvent
 import eu.thesimplecloud.api.eventapi.CloudEventHandler
 import eu.thesimplecloud.api.eventapi.IListener
 import eu.thesimplecloud.api.event.service.CloudServiceRegisteredEvent

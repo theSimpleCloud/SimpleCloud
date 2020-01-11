@@ -41,7 +41,7 @@ class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
     }
 
     override fun deleteServiceGroup(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<Unit> {
-        if (CloudAPI.instance.getCloudServiceManger().getCloudServicesByGroupName(cloudServiceGroup.getName()).isNotEmpty())
+        if (CloudAPI.instance.getCloudServiceManager().getCloudServicesByGroupName(cloudServiceGroup.getName()).isNotEmpty())
             return CommunicationPromise.failed(IllegalStateException("Cannot delete service group while services of this group are registered."))
         this.removeGroup(cloudServiceGroup)
         Manager.instance.communicationServer.getClientManager().sendPacketToAllAuthenticatedClients(PacketIORemoveCloudServiceGroup(cloudServiceGroup.getName()))

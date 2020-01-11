@@ -17,7 +17,7 @@ interface IPacketRegistry {
     /**
      * Registers all Packets in the specified [packages]
      */
-    fun registerPacketPackage(cloudModule: ICloudModule, vararg packages: String) {
+    fun registerPacketsByPackage(cloudModule: ICloudModule, vararg packages: String) {
         for (packageName in packages) {
             val reflections = Reflections(packageName)
             val allClasses = reflections.getSubTypesOf(IPacket::class.java)

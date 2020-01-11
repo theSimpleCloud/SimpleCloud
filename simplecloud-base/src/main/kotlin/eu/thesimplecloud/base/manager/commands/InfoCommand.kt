@@ -23,7 +23,7 @@ class InfoCommand : ICommandHandler {
 
     @CommandSubPath("service <name>", "Prints some information about the specified service")
     fun service(commandSender: ICommandSender, @CommandArgument("name") name: String) {
-        val service = CloudAPI.instance.getCloudServiceManger().getCloudServiceByName(name)
+        val service = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(name)
         if (service == null) {
             commandSender.sendMessage("manager.command.info.service.not-exist", "The specified service does not exist.")
             return

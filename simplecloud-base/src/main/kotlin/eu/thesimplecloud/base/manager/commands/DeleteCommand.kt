@@ -25,7 +25,7 @@ class DeleteCommand : ICommandHandler {
             Launcher.instance.consoleSender.sendMessage("manager.command.delete.template.in-use.group", "Template %NAME%", name, " is in use by registered service groups. Delete them first.")
             return
         }
-        if (CloudAPI.instance.getCloudServiceManger().getAllCloudServices().any { it.getTemplateName().equals(name, true) }) {
+        if (CloudAPI.instance.getCloudServiceManager().getAllCloudServices().any { it.getTemplateName().equals(name, true) }) {
             Launcher.instance.consoleSender.sendMessage("manager.command.delete.template.in-use.service", "Template %NAME%", name, " is in use by registered services. Stop them first.")
             return
         }

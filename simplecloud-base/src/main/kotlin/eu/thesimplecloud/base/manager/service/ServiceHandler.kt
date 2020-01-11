@@ -25,7 +25,7 @@ class ServiceHandler : IServiceHandler {
         for (i in 0 until count) {
             val service = DefaultCloudService(cloudServiceGroup.getName(), getNumberForNewService(cloudServiceGroup), UUID.randomUUID(), cloudServiceGroup.getTemplateName(), cloudServiceGroup.getWrapperName()
                     ?: "", -1, cloudServiceGroup.getMaxMemory(), "Cloud service")
-            CloudAPI.instance.getCloudServiceManger().updateCloudService(service)
+            CloudAPI.instance.getCloudServiceManager().updateCloudService(service)
             list.add(service)
             addServiceToQueue(service)
         }
@@ -42,7 +42,7 @@ class ServiceHandler : IServiceHandler {
 
     private fun getNumberForNewService(cloudServiceGroup: ICloudServiceGroup): Int {
         var number = 1
-        while (CloudAPI.instance.getCloudServiceManger().getCloudServiceByName(cloudServiceGroup.getName() + "-" + number) != null)
+        while (CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(cloudServiceGroup.getName() + "-" + number) != null)
             number++
         return number
     }
@@ -72,7 +72,7 @@ class ServiceHandler : IServiceHandler {
                     if (wrapperClient != null) {
                         service as DefaultCloudService
                         service.setWrapperName(wrapperInfo.getName())
-                        CloudAPI.instance.getCloudServiceManger().updateCloudService(service)
+                        CloudAPI.instance.getCloudServiceManager().updateCloudService(service)
                         wrapperClient.sendUnitQuery(PacketIOUpdateCloudService(service)).syncUninterruptibly()
                         wrapperClient.sendUnitQuery(PacketIOWrapperStartService(service.getName())).syncUninterruptibly()
                         Launcher.instance.consoleSender.sendMessage("manager.service.start", "Told Wrapper %WRAPPER%", wrapperInfo.getName(), " to start service %SERVICE%", service.getName())

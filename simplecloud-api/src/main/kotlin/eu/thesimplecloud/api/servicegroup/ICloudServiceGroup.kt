@@ -120,7 +120,7 @@ interface ICloudServiceGroup {
     /**
      * Returns a list of all registered services by this group
      */
-    fun getAllServices(): List<ICloudService> = CloudAPI.instance.getCloudServiceManger().getCloudServicesByGroupName(getName())
+    fun getAllServices(): List<ICloudService> = CloudAPI.instance.getCloudServiceManager().getCloudServicesByGroupName(getName())
 
     /**
      * Stops all services by this group.

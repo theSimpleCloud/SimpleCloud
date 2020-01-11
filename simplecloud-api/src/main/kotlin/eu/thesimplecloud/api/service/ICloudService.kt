@@ -188,12 +188,12 @@ interface ICloudService : IAuthenticatable, IBootstrap, ICommandExecutable {
     /**
      * Updates this service to the network
      */
-    fun update() = CloudAPI.instance.getCloudServiceManger().updateCloudService(this)
+    fun update() = CloudAPI.instance.getCloudServiceManager().updateCloudService(this)
 
     override fun isActive(): Boolean = getState() != ServiceState.PREPARED && getState() != ServiceState.CLOSED
 
-    override fun start() = CloudAPI.instance.getCloudServiceManger().startService(this)
+    override fun start() = CloudAPI.instance.getCloudServiceManager().startService(this)
 
-    override fun shutdown() = CloudAPI.instance.getCloudServiceManger().stopService(this)
+    override fun shutdown() = CloudAPI.instance.getCloudServiceManager().stopService(this)
 
 }

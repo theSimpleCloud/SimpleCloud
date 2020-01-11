@@ -5,6 +5,7 @@ import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.plugin.extension.getCloudPlayer
 import eu.thesimplecloud.plugin.listener.CloudListener
 import eu.thesimplecloud.plugin.proxy.CloudProxyPlugin
+import eu.thesimplecloud.plugin.server.listener.SpigotListener
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
@@ -31,6 +32,7 @@ class CloudSpigotPlugin : JavaPlugin(), ICloudServerPlugin {
     override fun onEnable() {
         CloudPlugin.instance.onEnable()
         CloudAPI.instance.getEventManager().registerListener(CloudPlugin.instance, CloudListener())
+        server.pluginManager.registerEvents(SpigotListener(), this)
     }
 
     override fun onDisable() {

@@ -30,7 +30,7 @@ class ServiceLocation(
     /**
      * Returns the service this location is belongs to.
      */
-    fun getService() = CloudAPI.instance.getCloudServiceManger().getCloudServiceByName(serviceName)
+    fun getService() = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(serviceName)
 
     override fun add(x: Double, y: Double, z: Double): ServiceLocation {
         return ServiceLocation(this.serviceName, this.worldName, this.x + x, this.y + y, this.z + z, this.yaw, this.pitch)

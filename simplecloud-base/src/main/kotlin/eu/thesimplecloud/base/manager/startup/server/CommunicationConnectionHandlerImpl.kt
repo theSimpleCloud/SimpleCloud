@@ -26,12 +26,6 @@ class CommunicationConnectionHandlerImpl : IConnectionHandler {
         connection as IConnectedClient<ICommandExecutable>
         val clientValue = connection.getClientValue()
         clientValue ?: return
-        val activeScreen = Launcher.instance.screenManager.getActiveScreen()
-        activeScreen?.let {
-            if (activeScreen.getName().equals(clientValue.getName(), true)) {
-                Launcher.instance.screenManager.leaveActiveScreen()
-            }
-        }
         clientValue as IAuthenticatable
         clientValue.setAuthenticated(false)
 
@@ -42,7 +36,7 @@ class CommunicationConnectionHandlerImpl : IConnectionHandler {
         }
 
         if (clientValue is ICloudService)
-            CloudAPI.instance.getCloudServiceManger().updateCloudService(clientValue)
+            CloudAPI.instance.getCloudServiceManager().updateCloudService(clientValue)
     }
 
     override fun onFailure(connection: IConnection, ex: Throwable) {

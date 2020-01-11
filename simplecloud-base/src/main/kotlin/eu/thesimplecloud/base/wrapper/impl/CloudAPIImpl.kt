@@ -18,7 +18,7 @@ class CloudAPIImpl : CloudAPI() {
 
     override fun getCloudServiceGroupManager(): ICloudServiceGroupManager = this.cloudServiceGroupManager
 
-    override fun getCloudServiceManger(): ICloudServiceManager = this.cloudServiceManager
+    override fun getCloudServiceManager(): ICloudServiceManager = this.cloudServiceManager
 
     override fun getCloudPlayerManager(): ICloudPlayerManager = this.cloudPlayerManager
 

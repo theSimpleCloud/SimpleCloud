@@ -59,7 +59,7 @@ class CloudProxyPlugin : Plugin(), ICloudProxyPlugin {
         for (info in ProxyServer.getInstance().configurationAdapter.listeners) {
             info.serverPriority.clear()
         }
-        CloudAPI.instance.getCloudServiceManger().getAllCloudServices().forEach { addServiceToProxy(it) }
+        CloudAPI.instance.getCloudServiceManager().getAllCloudServices().forEach { addServiceToProxy(it) }
         CloudPlugin.instance.onEnable()
         CloudAPI.instance.getEventManager().registerListener(CloudPlugin.instance, CloudListener())
         ProxyServer.getInstance().pluginManager.registerListener(this, BungeeListener())

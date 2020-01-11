@@ -2,7 +2,7 @@ package eu.thesimplecloud.launcher.exception
 
 import java.lang.Exception
 
-class CloudModuleLoadException(message: String, ex: Exception?) : Exception(message, ex) {
+class CloudModuleException(message: String, ex: Exception?) : Exception(message, ex) {
 
     constructor(message: String) : this(message, null)
 

@@ -25,6 +25,8 @@ import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.screen.ICommandExecutable
+import eu.thesimplecloud.base.manager.external.CloudModuleHandler
+import eu.thesimplecloud.base.manager.external.ICloudModuleHandler
 import eu.thesimplecloud.base.manager.packet.IPacketRegistry
 import eu.thesimplecloud.base.manager.packet.PacketRegistry
 import kotlinx.coroutines.GlobalScope
@@ -49,6 +51,7 @@ class Manager : ICloudApplication {
     val communicationServer: INettyServer<ICommandExecutable>
     val templateServer: INettyServer<ICommandExecutable>
     val packetRegistry: IPacketRegistry = PacketRegistry()
+    val cloudModuleHandler: ICloudModuleHandler = CloudModuleHandler()
 
     companion object {
         @JvmStatic
@@ -75,6 +78,7 @@ class Manager : ICloudApplication {
         this.communicationServer.addPacketsByPackage("eu.thesimplecloud.base.manager.network.packets")
         this.templateServer.addPacketsByPackage("eu.thesimplecloud.base.manager.network.packets.template")
         createDirectories()
+        thread(start = true, isDaemon = false) { (this.cloudModuleHandler as CloudModuleHandler).loadModules() }
         Launcher.instance.logger.console("Waiting for MongoDB...")
         this.mongoController?.startedPromise?.awaitUninterruptibly()
         mongoClient = connectToMongo(mongoConfig.mongoServerInformation)
@@ -151,6 +155,7 @@ class Manager : ICloudApplication {
     }
 
     override fun onDisable() {
+        (this.cloudModuleHandler as CloudModuleHandler).unregisterAllModules()
         this.mongoClient.close()
         this.mongoController?.stop()?.awaitUninterruptibly()
     }

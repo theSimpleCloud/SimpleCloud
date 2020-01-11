@@ -39,7 +39,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
             this.cloudService.setPort(Wrapper.instance.portManager.getUnusedPort())
         }
         this.cloudService.setState(ServiceState.STARTING)
-        CloudAPI.instance.getCloudServiceManger().updateCloudService(this.cloudService)
+        CloudAPI.instance.getCloudServiceManager().updateCloudService(this.cloudService)
         Wrapper.instance.communicationClient.sendUnitQuery(PacketIOUpdateCloudService(this.cloudService))
 
 
@@ -81,7 +81,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
         this.cloudService.setState(ServiceState.CLOSED)
         if (Wrapper.instance.communicationClient.isOpen()) {
             Wrapper.instance.communicationClient.sendUnitQuery(PacketIOUpdateCloudService(this.cloudService)).awaitUninterruptibly()
-            CloudAPI.instance.getCloudServiceManger().removeCloudService(this.cloudService.getName())
+            CloudAPI.instance.getCloudServiceManager().removeCloudService(this.cloudService.getName())
             Wrapper.instance.communicationClient.sendUnitQuery(PacketIORemoveCloudService(this.cloudService.getName()))
             Wrapper.instance.updateUsedMemory()
         }
