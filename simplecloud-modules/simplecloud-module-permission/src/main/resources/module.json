@@ -1,0 +1,8 @@
+{
+  "name": "SimpleCloud-Permission",
+  "author": "Wetterbericht",
+  "mainClass": "eu.thesimplecloud.module.permission.manager.PermissionModule",
+  "moduleCopyType": "ALL",
+  "repositories": [],
+  "dependencies": []
+}

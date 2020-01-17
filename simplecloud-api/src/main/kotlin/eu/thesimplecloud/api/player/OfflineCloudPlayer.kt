@@ -8,9 +8,10 @@ open class OfflineCloudPlayer(
         private val uniqueId: UUID,
         private val firstLogin: Long,
         private val lastLogin: Long,
-        private val onlineTime: Long
+        private val onlineTime: Long,
+        val properties: MutableMap<String, String> = HashMap()
 ) : IOfflineCloudPlayer {
-    val properties = HashMap<String, String>()
+
 
     override fun getName(): String = this.name
 

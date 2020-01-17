@@ -13,6 +13,7 @@ import org.apache.maven.model.io.xpp3.MavenXpp3Reader
 import java.io.ByteArrayInputStream
 import java.io.FileNotFoundException
 import java.io.IOException
+import java.util.concurrent.CopyOnWriteArraySet
 
 
 class DependencyLoader : IDependencyLoader {
@@ -22,11 +23,13 @@ class DependencyLoader : IDependencyLoader {
         val INSTANCE = DependencyLoader()
     }
 
-    private val repositories = HashSet<String>()
+    private val repositories = CopyOnWriteArraySet<String>()
 
-    private val dependencies = HashSet<Dependency>()
+    private val dependencies = CopyOnWriteArraySet<Dependency>()
 
-    private val loadedDependencyList = ArrayList<Dependency>()
+    private val webSearchedDependencies = CopyOnWriteArraySet<Dependency>()
+
+    private val loadedDependencies = CopyOnWriteArraySet<Dependency>()
 
     override fun addRepositories(vararg repositories: String) {
         this.repositories.addAll(repositories)
@@ -154,13 +157,13 @@ class DependencyLoader : IDependencyLoader {
     }
 
     private fun appendSubDependenciesOfDependency(dependency: Dependency, dependencyList: MutableList<Dependency>, useWeb: Boolean) {
-        if (useWeb && this.loadedDependencyList.contains(dependency)) return
+        if (useWeb && this.webSearchedDependencies.contains(dependency)) return
         if (useWeb) {
             if (isLoggerAvailable())
                 Launcher.instance.logger.console("Searching dependencies of ${dependency.artifactId}-${dependency.version}")
             else
                 println("Searching dependencies of ${dependency.artifactId}-${dependency.version}")
-            loadedDependencyList.add(dependency)
+            webSearchedDependencies.add(dependency)
         }
         for (repoURL in repositories) {
             val pomContent = if (useWeb) dependency.getPomContent(repoURL) else {
@@ -246,6 +249,7 @@ class DependencyLoader : IDependencyLoader {
         }
         if (!dependency.getDownloadedFile().exists()) throw FileNotFoundException("Failed to download dependency ${dependency.artifactId}-${dependency.version}")
         ResourceFinder.addToClassLoader(dependency.getDownloadedFile())
+        this.loadedDependencies.add(dependency)
     }
 
     private fun downloadDependency(dependency: Dependency) {
@@ -265,5 +269,9 @@ class DependencyLoader : IDependencyLoader {
             else
                 println("Downloaded dependency ${dependency.artifactId}-${dependency.version}.jar")
         }
+    }
+
+    fun getLoadedDependencies(): Collection<Dependency> {
+        return this.loadedDependencies
     }
 }

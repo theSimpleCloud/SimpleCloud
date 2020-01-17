@@ -4,4 +4,7 @@ include 'simplecloud-client'
 include 'simplecloud-launcher'
 include 'simplecloud-plugin'
 include 'simplecloud-base'
+include 'simplecloud-modules'
+include 'simplecloud-modules:simplecloud-module-permission'
+findProject(':simplecloud-modules:simplecloud-module-permission')?.name = 'simplecloud-module-permission'
 

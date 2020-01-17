@@ -1,0 +1,7 @@
+name: SimpleCloud-Permission
+version: 1.0
+author: Wetterbericht
+
+main: eu.thesimplecloud.module.permission.service.SpigotPluginMain
+
+commands:

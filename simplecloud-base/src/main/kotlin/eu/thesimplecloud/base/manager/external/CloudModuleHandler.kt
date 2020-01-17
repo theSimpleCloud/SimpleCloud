@@ -35,7 +35,8 @@ class CloudModuleHandler : ICloudModuleHandler {
     override fun getModuleDataByCloudModule(cloudModule: ICloudModule): CloudModuleData? = this.loadedModules.firstOrNull { it.cloudModule == cloudModule }
 
     override fun unloadModule(cloudModule: ICloudModule) {
-        val cloudModuleData = getModuleDataByCloudModule(cloudModule) ?: throw IllegalStateException("Cannot unload unloaded module")
+        val cloudModuleData = getModuleDataByCloudModule(cloudModule)
+                ?: throw IllegalStateException("Cannot unload unloaded module")
         try {
             cloudModule.onDisable()
         } catch (ex: Exception) {
@@ -48,6 +49,7 @@ class CloudModuleHandler : ICloudModuleHandler {
         ResourceFinder.removeFromClassLoader(cloudModuleData.file)
 
         this.loadedModules.remove(cloudModuleData)
+        Launcher.instance.consoleSender.sendMessage("manager.module.unload", "Unloaded module %NAME%", cloudModuleData.cloudModuleFileContent.name, " by %AUTHOR%", cloudModuleData.cloudModuleFileContent.author)
     }
 
     override fun loadModule(file: File) {
@@ -58,6 +60,7 @@ class CloudModuleHandler : ICloudModuleHandler {
             return
         }
         this.loadedModules.add(cloudModuleData)
+        Launcher.instance.consoleSender.sendMessage("manager.module.loaded", "Loaded module %NAME%", cloudModuleData.cloudModuleFileContent.name, " by %AUTHOR%", cloudModuleData.cloudModuleFileContent.author)
     }
 
     override fun getLoadedModules(): List<CloudModuleData> = this.loadedModules

@@ -14,6 +14,7 @@ import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.service.impl.DefaultCloudService
 import eu.thesimplecloud.api.servicegroup.grouptype.ICloudProxyGroup
 import eu.thesimplecloud.api.utils.ManifestLoader
+import eu.thesimplecloud.launcher.dependency.DependencyLoader
 import org.apache.commons.io.FileUtils
 import java.io.BufferedReader
 import java.io.File
@@ -100,8 +101,9 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
     private fun createProcessBuilder(jarFile: File): ProcessBuilder {
         val launcherJarPath = File(Launcher::class.java.protectionDomain.codeSource.location.toURI()).path
         val baseJarPath = File(this::class.java.protectionDomain.codeSource.location.toURI()).path
-        val dependenciesDir = File("dependencies").absolutePath + "/*"
-        val classPathValueList = listOf(jarFile.absolutePath, launcherJarPath, baseJarPath, dependenciesDir)
+        println("dependencies: " + DependencyLoader.INSTANCE.getLoadedDependencies())
+        val allDependencyPaths = DependencyLoader.INSTANCE.getLoadedDependencies().map { it.getDownloadedFile().absolutePath }
+        val classPathValueList = listOf(jarFile.absolutePath, launcherJarPath, baseJarPath).union(allDependencyPaths)
         val separator = if (CloudAPI.instance.isWindows()) ";" else ":"
         val beginAndEnd = if(CloudAPI.instance.isWindows()) "\"" else ""
         val classPathValue = beginAndEnd + classPathValueList.joinToString(separator) + beginAndEnd

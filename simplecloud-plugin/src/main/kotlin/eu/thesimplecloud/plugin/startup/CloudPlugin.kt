@@ -12,6 +12,8 @@ import eu.thesimplecloud.api.network.packets.service.PacketIOUpdateCloudService
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.plugin.ICloudServicePlugin
+import eu.thesimplecloud.plugin.extension.syncBukkit
+import eu.thesimplecloud.plugin.extension.syncService
 import eu.thesimplecloud.plugin.impl.CloudAPIImpl
 import java.io.File
 import java.net.URLClassLoader
@@ -32,7 +34,8 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin, val classLoader: 
         private set
     lateinit var thisServiceName: String
         private set
-    private val nettyThread: Thread
+    private lateinit var nettyThread: Thread
+    lateinit var pluginsClassLoader: ClassLoader
 
     init {
         println("<---------- Starting SimpleCloud-Plugin ---------->")
@@ -41,15 +44,8 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin, val classLoader: 
         if (!loadConfig())
             cloudServicePlugin.shutdown()
         println("<---------- Service-Name: $thisServiceName ---------->")
+        println(Class.forName("eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket"))
 
-        this.communicationClient.addPacketsByPackage("eu.thesimplecloud.plugin.network.packets")
-        this.communicationClient.addPacketsByPackage("eu.thesimplecloud.client.packets")
-        this.communicationClient.addPacketsByPackage("eu.thesimplecloud.api.network.packets")
-        this.communicationClient.addClassLoader(ResourceFinder.getSystemClassLoader(), this.classLoader)
-        this.communicationClient.addClassLoader(ResourceFinder.getSystemClassLoader(), this.classLoader)
-        nettyThread = thread {
-            this.communicationClient.start()
-        }
         Runtime.getRuntime().addShutdownHook(Thread {
             try {
                 this.communicationClient.shutdown()
@@ -87,6 +83,14 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin, val classLoader: 
     }
 
     override fun onEnable() {
+        pluginsClassLoader = this::class.java.classLoader
+        this.communicationClient.addPacketsByPackage("eu.thesimplecloud.plugin.network.packets")
+        this.communicationClient.addPacketsByPackage("eu.thesimplecloud.client.packets")
+        this.communicationClient.addPacketsByPackage("eu.thesimplecloud.api.network.packets")
+        this.communicationClient.addClassLoader(this::class.java.classLoader)
+        nettyThread = thread {
+            this.communicationClient.start()
+        }
         if (this.updateState && thisService().getState() == ServiceState.STARTING) {
             thisService().setState(ServiceState.VISIBLE)
             updateThisService()

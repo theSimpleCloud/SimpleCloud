@@ -23,17 +23,19 @@ dependencies {
     }
     implementation group: 'io.netty', name: 'netty-all', version: '4.1.1.Final'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    implementation (project(":simplecloud-api")) {
+    implementation(project(":simplecloud-api")) {
         exclude group: 'io.netty'
         exclude group: 'org.jetbrains.kotlin'
     }
-    implementation( project(":simplecloud-client")) {
+    implementation(project(":simplecloud-client")) {
         exclude group: 'org.jetbrains.kotlin'
         exclude group: 'eu.thesimplecloud.clientserverapi'
         exclude module: 'simplecloud-api'
     }
-    implementation 'org.spigotmc:spigot-api:1.15.1-R0.1-SNAPSHOT' // The full Spigot server with no shadowing. Requires mavenLocal.
-    implementation 'net.md-5:bungeecord-api:1.12-SNAPSHOT' // The full Spigot server with no shadowing. Requires mavenLocal.
+    implementation 'org.spigotmc:spigot-api:1.15.1-R0.1-SNAPSHOT'
+    // The full Spigot server with no shadowing. Requires mavenLocal.
+    implementation 'net.md-5:bungeecord-api:1.12-SNAPSHOT'
+    // The full Spigot server with no shadowing. Requires mavenLocal.
     // https://mvnrepository.com/artifact/org.reflections/reflections
 
 }
