@@ -44,6 +44,38 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
             cloudServicePlugin.shutdown()
         println("<---------- Service-Name: $thisServiceName ---------->")
 
+        pluginsClassLoader = this::class.java.classLoader
+        this.communicationClient.addPacketsByPackage("eu.thesimplecloud.plugin.network.packets")
+        this.communicationClient.addPacketsByPackage("eu.thesimplecloud.client.packets")
+        this.communicationClient.addPacketsByPackage("eu.thesimplecloud.api.network.packets")
+        this.communicationClient.addClassLoader(this::class.java.classLoader)
+
+        nettyThread = thread(true, isDaemon = false, contextClassLoader = this::class.java.classLoader) {
+            this.communicationClient.start()
+            /*
+            this.communicationClient.getPacketIdsSyncPromise().thenAccept {
+                val castedClient = this.communicationClient as NettyClient
+                val idFromPacket = castedClient.packetManager.getIdFromPacket(PacketIOUpdateCloudService::class.java)
+                println("found id: $idFromPacket")
+                val packetClassById = castedClient.packetManager.getPacketClassById(idFromPacket!!)!!
+                println("before check: ${PacketIOUpdateCloudService::class.java.classLoader == this.pluginsClassLoader}")
+                println("classloader of found packet equal to plugins class loader: ${packetClassById.classLoader == this.pluginsClassLoader}")
+                println("classloader still equal: ${this::class.java.classLoader == this.pluginsClassLoader}")
+                //val loadedClass = Class.forName(PacketIOUpdateCloudService::class.java.name, true, this.pluginsClassLoader)
+                val reloadedClass = this.pluginsClassLoader.loadClass(PacketIOUpdateCloudService::class.java.name)
+                println("reloaded class classloader: ${this.pluginsClassLoader == reloadedClass.classLoader}")
+                println("is system classloader: ${ResourceFinder.getSystemClassLoader() == PacketIOUpdateCloudService::class.java.classLoader}")
+                val classLoader = this::class.java.classLoader as URLClassLoader
+
+                val method = classLoader.javaClass.getDeclaredMethod("defineClass", String::class.java, Resource::class.java)
+                method.invoke(classLoader, )
+                classLoader.urLs.forEach { url ->
+                    ResourceFinder.addToClassLoader(url, ResourceFinder.getSystemClassLoader())
+                }
+            }
+             */
+        }
+
         Runtime.getRuntime().addShutdownHook(Thread {
             try {
                 this.communicationClient.shutdown()
@@ -81,37 +113,6 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
     }
 
     override fun onEnable() {
-        pluginsClassLoader = this::class.java.classLoader
-        this.communicationClient.addPacketsByPackage("eu.thesimplecloud.plugin.network.packets")
-        this.communicationClient.addPacketsByPackage("eu.thesimplecloud.client.packets")
-        this.communicationClient.addPacketsByPackage("eu.thesimplecloud.api.network.packets")
-        this.communicationClient.addClassLoader(this::class.java.classLoader)
-
-        nettyThread = thread(true, isDaemon = false, contextClassLoader = this::class.java.classLoader) {
-            this.communicationClient.start()
-            /*
-            this.communicationClient.getPacketIdsSyncPromise().thenAccept {
-                val castedClient = this.communicationClient as NettyClient
-                val idFromPacket = castedClient.packetManager.getIdFromPacket(PacketIOUpdateCloudService::class.java)
-                println("found id: $idFromPacket")
-                val packetClassById = castedClient.packetManager.getPacketClassById(idFromPacket!!)!!
-                println("before check: ${PacketIOUpdateCloudService::class.java.classLoader == this.pluginsClassLoader}")
-                println("classloader of found packet equal to plugins class loader: ${packetClassById.classLoader == this.pluginsClassLoader}")
-                println("classloader still equal: ${this::class.java.classLoader == this.pluginsClassLoader}")
-                //val loadedClass = Class.forName(PacketIOUpdateCloudService::class.java.name, true, this.pluginsClassLoader)
-                val reloadedClass = this.pluginsClassLoader.loadClass(PacketIOUpdateCloudService::class.java.name)
-                println("reloaded class classloader: ${this.pluginsClassLoader == reloadedClass.classLoader}")
-                println("is system classloader: ${ResourceFinder.getSystemClassLoader() == PacketIOUpdateCloudService::class.java.classLoader}")
-                val classLoader = this::class.java.classLoader as URLClassLoader
-
-                val method = classLoader.javaClass.getDeclaredMethod("defineClass", String::class.java, Resource::class.java)
-                method.invoke(classLoader, )
-                classLoader.urLs.forEach { url ->
-                    ResourceFinder.addToClassLoader(url, ResourceFinder.getSystemClassLoader())
-                }
-            }
-             */
-        }
         if (this.updateState && thisService().getState() == ServiceState.STARTING) {
             thisService().setState(ServiceState.VISIBLE)
             updateThisService()
