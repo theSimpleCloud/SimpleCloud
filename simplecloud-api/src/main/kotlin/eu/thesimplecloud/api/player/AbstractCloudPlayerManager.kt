@@ -27,6 +27,7 @@ abstract class AbstractCloudPlayerManager : ICloudPlayerManager {
         cachedCloudPlayer as CloudPlayer
         cachedCloudPlayer.setConnectedProxyName(cloudPlayer.getConnectedProxyName())
         cachedCloudPlayer.setConnectedServerName(cloudPlayer.getConnectedServerName())
+        cachedCloudPlayer.propertyMap = HashMap(cloudPlayer.getProperties())
         CloudAPI.instance.getEventManager().call(CloudPlayerUpdatedEvent(cachedCloudPlayer))
 
         if (cachedCloudPlayer.getConnectedServerName() != null && cachedCloudPlayer.getConnectedServerName() != oldServerName) {

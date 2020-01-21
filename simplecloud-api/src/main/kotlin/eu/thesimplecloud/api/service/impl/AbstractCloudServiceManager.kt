@@ -31,6 +31,7 @@ abstract class AbstractCloudServiceManager : ICloudServiceManager {
         cashedService as DefaultCloudService
         cashedService.setWrapperName(cloudService.getWrapperName())
         cashedService.setPort(cloudService.getPort())
+        cashedService.propertyMap = HashMap(cloudService.getProperties())
 
         CloudAPI.instance.getEventManager().call(CloudServiceUpdatedEvent(cashedService))
 

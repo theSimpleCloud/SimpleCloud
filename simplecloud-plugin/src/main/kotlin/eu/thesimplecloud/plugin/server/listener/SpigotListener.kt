@@ -9,6 +9,6 @@ import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 
 class SpigotListener : Listener {
-
+    
 
 }

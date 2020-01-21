@@ -36,7 +36,7 @@ data class DefaultCloudService(
     @GsonExclude
     private var lastUpdate = System.currentTimeMillis()
 
-    private val properties = HashMap<String, Any>()
+    var propertyMap = HashMap<String, Any>()
 
     override fun getGroupName(): String = this.groupName
 
@@ -103,12 +103,10 @@ data class DefaultCloudService(
         return JsonData.fromObjectWithGsonExclude(this).getAsJsonString()
     }
 
-    override fun <T : Any> getProperty(name: String): T? {
-        return this.properties[name] as T?
-    }
+    override fun getProperties(): Map<String, Any> = this.propertyMap
 
     override fun <T : Any> setProperty(name: String, value: T) {
-        this.properties[name] = value
+        this.propertyMap[name] = value
     }
 
 
