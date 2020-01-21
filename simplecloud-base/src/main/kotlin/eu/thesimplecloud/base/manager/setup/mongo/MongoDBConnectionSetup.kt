@@ -63,7 +63,7 @@ class MongoDBConnectionSetup : ISetup {
 
     @SetupFinished
     fun finished() {
-        val mongoServerInformation = MongoServerInformation(this.host!!, this.port!!, this.databaseName!!, this.username!!, this.password!!, "/", "/")
+        val mongoServerInformation = MongoServerInformation(this.host!!, this.port!!, this.databaseName!!, this.username!!, this.password!!, "", "/", "/")
         MongoConfigLoader().saveConfig(MongoConfig(false, mongoServerInformation))
     }
 

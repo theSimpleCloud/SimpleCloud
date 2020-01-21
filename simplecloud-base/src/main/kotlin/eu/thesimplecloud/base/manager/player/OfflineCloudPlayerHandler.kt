@@ -12,7 +12,7 @@ import org.litote.kmongo.*
 
 class OfflineCloudPlayerHandler(mongoConnectionInformation: MongoConnectionInformation) : IOfflineCloudPlayerHandler {
 
-    private val playersCollection = Manager.instance.mongoClient.getDatabase(mongoConnectionInformation.databaseName).getCollection<OfflineCloudPlayer>("players")
+    private val playersCollection = Manager.instance.mongoClient.getDatabase(mongoConnectionInformation.databaseName).getCollection<OfflineCloudPlayer>(mongoConnectionInformation.collectionPrefix + "players")
 
     init {
         //make a first request (the first request will take a very long time when using embed mongodb. Following requests will be way faster)

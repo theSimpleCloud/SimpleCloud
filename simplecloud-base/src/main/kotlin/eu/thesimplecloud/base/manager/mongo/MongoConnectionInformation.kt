@@ -7,7 +7,8 @@ open class MongoConnectionInformation(
         val port: Int,
         val databaseName: String,
         val userName: String,
-        val password: String
+        val password: String,
+        val collectionPrefix: String
 ) {
 
     fun getConnectionString(): ConnectionString {

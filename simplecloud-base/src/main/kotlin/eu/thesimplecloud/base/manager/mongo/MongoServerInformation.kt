@@ -6,7 +6,7 @@ class MongoServerInformation(
         databaseName: String,
         userName: String,
         password: String,
+        collectionPrefix: String,
         val adminUserName: String,
         val adminPassword: String
-) : MongoConnectionInformation(host, port, databaseName, userName, password) {
-}
+) : MongoConnectionInformation(host, port, databaseName, userName, password, collectionPrefix)
