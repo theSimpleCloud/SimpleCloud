@@ -6,7 +6,9 @@ import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
+import jdk.nashorn.internal.runtime.PropertyMap
 import java.util.*
+import kotlin.collections.HashMap
 
 data class DefaultCloudService(
         private val groupName: String,
@@ -33,6 +35,8 @@ data class DefaultCloudService(
     private var authenticated = false
     @GsonExclude
     private var lastUpdate = System.currentTimeMillis()
+
+    private val properties = HashMap<String, Any>()
 
     override fun getGroupName(): String = this.groupName
 
@@ -97,6 +101,14 @@ data class DefaultCloudService(
 
     override fun toString(): String {
         return JsonData.fromObjectWithGsonExclude(this).getAsJsonString()
+    }
+
+    override fun <T : Any> getProperty(name: String): T? {
+        return this.properties[name] as T?
+    }
+
+    override fun <T : Any> setProperty(name: String, value: T) {
+        this.properties[name] = value
     }
 
 

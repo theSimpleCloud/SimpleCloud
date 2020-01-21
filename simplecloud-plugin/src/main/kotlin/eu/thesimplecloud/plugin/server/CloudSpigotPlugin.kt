@@ -26,7 +26,8 @@ class CloudSpigotPlugin : JavaPlugin(), ICloudServerPlugin {
     }
 
     override fun onLoad() {
-        CloudPlugin(this, URLClassLoader(arrayOf(this.file.toURI().toURL())))
+        //URLClassLoader(arrayOf(this.file.toURI().toURL()))
+        CloudPlugin(this)
     }
 
     override fun onEnable() {

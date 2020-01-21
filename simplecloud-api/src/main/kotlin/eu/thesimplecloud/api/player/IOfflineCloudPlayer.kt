@@ -1,9 +1,10 @@
 package eu.thesimplecloud.api.player
 
+import eu.thesimplecloud.api.property.IProperty
 import eu.thesimplecloud.api.utils.Nameable
 import java.util.*
 
-interface IOfflineCloudPlayer : Nameable {
+interface IOfflineCloudPlayer : Nameable, IProperty {
 
     /**
      * Returns the unique id of this player.
@@ -25,15 +26,5 @@ interface IOfflineCloudPlayer : Nameable {
      * Returns the online time of this player in milliseconds
      */
     fun getOnlineTime(): Long
-
-    /**
-     * Returns a property.
-     */
-    fun getProperty(name: String): String?
-
-    /**
-     * Sets a property.
-     */
-    fun setProperty(name: String, content: String)
 
 }

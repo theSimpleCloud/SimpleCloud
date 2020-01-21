@@ -4,8 +4,7 @@ import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.api.eventapi.CloudEventHandler
 import eu.thesimplecloud.api.eventapi.IListener
 import eu.thesimplecloud.api.event.service.CloudServiceUnregisteredEvent
-import eu.thesimplecloud.api.event.service.CloudServiceUpdatedEvent
-import eu.thesimplecloud.base.manager.startup.Manager
+import eu.thesimplecloud.base.manager.events.CloudPlayerLoginEvent
 
 class CloudListener : IListener {
 

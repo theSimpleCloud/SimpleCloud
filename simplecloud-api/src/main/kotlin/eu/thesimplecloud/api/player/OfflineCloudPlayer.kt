@@ -9,7 +9,7 @@ open class OfflineCloudPlayer(
         private val firstLogin: Long,
         private val lastLogin: Long,
         private val onlineTime: Long,
-        val properties: MutableMap<String, String> = HashMap()
+        val properties: MutableMap<String, Any> = HashMap()
 ) : IOfflineCloudPlayer {
 
 
@@ -23,10 +23,10 @@ open class OfflineCloudPlayer(
 
     override fun getOnlineTime(): Long = this.onlineTime
 
-    override fun getProperty(name: String): String? = properties[name]
+    override fun <T : Any> getProperty(name: String): T? = properties[name] as T?
 
-    override fun setProperty(name: String, content: String) {
-        properties[name] = content
+    override fun <T : Any> setProperty(name: String, value: T) {
+        properties[name] = value
     }
 
 

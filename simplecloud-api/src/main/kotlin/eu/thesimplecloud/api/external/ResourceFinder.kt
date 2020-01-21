@@ -17,15 +17,19 @@ class ResourceFinder {
 
         @Throws(MalformedURLException::class)
         fun findResource(file: File, pathToResource: String): InputStream? {
-            addToClassLoader(file)
+            addToClassLoader(file.toURI().toURL())
             return ClassLoader.getSystemClassLoader().getResourceAsStream(pathToResource)
         }
 
-        fun addToClassLoader(file: File, urlClassLoader: URLClassLoader = getSystemClassLoader()) {
+        fun addToClassLoader(url: URL, urlClassLoader: URLClassLoader = getSystemClassLoader()) {
             val method = URLClassLoader::class.java.getDeclaredMethod("addURL", URL::class.java)
             method.isAccessible = true
-            if (!urlClassLoader.urLs.contains(file.toURI().toURL()))
-                method.invoke(urlClassLoader, file.toURI().toURL())
+            if (!urlClassLoader.urLs.contains(url))
+                method.invoke(urlClassLoader, url)
+        }
+
+        fun addToClassLoader(file: File, urlClassLoader: URLClassLoader = getSystemClassLoader()) {
+            addToClassLoader(file.toURI().toURL(), urlClassLoader)
         }
 
         fun removeFromClassLoader(file: File, urlClassLoader: URLClassLoader = getSystemClassLoader()) {

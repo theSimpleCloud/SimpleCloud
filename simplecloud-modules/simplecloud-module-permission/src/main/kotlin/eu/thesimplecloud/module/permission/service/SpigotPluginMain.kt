@@ -10,6 +10,7 @@ import org.bukkit.plugin.java.JavaPlugin
 class SpigotPluginMain : JavaPlugin() {
 
     override fun onEnable() {
+        /*
         CloudAPI.instance.getEventManager().registerListener(CloudPlugin.instance, object: IListener {
 
             @CloudEventHandler
@@ -20,6 +21,7 @@ class SpigotPluginMain : JavaPlugin() {
 
         })
         CloudAPI.instance.getEventManager().call(TestSynchronizedEvent("Name"))
+        */
     }
 
 }

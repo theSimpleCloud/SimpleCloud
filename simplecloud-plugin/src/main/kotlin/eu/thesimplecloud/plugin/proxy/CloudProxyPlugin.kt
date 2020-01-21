@@ -50,7 +50,7 @@ class CloudProxyPlugin : Plugin(), ICloudProxyPlugin {
     override fun onLoad() {
         ProxyServer.getInstance().reconnectHandler = ReconnectHandlerImpl()
         val classLoader = URLClassLoader(arrayOf(this.file.toURI().toURL()))
-        CloudPlugin(this, classLoader)
+        CloudPlugin(this)
     }
 
     override fun onEnable() {
