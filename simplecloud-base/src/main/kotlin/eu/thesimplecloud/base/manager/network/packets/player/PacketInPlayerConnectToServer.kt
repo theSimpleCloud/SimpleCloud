@@ -20,11 +20,13 @@ class PacketInPlayerConnectToServer() : JsonPacket() {
         val serviceName = this.jsonData.getString("serviceName") ?: return contentException("serviceName")
         val cloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(uniqueId) ?: return failure(NoSuchPlayerException("Player cannot be found"))
         cloudPlayer as CloudPlayer
+        /*
         val oldConnectedServer = cloudPlayer.getConnectedServer()
         oldConnectedServer?.let {
             val oldClient = Manager.instance.communicationServer.getClientManager().getClientByClientValue(it)
             oldClient?.sendUnitQuery(PacketIORemoveCloudPlayer(cloudPlayer.getUniqueId()))
         }
+         */
         val newService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(serviceName) ?: return failure(NoSuchServiceException("New service cannot be found"))
         val newServiceClient = Manager.instance.communicationServer.getClientManager().getClientByClientValue(newService) ?: return failure(UnavailableServiceException("New service is not connected to the manager"))
         return newServiceClient.sendUnitQuery(PacketIOUpdateCloudPlayer(cloudPlayer))
