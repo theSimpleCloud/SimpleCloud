@@ -18,16 +18,17 @@ repositories {
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     implementation group: 'org.reflections', name: 'reflections', version: '0.9.10'
-    implementation(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion) {
+    compile(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion) {
+        exclude group: 'org.jetbrains.kotlin'
+    }
+    compile(project(":simplecloud-api")) {
+        exclude group: 'io.netty'
         exclude group: 'org.jetbrains.kotlin'
     }
     implementation group: 'io.netty', name: 'netty-all', version: '4.1.1.Final'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    implementation(project(":simplecloud-api")) {
-        exclude group: 'io.netty'
-        exclude group: 'org.jetbrains.kotlin'
-    }
-    implementation(project(":simplecloud-client")) {
+
+    compile(project(":simplecloud-client")) {
         exclude group: 'org.jetbrains.kotlin'
         exclude group: 'eu.thesimplecloud.clientserverapi'
         exclude module: 'simplecloud-api'
