@@ -118,10 +118,11 @@ class BungeeListener : Listener {
         service.update()
 
         //update player
+        //use cloned player to compare connected server with old connected server.
         val cloudPlayer = proxiedPlayer.getCloudPlayer()
-        cloudPlayer as CloudPlayer
-        cloudPlayer.setConnectedServerName(service.getName())
-        cloudPlayer.update()
+        val clonedPlayer = cloudPlayer.clone() as CloudPlayer
+        clonedPlayer.setConnectedServerName(service.getName())
+        clonedPlayer.update()
     }
 
     @EventHandler

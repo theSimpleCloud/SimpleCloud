@@ -13,7 +13,7 @@ class CloudTextBuilder {
     private val colorCodes = Arrays.asList('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f')
     private val specialCodes = Arrays.asList('k', 'l', 'm', 'n', 'o')
 
-    fun build(cloudText: CloudText): TextComponent? {
+    fun build(cloudText: CloudText): TextComponent {
         val textComponent = TextComponent()
         var text: String = cloudText.text.replace("&", "§")
         var currentColorCode = Character.MIN_VALUE

@@ -4,6 +4,7 @@ plugins {
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
     maven { url("http://oss.sonatype.org/content/repositories/snapshots") }
     maven { url("http://xbib.org/repository/") }
@@ -19,6 +20,8 @@ dependencies {
         exclude group: 'org.jetbrains.kotlin'
         exclude group: 'eu.thesimplecloud.clientserverapi'
         exclude module: 'simplecloud-api'
+        exclude module: 'simplecloud-api'
+        exclude group: 'io.netty'
     }
     implementation("com.github.ajalt:clikt:2.2.0")
     // https://mvnrepository.com/artifact/commons-io/commons-io

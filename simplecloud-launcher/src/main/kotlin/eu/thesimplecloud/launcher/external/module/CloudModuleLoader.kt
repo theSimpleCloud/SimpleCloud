@@ -1,11 +1,11 @@
 package eu.thesimplecloud.launcher.external.module
 
 import eu.thesimplecloud.clientserverapi.lib.json.JsonData
-import eu.thesimplecloud.clientserverapi.lib.resource.ResourceFinder
 import eu.thesimplecloud.launcher.dependency.DependencyLoader
 import eu.thesimplecloud.launcher.exception.CloudModuleException
 import eu.thesimplecloud.launcher.external.ExtensionLoader
 import eu.thesimplecloud.api.external.ICloudModule
+import eu.thesimplecloud.api.external.ResourceFinder
 import java.io.File
 import kotlin.Exception
 

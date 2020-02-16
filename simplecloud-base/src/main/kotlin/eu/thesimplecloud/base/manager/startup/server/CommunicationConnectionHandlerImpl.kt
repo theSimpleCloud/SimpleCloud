@@ -9,6 +9,7 @@ import eu.thesimplecloud.api.screen.ICommandExecutable
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.utils.IAuthenticatable
 import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
+import eu.thesimplecloud.base.manager.impl.SynchronizedObjectManagerImpl
 
 class CommunicationConnectionHandlerImpl : IConnectionHandler {
 
@@ -37,6 +38,9 @@ class CommunicationConnectionHandlerImpl : IConnectionHandler {
 
         if (clientValue is ICloudService)
             CloudAPI.instance.getCloudServiceManager().updateCloudService(clientValue)
+
+        val synchronizedObjectManager = CloudAPI.instance.getSynchronizedObjectManager() as SynchronizedObjectManagerImpl
+        synchronizedObjectManager.unregisterClient(connection)
     }
 
     override fun onFailure(connection: IConnection, ex: Throwable) {

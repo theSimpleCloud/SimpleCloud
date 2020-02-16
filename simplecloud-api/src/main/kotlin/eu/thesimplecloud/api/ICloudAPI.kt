@@ -6,6 +6,7 @@ import eu.thesimplecloud.api.screen.ICommandExecuteManager
 import eu.thesimplecloud.api.screen.ICommandExecutable
 import eu.thesimplecloud.api.service.ICloudServiceManager
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroupManager
+import eu.thesimplecloud.api.syncobject.ISynchronizedObjectManager
 import eu.thesimplecloud.api.template.ITemplateManager
 import eu.thesimplecloud.api.wrapper.IWrapperManager
 
@@ -49,6 +50,11 @@ interface ICloudAPI {
      * Returns the [ITemplateManager] used to manage the templates
      */
     fun getTemplateManager(): ITemplateManager
+
+    /**
+     * Returns the [ISynchronizedObjectManager] used to manage the templates
+     */
+    fun getSynchronizedObjectManager(): ISynchronizedObjectManager
 
     /**
      * Returns the name of this side

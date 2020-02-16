@@ -30,6 +30,7 @@ dependencies {
     implementation(project(":simplecloud-base"))
     implementation(project(":simplecloud-api"))
     implementation(project(":simplecloud-plugin"))
+    implementation(project(":simplecloud-launcher"))
 
     implementation 'org.spigotmc:spigot-api:1.15.1-R0.1-SNAPSHOT' // The full Spigot server with no shadowing. Requires mavenLocal.
     implementation 'net.md-5:bungeecord-api:1.12-SNAPSHOT' // The full Spigot server with no shadowing. Requires mavenLocal.

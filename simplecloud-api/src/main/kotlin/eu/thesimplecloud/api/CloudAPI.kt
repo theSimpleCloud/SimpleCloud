@@ -23,5 +23,6 @@ abstract class CloudAPI : ICloudAPI {
     companion object {
         @JvmStatic
         lateinit var instance: CloudAPI
+            private set
     }
 }

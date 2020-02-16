@@ -9,6 +9,7 @@ import eu.thesimplecloud.api.client.CloudClientType
 import eu.thesimplecloud.api.external.ICloudModule
 import eu.thesimplecloud.api.external.ResourceFinder
 import eu.thesimplecloud.api.network.packets.service.PacketIOUpdateCloudService
+import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.plugin.ICloudServicePlugin
@@ -24,6 +25,7 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
     companion object {
         @JvmStatic
         lateinit var instance: CloudPlugin
+            private set
     }
 
     @Volatile
@@ -38,10 +40,10 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
     init {
         println("<---------- Starting SimpleCloud-Plugin ---------->")
         instance = this
-        CloudAPIImpl()
         if (!loadConfig())
             cloudServicePlugin.shutdown()
         println("<---------- Service-Name: $thisServiceName ---------->")
+        CloudAPIImpl()
 
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.plugin.network.packets")
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.client.packets")

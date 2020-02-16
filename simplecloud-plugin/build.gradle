@@ -32,6 +32,7 @@ dependencies {
         exclude group: 'org.jetbrains.kotlin'
         exclude group: 'eu.thesimplecloud.clientserverapi'
         exclude module: 'simplecloud-api'
+        exclude group: 'io.netty'
     }
     implementation 'org.spigotmc:spigot-api:1.15.1-R0.1-SNAPSHOT'
     // The full Spigot server with no shadowing. Requires mavenLocal.

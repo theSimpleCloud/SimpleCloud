@@ -56,6 +56,7 @@ class Manager : ICloudApplication {
     companion object {
         @JvmStatic
         lateinit var instance: Manager
+            private set
     }
 
     init {
