@@ -34,6 +34,8 @@ class CloudPlayer(
 
     override fun isOnline(): Boolean = this.online
 
+    override fun clone(): ICloudPlayer = CloudPlayer(getName(), getUniqueId(), getFirstLogin(), getLastLogin(), getOnlineTime(), connectedProxyName, connectedServerName, playerConnection)
+
     fun setOffline() {
         this.online = false
     }
@@ -54,5 +56,4 @@ class CloudPlayer(
     override fun toString(): String {
         return JsonData.fromObjectWithGsonExclude(this).getAsJsonString()
     }
-
 }

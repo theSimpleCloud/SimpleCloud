@@ -35,7 +35,8 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
 
     override fun updateCloudPlayer(cloudPlayer: ICloudPlayer, fromPacket: Boolean) {
         super.updateCloudPlayer(cloudPlayer, fromPacket)
-        if (!fromPacket) CloudPlugin.instance.communicationClient.sendUnitQuery(PacketIOUpdateCloudPlayer(cloudPlayer))
+        if (!fromPacket)
+            CloudPlugin.instance.communicationClient.sendUnitQuery(PacketIOUpdateCloudPlayer(cloudPlayer))
     }
 
     override fun getCloudPlayer(uniqueId: UUID): ICommunicationPromise<ICloudPlayer> {

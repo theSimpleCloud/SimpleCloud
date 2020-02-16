@@ -165,6 +165,11 @@ interface ICloudPlayer : IOfflineCloudPlayer {
     fun isOnline(): Boolean
 
     /**
+     * Clones this player.
+     */
+    fun clone(): ICloudPlayer
+
+    /**
      * Updates this player to the network
      */
     fun update() = CloudAPI.instance.getCloudPlayerManager().updateCloudPlayer(this)

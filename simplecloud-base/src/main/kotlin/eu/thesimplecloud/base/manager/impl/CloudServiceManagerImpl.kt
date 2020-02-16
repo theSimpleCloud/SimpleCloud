@@ -1,6 +1,7 @@
 package eu.thesimplecloud.base.manager.impl
 
 import eu.thesimplecloud.api.extension.sendPacketToAllAuthenticatedClients
+import eu.thesimplecloud.api.extension.sendPacketToAllAuthenticatedNonWrapperClients
 import eu.thesimplecloud.api.network.packets.service.PacketIORemoveCloudService
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.api.network.packets.service.PacketIOStopCloudService
@@ -15,7 +16,7 @@ class CloudServiceManagerImpl : AbstractCloudServiceManager() {
 
     override fun updateCloudService(cloudService: ICloudService, fromPacket: Boolean) {
         super.updateCloudService(cloudService, fromPacket)
-        Manager.instance.communicationServer.getClientManager().sendPacketToAllAuthenticatedClients(PacketIOUpdateCloudService(cloudService))
+        Manager.instance.communicationServer.getClientManager().sendPacketToAllAuthenticatedNonWrapperClients(PacketIOUpdateCloudService(cloudService))
     }
 
     override fun removeCloudService(name: String) {

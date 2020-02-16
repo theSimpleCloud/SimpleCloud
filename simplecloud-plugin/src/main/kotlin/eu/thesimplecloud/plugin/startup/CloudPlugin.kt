@@ -9,6 +9,7 @@ import eu.thesimplecloud.api.client.CloudClientType
 import eu.thesimplecloud.api.external.ICloudModule
 import eu.thesimplecloud.api.external.ResourceFinder
 import eu.thesimplecloud.api.network.packets.service.PacketIOUpdateCloudService
+import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.plugin.ICloudServicePlugin
@@ -24,6 +25,7 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
     companion object {
         @JvmStatic
         lateinit var instance: CloudPlugin
+            private set
     }
 
     @Volatile
@@ -33,18 +35,16 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
         private set
     lateinit var thisServiceName: String
         private set
-    private lateinit var nettyThread: Thread
-    lateinit var pluginsClassLoader: ClassLoader
+    private var nettyThread: Thread
 
     init {
         println("<---------- Starting SimpleCloud-Plugin ---------->")
         instance = this
-        CloudAPIImpl()
         if (!loadConfig())
             cloudServicePlugin.shutdown()
         println("<---------- Service-Name: $thisServiceName ---------->")
+        CloudAPIImpl()
 
-        pluginsClassLoader = this::class.java.classLoader
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.plugin.network.packets")
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.client.packets")
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.api.network.packets")
@@ -52,28 +52,11 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
 
         nettyThread = thread(true, isDaemon = false, contextClassLoader = this::class.java.classLoader) {
             this.communicationClient.start()
-            /*
-            this.communicationClient.getPacketIdsSyncPromise().thenAccept {
-                val castedClient = this.communicationClient as NettyClient
-                val idFromPacket = castedClient.packetManager.getIdFromPacket(PacketIOUpdateCloudService::class.java)
-                println("found id: $idFromPacket")
-                val packetClassById = castedClient.packetManager.getPacketClassById(idFromPacket!!)!!
-                println("before check: ${PacketIOUpdateCloudService::class.java.classLoader == this.pluginsClassLoader}")
-                println("classloader of found packet equal to plugins class loader: ${packetClassById.classLoader == this.pluginsClassLoader}")
-                println("classloader still equal: ${this::class.java.classLoader == this.pluginsClassLoader}")
-                //val loadedClass = Class.forName(PacketIOUpdateCloudService::class.java.name, true, this.pluginsClassLoader)
-                val reloadedClass = this.pluginsClassLoader.loadClass(PacketIOUpdateCloudService::class.java.name)
-                println("reloaded class classloader: ${this.pluginsClassLoader == reloadedClass.classLoader}")
-                println("is system classloader: ${ResourceFinder.getSystemClassLoader() == PacketIOUpdateCloudService::class.java.classLoader}")
-                val classLoader = this::class.java.classLoader as URLClassLoader
+        }
 
-                val method = classLoader.javaClass.getDeclaredMethod("defineClass", String::class.java, Resource::class.java)
-                method.invoke(classLoader, )
-                classLoader.urLs.forEach { url ->
-                    ResourceFinder.addToClassLoader(url, ResourceFinder.getSystemClassLoader())
-                }
-            }
-             */
+        this.communicationClient.getPacketIdsSyncPromise().addResultListener {
+            println("<-------- Connection is now set up -------->")
+            this.communicationClient.sendUnitQuery(PacketOutCloudClientLogin(CloudClientType.SERVICE, thisServiceName))
         }
 
         Runtime.getRuntime().addShutdownHook(Thread {
@@ -83,10 +66,6 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
             }
 
         })
-        this.communicationClient.getPacketIdsSyncPromise().addResultListener {
-            println("<-------- Connection is now set up -------->")
-            this.communicationClient.sendUnitQuery(PacketOutCloudClientLogin(CloudClientType.SERVICE, thisServiceName))
-        }
     }
 
     /**

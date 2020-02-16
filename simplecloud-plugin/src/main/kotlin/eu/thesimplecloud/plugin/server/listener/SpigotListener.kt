@@ -11,4 +11,10 @@ import org.bukkit.event.player.PlayerQuitEvent
 class SpigotListener : Listener {
 
 
+    @EventHandler(priority = EventPriority.HIGHEST)
+    fun on(event: PlayerJoinEvent) {
+        val cloudPlayer = event.player.getCloudPlayer()
+        CloudAPI.instance.getCloudPlayerManager().removeCloudPlayer(cloudPlayer)
+    }
+
 }

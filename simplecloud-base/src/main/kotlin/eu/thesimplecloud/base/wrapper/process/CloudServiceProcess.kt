@@ -87,25 +87,28 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
             Wrapper.instance.updateUsedMemory()
         }
 
-        while (true) {
-            try {
-                FileUtils.deleteDirectory(this.serviceTmpDir)
-                break
-            } catch (e: Exception) {
+        if (!cloudService.isStatic()) {
+            while (true) {
+                try {
+                    FileUtils.deleteDirectory(this.serviceTmpDir)
+                    break
+                } catch (e: Exception) {
 
+                }
             }
         }
         Wrapper.instance.portManager.setPortUnused(this.cloudService.getPort())
     }
 
     private fun createProcessBuilder(jarFile: File): ProcessBuilder {
-        val launcherJarPath = File(Launcher::class.java.protectionDomain.codeSource.location.toURI()).path
-        val baseJarPath = File(this::class.java.protectionDomain.codeSource.location.toURI()).path
+        //val launcherJarPath = File(Launcher::class.java.protectionDomain.codeSource.location.toURI()).path
+        //val baseJarPath = File(this::class.java.protectionDomain.codeSource.location.toURI()).path
         println("dependencies: " + DependencyLoader.INSTANCE.getLoadedDependencies())
-        val allDependencyPaths = DependencyLoader.INSTANCE.getLoadedDependencies().map { it.getDownloadedFile().absolutePath }
-        val classPathValueList = listOf(jarFile.absolutePath, launcherJarPath, baseJarPath).union(allDependencyPaths)
+        val allDependencyPaths = DependencyLoader.INSTANCE.getLoadedDependencies().filter { it.groupId != "eu.thesimplecloud.clientserverapi" }.map { it.getDownloadedFile().absolutePath }
+        //val classPathValueList = listOf(jarFile.absolutePath, launcherJarPath, baseJarPath).union(allDependencyPaths)
+        val classPathValueList = listOf(jarFile.absolutePath).union(allDependencyPaths)
         val separator = if (CloudAPI.instance.isWindows()) ";" else ":"
-        val beginAndEnd = if(CloudAPI.instance.isWindows()) "\"" else ""
+        val beginAndEnd = if (CloudAPI.instance.isWindows()) "\"" else ""
         val classPathValue = beginAndEnd + classPathValueList.joinToString(separator) + beginAndEnd
 
         val processBuilder = ProcessBuilder("java", "-Dcom.mojang.eula.agree=true", "-XX:+UseConcMarkSweepGC", "-XX:+CMSIncrementalMode",

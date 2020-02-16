@@ -34,6 +34,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
     companion object {
         @JvmStatic
         lateinit var instance: Launcher
+            private set
     }
 
     val launcherCloudModule = object : ICloudModule {

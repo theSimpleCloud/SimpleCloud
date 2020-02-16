@@ -26,6 +26,7 @@ class Wrapper : ICloudApplication {
 
     companion object {
         lateinit var instance: Wrapper
+            private set
     }
 
     lateinit var thisWrapperName: String
@@ -40,9 +41,9 @@ class Wrapper : ICloudApplication {
     init {
         instance = this
         Launcher.instance.logger.addLoggerMessageListener(LoggerMessageListenerImpl())
-        CloudAPIImpl()
         val launcherConfig = Launcher.instance.launcherConfigLoader.loadConfig()
         this.communicationClient = NettyClient(launcherConfig.host, launcherConfig.port, ConnectionHandlerImpl())
+        CloudAPIImpl()
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.client.packets")
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.base.wrapper.network.packets")
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.api.network.packets")
