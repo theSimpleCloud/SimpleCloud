@@ -21,6 +21,7 @@ class OfflineCloudPlayerHandler(mongoConnectionInformation: MongoConnectionInfor
             if (player != null) {
                 getOfflinePlayer(player.getUniqueId())
             }
+            playersCollection.createIndex("{ name: \"text\" }")
         }
     }
 
@@ -29,7 +30,7 @@ class OfflineCloudPlayerHandler(mongoConnectionInformation: MongoConnectionInfor
     }
 
     override fun getOfflinePlayer(name: String): IOfflineCloudPlayer? {
-        return this.playersCollection.findOne(Filters.eq("name", name))
+        return this.playersCollection.findOne("{ \$text: { \$search: \"$name\",\$caseSensitive :false } }")
     }
 
     override fun saveCloudPlayer(offlineCloudPlayer: OfflineCloudPlayer) {
