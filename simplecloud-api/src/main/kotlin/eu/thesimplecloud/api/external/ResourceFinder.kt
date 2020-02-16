@@ -19,7 +19,7 @@ class ResourceFinder {
         @Throws(MalformedURLException::class)
         fun findResource(file: File, pathToResource: String): InputStream? {
             val newClassLoader = URLClassLoader(arrayOf(file.toURI().toURL()))
-            println(newClassLoader.urLs.joinToString())
+            //println(newClassLoader.urLs.joinToString())
             val resourceAsStream = newClassLoader.getResourceAsStream(pathToResource)
             if (resourceAsStream != null) {
                 //println(JsonData.fromInputStream(resourceAsStream))

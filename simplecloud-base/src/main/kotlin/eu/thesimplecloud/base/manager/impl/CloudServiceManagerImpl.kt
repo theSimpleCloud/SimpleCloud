@@ -16,7 +16,7 @@ class CloudServiceManagerImpl : AbstractCloudServiceManager() {
 
     override fun updateCloudService(cloudService: ICloudService, fromPacket: Boolean) {
         super.updateCloudService(cloudService, fromPacket)
-        Manager.instance.communicationServer.getClientManager().sendPacketToAllAuthenticatedNonWrapperClients(PacketIOUpdateCloudService(cloudService))
+        Manager.instance.communicationServer.getClientManager().sendPacketToAllAuthenticatedClients(PacketIOUpdateCloudService(cloudService))
     }
 
     override fun removeCloudService(name: String) {

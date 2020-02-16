@@ -34,7 +34,7 @@ class CloudModuleLoader {
         return ExtensionLoader<ICloudModule>().loadClass(file, mainClass, ICloudModule::class.java)
     }
 
-    fun loadModuleFileContent(file: File, moduleFileName: String): CloudModuleFileContent {
+    private fun loadModuleFileContent(file: File, moduleFileName: String): CloudModuleFileContent {
         require(file.exists()) { "Specified file to load module from does not exist: ${file.path}" }
         val fileStream = ResourceFinder.findResource(file, moduleFileName)
                 ?: throw CloudModuleException("An error occurred while loading module ${file.path}: No '$moduleFileName.json' found.")

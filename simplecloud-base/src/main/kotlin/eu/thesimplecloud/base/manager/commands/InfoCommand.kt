@@ -41,5 +41,15 @@ class InfoCommand : ICommandHandler {
         commandSender.sendMessage(group.toString())
     }
 
+    @CommandSubPath("player <name>", "Prints some information about the specified player")
+    fun player(commandSender: ICommandSender, @CommandArgument("name") name: String) {
+        val player = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(name)
+        if (player == null) {
+            commandSender.sendMessage("manager.command.info.player.not-exist", "The specified player does not exist.")
+            return
+        }
+        commandSender.sendMessage(player.toString())
+    }
+
 
 }
