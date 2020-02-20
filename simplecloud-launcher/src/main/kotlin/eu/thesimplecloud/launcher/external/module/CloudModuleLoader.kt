@@ -1,13 +1,14 @@
 package eu.thesimplecloud.launcher.external.module
 
+import eu.thesimplecloud.api.external.ICloudModule
+import eu.thesimplecloud.api.external.ResourceFinder
 import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.launcher.dependency.DependencyLoader
 import eu.thesimplecloud.launcher.exception.CloudModuleException
 import eu.thesimplecloud.launcher.external.ExtensionLoader
-import eu.thesimplecloud.api.external.ICloudModule
-import eu.thesimplecloud.api.external.ResourceFinder
 import java.io.File
-import kotlin.Exception
+import java.util.jar.JarEntry
+import java.util.jar.JarFile
 
 class CloudModuleLoader {
 
@@ -36,11 +37,17 @@ class CloudModuleLoader {
 
     private fun loadModuleFileContent(file: File, moduleFileName: String): CloudModuleFileContent {
         require(file.exists()) { "Specified file to load module from does not exist: ${file.path}" }
-        val fileStream = ResourceFinder.findResource(file, moduleFileName)
-                ?: throw CloudModuleException("An error occurred while loading module ${file.path}: No '$moduleFileName.json' found.")
-        val jsonData = JsonData.fromInputStream(fileStream)
-        return jsonData.getObjectOrNull(CloudModuleFileContent::class.java)
-                ?: throw CloudModuleException("An error occurred while loading module ${file.path}: Empty '$moduleFileName.json'.")
+        try {
+            val jar = JarFile(file)
+            val entry: JarEntry = jar.getJarEntry(moduleFileName)
+                    ?: throw CloudModuleException("An error occurred while loading module ${file.path}: No '$moduleFileName.json' found.")
+            val fileStream = jar.getInputStream(entry)
+            val jsonData = JsonData.fromInputStream(fileStream)
+            return jsonData.getObjectOrNull(CloudModuleFileContent::class.java)
+                    ?: throw CloudModuleException("An error occurred while loading module ${file.path}: Invalid '$moduleFileName.json'.")
+        } catch (ex: Exception) {
+            throw CloudModuleException("An error occurred while loading module ${file.path}:", ex)
+        }
     }
 
 }

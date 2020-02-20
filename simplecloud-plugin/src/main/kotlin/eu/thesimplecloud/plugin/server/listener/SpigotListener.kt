@@ -12,7 +12,7 @@ class SpigotListener : Listener {
 
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    fun on(event: PlayerJoinEvent) {
+    fun on(event: PlayerQuitEvent) {
         val cloudPlayer = event.player.getCloudPlayer()
         CloudAPI.instance.getCloudPlayerManager().removeCloudPlayer(cloudPlayer)
     }
