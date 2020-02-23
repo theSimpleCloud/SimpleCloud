@@ -35,7 +35,7 @@ class CloudModuleLoader {
         return ExtensionLoader<ICloudModule>().loadClass(file, mainClass, ICloudModule::class.java)
     }
 
-    private fun loadModuleFileContent(file: File, moduleFileName: String): CloudModuleFileContent {
+    fun loadModuleFileContent(file: File, moduleFileName: String): CloudModuleFileContent {
         require(file.exists()) { "Specified file to load module from does not exist: ${file.path}" }
         try {
             val jar = JarFile(file)

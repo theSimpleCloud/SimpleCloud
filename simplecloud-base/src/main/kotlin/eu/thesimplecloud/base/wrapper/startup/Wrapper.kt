@@ -17,6 +17,9 @@ import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.network.packets.wrapper.PacketIOUpdateWrapperInfo
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
+import eu.thesimplecloud.base.manager.external.CloudModuleHandler
+import eu.thesimplecloud.launcher.external.module.CloudModuleFileContent
+import eu.thesimplecloud.launcher.external.module.CloudModuleLoader
 import java.io.File
 import java.lang.IllegalStateException
 import java.util.concurrent.TimeUnit
@@ -37,6 +40,7 @@ class Wrapper : ICloudApplication {
     val communicationClient: INettyClient
     val templateClient: INettyClient?
     val serviceVersionLoader = ServiceVersionLoader()
+    lateinit var existingModules: List<Pair<CloudModuleFileContent, File>>
 
     init {
         instance = this
@@ -48,7 +52,10 @@ class Wrapper : ICloudApplication {
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.base.wrapper.network.packets")
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.api.network.packets")
         thread(start = true, isDaemon = false) { communicationClient.start() }
-        this.communicationClient.getPacketIdsSyncPromise().addResultListener { this.communicationClient.sendUnitQuery(PacketOutCloudClientLogin(CloudClientType.WRAPPER)) }
+        this.communicationClient.getPacketIdsSyncPromise().addResultListener {
+            this.existingModules = CloudModuleHandler().getAllCloudModuleFileContents()
+            this.communicationClient.sendUnitQuery(PacketOutCloudClientLogin(CloudClientType.WRAPPER))
+        }
         if (isStartedInManagerDirectory()) {
             Launcher.instance.consoleSender.sendMessage("wrapper.startup.template-client.not-activated", "Detected that a manager is running in this directory. Using templates in this folder.")
             Launcher.instance.consoleSender.sendMessage("wrapper.startup.template-client.help-message", "If your'e manager is not running in this directory delete the folder \"storage/wrappers\" and restart the wrapper.")

@@ -7,6 +7,7 @@ import eu.thesimplecloud.api.external.ResourceFinder
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.launcher.exception.CloudModuleException
 import eu.thesimplecloud.launcher.external.module.CloudModuleData
+import eu.thesimplecloud.launcher.external.module.CloudModuleFileContent
 import eu.thesimplecloud.launcher.external.module.CloudModuleLoader
 import eu.thesimplecloud.launcher.startup.Launcher
 import java.io.File
@@ -24,6 +25,11 @@ class CloudModuleHandler : ICloudModuleHandler {
         for (file in modulesDir.listFiles()) {
             loadModule(file)
         }
+    }
+
+    fun getAllCloudModuleFileContents(): List<Pair<CloudModuleFileContent, File>> {
+        val modulesDir = File(DirectoryPaths.paths.modulesPath)
+        return modulesDir.listFiles().map { this.cloudModuleLoader.loadModuleFileContent(it, "module.json") to it }
     }
 
     fun unregisterAllModules() {
