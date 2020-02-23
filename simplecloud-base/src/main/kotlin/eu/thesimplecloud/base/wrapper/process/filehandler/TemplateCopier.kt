@@ -9,6 +9,7 @@ import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceType
 import eu.thesimplecloud.api.template.ITemplate
+import eu.thesimplecloud.launcher.external.module.ModuleCopyType
 import org.apache.commons.io.FileUtils
 import java.io.File
 
@@ -25,6 +26,20 @@ class TemplateCopier : ITemplateCopier {
         val cloudPluginFile = File(serviceTmpDir, "/plugins/SimpleCloud-Plugin.jar")
         FileCopier.copyFileOutOfJar(cloudPluginFile, "/SimpleCloud-Plugin.jar")
         generateServiceFile(cloudService, serviceTmpDir)
+
+        val modulesByCopyType = Wrapper.instance.existingModules
+                .filter { it.first.moduleCopyType != ModuleCopyType.NONE }.toMutableList()
+        if (!cloudService.isLobby())
+            modulesByCopyType.removeIf { it.first.moduleCopyType == ModuleCopyType.LOBBY }
+        if (!cloudService.isProxy())
+            modulesByCopyType.removeIf { it.first.moduleCopyType == ModuleCopyType.PROXY }
+        if (cloudService.isProxy())
+            modulesByCopyType.removeIf { it.first.moduleCopyType == ModuleCopyType.SERVER }
+
+        val moduleNamesToCopy = getModulesToCopyOfTemplateAndSubTemplates(template)
+        val modulesByName = Wrapper.instance.existingModules.filter { moduleNamesToCopy.contains(it.first.name) }
+
+        modulesByCopyType.union(modulesByName).distinctBy { it.first.name }.forEach { FileUtils.copyFile(it.second, File(serviceTmpDir, "/plugins/" + it.second.name)) }
     }
 
     /*
@@ -59,13 +74,23 @@ class TemplateCopier : ITemplateCopier {
                 .saveAsFile(File(serviceTmpDir, "SIMPLE-CLOUD.json"))
     }
 
-    fun getDirectoriesOfTemplateAndSubTemplates(template: ITemplate): Set<File> {
+    private fun getDirectoriesOfTemplateAndSubTemplates(template: ITemplate): Set<File> {
         val set = HashSet<File>()
         for (templateName in template.getInheritedTemplateNames()) {
             val subTemplate = CloudAPI.instance.getTemplateManager().getTemplate(templateName)
             subTemplate?.let { set.addAll(getDirectoriesOfTemplateAndSubTemplates(it)) }
         }
         set.add(template.getDirectory())
+        return set
+    }
+
+    private fun getModulesToCopyOfTemplateAndSubTemplates(template: ITemplate): Set<String> {
+        val set = HashSet<String>()
+        for (templateName in template.getInheritedTemplateNames()) {
+            val subTemplate = CloudAPI.instance.getTemplateManager().getTemplate(templateName)
+            subTemplate?.let { set.addAll(getModulesToCopyOfTemplateAndSubTemplates(it)) }
+        }
+        set.addAll(template.getModuleNamesToCopy())
         return set
     }
 }

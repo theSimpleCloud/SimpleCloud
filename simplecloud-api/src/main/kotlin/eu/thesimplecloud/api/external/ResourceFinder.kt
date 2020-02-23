@@ -1,6 +1,5 @@
 package eu.thesimplecloud.api.external
 
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import sun.misc.URLClassPath
 import java.io.File
 import java.io.InputStream
@@ -19,12 +18,7 @@ class ResourceFinder {
         @Throws(MalformedURLException::class)
         fun findResource(file: File, pathToResource: String): InputStream? {
             val newClassLoader = URLClassLoader(arrayOf(file.toURI().toURL()))
-            //println(newClassLoader.urLs.joinToString())
-            val resourceAsStream = newClassLoader.getResourceAsStream(pathToResource)
-            if (resourceAsStream != null) {
-                //println(JsonData.fromInputStream(resourceAsStream))
-            }
-            return resourceAsStream
+            return newClassLoader.getResourceAsStream(pathToResource)
         }
 
         fun addToClassLoader(url: URL, urlClassLoader: URLClassLoader = getSystemClassLoader()) {
