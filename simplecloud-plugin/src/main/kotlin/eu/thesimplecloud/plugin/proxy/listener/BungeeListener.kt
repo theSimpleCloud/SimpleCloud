@@ -36,7 +36,7 @@ class BungeeListener : Listener {
             event.setCancelReason(CloudTextBuilder().build(CloudText("§cYou are already registered in the network")))
             return
         }
-        val playerAddress = DefaultPlayerAddress(connection.address.hostName, connection.address.port)
+        val playerAddress = DefaultPlayerAddress(connection.address.hostString, connection.address.port)
         val playerConnection = DefaultPlayerConnection(playerAddress, connection.name, connection.uniqueId, connection.isOnlineMode, connection.version)
 
         //send login request

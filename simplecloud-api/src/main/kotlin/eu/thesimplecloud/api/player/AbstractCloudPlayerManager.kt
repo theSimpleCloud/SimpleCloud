@@ -8,8 +8,10 @@ import eu.thesimplecloud.api.event.player.CloudPlayerUnregisteredEvent
 import eu.thesimplecloud.api.event.player.CloudPlayerUpdatedEvent
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
+import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.NoSuchElementException
+import kotlin.collections.HashMap
 
 abstract class AbstractCloudPlayerManager : ICloudPlayerManager {
 

@@ -58,6 +58,13 @@ class CloudTextBuilder {
         if (cloudText.click != null) {
             textComponent.clickEvent = ClickEvent(ClickEvent.Action.valueOf(cloudText.clickEventType.toString()), cloudText.click)
         }
+
+        val appendedCloudText = cloudText.appendedCloudText
+        if (appendedCloudText != null) {
+            val componentToAppend = build(appendedCloudText)
+            textComponent.addExtra(componentToAppend)
+        }
+
         return textComponent
     }
 
