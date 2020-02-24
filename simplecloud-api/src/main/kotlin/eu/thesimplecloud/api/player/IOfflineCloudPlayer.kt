@@ -27,4 +27,9 @@ interface IOfflineCloudPlayer : Nameable, IProperty {
      */
     fun getOnlineTime(): Long
 
+    /**
+     * Returns whether this player is connected to the network..
+     */
+    fun isOnline(): Boolean = false
+
 }
