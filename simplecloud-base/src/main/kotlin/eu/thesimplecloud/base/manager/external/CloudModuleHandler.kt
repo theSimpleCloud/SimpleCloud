@@ -21,15 +21,17 @@ class CloudModuleHandler : ICloudModuleHandler {
     private val loadedModules = CopyOnWriteArrayList<CloudModuleData>()
 
     fun loadModules() {
-        val modulesDir = File(DirectoryPaths.paths.modulesPath)
-        for (file in modulesDir.listFiles()) {
+        for (file in  getAllModuleJarFiles()) {
             loadModule(file)
         }
     }
 
     fun getAllCloudModuleFileContents(): List<Pair<CloudModuleFileContent, File>> {
-        val modulesDir = File(DirectoryPaths.paths.modulesPath)
-        return modulesDir.listFiles().map { this.cloudModuleLoader.loadModuleFileContent(it, "module.json") to it }
+        return getAllModuleJarFiles().map { this.cloudModuleLoader.loadModuleFileContent(it, "module.json") to it }
+    }
+
+    private fun getAllModuleJarFiles(): List<File> {
+        return File(DirectoryPaths.paths.modulesPath).listFiles().filter { it.name.endsWith(".jar") }
     }
 
     fun unregisterAllModules() {
