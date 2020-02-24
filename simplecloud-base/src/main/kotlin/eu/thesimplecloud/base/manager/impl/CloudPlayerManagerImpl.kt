@@ -145,11 +145,15 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
     }
 
     override fun getOfflineCloudPlayer(name: String): ICommunicationPromise<IOfflineCloudPlayer> {
+        val onlineCloudPlayer = getCachedCloudPlayer(name)
+        if (onlineCloudPlayer != null) return CommunicationPromise.of(onlineCloudPlayer)
         val offlinePlayer = Manager.instance.offlineCloudPlayerHandler.getOfflinePlayer(name)
         return CommunicationPromise.ofNullable(offlinePlayer, NoSuchPlayerException("Player not found"))
     }
 
     override fun getOfflineCloudPlayer(uniqueId: UUID): ICommunicationPromise<IOfflineCloudPlayer> {
+        val onlineCloudPlayer = getCachedCloudPlayer(uniqueId)
+        if (onlineCloudPlayer != null) return CommunicationPromise.of(onlineCloudPlayer)
         val offlinePlayer = Manager.instance.offlineCloudPlayerHandler.getOfflinePlayer(uniqueId)
         return CommunicationPromise.ofNullable(offlinePlayer, NoSuchPlayerException("Player not found"))
     }

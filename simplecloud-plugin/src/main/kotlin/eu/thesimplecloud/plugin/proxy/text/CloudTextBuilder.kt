@@ -10,8 +10,8 @@ import java.util.function.Consumer
 
 class CloudTextBuilder {
 
-    private val colorCodes = Arrays.asList('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f')
-    private val specialCodes = Arrays.asList('k', 'l', 'm', 'n', 'o')
+    private val colorCodes = listOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f')
+    private val specialCodes = listOf('k', 'l', 'm', 'n', 'o')
 
     fun build(cloudText: CloudText): TextComponent {
         val textComponent = TextComponent()
