@@ -1,13 +1,13 @@
-package eu.thesimplecloud.api.syncobject
+package eu.thesimplecloud.api.sync.`object`
 
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.event.syncobject.SynchronizedObjectUpdatedEvent
+import eu.thesimplecloud.api.event.sync.`object`.SynchronizedObjectUpdatedEvent
 import java.lang.IllegalArgumentException
-import java.lang.IllegalStateException
+import java.util.concurrent.ConcurrentHashMap
 
 abstract class AbstractSynchronizedObjectManager : ISynchronizedObjectManager {
 
-    protected val nameToValue: MutableMap<String, ISynchronizedObject> = HashMap()
+    protected val nameToValue: MutableMap<String, ISynchronizedObject> = ConcurrentHashMap()
 
     override fun updateObject(synchronizedObject: ISynchronizedObject, fromPacket: Boolean) {
         if (nameToValue.containsKey(synchronizedObject.getName())) {

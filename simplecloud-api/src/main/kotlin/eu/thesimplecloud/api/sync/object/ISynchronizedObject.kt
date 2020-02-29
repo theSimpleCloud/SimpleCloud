@@ -1,4 +1,4 @@
-package eu.thesimplecloud.api.syncobject
+package eu.thesimplecloud.api.sync.`object`
 
 import eu.thesimplecloud.api.CloudAPI
 

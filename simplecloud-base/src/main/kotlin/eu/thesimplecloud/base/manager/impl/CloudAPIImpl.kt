@@ -6,9 +6,13 @@ import eu.thesimplecloud.api.player.ICloudPlayerManager
 import eu.thesimplecloud.api.screen.ICommandExecuteManager
 import eu.thesimplecloud.api.service.ICloudServiceManager
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroupManager
-import eu.thesimplecloud.api.syncobject.ISynchronizedObjectManager
+import eu.thesimplecloud.api.sync.`object`.ISynchronizedObjectManager
+import eu.thesimplecloud.api.sync.list.manager.ISynchronizedObjectListManager
+import eu.thesimplecloud.api.sync.list.manager.SynchronizedObjectListManager
 import eu.thesimplecloud.api.template.ITemplateManager
 import eu.thesimplecloud.api.wrapper.IWrapperManager
+import eu.thesimplecloud.base.manager.startup.Manager
+import eu.thesimplecloud.clientserverapi.lib.bootstrap.ICommunicationBootstrap
 
 class CloudAPIImpl : CloudAPI() {
 
@@ -20,6 +24,7 @@ class CloudAPIImpl : CloudAPI() {
     private val wrapperManager = WrapperManagerImpl()
     private val eventManager = EventManagerImpl()
     private val synchronizedObjectManager = SynchronizedObjectManagerImpl()
+    private val synchronizedObjectListManager = SynchronizedObjectListManager()
 
 
     override fun getCloudServiceGroupManager(): ICloudServiceGroupManager = this.cloudServiceGroupManager
@@ -33,6 +38,10 @@ class CloudAPIImpl : CloudAPI() {
     override fun getCommandExecuteManager(): ICommandExecuteManager = this.commandExecuteManager
 
     override fun getSynchronizedObjectManager(): ISynchronizedObjectManager = this.synchronizedObjectManager
+
+    override fun getThisSidesCommunicationBootstrap(): ICommunicationBootstrap = Manager.instance.communicationServer
+
+    override fun getSynchronizedObjectListManager(): ISynchronizedObjectListManager = this.synchronizedObjectListManager
 
     override fun getTemplateManager(): ITemplateManager = this.templateManager
 

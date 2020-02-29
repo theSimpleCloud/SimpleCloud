@@ -1,7 +1,7 @@
 package eu.thesimplecloud.base.manager.network.packets
 
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.syncobject.ISynchronizedObject
+import eu.thesimplecloud.api.sync.`object`.ISynchronizedObject
 import eu.thesimplecloud.base.manager.impl.SynchronizedObjectManagerImpl
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.ObjectPacket
