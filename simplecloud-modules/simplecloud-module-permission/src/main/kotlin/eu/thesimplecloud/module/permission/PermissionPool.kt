@@ -1,35 +1,27 @@
 package eu.thesimplecloud.module.permission
 
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.event.sync.list.SynchronizedListObjectRemovedEvent
-import eu.thesimplecloud.api.eventapi.CloudEventHandler
-import eu.thesimplecloud.api.eventapi.IListener
-import eu.thesimplecloud.api.event.sync.list.SynchronizedListObjectUpdatedEvent
-import eu.thesimplecloud.base.manager.startup.Manager
-import eu.thesimplecloud.module.permission.core.TestSynchronizedListObject
-import eu.thesimplecloud.module.permission.core.TestSynchronizedObjectList
-import eu.thesimplecloud.plugin.startup.CloudPlugin
+import eu.thesimplecloud.module.permission.group.manager.IPermissionGroupManager
+import eu.thesimplecloud.module.permission.group.manager.PermissionGroupManager
+import eu.thesimplecloud.module.permission.player.manager.IPermissionPlayerManager
 
-class PermissionPool : IPermissionPool {
+class PermissionPool(private val permissionGroupManager: PermissionGroupManager) : IPermissionPool {
+
+    private val permissionPlayerManager = object : IPermissionPlayerManager {}
 
     init {
-        CloudAPI.instance.getSynchronizedObjectListManager().registerSynchronizedObjectList(TestSynchronizedObjectList())
-        val cloudModule = if (CloudAPI.instance.isManager()) Manager.instance else CloudPlugin.instance
-        CloudAPI.instance.getEventManager().registerListener(cloudModule, object : IListener {
+        instance = this
+        CloudAPI.instance.getSynchronizedObjectListManager().registerSynchronizedObjectList(permissionGroupManager)
+    }
 
-            @CloudEventHandler
-            fun on(event: SynchronizedListObjectUpdatedEvent) {
-                println("updated list obj: " + (event.obj as TestSynchronizedListObject))
-                println(CloudAPI.instance.getSynchronizedObjectListManager().getSynchronizedObjectList("test")?.getAllCachedObjects())
-            }
 
-            @CloudEventHandler
-            fun on(event: SynchronizedListObjectRemovedEvent) {
-                println("removed list obj: " + (event.obj as TestSynchronizedListObject))
-                println("list objects: " + CloudAPI.instance.getSynchronizedObjectListManager().getSynchronizedObjectList("test")?.getAllCachedObjects())
-            }
 
-        })
+    override fun getPermissionGroupManager(): IPermissionGroupManager = this.permissionGroupManager
+
+    override fun getPermissionPlayerManager(): IPermissionPlayerManager = this.permissionPlayerManager
+
+    companion object {
+        lateinit var instance: PermissionPool
     }
 
 }

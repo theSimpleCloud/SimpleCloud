@@ -1,0 +1,25 @@
+package eu.thesimplecloud.api.property
+
+import com.fasterxml.jackson.annotation.JsonIgnore
+import eu.thesimplecloud.clientserverapi.lib.json.GsonExclude
+import eu.thesimplecloud.clientserverapi.lib.json.JsonData
+
+
+class Property<T : Any>(
+        value: T
+) {
+    @GsonExclude
+    var savedValue: T? = value
+    val className = value::class.java.name
+    @JsonIgnore
+    val valueAsString: String = JsonData.fromObject(value).getAsJsonString()
+
+    @JsonIgnore
+    fun getValue(): T {
+        savedValue?.let {
+            savedValue = JsonData.fromJsonString(valueAsString).getObject(Class.forName(className) as Class<T>)
+        }
+        return savedValue!!
+    }
+
+}

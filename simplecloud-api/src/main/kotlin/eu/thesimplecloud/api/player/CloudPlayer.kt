@@ -2,6 +2,7 @@ package eu.thesimplecloud.api.player
 
 import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
 import eu.thesimplecloud.api.player.connection.IPlayerConnection
+import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import java.util.*
 
@@ -13,13 +14,15 @@ class CloudPlayer(
         onlineTime: Long,
         private var connectedProxyName: String,
         private var connectedServerName: String?,
-        private val playerConnection: DefaultPlayerConnection
+        private val playerConnection: DefaultPlayerConnection,
+        propertyMap: MutableMap<String, Property<*>>
 ) : OfflineCloudPlayer(
         name,
         uniqueId,
         firstLogin,
         lastLogin,
-        onlineTime
+        onlineTime,
+        propertyMap
 ), ICloudPlayer {
 
     private var online = true
@@ -34,7 +37,7 @@ class CloudPlayer(
 
     override fun isOnline(): Boolean = this.online
 
-    override fun clone(): ICloudPlayer = CloudPlayer(getName(), getUniqueId(), getFirstLogin(), getLastLogin(), getOnlineTime(), connectedProxyName, connectedServerName, playerConnection)
+    override fun clone(): ICloudPlayer = CloudPlayer(getName(), getUniqueId(), getFirstLogin(), getLastLogin(), getOnlineTime(), connectedProxyName, connectedServerName, playerConnection, propertyMap)
 
     fun setOffline() {
         this.online = false

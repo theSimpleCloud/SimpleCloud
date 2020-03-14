@@ -1,5 +1,6 @@
 package eu.thesimplecloud.api.service.impl
 
+import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.clientserverapi.lib.json.GsonExclude
 import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
@@ -36,7 +37,7 @@ data class DefaultCloudService(
     @GsonExclude
     private var lastUpdate = System.currentTimeMillis()
 
-    var propertyMap = HashMap<String, Any>()
+    var propertyMap = HashMap<String, Property<*>>()
 
     override fun getGroupName(): String = this.groupName
 
@@ -103,10 +104,10 @@ data class DefaultCloudService(
         return JsonData.fromObjectWithGsonExclude(this).getAsJsonString()
     }
 
-    override fun getProperties(): Map<String, Any> = this.propertyMap
+    override fun getProperties(): Map<String, Property<*>> = this.propertyMap
 
-    override fun <T : Any> setProperty(name: String, value: T) {
-        this.propertyMap[name] = value
+    override fun <T : Any> setProperty(name: String, property: Property<T>) {
+        this.propertyMap[name] = property
     }
 
 

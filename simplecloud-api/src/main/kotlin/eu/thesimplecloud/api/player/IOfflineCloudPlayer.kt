@@ -1,10 +1,11 @@
 package eu.thesimplecloud.api.player
 
-import eu.thesimplecloud.api.property.IProperty
+import com.fasterxml.jackson.annotation.JsonIgnore
+import eu.thesimplecloud.api.property.IPropertyMap
 import eu.thesimplecloud.api.utils.Nameable
 import java.util.*
 
-interface IOfflineCloudPlayer : Nameable, IProperty {
+interface IOfflineCloudPlayer : Nameable, IPropertyMap {
 
     /**
      * Returns the unique id of this player.
@@ -15,7 +16,6 @@ interface IOfflineCloudPlayer : Nameable, IProperty {
      * Returns the timestamp of the last login.
      */
     fun getLastLogin(): Long
-
 
     /**
      * Returns the timestamp of the first login.
@@ -30,6 +30,7 @@ interface IOfflineCloudPlayer : Nameable, IProperty {
     /**
      * Returns whether this player is connected to the network..
      */
+    @JsonIgnore
     fun isOnline(): Boolean = false
 
 }

@@ -12,5 +12,7 @@ dependencies {
     implementation group: 'io.netty', name: 'netty-all', version: '4.1.1.Final'
     // https://mvnrepository.com/artijava -jar sifact/commons-io/commons-io
     implementation group: 'commons-io', name: 'commons-io', version: '2.6'
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.0.1'
 
 }
