@@ -1,0 +1,8 @@
+{
+  "name": "SimpleCloud-CloudFlare",
+  "author": "Fllip",
+  "mainClass": "eu.thesimplecloud.module.cloudflare.CloudFlareModule",
+  "moduleCopyType": "NONE",
+  "repositories": [],
+  "dependencies": []
+}

@@ -7,4 +7,6 @@ include 'simplecloud-base'
 include 'simplecloud-modules'
 include 'simplecloud-modules:simplecloud-module-permission'
 findProject(':simplecloud-modules:simplecloud-module-permission')?.name = 'simplecloud-module-permission'
+include 'simplecloud-modules:simplecloud-module-cloudflare'
+findProject(':simplecloud-modules:simplecloud-module-cloudflare')?.name = 'simplecloud-module-cloudflare'
 

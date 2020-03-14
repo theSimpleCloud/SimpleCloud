@@ -13,7 +13,7 @@ class LauncherDependencyLoader {
                 Dependency("io.netty", "netty-all", "4.1.4.Final"),
                 Dependency("eu.thesimplecloud.clientserverapi", "clientserverapi", "2.0.22-SNAPSHOT"),
                 Dependency("org.reflections", "reflections", "0.9.10"),
-                Dependency("com.google.code.gson", "gson", "2.8.5"),
+                Dependency("com.google.code.gson", "gson", "2.8.6"),
                 Dependency("commons-io", "commons-io", "2.6"),
                 Dependency("org.slf4j", "slf4j-simple", "1.7.10"),
                 Dependency("com.github.ajalt", "clikt", "2.2.0"))
