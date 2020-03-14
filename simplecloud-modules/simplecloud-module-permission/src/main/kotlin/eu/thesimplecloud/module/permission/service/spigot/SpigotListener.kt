@@ -18,10 +18,8 @@ class SpigotListener : Listener {
         try {
             val clazz: Class<*>? = ReflectionUtils.reflectCraftClazz(".entity.CraftHumanEntity")
             var field: Field? = null
-            println("class: $clazz")
             if (clazz != null) {
                 field = clazz.getDeclaredField("perm")
-                println("field: $field")
             }
             if (field == null) {
                 println("WARNING: Permission field was null")
@@ -38,8 +36,6 @@ class SpigotListener : Listener {
         } catch (ex: IllegalAccessException) {
             ex.printStackTrace()
         }
-        println(event.player.getCloudPlayer().getProperties())
-        println(JsonData.fromObject(PermissionPool.instance.getPermissionPlayerManager().getCachedPermissionPlayer(event.player.uniqueId)!!).getAsJsonString())
     }
 
 }
