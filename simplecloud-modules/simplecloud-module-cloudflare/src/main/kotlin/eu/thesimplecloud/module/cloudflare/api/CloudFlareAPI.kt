@@ -1,5 +1,6 @@
 package eu.thesimplecloud.module.cloudflare.api
 
+import com.google.gson.JsonArray
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.clientserverapi.lib.json.JsonData
@@ -66,7 +67,7 @@ class CloudFlareAPI(val config: Config) {
                     return resultPath.getString("id")
                 } else {
                     try {
-                        val array = result.getAsJsonArray("errors")
+                        val array: JsonArray = null!! //result.getAsJsonArray("errors")!!
                         if (array.size() == 0) {
                             return null
                         }

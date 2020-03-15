@@ -1,0 +1,7 @@
+name: SimpleCloud-Proxy
+version: 1.0
+author: Fllip
+
+main: eu.thesimplecloud.module.proxy.service.BungeePluginMain
+
+depend: [SimpleCloud-Plugin]

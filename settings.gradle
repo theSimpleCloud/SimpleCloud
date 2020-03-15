@@ -9,4 +9,6 @@ include 'simplecloud-modules:simplecloud-module-permission'
 findProject(':simplecloud-modules:simplecloud-module-permission')?.name = 'simplecloud-module-permission'
 include 'simplecloud-modules:simplecloud-module-cloudflare'
 findProject(':simplecloud-modules:simplecloud-module-cloudflare')?.name = 'simplecloud-module-cloudflare'
+include 'simplecloud-modules:simplecloud-module-proxy'
+findProject(':simplecloud-modules:simplecloud-module-proxy')?.name = 'simplecloud-module-proxy'
 
