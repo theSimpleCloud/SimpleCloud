@@ -19,20 +19,16 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     implementation group: 'org.reflections', name: 'reflections', version: '0.9.10'
     compile(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion) {
-        exclude group: 'org.jetbrains.kotlin'
+        transitive = false
     }
     compile(project(":simplecloud-api")) {
-        exclude group: 'io.netty'
-        exclude group: 'org.jetbrains.kotlin'
+        transitive = false
     }
     implementation group: 'io.netty', name: 'netty-all', version: '4.1.1.Final'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
     compile(project(":simplecloud-client")) {
-        exclude group: 'org.jetbrains.kotlin'
-        exclude group: 'eu.thesimplecloud.clientserverapi'
-        exclude module: 'simplecloud-api'
-        exclude group: 'io.netty'
+        transitive = false
     }
     implementation 'org.spigotmc:spigot-api:1.15.1-R0.1-SNAPSHOT'
     // The full Spigot server with no shadowing. Requires mavenLocal.

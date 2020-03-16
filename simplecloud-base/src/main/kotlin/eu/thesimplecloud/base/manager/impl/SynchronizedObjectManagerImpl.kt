@@ -1,9 +1,8 @@
 package eu.thesimplecloud.base.manager.impl
 
-import eu.thesimplecloud.api.network.packets.syncobject.PacketIOUpdateSynchronizedObject
-import eu.thesimplecloud.api.syncobject.AbstractSynchronizedObjectManager
-import eu.thesimplecloud.api.syncobject.ISynchronizedObject
-import eu.thesimplecloud.clientserverapi.lib.connection.AbstractConnection
+import eu.thesimplecloud.api.network.packets.sync.`object`.PacketIOUpdateSynchronizedObject
+import eu.thesimplecloud.api.sync.`object`.AbstractSynchronizedObjectManager
+import eu.thesimplecloud.api.sync.`object`.ISynchronizedObject
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise

@@ -3,17 +3,16 @@ package eu.thesimplecloud.api.service
 import eu.thesimplecloud.clientserverapi.lib.bootstrap.IBootstrap
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.property.IProperty
+import eu.thesimplecloud.api.property.IPropertyMap
 import eu.thesimplecloud.api.screen.ICommandExecutable
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.api.template.ITemplate
 import eu.thesimplecloud.api.utils.IAuthenticatable
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import java.lang.IllegalStateException
 import java.util.*
 
-interface ICloudService : IAuthenticatable, IBootstrap, ICommandExecutable, IProperty {
+interface ICloudService : IAuthenticatable, IBootstrap, ICommandExecutable, IPropertyMap {
 
     /**
      * Returns the service group name of this service

@@ -1,0 +1,6 @@
+name: SimpleCloud-Permissions
+version: ${project.version}
+author: Wetterbericht
+depend: [SimpleCloudAPI]
+
+main: eu.thesimplecloud.module.permission.service.bungee.BungeePluginMain

@@ -1,7 +1,7 @@
-package eu.thesimplecloud.api.network.packets.syncobject
+package eu.thesimplecloud.api.network.packets.sync.`object`
 
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.syncobject.ISynchronizedObject
+import eu.thesimplecloud.api.sync.`object`.ISynchronizedObject
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise

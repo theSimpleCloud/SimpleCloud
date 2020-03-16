@@ -1,13 +1,10 @@
 package eu.thesimplecloud.client.impl
 
-import eu.thesimplecloud.api.network.packets.syncobject.PacketIOUpdateSynchronizedObject
-import eu.thesimplecloud.api.syncobject.AbstractSynchronizedObjectManager
-import eu.thesimplecloud.api.syncobject.ISynchronizedObject
-import eu.thesimplecloud.api.syncobject.ISynchronizedObjectManager
+import eu.thesimplecloud.api.network.packets.sync.`object`.PacketIOUpdateSynchronizedObject
+import eu.thesimplecloud.api.sync.`object`.AbstractSynchronizedObjectManager
+import eu.thesimplecloud.api.sync.`object`.ISynchronizedObject
 import eu.thesimplecloud.client.packets.PacketOutGetSynchronizedObject
 import eu.thesimplecloud.clientserverapi.client.INettyClient
-import eu.thesimplecloud.clientserverapi.client.NettyClient
-import eu.thesimplecloud.clientserverapi.lib.packet.packetsender.sendQuery
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
 class SynchronizedObjectManagerImpl(private val client: INettyClient) : AbstractSynchronizedObjectManager() {

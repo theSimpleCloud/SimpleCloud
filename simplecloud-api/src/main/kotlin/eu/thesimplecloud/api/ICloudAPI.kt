@@ -6,9 +6,11 @@ import eu.thesimplecloud.api.screen.ICommandExecuteManager
 import eu.thesimplecloud.api.screen.ICommandExecutable
 import eu.thesimplecloud.api.service.ICloudServiceManager
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroupManager
-import eu.thesimplecloud.api.syncobject.ISynchronizedObjectManager
+import eu.thesimplecloud.api.sync.`object`.ISynchronizedObjectManager
+import eu.thesimplecloud.api.sync.list.manager.ISynchronizedObjectListManager
 import eu.thesimplecloud.api.template.ITemplateManager
 import eu.thesimplecloud.api.wrapper.IWrapperManager
+import eu.thesimplecloud.clientserverapi.lib.bootstrap.ICommunicationBootstrap
 
 /**
  * It represents the main part of a cloud part
@@ -57,8 +59,24 @@ interface ICloudAPI {
     fun getSynchronizedObjectManager(): ISynchronizedObjectManager
 
     /**
+     * Returns the [ICommunicationBootstrap] of this side.
+     */
+    fun getThisSidesCommunicationBootstrap(): ICommunicationBootstrap
+
+    /**
+     * Returns the [ISynchronizedObjectListManager]
+     */
+    fun getSynchronizedObjectListManager(): ISynchronizedObjectListManager
+
+    /**
      * Returns the name of this side
      * e.g Manager / Wrapper / Lobby-1
      */
     fun getThisSidesName(): String
+
+    /**
+     * Returns whether this side is a manager.
+     */
+    fun isManager(): Boolean = getThisSidesName() == "Manager"
+
 }

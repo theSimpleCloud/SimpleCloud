@@ -19,9 +19,9 @@ class PacketInCreateCloudPlayer() : JsonPacket() {
         val proxyName = this.jsonData.getString("proxyName") ?: return contentException("proxyName")
         val offlinePlayer = Manager.instance.offlineCloudPlayerHandler.getOfflinePlayer(playerConnection.getUniqueId())
         val cloudPlayer = if (offlinePlayer == null) {
-            CloudPlayer(playerConnection.getName(), playerConnection.getUniqueId(), System.currentTimeMillis(), System.currentTimeMillis(), 0L, proxyName, null, playerConnection)
+            CloudPlayer(playerConnection.getName(), playerConnection.getUniqueId(), System.currentTimeMillis(), System.currentTimeMillis(), 0L, proxyName, null, playerConnection, HashMap())
         } else {
-            CloudPlayer(playerConnection.getName(), playerConnection.getUniqueId(), offlinePlayer.getFirstLogin(), System.currentTimeMillis(), offlinePlayer.getOnlineTime(), proxyName, null, playerConnection)
+            CloudPlayer(playerConnection.getName(), playerConnection.getUniqueId(), offlinePlayer.getFirstLogin(), System.currentTimeMillis(), offlinePlayer.getOnlineTime(), proxyName, null, playerConnection, offlinePlayer.getProperties().toMutableMap())
         }
         CloudAPI.instance.getCloudPlayerManager().updateCloudPlayer(cloudPlayer)
         Manager.instance.offlineCloudPlayerHandler.saveCloudPlayer(cloudPlayer.toOfflinePlayer() as OfflineCloudPlayer)
