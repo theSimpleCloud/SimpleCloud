@@ -17,15 +17,26 @@ import java.lang.reflect.Field
 @Command("edit", CommandType.CONSOLE_AND_INGAME)
 class EditCommand : ICommandHandler {
 
-    @CommandSubPath("group <name> <parameter> <value>", "Edits a service group.")
-    fun editGroup(commandSender: ICommandSender, @CommandArgument("name") name: String, @CommandArgument("parameter") parameter: String, @CommandArgument("value") value: String){
-        val serviceGroup = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(name)
-        if (serviceGroup == null){
-            Launcher.instance.consoleSender.sendMessage("manager.command.edit.group.not-exist", "The specified group does not exist.")
-            return
+    @CommandSubPath("group <name> <parameter>", "Shows the parameters value")
+    fun editGroup(commandSender: ICommandSender, @CommandArgument("name") name: String, @CommandArgument("parameter") parameter: String) {
+        val fields = getFieldsOfGroup(name) ?: return
+        val serviceGroup = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(name)!!
+        val lowerCaseFieldNames = fields.map { it.name.toLowerCase() }
+        if (lowerCaseFieldNames.contains(parameter.toLowerCase())) {
+            val field = fields[lowerCaseFieldNames.indexOf(parameter.toLowerCase())]
+            field.isAccessible = true
+            val fieldValue = field[serviceGroup]
+            commandSender.sendMessage("Value: $fieldValue")
+        } else {
+            sendAllParameters(commandSender, fields)
         }
-        val fields = serviceGroup::class.java.getAllFieldsFromClassAndSubClasses().filter { !Collection::class.java.isAssignableFrom(it.type) }
-        val lowerCaseFieldNames = fields.map { it.name }.map { it.toLowerCase() }
+    }
+
+    @CommandSubPath("group <name> <parameter> <value>", "Edits a service group.")
+    fun editGroup(commandSender: ICommandSender, @CommandArgument("name") name: String, @CommandArgument("parameter") parameter: String, @CommandArgument("value") value: String) {
+        val fields = getFieldsOfGroup(name) ?: return
+        val serviceGroup = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(name)!!
+        val lowerCaseFieldNames = fields.map { it.name.toLowerCase() }
         if (lowerCaseFieldNames.contains(parameter.toLowerCase())) {
             val field = fields[lowerCaseFieldNames.indexOf(parameter.toLowerCase())]
             field.isAccessible = true
@@ -47,18 +58,28 @@ class EditCommand : ICommandHandler {
         }
     }
 
-    fun sendAllParameters(commandSender: ICommandSender, fields: List<Field>){
+    fun getFieldsOfGroup(groupName: String): List<Field>? {
+        val serviceGroup = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(groupName)
+        if (serviceGroup == null) {
+            Launcher.instance.consoleSender.sendMessage("manager.command.edit.group.not-exist", "The specified group does not exist.")
+            return null
+        }
+        val allFields = serviceGroup::class.java.getAllFieldsFromClassAndSubClasses().filter { !Collection::class.java.isAssignableFrom(it.type) }
+        return allFields.filterNot { it.name == "name" || it.name == "serviceVersion" }
+    }
+
+    fun sendAllParameters(commandSender: ICommandSender, fields: List<Field>) {
         commandSender.sendMessage("manager.command.edit.group.allowed-parameters", "Allowed parameters are:")
         commandSender.sendMessage(fields.joinToString { it.name })
     }
 
     @CommandSubPath("template <name> inheritance add <otherTemplate>", "Adds a inheritance to a template")
     fun addInheritTemplate(commandSender: ICommandSender, @CommandArgument("name") template: ITemplate, @CommandArgument("otherTemplate") otherTemplate: ITemplate) {
-        if (template == otherTemplate){
+        if (template == otherTemplate) {
             commandSender.sendMessage("manager.command.edit.template.inheritance.add.both-equal", "Cannot add a template as inheritance to itself.")
             return
         }
-        if (template.getInheritedTemplateNames().contains(otherTemplate.getName())){
+        if (template.getInheritedTemplateNames().contains(otherTemplate.getName())) {
             commandSender.sendMessage("manager.command.edit.template.inheritance.add.already-added", "Template %NAME%", template.getName(), " is already inheriting from %OTHER_NAME%", otherTemplate.getName())
             return
         }
@@ -69,7 +90,7 @@ class EditCommand : ICommandHandler {
 
     @CommandSubPath("template <name> inheritance remove <otherTemplate>", "Removes a inheritance from a template")
     fun removeInheritTemplate(commandSender: ICommandSender, @CommandArgument("name") template: ITemplate, @CommandArgument("otherTemplate") otherTemplate: ITemplate) {
-        if (!template.getInheritedTemplateNames().contains(otherTemplate.getName())){
+        if (!template.getInheritedTemplateNames().contains(otherTemplate.getName())) {
             commandSender.sendMessage("manager.command.edit.template.inheritance.remove.not-added", "Template %NAME%", template.getName(), " is not inheriting from %OTHER_NAME%", otherTemplate.getName())
             return
         }
@@ -81,7 +102,7 @@ class EditCommand : ICommandHandler {
 
     @CommandSubPath("template <name> module add <module>", "Adds a module to a template")
     fun addModuleNameToCopy(commandSender: ICommandSender, @CommandArgument("name") template: ITemplate, @CommandArgument("module") module: String) {
-        if (template.getModuleNamesToCopy().map { it.toLowerCase() }.contains(module)){
+        if (template.getModuleNamesToCopy().map { it.toLowerCase() }.contains(module)) {
             commandSender.sendMessage("manager.command.edit.template.modules.add.already-added", "Module %MODULE%", module, " is already added to template %TEMPLATE%", template.getName())
             return
         }
@@ -92,7 +113,7 @@ class EditCommand : ICommandHandler {
 
     @CommandSubPath("template <name> module remove <module>", "Removes a module from a template")
     fun removeModuleNameToCopy(commandSender: ICommandSender, @CommandArgument("name") template: ITemplate, @CommandArgument("module") module: String) {
-        if (!template.getModuleNamesToCopy().map { it.toLowerCase() }.contains(module)){
+        if (!template.getModuleNamesToCopy().map { it.toLowerCase() }.contains(module)) {
             commandSender.sendMessage("manager.command.edit.template.modules.add.not-added", "Module %MODULE%", module, " was not added to template %TEMPLATE%", template.getName())
             return
         }

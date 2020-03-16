@@ -114,7 +114,6 @@ class CommandManager() {
         val dataList = getCommandDataByMinimumArgumentLength(messageArray.size)
         return dataList.filter { commandData ->
             val path = commandData.getPathWithCloudPrefixIfRequired()
-            Launcher.instance.logger.console("$message : $path")
             val pathArray = path.split(" ")
             messageArray.withIndex().all {
                 val pathValue = pathArray[it.index]
