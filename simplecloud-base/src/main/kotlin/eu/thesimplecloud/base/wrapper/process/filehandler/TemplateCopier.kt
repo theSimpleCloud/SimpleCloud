@@ -40,6 +40,7 @@ class TemplateCopier : ITemplateCopier {
         val modulesByName = Wrapper.instance.existingModules.filter { moduleNamesToCopy.contains(it.first.name) }
 
         modulesByCopyType.union(modulesByName).distinctBy { it.first.name }.forEach { FileUtils.copyFile(it.second, File(serviceTmpDir, "/plugins/" + it.second.name)) }
+
     }
 
     /*

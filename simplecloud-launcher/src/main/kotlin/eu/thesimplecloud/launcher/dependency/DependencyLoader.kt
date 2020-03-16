@@ -141,7 +141,7 @@ class DependencyLoader : IDependencyLoader {
     private fun checkDependenciesToDownloadDependencies() {
         val dependencies = listOf(Dependency("org.apache.maven", "maven-model", "3.3.9"),
                 Dependency("org.codehaus.plexus", "plexus-utils", "3.3.0"),
-                Dependency("com.google.code.gson", "gson", "2.8.5"),
+                Dependency("com.google.code.gson", "gson", "2.8.6"),
                 Dependency("org.codehaus.woodstox", "stax2-api", "4.2"),
                 Dependency("com.fasterxml.woodstox", "woodstox-core", "6.0.2"),
                 Dependency("com.fasterxml.jackson.core", "jackson-databind", "2.10.1"),
