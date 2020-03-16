@@ -1,6 +1,7 @@
 package eu.thesimplecloud.module.proxy.service.listener
 
 import eu.thesimplecloud.api.player.text.CloudText
+import eu.thesimplecloud.module.proxy.extensions.mapToLowerCase
 import eu.thesimplecloud.module.proxy.service.BungeePluginMain
 import eu.thesimplecloud.plugin.proxy.text.CloudTextBuilder
 import eu.thesimplecloud.plugin.startup.CloudPlugin
@@ -35,7 +36,7 @@ class BungeeListener(val plugin: BungeePluginMain) : Listener {
 
         if (plugin.thisService.getServiceGroup().isInMaintenance()) {
             if (!player.hasPermission(JOIN_MAINTENANCE_PERMISSION) &&
-                    !proxyConfiguration.whitelist.map { it.toLowerCase() }.contains(player.name.toLowerCase())) {
+                    !proxyConfiguration.whitelist.mapToLowerCase().contains(player.name.toLowerCase())) {
                 player.disconnect(CloudTextBuilder().build(CloudText(config.maintenanceKickMessage)))
                 event.isCancelled = true
             }
@@ -43,9 +44,12 @@ class BungeeListener(val plugin: BungeePluginMain) : Listener {
             return
         }
 
-        if (plugin.getOnlinePlayers() >= proxyConfiguration.maxPlayers) {
+
+        val maxPlayers = plugin.thisService.getMaxPlayers()
+
+        if (plugin.getOnlinePlayers() >= maxPlayers) {
             if (!player.hasPermission(JOIN_FULL_PERMISSION) &&
-                    !proxyConfiguration.whitelist.map { it.toLowerCase() }.contains(player.name.toLowerCase())) {
+                    !proxyConfiguration.whitelist.mapToLowerCase().contains(player.name.toLowerCase())) {
                 player.disconnect(CloudTextBuilder().build(CloudText(config.fullProxyKickMessage)))
                 event.isCancelled = true
             }
@@ -78,15 +82,17 @@ class BungeeListener(val plugin: BungeePluginMain) : Listener {
             response.version = ServerPing.Protocol(plugin.replaceString(versionName), -1)
         }
 
+        val maxPlayers = plugin.thisService.getMaxPlayers()
+
         if (playerInfo != null && playerInfo.isNotEmpty()) {
             val playerInfoString = plugin.replaceString(playerInfo.joinToString("\n"))
             val sample = arrayOf(ServerPing.PlayerInfo(playerInfoString, ""))
-            response.players = ServerPing.Players(proxyConfiguration.maxPlayers, onlinePlayers, sample)
+            response.players = ServerPing.Players(maxPlayers, onlinePlayers, sample)
 
             return
         }
 
-        response.players.max = proxyConfiguration.maxPlayers
+        response.players.max = maxPlayers
         response.players.online = onlinePlayers
     }
 

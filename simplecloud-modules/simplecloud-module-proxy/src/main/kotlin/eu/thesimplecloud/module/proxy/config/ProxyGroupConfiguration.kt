@@ -9,8 +9,7 @@ package eu.thesimplecloud.module.proxy.config
 
 data class ProxyGroupConfiguration(
         val proxyGroup: String,
-        val maxPlayers: Int,
-        val whitelist: List<String>,
+        val whitelist: MutableList<String>,
         val motds: MotdConfiguration,
         val maintenanceMotds: MotdConfiguration
 )
