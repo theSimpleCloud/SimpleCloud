@@ -104,6 +104,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
     }
 
     fun executeCommand(command: String) {
+        if (command.isBlank()) return
         this.commandManager.handleCommand(command, this.consoleSender)
     }
 

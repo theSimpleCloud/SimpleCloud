@@ -1,11 +1,13 @@
 package eu.thesimplecloud.plugin.proxy
 
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.ingamecommand.SynchronizedIngameCommandNamesContainer
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.servicegroup.grouptype.ICloudServerGroup
 import eu.thesimplecloud.plugin.listener.CloudListener
 import eu.thesimplecloud.plugin.proxy.listener.BungeeListener
+import eu.thesimplecloud.plugin.proxy.listener.IngameCommandListener
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.plugin.Plugin
@@ -15,6 +17,8 @@ import java.net.URLClassLoader
 class CloudProxyPlugin : Plugin(), ICloudProxyPlugin {
 
     val lobbyConnector = LobbyConnector()
+    var synchronizedIngameCommandNamesContainer = SynchronizedIngameCommandNamesContainer()
+        private set
 
     companion object {
         @JvmStatic
@@ -49,8 +53,11 @@ class CloudProxyPlugin : Plugin(), ICloudProxyPlugin {
 
     override fun onLoad() {
         ProxyServer.getInstance().reconnectHandler = ReconnectHandlerImpl()
-        val classLoader = URLClassLoader(arrayOf(this.file.toURI().toURL()))
         CloudPlugin(this)
+        val synchronizedObjectPromise = CloudAPI.instance.getSynchronizedObjectManager().requestSynchronizedObject("simplecloud-ingamecommands", SynchronizedIngameCommandNamesContainer::class.java)
+        synchronizedObjectPromise.addResultListener {
+            this.synchronizedIngameCommandNamesContainer = it
+        }
     }
 
     override fun onEnable() {
@@ -63,6 +70,7 @@ class CloudProxyPlugin : Plugin(), ICloudProxyPlugin {
         CloudPlugin.instance.onEnable()
         CloudAPI.instance.getEventManager().registerListener(CloudPlugin.instance, CloudListener())
         ProxyServer.getInstance().pluginManager.registerListener(this, BungeeListener())
+        ProxyServer.getInstance().pluginManager.registerListener(this, IngameCommandListener())
 
     }
 

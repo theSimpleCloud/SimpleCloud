@@ -9,6 +9,7 @@ import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.service.ServiceVersion
 import eu.thesimplecloud.api.template.ITemplate
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
+import eu.thesimplecloud.launcher.extension.sendMessage
 import kotlin.properties.Delegates
 
 class ServerGroupSetup : ISetup {

@@ -14,8 +14,10 @@ import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.extension.sendPacketToAllAuthenticatedClients
 import eu.thesimplecloud.api.network.packets.template.PacketIOUpdateTemplate
 import eu.thesimplecloud.api.template.impl.DefaultTemplate
+import eu.thesimplecloud.launcher.console.command.CommandType
+import eu.thesimplecloud.launcher.extension.sendMessage
 
-@Command("create", true)
+@Command("create", CommandType.CONSOLE)
 class CreateCommand : ICommandHandler {
 
     val templateManager = CloudAPI.instance.getTemplateManager()

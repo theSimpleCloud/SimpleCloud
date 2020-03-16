@@ -9,8 +9,10 @@ import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.extension.sendPacketToAllAuthenticatedClients
 import eu.thesimplecloud.api.network.packets.template.PacketIODeleteTemplate
+import eu.thesimplecloud.launcher.console.command.CommandType
+import eu.thesimplecloud.launcher.extension.sendMessage
 
-@Command("delete", true)
+@Command("delete", CommandType.CONSOLE)
 class DeleteCommand : ICommandHandler {
 
     val templateManager = CloudAPI.instance.getTemplateManager()

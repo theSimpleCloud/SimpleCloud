@@ -1,6 +1,8 @@
 package eu.thesimplecloud.launcher.console.command
 
 import com.google.gson.GsonBuilder
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.command.ICommandSender
 import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 import eu.thesimplecloud.launcher.startup.Launcher
@@ -10,6 +12,10 @@ import eu.thesimplecloud.launcher.invoker.MethodInvokeHelper
 import eu.thesimplecloud.api.external.ICloudModule
 import eu.thesimplecloud.api.parser.string.StringParser
 import eu.thesimplecloud.api.utils.getEnumValues
+import eu.thesimplecloud.launcher.console.ConsoleSender
+import eu.thesimplecloud.launcher.event.command.CommandExecuteEvent
+import eu.thesimplecloud.launcher.event.command.CommandRegisteredEvent
+import eu.thesimplecloud.launcher.extension.sendMessage
 import org.reflections.Reflections
 import java.lang.NullPointerException
 import kotlin.collections.ArrayList
@@ -29,12 +35,17 @@ class CommandManager() {
     val allowedTypesWithoutCommandArgument = listOf(ICommandSender::class.java)
 
     fun handleCommand(readLine: String, commandSender: ICommandSender) {
-        val readLine = readLine.trim()
+        val readLine = if (readLine.trim().equals("cloud", true)) "cloud help" else readLine.trim()
+
+        val covertPathFunction: (CommandData) -> String = { if (commandSender is ConsoleSender) it.path else it.getPathWithCloudPrefixIfRequired() }
         val matchingCommandData = getMatchingCommandData(readLine)
         if (matchingCommandData == null) {
             val list = getAvailableArgsMatchingCommandData(readLine)
-
-            list.forEach { commandSender.sendMessage(">> ${it.path} (${it.commandDescription})") }
+            if (commandSender is ConsoleSender) {
+                list.forEach { commandSender.sendMessage(">> ${covertPathFunction(it)} (${it.commandDescription})") }
+            } else {
+                list.filter { it.commandType != CommandType.CONSOLE }.forEach { commandSender.sendMessage("§8>> §7${covertPathFunction(it)}") }
+            }
             if (list.isEmpty()) {
                 Launcher.instance.logger.warning("This command could not be found! Type \"help\" for help.")
                 return
@@ -42,6 +53,16 @@ class CommandManager() {
 
             return
         }
+        if (matchingCommandData.commandType == CommandType.CONSOLE && commandSender !is ConsoleSender) {
+            commandSender.sendMessage("commandmanager.onlyconsole", "This command can only be executed via the console.")
+            return
+        }
+
+        val event = CommandExecuteEvent(commandSender, matchingCommandData)
+        getCloudAPI()?.getEventManager()?.call(event)
+        if (event.isCancelled())
+            return
+
         val list = ArrayList<Any?>()
         val messageArray = readLine.split(" ")
         for (parameterData in matchingCommandData.parameterDataList) {
@@ -82,7 +103,7 @@ class CommandManager() {
         val messageArray = message.split(" ")
         val commandDataList = getCommandDataByArgumentLength(messageArray.size)
         return commandDataList.firstOrNull { commandData ->
-            val path = commandData.path.trim()
+            val path = commandData.getPathWithCloudPrefixIfRequired().trim()
             val pathArray = path.split(" ")
             pathArray.withIndex().all { isParamater(it.value) || it.value.toLowerCase() == messageArray[it.index].toLowerCase() }
         }
@@ -92,7 +113,8 @@ class CommandManager() {
         val messageArray = message.split(" ")
         val dataList = getCommandDataByMinimumArgumentLength(messageArray.size)
         return dataList.filter { commandData ->
-            val path = commandData.path
+            val path = commandData.getPathWithCloudPrefixIfRequired()
+            Launcher.instance.logger.console("$message : $path")
             val pathArray = path.split(" ")
             messageArray.withIndex().all {
                 val pathValue = pathArray[it.index]
@@ -103,9 +125,9 @@ class CommandManager() {
 
     fun isParamater(s: String) = s.startsWith("<") && s.endsWith(">")
 
-    fun getCommandDataByMinimumArgumentLength(length: Int) = this.commands.filter { it.path.split(" ").size >= length }
+    fun getCommandDataByMinimumArgumentLength(length: Int) = this.commands.filter { it.getPathWithCloudPrefixIfRequired().split(" ").size >= length }
 
-    fun getCommandDataByArgumentLength(length: Int) = this.commands.filter { it.path.trim().split(" ").size == length }
+    fun getCommandDataByArgumentLength(length: Int) = this.commands.filter { it.getPathWithCloudPrefixIfRequired().trim().split(" ").size == length }
 
     fun registerAllCommands(cloudModule: ICloudModule, vararg packages: String) {
         packages.forEach { pack ->
@@ -136,21 +158,32 @@ class CommandManager() {
                 val commandSubPath = method.getAnnotation(CommandSubPath::class.java)
                 commandSubPath ?: continue
 
-                val commandData = CommandData(cloudModule, classAnnotation.name + " " + commandSubPath.path, commandSubPath.description, command, method)
+                val commandData = CommandData(cloudModule, classAnnotation.name + " " + commandSubPath.path, commandSubPath.description, command, method, classAnnotation.commandType)
                 for (parameter in method.parameters) {
                     val commandArgument = parameter.getAnnotation(CommandArgument::class.java)
                     if (commandArgument == null) {
                         if (!allowedTypesWithoutCommandArgument.contains(parameter.type) || !allowedTypesWithoutCommandArgument.any { it.isAssignableFrom(parameter.type) }) {
-                            throw CommandRegistrationException("Unallowed parameter type without CommandArgument annotation.")
+                            throw CommandRegistrationException("Forbidden parameter type without CommandArgument annotation.")
                         }
                     }
                     commandData.parameterDataList.add(CommandParameterData(parameter.type, commandArgument?.name))
                 }
                 commands.add(commandData)
+                getCloudAPI()?.getEventManager()?.call(CommandRegisteredEvent(commandData))
             }
         } catch (e: Exception) {
             throw e
         }
-
     }
+
+    fun getAllIngameCommandPrefixes(): Collection<String> = this.commands.filter { it.commandType == CommandType.INGAME }.map { it.path.split(" ")[0] }.toSet().union(listOf("cloud"))
+
+    private fun getCloudAPI(): CloudAPI? {
+        return try {
+            CloudAPI.instance
+        } catch (ex: Exception) {
+            return null
+        }
+    }
+
 }

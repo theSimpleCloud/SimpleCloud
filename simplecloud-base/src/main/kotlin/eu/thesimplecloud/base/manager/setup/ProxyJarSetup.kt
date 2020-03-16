@@ -6,6 +6,7 @@ import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.api.utils.Downloader
 import eu.thesimplecloud.api.service.ServiceVersion
+import eu.thesimplecloud.launcher.extension.sendMessage
 import java.io.File
 
 class ProxyJarSetup(val proxyFile: File) : ISetup {

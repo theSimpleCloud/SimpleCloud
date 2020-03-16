@@ -27,8 +27,10 @@ import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.screen.ICommandExecutable
 import eu.thesimplecloud.base.manager.external.CloudModuleHandler
 import eu.thesimplecloud.base.manager.external.ICloudModuleHandler
+import eu.thesimplecloud.base.manager.ingamecommands.IngameCommandUpdater
 import eu.thesimplecloud.base.manager.packet.IPacketRegistry
 import eu.thesimplecloud.base.manager.packet.PacketRegistry
+import eu.thesimplecloud.launcher.extension.sendMessage
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.litote.kmongo.KMongo
@@ -37,6 +39,7 @@ import kotlin.concurrent.thread
 
 class Manager : ICloudApplication {
 
+    val ingameCommandUpdater: IngameCommandUpdater
     val cloudServiceGroupFileHandler = CloudServiceGroupFileHandler()
     val wrapperFileHandler = WrapperFileHandler()
     val templatesConfigLoader = TemplatesConfigLoader()
@@ -64,6 +67,7 @@ class Manager : ICloudApplication {
         instance = this
         CloudAPIImpl()
         CloudAPI.instance.getEventManager().registerListener(this, CloudListener())
+        this.ingameCommandUpdater = IngameCommandUpdater()
         if (!MongoConfigLoader().doesConfigFileExist()) {
             Launcher.instance.setupManager.queueSetup(MongoDBUseEmbedSetup())
             Launcher.instance.setupManager.waitFroAllSetups()
