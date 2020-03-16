@@ -6,6 +6,7 @@ import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.api.parser.string.StringParser
+import eu.thesimplecloud.launcher.extension.sendMessage
 import java.lang.reflect.Method
 import java.lang.reflect.Parameter
 import kotlin.collections.ArrayList

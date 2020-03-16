@@ -1,5 +1,7 @@
 package eu.thesimplecloud.launcher.console.command.annotations
 
+import eu.thesimplecloud.launcher.console.command.CommandType
+
 /**
  * Created by IntelliJ IDEA.
  * User: Philipp.Eistrach
@@ -8,6 +10,6 @@ package eu.thesimplecloud.launcher.console.command.annotations
  */
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class Command(val name: String, val onlyConsole: Boolean) {
+annotation class Command(val name: String, val commandType: CommandType) {
 
 }

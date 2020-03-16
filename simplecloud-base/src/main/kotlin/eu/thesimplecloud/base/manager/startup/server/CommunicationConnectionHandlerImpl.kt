@@ -10,6 +10,7 @@ import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.utils.IAuthenticatable
 import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
 import eu.thesimplecloud.base.manager.impl.SynchronizedObjectManagerImpl
+import eu.thesimplecloud.launcher.extension.sendMessage
 
 class CommunicationConnectionHandlerImpl : IConnectionHandler {
 

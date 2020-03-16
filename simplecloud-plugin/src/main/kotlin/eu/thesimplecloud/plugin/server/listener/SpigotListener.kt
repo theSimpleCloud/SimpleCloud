@@ -22,10 +22,8 @@ class SpigotListener : Listener {
             return
         }
 
-        CloudAPI.instance.getCloudPlayerManager().getCloudPlayer(event.player.uniqueId).addCompleteListener {
-            if (!it.isSuccess) {
-                event.disallow(PlayerLoginEvent.Result.KICK_OTHER, NOT_REGISTERED)
-            }
+        if (CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(event.player.uniqueId) == null) {
+            event.disallow(PlayerLoginEvent.Result.KICK_OTHER, NOT_REGISTERED)
         }
 
     }

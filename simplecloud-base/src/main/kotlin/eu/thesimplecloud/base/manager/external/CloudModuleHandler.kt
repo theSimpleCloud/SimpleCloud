@@ -6,6 +6,7 @@ import eu.thesimplecloud.api.external.ICloudModule
 import eu.thesimplecloud.api.external.ResourceFinder
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.launcher.exception.CloudModuleException
+import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.external.module.CloudModuleData
 import eu.thesimplecloud.launcher.external.module.CloudModuleFileContent
 import eu.thesimplecloud.launcher.external.module.CloudModuleLoader

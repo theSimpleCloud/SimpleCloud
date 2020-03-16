@@ -13,6 +13,7 @@ import eu.thesimplecloud.api.network.packets.service.PacketIOUpdateCloudService
 import eu.thesimplecloud.api.network.packets.servicegroup.PacketIOUpdateCloudServiceGroup
 import eu.thesimplecloud.api.network.packets.template.PacketIOUpdateTemplate
 import eu.thesimplecloud.api.network.packets.wrapper.PacketIOUpdateWrapperInfo
+import eu.thesimplecloud.launcher.extension.sendMessage
 
 class PacketInCloudClientLogin() : JsonPacket() {
 

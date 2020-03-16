@@ -15,11 +15,14 @@ class CommandData(
         val commandDescription: String,
         val source: ICommandHandler,
         val method: Method,
+        val commandType: CommandType,
         val parameterDataList: MutableList<CommandParameterData> = ArrayList()
 ) {
 
+    fun getPathWithCloudPrefixIfRequired() = (if (commandType == CommandType.INGAME) "" else "cloud ") + path
+
     fun getIndexOfParameter(parameterName: String): Int {
-        return path.split(" ").indexOf("<$parameterName>")
+        return getPathWithCloudPrefixIfRequired().split(" ").indexOf("<$parameterName>")
     }
 
 }

@@ -2,14 +2,16 @@ package eu.thesimplecloud.api.player
 
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.command.ICommandSender
 import eu.thesimplecloud.api.exception.*
 import eu.thesimplecloud.api.location.ServiceLocation
 import eu.thesimplecloud.api.location.SimpleLocation
 import eu.thesimplecloud.api.player.connection.IPlayerConnection
 import eu.thesimplecloud.api.player.text.CloudText
+import eu.thesimplecloud.api.screen.ICommandExecutable
 import eu.thesimplecloud.api.service.ICloudService
 
-interface ICloudPlayer : IOfflineCloudPlayer {
+interface ICloudPlayer : IOfflineCloudPlayer, ICommandSender {
 
     /**
      * Returns the [IPlayerConnection] of this player.
@@ -24,7 +26,7 @@ interface ICloudPlayer : IOfflineCloudPlayer {
     /**
      * Sends a message to this player.
      */
-    fun sendMessage(message: String) = sendMessage(CloudText(message))
+    override fun sendMessage(message: String) = sendMessage(CloudText(message))
 
     /**
      * Sends this player to the specified [cloudService]

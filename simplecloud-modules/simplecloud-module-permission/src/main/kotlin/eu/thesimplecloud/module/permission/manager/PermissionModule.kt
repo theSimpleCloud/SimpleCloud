@@ -11,7 +11,7 @@ import java.io.File
 import java.lang.IllegalStateException
 
 class PermissionModule : ICloudModule {
-
+    //TODO: mehrere gruppen mit ablaufzeit
     private val groupsFile = File("modules/permissions/groups.json")
 
     override fun onEnable() {

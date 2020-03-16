@@ -4,6 +4,7 @@ import eu.thesimplecloud.clientserverapi.lib.handler.IServerHandler
 import eu.thesimplecloud.clientserverapi.server.NettyServer
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.api.screen.ICommandExecutable
+import eu.thesimplecloud.launcher.extension.sendMessage
 
 class ServerHandlerImpl : IServerHandler<ICommandExecutable> {
     override fun onServerShutdown(nettyServer: NettyServer<ICommandExecutable>) {

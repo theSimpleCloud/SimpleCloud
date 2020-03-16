@@ -58,7 +58,8 @@ class ConsoleManager(val commandManager: CommandManager, private val consoleSend
                     Launcher.instance.setupManager.onResponse(readLine)
                     continue
                 }
-                commandManager.handleCommand(readLine, consoleSender)
+                //add cloud to execute a cloud command
+                commandManager.handleCommand("cloud $readLine", consoleSender)
             }
         }
         thread?.start()

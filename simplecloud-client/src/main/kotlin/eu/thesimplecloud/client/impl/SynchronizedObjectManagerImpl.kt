@@ -6,6 +6,7 @@ import eu.thesimplecloud.api.sync.`object`.ISynchronizedObject
 import eu.thesimplecloud.client.packets.PacketOutGetSynchronizedObject
 import eu.thesimplecloud.clientserverapi.client.INettyClient
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
+import eu.thesimplecloud.clientserverapi.lib.promise.flatten
 
 class SynchronizedObjectManagerImpl(private val client: INettyClient) : AbstractSynchronizedObjectManager() {
 
@@ -19,6 +20,6 @@ class SynchronizedObjectManagerImpl(private val client: INettyClient) : Abstract
     }
 
     override fun <T : ISynchronizedObject> requestSynchronizedObject(name: String, clazz: Class<T>): ICommunicationPromise<T> {
-        return client.sendQuery(PacketOutGetSynchronizedObject(name), clazz).addResultListener { updateObject(it, true) }
+        return client.getPacketIdsSyncPromise().then { client.sendQuery(PacketOutGetSynchronizedObject(name), clazz).addResultListener { updateObject(it, true) } }.flatten()
     }
 }

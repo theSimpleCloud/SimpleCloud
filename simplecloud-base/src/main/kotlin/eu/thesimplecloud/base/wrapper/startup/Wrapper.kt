@@ -18,6 +18,7 @@ import eu.thesimplecloud.api.network.packets.wrapper.PacketIOUpdateWrapperInfo
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
 import eu.thesimplecloud.base.manager.external.CloudModuleHandler
+import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.external.module.CloudModuleFileContent
 import eu.thesimplecloud.launcher.external.module.CloudModuleLoader
 import java.io.File

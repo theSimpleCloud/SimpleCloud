@@ -7,6 +7,7 @@ import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.launcher.utils.IpValidator
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.wrapper.impl.DefaultWrapperInfo
+import eu.thesimplecloud.launcher.extension.sendMessage
 
 class WrapperSetup : ISetup {
 

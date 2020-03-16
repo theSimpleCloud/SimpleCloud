@@ -15,6 +15,7 @@ import eu.thesimplecloud.api.service.impl.DefaultCloudService
 import eu.thesimplecloud.api.servicegroup.grouptype.ICloudProxyGroup
 import eu.thesimplecloud.api.utils.ManifestLoader
 import eu.thesimplecloud.launcher.dependency.DependencyLoader
+import eu.thesimplecloud.launcher.extension.sendMessage
 import org.apache.commons.io.FileUtils
 import java.io.BufferedReader
 import java.io.File

@@ -6,6 +6,7 @@ import eu.thesimplecloud.base.wrapper.startup.Wrapper
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
+import eu.thesimplecloud.launcher.extension.sendMessage
 import java.util.ArrayList
 import java.util.concurrent.LinkedBlockingQueue
 import kotlin.concurrent.thread
