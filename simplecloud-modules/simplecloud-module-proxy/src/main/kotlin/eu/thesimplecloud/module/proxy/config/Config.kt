@@ -1,6 +1,6 @@
 package eu.thesimplecloud.module.proxy.config
 
-import eu.thesimplecloud.api.syncobject.ISynchronizedObject
+import eu.thesimplecloud.api.sync.`object`.ISynchronizedObject
 
 /**
  * Created by IntelliJ IDEA.
