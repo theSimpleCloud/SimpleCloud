@@ -18,34 +18,4 @@ data class Config(
     override fun getName(): String {
         return "simplecloud-module-proxy-config"
     }
-
-    companion object {
-        fun getDefaultConfig(): Config {
-            val motdConfiguration = MotdConfiguration(listOf("§cSimpleCloud service"),
-                    listOf(""),
-                    emptyList(),
-                    null)
-            val maintenanceMotdConfiguration = MotdConfiguration(listOf("§cSimpleCloud service"),
-                    listOf("§cMaintenance"),
-                    emptyList(),
-                    null)
-            val proxyGroupConfiguration = ProxyGroupConfiguration("Proxy",
-                    512,
-                    listOf("Fllip", "Wetterbericht"),
-                    motdConfiguration,
-                    maintenanceMotdConfiguration)
-
-            val tablistConfiguration = TablistConfiguration(listOf("Proxy"),
-                    listOf ("Header"),
-                    listOf("Footer"),
-                    1)
-
-            val config = Config(listOf(proxyGroupConfiguration),
-                    listOf(tablistConfiguration),
-                    "This service is in maintenance",
-                    "This service is full")
-
-            return config
-        }
-    }
 }

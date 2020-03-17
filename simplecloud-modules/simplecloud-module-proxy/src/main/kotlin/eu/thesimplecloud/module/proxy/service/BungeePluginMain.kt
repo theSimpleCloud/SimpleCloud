@@ -3,8 +3,10 @@ package eu.thesimplecloud.module.proxy.service
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.module.proxy.config.Config
+import eu.thesimplecloud.module.proxy.config.DefaultConfig
 import eu.thesimplecloud.module.proxy.config.ProxyGroupConfiguration
 import eu.thesimplecloud.module.proxy.config.TablistConfiguration
+import eu.thesimplecloud.module.proxy.extensions.mapToLowerCase
 import eu.thesimplecloud.module.proxy.service.listener.BungeeListener
 import eu.thesimplecloud.plugin.proxy.text.CloudTextBuilder
 import eu.thesimplecloud.plugin.startup.CloudPlugin
@@ -22,7 +24,7 @@ import java.util.concurrent.TimeUnit
  */
 class BungeePluginMain : Plugin() {
 
-    var config: Config = Config.getDefaultConfig()
+    var config: Config = DefaultConfig.get()
     val thisService = CloudPlugin.instance.thisService()
     val serviceGroupName = thisService.getGroupName()
 
@@ -46,7 +48,7 @@ class BungeePluginMain : Plugin() {
         tablistStarted = true
         proxy.scheduler.schedule(this, Runnable {
 
-            if (proxy.players.size == 0) {
+            if (proxy.players.isEmpty()) {
                 return@Runnable
             }
             var header: String = ""
@@ -82,8 +84,7 @@ class BungeePluginMain : Plugin() {
 
     fun getTablistConfiguration(): TablistConfiguration? {
         return config.tablistConfigurations.firstOrNull {
-            it.proxies
-                    .map { it.toLowerCase() }.contains(serviceGroupName.toLowerCase())
+            it.proxies.mapToLowerCase().contains(serviceGroupName.toLowerCase())
         }
     }
 
@@ -102,7 +103,7 @@ class BungeePluginMain : Plugin() {
 
         val replacesMessage = message
                 .replace("%ONLINE_PLAYERS%", getOnlinePlayers().toString())
-                .replace("%MAX_PLAYERS%", configuration.maxPlayers.toString())
+                .replace("%MAX_PLAYERS%", thisService.getMaxPlayers().toString())
                 .replace("%PROXY%", thisService.getName())
 
         return ChatColor.translateAlternateColorCodes('&', replacesMessage)
