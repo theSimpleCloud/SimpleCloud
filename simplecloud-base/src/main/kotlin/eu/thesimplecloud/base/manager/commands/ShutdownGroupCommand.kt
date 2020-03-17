@@ -9,7 +9,7 @@ import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 import eu.thesimplecloud.launcher.extension.sendMessage
 
-@Command("shutdowngroup", CommandType.CONSOLE_AND_INGAME)
+@Command("shutdowngroup", CommandType.CONSOLE_AND_INGAME, "simplecloud.command.shutdowngroup")
 class ShutdownGroupCommand : ICommandHandler {
 
     @CommandSubPath("<group>", "Stops all services of a group.")

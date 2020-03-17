@@ -9,7 +9,7 @@ import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.launcher.console.command.CommandType
 import eu.thesimplecloud.launcher.extension.sendMessage
 
-@Command("shutdown", CommandType.CONSOLE_AND_INGAME)
+@Command("shutdown", CommandType.CONSOLE_AND_INGAME, "simplecloud.command.shutdown")
 class ShutdownCommand : ICommandHandler {
 
     @CommandSubPath("<name>", "Stops a service")

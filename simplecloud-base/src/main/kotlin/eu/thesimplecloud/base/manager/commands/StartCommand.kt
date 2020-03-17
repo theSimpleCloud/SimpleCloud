@@ -9,7 +9,7 @@ import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.launcher.console.command.CommandType
 import eu.thesimplecloud.launcher.extension.sendMessage
 
-@Command("start", CommandType.CONSOLE_AND_INGAME)
+@Command("start", CommandType.CONSOLE_AND_INGAME, "simplecloud.command.start")
 class StartCommand : ICommandHandler {
 
     @CommandSubPath("<group>", "Starts a service.")

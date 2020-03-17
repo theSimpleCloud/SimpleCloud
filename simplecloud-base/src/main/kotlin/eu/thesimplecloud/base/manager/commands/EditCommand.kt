@@ -14,7 +14,7 @@ import eu.thesimplecloud.launcher.console.command.CommandType
 import eu.thesimplecloud.launcher.extension.sendMessage
 import java.lang.reflect.Field
 
-@Command("edit", CommandType.CONSOLE_AND_INGAME)
+@Command("edit", CommandType.CONSOLE_AND_INGAME, "simplecloud.command.edit")
 class EditCommand : ICommandHandler {
 
     @CommandSubPath("group <name> <parameter>", "Shows the parameters value")

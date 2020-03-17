@@ -16,7 +16,7 @@ import eu.thesimplecloud.launcher.extension.sendMessage
  * Date: 07.09.2019
  * Time: 16:07
  */
-@Command("help", CommandType.CONSOLE_AND_INGAME)
+@Command("help", CommandType.CONSOLE_AND_INGAME, "simplecloud.command.help")
 class HelpCommand() : ICommandHandler {
 
     @CommandSubPath
@@ -43,11 +43,3 @@ class HelpCommand() : ICommandHandler {
     }
 
 }
-
-/*
-* {
-* "launger-allcommands-command": ">> a (aaaa)",
-* }
-*
-*
-* */

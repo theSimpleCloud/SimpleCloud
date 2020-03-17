@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit
 class PermissionCommand : ICommandHandler {
 
 
-    @CommandSubPath("user <user>")
+    @CommandSubPath("user <user>", "Shows information about a user")
     fun on(commandSender: ICommandSender, @CommandArgument("user") user: String) {
         val permissionPlayer = getPermissionPlayerByName(user)
         if (permissionPlayer == null) {
@@ -49,7 +49,7 @@ class PermissionCommand : ICommandHandler {
 
 
 
-    @CommandSubPath("user <user> addGroup <group> <days>")
+    @CommandSubPath("user <user> group add <group> <days>", "Adds a group to a user")
     fun on(commandSender: ICommandSender, @CommandArgument("user") user: String, @CommandArgument("group") group: String, @CommandArgument("days") days: String) {
         val permissionPlayer = getPermissionPlayerByName(user)
         if (permissionPlayer == null) {
@@ -82,7 +82,7 @@ class PermissionCommand : ICommandHandler {
         commandSender.sendMessage("manager.command.perms.user.group.added.days", "&aAdded group %GROUP%", permissionGroup.getName(), " for %DAYS%", days, " days to %PLAYER%", permissionPlayer.getName())
     }
 
-    @CommandSubPath("user <user> removeGroup <group>")
+    @CommandSubPath("user <user> group remove <group>", "Removes a group from a user")
     fun on(commandSender: ICommandSender, @CommandArgument("user") user: String, @CommandArgument("group") group: String) {
         val permissionPlayer = getPermissionPlayerByName(user)
         if (permissionPlayer == null) {
@@ -99,7 +99,7 @@ class PermissionCommand : ICommandHandler {
         commandSender.sendMessage("manager.command.perms.user.group.removed", "&7Group &e%GROUP%", permissionGroup.getName(), " &7removed.")
     }
 
-    @CommandSubPath("user <user> addPermission <permission> <days> <active>")
+    @CommandSubPath("user <user> permission add <permission> <days> <active>", "Adds a permission to a user")
     fun onPermission(commandSender: ICommandSender, @CommandArgument("user") user: String, @CommandArgument("permission") permission: String, @CommandArgument("days") days: String, @CommandArgument("active") active: String) {
         val permissionPlayer = getPermissionPlayerByName(user)
         if (permissionPlayer == null) {
@@ -128,12 +128,12 @@ class PermissionCommand : ICommandHandler {
         PermissionModule.instance.updatePermissionPlayer(permissionPlayer)
     }
 
-    @CommandSubPath("user <user> addPermission <permission> <days>")
+    @CommandSubPath("user <user> permission add <permission> <days>", "Adds a permission to a user")
     fun onPermission(commandSender: ICommandSender, @CommandArgument("user") user: String, @CommandArgument("permission") permission: String, @CommandArgument("days") days: String) {
         onPermission(commandSender, user, permission, days, true.toString())
     }
 
-    @CommandSubPath("user <user> removePermission <permission>")
+    @CommandSubPath("user <user> permission remove <permission>", "Removes a permission from a user")
     fun onPermission(commandSender: ICommandSender, @CommandArgument("user") user: String, @CommandArgument("permission") permission: String) {
         val permissionPlayer = getPermissionPlayerByName(user)
         if (permissionPlayer == null) {
@@ -153,7 +153,7 @@ class PermissionCommand : ICommandHandler {
 
     fun getPermissionGroupByName(name: String) = PermissionPool.instance.getPermissionGroupManager().getPermissionGroupByName(name)
 
-    @CommandSubPath("groups")
+    @CommandSubPath("groups", "Shows all permission groups")
     fun handleGroup(commandSender: ICommandSender) {
         commandSender.sendMessage("&7Permission-Groups:")
         PermissionPool.instance.getPermissionGroupManager().getAllPermissionGroups().forEach {
@@ -161,7 +161,7 @@ class PermissionCommand : ICommandHandler {
         }
     }
 
-    @CommandSubPath("group <group> create")
+    @CommandSubPath("group <group> create", "Creates a permission group")
     fun handleGroupCreate(commandSender: ICommandSender, @CommandArgument("group") group: String) {
         val permissionGroup = getPermissionGroupByName(group)
         if (permissionGroup != null) {
@@ -172,7 +172,7 @@ class PermissionCommand : ICommandHandler {
         commandSender.sendMessage("manager.command.perms.group.created", "&7Group &e%GROUP%", group, " &7created.")
     }
 
-    @CommandSubPath("group <group>")
+    @CommandSubPath("group <group>", "Shows information about a group")
     fun handleGroup(commandSender: ICommandSender, @CommandArgument("group") group: String) {
         val permissionGroup = getPermissionGroupByName(group)
         if (permissionGroup == null) {
@@ -185,7 +185,7 @@ class PermissionCommand : ICommandHandler {
         }
     }
 
-    @CommandSubPath("group <group> addPermission <permission> <active>")
+    @CommandSubPath("group <group> permission add <permission> <active>", "Adds a permission to a group")
     fun handleGroupPermissionAdd(commandSender: ICommandSender, @CommandArgument("group") group: String, @CommandArgument("permission") permission: String, @CommandArgument("active") active: String) {
         val permissionGroup = getPermissionGroupByName(group)
         if (permissionGroup == null) {
@@ -198,12 +198,12 @@ class PermissionCommand : ICommandHandler {
         commandSender.sendMessage("manager.command.perms.group.permission-added", "&7Added permission %PERMISSION%", permission, " to group %GROUP%", permissionGroup.getName(), ".")
     }
 
-    @CommandSubPath("group <group> addPermission <permission>")
+    @CommandSubPath("group <group> permission add <permission>", "Adds a permission to a group")
     fun handleGroupPermissionAdd(commandSender: ICommandSender, @CommandArgument("group") group: String, @CommandArgument("permission") permission: String) {
         handleGroupPermissionAdd(commandSender, group, permission, true.toString())
     }
 
-    @CommandSubPath("group <group> removePermission <permission>")
+    @CommandSubPath("group <group> permission remove <permission>", "Removes a permission from a group")
     fun handleGroupPermissionRemove(commandSender: ICommandSender, @CommandArgument("group") group: String, @CommandArgument("permission") permission: String) {
         val permissionGroup = getPermissionGroupByName(group)
         if (permissionGroup == null) {
@@ -220,7 +220,7 @@ class PermissionCommand : ICommandHandler {
         commandSender.sendMessage("manager.command.perms.group.permission.removed", "&7Permission &e%PERMISSION%", permission, " &7removed.")
     }
 
-    @CommandSubPath("group <group> addInheritance <otherGroup>")
+    @CommandSubPath("group <group> inheritance add <otherGroup>", "Inherits the group from the other group")
     fun handleInheritanceAdd(commandSender: ICommandSender, @CommandArgument("group") group: String, @CommandArgument("otherGroup") otherGroup: String) {
         val permissionGroup = getPermissionGroupByName(group)
         if (permissionGroup == null) {
@@ -249,7 +249,7 @@ class PermissionCommand : ICommandHandler {
         permissionGroup.update()
     }
 
-    @CommandSubPath("group <group> removeInheritance <otherGroup>")
+    @CommandSubPath("group <group> inheritance remove <otherGroup>", "Removes the inheritance from the group to the other group")
     fun handleInheritanceRemove(commandSender: ICommandSender, @CommandArgument("group") group: String, @CommandArgument("otherGroup") otherGroup: String) {
         val permissionGroup = getPermissionGroupByName(group)
         if (permissionGroup == null) {
