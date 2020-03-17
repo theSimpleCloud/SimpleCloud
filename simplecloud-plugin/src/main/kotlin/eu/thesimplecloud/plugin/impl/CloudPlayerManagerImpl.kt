@@ -13,6 +13,7 @@ import eu.thesimplecloud.api.player.IOfflineCloudPlayer
 import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceType
+import eu.thesimplecloud.plugin.extension.getBukkitPlayer
 import eu.thesimplecloud.plugin.extension.syncBukkit
 import eu.thesimplecloud.plugin.network.packets.PacketOutTeleportOtherService
 import eu.thesimplecloud.plugin.proxy.CloudProxyPlugin
@@ -144,9 +145,13 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
     }
 
     override fun hasPermission(cloudPlayer: ICloudPlayer, permission: String): ICommunicationPromise<Boolean> {
-        val proxiedPlayer = getProxiedPlayerByCloudPlayer(cloudPlayer)
-        proxiedPlayer ?: return CommunicationPromise.failed(NoSuchPlayerException("Unable to find bungeecord player"))
-        return CommunicationPromise.of(proxiedPlayer.hasPermission(permission))
+        if (cloudPlayer.getConnectedServerName() == CloudPlugin.instance.thisServiceName) return CommunicationPromise.of(cloudPlayer.getBukkitPlayer().hasPermission(permission))
+        if (cloudPlayer.getConnectedProxyName() == CloudPlugin.instance.thisServiceName) {
+            val proxiedPlayer = getProxiedPlayerByCloudPlayer(cloudPlayer)
+            proxiedPlayer ?: return CommunicationPromise.failed(NoSuchPlayerException("Unable to find bungeecord player"))
+            return CommunicationPromise.of(proxiedPlayer.hasPermission(permission))
+        }
+        return CloudPlugin.instance.communicationClient.sendQuery(PacketIOPlayerHasPermission(cloudPlayer.getUniqueId(), permission), 400)
     }
 
     override fun getLocationOfPlayer(cloudPlayer: ICloudPlayer): ICommunicationPromise<ServiceLocation> {
