@@ -16,6 +16,7 @@ class CommandData(
         val source: ICommandHandler,
         val method: Method,
         val commandType: CommandType,
+        val permission: String,
         val parameterDataList: MutableList<CommandParameterData> = ArrayList()
 ) {
 

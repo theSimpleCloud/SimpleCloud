@@ -86,7 +86,7 @@ class Manager : ICloudApplication {
         thread(start = true, isDaemon = false) { (this.cloudModuleHandler as CloudModuleHandler).loadModules() }
         Launcher.instance.logger.console("Waiting for MongoDB...")
         this.mongoController?.startedPromise?.awaitUninterruptibly()
-        mongoClient = connectToMongo(mongoConfig.mongoServerInformation)
+        mongoClient = mongoConfig.mongoServerInformation.createMongoClient()
         Launcher.instance.logger.console("Connected to MongoDB")
 
         this.offlineCloudPlayerHandler = OfflineCloudPlayerHandler(mongoConfig.mongoServerInformation)
@@ -110,10 +110,6 @@ class Manager : ICloudApplication {
                 .setUserPassword(mongoServerInformation.password))
         mongoController.start()
         return mongoController
-    }
-
-    private fun connectToMongo(mongoConnectionInformation: MongoConnectionInformation): MongoClient {
-        return KMongo.createClient(mongoConnectionInformation.getConnectionString())
     }
 
     override fun onEnable() {

@@ -16,12 +16,12 @@ interface IPermissionEntity {
     /**
      * Returns the permission object of the specified [permission]
      */
-    fun getPermissionByName(permission: String): Permission? = getAllPermissions().firstOrNull { it.permissionString == permission }
+    fun getPermissionByName(permission: String): Permission? = getPermissions().firstOrNull { it.permissionString == permission }
 
     /**
      * Returns all permissions of this entity
      */
-    fun getAllPermissions(): Collection<Permission>
+    fun getPermissions(): Collection<Permission>
 
     /**
      * Adds the specified [permission] to the list
@@ -42,7 +42,7 @@ interface IPermissionEntity {
     * Returns all not expired permissions
     */
     @JsonIgnore
-    fun getAllNotExpiredPermissions(): Collection<Permission> = getAllPermissions().filter { !it.isExpired() }
+    fun getAllNotExpiredPermissions(): Collection<Permission> = getPermissions().filter { !it.isExpired() }
 
     /**
      * Returns whether this

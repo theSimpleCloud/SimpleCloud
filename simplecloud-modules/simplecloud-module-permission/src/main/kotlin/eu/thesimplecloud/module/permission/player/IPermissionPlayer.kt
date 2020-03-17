@@ -3,7 +3,6 @@ package eu.thesimplecloud.module.permission.player
 import com.fasterxml.jackson.annotation.JsonIgnore
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.player.ICloudPlayer
-import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.api.utils.Nameable
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.module.permission.PermissionPool
@@ -19,15 +18,28 @@ interface IPermissionPlayer : IPermissionEntity, Nameable {
     fun getUniqueId(): UUID
 
     /**
-     * Returns the permission groups name of this player
+     * Returns the permission group info list
      */
-    fun getPermissionGroupName(): String
+    fun getPermissionGroupInfoList(): Collection<PlayerPermissionGroupInfo>
+
+    /**
+     * Returns the permission group info list
+     */
+    @JsonIgnore
+    fun getAllNotExpiredPermissionGroupInfoList(): Collection<PlayerPermissionGroupInfo> = getPermissionGroupInfoList().filter { !it.isExpired() }
+
+    /**
+     * Returns whether this player has the specified permission group.
+     * (case insensitive)
+     */
+    @JsonIgnore
+    fun hasPermissionGroup(name: String): Boolean = getPermissionGroupInfoList().map { it.permissionGroupName.toLowerCase() }.contains(name)
 
     /**
      * Returns the [IPermissionGroup] of this player
      */
     @JsonIgnore
-    fun getPermissionGroup(): IPermissionGroup = PermissionPool.instance.getPermissionGroupManager().getPermissionGroupByName(getPermissionGroupName()) ?: PermissionPool.instance.getPermissionGroupManager().getDefaultPermissionGroup()
+    fun getAllNotExpiredPermissionGroups(): List<IPermissionGroup> = getAllNotExpiredPermissionGroupInfoList().mapNotNull { PermissionPool.instance.getPermissionGroupManager().getPermissionGroupByName(it.permissionGroupName) }
 
     /**
      * Returns the the [ICloudPlayer] of this permission player wrapped in a promise
@@ -41,8 +53,18 @@ interface IPermissionPlayer : IPermissionEntity, Nameable {
     @JsonIgnore
     fun update(): ICommunicationPromise<Unit>
 
+    /**
+     * Adds a permission group to this player
+     */
+    fun addPermissionGroup(group: PlayerPermissionGroupInfo)
+
+    /**
+     * Removes a permission group from this player
+     */
+    fun removePermissionGroup(name: String)
+
     override fun hasPermission(permission: String): Boolean {
-        return super.hasPermission(permission) || getPermissionGroup().hasPermission(permission)
+        return super.hasPermission(permission) || getAllNotExpiredPermissionGroups().any { it.hasPermission(permission) }
     }
 
 }

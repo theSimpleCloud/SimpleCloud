@@ -6,9 +6,11 @@ import eu.thesimplecloud.api.event.sync.list.SynchronizedListObjectUpdatedEvent
 import eu.thesimplecloud.api.extension.sendPacketToAllAuthenticatedNonWrapperClients
 import eu.thesimplecloud.api.network.packets.sync.list.PacketIORemoveSynchronizedListObject
 import eu.thesimplecloud.api.network.packets.sync.list.PacketIOUpdateSynchronizedListObject
+import eu.thesimplecloud.api.utils.getAllFieldsFromClassAndSubClasses
 import eu.thesimplecloud.clientserverapi.client.INettyClient
 import eu.thesimplecloud.clientserverapi.lib.packet.IPacket
 import eu.thesimplecloud.clientserverapi.server.INettyServer
+import java.lang.reflect.Modifier
 import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.collections.ArrayList
@@ -23,9 +25,11 @@ abstract class AbstractSynchronizedObjectList<T : ISynchronizedListObject> : ISy
             this.values.add(value)
         } else {
             if (cachedValue !== value)
-                cachedValue::class.java.declaredFields.forEach { field ->
-                    field.isAccessible = true
-                    field.set(cachedValue, field.get(value))
+                cachedValue::class.java.getAllFieldsFromClassAndSubClasses().forEach { field ->
+                    if (!Modifier.isStatic(field.getModifiers())) {
+                        field.isAccessible = true
+                        field.set(cachedValue, field.get(value))
+                    }
                 }
         }
         if (CloudAPI.instance.isManager() || fromPacket) {

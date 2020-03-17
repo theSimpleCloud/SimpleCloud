@@ -11,6 +11,7 @@ import eu.thesimplecloud.launcher.exception.CommandRegistrationException
 import eu.thesimplecloud.launcher.invoker.MethodInvokeHelper
 import eu.thesimplecloud.api.external.ICloudModule
 import eu.thesimplecloud.api.parser.string.StringParser
+import eu.thesimplecloud.api.player.ICloudPlayer
 import eu.thesimplecloud.api.utils.getEnumValues
 import eu.thesimplecloud.launcher.console.ConsoleSender
 import eu.thesimplecloud.launcher.event.command.CommandExecuteEvent
@@ -57,6 +58,12 @@ class CommandManager() {
             commandSender.sendMessage("commandmanager.onlyconsole", "This command can only be executed via the console.")
             return
         }
+        if (commandSender is ICloudPlayer) {
+            if (!commandSender.hasPermission(matchingCommandData.permission).awaitUninterruptibly().get()) {
+                commandSender.sendMessage("command.player.no-permission", "§cYou don't have the permission to execute this command.")
+                return
+            }
+        }
 
         val event = CommandExecuteEvent(commandSender, matchingCommandData)
         getCloudAPI()?.getEventManager()?.call(event)
@@ -95,7 +102,11 @@ class CommandManager() {
             }
             list.add(obj)
         }
-        MethodInvokeHelper.invoke(matchingCommandData.method, matchingCommandData.source, list.toArray())
+        try {
+            MethodInvokeHelper.invoke(matchingCommandData.method, matchingCommandData.source, list.toArray())
+        } catch (e: Exception) {
+            throw e
+        }
     }
 
 
@@ -157,7 +168,7 @@ class CommandManager() {
                 val commandSubPath = method.getAnnotation(CommandSubPath::class.java)
                 commandSubPath ?: continue
 
-                val commandData = CommandData(cloudModule, classAnnotation.name + " " + commandSubPath.path, commandSubPath.description, command, method, classAnnotation.commandType)
+                val commandData = CommandData(cloudModule, classAnnotation.name + " " + commandSubPath.path, commandSubPath.description, command, method, classAnnotation.commandType, classAnnotation.permission)
                 for (parameter in method.parameters) {
                     val commandArgument = parameter.getAnnotation(CommandArgument::class.java)
                     if (commandArgument == null) {

@@ -13,7 +13,7 @@ class CloudListener : IListener {
     fun on(event: CloudPlayerUpdatedEvent) {
         val cloudPlayer = event.cloudPlayer
         if (!cloudPlayer.hasProperty(PermissionPlayer.PROPERTY_NAME)) {
-            cloudPlayer.setProperty(PermissionPlayer.PROPERTY_NAME, Property(PermissionPlayer(cloudPlayer.getName(), cloudPlayer.getUniqueId(), PermissionPool.instance.getPermissionGroupManager().getDefaultPermissionGroupName())))
+            cloudPlayer.setProperty(PermissionPlayer.PROPERTY_NAME, Property(PermissionPlayer(cloudPlayer.getName(), cloudPlayer.getUniqueId())))
         }
     }
 

@@ -1,10 +1,9 @@
-package eu.thesimplecloud.module.permission.permission
+package eu.thesimplecloud.module.permission.player
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 
-data class Permission(val permissionString: String, val timeoutTimestamp: Long, val active: Boolean) {
+class PlayerPermissionGroupInfo(val permissionGroupName: String, val timeoutTimestamp: Long) {
 
     @JsonIgnore
     fun isExpired(): Boolean = (System.currentTimeMillis() > timeoutTimestamp) && timeoutTimestamp != -1L
-
 }

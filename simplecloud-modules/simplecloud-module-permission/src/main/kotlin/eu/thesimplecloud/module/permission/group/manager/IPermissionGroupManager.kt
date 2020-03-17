@@ -1,6 +1,7 @@
 package eu.thesimplecloud.module.permission.group.manager
 
 import eu.thesimplecloud.module.permission.group.IPermissionGroup
+import eu.thesimplecloud.module.permission.group.PermissionGroup
 
 interface IPermissionGroupManager {
 
@@ -23,5 +24,10 @@ interface IPermissionGroupManager {
      * Returns the default [IPermissionGroup]
      */
     fun getDefaultPermissionGroup(): IPermissionGroup = getPermissionGroupByName(getDefaultPermissionGroupName())!!
+
+    /**
+     * Updates the specified [IPermissionGroup]
+     */
+    fun update(permissionGroup: PermissionGroup)
 
 }
