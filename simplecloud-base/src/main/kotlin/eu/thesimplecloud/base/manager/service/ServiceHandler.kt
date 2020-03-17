@@ -13,8 +13,10 @@ import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.launcher.extension.sendMessage
 import java.util.*
 import java.util.concurrent.LinkedBlockingQueue
+import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
+import kotlin.math.min
 
 class ServiceHandler : IServiceHandler {
 
@@ -48,7 +50,7 @@ class ServiceHandler : IServiceHandler {
         return number
     }
 
-    fun startMinServices() {
+    private fun startMinServices() {
         for (serviceGroup in CloudAPI.instance.getCloudServiceGroupManager().getAllGroups()) {
             val allServices = serviceGroup.getAllServices()
             val inLobbyServices = allServices.filter { it.getState() != ServiceState.INVISIBLE && it.getState() != ServiceState.CLOSED }
@@ -62,10 +64,30 @@ class ServiceHandler : IServiceHandler {
         }
     }
 
+    private fun stopRedundantServices() {
+        for (serviceGroup in CloudAPI.instance.getCloudServiceGroupManager().getAllGroups()) {
+            val allServices = serviceGroup.getAllServices()
+            val inLobbyServices = allServices.filter { it.getState() != ServiceState.INVISIBLE && it.getState() != ServiceState.CLOSED }
+            val stoppableServices = inLobbyServices.filter { it.getState() == ServiceState.VISIBLE }
+                    .filter { (it.getLastUpdate() + TimeUnit.MINUTES.toMillis(3)) < System.currentTimeMillis() }
+            if (stoppableServices.size > serviceGroup.getMinimumOnlineServiceCount()) {
+                val amountToStop = stoppableServices.size - serviceGroup.getMinimumOnlineServiceCount()
+                for (i in 0 until min(amountToStop, stoppableServices.size)) {
+                    val service = stoppableServices[i]
+                    //set to invisible, so that services are not shutdown again
+                    service.setState(ServiceState.INVISIBLE)
+                    service.update()
+                    service.shutdown()
+                }
+            }
+        }
+    }
+
     fun startThread() {
         thread(start = true, isDaemon = true) {
             while (true) {
                 startMinServices()
+                stopRedundantServices()
                 if (serviceQueue.isNotEmpty()) {
                     val service = serviceQueue.poll()
                     val wrapperInfo = getWrapperForService(service)
@@ -81,7 +103,7 @@ class ServiceHandler : IServiceHandler {
                         serviceQueue.add(service)
                     }
                 }
-                Thread.sleep(100)
+                Thread.sleep(300)
             }
         }
     }

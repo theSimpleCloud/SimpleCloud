@@ -14,6 +14,7 @@ abstract class AbstractCloudServiceManager : ICloudServiceManager {
     override fun updateCloudService(cloudService: ICloudService, fromPacket: Boolean) {
         val cashedService = getCloudServiceByName(cloudService.getName())
         if (cashedService == null){
+            cloudService.setLastUpdate(System.currentTimeMillis())
             this.services.add(cloudService)
             CloudAPI.instance.getEventManager().call(CloudServiceRegisteredEvent(cloudService))
             CloudAPI.instance.getEventManager().call(CloudServiceUpdatedEvent(cloudService))
