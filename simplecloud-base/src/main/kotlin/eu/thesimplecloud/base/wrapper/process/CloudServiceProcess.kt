@@ -42,11 +42,8 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
         }
         this.cloudService.setState(ServiceState.STARTING)
         CloudAPI.instance.getCloudServiceManager().updateCloudService(this.cloudService)
-        Wrapper.instance.communicationClient.sendUnitQuery(PacketIOUpdateCloudService(this.cloudService))
 
-
-        if (!cloudService.isStatic() || !this.serviceTmpDir.exists())
-            TemplateCopier().copyTemplate(cloudService, cloudService.getTemplate())
+        TemplateCopier().copyTemplate(cloudService, cloudService.getTemplate())
 
         val serviceConfigurator = Wrapper.instance.serviceConfigurationManager.getServiceConfigurator(cloudService.getServiceVersion().serviceVersionType)
         serviceConfigurator
@@ -102,22 +99,16 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
     }
 
     private fun createProcessBuilder(jarFile: File): ProcessBuilder {
-        //val launcherJarPath = File(Launcher::class.java.protectionDomain.codeSource.location.toURI()).path
-        //val baseJarPath = File(this::class.java.protectionDomain.codeSource.location.toURI()).path
-        println("dependencies: " + DependencyLoader.INSTANCE.getLoadedDependencies())
         val allDependencyPaths = DependencyLoader.INSTANCE.getLoadedDependencies().filter { it.groupId != "eu.thesimplecloud.clientserverapi" }.map { it.getDownloadedFile().absolutePath }
-        //val classPathValueList = listOf(jarFile.absolutePath, launcherJarPath, baseJarPath).union(allDependencyPaths)
         val classPathValueList = listOf(jarFile.absolutePath).union(allDependencyPaths)
         val separator = if (CloudAPI.instance.isWindows()) ";" else ":"
         val beginAndEnd = if (CloudAPI.instance.isWindows()) "\"" else ""
         val classPathValue = beginAndEnd + classPathValueList.joinToString(separator) + beginAndEnd
 
-        val processBuilder = ProcessBuilder("java", "-Dcom.mojang.eula.agree=true", "-XX:+UseConcMarkSweepGC", "-XX:+CMSIncrementalMode",
+        return ProcessBuilder("java", "-Dcom.mojang.eula.agree=true", "-XX:+UseConcMarkSweepGC", "-XX:+CMSIncrementalMode",
                 "-XX:-UseAdaptiveSizePolicy", "-Djline.terminal=jline.UnsupportedTerminal",
-                "-Xms" + this.cloudService.getMaxMemory() + "M", "-Xmx" + this.cloudService.getMaxMemory() + "M", "-cp", classPathValue,
+                "-Xms" + cloudService.getMaxMemory() + "M", "-Xmx" + cloudService.getMaxMemory() + "M", "-cp", classPathValue,
                 ManifestLoader.getMainClass(jarFile.absolutePath))
-        Launcher.instance.consoleSender.sendMessage(processBuilder.command().joinToString(" "))
-        return processBuilder
     }
 
     override fun forceStop() {

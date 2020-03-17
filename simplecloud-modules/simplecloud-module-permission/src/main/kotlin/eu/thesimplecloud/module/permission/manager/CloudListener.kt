@@ -6,6 +6,7 @@ import eu.thesimplecloud.api.eventapi.IListener
 import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.module.permission.PermissionPool
 import eu.thesimplecloud.module.permission.player.PermissionPlayer
+import eu.thesimplecloud.module.permission.player.getPermissionPlayer
 
 class CloudListener : IListener {
 
@@ -14,6 +15,16 @@ class CloudListener : IListener {
         val cloudPlayer = event.cloudPlayer
         if (!cloudPlayer.hasProperty(PermissionPlayer.PROPERTY_NAME)) {
             cloudPlayer.setProperty(PermissionPlayer.PROPERTY_NAME, Property(PermissionPlayer(cloudPlayer.getName(), cloudPlayer.getUniqueId())))
+        }
+
+        //check for expired groups and permissions
+        val permissionPlayer = cloudPlayer.getPermissionPlayer() ?: return
+        val expiredPermissions = permissionPlayer.getPermissions().filter { it.isExpired() }
+        expiredPermissions.forEach { permissionPlayer.removePermission(it.permissionString) }
+        val expiredGroups = permissionPlayer.getPermissionGroupInfoList().filter { it.isExpired() }
+        expiredGroups.forEach { permissionPlayer.removePermissionGroup(it.permissionGroupName) }
+        if (expiredPermissions.isNotEmpty() || expiredGroups.isNotEmpty()) {
+            PermissionModule.instance.updatePermissionPlayer(permissionPlayer)
         }
     }
 

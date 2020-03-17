@@ -13,6 +13,7 @@ import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.module.permission.PermissionPool
 import eu.thesimplecloud.module.permission.group.PermissionGroup
+import eu.thesimplecloud.module.permission.manager.PermissionModule
 import eu.thesimplecloud.module.permission.permission.Permission
 import eu.thesimplecloud.module.permission.player.IPermissionPlayer
 import eu.thesimplecloud.module.permission.player.PermissionPlayer
@@ -46,18 +47,7 @@ class PermissionCommand : ICommandHandler {
         return offlinePlayer.getPermissionPlayer()
     }
 
-    fun updatePermissionPlayer(permissionPlayer: IPermissionPlayer) {
-        val offlineCloudPlayerHandler = Manager.instance.offlineCloudPlayerHandler
-        val cloudPlayer = permissionPlayer.getCloudPlayer().get()
-        if (cloudPlayer != null) {
-            permissionPlayer.update()
-            offlineCloudPlayerHandler.saveCloudPlayer(cloudPlayer.toOfflinePlayer() as OfflineCloudPlayer)
-        } else {
-            val offlinePlayer = offlineCloudPlayerHandler.getOfflinePlayer(permissionPlayer.getName()) ?: return
-            offlinePlayer.setProperty(PermissionPlayer.PROPERTY_NAME, Property(permissionPlayer))
-            offlineCloudPlayerHandler.saveCloudPlayer(offlinePlayer as OfflineCloudPlayer)
-        }
-    }
+
 
     @CommandSubPath("user <user> addGroup <group> <days>")
     fun on(commandSender: ICommandSender, @CommandArgument("user") user: String, @CommandArgument("group") group: String, @CommandArgument("days") days: String) {
@@ -79,7 +69,7 @@ class PermissionCommand : ICommandHandler {
         }
         if (days.equals("lifetime", true)) {
             permissionPlayer.addPermissionGroup(PlayerPermissionGroupInfo(group, -1))
-            updatePermissionPlayer(permissionPlayer)
+            PermissionModule.instance.updatePermissionPlayer(permissionPlayer)
             commandSender.sendMessage("manager.command.perms.user.group.added.lifetime", "&aAdded group %GROUP%", permissionGroup.getName(), " lifetime to %PLAYER%", permissionPlayer.getName())
             return
         }
@@ -88,7 +78,7 @@ class PermissionCommand : ICommandHandler {
             return
         }
         permissionPlayer.addPermissionGroup(PlayerPermissionGroupInfo(group, System.currentTimeMillis() + TimeUnit.DAYS.toMillis(days.toLong())))
-        updatePermissionPlayer(permissionPlayer)
+        PermissionModule.instance.updatePermissionPlayer(permissionPlayer)
         commandSender.sendMessage("manager.command.perms.user.group.added.days", "&aAdded group %GROUP%", permissionGroup.getName(), " for %DAYS%", days, " days to %PLAYER%", permissionPlayer.getName())
     }
 
@@ -105,7 +95,7 @@ class PermissionCommand : ICommandHandler {
             return
         }
         permissionPlayer.removePermissionGroup(permissionGroup.getName())
-        updatePermissionPlayer(permissionPlayer)
+        PermissionModule.instance.updatePermissionPlayer(permissionPlayer)
         commandSender.sendMessage("manager.command.perms.user.group.removed", "&7Group &e%GROUP%", permissionGroup.getName(), " &7removed.")
     }
 
@@ -125,7 +115,7 @@ class PermissionCommand : ICommandHandler {
         }
         if (days.equals("lifetime", true)) {
             permissionPlayer.addPermission(Permission(permission, -1, active.toBoolean()))
-            updatePermissionPlayer(permissionPlayer)
+            PermissionModule.instance.updatePermissionPlayer(permissionPlayer)
             commandSender.sendMessage("manager.command.perms.user.permission.added.lifetime", "&aAdded permission %PERMISSION%", permission, " lifetime to %PLAYER%", permissionPlayer.getName())
             return
         }
@@ -135,7 +125,7 @@ class PermissionCommand : ICommandHandler {
         }
         commandSender.sendMessage("manager.command.perms.user.group.added.days", "&aAdded permission %PERMISSION%", permission, " for %DAYS%", days, " days to %PLAYER%", permissionPlayer.getName())
         permissionPlayer.addPermission(Permission(permission, System.currentTimeMillis() + TimeUnit.DAYS.toMillis(days.toLong()), active.toBoolean()))
-        updatePermissionPlayer(permissionPlayer)
+        PermissionModule.instance.updatePermissionPlayer(permissionPlayer)
     }
 
     @CommandSubPath("user <user> addPermission <permission> <days>")
@@ -155,7 +145,7 @@ class PermissionCommand : ICommandHandler {
             return
         }
         permissionPlayer.removePermission(permission)
-        updatePermissionPlayer(permissionPlayer)
+        PermissionModule.instance.updatePermissionPlayer(permissionPlayer)
         commandSender.sendMessage("manager.command.perms.user.permission.removed", "&7Permission &e%PERMISSION%", permission, " &7removed.")
     }
 
@@ -251,9 +241,9 @@ class PermissionCommand : ICommandHandler {
             return
         }
         if (permissionGroup.addInheritedPermissionGroup(otherPermissionGroup)) {
-            commandSender.sendMessage("manager.command.perms.inheritance.add.success", "&7Group &e%GROUP%", permissionGroup.getName(), " &7is now inheriting &e%OTHER_GROUP%", otherPermissionGroup.getName(), "&7.")
+            commandSender.sendMessage("manager.command.perms.inheritance.add.success", "&7Group &e%GROUP%", permissionGroup.getName(), " &7is now inheriting from &e%OTHER_GROUP%", otherPermissionGroup.getName(), "&7.")
         } else {
-            commandSender.sendMessage("manager.command.perms.inheritance.add.failure", "&cGroup %GROUP%", permissionGroup.getName(), " is already inheriting %OTHER_GROUP%", otherPermissionGroup.getName(), ".")
+            commandSender.sendMessage("manager.command.perms.inheritance.add.failure", "&cGroup %GROUP%", permissionGroup.getName(), " is already inheriting from %OTHER_GROUP%", otherPermissionGroup.getName(), ".")
         }
         permissionGroup as PermissionGroup
         permissionGroup.update()
@@ -273,9 +263,9 @@ class PermissionCommand : ICommandHandler {
         }
 
         if (permissionGroup.removeInheritedPermissionGroup(otherPermissionGroup)) {
-            commandSender.sendMessage("manager.command.perms.inheritance.remove.success", "&7Group &e%GROUP%", permissionGroup.getName(), " &7is no longer inheriting &e%OTHER_GROUP%", otherPermissionGroup.getName(), "&7.")
+            commandSender.sendMessage("manager.command.perms.inheritance.remove.success", "&7Group &e%GROUP%", permissionGroup.getName(), " &7is no longer inheriting from &e%OTHER_GROUP%", otherPermissionGroup.getName(), "&7.")
         } else {
-            commandSender.sendMessage("manager.command.perms.inheritance.remove.failure", "&cGroup &e%GROUP%", permissionGroup.getName(), " &7is not inheriting &e%OTHER_GROUP%", otherPermissionGroup.getName(), "&7.")
+            commandSender.sendMessage("manager.command.perms.inheritance.remove.failure", "&cGroup &e%GROUP%", permissionGroup.getName(), " &7is not inheriting from &e%OTHER_GROUP%", otherPermissionGroup.getName(), "&7.")
         }
         permissionGroup as PermissionGroup
         permissionGroup.update()
