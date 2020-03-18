@@ -1,5 +1,6 @@
 package eu.thesimplecloud.api.player
 
+import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.exception.NoSuchWorldException
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.api.location.ServiceLocation
@@ -10,6 +11,7 @@ import eu.thesimplecloud.api.exception.UnreachableServiceException
 import eu.thesimplecloud.api.exception.NoSuchPlayerException
 import eu.thesimplecloud.api.exception.PlayerConnectException
 import eu.thesimplecloud.api.exception.NoSuchServiceException
+import eu.thesimplecloud.api.executeOnManager
 import java.util.*
 
 interface ICloudPlayerManager {
@@ -193,5 +195,10 @@ interface ICloudPlayerManager {
      * - [NoSuchPlayerException] if the [IOfflineCloudPlayer] cannot be found by the specified [uniqueId]
      */
     fun getOfflineCloudPlayer(uniqueId: UUID): ICommunicationPromise<IOfflineCloudPlayer>
+
+    /**
+     * Returns the current online count
+     */
+    fun getOnlinePlayerCount(): ICommunicationPromise<Int> = CloudAPI.instance.executeOnManager { CloudAPI.instance.getCloudPlayerManager().getAllCachedCloudPlayers().size }
 
 }
