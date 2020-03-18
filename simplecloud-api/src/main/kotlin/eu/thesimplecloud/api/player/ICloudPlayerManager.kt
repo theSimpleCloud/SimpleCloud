@@ -197,8 +197,8 @@ interface ICloudPlayerManager {
     fun getOfflineCloudPlayer(uniqueId: UUID): ICommunicationPromise<IOfflineCloudPlayer>
 
     /**
-     * Returns the current online count
+     * Returns the amount of players connected to the network
      */
-    fun getOnlinePlayerCount(): ICommunicationPromise<Int> = CloudAPI.instance.executeOnManager { CloudAPI.instance.getCloudPlayerManager().getAllCachedCloudPlayers().size }
+    fun getNetworkOnlinePlayerCount(): ICommunicationPromise<Int> = CloudAPI.instance.executeOnManager { CloudAPI.instance.getCloudPlayerManager().getAllCachedCloudPlayers().size }
 
 }
