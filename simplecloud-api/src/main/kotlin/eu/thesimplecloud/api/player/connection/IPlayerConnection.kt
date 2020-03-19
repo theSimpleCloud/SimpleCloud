@@ -1,5 +1,6 @@
 package eu.thesimplecloud.api.player.connection
 
+import eu.thesimplecloud.api.CloudAPI
 import java.util.*
 
 interface IPlayerConnection {
@@ -30,5 +31,10 @@ interface IPlayerConnection {
      * @return the protocol version of the client
      */
     fun getVersion(): Int
+
+    /**
+     * Returns the cloud player this player connection is linked to
+     */
+    fun getCloudPlayer() = CloudAPI.instance.getCloudPlayerManager().getCloudPlayer(getUniqueId())
 
 }

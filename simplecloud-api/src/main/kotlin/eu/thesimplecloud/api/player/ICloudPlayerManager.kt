@@ -12,7 +12,9 @@ import eu.thesimplecloud.api.exception.NoSuchPlayerException
 import eu.thesimplecloud.api.exception.PlayerConnectException
 import eu.thesimplecloud.api.exception.NoSuchServiceException
 import eu.thesimplecloud.api.executeOnManager
+import eu.thesimplecloud.api.player.connection.IPlayerConnection
 import java.util.*
+import java.util.function.Predicate
 
 interface ICloudPlayerManager {
 
@@ -201,4 +203,12 @@ interface ICloudPlayerManager {
      */
     fun getNetworkOnlinePlayerCount(): ICommunicationPromise<Int> = CloudAPI.instance.executeOnManager { CloudAPI.instance.getCloudPlayerManager().getAllCachedCloudPlayers().size }
 
+    /*
+    /**
+     * Returns all Player Connections matching the specified [predicate]
+     */
+    fun getCloudPlayersFiltered(predicate: (ICloudPlayer) -> Boolean): ICommunicationPromise<List<IPlayerConnection>> {
+        return CloudAPI.instance.executeOnManager { CloudAPI.instance.getCloudPlayerManager().getAllCachedCloudPlayers().filter { predicate(it) }.map { it.getPlayerConnection() } }
+    }
+    */
 }
