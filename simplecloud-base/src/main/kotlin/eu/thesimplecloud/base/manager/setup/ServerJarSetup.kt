@@ -23,7 +23,7 @@ class ServerJarSetup(val serverJar: File) : ISetup {
         return true
     }
 
-    @SetupQuestion(1, "manager.setup.server-jar.version.question", "Which version to you want to use? (1.7.10, 1.8.8, 1.9.4, 1.10.2, 1.11.2, 1.12.2, 1.13.2, 1.14.4)")
+    @SetupQuestion(1, "manager.setup.server-jar.version.question", "Which version to you want to use? (1.7.10, 1.8.8, 1.9.4, 1.10.2, 1.11.2, 1.12.2, 1.13.2, 1.14.4, 1.15.2)")
     fun versionSetup(answer: String) : Boolean {
         val version = answer.replace(".", "_")
         val serviceVersion = JsonData.fromObject(spigotType + "_" + version).getObjectOrNull(ServiceVersion::class.java)

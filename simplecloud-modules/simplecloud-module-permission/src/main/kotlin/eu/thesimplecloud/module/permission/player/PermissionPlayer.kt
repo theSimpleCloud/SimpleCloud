@@ -19,7 +19,11 @@ class PermissionPlayer(
 
     override fun getUniqueId(): UUID = this.uniqueId
 
-    override fun getPermissionGroupInfoList(): Collection<PlayerPermissionGroupInfo> = permissionGroupInfoList.union(listOf(PlayerPermissionGroupInfo(PermissionPool.instance.getPermissionGroupManager().getDefaultPermissionGroupName(), -1)))
+    override fun getPermissionGroupInfoList(): Collection<PlayerPermissionGroupInfo> {
+        if (!permissionGroupInfoList.map { it.permissionGroupName }.contains(PermissionPool.instance.getPermissionGroupManager().getDefaultPermissionGroupName()))
+            permissionGroupInfoList.add(PlayerPermissionGroupInfo(PermissionPool.instance.getPermissionGroupManager().getDefaultPermissionGroupName(), -1))
+        return permissionGroupInfoList
+    }
 
     override fun update(): ICommunicationPromise<Unit> {
         return getCloudPlayer().then {

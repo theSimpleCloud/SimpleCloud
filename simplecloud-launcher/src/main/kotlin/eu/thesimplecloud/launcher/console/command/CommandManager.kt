@@ -38,6 +38,13 @@ class CommandManager() {
     fun handleCommand(readLine: String, commandSender: ICommandSender) {
         val readLine = if (readLine.trim().equals("cloud", true)) "cloud help" else readLine.trim()
 
+        if (readLine.toLowerCase().startsWith("cloud") && commandSender is ICloudPlayer) {
+            if (!commandSender.hasPermission("cloud.command.use").awaitUninterruptibly().getNow()) {
+                commandSender.sendMessage("command.cloud.no-permission", "&cYou don't have the permission to execute this command.")
+                return
+            }
+        }
+
         val covertPathFunction: (CommandData) -> String = { if (commandSender is ConsoleSender) it.path else it.getPathWithCloudPrefixIfRequired() }
         val matchingCommandData = getMatchingCommandData(readLine)
         if (matchingCommandData == null) {
