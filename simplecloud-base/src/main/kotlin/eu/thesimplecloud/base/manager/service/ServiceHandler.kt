@@ -67,12 +67,12 @@ class ServiceHandler : IServiceHandler {
     private fun stopRedundantServices() {
         for (serviceGroup in CloudAPI.instance.getCloudServiceGroupManager().getAllGroups()) {
             val allServices = serviceGroup.getAllServices()
-            val inLobbyServices = allServices.filter { it.getState() != ServiceState.INVISIBLE && it.getState() != ServiceState.CLOSED }
-            val stoppableServices = inLobbyServices.filter { it.getState() == ServiceState.VISIBLE }
+            val inLobbyServices = allServices.filter { it.getState() == ServiceState.VISIBLE }
+            val stoppableServices = inLobbyServices
                     .filter { (it.getLastUpdate() + TimeUnit.MINUTES.toMillis(3)) < System.currentTimeMillis() }
                     .filter { it.getOnlinePlayers() <= 0 }
-            if (stoppableServices.size > serviceGroup.getMinimumOnlineServiceCount()) {
-                val amountToStop = stoppableServices.size - serviceGroup.getMinimumOnlineServiceCount()
+            if (inLobbyServices.size > serviceGroup.getMinimumOnlineServiceCount()) {
+                val amountToStop = inLobbyServices.size - serviceGroup.getMinimumOnlineServiceCount()
                 for (i in 0 until min(amountToStop, stoppableServices.size)) {
                     val service = stoppableServices[i]
                     //set to invisible, so that services are not shutdown again
