@@ -12,7 +12,7 @@ class ServiceVersionLoader {
     fun loadVersionFile(serviceVersion: ServiceVersion): File {
         val file = File(DirectoryPaths.paths.minecraftJarsPath + serviceVersion.name + ".jar")
         if (!file.exists()){
-            Downloader().userAgentDownload(serviceVersion.downloadLink, file.absolutePath)
+            Downloader().userAgentDownload(serviceVersion.downloadLink, file)
             //delete json to prevent bugs in spigot version 1.8
             ZipUtils().deletePath(file, "com/google/gson/")
             Thread.sleep(200)

@@ -35,7 +35,7 @@ data class Dependency(val groupId: String, val artifactId: String, val version: 
 
     @Throws(IOException::class)
     fun download(repoUrl: String) {
-        Downloader().userAgentDownload(this.getDownloadURL(repoUrl), this.getDownloadedFile().absolutePath)
+        Downloader().userAgentDownload(this.getDownloadURL(repoUrl), this.getDownloadedFile())
     }
 
     fun getPomContent(repoUrl: String): String? {

@@ -9,7 +9,7 @@ import eu.thesimplecloud.api.service.ServiceVersion
 import eu.thesimplecloud.launcher.extension.sendMessage
 import java.io.File
 
-class ServerJarSetup(val serverJar: File) : ISetup {
+class ServerJarSetup(private val serverJar: File) : ISetup {
 
     private var spigotType: String = ""
 
@@ -32,7 +32,7 @@ class ServerJarSetup(val serverJar: File) : ISetup {
             return false
         }
         Launcher.instance.consoleSender.sendMessage("manager.setup.server-jar.downloading", "Downloading server...")
-        Downloader().userAgentDownload(serviceVersion.downloadLink, serverJar.path)
+        Downloader().userAgentDownload(serviceVersion.downloadLink, serverJar)
         return true
     }
 

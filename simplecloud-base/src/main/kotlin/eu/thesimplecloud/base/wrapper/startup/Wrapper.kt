@@ -14,6 +14,7 @@ import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.api.client.CloudClientType
 import eu.thesimplecloud.client.packets.PacketOutCloudClientLogin
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.network.packets.wrapper.PacketIOUpdateWrapperInfo
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
@@ -21,6 +22,7 @@ import eu.thesimplecloud.base.manager.external.CloudModuleHandler
 import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.external.module.CloudModuleFileContent
 import eu.thesimplecloud.launcher.external.module.CloudModuleLoader
+import org.apache.commons.io.FileUtils
 import java.io.File
 import java.lang.IllegalStateException
 import java.util.concurrent.TimeUnit
@@ -54,7 +56,6 @@ class Wrapper : ICloudApplication {
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.api.network.packets")
         thread(start = true, isDaemon = false) { communicationClient.start() }
         this.communicationClient.getPacketIdsSyncPromise().addResultListener {
-            this.existingModules = CloudModuleHandler().getAllCloudModuleFileContents()
             this.communicationClient.sendUnitQuery(PacketOutCloudClientLogin(CloudClientType.WRAPPER))
         }
         if (isStartedInManagerDirectory()) {
@@ -87,6 +88,9 @@ class Wrapper : ICloudApplication {
                 }
 
             }
+            if (this.templateClient != null) {
+                FileUtils.deleteDirectory(File(DirectoryPaths.paths.templatesPath))
+            }
             this.communicationClient.shutdown()
             this.templateClient?.shutdown()
         })
@@ -98,8 +102,14 @@ class Wrapper : ICloudApplication {
         templateClient.addPacketsByPackage("eu.thesimplecloud.base.wrapper.network.packets.template")
         thread(start = true, isDaemon = false) { templateClient.start() }
         templateClient.getPacketIdsSyncPromise().addResultListener {
-            println("sending request template")
-            templateClient.sendUnitQuery(PacketOutGetTemplates())
+            Launcher.instance.consoleSender.sendMessage("wrapper.template.requesting", "Requesting templates...")
+            templateClient.sendUnitQuery(PacketOutGetTemplates(), TimeUnit.SECONDS.toMillis((60 * 2) + 30)).addResultListener {
+                this.existingModules = CloudModuleHandler().getAllCloudModuleFileContents()
+                Launcher.instance.consoleSender.sendMessage("wrapper.template.received", "Templates received.")
+            }.addFailureListener {
+                Launcher.instance.logger.severe("An error occurred while requesting templates:")
+                Launcher.instance.logger.exception(it)
+            }
         }
     }
 

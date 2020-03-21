@@ -22,9 +22,11 @@ class TemplateCopier : ITemplateCopier {
         val serviceTmpDir = if (cloudService.isStatic()) File(DirectoryPaths.paths.staticPath + cloudService.getName()) else File(DirectoryPaths.paths.tempPath + cloudService.getName())
         val dontCopyTemplates = cloudService.isStatic() && serviceTmpDir.exists()
         if (!dontCopyTemplates) {
-            FileUtils.copyDirectory(everyDir, serviceTmpDir)
-            FileUtils.copyDirectory(everyTypeDir, serviceTmpDir)
-            templateDirectories.forEach { FileUtils.copyDirectory(it, serviceTmpDir) }
+            if (everyDir.exists())
+                FileUtils.copyDirectory(everyDir, serviceTmpDir)
+            if (everyTypeDir.exists())
+                FileUtils.copyDirectory(everyTypeDir, serviceTmpDir)
+            templateDirectories.filter { it.exists() }.forEach { FileUtils.copyDirectory(it, serviceTmpDir) }
         }
         val cloudPluginFile = File(serviceTmpDir, "/plugins/SimpleCloud-Plugin.jar")
         FileCopier.copyFileOutOfJar(cloudPluginFile, "/SimpleCloud-Plugin.jar")

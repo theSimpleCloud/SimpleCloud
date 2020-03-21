@@ -32,6 +32,6 @@ class PacketInGetTemplates() : JsonPacket() {
     fun syncDirectory(directorySync: IDirectorySync?, connection: IConnection) {
         checkNotNull(directorySync) { "Failed to send modules and templates to a connected wrapper." }
         val promise = directorySync.syncDirectory(connection)
-        promise.syncUninterruptibly()
+        promise.awaitUninterruptibly()
     }
 }

@@ -93,6 +93,7 @@ class Manager : ICloudApplication {
 
         thread(start = true, isDaemon = false) { templateServer.start() }
         thread(start = true, isDaemon = false) { communicationServer.start() }
+        this.templateServer.getDirectorySyncManager().setTmpZipDirectory(File(DirectoryPaths.paths.zippedTemplatesPath))
         this.templateServer.getDirectorySyncManager().createDirectorySync(File(DirectoryPaths.paths.templatesPath), DirectoryPaths.paths.templatesPath)
         this.templateServer.getDirectorySyncManager().createDirectorySync(File(DirectoryPaths.paths.modulesPath), DirectoryPaths.paths.modulesPath)
         this.serviceHandler.startThread()

@@ -2,6 +2,7 @@ package eu.thesimplecloud.launcher.updater
 
 import eu.thesimplecloud.api.utils.Downloader
 import eu.thesimplecloud.api.update.IUpdater
+import java.io.File
 
 class CloudUpdater : IUpdater {
 
@@ -13,7 +14,7 @@ class CloudUpdater : IUpdater {
     override fun downloadJarsForUpdate() {
         //TODO edit download url
         val downloadUrl = "http://repo.thesimplecloud.eu/artifactory/gradle-dev-local/eu/thesimplecloud/clientserverapi/clientserverapi/${getLatestVersion()}/clientserverapi-${getLatestVersion()}.jar"
-        Downloader().userAgentDownload(downloadUrl, "SimpleCloud.jar")
+        Downloader().userAgentDownload(downloadUrl, File("SimpleCloud.jar"))
     }
 
     override fun executeJar() {

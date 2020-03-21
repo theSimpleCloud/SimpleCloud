@@ -9,7 +9,7 @@ import eu.thesimplecloud.api.service.ServiceVersion
 import eu.thesimplecloud.launcher.extension.sendMessage
 import java.io.File
 
-class ProxyJarSetup(val proxyFile: File) : ISetup {
+class ProxyJarSetup(private val proxyFile: File) : ISetup {
 
     @SetupQuestion(0, "manager.setup.proxy-jar.question", "Which proxy version do you want to use? (Bungeecord, Waterfall, Travertine, Hexacord)")
     fun setup(answer: String): Boolean {
@@ -19,7 +19,7 @@ class ProxyJarSetup(val proxyFile: File) : ISetup {
             return false
         }
         Launcher.instance.consoleSender.sendMessage("manager.setup.proxy-jar.downloading", "Downloading proxy...")
-        Downloader().userAgentDownload(serviceVersion.downloadLink, proxyFile.path)
+        Downloader().userAgentDownload(serviceVersion.downloadLink, proxyFile)
         return true
     }
 

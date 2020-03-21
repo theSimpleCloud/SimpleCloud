@@ -32,7 +32,7 @@ class CloudModuleHandler : ICloudModuleHandler {
     }
 
     private fun getAllModuleJarFiles(): List<File> {
-        return File(DirectoryPaths.paths.modulesPath).listFiles().filter { it.name.endsWith(".jar") }
+        return File(DirectoryPaths.paths.modulesPath).listFiles()?.filter { it.name.endsWith(".jar") } ?: emptyList()
     }
 
     fun unregisterAllModules() {
