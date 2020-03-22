@@ -10,7 +10,7 @@ repositories {
 
 allprojects {
     
-    group 'eu.thesimplecloud'
+    group 'eu.thesimplecloud.simplecloud'
     version '1.0.0-SNAPSHOT'
 
     sourceCompatibility = 1.8
