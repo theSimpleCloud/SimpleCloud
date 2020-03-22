@@ -1,6 +1,8 @@
 plugins {
     id 'java'
     id 'org.jetbrains.kotlin.jvm'
+    id 'maven-publish'
+    id 'maven'
 }
 
 repositories {
