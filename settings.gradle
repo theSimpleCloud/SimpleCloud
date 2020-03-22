@@ -13,4 +13,6 @@ include 'simplecloud-modules:simplecloud-module-proxy'
 findProject(':simplecloud-modules:simplecloud-module-proxy')?.name = 'simplecloud-module-proxy'
 include 'simplecloud-modules:simplecloud-module-sign'
 findProject(':simplecloud-modules:simplecloud-module-sign')?.name = 'simplecloud-module-sign'
+include 'simplecloud-modules:simplecloud-module-internalwrapper'
+findProject(':simplecloud-modules:simplecloud-module-internalwrapper')?.name = 'simplecloud-module-internalwrapper'
 

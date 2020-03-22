@@ -19,7 +19,7 @@ class BukkitCloudSign(
     val templateLocation = cloudSign.templateLocation
     var currentServer: ICloudService? = null
 
-    var placeholders = listOf<Placeholder<ICloudService>>(
+    private var placeholders = listOf<Placeholder<ICloudService>>(
             Placeholder("SERVICE") { it.getName() },
             Placeholder("ONLINE_PLAYERS") { it.getOnlinePlayers().toString() },
             Placeholder("MOTD") { it.getMOTD() },
@@ -29,7 +29,7 @@ class BukkitCloudSign(
             Placeholder("NUMBER") { it.getServiceNumber().toString() },
             Placeholder("WRAPPER") { it.getWrapperName() }
     )
-    var groupPlaceholders = listOf<Placeholder<ICloudServiceGroup>>(
+    private var groupPlaceholders = listOf<Placeholder<ICloudServiceGroup>>(
             Placeholder("GROUP") { it.getName() },
             Placeholder("MAX_PLAYERS") { it.getMaxPlayers().toString() },
             Placeholder("TEMPLATE") { it.getTemplateName() }

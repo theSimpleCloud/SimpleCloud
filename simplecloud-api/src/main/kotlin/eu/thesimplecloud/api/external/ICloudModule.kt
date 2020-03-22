@@ -12,4 +12,9 @@ interface ICloudModule {
      */
     fun onDisable()
 
+    /**
+     * Returns whether this module is reloadable
+     */
+    fun isReloadable() = true
+
 }
