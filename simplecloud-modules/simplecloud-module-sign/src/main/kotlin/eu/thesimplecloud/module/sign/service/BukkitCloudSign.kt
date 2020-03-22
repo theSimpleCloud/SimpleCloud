@@ -88,11 +88,10 @@ class BukkitCloudSign(
     }
 
     private fun replacePlaceholders(lineToReplace: String, currentServer: ICloudService?): String {
-        currentServer ?: return lineToReplace
-        val serviceGroup = currentServer.getServiceGroup()
         var lineToReplace = lineToReplace
-        placeholders.forEach { lineToReplace = it.replacePlaceholder(currentServer, lineToReplace) }
-        groupPlaceholders.forEach { lineToReplace = it.replacePlaceholder(serviceGroup, lineToReplace) }
+        if (currentServer != null)
+            placeholders.forEach { lineToReplace = it.replacePlaceholder(currentServer, lineToReplace) }
+        groupPlaceholders.forEach { lineToReplace = it.replacePlaceholder(this.serviceGroup!!, lineToReplace) }
         return lineToReplace
     }
 
