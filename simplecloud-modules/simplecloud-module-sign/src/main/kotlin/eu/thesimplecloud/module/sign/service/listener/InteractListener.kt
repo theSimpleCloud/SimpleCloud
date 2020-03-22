@@ -1,5 +1,6 @@
 package eu.thesimplecloud.module.sign.service.listener
 
+import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.module.sign.lib.SignModuleConfig
 import eu.thesimplecloud.module.sign.service.SpigotPluginMain
 import eu.thesimplecloud.plugin.extension.getCloudPlayer
@@ -21,7 +22,9 @@ class InteractListener : Listener {
         if (state is Sign) {
             val bukkitCloudSign = SpigotPluginMain.INSTANCE.bukkitCloudSignManager.getBukkitCloudSignByLocation(state.location)
             bukkitCloudSign ?: return
+            if (bukkitCloudSign.serviceGroup?.isInMaintenance() == true) return
             val currentServer = bukkitCloudSign.currentServer ?: return
+            if (currentServer.getState() != ServiceState.VISIBLE) return
             event.player.getCloudPlayer().connect(currentServer)
         }
     }

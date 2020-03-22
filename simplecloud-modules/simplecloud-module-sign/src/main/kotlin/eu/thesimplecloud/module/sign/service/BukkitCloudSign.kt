@@ -14,7 +14,7 @@ class BukkitCloudSign(
         val cloudSign: CloudSign
 ) {
 
-    private val serviceGroup = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(cloudSign.forGroup)
+    val serviceGroup = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(cloudSign.forGroup)
     private val location = cloudSign.templateLocation.toBukkitLocation()
     val templateLocation = cloudSign.templateLocation
     var currentServer: ICloudService? = null
