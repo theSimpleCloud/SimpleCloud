@@ -3,7 +3,6 @@ package eu.thesimplecloud.base.manager.network.packets.player
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.exception.NoSuchPlayerException
 import eu.thesimplecloud.api.exception.NoSuchServiceException
-import eu.thesimplecloud.api.network.packets.player.PacketIORemoveCloudPlayer
 import eu.thesimplecloud.api.network.packets.player.PacketIOUpdateCloudPlayer
 import eu.thesimplecloud.api.player.CloudPlayer
 import eu.thesimplecloud.base.manager.startup.Manager
@@ -11,7 +10,6 @@ import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import java.util.*
-import javax.jnlp.UnavailableServiceException
 
 class PacketInPlayerConnectToServer() : JsonPacket() {
 
@@ -28,7 +26,7 @@ class PacketInPlayerConnectToServer() : JsonPacket() {
         }
          */
         val newService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(serviceName) ?: return failure(NoSuchServiceException("New service cannot be found"))
-        val newServiceClient = Manager.instance.communicationServer.getClientManager().getClientByClientValue(newService) ?: return failure(UnavailableServiceException("New service is not connected to the manager"))
+        val newServiceClient = Manager.instance.communicationServer.getClientManager().getClientByClientValue(newService) ?: return failure(NoSuchServiceException("New service is not connected to the manager"))
         return newServiceClient.sendUnitQuery(PacketIOUpdateCloudPlayer(cloudPlayer))
     }
 }
