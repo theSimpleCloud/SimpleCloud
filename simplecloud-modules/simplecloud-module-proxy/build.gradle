@@ -2,12 +2,6 @@ plugins {
     id 'java'
     id 'org.jetbrains.kotlin.jvm'
 }
-
-group 'eu.thesimplecloud'
-version '1.0-SNAPSHOT'
-
-sourceCompatibility = 1.8
-
 repositories {
     mavenCentral()
     mavenLocal()
