@@ -59,6 +59,7 @@ class Wrapper : ICloudApplication {
             this.communicationClient.sendUnitQuery(PacketOutCloudClientLogin(CloudClientType.WRAPPER))
         }
         if (isStartedInManagerDirectory()) {
+            this.existingModules = CloudModuleHandler().getAllCloudModuleFileContents()
             Launcher.instance.consoleSender.sendMessage("wrapper.startup.template-client.not-activated", "Detected that a manager is running in this directory. Using templates in this folder.")
             Launcher.instance.consoleSender.sendMessage("wrapper.startup.template-client.help-message", "If your'e manager is not running in this directory delete the folder \"storage/wrappers\" and restart the wrapper.")
             this.templateClient = null

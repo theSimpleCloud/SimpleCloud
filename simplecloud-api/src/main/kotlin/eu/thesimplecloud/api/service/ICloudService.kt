@@ -51,7 +51,7 @@ interface ICloudService : IAuthenticatable, IBootstrap, ICommandExecutable, IPro
      * Returns the template that this service uses
      * e.g. Lobby
      */
-    fun getTemplate(): ITemplate = CloudAPI.instance.getTemplateManager().getTemplate(getTemplateName()) ?: throw IllegalStateException("Can't find the template of an registered service (templates: ${CloudAPI.instance.getTemplateManager().getAllTemplates().joinToString { it.getName() }})")
+    fun getTemplate(): ITemplate = CloudAPI.instance.getTemplateManager().getTemplateByName(getTemplateName()) ?: throw IllegalStateException("Can't find the template of an registered service (templates: ${CloudAPI.instance.getTemplateManager().getAllTemplates().joinToString { it.getName() }})")
 
     /**
      * Returns the service group of this service

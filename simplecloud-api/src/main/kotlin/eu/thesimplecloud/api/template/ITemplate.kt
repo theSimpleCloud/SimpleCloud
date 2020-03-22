@@ -33,7 +33,7 @@ interface ITemplate {
     /**
      * Returns all templates this group inherits from.
      */
-    fun inheritedTemplates(): List<ITemplate> = getInheritedTemplateNames().mapNotNull { CloudAPI.instance.getTemplateManager().getTemplate(it) }
+    fun inheritedTemplates(): List<ITemplate> = getInheritedTemplateNames().mapNotNull { CloudAPI.instance.getTemplateManager().getTemplateByName(it) }
 
     /**
      * Adds the specified name to the list of all module names, this template shall copy in the plugins directory of a service.

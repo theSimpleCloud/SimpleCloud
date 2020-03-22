@@ -19,7 +19,7 @@ class DeleteCommand : ICommandHandler {
 
     @CommandSubPath("template <name>", "Deletes a template")
     fun deleteTemplate(@CommandArgument("name") name: String) {
-        if (templateManager.getTemplate(name) == null) {
+        if (templateManager.getTemplateByName(name) == null) {
             Launcher.instance.consoleSender.sendMessage("manager.command.delete.template.not-exist", "Template %NAME%", name, " does not exist.")
             return
         }

@@ -48,7 +48,7 @@ class CreateCommand : ICommandHandler {
         if (name.length > 16) {
             Launcher.instance.consoleSender.sendMessage("manager.command.create.template.name-too-long", "The specified name must be shorter than 17 characters.")
         }
-        if (templateManager.getTemplate(name) != null) {
+        if (templateManager.getTemplateByName(name) != null) {
             Launcher.instance.consoleSender.sendMessage("manager.command.create.template.already-exist", "Template %NAME%", name, " does already exist.")
             return
         }

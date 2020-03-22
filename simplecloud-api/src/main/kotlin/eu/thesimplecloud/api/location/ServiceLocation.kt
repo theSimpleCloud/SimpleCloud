@@ -28,6 +28,14 @@ class ServiceLocation(
     fun toGroupLocation() = GroupLocation(groupName, worldName, x, y, z, yaw, pitch)
 
     /**
+     * Returns the template location of this location
+     */
+    fun toTemplateLocation(): TemplateLocation {
+        val service = getService() ?: throw IllegalStateException("Service $serviceName cannot be found")
+        return TemplateLocation(service.getTemplateName(), worldName, x, y, z, yaw, pitch)
+    }
+
+    /**
      * Returns the service this location is belongs to.
      */
     fun getService() = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(serviceName)
@@ -45,6 +53,22 @@ class ServiceLocation(
      */
     fun setServiceName(serviceName: String): ServiceLocation {
         return ServiceLocation(serviceName, this.worldName, this.x, this.y, this.z, this.yaw, this.pitch)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is ServiceLocation) return false
+        if (!super.equals(other)) return false
+
+        if (serviceName != other.serviceName) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + serviceName.hashCode()
+        return result
     }
 
 }

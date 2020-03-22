@@ -22,7 +22,7 @@ interface ITemplateManager {
     /**
      * Returns the first template found by the specified name
      */
-    fun getTemplate(name: String): ITemplate? = getAllTemplates().firstOrNull { it.getName().equals(name, true) }
+    fun getTemplateByName(name: String): ITemplate? = getAllTemplates().firstOrNull { it.getName().equals(name, true) }
 
     /**
      * Clears the cache

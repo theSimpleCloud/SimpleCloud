@@ -4,6 +4,7 @@ import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.event.sync.`object`.SynchronizedObjectUpdatedEvent
 import eu.thesimplecloud.api.utils.getAllFieldsFromClassAndSubClasses
 import java.lang.IllegalArgumentException
+import java.lang.reflect.Modifier
 import java.util.concurrent.ConcurrentHashMap
 
 abstract class AbstractSynchronizedObjectManager : ISynchronizedObjectManager {
@@ -16,8 +17,10 @@ abstract class AbstractSynchronizedObjectManager : ISynchronizedObjectManager {
             if (cachedObject !== synchronizedObject) {
                 if (cachedObject::class.java != synchronizedObject::class.java) throw IllegalArgumentException("Class of registered value by name ${synchronizedObject.getName()} is not matching the class of the update value. Registered: ${cachedObject::class.java.name} Update: ${synchronizedObject::class.java.name}")
                 for (field in cachedObject::class.java.getAllFieldsFromClassAndSubClasses()) {
-                    field.isAccessible = true
-                    field.set(cachedObject, field.get(synchronizedObject))
+                    if (!Modifier.isStatic(field.modifiers)) {
+                        field.isAccessible = true
+                        field.set(cachedObject, field.get(synchronizedObject))
+                    }
                 }
             }
             CloudAPI.instance.getEventManager().call(SynchronizedObjectUpdatedEvent(cachedObject))

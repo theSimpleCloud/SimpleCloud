@@ -83,7 +83,7 @@ class TemplateCopier : ITemplateCopier {
     private fun getDirectoriesOfTemplateAndSubTemplates(template: ITemplate): Set<File> {
         val set = HashSet<File>()
         for (templateName in template.getInheritedTemplateNames()) {
-            val subTemplate = CloudAPI.instance.getTemplateManager().getTemplate(templateName)
+            val subTemplate = CloudAPI.instance.getTemplateManager().getTemplateByName(templateName)
             subTemplate?.let { set.addAll(getDirectoriesOfTemplateAndSubTemplates(it)) }
         }
         set.add(template.getDirectory())
@@ -93,7 +93,7 @@ class TemplateCopier : ITemplateCopier {
     private fun getModulesToCopyOfTemplateAndSubTemplates(template: ITemplate): Set<String> {
         val set = HashSet<String>()
         for (templateName in template.getInheritedTemplateNames()) {
-            val subTemplate = CloudAPI.instance.getTemplateManager().getTemplate(templateName)
+            val subTemplate = CloudAPI.instance.getTemplateManager().getTemplateByName(templateName)
             subTemplate?.let { set.addAll(getModulesToCopyOfTemplateAndSubTemplates(it)) }
         }
         set.addAll(template.getModuleNamesToCopy())

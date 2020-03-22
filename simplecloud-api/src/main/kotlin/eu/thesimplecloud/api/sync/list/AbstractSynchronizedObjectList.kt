@@ -26,7 +26,7 @@ abstract class AbstractSynchronizedObjectList<T : ISynchronizedListObject> : ISy
         } else {
             if (cachedValue !== value)
                 cachedValue::class.java.getAllFieldsFromClassAndSubClasses().forEach { field ->
-                    if (!Modifier.isStatic(field.getModifiers())) {
+                    if (!Modifier.isStatic(field.modifiers)) {
                         field.isAccessible = true
                         field.set(cachedValue, field.get(value))
                     }
