@@ -8,7 +8,6 @@ import eu.thesimplecloud.api.location.ServiceLocation
 import eu.thesimplecloud.api.location.SimpleLocation
 import eu.thesimplecloud.api.player.connection.IPlayerConnection
 import eu.thesimplecloud.api.player.text.CloudText
-import eu.thesimplecloud.api.screen.ICommandExecutable
 import eu.thesimplecloud.api.service.ICloudService
 
 interface ICloudPlayer : IOfflineCloudPlayer, ICommandSender {
@@ -35,7 +34,7 @@ interface ICloudPlayer : IOfflineCloudPlayer, ICommandSender {
      * when an exception is encountered. [ICommunicationPromise.isSuccess] indicates success
      * or failure.
      * The promise will fail with:
-     * - [UnreachableServiceException] if the proxy service the player is connected to is not reachable
+     * - [NoSuchServiceException] if the proxy service the player is connected to is not reachable
      * - [IllegalArgumentException] if the specified [cloudService] is a proxy service.
      */
     fun connect(cloudService: ICloudService): ICommunicationPromise<Unit> = CloudAPI.instance.getCloudPlayerManager().connectPlayer(this, cloudService)
