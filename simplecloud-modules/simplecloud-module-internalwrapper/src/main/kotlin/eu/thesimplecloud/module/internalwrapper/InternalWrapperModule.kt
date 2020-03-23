@@ -21,8 +21,10 @@ class InternalWrapperModule : ICloudModule {
     override fun onEnable() {
         val launcherJarFile = File(Launcher::class.java.protectionDomain.codeSource.location.toURI().path)
         val wrapperManager = CloudAPI.instance.getWrapperManager()
-        if (wrapperManager.getWrapperByHost("localhost") == null && wrapperManager.getWrapperByHost("127.0.0.1") == null) {
-            val wrapperInfo = DefaultWrapperInfo("InternalWrapper", "127.0.0.1", 2, 2048)
+        val config = Launcher.instance.launcherConfigLoader.loadConfig()
+
+        if (wrapperManager.getWrapperByHost(config.host) == null) {
+            val wrapperInfo = DefaultWrapperInfo("InternalWrapper", config.host, 2, 2048)
             CloudAPI.instance.getWrapperManager().updateWrapper(wrapperInfo)
         }
         thread(start = true, isDaemon = false) {
