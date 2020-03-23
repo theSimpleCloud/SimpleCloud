@@ -13,6 +13,6 @@ open class LoadOfflineCloudPlayer(
         val firstLogin: Long,
         val lastLogin: Long,
         val onlineTime: Long,
-        val playerConnection: DefaultPlayerConnection,
+        val lastPlayerConnection: DefaultPlayerConnection,
         var propertyMap: Document
 )

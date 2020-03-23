@@ -11,11 +11,11 @@ open class DefaultWrapperManager : IWrapperManager {
     private val wrappers = CopyOnWriteArrayList<IWrapperInfo>()
 
     override fun updateWrapper(wrapper: IWrapperInfo) {
-        if (!this.wrappers.contains(wrapper)) {
+        val cashedWrapper = getWrapperByHost(wrapper.getHost())
+        if (cashedWrapper == null) {
             this.wrappers.add(wrapper)
             return
         }
-        val cashedWrapper = getWrapperByHost(wrapper.getHost())
         cashedWrapper as IWritableWrapperInfo
         cashedWrapper.setMaxMemory(wrapper.getMaxMemory())
         cashedWrapper.setMaxSimultaneouslyStartingServices(wrapper.getMaxSimultaneouslyStartingServices())

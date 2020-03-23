@@ -9,7 +9,6 @@ import eu.thesimplecloud.base.manager.config.TemplatesConfigLoader
 import eu.thesimplecloud.base.manager.filehandler.WrapperFileHandler
 import eu.thesimplecloud.base.manager.impl.CloudAPIImpl
 import eu.thesimplecloud.base.manager.listener.CloudListener
-import eu.thesimplecloud.base.manager.mongo.MongoConnectionInformation
 import eu.thesimplecloud.base.manager.mongo.MongoServerInformation
 import eu.thesimplecloud.base.manager.player.IOfflineCloudPlayerHandler
 import eu.thesimplecloud.base.manager.player.OfflineCloudPlayerHandler
@@ -33,7 +32,6 @@ import eu.thesimplecloud.base.manager.packet.PacketRegistry
 import eu.thesimplecloud.launcher.extension.sendMessage
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.litote.kmongo.KMongo
 import java.io.File
 import kotlin.concurrent.thread
 
@@ -133,7 +131,7 @@ class Manager : ICloudApplication {
             Launcher.instance.consoleSender.sendMessage("manager.startup.loaded.groups", "Loaded following groups:")
             CloudAPI.instance.getCloudServiceGroupManager().getAllGroups().forEach { Launcher.instance.consoleSender.sendMessage("- ${it.getName()}") }
         }
-        thread(start = true, isDaemon = false) { (this.cloudModuleHandler as CloudModuleHandler).loadModules() }
+        thread(start = true, isDaemon = false) { (this.cloudModuleHandler as CloudModuleHandler).loadAllUnloadedModules() }
     }
 
 

@@ -12,7 +12,6 @@ import eu.thesimplecloud.launcher.external.module.CloudModuleFileContent
 import eu.thesimplecloud.launcher.external.module.CloudModuleLoader
 import eu.thesimplecloud.launcher.startup.Launcher
 import java.io.File
-import java.lang.IllegalStateException
 import java.util.concurrent.CopyOnWriteArrayList
 
 class CloudModuleHandler : ICloudModuleHandler {
@@ -21,9 +20,13 @@ class CloudModuleHandler : ICloudModuleHandler {
 
     private val loadedModules = CopyOnWriteArrayList<CloudModuleData>()
 
-    fun loadModules() {
+    fun loadAllUnloadedModules() {
         for (file in  getAllModuleJarFiles()) {
-            loadModule(file)
+            try {
+                loadModule(file)
+            } catch (e: IllegalStateException) {
+
+            }
         }
     }
 
@@ -62,6 +65,7 @@ class CloudModuleHandler : ICloudModuleHandler {
     }
 
     override fun loadModule(file: File) {
+        if (this.loadedModules.map { it.file }.contains(file)) throw IllegalStateException("Module is already loaded")
         val cloudModuleData = try {
             cloudModuleLoader.loadModule(file, "module.json")
         } catch (ex: Exception) {
