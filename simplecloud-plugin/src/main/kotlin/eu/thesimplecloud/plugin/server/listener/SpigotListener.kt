@@ -11,8 +11,8 @@ import org.bukkit.event.player.PlayerQuitEvent
 
 class SpigotListener : Listener {
 
-    val UNKNOWN_ADRESS = "§cYou are connected from an unknown address!"
-    val NOT_REGISTERED = "§cYou are not registered on the network!"
+    private val UNKNOWN_ADRESS = "§cYou are connected from an unknown address!"
+    private val NOT_REGISTERED = "§cYou are not registered on the network!"
 
     @EventHandler
     fun on(event: PlayerLoginEvent) {

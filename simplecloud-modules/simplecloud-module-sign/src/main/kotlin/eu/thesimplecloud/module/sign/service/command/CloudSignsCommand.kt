@@ -50,7 +50,7 @@ class CloudSignsCommand : CommandExecutor {
                     sender.sendMessage("§cThere is already a sign registered on this location.")
                     return true
                 }
-                signModuleConfig.cloudSigns.add(CloudSign(templateLocation, groupName))
+                signModuleConfig.cloudSigns.add(CloudSign(templateLocation, serviceGroup.getName()))
 
                 if (signModuleConfig.groupToLayout.getLayoutByGroupName(groupName) == null) {
                     signModuleConfig.groupToLayout.putGroupToLayout(groupName, "default")
