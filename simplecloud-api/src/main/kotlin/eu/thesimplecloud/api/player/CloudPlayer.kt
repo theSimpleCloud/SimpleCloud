@@ -14,7 +14,7 @@ class CloudPlayer(
         onlineTime: Long,
         private var connectedProxyName: String,
         private var connectedServerName: String?,
-        private val playerConnection: DefaultPlayerConnection,
+        playerConnection: DefaultPlayerConnection,
         propertyMap: MutableMap<String, Property<*>>
 ) : OfflineCloudPlayer(
         name,
@@ -22,6 +22,7 @@ class CloudPlayer(
         firstLogin,
         lastLogin,
         onlineTime,
+        playerConnection,
         propertyMap
 ), ICloudPlayer {
 
@@ -33,11 +34,11 @@ class CloudPlayer(
 
     override fun getConnectedServerName(): String? = this.connectedServerName
 
-    override fun toOfflinePlayer(): IOfflineCloudPlayer = OfflineCloudPlayer(getName(), getUniqueId(), getFirstLogin(), getLastLogin(), getOnlineTime(), this.propertyMap)
+    override fun toOfflinePlayer(): IOfflineCloudPlayer = OfflineCloudPlayer(getName(), getUniqueId(), getFirstLogin(), getLastLogin(), getOnlineTime(), this.playerConnection, this.propertyMap)
 
     override fun isOnline(): Boolean = this.online
 
-    override fun clone(): ICloudPlayer = CloudPlayer(getName(), getUniqueId(), getFirstLogin(), getLastLogin(), getOnlineTime(), connectedProxyName, connectedServerName, playerConnection, propertyMap)
+    override fun clone(): ICloudPlayer = CloudPlayer(getName(), getUniqueId(), getFirstLogin(), getLastLogin(), getOnlineTime(), connectedProxyName, connectedServerName, this.playerConnection, propertyMap)
 
     fun setOffline() {
         this.online = false
