@@ -11,17 +11,16 @@ import org.bukkit.event.player.PlayerQuitEvent
 
 class SpigotListener : Listener {
 
-    val NOT_REGISTERED = "§cYou are not registered on the network!"
+    private val UNKNOWN_ADRESS = "§cYou are connected from an unknown address!"
+    private val NOT_REGISTERED = "§cYou are not registered on the network!"
 
     @EventHandler
     fun on(event: PlayerLoginEvent) {
-
-        /*val hostAddress = event.address.hostAddress
+        val hostAddress = event.realAddress.hostAddress
         if (hostAddress != "127.0.0.1" && !CloudAPI.instance.getWrapperManager().getAllWrappers().any { it.getHost() == hostAddress }) {
-            println("ghhhh")
-            event.disallow(PlayerLoginEvent.Result.KICK_OTHER, NOT_REGISTERED)
+            event.disallow(PlayerLoginEvent.Result.KICK_OTHER, UNKNOWN_ADRESS)
             return
-        }*/
+        }
 
         if (CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(event.player.uniqueId) == null) {
             event.disallow(PlayerLoginEvent.Result.KICK_OTHER, NOT_REGISTERED)

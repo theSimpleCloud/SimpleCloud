@@ -17,6 +17,8 @@ import java.lang.reflect.Field
 @Command("edit", CommandType.CONSOLE_AND_INGAME, "simplecloud.command.edit")
 class EditCommand : ICommandHandler {
 
+    //group
+
     @CommandSubPath("group <name> <parameter>", "Shows the parameters value")
     fun editGroup(commandSender: ICommandSender, @CommandArgument("name") name: String, @CommandArgument("parameter") parameter: String) {
         val fields = getFieldsOfGroup(name) ?: return
@@ -58,7 +60,7 @@ class EditCommand : ICommandHandler {
         }
     }
 
-    fun getFieldsOfGroup(groupName: String): List<Field>? {
+    private fun getFieldsOfGroup(groupName: String): List<Field>? {
         val serviceGroup = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(groupName)
         if (serviceGroup == null) {
             Launcher.instance.consoleSender.sendMessage("manager.command.edit.group.not-exist", "The specified group does not exist.")
@@ -67,9 +69,61 @@ class EditCommand : ICommandHandler {
         val allFields = serviceGroup::class.java.getAllFieldsFromClassAndSubClasses().filter { !Collection::class.java.isAssignableFrom(it.type) }
         return allFields.filterNot { it.name == "name" || it.name == "serviceVersion" }
     }
+    //wrapper
 
-    fun sendAllParameters(commandSender: ICommandSender, fields: List<Field>) {
-        commandSender.sendMessage("manager.command.edit.group.allowed-parameters", "Allowed parameters are:")
+    @CommandSubPath("wrapper <name> <parameter>", "Shows the parameters value")
+    fun editWrapper(commandSender: ICommandSender, @CommandArgument("name") name: String, @CommandArgument("parameter") parameter: String) {
+        val fields = getFieldsOfWrapper(name) ?: return
+        val wrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(name)!!
+        val lowerCaseFieldNames = fields.map { it.name.toLowerCase() }
+        if (lowerCaseFieldNames.contains(parameter.toLowerCase())) {
+            val field = fields[lowerCaseFieldNames.indexOf(parameter.toLowerCase())]
+            field.isAccessible = true
+            val fieldValue = field[wrapper]
+            commandSender.sendMessage("Value: $fieldValue")
+        } else {
+            sendAllParameters(commandSender, fields)
+        }
+    }
+
+    @CommandSubPath("wrapper <name> <parameter> <value>", "Edits a wrapper.")
+    fun editWrapper(commandSender: ICommandSender, @CommandArgument("name") name: String, @CommandArgument("parameter") parameter: String, @CommandArgument("value") value: String) {
+        val fields = getFieldsOfWrapper(name) ?: return
+        val wrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(name)!!
+        val lowerCaseFieldNames = fields.map { it.name.toLowerCase() }
+        if (lowerCaseFieldNames.contains(parameter.toLowerCase())) {
+            val field = fields[lowerCaseFieldNames.indexOf(parameter.toLowerCase())]
+            field.isAccessible = true
+            val type = StringParser().parseToObject(value, field.type)
+            if (type == null) {
+                commandSender.sendMessage("manager.command.edit.wrapper.invalid-value", "Invalid value. Expected type: %TYPE%", field.type.simpleName)
+                return
+            }
+            try {
+                field.set(wrapper, type)
+                commandSender.sendMessage("manager.command.edit.wrapper.success", "Wrapper edited.")
+                CloudAPI.instance.getWrapperManager().updateWrapper(wrapper)
+            } catch (e: Exception) {
+                commandSender.sendMessage("manager.command.edit.wrapper.invalid-value", "Invalid value. Expected type: %TYPE%", field.type.simpleName)
+                return
+            }
+        } else {
+            sendAllParameters(commandSender, fields)
+        }
+    }
+
+    private fun getFieldsOfWrapper(wrapperName: String): List<Field>? {
+        val wrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(wrapperName)
+        if (wrapper == null) {
+            Launcher.instance.consoleSender.sendMessage("manager.command.edit.wrapper.not-exist", "The specified wrapper does not exist.")
+            return null
+        }
+        val allFields = wrapper::class.java.getAllFieldsFromClassAndSubClasses().filter { !Collection::class.java.isAssignableFrom(it.type) }
+        return allFields.filterNot { it.name == "name" || it.name == "host" }
+    }
+
+    private fun sendAllParameters(commandSender: ICommandSender, fields: List<Field>) {
+        commandSender.sendMessage("manager.command.edit.allowed-parameters", "Allowed parameters are:")
         commandSender.sendMessage(fields.joinToString { it.name })
     }
 

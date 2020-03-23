@@ -83,7 +83,6 @@ class Manager : ICloudApplication {
         this.communicationServer.addPacketsByPackage("eu.thesimplecloud.base.manager.network.packets")
         this.templateServer.addPacketsByPackage("eu.thesimplecloud.base.manager.network.packets.template")
         createDirectories()
-        thread(start = true, isDaemon = false) { (this.cloudModuleHandler as CloudModuleHandler).loadModules() }
         Launcher.instance.logger.console("Waiting for MongoDB...")
         this.mongoController?.startedPromise?.awaitUninterruptibly()
         mongoClient = mongoConfig.mongoServerInformation.createMongoClient()
@@ -134,6 +133,7 @@ class Manager : ICloudApplication {
             Launcher.instance.consoleSender.sendMessage("manager.startup.loaded.groups", "Loaded following groups:")
             CloudAPI.instance.getCloudServiceGroupManager().getAllGroups().forEach { Launcher.instance.consoleSender.sendMessage("- ${it.getName()}") }
         }
+        thread(start = true, isDaemon = false) { (this.cloudModuleHandler as CloudModuleHandler).loadModules() }
     }
 
 

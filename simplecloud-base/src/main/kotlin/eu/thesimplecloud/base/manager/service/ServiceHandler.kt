@@ -12,7 +12,6 @@ import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.launcher.extension.sendMessage
 import java.util.*
-import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
@@ -20,7 +19,7 @@ import kotlin.math.min
 
 class ServiceHandler : IServiceHandler {
 
-    private val serviceQueue = LinkedBlockingQueue<ICloudService>()
+    private var serviceQueue: MutableList<ICloudService> = ArrayList()
 
     override fun startServicesByGroup(cloudServiceGroup: ICloudServiceGroup, count: Int): List<ICloudService> {
         require(count >= 1) { "Count must be positive." }
@@ -87,10 +86,11 @@ class ServiceHandler : IServiceHandler {
     fun startThread() {
         thread(start = true, isDaemon = true) {
             while (true) {
+                this.serviceQueue = this.serviceQueue.sortedByDescending { it.getServiceGroup().getStartPriority() }.toMutableList()
                 startMinServices()
                 stopRedundantServices()
                 if (serviceQueue.isNotEmpty()) {
-                    val service = serviceQueue.poll()
+                    val service = serviceQueue.removeAt(0)
                     val wrapperInfo = getWrapperForService(service)
                     val wrapperClient = wrapperInfo?.let { Manager.instance.communicationServer.getClientManager().getClientByClientValue(it) }
                     if (wrapperClient != null) {

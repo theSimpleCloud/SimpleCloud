@@ -58,6 +58,7 @@ class ConsoleManager(val commandManager: CommandManager, private val consoleSend
                     Launcher.instance.setupManager.onResponse(readLine)
                     continue
                 }
+                if (readLine.isBlank()) continue
                 //add cloud to execute a cloud command
                 commandManager.handleCommand("cloud $readLine", consoleSender)
             }

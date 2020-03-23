@@ -11,7 +11,7 @@ class LauncherDependencyLoader {
                 Dependency("org.jline", "jline", "3.13.2"),
                 Dependency("org.litote.kmongo", "kmongo", "3.11.2"),
                 Dependency("io.netty", "netty-all", "4.1.4.Final"),
-                Dependency("eu.thesimplecloud.clientserverapi", "clientserverapi", "2.2.6-SNAPSHOT"),
+                Dependency("eu.thesimplecloud.clientserverapi", "clientserverapi", "2.2.7-SNAPSHOT"),
                 Dependency("org.reflections", "reflections", "0.9.10"),
                 Dependency("com.google.code.gson", "gson", "2.8.6"),
                 Dependency("commons-io", "commons-io", "2.6"),

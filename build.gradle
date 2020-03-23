@@ -1,8 +1,6 @@
 plugins {
     id 'java'
     id 'org.jetbrains.kotlin.jvm' version '1.3.70'
-    id 'maven-publish'
-    id 'maven'
 }
 
 
@@ -12,8 +10,8 @@ repositories {
 
 allprojects {
     
-    group 'eu.thesimplecloud'
-    version '1.0-SNAPSHOT'
+    group 'eu.thesimplecloud.simplecloud'
+    version '1.0.0-SNAPSHOT'
 
     sourceCompatibility = 1.8
 
@@ -43,7 +41,7 @@ allprojects {
     }
 
     project.ext {
-        depedencyClientServerAPIVersion = '2.2.6-SNAPSHOT'
+        depedencyClientServerAPIVersion = '2.2.7-SNAPSHOT'
     }
 }
 

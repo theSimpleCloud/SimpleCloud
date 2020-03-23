@@ -1,10 +1,11 @@
 package eu.thesimplecloud.launcher.screens
 
 import eu.thesimplecloud.api.screen.ICommandExecutable
+import java.util.concurrent.CopyOnWriteArrayList
 
 class ScreenImpl(private val commandExecutable: ICommandExecutable) : IScreen {
 
-    private val messages = ArrayList<String>()
+    private val messages = CopyOnWriteArrayList<String>()
 
     override fun getCommandExecutable(): ICommandExecutable = this.commandExecutable
 

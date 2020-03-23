@@ -12,9 +12,7 @@ import eu.thesimplecloud.api.exception.NoSuchPlayerException
 import eu.thesimplecloud.api.exception.PlayerConnectException
 import eu.thesimplecloud.api.exception.NoSuchServiceException
 import eu.thesimplecloud.api.executeOnManager
-import eu.thesimplecloud.api.player.connection.IPlayerConnection
 import java.util.*
-import java.util.function.Predicate
 
 interface ICloudPlayerManager {
 

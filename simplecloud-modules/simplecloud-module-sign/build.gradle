@@ -1,16 +1,14 @@
 plugins {
     id 'java'
     id 'org.jetbrains.kotlin.jvm'
+    id 'maven-publish'
+    id 'maven'
 }
 
 configurations {
     jar.archiveName = 'SimpleCloud-Sign.jar'
 }
 
-group 'eu.thesimplecloud'
-version '1.0-SNAPSHOT'
-
-sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
