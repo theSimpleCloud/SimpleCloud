@@ -15,13 +15,14 @@ class PermissionPool(private val permissionGroupManager: PermissionGroupManager)
     }
 
 
-
     override fun getPermissionGroupManager(): IPermissionGroupManager = this.permissionGroupManager
 
     override fun getPermissionPlayerManager(): IPermissionPlayerManager = this.permissionPlayerManager
 
     companion object {
+        @JvmStatic
         lateinit var instance: PermissionPool
+            private set
     }
 
 }

@@ -8,6 +8,7 @@ import eu.thesimplecloud.plugin.startup.CloudPlugin
 import net.md_5.bungee.api.ServerPing
 import net.md_5.bungee.api.event.ProxyPingEvent
 import net.md_5.bungee.api.event.ServerConnectEvent
+import net.md_5.bungee.api.event.ServerSwitchEvent
 import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.event.EventHandler
 import net.md_5.bungee.event.EventPriority
@@ -20,8 +21,8 @@ import net.md_5.bungee.event.EventPriority
  */
 class BungeeListener(val plugin: BungeePluginMain) : Listener {
 
-    val JOIN_MAINTENANCE_PERMISSION = "cloud.maintenance.join"
-    val JOIN_FULL_PERMISSION = "cloud.full.join"
+    val JOIN_MAINTENANCE_PERMISSION = "simplecloud.maintenance.join"
+    val JOIN_FULL_PERMISSION = "simplecloud.full.join"
 
     @EventHandler(priority = EventPriority.HIGHEST)
     fun on(event: ServerConnectEvent) {
@@ -55,6 +56,20 @@ class BungeeListener(val plugin: BungeePluginMain) : Listener {
             }
         }
 
+        val tablistConfiguration = plugin.getTablistConfiguration()?: return
+
+        val headerAndFooter = plugin.getCurrentHeaderAndFooter(tablistConfiguration)
+        plugin.sendHeaderAndFooter(player, headerAndFooter.first, headerAndFooter.second)
+    }
+
+    @EventHandler
+    fun on(event: ServerSwitchEvent) {
+        val player = event.player
+
+        val tablistConfiguration = plugin.getTablistConfiguration()?: return
+
+        val headerAndFooter = plugin.getCurrentHeaderAndFooter(tablistConfiguration)
+        plugin.sendHeaderAndFooter(player, headerAndFooter.first, headerAndFooter.second)
     }
 
     @EventHandler

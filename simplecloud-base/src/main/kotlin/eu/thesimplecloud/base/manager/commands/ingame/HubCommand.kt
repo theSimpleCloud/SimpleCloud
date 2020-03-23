@@ -8,7 +8,7 @@ import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 import eu.thesimplecloud.launcher.extension.sendMessage
 
-@Command("hub", CommandType.INGAME)
+@Command("hub", CommandType.INGAME, aliases = ["lobby", "leave", "l"])
 class HubCommand : ICommandHandler {
 
     @CommandSubPath
