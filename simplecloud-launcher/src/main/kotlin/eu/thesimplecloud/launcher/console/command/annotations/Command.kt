@@ -15,6 +15,7 @@ annotation class Command(val name: String,
                          /**
                           * Only used if the command can be executed ingame.
                           */
-                         val permission: String = "") {
+                         val permission: String = "",
+                         val aliases: Array<String> = []) {
 
 }

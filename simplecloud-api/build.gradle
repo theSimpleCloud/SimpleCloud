@@ -1,7 +1,17 @@
 plugins {
     id 'java'
     id 'org.jetbrains.kotlin.jvm'
+    id 'maven-publish'
 }
+
+publishing {
+    publications {
+        myCoolLibrary(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'

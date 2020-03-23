@@ -121,9 +121,12 @@ class CommandManager() {
         val messageArray = message.split(" ")
         val commandDataList = getCommandDataByArgumentLength(messageArray.size)
         return commandDataList.firstOrNull { commandData ->
-            val path = commandData.getPathWithCloudPrefixIfRequired().trim()
-            val pathArray = path.split(" ")
-            pathArray.withIndex().all { isParamater(it.value) || it.value.toLowerCase() == messageArray[it.index].toLowerCase() }
+            commandData.getAllPathsWithAliases().any {
+                val path = it.trim()
+                val pathArray = path.split(" ")
+
+                pathArray.withIndex().all { isParamater(it.value) || it.value.toLowerCase() == messageArray[it.index].toLowerCase() }
+            }
         }
     }
 
@@ -131,11 +134,14 @@ class CommandManager() {
         val messageArray = message.split(" ")
         val dataList = getCommandDataByMinimumArgumentLength(messageArray.size)
         return dataList.filter { commandData ->
-            val path = commandData.getPathWithCloudPrefixIfRequired()
-            val pathArray = path.split(" ")
-            messageArray.withIndex().all {
-                val pathValue = pathArray[it.index]
-                isParamater(pathValue) || it.value.toLowerCase() == pathValue.toLowerCase()
+            commandData.getAllPathsWithAliases().any {
+                val path = it.trim()
+                val pathArray = path.split(" ")
+
+                messageArray.withIndex().all {
+                    val pathValue = pathArray[it.index]
+                    isParamater(pathValue) || it.value.toLowerCase() == pathValue.toLowerCase()
+                }
             }
         }
     }
@@ -175,7 +181,7 @@ class CommandManager() {
                 val commandSubPath = method.getAnnotation(CommandSubPath::class.java)
                 commandSubPath ?: continue
 
-                val commandData = CommandData(cloudModule, classAnnotation.name + " " + commandSubPath.path, commandSubPath.description, command, method, classAnnotation.commandType, classAnnotation.permission)
+                val commandData = CommandData(cloudModule, classAnnotation.name + " " + commandSubPath.path, commandSubPath.description, command, method, classAnnotation.commandType, classAnnotation.permission, classAnnotation.aliases)
                 for (parameter in method.parameters) {
                     val commandArgument = parameter.getAnnotation(CommandArgument::class.java)
                     if (commandArgument == null) {
@@ -193,7 +199,7 @@ class CommandManager() {
         }
     }
 
-    fun getAllIngameCommandPrefixes(): Collection<String> = this.commands.filter { it.commandType == CommandType.INGAME }.map { it.path.split(" ")[0] }.toSet().union(listOf("cloud"))
+    fun getAllIngameCommandPrefixes(): Collection<String> = this.commands.filter { it.commandType == CommandType.INGAME }.map { it.getAllPathsWithAliases().map { it.split(" ")[0] } }.flatten().toSet().union(listOf("cloud"))
 
     private fun getCloudAPI(): CloudAPI? {
         return try {

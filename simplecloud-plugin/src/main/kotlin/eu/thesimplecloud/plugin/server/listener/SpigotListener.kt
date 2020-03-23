@@ -16,11 +16,12 @@ class SpigotListener : Listener {
     @EventHandler
     fun on(event: PlayerLoginEvent) {
 
-        val hostAddress = event.address.hostAddress
+        /*val hostAddress = event.address.hostAddress
         if (hostAddress != "127.0.0.1" && !CloudAPI.instance.getWrapperManager().getAllWrappers().any { it.getHost() == hostAddress }) {
+            println("ghhhh")
             event.disallow(PlayerLoginEvent.Result.KICK_OTHER, NOT_REGISTERED)
             return
-        }
+        }*/
 
         if (CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(event.player.uniqueId) == null) {
             event.disallow(PlayerLoginEvent.Result.KICK_OTHER, NOT_REGISTERED)

@@ -17,10 +17,18 @@ class CommandData(
         val method: Method,
         val commandType: CommandType,
         val permission: String,
+        val aliases: Array<String>,
         val parameterDataList: MutableList<CommandParameterData> = ArrayList()
 ) {
 
-    fun getPathWithCloudPrefixIfRequired() = (if (commandType == CommandType.INGAME) "" else "cloud ") + path
+    fun getPathWithCloudPrefixIfRequired() = getPathWithCloudPrefixIfRequired(this.path)
+
+    fun getPathWithCloudPrefixIfRequired(path: String) = (if (commandType == CommandType.INGAME) "" else "cloud ") + path
+
+    fun getAllPathsWithAliases(): Collection<String> {
+        val path = path.split(" ").drop(1).joinToString(" ")
+        return aliases.map { getPathWithCloudPrefixIfRequired("$it $path") }.union(listOf(getPathWithCloudPrefixIfRequired()))
+    }
 
     fun getIndexOfParameter(parameterName: String): Int {
         return getPathWithCloudPrefixIfRequired().split(" ").indexOf("<$parameterName>")

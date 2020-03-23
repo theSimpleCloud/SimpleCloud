@@ -40,46 +40,65 @@ class BungeePluginMain : Plugin() {
         proxy.pluginManager.registerListener(this, BungeeListener(this))
     }
 
-    fun startTablist() {
-        val tablistConfiguration = getTablistConfiguration() ?: return
+    private var headerCounter = 0
+    private var footerCounter = 0
 
-        var counter = 0
+    fun startTablist() {
 
         tablistStarted = true
-        proxy.scheduler.schedule(this, Runnable {
+        getTablistConfiguration()?.animationDelayInSeconds?.let {
+            proxy.scheduler.schedule(this, Runnable {
+                val tablistConfiguration = getTablistConfiguration() ?: return@Runnable
 
-            if (proxy.players.isEmpty()) {
-                return@Runnable
-            }
-            var header: String = ""
-            var footer: String = ""
-
-            var onlinePlayers = getOnlinePlayers()
-
-            if (counter >= tablistConfiguration.footers.size) {
-                counter = 0
-            }
-
-            if (tablistConfiguration.footers.isNotEmpty()) {
-                footer = tablistConfiguration.footers.get(counter)
-                if (tablistConfiguration.headers.size > counter) {
-                    header = tablistConfiguration.headers.get(counter)
-                } else if (tablistConfiguration.headers.isNotEmpty()) {
-                    header = tablistConfiguration.headers.get(0)
+                if (proxy.players.isEmpty()) {
+                    return@Runnable
                 }
+
+                var onlinePlayers = getOnlinePlayers()
+
+                headerCounter++
+                footerCounter++
+
+                if (headerCounter >= tablistConfiguration.headers.size) {
+                    headerCounter = 0
+                }
+
+                if (footerCounter >= tablistConfiguration.footers.size) {
+                    footerCounter = 0
+                }
+                val headerAndFooter = getCurrentHeaderAndFooter(tablistConfiguration)
+
+                sendHeaderAndFooter(headerAndFooter.first, headerAndFooter.second)
+
+            }, it, it, TimeUnit.SECONDS)
+        }
+    }
+
+    fun getCurrentHeaderAndFooter(tablistConfiguration: TablistConfiguration): Pair<String, String> {
+        var header: String = ""
+        var footer: String = ""
+
+        if (tablistConfiguration.footers.isNotEmpty()) {
+            footer = tablistConfiguration.footers.get(footerCounter)
+            if (tablistConfiguration.headers.size > headerCounter) {
+                header = tablistConfiguration.headers.get(headerCounter)
+            } else if (tablistConfiguration.headers.isNotEmpty()) {
+                header = tablistConfiguration.headers.get(0)
             }
+        }
 
-            sendHeaderAndFooter(header, footer)
-
-            counter++
-        }, tablistConfiguration.animationDelayInSeconds, 1, TimeUnit.SECONDS)
+        return Pair(header, footer)
     }
 
     fun sendHeaderAndFooter(header: String, footer: String) {
         proxy.players.forEach {
-            it.setTabHeader(CloudTextBuilder().build(CloudText(replaceString(header, it)))
-                    , CloudTextBuilder().build(CloudText(replaceString(footer, it))))
+            sendHeaderAndFooter(it, header, footer)
         }
+    }
+
+    fun sendHeaderAndFooter(player: ProxiedPlayer, header: String, footer: String) {
+        player.setTabHeader(CloudTextBuilder().build(CloudText(replaceString(header, player)))
+                , CloudTextBuilder().build(CloudText(replaceString(footer, player))))
     }
 
     fun getTablistConfiguration(): TablistConfiguration? {
