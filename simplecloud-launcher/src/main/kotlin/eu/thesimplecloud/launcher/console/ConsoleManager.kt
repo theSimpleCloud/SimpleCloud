@@ -22,14 +22,13 @@ class ConsoleManager(val commandManager: CommandManager, private val consoleSend
     var prompt = Launcher.instance.logger.getColoredString("§c${Launcher.instance.logger.applicationName}§f@§eSimpleCloud§f> ", LogType.EMPTY)
 
     private fun createLineReader() : LineReader {
-        val terminal = TerminalBuilder.builder()
+        /*val terminal = TerminalBuilder.builder()
                 .system(true)
                 .streams(System.`in`, System.out)
                 .encoding(Charsets.UTF_8)
-                .build()
+                .build()*/
 
         return LineReaderBuilder.builder()
-                .terminal(terminal)
                 .build()
     }
 

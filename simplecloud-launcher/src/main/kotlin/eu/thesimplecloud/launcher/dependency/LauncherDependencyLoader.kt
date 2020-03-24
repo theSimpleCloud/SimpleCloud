@@ -8,7 +8,7 @@ class LauncherDependencyLoader {
         val dependencyLoader = DependencyLoader.INSTANCE
         dependencyLoader.addRepositories("https://repo.maven.apache.org/maven2/", "https://repo.thesimplecloud.eu/artifactory/gradle-dev-local/")
         dependencyLoader.addDependencies(
-                Dependency("org.jline", "jline", "3.13.2"),
+                Dependency("org.jline", "jline", "3.14.0"),
                 Dependency("org.litote.kmongo", "kmongo", "3.11.2"),
                 Dependency("io.netty", "netty-all", "4.1.4.Final"),
                 Dependency("eu.thesimplecloud.clientserverapi", "clientserverapi", "2.2.7-SNAPSHOT"),
