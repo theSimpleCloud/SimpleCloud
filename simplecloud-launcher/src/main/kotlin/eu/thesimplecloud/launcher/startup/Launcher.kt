@@ -1,6 +1,5 @@
 package eu.thesimplecloud.launcher.startup
 
-import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.external.ICloudModule
 import eu.thesimplecloud.api.language.LanguageManager
@@ -18,6 +17,10 @@ import eu.thesimplecloud.launcher.screens.ScreenManagerImpl
 import eu.thesimplecloud.launcher.setups.AutoIpSetup
 import eu.thesimplecloud.launcher.setups.LanguageSetup
 import eu.thesimplecloud.launcher.setups.StartSetup
+import eu.thesimplecloud.launcher.updater.CloudUpdater
+import eu.thesimplecloud.launcher.updater.UpdateExecutor
+import org.apache.commons.io.FileUtils
+import java.io.File
 import java.io.IOException
 import java.util.concurrent.Executors
 import kotlin.system.exitProcess
@@ -67,6 +70,28 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
     }
 
     fun start() {
+        val oldLauncher = launcherStartArguments.update
+        if (oldLauncher != null) {
+            //wait 5 seconds for the launcher started this update to shut down
+            this.consoleSender.sendMessage("Waiting for launcher to shut down.")
+            Thread.sleep(5000)
+            this.consoleSender.sendMessage("Installing update...")
+            oldLauncher.delete()
+            val runningLauncher = File(Launcher::class.java.protectionDomain.codeSource.location.toURI())
+            FileUtils.copyFile(runningLauncher, oldLauncher)
+            val processBuilder = ProcessBuilder("java", "-jar", oldLauncher.absolutePath)
+            processBuilder.directory(File("."))
+            processBuilder.start()
+            runningLauncher.deleteOnExit()
+            this.shutdown()
+            return
+        }
+        if (launcherStartArguments.autoUpdater) {
+            UpdateExecutor().executeUpdateIfAvailable(CloudUpdater())
+            this.consoleSender.sendMessage("You are running the latest version of SimpleCloud.")
+        } else {
+            this.logger.warning("Auto updater is disabled.")
+        }
         this.languageManager.loadFile()
         this.commandManager.registerAllCommands(launcherCloudModule, "eu.thesimplecloud.launcher.commands")
         this.consoleManager.startThread()

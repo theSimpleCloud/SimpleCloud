@@ -1,11 +1,11 @@
-package eu.thesimplecloud.api.update
+package eu.thesimplecloud.launcher.updater
 
 interface IUpdater {
 
     /**
      * Returns the latest version
      */
-    fun getLatestVersion(): String
+    fun getLatestVersion(): String?
 
     /**
      * Returns the current version.

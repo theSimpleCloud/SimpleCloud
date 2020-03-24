@@ -11,6 +11,7 @@ class WebContentLoader {
         val url = URL(urlstring)
         val connection = url.openConnection() as HttpURLConnection
         connection.requestMethod = "GET"
+        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:58.0) Gecko/20100101 Firefox/58.0")
         connection.connect()
         val responseCode = connection.responseCode
         if (responseCode != 200) {

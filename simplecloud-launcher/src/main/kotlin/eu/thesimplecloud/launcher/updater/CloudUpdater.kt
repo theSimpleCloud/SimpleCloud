@@ -1,23 +1,20 @@
 package eu.thesimplecloud.launcher.updater
 
-import eu.thesimplecloud.api.utils.Downloader
-import eu.thesimplecloud.api.update.IUpdater
+
+import eu.thesimplecloud.launcher.startup.Launcher
 import java.io.File
 
-class CloudUpdater : IUpdater {
-
-    //TODO get latest version from web
-    override fun getLatestVersion(): String = CloudUpdater::class.java.getPackage().implementationVersion
-    //TODO get current version from file
-    override fun getCurrentVersion(): String = CloudUpdater::class.java.getPackage().implementationVersion
-
-    override fun downloadJarsForUpdate() {
-        //TODO edit download url
-        val downloadUrl = "http://repo.thesimplecloud.eu/artifactory/gradle-dev-local/eu/thesimplecloud/clientserverapi/clientserverapi/${getLatestVersion()}/clientserverapi-${getLatestVersion()}.jar"
-        Downloader().userAgentDownload(downloadUrl, File("SimpleCloud.jar"))
-    }
+class CloudUpdater : AbstractUpdater(
+        "eu.thesimplecloud.simplecloud",
+        "simplecloud-launcher",
+        "http://repo.thesimplecloud.eu/artifactory/gradle-dev-local/",
+        File("launcher-update.jar")
+) {
 
     override fun executeJar() {
-        //Its not necessary to execute the jar here.
+        val processBuilder = ProcessBuilder("java", "-jar", "launcher-update.jar", "--update")
+        processBuilder.directory(File("."))
+        processBuilder.start()
+        Launcher.instance.shutdown()
     }
 }

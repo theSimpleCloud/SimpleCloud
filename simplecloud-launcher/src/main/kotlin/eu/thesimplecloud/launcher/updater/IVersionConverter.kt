@@ -1,4 +1,4 @@
-package eu.thesimplecloud.api.update
+package eu.thesimplecloud.launcher.updater
 
 interface IVersionConverter {
 

@@ -35,7 +35,11 @@ data class Dependency(val groupId: String, val artifactId: String, val version: 
 
     @Throws(IOException::class)
     fun download(repoUrl: String) {
-        Downloader().userAgentDownload(this.getDownloadURL(repoUrl), this.getDownloadedFile())
+        return download(repoUrl, getDownloadedFile())
+    }
+    @Throws(IOException::class)
+    fun download(repoUrl: String, downloadFile: File) {
+        Downloader().userAgentDownload(this.getDownloadURL(repoUrl), downloadFile)
     }
 
     fun getPomContent(repoUrl: String): String? {
@@ -46,7 +50,7 @@ data class Dependency(val groupId: String, val artifactId: String, val version: 
         return WebContentLoader().loadContent(getMainURL(repoUrl) + "maven-metadata.xml")
     }
 
-    private fun getMainURL(repoUrl: String): String {
+    fun getMainURL(repoUrl: String): String {
         return repoUrl + groupId.replace("\\.".toRegex(), "/") + "/" + artifactId + "/"
     }
 
