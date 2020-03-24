@@ -5,6 +5,7 @@ import eu.thesimplecloud.launcher.startup.Launcher
 import org.jline.reader.LineReader
 import org.jline.reader.LineReaderBuilder
 import org.jline.terminal.TerminalBuilder
+import org.jline.utils.InfoCmp
 import java.io.File
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
@@ -102,13 +103,15 @@ class LoggerProvider(var applicationName: String, val screenManager: IScreenMana
         val lineReader = Launcher.instance.consoleManager.lineReader
         if (lineReader.isReading) {
             lineReader.callWidget(LineReader.CLEAR)
+            lineReader.terminal.puts(InfoCmp.Capability.carriage_return)
             lineReader.terminal.writer().println("\r" + coloredMessage)
             lineReader.callWidget(LineReader.REDRAW_LINE)
             lineReader.callWidget(LineReader.REDISPLAY)
         } else {
             lineReader.terminal.writer().println(coloredMessage);
         }
-        lineReader.terminal.flush()
+
+        lineReader.terminal.writer().flush()
 
         //print("\r" + coloredMessage)
         //updatePrompt(true)

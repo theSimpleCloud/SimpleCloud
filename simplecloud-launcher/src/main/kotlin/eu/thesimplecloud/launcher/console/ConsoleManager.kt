@@ -24,8 +24,8 @@ class ConsoleManager(val commandManager: CommandManager, private val consoleSend
     private fun createLineReader() : LineReader {
         val terminal = TerminalBuilder.builder()
                 .system(true)
-                .streams(System.`in`, System.out)
-                .encoding(Charsets.UTF_8)
+                //.streams(System.`in`, System.out)
+                //.encoding(Charsets.UTF_8)
                 .build()
 
         return LineReaderBuilder.builder()
