@@ -13,12 +13,22 @@ class SynchronizedObjectListManager : ISynchronizedObjectListManager {
 
 
     override fun registerSynchronizedObjectList(synchronizedObjectList: ISynchronizedObjectList<out ISynchronizedListObject>) {
+        if (CloudAPI.instance.isManager()) {
+            val oldObject = getSynchronizedObjectList(synchronizedObjectList.getIdentificationName())
+            oldObject?.let { oldList ->
+                oldList.getAllCachedObjects().forEach { oldList.remove(it) }
+            }
+        }
         this.nameToSynchronizedObjectList[synchronizedObjectList.getIdentificationName()] = synchronizedObjectList
         if (!CloudAPI.instance.isManager()) {
             val client = CloudAPI.instance.getThisSidesCommunicationBootstrap() as INettyClient
             client.getPacketIdsSyncPromise().addResultListener {
                 client.sendUnitQuery(PacketIOGetAllCachedListObjects(synchronizedObjectList.getIdentificationName()))
             }
+        } else {
+            //manager
+            synchronizedObjectList as ISynchronizedObjectList<ISynchronizedListObject>
+            synchronizedObjectList.getAllCachedObjects().forEach { synchronizedObjectList.update(it) }
         }
     }
 
