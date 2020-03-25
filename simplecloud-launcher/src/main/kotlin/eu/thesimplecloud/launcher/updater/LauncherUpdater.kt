@@ -35,6 +35,7 @@ class LauncherUpdater : AbstractUpdater(
             processBuilder.directory(File("."))
             processBuilder.start()
         })
+        System.setProperty("simplecloud.launcher.update-mode", "true")
         System.setProperty("simplecloud.version", getLatestVersion()!!)
         mainMethod.invoke(null, LauncherMain.specifiedArguments)
     }

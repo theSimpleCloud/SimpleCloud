@@ -19,7 +19,8 @@ class InternalWrapperModule : ICloudModule {
     private var commandExecutable: ICommandExecutable? = null
 
     override fun onEnable() {
-        val launcherJarFile = File(Launcher::class.java.protectionDomain.codeSource.location.toURI().path)
+        val launcherJarFile = Launcher.instance.getLauncherFile()
+        Launcher.instance.consoleSender.sendMessage(launcherJarFile.absolutePath)
         val wrapperManager = CloudAPI.instance.getWrapperManager()
         val config = Launcher.instance.launcherConfigLoader.loadConfig()
 

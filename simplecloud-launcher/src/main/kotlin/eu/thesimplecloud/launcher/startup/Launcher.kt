@@ -146,4 +146,11 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
 
     fun isWindows(): Boolean = System.getProperty("os.name").toLowerCase().contains("windows")
 
+    fun getLauncherFile(): File {
+        if (System.getProperty("simplecloud.launcher.update-mode") != null) {
+            return File("launcher-update.jar")
+        }
+        return File(Launcher::class.java.protectionDomain.codeSource.location.toURI().path)
+    }
+
 }

@@ -50,6 +50,7 @@ class Wrapper : ICloudApplication {
         Launcher.instance.logger.addLoggerMessageListener(LoggerMessageListenerImpl())
         val launcherConfig = Launcher.instance.launcherConfigLoader.loadConfig()
         this.communicationClient = NettyClient(launcherConfig.host, launcherConfig.port, ConnectionHandlerImpl())
+        this.communicationClient.addClassLoader(Thread.currentThread().contextClassLoader)
         CloudAPIImpl()
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.client.packets")
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.base.wrapper.network.packets")
@@ -66,6 +67,7 @@ class Wrapper : ICloudApplication {
         } else {
             Launcher.instance.consoleSender.sendMessage("wrapper.startup.template-client.using", "Using an extra client to receive / send templates.")
             this.templateClient = NettyClient(launcherConfig.host, launcherConfig.port + 1, ConnectionHandlerImpl())
+            this.templateClient.addClassLoader(Thread.currentThread().contextClassLoader)
             this.communicationClient.getPacketIdsSyncPromise().addResultListener {
                 Launcher.instance.scheduler.schedule({ startTemplateClient(this.templateClient) }, 100, TimeUnit.MILLISECONDS)
             }
