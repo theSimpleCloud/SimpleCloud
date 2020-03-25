@@ -23,7 +23,7 @@ compileTestKotlin {
 jar {
     manifest {
         attributes(
-                'Main-Class': 'eu.thesimplecloud.updater.UpdaterMainKt'
+                'Main-Class': 'eu.thesimplecloud.updater.UpdaterMain'
         )
     }
     // This line of code recursively collects and copies all of a project's files
