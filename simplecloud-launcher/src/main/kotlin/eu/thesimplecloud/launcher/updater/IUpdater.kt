@@ -1,5 +1,7 @@
 package eu.thesimplecloud.launcher.updater
 
+import eu.thesimplecloud.launcher.startup.Launcher
+
 interface IUpdater {
 
     /**
@@ -26,5 +28,23 @@ interface IUpdater {
      * Executes the jar to complete the update.
      */
     fun executeJar()
+
+    /**
+     * Returns the current launcher version
+     */
+    fun getCurrentLauncherVersion(): String {
+        return Launcher::class.java.getPackage().implementationVersion
+    }
+
+    /**
+     * Returns the repository url to use
+     */
+    fun getRepositoryURL(): String {
+        return if (getCurrentLauncherVersion().contains("SNAPSHOT")) {
+            "https://repo.thesimplecloud.eu/artifactory/list/gradle-dev-local/"
+        } else {
+            "https://repo.thesimplecloud.eu/artifactory/list/gradle-release-local/"
+        }
+    }
 
 }

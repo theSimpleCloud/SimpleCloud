@@ -7,11 +7,11 @@ import java.io.File
 class LauncherUpdater : AbstractUpdater(
         "eu.thesimplecloud.simplecloud",
         "simplecloud-launcher",
-        "https://repo.thesimplecloud.eu/artifactory/list/gradle-release-local/",
         File("launcher-update.jar")
 ) {
+
     override fun getCurrentVersion(): String {
-        return Launcher::class.java.getPackage().implementationVersion
+        return getCurrentLauncherVersion()
     }
 
     override fun executeJar() {

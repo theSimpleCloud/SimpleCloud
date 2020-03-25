@@ -5,7 +5,6 @@ import java.io.File
 class BaseUpdater(private val baseClass: Class<*>?) : AbstractUpdater(
         "eu.thesimplecloud.simplecloud",
         "simplecloud-base",
-        "https://repo.thesimplecloud.eu/artifactory/list/gradle-release-local/",
         File("SimpleCloud.jar")
 ) {
     override fun getCurrentVersion(): String {
