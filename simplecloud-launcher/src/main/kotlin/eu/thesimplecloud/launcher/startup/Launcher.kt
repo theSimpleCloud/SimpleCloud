@@ -64,6 +64,8 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
 
     init {
         instance = this
+        if (System.getProperty("simplecloud.version") == null)
+            System.setProperty("simplecloud.version", Launcher::class.java.`package`.implementationVersion)
         Thread.setDefaultUncaughtExceptionHandler { thread, cause -> this.logger.exception(cause) }
         System.setProperty("user.language", "en")
         val launcherConfig = this.launcherConfigLoader.loadConfig()

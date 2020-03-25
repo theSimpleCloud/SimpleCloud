@@ -33,7 +33,7 @@ interface IUpdater {
      * Returns the current launcher version
      */
     fun getCurrentLauncherVersion(): String {
-        return Launcher::class.java.getPackage().implementationVersion
+        return System.getProperty("simplecloud.version")
     }
 
     /**
