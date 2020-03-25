@@ -19,8 +19,6 @@ class ApplicationStarter {
             Launcher.instance.consoleSender.sendMessage("launcher.base.checking-for-updates", "Checking for base updates...")
             val mainClass = if (file.exists()) cloudModuleLoader.loadMainClass(file, moduleFileName) else null
             val updater = BaseUpdater(mainClass)
-            Launcher.instance.consoleSender.sendMessage(updater.getLatestVersion().toString())
-            Launcher.instance.consoleSender.sendMessage(updater.getCurrentVersion().toString())
             if (updater.isUpdateAvailable()) {
                 Launcher.instance.consoleSender.sendMessage("launcher.base.update-found",
                         "Found base update %VERSION%", updater.getLatestVersion()!!, " (current: %CURRENT_VERSION%", updater.getCurrentVersion(), ")")
