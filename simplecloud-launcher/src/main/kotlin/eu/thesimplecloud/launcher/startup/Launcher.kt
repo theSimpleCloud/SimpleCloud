@@ -3,6 +3,8 @@ package eu.thesimplecloud.launcher.startup
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.external.ICloudModule
 import eu.thesimplecloud.api.language.LanguageManager
+import eu.thesimplecloud.api.utils.ManifestLoader
+import eu.thesimplecloud.launcher.LauncherMain
 import eu.thesimplecloud.launcher.application.ApplicationStarter
 import eu.thesimplecloud.launcher.application.CloudApplicationType
 import eu.thesimplecloud.launcher.application.ICloudApplication
@@ -11,6 +13,7 @@ import eu.thesimplecloud.launcher.console.ConsoleManager
 import eu.thesimplecloud.launcher.console.ConsoleSender
 import eu.thesimplecloud.launcher.console.command.CommandManager
 import eu.thesimplecloud.launcher.console.setup.SetupManager
+import eu.thesimplecloud.launcher.invoker.MethodInvokeHelper
 import eu.thesimplecloud.launcher.logging.LoggerProvider
 import eu.thesimplecloud.launcher.screens.IScreenManager
 import eu.thesimplecloud.launcher.screens.ScreenManagerImpl
@@ -19,9 +22,9 @@ import eu.thesimplecloud.launcher.setups.LanguageSetup
 import eu.thesimplecloud.launcher.setups.StartSetup
 import eu.thesimplecloud.launcher.updater.LauncherUpdater
 import eu.thesimplecloud.launcher.updater.UpdateExecutor
-import org.apache.commons.io.FileUtils
 import java.io.File
 import java.io.IOException
+import java.net.URLClassLoader
 import java.util.concurrent.Executors
 import kotlin.system.exitProcess
 
@@ -70,25 +73,13 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
     }
 
     fun start() {
-        val oldLauncher = launcherStartArguments.update
-        if (oldLauncher != null) {
-            //wait 5 seconds for the launcher started this update to shut down
-            this.consoleSender.sendMessage("Waiting for launcher to shut down.")
-            Thread.sleep(5000)
-            this.consoleSender.sendMessage("Installing update...")
-            oldLauncher.delete()
-            val runningLauncher = File(Launcher::class.java.protectionDomain.codeSource.location.toURI())
-            FileUtils.copyFile(runningLauncher, oldLauncher)
-            val processBuilder = ProcessBuilder("java", "-jar", oldLauncher.absolutePath)
-            processBuilder.directory(File("."))
-            processBuilder.start()
-            runningLauncher.deleteOnExit()
-            this.shutdown()
-            return
+        if (Thread.currentThread().contextClassLoader == null) {
+            Thread.currentThread().contextClassLoader = ClassLoader.getSystemClassLoader()
         }
         if (!launcherStartArguments.disableAutoUpdater) {
-            UpdateExecutor().executeUpdateIfAvailable(LauncherUpdater())
-            this.consoleSender.sendMessage("You are running the latest version of SimpleCloud.")
+            if (executeUpdateIfAvailable()) {
+                return
+            }
         } else {
             this.logger.warning("Auto updater is disabled.")
         }
@@ -105,6 +96,17 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
 
         this.setupManager.waitFroAllSetups()
         this.launcherStartArguments.startApplication?.let { startApplication(it) }
+    }
+
+    private fun executeUpdateIfAvailable(): Boolean {
+        val updater = LauncherUpdater()
+        if (updater.isUpdateAvailable()) {
+            UpdateExecutor().executeUpdate(updater)
+            return true
+        } else {
+            this.consoleSender.sendMessage("You are running the latest version of SimpleCloud.")
+        }
+        return false
     }
 
     fun startApplication(cloudApplicationType: CloudApplicationType) {

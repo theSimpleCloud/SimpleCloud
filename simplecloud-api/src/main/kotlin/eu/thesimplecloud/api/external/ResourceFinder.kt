@@ -21,18 +21,18 @@ class ResourceFinder {
             return newClassLoader.getResourceAsStream(pathToResource)
         }
 
-        fun addToClassLoader(url: URL, urlClassLoader: URLClassLoader = getSystemClassLoader()) {
+        fun addToClassLoader(url: URL, urlClassLoader: URLClassLoader = getThreadClassLoader()) {
             val method = URLClassLoader::class.java.getDeclaredMethod("addURL", URL::class.java)
             method.isAccessible = true
             if (!urlClassLoader.urLs.contains(url))
                 method.invoke(urlClassLoader, url)
         }
 
-        fun addToClassLoader(file: File, urlClassLoader: URLClassLoader = getSystemClassLoader()) {
+        fun addToClassLoader(file: File, urlClassLoader: URLClassLoader = getThreadClassLoader()) {
             addToClassLoader(file.toURI().toURL(), urlClassLoader)
         }
 
-        fun removeFromClassLoader(file: File, urlClassLoader: URLClassLoader = getSystemClassLoader()) {
+        fun removeFromClassLoader(file: File, urlClassLoader: URLClassLoader = getThreadClassLoader()) {
             val url = file.toURI().toURL()
             val urlClass: Class<*> = URLClassLoader::class.java
             val ucpField: Field = urlClass.getDeclaredField("ucp")
@@ -45,7 +45,7 @@ class ResourceFinder {
             urls.remove(url)
         }
 
-        fun getSystemClassLoader() = ClassLoader.getSystemClassLoader() as URLClassLoader
+        private fun getThreadClassLoader() = Thread.currentThread().contextClassLoader as URLClassLoader
 
     }
 }
