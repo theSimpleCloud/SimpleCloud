@@ -10,7 +10,7 @@ import java.io.File
 
 class LauncherStartArguments() : CliktCommand() {
 
-    val autoUpdater: Boolean by option(help = "Sets the auto updater.").flag()
+    val disableAutoUpdater: Boolean by option(help = "Disables the auto updater.").flag()
     val startApplication: CloudApplicationType? by option(help = "Starts an application directly.").enum<CloudApplicationType>()
     /**
      * The launcher file the update was started from (the old launcher)

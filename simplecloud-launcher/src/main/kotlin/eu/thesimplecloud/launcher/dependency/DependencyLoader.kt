@@ -222,7 +222,6 @@ class DependencyLoader : IDependencyLoader {
     }
 
     fun getLatestVersionOfDependencyFromWeb(groupId: String, artifactId: String): String? {
-        val tmpDependency = Dependency(groupId, artifactId, "UNKNOWN")
         for (repository in repositories) {
             return getLatestVersionOfDependencyFromWeb(groupId, artifactId, repository) ?: continue
         }
@@ -238,7 +237,7 @@ class DependencyLoader : IDependencyLoader {
     private fun getLatestVersion(jsonString: String): String? {
         val jsonObject = JsonParser.parseString(jsonString) as JsonObject
         val versioning = jsonObject["versioning"]?.asJsonObject ?: return null
-        return versioning["release"]?.asString
+        return versioning["latest"]?.asString
     }
 
     private fun getVersionOfPlaceHolder(model: Model, mavenSubDependency: org.apache.maven.model.Dependency): String? {

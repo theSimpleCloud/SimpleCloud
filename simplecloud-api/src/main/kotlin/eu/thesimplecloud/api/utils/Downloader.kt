@@ -11,7 +11,7 @@ class Downloader {
 
     @Throws(IOException::class)
     fun userAgentDownload(url: String, file: File) {
-        file.parentFile.mkdirs()
+        file.parentFile?.mkdirs()
         val urlConnection = URL(url).openConnection()
         urlConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:58.0) Gecko/20100101 Firefox/58.0")
         urlConnection.connect()

@@ -17,7 +17,7 @@ import eu.thesimplecloud.launcher.screens.ScreenManagerImpl
 import eu.thesimplecloud.launcher.setups.AutoIpSetup
 import eu.thesimplecloud.launcher.setups.LanguageSetup
 import eu.thesimplecloud.launcher.setups.StartSetup
-import eu.thesimplecloud.launcher.updater.CloudUpdater
+import eu.thesimplecloud.launcher.updater.LauncherUpdater
 import eu.thesimplecloud.launcher.updater.UpdateExecutor
 import org.apache.commons.io.FileUtils
 import java.io.File
@@ -40,7 +40,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
             private set
     }
 
-    val launcherCloudModule = object : ICloudModule {
+    private val launcherCloudModule = object : ICloudModule {
         override fun onEnable() {
         }
 
@@ -86,8 +86,8 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
             this.shutdown()
             return
         }
-        if (launcherStartArguments.autoUpdater) {
-            UpdateExecutor().executeUpdateIfAvailable(CloudUpdater())
+        if (!launcherStartArguments.disableAutoUpdater) {
+            UpdateExecutor().executeUpdateIfAvailable(LauncherUpdater())
             this.consoleSender.sendMessage("You are running the latest version of SimpleCloud.")
         } else {
             this.logger.warning("Auto updater is disabled.")

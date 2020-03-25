@@ -18,14 +18,8 @@ abstract class AbstractUpdater(
     override fun getLatestVersion(): String? = latestVersionByLazy
 
     override fun downloadJarsForUpdate() {
-        val latestVersion = getLatestVersion() ?: throw RuntimeException("Cannot update launcher. Is the server down?")
+        val latestVersion = getLatestVersion() ?: throw RuntimeException("Cannot perform update. Is the server down? (repo: $repositoryURL)")
         val dependency = Dependency(groupId, artifactId, latestVersion)
         dependency.download(repositoryURL, updateFile)
     }
-
-
-    override fun getCurrentVersion(): String {
-        return Launcher::class.java.getPackage().implementationVersion
-    }
-
 }
