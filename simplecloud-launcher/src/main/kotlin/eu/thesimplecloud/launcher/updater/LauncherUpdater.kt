@@ -35,6 +35,6 @@ class LauncherUpdater : AbstractUpdater(
             processBuilder.directory(File("."))
             processBuilder.start()
         })
-        MethodInvokeHelper.invoke(mainMethod, null, LauncherMain.specifiedArguments)
+        mainMethod.invoke(null, LauncherMain.specifiedArguments)
     }
 }

@@ -102,10 +102,11 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
     private fun executeUpdateIfAvailable(): Boolean {
         val updater = LauncherUpdater()
         if (updater.isUpdateAvailable()) {
+            this.consoleSender.sendMessage("Found a new launcher version: " + updater.getLatestVersion()!!)
             UpdateExecutor().executeUpdate(updater)
             return true
         } else {
-            this.consoleSender.sendMessage("launcher.version.latest", "You are running on the latest version of SimpleCloud.")
+            this.consoleSender.sendMessage("You are running on the latest version of SimpleCloud.")
         }
         return false
     }
