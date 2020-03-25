@@ -25,7 +25,7 @@ class ApplicationStarter {
                 Launcher.instance.consoleSender.sendMessage("launcher.base.downloading-update", "Downloading base update...")
                 UpdateExecutor().executeUpdate(updater)
             } else {
-                Launcher.instance.consoleSender.sendMessage("launcher.base.newest-version", "You are running the latest version.")
+                Launcher.instance.consoleSender.sendMessage("launcher.base.newest-version", "You are running on the latest version.")
             }
         }
 

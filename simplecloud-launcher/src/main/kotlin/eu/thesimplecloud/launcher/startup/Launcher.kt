@@ -13,6 +13,7 @@ import eu.thesimplecloud.launcher.console.ConsoleManager
 import eu.thesimplecloud.launcher.console.ConsoleSender
 import eu.thesimplecloud.launcher.console.command.CommandManager
 import eu.thesimplecloud.launcher.console.setup.SetupManager
+import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.invoker.MethodInvokeHelper
 import eu.thesimplecloud.launcher.logging.LoggerProvider
 import eu.thesimplecloud.launcher.screens.IScreenManager
@@ -104,7 +105,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
             UpdateExecutor().executeUpdate(updater)
             return true
         } else {
-            this.consoleSender.sendMessage("You are running the latest version of SimpleCloud.")
+            this.consoleSender.sendMessage("launcher.version.latest", "You are running on the latest version of SimpleCloud.")
         }
         return false
     }
