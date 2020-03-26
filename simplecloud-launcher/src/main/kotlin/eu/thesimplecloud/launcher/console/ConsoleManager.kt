@@ -13,15 +13,15 @@ import org.jline.terminal.TerminalBuilder
  * Date: 06.09.2019
  * Time: 21:29
  */
-class ConsoleManager(val commandManager: CommandManager, private val consoleSender: ConsoleSender) : IConsoleManager {
+class ConsoleManager(@Volatile var applicationName: String, private val commandManager: CommandManager, private val consoleSender: ConsoleSender) : IConsoleManager {
 
 
     var thread: Thread? = null
 
     val lineReader = createLineReader()
-    var prompt = Launcher.instance.logger.getColoredString("§c${Launcher.instance.logger.applicationName}§f@§eSimpleCloud§f> ", LogType.EMPTY)
+    private var promptFunction = { Launcher.instance.logger.getColoredString("§c${this.applicationName}§f@§eSimpleCloud§f> ", LogType.EMPTY) }
 
-    private fun createLineReader() : LineReader {
+    private fun createLineReader(): LineReader {
         val terminal = TerminalBuilder.builder()
                 .system(true)
                 //.streams(System.`in`, System.out)
@@ -36,11 +36,11 @@ class ConsoleManager(val commandManager: CommandManager, private val consoleSend
     override fun startThread() {
         thread = Thread {
             while (true) {
-                val readLine = lineReader.readLine("%{$prompt%}") ?: continue
+                val readLine = lineReader.readLine("%{${promptFunction()}%}") ?: continue
 
                 val screenManager = Launcher.instance.screenManager
                 if (screenManager.hasActiveScreen()) {
-                    if (readLine.equals("leave", true)){
+                    if (readLine.equals("leave", true)) {
                         Launcher.instance.screenManager.leaveActiveScreen()
                         continue
                     }

@@ -14,7 +14,7 @@ class ApplicationStarter {
         Thread.currentThread().contextClassLoader = Launcher.instance.currentClassLoader
         val cloudModuleLoader = CloudModuleLoader()
         val moduleFileName = applicationType.name.toLowerCase() + ".json"
-        Launcher.instance.logger.applicationName = applicationType.getApplicationName()
+        Launcher.instance.consoleManager.applicationName = applicationType.getApplicationName()
         val file = File("SimpleCloud.jar")
 
         if (!Launcher.instance.launcherStartArguments.disableAutoUpdater || !file.exists()) {

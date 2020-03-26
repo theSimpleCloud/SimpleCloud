@@ -53,7 +53,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
     }
     var activeApplication: ICloudApplication? = null
     val screenManager: IScreenManager = ScreenManagerImpl()
-    val logger = LoggerProvider("Launcher", screenManager)
+    val logger = LoggerProvider(screenManager)
     val commandManager: CommandManager
     val consoleSender = ConsoleSender()
     val consoleManager: ConsoleManager
@@ -73,7 +73,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
         val launcherConfig = this.launcherConfigLoader.loadConfig()
         DirectoryPaths.paths = launcherConfig.directoryPaths
         this.commandManager = CommandManager()
-        this.consoleManager = ConsoleManager(this.commandManager, this.consoleSender)
+        this.consoleManager = ConsoleManager("Launcher", this.commandManager, this.consoleSender)
         this.languageManager = LanguageManager("en_EN")
     }
 
