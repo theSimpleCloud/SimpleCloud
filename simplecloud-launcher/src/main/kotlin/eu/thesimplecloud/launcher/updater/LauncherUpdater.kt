@@ -31,7 +31,7 @@ class LauncherUpdater : AbstractUpdater(
             val updaterFile = File("storage/updater.jar")
             val dependency = Dependency("eu.thesimplecloud.simplecloud", "simplecloud-updater", getLatestVersion()!!)
             dependency.download(getRepositoryURL(), updaterFile)
-            val processBuilder = ProcessBuilder("java", "-jar", "storage/updater.jar", "1500", runningJar.absolutePath, file.absolutePath)
+            val processBuilder = ProcessBuilder("java", "-jar", "storage/updater.jar", "300", runningJar.absolutePath, file.absolutePath)
             processBuilder.directory(File("."))
             processBuilder.start()
         })

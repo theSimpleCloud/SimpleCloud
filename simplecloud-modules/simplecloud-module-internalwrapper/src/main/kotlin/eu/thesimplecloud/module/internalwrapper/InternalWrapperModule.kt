@@ -20,7 +20,6 @@ class InternalWrapperModule : ICloudModule {
 
     override fun onEnable() {
         val launcherJarFile = Launcher.instance.getLauncherFile()
-        Launcher.instance.consoleSender.sendMessage(launcherJarFile.absolutePath)
         val wrapperManager = CloudAPI.instance.getWrapperManager()
         val config = Launcher.instance.launcherConfigLoader.loadConfig()
 
