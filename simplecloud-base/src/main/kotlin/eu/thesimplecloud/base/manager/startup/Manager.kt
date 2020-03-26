@@ -29,10 +29,12 @@ import eu.thesimplecloud.base.manager.external.ICloudModuleHandler
 import eu.thesimplecloud.base.manager.ingamecommands.IngameCommandUpdater
 import eu.thesimplecloud.base.manager.packet.IPacketRegistry
 import eu.thesimplecloud.base.manager.packet.PacketRegistry
+import eu.thesimplecloud.clientserverapi.lib.debug.DebugMessage
 import eu.thesimplecloud.launcher.extension.sendMessage
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
+import java.net.URLClassLoader
 import kotlin.concurrent.thread
 
 class Manager : ICloudApplication {
@@ -76,6 +78,8 @@ class Manager : ICloudApplication {
 
         val launcherConfig = Launcher.instance.launcherConfigLoader.loadConfig()
         this.communicationServer = NettyServer<ICommandExecutable>(launcherConfig.host, launcherConfig.port, CommunicationConnectionHandlerImpl(), ServerHandlerImpl())
+        println((Thread.currentThread().contextClassLoader as URLClassLoader).urLs)
+        this.communicationServer.getDebugMessageManager().enable(DebugMessage.REGISTER_PACKET)
         this.communicationServer.addClassLoader(Thread.currentThread().contextClassLoader)
         this.templateServer = NettyServer<ICommandExecutable>(launcherConfig.host, launcherConfig.port + 1, TemplateConnectionHandlerImpl(), ServerHandlerImpl())
         this.templateServer.addClassLoader(Thread.currentThread().contextClassLoader)
