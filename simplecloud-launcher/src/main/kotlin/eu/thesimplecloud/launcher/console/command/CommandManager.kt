@@ -154,7 +154,7 @@ class CommandManager() {
 
     fun registerAllCommands(cloudModule: ICloudModule, vararg packages: String) {
         packages.forEach { pack ->
-            val reflection = Reflections(pack)
+            val reflection = Reflections(pack, Launcher.instance.currentClassLoader)
             reflection.getSubTypesOf(ICommandHandler::class.java).forEach {
                 try {
                     registerCommand(cloudModule, it.getDeclaredConstructor().newInstance())
