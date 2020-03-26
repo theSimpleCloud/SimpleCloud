@@ -1,5 +1,6 @@
 package eu.thesimplecloud.launcher.external
 
+import eu.thesimplecloud.launcher.startup.Launcher
 import java.io.File
 import java.lang.reflect.InvocationTargetException
 import java.net.MalformedURLException
@@ -18,7 +19,7 @@ class ExtensionLoader<C> {
     }
 
     fun loadClass(jar: File, classpath: String, parentClass: Class<C>): Class<out C> {
-        val urlClassLoader = URLClassLoader(arrayOf(jar.toURI().toURL()), javaClass.classLoader)
+        val urlClassLoader = URLClassLoader(arrayOf(jar.toURI().toURL()), Launcher.instance.currentClassLoader)
         val clazz = Class.forName(classpath, true, urlClassLoader)
         return clazz.asSubclass<C>(parentClass)
     }
