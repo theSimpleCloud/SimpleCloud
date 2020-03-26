@@ -78,8 +78,6 @@ class Manager : ICloudApplication {
 
         val launcherConfig = Launcher.instance.launcherConfigLoader.loadConfig()
         this.communicationServer = NettyServer<ICommandExecutable>(launcherConfig.host, launcherConfig.port, CommunicationConnectionHandlerImpl(), ServerHandlerImpl())
-        println((Thread.currentThread().contextClassLoader as URLClassLoader).urLs)
-        this.communicationServer.getDebugMessageManager().enable(DebugMessage.REGISTER_PACKET)
         this.communicationServer.addClassLoader(Thread.currentThread().contextClassLoader)
         this.templateServer = NettyServer<ICommandExecutable>(launcherConfig.host, launcherConfig.port + 1, TemplateConnectionHandlerImpl(), ServerHandlerImpl())
         this.templateServer.addClassLoader(Thread.currentThread().contextClassLoader)
