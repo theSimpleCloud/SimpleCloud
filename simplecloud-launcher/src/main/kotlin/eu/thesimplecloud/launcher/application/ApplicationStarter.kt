@@ -10,6 +10,8 @@ import java.io.File
 class ApplicationStarter {
 
     fun startApplication(applicationType: CloudApplicationType) {
+        //set thread class loader to load the base with the same class loader
+        Thread.currentThread().contextClassLoader = Launcher.instance.currentClassLoader
         val cloudModuleLoader = CloudModuleLoader()
         val moduleFileName = applicationType.name.toLowerCase() + ".json"
         Launcher.instance.logger.applicationName = applicationType.getApplicationName()

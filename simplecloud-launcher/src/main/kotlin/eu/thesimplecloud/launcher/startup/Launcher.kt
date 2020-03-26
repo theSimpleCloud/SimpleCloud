@@ -61,6 +61,8 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
     val languageManager: LanguageManager
     val launcherConfigLoader = LauncherConfigLoader()
     val scheduler = Executors.newScheduledThreadPool(1)
+    var currentClassLoader: ClassLoader = ClassLoader.getSystemClassLoader()
+        private set
 
     init {
         instance = this
@@ -79,6 +81,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
         if (Thread.currentThread().contextClassLoader == null) {
             Thread.currentThread().contextClassLoader = ClassLoader.getSystemClassLoader()
         }
+        currentClassLoader = Thread.currentThread().contextClassLoader
         if (!launcherStartArguments.disableAutoUpdater) {
             if (executeUpdateIfAvailable()) {
                 return
