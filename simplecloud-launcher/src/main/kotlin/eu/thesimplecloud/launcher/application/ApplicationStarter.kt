@@ -23,7 +23,7 @@ class ApplicationStarter {
             val updater = BaseUpdater(mainClass)
             if (updater.isUpdateAvailable()) {
                 Launcher.instance.consoleSender.sendMessage("launcher.base.update-found",
-                        "Found base update %VERSION%", updater.getLatestVersion()!!, " (current: %CURRENT_VERSION%", updater.getCurrentVersion(), ")")
+                        "Found base update %VERSION%", updater.getVersionToInstall()!!, " (current: %CURRENT_VERSION%", updater.getCurrentVersion(), ")")
                 Launcher.instance.consoleSender.sendMessage("launcher.base.downloading-update", "Downloading base update...")
                 UpdateExecutor().executeUpdate(updater)
             } else {

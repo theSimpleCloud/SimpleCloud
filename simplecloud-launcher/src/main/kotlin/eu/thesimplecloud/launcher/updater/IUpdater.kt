@@ -1,13 +1,11 @@
 package eu.thesimplecloud.launcher.updater
 
-import eu.thesimplecloud.launcher.startup.Launcher
-
 interface IUpdater {
 
     /**
      * Returns the latest version
      */
-    fun getLatestVersion(): String?
+    fun getVersionToInstall(): String?
 
     /**
      * Returns the current version.
@@ -17,7 +15,7 @@ interface IUpdater {
     /**
      * Returns whether an update is available
      */
-    fun isUpdateAvailable(): Boolean = getCurrentVersion().isBlank() || (getLatestVersion() != null && getLatestVersion() != getCurrentVersion())
+    fun isUpdateAvailable(): Boolean = getCurrentVersion().isBlank() || (getVersionToInstall() != null && getVersionToInstall() != getCurrentVersion())
 
     /**
      * Downloads the jars needed to update

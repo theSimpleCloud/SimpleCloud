@@ -13,10 +13,10 @@ abstract class AbstractUpdater(
 
     private val latestVersionByLazy by lazy { DependencyLoader.INSTANCE.getLatestVersionOfDependencyFromWeb(groupId, artifactId, getRepositoryURL()) }
 
-    override fun getLatestVersion(): String? = latestVersionByLazy
+    override fun getVersionToInstall(): String? = latestVersionByLazy
 
     override fun downloadJarsForUpdate() {
-        val latestVersion = getLatestVersion() ?: throw RuntimeException("Cannot perform update. Is the server down? (repo: ${getRepositoryURL()})")
+        val latestVersion = getVersionToInstall() ?: throw RuntimeException("Cannot perform update. Is the server down? (repo: ${getRepositoryURL()})")
         val dependency = Dependency(groupId, artifactId, latestVersion)
         dependency.download(getRepositoryURL(), updateFile)
     }

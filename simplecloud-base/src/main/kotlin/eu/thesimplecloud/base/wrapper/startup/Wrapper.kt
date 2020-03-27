@@ -19,9 +19,9 @@ import eu.thesimplecloud.api.network.packets.wrapper.PacketIOUpdateWrapperInfo
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
 import eu.thesimplecloud.base.manager.external.CloudModuleHandler
+import eu.thesimplecloud.launcher.config.LauncherConfig
 import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.external.module.CloudModuleFileContent
-import eu.thesimplecloud.launcher.external.module.CloudModuleLoader
 import org.apache.commons.io.FileUtils
 import java.io.File
 import java.lang.IllegalStateException
@@ -35,15 +35,16 @@ class Wrapper : ICloudApplication {
             private set
     }
 
-    lateinit var thisWrapperName: String
+    var thisWrapperName: String? = null
     var processQueue: CloudServiceProcessQueue? = null
     val serviceConfigurationManager = ServiceConfiguratorManager()
     val cloudServiceProcessManager = CloudServiceProcessManager()
     val portManager = PortManager()
     val communicationClient: INettyClient
-    val templateClient: INettyClient?
+    var templateClient: INettyClient? = null
+        private set
     val serviceVersionLoader = ServiceVersionLoader()
-    lateinit var existingModules: List<Pair<CloudModuleFileContent, File>>
+    var existingModules: List<Pair<CloudModuleFileContent, File>> = ArrayList()
 
     init {
         instance = this
@@ -55,9 +56,8 @@ class Wrapper : ICloudApplication {
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.client.packets")
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.base.wrapper.network.packets")
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.api.network.packets")
-        thread(start = true, isDaemon = false) { communicationClient.start() }
-        this.communicationClient.getPacketIdsSyncPromise().addResultListener {
-            this.communicationClient.sendUnitQuery(PacketOutCloudClientLogin(CloudClientType.WRAPPER))
+        thread(start = true, isDaemon = true) {
+            resetWrapperAndStartReconnectLoop(launcherConfig)
         }
         if (isStartedInManagerDirectory()) {
             this.existingModules = CloudModuleHandler().getAllCloudModuleFileContents()
@@ -66,11 +66,6 @@ class Wrapper : ICloudApplication {
             this.templateClient = null
         } else {
             Launcher.instance.consoleSender.sendMessage("wrapper.startup.template-client.using", "Using an extra client to receive / send templates.")
-            this.templateClient = NettyClient(launcherConfig.host, launcherConfig.port + 1, ConnectionHandlerImpl())
-            this.templateClient.addClassLoader(Thread.currentThread().contextClassLoader)
-            this.communicationClient.getPacketIdsSyncPromise().addResultListener {
-                Launcher.instance.scheduler.schedule({ startTemplateClient(this.templateClient) }, 100, TimeUnit.MILLISECONDS)
-            }
         }
 
         //shutdown hook
@@ -82,41 +77,70 @@ class Wrapper : ICloudApplication {
                 communicationClient.sendUnitQuery(PacketIOUpdateWrapperInfo(wrapperInfo)).syncUninterruptibly()
             }
             this.processQueue?.clearQueue()
-            this.cloudServiceProcessManager.stopAllServices()
-            while (this.cloudServiceProcessManager.getAllProcesses().isNotEmpty()) {
-                try {
-                    Thread.sleep(100)
-                } catch (e: InterruptedException) {
-                    e.printStackTrace()
-                }
-
-            }
+            stopAllRunningServicesAndWaitFor()
             if (this.templateClient != null) {
                 FileUtils.deleteDirectory(File(DirectoryPaths.paths.templatesPath))
             }
             this.communicationClient.shutdown()
             this.templateClient?.shutdown()
         })
+    }
 
+    private fun stopAllRunningServicesAndWaitFor() {
+        this.cloudServiceProcessManager.stopAllServices()
+        while (this.cloudServiceProcessManager.getAllProcesses().isNotEmpty()) {
+            Thread.sleep(100)
+        }
+    }
 
+    /**
+     * Starts this client. This method will return when the client is fully connected to the manager.
+     */
+    fun resetWrapperAndStartReconnectLoop(launcherConfig: LauncherConfig) {
+        //reset wrapper
+        this.stopAllRunningServicesAndWaitFor()
+        this.communicationClient.shutdown().awaitUninterruptibly()
+        this.templateClient?.shutdown()?.awaitUninterruptibly()
+        this.existingModules = ArrayList()
+        this.thisWrapperName = null
+        this.processQueue = null
+
+        while (!this.communicationClient.start().awaitUninterruptibly().isSuccess) {
+            Launcher.instance.consoleSender.sendMessage("wrapper.connection-failed", "Failed to connect to manager. Retrying in 5 seconds.")
+            try {
+                Thread.sleep(5000)
+            } catch (e: InterruptedException) {
+            }
+        }
+
+        this.communicationClient.sendUnitQuery(PacketOutCloudClientLogin(CloudClientType.WRAPPER))
+        if (!isStartedInManagerDirectory()) {
+            val templateClient = NettyClient(launcherConfig.host, launcherConfig.port + 1, ConnectionHandlerImpl())
+            this.templateClient = templateClient
+            templateClient.addClassLoader(Thread.currentThread().contextClassLoader)
+            Launcher.instance.scheduler.schedule({ startTemplateClient(templateClient) }, 100, TimeUnit.MILLISECONDS)
+        }
     }
 
     private fun startTemplateClient(templateClient: NettyClient) {
         templateClient.addPacketsByPackage("eu.thesimplecloud.base.wrapper.network.packets.template")
-        thread(start = true, isDaemon = false) { templateClient.start() }
-        templateClient.getPacketIdsSyncPromise().addResultListener {
-            Launcher.instance.consoleSender.sendMessage("wrapper.template.requesting", "Requesting templates...")
-            templateClient.sendUnitQuery(PacketOutGetTemplates(), TimeUnit.SECONDS.toMillis((60 * 2) + 30)).addResultListener {
-                this.existingModules = CloudModuleHandler().getAllCloudModuleFileContents()
-                Launcher.instance.consoleSender.sendMessage("wrapper.template.received", "Templates received.")
-            }.addFailureListener {
-                Launcher.instance.logger.severe("An error occurred while requesting templates:")
-                Launcher.instance.logger.exception(it)
+        thread(start = true, isDaemon = false) {
+            templateClient.start().then {
+                Launcher.instance.consoleSender.sendMessage("wrapper.template.requesting", "Requesting templates...")
+                templateClient.sendUnitQuery(PacketOutGetTemplates(), TimeUnit.SECONDS.toMillis((60 * 2) + 30)).addResultListener {
+                    this.existingModules = CloudModuleHandler().getAllCloudModuleFileContents()
+                    Launcher.instance.consoleSender.sendMessage("wrapper.template.received", "Templates received.")
+                }.addFailureListener {
+                    Launcher.instance.logger.severe("An error occurred while requesting templates:")
+                    Launcher.instance.logger.exception(it)
+                }
             }
         }
     }
 
-    fun getThisWrapper(): IWrapperInfo = CloudAPI.instance.getWrapperManager().getWrapperByName(this.thisWrapperName)
+    fun isWrapperNameSet(): Boolean = thisWrapperName != null
+
+    fun getThisWrapper(): IWrapperInfo = CloudAPI.instance.getWrapperManager().getWrapperByName(this.thisWrapperName!!)
             ?: throw IllegalStateException("Unable to find self wrapper.")
 
     /**

@@ -3,8 +3,6 @@ package eu.thesimplecloud.launcher.startup
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.external.ICloudModule
 import eu.thesimplecloud.api.language.LanguageManager
-import eu.thesimplecloud.api.utils.ManifestLoader
-import eu.thesimplecloud.launcher.LauncherMain
 import eu.thesimplecloud.launcher.application.ApplicationStarter
 import eu.thesimplecloud.launcher.application.CloudApplicationType
 import eu.thesimplecloud.launcher.application.ICloudApplication
@@ -13,8 +11,6 @@ import eu.thesimplecloud.launcher.console.ConsoleManager
 import eu.thesimplecloud.launcher.console.ConsoleSender
 import eu.thesimplecloud.launcher.console.command.CommandManager
 import eu.thesimplecloud.launcher.console.setup.SetupManager
-import eu.thesimplecloud.launcher.extension.sendMessage
-import eu.thesimplecloud.launcher.invoker.MethodInvokeHelper
 import eu.thesimplecloud.launcher.logging.LoggerProvider
 import eu.thesimplecloud.launcher.screens.IScreenManager
 import eu.thesimplecloud.launcher.screens.ScreenManagerImpl
@@ -25,7 +21,6 @@ import eu.thesimplecloud.launcher.updater.LauncherUpdater
 import eu.thesimplecloud.launcher.updater.UpdateExecutor
 import java.io.File
 import java.io.IOException
-import java.net.URLClassLoader
 import java.util.concurrent.Executors
 import kotlin.system.exitProcess
 
@@ -107,7 +102,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
     private fun executeUpdateIfAvailable(): Boolean {
         val updater = LauncherUpdater()
         if (updater.isUpdateAvailable()) {
-            this.consoleSender.sendMessage("Found a new launcher version: " + updater.getLatestVersion()!!)
+            this.consoleSender.sendMessage("Found a new launcher version: " + updater.getVersionToInstall()!!)
             UpdateExecutor().executeUpdate(updater)
             return true
         } else {

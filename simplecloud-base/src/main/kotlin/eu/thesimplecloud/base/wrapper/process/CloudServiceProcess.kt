@@ -14,6 +14,8 @@ import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.service.impl.DefaultCloudService
 import eu.thesimplecloud.api.servicegroup.grouptype.ICloudProxyGroup
 import eu.thesimplecloud.api.utils.ManifestLoader
+import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.launcher.dependency.DependencyLoader
 import eu.thesimplecloud.launcher.extension.sendMessage
 import org.apache.commons.io.FileUtils
@@ -30,7 +32,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
     private var process: Process? = null
     private val serviceTmpDir = if (cloudService.isStatic()) File(DirectoryPaths.paths.staticPath + cloudService.getName()) else File(DirectoryPaths.paths.tempPath + cloudService.getName())
 
-    override fun start() {
+    override fun start(): ICommunicationPromise<Unit> {
         Launcher.instance.consoleSender.sendMessage("wrapper.service.starting", "Starting service %NAME%", cloudService.getName(), ".")
         this.cloudService as DefaultCloudService
         if (cloudService.getServiceType().isProxy()) {
@@ -53,8 +55,8 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
         val jarFile = Wrapper.instance.serviceVersionLoader.loadVersionFile(cloudService.getServiceVersion())
         val processBuilder = createProcessBuilder(jarFile)
         processBuilder.directory(this.serviceTmpDir)
-        this.process = processBuilder.start()
-        val process = this.process ?: return
+        val process = processBuilder.start()
+        this.process = process
 
         val bufferedReader = BufferedReader(InputStreamReader(process.inputStream))
 
@@ -71,9 +73,11 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
             }
         }
         processStopped()
+        //this method will not return before the process stops
+        return CommunicationPromise.of(Unit)
     }
 
-    private fun processStopped() {
+    private fun processStopped(){
         Launcher.instance.consoleSender.sendMessage("wrapper.service.stopped", "Service %NAME%", cloudService.getName(), " was stopped.")
         Wrapper.instance.cloudServiceProcessManager.unregisterServiceProcess(this)
         this.cloudService.setOnlinePlayers(0)
@@ -117,7 +121,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
 
     override fun isActive(): Boolean = this.process?.isAlive ?: false
 
-    override fun shutdown() {
+    override fun shutdown(): ICommunicationPromise<Unit> {
         if (isActive()) {
             if (this.cloudService.getServiceType().isProxy()) {
                 executeCommand("end")
@@ -129,6 +133,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
                     forceStop()
             }, 7, TimeUnit.SECONDS)
         }
+        return getCloudService().closedPromise()
     }
 
     override fun executeCommand(command: String) {
