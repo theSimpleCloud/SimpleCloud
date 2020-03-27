@@ -9,7 +9,7 @@ import eu.thesimplecloud.api.client.CloudClientType
 class LoggerMessageListenerImpl : ILoggerMessageListener {
 
     override fun message(msg: String, logType: LogType) {
-        if (Wrapper.instance.communicationClient.isOpen() && Wrapper.instance.communicationClient.getPacketIdsSyncPromise().isSuccess)
-            Wrapper.instance.communicationClient.sendUnitQuery(PacketOutScreenMessage(CloudClientType.WRAPPER, Wrapper.instance.getThisWrapper(), msg))
+        if (Wrapper.instance.communicationClient.isOpen() && Wrapper.instance.isWrapperNameSet())
+            Wrapper.instance.communicationClient.sendUnitQueryAsync(PacketOutScreenMessage(CloudClientType.WRAPPER, Wrapper.instance.getThisWrapper(), msg))
     }
 }

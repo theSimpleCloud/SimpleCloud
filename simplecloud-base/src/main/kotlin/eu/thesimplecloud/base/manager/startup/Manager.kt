@@ -29,10 +29,12 @@ import eu.thesimplecloud.base.manager.external.ICloudModuleHandler
 import eu.thesimplecloud.base.manager.ingamecommands.IngameCommandUpdater
 import eu.thesimplecloud.base.manager.packet.IPacketRegistry
 import eu.thesimplecloud.base.manager.packet.PacketRegistry
+import eu.thesimplecloud.clientserverapi.lib.debug.DebugMessage
 import eu.thesimplecloud.launcher.extension.sendMessage
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
+import java.net.URLClassLoader
 import kotlin.concurrent.thread
 
 class Manager : ICloudApplication {
@@ -76,7 +78,9 @@ class Manager : ICloudApplication {
 
         val launcherConfig = Launcher.instance.launcherConfigLoader.loadConfig()
         this.communicationServer = NettyServer<ICommandExecutable>(launcherConfig.host, launcherConfig.port, CommunicationConnectionHandlerImpl(), ServerHandlerImpl())
+        this.communicationServer.addClassLoader(Thread.currentThread().contextClassLoader)
         this.templateServer = NettyServer<ICommandExecutable>(launcherConfig.host, launcherConfig.port + 1, TemplateConnectionHandlerImpl(), ServerHandlerImpl())
+        this.templateServer.addClassLoader(Thread.currentThread().contextClassLoader)
         this.communicationServer.addPacketsByPackage("eu.thesimplecloud.api.network.packets")
         this.communicationServer.addPacketsByPackage("eu.thesimplecloud.base.manager.network.packets")
         this.templateServer.addPacketsByPackage("eu.thesimplecloud.base.manager.network.packets.template")
@@ -131,7 +135,9 @@ class Manager : ICloudApplication {
             Launcher.instance.consoleSender.sendMessage("manager.startup.loaded.groups", "Loaded following groups:")
             CloudAPI.instance.getCloudServiceGroupManager().getAllGroups().forEach { Launcher.instance.consoleSender.sendMessage("- ${it.getName()}") }
         }
-        thread(start = true, isDaemon = false) { (this.cloudModuleHandler as CloudModuleHandler).loadAllUnloadedModules() }
+        thread(start = true, isDaemon = false) {
+            (this.cloudModuleHandler as CloudModuleHandler).loadAllUnloadedModules()
+        }
     }
 
 

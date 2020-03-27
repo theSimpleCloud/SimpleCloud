@@ -28,7 +28,7 @@ import kotlin.collections.ArrayList
  * Time: 17:02
  */
 @Suppress("NON_EXHAUSTIVE_WHEN")
-class LoggerProvider(var applicationName: String, val screenManager: IScreenManager) : Logger("SimpleCloudLogger", null) {
+class LoggerProvider(val screenManager: IScreenManager) : Logger("SimpleCloudLogger", null) {
 
     val dataFormat = SimpleDateFormat("[HH:mm:ss]")
 

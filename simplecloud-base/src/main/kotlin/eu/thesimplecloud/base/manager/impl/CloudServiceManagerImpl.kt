@@ -10,6 +10,7 @@ import eu.thesimplecloud.api.network.packets.service.PacketIOWrapperStartService
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.service.impl.AbstractCloudServiceManager
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import java.lang.IllegalStateException
 
 class CloudServiceManagerImpl : AbstractCloudServiceManager() {
@@ -24,17 +25,19 @@ class CloudServiceManagerImpl : AbstractCloudServiceManager() {
         Manager.instance.communicationServer.getClientManager().sendPacketToAllAuthenticatedClients(PacketIORemoveCloudService(name))
     }
 
-    override fun stopService(cloudService: ICloudService) {
+    override fun stopService(cloudService: ICloudService): ICommunicationPromise<Unit> {
         val wrapper = cloudService.getWrapper()
         val wrapperClient = Manager.instance.communicationServer.getClientManager().getClientByClientValue(wrapper)
         wrapperClient?.sendUnitQuery(PacketIOStopCloudService(cloudService.getName()))
+        return cloudService.closedPromise()
     }
 
-    override fun startService(cloudService: ICloudService) {
+    override fun startService(cloudService: ICloudService): ICommunicationPromise<Unit> {
         if (cloudService.isActive() || cloudService.getState() == ServiceState.CLOSED) throw IllegalStateException("Can not start started service.")
         val wrapper = cloudService.getWrapper()
         val wrapperClient = Manager.instance.communicationServer.getClientManager().getClientByClientValue(wrapper)
         check(wrapperClient != null) { "Can not find client of wrapper to start service ${cloudService.getName()} on." }
         wrapperClient.sendUnitQuery(PacketIOWrapperStartService(cloudService.getName()))
+        return cloudService.connectedPromise()
     }
 }

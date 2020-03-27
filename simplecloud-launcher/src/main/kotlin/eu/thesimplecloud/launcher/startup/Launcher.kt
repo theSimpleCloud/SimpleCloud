@@ -18,6 +18,9 @@ import eu.thesimplecloud.launcher.screens.ScreenManagerImpl
 import eu.thesimplecloud.launcher.setups.AutoIpSetup
 import eu.thesimplecloud.launcher.setups.LanguageSetup
 import eu.thesimplecloud.launcher.setups.StartSetup
+import eu.thesimplecloud.launcher.updater.LauncherUpdater
+import eu.thesimplecloud.launcher.updater.UpdateExecutor
+import java.io.File
 import java.io.IOException
 import java.util.concurrent.Executors
 import kotlin.system.exitProcess
@@ -37,7 +40,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
             private set
     }
 
-    val launcherCloudModule = object : ICloudModule {
+    private val launcherCloudModule = object : ICloudModule {
         override fun onEnable() {
         }
 
@@ -46,7 +49,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
     }
     var activeApplication: ICloudApplication? = null
     val screenManager: IScreenManager = ScreenManagerImpl()
-    val logger = LoggerProvider("Launcher", screenManager)
+    val logger = LoggerProvider(screenManager)
     val commandManager: CommandManager
     val consoleSender = ConsoleSender()
     val consoleManager: ConsoleManager
@@ -54,21 +57,36 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
     val languageManager: LanguageManager
     val launcherConfigLoader = LauncherConfigLoader()
     val scheduler = Executors.newScheduledThreadPool(1)
+    var currentClassLoader: ClassLoader = ClassLoader.getSystemClassLoader()
+        private set
 
     init {
         instance = this
+        if (System.getProperty("simplecloud.version") == null)
+            System.setProperty("simplecloud.version", Launcher::class.java.`package`.implementationVersion)
         Thread.setDefaultUncaughtExceptionHandler { thread, cause -> this.logger.exception(cause) }
         System.setProperty("user.language", "en")
         val launcherConfig = this.launcherConfigLoader.loadConfig()
         DirectoryPaths.paths = launcherConfig.directoryPaths
         this.commandManager = CommandManager()
-        this.consoleManager = ConsoleManager(this.commandManager, this.consoleSender)
+        this.consoleManager = ConsoleManager("Launcher", this.commandManager, this.consoleSender)
         this.languageManager = LanguageManager("en_EN")
     }
 
     fun start() {
         clearConsole()
 
+        if (Thread.currentThread().contextClassLoader == null) {
+            Thread.currentThread().contextClassLoader = ClassLoader.getSystemClassLoader()
+        }
+        currentClassLoader = Thread.currentThread().contextClassLoader
+        if (!launcherStartArguments.disableAutoUpdater) {
+            if (executeUpdateIfAvailable()) {
+                return
+            }
+        } else {
+            this.logger.warning("Auto updater is disabled.")
+        }
         this.languageManager.loadFile()
         this.commandManager.registerAllCommands(launcherCloudModule, "eu.thesimplecloud.launcher.commands")
         this.consoleManager.startThread()
@@ -82,6 +100,18 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
 
         this.setupManager.waitFroAllSetups()
         this.launcherStartArguments.startApplication?.let { startApplication(it) }
+    }
+
+    private fun executeUpdateIfAvailable(): Boolean {
+        val updater = LauncherUpdater()
+        if (updater.isUpdateAvailable()) {
+            this.consoleSender.sendMessage("Found a new launcher version: " + updater.getVersionToInstall()!!)
+            UpdateExecutor().executeUpdate(updater)
+            return true
+        } else {
+            this.consoleSender.sendMessage("You are running on the latest version of SimpleCloud.")
+        }
+        return false
     }
 
     fun startApplication(cloudApplicationType: CloudApplicationType) {
@@ -116,5 +146,12 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
     }
 
     fun isWindows(): Boolean = System.getProperty("os.name").toLowerCase().contains("windows")
+
+    fun getLauncherFile(): File {
+        if (System.getProperty("simplecloud.launcher.update-mode") != null) {
+            return File("launcher-update.jar")
+        }
+        return File(Launcher::class.java.protectionDomain.codeSource.location.toURI().path)
+    }
 
 }

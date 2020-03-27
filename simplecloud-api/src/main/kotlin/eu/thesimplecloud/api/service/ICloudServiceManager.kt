@@ -1,5 +1,7 @@
 package eu.thesimplecloud.api.service
 
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
+
 interface ICloudServiceManager {
 
     /**
@@ -43,12 +45,14 @@ interface ICloudServiceManager {
     fun getServicesRunningOnWrapper(wrapperName: String): List<ICloudService> = getAllCloudServices().filter { it.getWrapperName().equals(wrapperName, true) }
 
     /**
-     * Starts the specified service
+     * Starts the specified servic
+     * @return the [ICloudService.connectedPromise]
      */
-    fun startService(cloudService: ICloudService): Unit = throw UnsupportedOperationException("Can not start a service here.")
+    fun startService(cloudService: ICloudService): ICommunicationPromise<Unit> = throw UnsupportedOperationException("Can not start a service here.")
 
     /**
      * Stops the specified service
+     * @return the [ICloudService.closedPromise]
      */
-    fun stopService(cloudService: ICloudService)
+    fun stopService(cloudService: ICloudService): ICommunicationPromise<Unit>
 }

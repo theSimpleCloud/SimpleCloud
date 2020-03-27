@@ -13,6 +13,16 @@ import java.util.jar.JarFile
 class CloudModuleLoader {
 
     @Throws(CloudModuleException::class)
+    fun loadMainClass(file: File, moduleFileName: String): Class<out ICloudModule> {
+        try {
+            val cloudModuleFileContent = loadModuleFileContent(file, moduleFileName)
+            return ExtensionLoader<ICloudModule>().loadClass(file, cloudModuleFileContent.mainClass, ICloudModule::class.java)
+        } catch (ex: Exception) {
+            throw CloudModuleException("An error occurred while loading module: ${file.path}", ex)
+        }
+    }
+
+    @Throws(CloudModuleException::class)
     fun loadModule(file: File, moduleFileName: String): CloudModuleData {
         try {
             val cloudModuleFileContent = loadModuleFileContent(file, moduleFileName)
@@ -32,7 +42,7 @@ class CloudModuleLoader {
 
     private fun loadModuleClass(file: File, mainClass: String): ICloudModule {
         //exception will be caught in function above
-        return ExtensionLoader<ICloudModule>().loadClass(file, mainClass, ICloudModule::class.java)
+        return ExtensionLoader<ICloudModule>().loadClassInstance(file, mainClass, ICloudModule::class.java)
     }
 
     fun loadModuleFileContent(file: File, moduleFileName: String): CloudModuleFileContent {
