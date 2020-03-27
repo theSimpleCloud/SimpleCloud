@@ -101,20 +101,16 @@ class LoggerProvider(var applicationName: String, val screenManager: IScreenMana
         this.loggerMessageListeners.forEach { it.message(msg, logType) }
 
         val lineReader = Launcher.instance.consoleManager.lineReader
+
+        lineReader.terminal.puts(InfoCmp.Capability.carriage_return)
+        lineReader.terminal.writer().println(coloredMessage);
+        lineReader.terminal.flush();
+
         if (lineReader.isReading) {
-            lineReader.callWidget(LineReader.CLEAR)
-            lineReader.terminal.puts(InfoCmp.Capability.carriage_return)
-            lineReader.terminal.writer().println("\r" + coloredMessage)
             lineReader.callWidget(LineReader.REDRAW_LINE)
             lineReader.callWidget(LineReader.REDISPLAY)
-        } else {
-            lineReader.terminal.writer().println(coloredMessage);
         }
 
-        lineReader.terminal.writer().flush()
-
-        //print("\r" + coloredMessage)
-        //updatePrompt(true)
     }
 
     private fun isMessageBlocked(logType: LogType): Boolean {

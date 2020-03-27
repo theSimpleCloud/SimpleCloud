@@ -27,6 +27,11 @@ dependencies {
 
 }
 
+configurations {
+    jar.archiveName = 'launcher.jar'
+}
+
+
 compileKotlin {
     kotlinOptions {
         jvmTarget = "1.8"

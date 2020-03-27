@@ -123,6 +123,11 @@ interface ICloudServiceGroup {
     fun getAllServices(): List<ICloudService> = CloudAPI.instance.getCloudServiceManager().getCloudServicesByGroupName(getName())
 
     /**
+     * Returns the amount of online players in this group
+     */
+    fun getOnlinePlayers(): Int = getAllServices().sumBy { it.getOnlinePlayers() }
+
+    /**
      * Stops all services by this group.
      */
     fun stopAllServices() = getAllServices().forEach { it.shutdown() }

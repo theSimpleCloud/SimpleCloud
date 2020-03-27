@@ -67,6 +67,8 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
     }
 
     fun start() {
+        clearConsole()
+
         this.languageManager.loadFile()
         this.commandManager.registerAllCommands(launcherCloudModule, "eu.thesimplecloud.launcher.commands")
         this.consoleManager.startThread()
