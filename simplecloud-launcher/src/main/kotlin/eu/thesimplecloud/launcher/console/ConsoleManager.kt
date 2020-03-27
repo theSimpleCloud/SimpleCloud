@@ -14,13 +14,13 @@ import org.jline.terminal.TerminalBuilder
  * Date: 06.09.2019
  * Time: 21:29
  */
-class ConsoleManager(val commandManager: CommandManager, private val consoleSender: ConsoleSender) : IConsoleManager {
+class ConsoleManager(var applicationName: String, val commandManager: CommandManager, private val consoleSender: ConsoleSender) : IConsoleManager {
 
 
     var thread: Thread? = null
 
     val lineReader = createLineReader()
-    var prompt = Launcher.instance.logger.getColoredString("§c${Launcher.instance.logger.applicationName}§f@§eSimpleCloud§f> ", LogType.EMPTY)
+    var prompt = Launcher.instance.logger.getColoredString("§c${applicationName}§f@§eSimpleCloud§f> ", LogType.EMPTY)
 
     private fun createLineReader() : LineReader {
         val terminal = TerminalBuilder.builder()
