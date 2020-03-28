@@ -8,11 +8,12 @@ import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.service.ServiceVersion
 import eu.thesimplecloud.api.template.ITemplate
+import eu.thesimplecloud.api.template.impl.DefaultTemplate
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.launcher.extension.sendMessage
 import kotlin.properties.Delegates
 
-class LobbyGroupSetup : ISetup {
+class LobbyGroupSetup : DefaultGroupSetup(), ISetup {
 
     private lateinit var serviceVersion: ServiceVersion
     private var wrapper: IWrapperInfo? = null
@@ -39,15 +40,18 @@ class LobbyGroupSetup : ISetup {
         return true
     }
 
-    @SetupQuestion(1, "manager.setup.service-group.question.template", "Which template shall the group use?")
-    fun templateQuestion(template: ITemplate) {
-        this.templateName = template.getName()
-        Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.template.success", "Template set.")
+    @SetupQuestion(1, "manager.setup.service-group.question.template", "Which template shall the group use? (create = Creates a template with the group's name)")
+    fun templateQuestion(templateName: String): Boolean {
+        val template = createTemplate(templateName, this.name)
+        if (template != null) {
+            this.templateName = template
+        }
+        return template != null
     }
 
     @SetupQuestion(2, "manager.setup.service-group.question.type", "Which spigot shall the group use? (Spigot, Paper)")
     fun typeQuestion(string: String) {
-        if (!string.equals("paper", true) && !string.equals("spigot", true)){
+        if (!string.equals("paper", true) && !string.equals("spigot", true)) {
             Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.type.invalid", "Invalid response.")
             return
         }
@@ -56,7 +60,7 @@ class LobbyGroupSetup : ISetup {
     }
 
     @SetupQuestion(3, "manager.setup.service-group.question.version", "Which version to you want to use? (1.7.10, 1.8.8, 1.9.4, 1.10.2, 1.11.2, 1.12.2, 1.13.2, 1.14.4)")
-    fun versionQuestion(answer: String) : Boolean {
+    fun versionQuestion(answer: String): Boolean {
         val version = answer.replace(".", "_")
         val serviceVersion = JsonData.fromObject(type.toUpperCase() + "_" + version).getObjectOrNull(ServiceVersion::class.java)
         if (serviceVersion == null) {
@@ -123,7 +127,7 @@ class LobbyGroupSetup : ISetup {
         if (string.isBlank())
             return true
         val wrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(string)
-        if (wrapper == null){
+        if (wrapper == null) {
             Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.wrapper.not-exist", "The specified wrapper does not exist.")
             return false
         }

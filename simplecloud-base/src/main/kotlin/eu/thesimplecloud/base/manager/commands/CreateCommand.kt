@@ -54,7 +54,6 @@ class CreateCommand : ICommandHandler {
         }
         val template = DefaultTemplate(name)
         templateManager.updateTemplate(template)
-        Manager.instance.communicationServer.getClientManager().sendPacketToAllAuthenticatedClients(PacketIOUpdateTemplate(template))
         Launcher.instance.consoleSender.sendMessage("manager.command.create.template.success", "Template %NAME%", name, " created")
 
         //---create directories

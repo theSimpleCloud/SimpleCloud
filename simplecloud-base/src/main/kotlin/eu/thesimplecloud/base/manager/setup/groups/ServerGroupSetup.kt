@@ -12,7 +12,7 @@ import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.launcher.extension.sendMessage
 import kotlin.properties.Delegates
 
-class ServerGroupSetup : ISetup {
+class ServerGroupSetup : DefaultGroupSetup(), ISetup {
 
     private lateinit var serviceVersion: ServiceVersion
     private var wrapper: IWrapperInfo? = null
@@ -37,10 +37,13 @@ class ServerGroupSetup : ISetup {
         return true
     }
 
-    @SetupQuestion(1, "manager.setup.service-group.question.template", "Which template shall the group use?")
-    fun templateQuestion(template: ITemplate) {
-        this.templateName = template.getName()
-        Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.template.success", "Template set.")
+    @SetupQuestion(1, "manager.setup.service-group.question.template", "Which template shall the group use? (create = Creates a template with the group's name)")
+    fun templateQuestion(templateName: String): Boolean {
+        val template = createTemplate(templateName, this.name)
+        if (template != null) {
+            this.templateName = template
+        }
+        return template != null
     }
 
     @SetupQuestion(2, "manager.setup.service-group.question.type", "Which spigot shall the group use? (Spigot, Paper)")
