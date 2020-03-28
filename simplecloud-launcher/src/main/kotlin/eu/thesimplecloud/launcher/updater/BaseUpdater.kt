@@ -1,11 +1,12 @@
 package eu.thesimplecloud.launcher.updater
 
+import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import java.io.File
 
 class BaseUpdater(private val baseClass: Class<*>?) : AbstractUpdater(
         "eu.thesimplecloud.simplecloud",
         "simplecloud-base",
-        File("SimpleCloud.jar")
+        File(DirectoryPaths.paths.storagePath + "base.jar")
 ) {
 
     override fun getVersionToInstall(): String? {

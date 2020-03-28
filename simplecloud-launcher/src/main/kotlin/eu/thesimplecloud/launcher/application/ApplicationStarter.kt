@@ -1,5 +1,6 @@
 package eu.thesimplecloud.launcher.application
 
+import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.external.module.CloudModuleLoader
 import eu.thesimplecloud.launcher.startup.Launcher
@@ -17,7 +18,7 @@ class ApplicationStarter {
         Launcher.instance.consoleManager.stopThread()
         Launcher.instance.consoleManager.applicationName = applicationType.getApplicationName()
         Launcher.instance.consoleManager.startThread()
-        val file = File("SimpleCloud.jar")
+        val file = File(DirectoryPaths.paths.storagePath + "base.jar")
 
         if (!Launcher.instance.launcherStartArguments.disableAutoUpdater || !file.exists()) {
             Launcher.instance.consoleSender.sendMessage("launcher.base.checking-for-updates", "Checking for base updates...")
