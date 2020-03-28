@@ -30,7 +30,6 @@ dependencies {
     implementation(project(":simplecloud-plugin"))
     implementation(project(":simplecloud-launcher"))
     implementation(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion)
-    implementation group: 'io.netty', name: 'netty-all', version: '4.1.1.Final'
 
     implementation 'org.spigotmc:spigot-api:1.15.1-R0.1-SNAPSHOT' // The full Spigot server with no shadowing. Requires mavenLocal.
     implementation group: 'commons-io', name: 'commons-io', version: '2.6'

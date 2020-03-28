@@ -79,6 +79,7 @@ class Wrapper : ICloudApplication {
             stopAllRunningServicesAndWaitFor()
             if (this.templateClient != null) {
                 FileUtils.deleteDirectory(File(DirectoryPaths.paths.templatesPath))
+                FileUtils.deleteDirectory(File(DirectoryPaths.paths.modulesPath))
             }
             this.communicationClient.shutdown()
             this.templateClient?.shutdown()

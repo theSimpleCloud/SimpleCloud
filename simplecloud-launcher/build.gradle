@@ -19,7 +19,6 @@ dependencies {
     implementation(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion)
     // https://mvnrepository.com/artifact/com.github.ajalt/clikt
     implementation("com.github.ajalt:clikt:2.2.0")
-    implementation group: 'io.netty', name: 'netty-all', version: '4.1.1.Final'
     implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: '1.3.2'
     implementation group: 'org.apache.maven', name: 'maven-model', version: '3.3.9'
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-xml

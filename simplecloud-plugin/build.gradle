@@ -26,7 +26,6 @@ dependencies {
     compile(project(":simplecloud-api")) {
         transitive = false
     }
-    implementation group: 'io.netty', name: 'netty-all', version: '4.1.1.Final'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
     compile(project(":simplecloud-client")) {

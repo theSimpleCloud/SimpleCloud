@@ -16,7 +16,6 @@ dependencies {
     implementation(project(":simplecloud-api"))
     implementation(project(":simplecloud-launcher"))
     implementation(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion)
-    implementation group: 'io.netty', name: 'netty-all', version: '4.1.1.Final'
 }
 
 compileKotlin {
