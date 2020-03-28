@@ -14,7 +14,7 @@ import org.jline.terminal.TerminalBuilder
  * Date: 06.09.2019
  * Time: 21:29
  */
-class ConsoleManager(var applicationName: String, val commandManager: CommandManager, private val consoleSender: ConsoleSender) : IConsoleManager {
+class ConsoleManager(var applicationName: String, private val commandManager: CommandManager, private val consoleSender: ConsoleSender) : IConsoleManager {
 
 
     var thread: Thread? = null
@@ -47,13 +47,10 @@ class ConsoleManager(var applicationName: String, val commandManager: CommandMan
             try {
                 while (!Thread.currentThread().isInterrupted) {
                     readLine = lineReader.readLine("%{$prompt%}")
-                    while (!readLine.isBlank()) {
-                        handleInput(readLine)
-
-                        readLine = lineReader.readLine("%{$prompt%}") ?: continue
-                    }
+                    handleInput(readLine)
                 }
-            } catch (ex: UserInterruptException) {}
+            } catch (ex: UserInterruptException) {
+            }
         }
         thread?.start()
     }

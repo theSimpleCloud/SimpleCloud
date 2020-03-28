@@ -20,6 +20,6 @@ class SynchronizedObjectManagerImpl(private val client: INettyClient) : Abstract
     }
 
     override fun <T : ISynchronizedObject> requestSynchronizedObject(name: String, clazz: Class<T>): ICommunicationPromise<T> {
-        return client.sendQueryAsync(PacketOutGetSynchronizedObject(name), clazz).addResultListener { updateObject(it, true) }
+        return client.sendQueryAsync(PacketOutGetSynchronizedObject(name), clazz, 2000).addResultListener { updateObject(it, true) }
     }
 }

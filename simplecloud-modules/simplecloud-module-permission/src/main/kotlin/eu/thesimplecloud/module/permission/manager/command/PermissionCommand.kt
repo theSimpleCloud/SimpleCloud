@@ -96,7 +96,7 @@ class PermissionCommand : ICommandHandler {
         }
         permissionPlayer.removePermissionGroup(permissionGroup.getName())
         PermissionModule.instance.updatePermissionPlayer(permissionPlayer)
-        commandSender.sendMessage("manager.command.perms.user.group.removed", "&7Group &e%GROUP%", permissionGroup.getName(), " &7removed.")
+        commandSender.sendMessage("manager.command.perms.user.group.removed", "&7Group &e%GROUP%", permissionGroup.getName(), " &7removed from %PLAYER%", permissionPlayer.getName(), ".")
     }
 
     @CommandSubPath("user <user> permission add <permission> <days> <active>", "Adds a permission to a user")

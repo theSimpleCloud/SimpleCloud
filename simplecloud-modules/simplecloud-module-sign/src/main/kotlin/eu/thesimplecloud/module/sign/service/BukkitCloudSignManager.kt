@@ -57,6 +57,7 @@ class BukkitCloudSignManager {
     private fun getWaitingServices(cloudServiceGroup: ICloudServiceGroup): List<ICloudService> {
         return cloudServiceGroup.getAllServices()
                 .filter { it.getState() == ServiceState.STARTING || it.getState() == ServiceState.VISIBLE }
+                .sortedByDescending { it.getState() }
                 .filter { getBukkitCloudSignsByServer(it) == null }
     }
 

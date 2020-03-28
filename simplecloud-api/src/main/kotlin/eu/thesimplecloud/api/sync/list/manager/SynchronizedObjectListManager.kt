@@ -22,7 +22,7 @@ class SynchronizedObjectListManager : ISynchronizedObjectListManager {
         this.nameToSynchronizedObjectList[synchronizedObjectList.getIdentificationName()] = synchronizedObjectList
         if (!CloudAPI.instance.isManager()) {
             val client = CloudAPI.instance.getThisSidesCommunicationBootstrap() as INettyClient
-            client.sendUnitQueryAsync(PacketIOGetAllCachedListObjects(synchronizedObjectList.getIdentificationName()))
+            client.sendUnitQueryAsync(PacketIOGetAllCachedListObjects(synchronizedObjectList.getIdentificationName()), 2000)
         } else {
             //manager
             synchronizedObjectList as ISynchronizedObjectList<ISynchronizedListObject>
