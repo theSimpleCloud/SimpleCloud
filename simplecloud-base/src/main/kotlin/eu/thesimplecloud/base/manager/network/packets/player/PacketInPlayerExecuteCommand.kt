@@ -16,7 +16,12 @@ class PacketInPlayerExecuteCommand() : JsonPacket() {
         val playerUniqueId = this.jsonData.getObject("playerUniqueId", UUID::class.java) ?: return contentException("playerUniqueId")
         val cloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(playerUniqueId) ?: return failure(NoSuchPlayerException("Cannot find player by UUID: $playerUniqueId"))
         val command = this.jsonData.getString("command") ?: return contentException("command")
-        Launcher.instance.commandManager.handleCommand(command, cloudPlayer)
+        try {
+            Launcher.instance.commandManager.handleCommand(command, cloudPlayer)
+        } catch (ex: Exception) {
+            cloudPlayer.sendMessage("§cAn error occurred while executing the command.")
+            throw ex
+        }
         return unit()
     }
 }

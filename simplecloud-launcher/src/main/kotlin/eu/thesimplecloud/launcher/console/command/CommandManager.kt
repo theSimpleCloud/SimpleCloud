@@ -30,10 +30,9 @@ import kotlin.collections.ArrayList
  */
 class CommandManager() {
 
-    val GSON = GsonBuilder().serializeNulls().create()
 
     val commands = ArrayList<CommandData>()
-    val allowedTypesWithoutCommandArgument = listOf(ICommandSender::class.java)
+    private val allowedTypesWithoutCommandArgument = listOf(ICommandSender::class.java)
 
     fun handleCommand(readLine: String, commandSender: ICommandSender) {
         val readLine = if (readLine.trim().equals("cloud", true)) "cloud help" else readLine.trim()
