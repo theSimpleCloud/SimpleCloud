@@ -179,8 +179,8 @@ class CommandManager() {
             for (method in commandClass.declaredMethods) {
                 val commandSubPath = method.getAnnotation(CommandSubPath::class.java)
                 commandSubPath ?: continue
-
-                val commandData = CommandData(cloudModule, classAnnotation.name + " " + commandSubPath.path, commandSubPath.description, command, method, classAnnotation.commandType, classAnnotation.permission, classAnnotation.aliases)
+                val path = if (commandSubPath.path.isBlank()) classAnnotation.name else classAnnotation.name + " " + commandSubPath.path
+                val commandData = CommandData(cloudModule, path, commandSubPath.description, command, method, classAnnotation.commandType, classAnnotation.permission, classAnnotation.aliases)
                 for (parameter in method.parameters) {
                     val commandArgument = parameter.getAnnotation(CommandArgument::class.java)
                     if (commandArgument == null) {

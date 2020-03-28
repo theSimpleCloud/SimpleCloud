@@ -31,6 +31,7 @@ import kotlin.concurrent.thread
 class Wrapper : ICloudApplication {
 
     companion object {
+        @JvmStatic
         lateinit var instance: Wrapper
             private set
     }
