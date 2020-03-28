@@ -45,7 +45,7 @@ interface ICloudServiceManager {
     fun getServicesRunningOnWrapper(wrapperName: String): List<ICloudService> = getAllCloudServices().filter { it.getWrapperName().equals(wrapperName, true) }
 
     /**
-     * Starts the specified servic
+     * Starts the specified service
      * @return the [ICloudService.connectedPromise]
      */
     fun startService(cloudService: ICloudService): ICommunicationPromise<Unit> = throw UnsupportedOperationException("Can not start a service here.")
