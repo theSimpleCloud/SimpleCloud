@@ -14,7 +14,7 @@ import org.jline.terminal.TerminalBuilder
  * Date: 06.09.2019
  * Time: 21:29
  */
-class ConsoleManager(var applicationName: String, val commandManager: CommandManager, private val consoleSender: ConsoleSender) : IConsoleManager {
+class ConsoleManager(var applicationName: String, private val commandManager: CommandManager, private val consoleSender: ConsoleSender) : IConsoleManager {
 
 
     var thread: Thread? = null
@@ -22,7 +22,7 @@ class ConsoleManager(var applicationName: String, val commandManager: CommandMan
     val lineReader = createLineReader()
     var prompt = Launcher.instance.logger.getColoredString("§c${applicationName}§f@§eSimpleCloud§f> ", LogType.EMPTY)
 
-    private fun createLineReader() : LineReader {
+    private fun createLineReader(): LineReader {
         val terminal = TerminalBuilder.builder()
                 .system(true)
                 .streams(System.`in`, System.out)
@@ -40,13 +40,13 @@ class ConsoleManager(var applicationName: String, val commandManager: CommandMan
     override fun startThread() {
         thread = Thread {
             var readLine = ""
-            while(!Thread.currentThread().isInterrupted) {
+            while (!Thread.currentThread().isInterrupted) {
                 readLine = lineReader.readLine("%{$prompt%}")
-                while (!readLine.isBlank()) {
-                    handleInput(readLine)
-
-                    readLine = lineReader.readLine("%{$prompt%}") ?: continue
-                }
+                //while (!readLine.isBlank()) {
+                handleInput(readLine)
+                //
+                //    readLine = lineReader.readLine("%{$prompt%}") ?: continue
+                //}
             }
         }
         thread?.start()

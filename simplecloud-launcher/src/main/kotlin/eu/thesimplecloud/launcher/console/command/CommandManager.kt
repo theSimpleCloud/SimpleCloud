@@ -199,7 +199,7 @@ class CommandManager() {
         }
     }
 
-    fun getAllIngameCommandPrefixes(): Collection<String> = this.commands.filter { it.commandType == CommandType.INGAME }.map { it.getAllPathsWithAliases().map { it.split(" ")[0] } }.flatten().toSet().union(listOf("cloud"))
+    fun getAllIngameCommandPrefixes(): Collection<String> = this.commands.filter { it.commandType == CommandType.INGAME }.map { it.getAllPathsWithAliases().map { path -> path.split(" ")[0] } }.flatten().toSet().union(listOf("cloud"))
 
     private fun getCloudAPI(): CloudAPI? {
         return try {
