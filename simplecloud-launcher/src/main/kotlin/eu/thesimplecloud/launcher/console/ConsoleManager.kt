@@ -5,7 +5,7 @@ import eu.thesimplecloud.launcher.logging.LogType
 import eu.thesimplecloud.launcher.startup.Launcher
 import org.jline.reader.LineReader
 import org.jline.reader.LineReaderBuilder
-import org.jline.reader.MaskingCallback
+import org.jline.reader.UserInterruptException
 import org.jline.terminal.TerminalBuilder
 
 /**
@@ -20,9 +20,11 @@ class ConsoleManager(var applicationName: String, val commandManager: CommandMan
     var thread: Thread? = null
 
     val lineReader = createLineReader()
-    var prompt = Launcher.instance.logger.getColoredString("§c${applicationName}§f@§eSimpleCloud§f> ", LogType.EMPTY)
+    var prompt = buildPrompt()
 
-    private fun createLineReader() : LineReader {
+    fun buildPrompt() = Launcher.instance.logger.getColoredString("§c${applicationName}§f@§eSimpleCloud§f> ", LogType.EMPTY)
+
+    private fun createLineReader(): LineReader {
         val terminal = TerminalBuilder.builder()
                 .system(true)
                 .streams(System.`in`, System.out)
@@ -38,16 +40,20 @@ class ConsoleManager(var applicationName: String, val commandManager: CommandMan
     }
 
     override fun startThread() {
+        var prompt = buildPrompt()
+
         thread = Thread {
             var readLine = ""
-            while(!Thread.currentThread().isInterrupted) {
-                readLine = lineReader.readLine("%{$prompt%}")
-                while (!readLine.isBlank()) {
-                    handleInput(readLine)
+            try {
+                while (!Thread.currentThread().isInterrupted) {
+                    readLine = lineReader.readLine("%{$prompt%}")
+                    while (!readLine.isBlank()) {
+                        handleInput(readLine)
 
-                    readLine = lineReader.readLine("%{$prompt%}") ?: continue
+                        readLine = lineReader.readLine("%{$prompt%}") ?: continue
+                    }
                 }
-            }
+            } catch (ex: UserInterruptException) {}
         }
         thread?.start()
     }
@@ -79,6 +85,7 @@ class ConsoleManager(var applicationName: String, val commandManager: CommandMan
     }
 
     override fun stopThread() {
+        lineReader.terminal.reader().shutdown()
         lineReader.terminal.pause()
         thread?.interrupt()
     }
