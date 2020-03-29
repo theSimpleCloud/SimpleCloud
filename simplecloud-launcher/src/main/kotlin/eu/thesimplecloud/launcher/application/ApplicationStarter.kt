@@ -15,9 +15,9 @@ class ApplicationStarter {
         Thread.currentThread().contextClassLoader = Launcher.instance.currentClassLoader
         val cloudModuleLoader = CloudModuleLoader()
         val moduleFileName = applicationType.name.toLowerCase() + ".json"
-        Launcher.instance.consoleManager.stopThread()
+        //Launcher.instance.consoleManager.stopThread()
         Launcher.instance.consoleManager.applicationName = applicationType.getApplicationName()
-        Launcher.instance.consoleManager.startThread()
+        //Launcher.instance.consoleManager.startThread()
         val file = File(DirectoryPaths.paths.storagePath + "base.jar")
 
         if (!Launcher.instance.launcherStartArguments.disableAutoUpdater || !file.exists()) {

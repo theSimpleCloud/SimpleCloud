@@ -38,7 +38,7 @@ class LanguageManager(var language: String) {
     private fun addNewProperty(property: String, message: String) {
         val fileMessage = languageFile.messages[property]
         if (fileMessage == null) {
-            languageFile.messages.put(property, message)
+            languageFile.messages[property] = message
             JsonData.fromObject(languageFile).saveAsFile(file)
         }
     }

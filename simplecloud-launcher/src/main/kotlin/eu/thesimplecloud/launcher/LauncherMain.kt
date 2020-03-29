@@ -12,6 +12,9 @@ class LauncherMain {
 fun main(args: Array<String>) {
     LauncherMain.specifiedArguments = args
     println("Starting launcher...")
+    if (Thread.currentThread().contextClassLoader == null) {
+        Thread.currentThread().contextClassLoader = ClassLoader.getSystemClassLoader()
+    }
     LauncherDependencyLoader().loadLauncherDependencies()
     LauncherStartArguments().main(args)
 }

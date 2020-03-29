@@ -75,10 +75,6 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
 
     fun start() {
         clearConsole()
-
-        if (Thread.currentThread().contextClassLoader == null) {
-            Thread.currentThread().contextClassLoader = ClassLoader.getSystemClassLoader()
-        }
         currentClassLoader = Thread.currentThread().contextClassLoader
         if (!launcherStartArguments.disableAutoUpdater) {
             if (executeUpdateIfAvailable()) {

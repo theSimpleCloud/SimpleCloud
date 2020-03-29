@@ -38,7 +38,7 @@ compileKotlin {
 jar {
     manifest {
         attributes(
-                'Main-Class': 'eu.thesimplecloud.launcher.LauncherMainKt',
+                'Main-Class': 'eu.thesimplecloud.launcher.KotlinInstallerMain',
                 'Implementation-Version': project.version,
         )
     }

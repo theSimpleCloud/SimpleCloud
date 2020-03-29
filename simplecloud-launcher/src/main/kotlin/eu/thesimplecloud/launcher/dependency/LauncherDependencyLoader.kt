@@ -10,7 +10,7 @@ class LauncherDependencyLoader {
         dependencyLoader.addDependencies(
                 Dependency("org.jline", "jline", "3.14.0"),
                 Dependency("org.litote.kmongo", "kmongo", "3.11.2"),
-                Dependency("eu.thesimplecloud.clientserverapi", "clientserverapi", "2.3.4-SNAPSHOT"),
+                Dependency("eu.thesimplecloud.clientserverapi", "clientserverapi", "2.3.5-SNAPSHOT"),
                 Dependency("org.reflections", "reflections", "0.9.10"),
                 Dependency("com.google.code.gson", "gson", "2.8.6"),
                 Dependency("commons-io", "commons-io", "2.6"),
