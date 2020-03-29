@@ -18,3 +18,7 @@ fun IClientManager<*>.sendPacketToAllAuthenticatedClients(packet: IPacket) {
 fun IClientManager<*>.sendPacketToAllAuthenticatedNonWrapperClients(packet: IPacket) {
     this.getAllAuthenticatedClients().filter { it.getClientValue() !is IWrapperInfo }.forEach { it.sendUnitQuery(packet) }
 }
+
+fun IClientManager<*>.sendPacketToAllAuthenticatedWrapperClients(packet: IPacket) {
+    this.getAllAuthenticatedClients().filter { it.getClientValue() is IWrapperInfo }.forEach { it.sendUnitQuery(packet) }
+}
