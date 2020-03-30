@@ -5,7 +5,7 @@ import eu.thesimplecloud.launcher.console.command.CommandData
 import eu.thesimplecloud.api.command.ICommandSender
 
 /**
- * This event will be called when a registered cloud command was executed by a player or the console.
+ * This event will be called when a registered cloud command is going to be executed by a player or the console.
  */
 class CommandExecuteEvent(val commandSender: ICommandSender, command: CommandData) : CommandEvent(command), ICancellable {
 
