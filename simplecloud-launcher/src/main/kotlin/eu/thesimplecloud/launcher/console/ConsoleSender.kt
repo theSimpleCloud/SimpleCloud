@@ -1,6 +1,8 @@
 package eu.thesimplecloud.launcher.console
 
 import eu.thesimplecloud.api.command.ICommandSender
+import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.launcher.startup.Launcher
 
 /**
@@ -12,12 +14,13 @@ import eu.thesimplecloud.launcher.startup.Launcher
 class ConsoleSender : ICommandSender {
 
 
-    override fun sendMessage(message: String) {
+    override fun sendMessage(message: String): ICommunicationPromise<Unit> {
         if (message.startsWith("§c") || message.startsWith("&c")) {
             Launcher.instance.logger.warning(filerColorCodes(message))
         } else {
             Launcher.instance.logger.console(filerColorCodes(message))
         }
+        return CommunicationPromise.of(Unit)
     }
 
     private fun filerColorCodes(message: String): String {

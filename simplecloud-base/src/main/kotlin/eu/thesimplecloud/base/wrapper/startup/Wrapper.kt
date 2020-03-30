@@ -31,6 +31,7 @@ import kotlin.concurrent.thread
 class Wrapper : ICloudApplication {
 
     companion object {
+        @JvmStatic
         lateinit var instance: Wrapper
             private set
     }
@@ -45,6 +46,7 @@ class Wrapper : ICloudApplication {
         private set
     val serviceVersionLoader = ServiceVersionLoader()
     var existingModules: List<Pair<CloudModuleFileContent, File>> = ArrayList()
+        private set
 
     init {
         instance = this
@@ -119,7 +121,7 @@ class Wrapper : ICloudApplication {
             templateClient.addClassLoader(Thread.currentThread().contextClassLoader)
             Launcher.instance.scheduler.schedule({ startTemplateClient(templateClient) }, 100, TimeUnit.MILLISECONDS)
         } else {
-            this.existingModules = CloudModuleHandler().getAllCloudModuleFileContents()
+            reloadExistingModules()
         }
         this.communicationClient.sendUnitQuery(PacketOutCloudClientLogin(CloudClientType.WRAPPER))
     }
@@ -130,7 +132,7 @@ class Wrapper : ICloudApplication {
             templateClient.start().then {
                 Launcher.instance.consoleSender.sendMessage("wrapper.template.requesting", "Requesting templates...")
                 templateClient.sendUnitQuery(PacketOutGetTemplates(), TimeUnit.SECONDS.toMillis((60 * 2) + 30)).addResultListener {
-                    this.existingModules = CloudModuleHandler().getAllCloudModuleFileContents()
+                    reloadExistingModules()
                     Launcher.instance.consoleSender.sendMessage("wrapper.template.received", "Templates received.")
                 }.addFailureListener {
                     Launcher.instance.logger.severe("An error occurred while requesting templates:")
@@ -138,6 +140,10 @@ class Wrapper : ICloudApplication {
                 }
             }
         }
+    }
+
+    fun reloadExistingModules() {
+        this.existingModules = CloudModuleHandler().getAllCloudModuleFileContents()
     }
 
     fun isWrapperNameSet(): Boolean = thisWrapperName != null

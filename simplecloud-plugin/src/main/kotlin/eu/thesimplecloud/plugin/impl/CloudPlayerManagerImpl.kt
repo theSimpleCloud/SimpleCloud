@@ -56,12 +56,12 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
         return CloudPlugin.instance.communicationClient.sendQuery(PacketIOGetCloudPlayer(name))
     }
 
-    override fun sendMessageToPlayer(cloudPlayer: ICloudPlayer, cloudText: CloudText) {
+    override fun sendMessageToPlayer(cloudPlayer: ICloudPlayer, cloudText: CloudText): ICommunicationPromise<Unit> {
         if (cloudPlayer.getConnectedProxyName() == CloudPlugin.instance.thisServiceName) {
             getProxiedPlayerByCloudPlayer(cloudPlayer)?.sendMessage(CloudTextBuilder().build(cloudText))
-            return
+            return CommunicationPromise.of(Unit)
         }
-        CloudPlugin.instance.communicationClient.sendUnitQuery(PacketIOSendMessageToCloudPlayer(cloudPlayer, cloudText))
+        return CloudPlugin.instance.communicationClient.sendUnitQuery(PacketIOSendMessageToCloudPlayer(cloudPlayer, cloudText))
     }
 
     override fun connectPlayer(cloudPlayer: ICloudPlayer, cloudService: ICloudService): ICommunicationPromise<Unit> {

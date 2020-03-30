@@ -71,9 +71,10 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
         return promiseOfNullablePlayer(getCachedCloudPlayer(name))
     }
 
-    override fun sendMessageToPlayer(cloudPlayer: ICloudPlayer, cloudText: CloudText) {
+    override fun sendMessageToPlayer(cloudPlayer: ICloudPlayer, cloudText: CloudText): ICommunicationPromise<Unit> {
         val proxyClient = getProxyClientOfCloudPlayer(cloudPlayer)
-        proxyClient?.sendUnitQuery(PacketIOSendMessageToCloudPlayer(cloudPlayer, cloudText))
+        return proxyClient?.sendUnitQuery(PacketIOSendMessageToCloudPlayer(cloudPlayer, cloudText)) ?:
+                CommunicationPromise.failed(UnreachableServiceException("Proxy service is unreachable"))
     }
 
     override fun connectPlayer(cloudPlayer: ICloudPlayer, cloudService: ICloudService): ICommunicationPromise<Unit> {

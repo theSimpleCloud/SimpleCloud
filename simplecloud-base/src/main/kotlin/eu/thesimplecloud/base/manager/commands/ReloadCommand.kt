@@ -2,8 +2,11 @@ package eu.thesimplecloud.base.manager.commands
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.command.ICommandSender
+import eu.thesimplecloud.api.extension.getAllAuthenticatedClients
+import eu.thesimplecloud.api.extension.sendPacketToAllAuthenticatedWrapperClients
 import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
 import eu.thesimplecloud.base.manager.external.CloudModuleHandler
+import eu.thesimplecloud.base.manager.network.packets.PacketOutReloadExistingModules
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.launcher.console.command.CommandType
 import eu.thesimplecloud.launcher.console.command.ICommandHandler
@@ -50,6 +53,9 @@ class ReloadCommand : ICommandHandler {
         loadedGroups.toMutableList().removeAll(unknownGroups)
         loadedGroups.forEach { CloudAPI.instance.getCloudServiceGroupManager().updateGroup(it) }
         loadedGroups.forEach { commandSender.sendMessage("manager.command.reload.group-success", "Reloaded group %GROUP%", it.getName(), ".") }
+
+        //send all wrappers a packet to reload the modules list
+        Manager.instance.communicationServer.getClientManager().sendPacketToAllAuthenticatedWrapperClients(PacketOutReloadExistingModules())
 
         //enable
         thread(start = true, isDaemon = false) { cloudModuleHandler.loadAllUnloadedModules() }
