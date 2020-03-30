@@ -57,8 +57,9 @@ interface ICloudPlayerManager {
      * Sends a message to a player.
      * @param cloudPlayer the player that shall receive the message
      * @param cloudText the text to send.
+     * @return a promise that completes when the message was sent.
      */
-    fun sendMessageToPlayer(cloudPlayer: ICloudPlayer, cloudText: CloudText)
+    fun sendMessageToPlayer(cloudPlayer: ICloudPlayer, cloudText: CloudText): ICommunicationPromise<Unit>
 
     /**
      * Sends the [cloudPlayer] to the specified [cloudService]
