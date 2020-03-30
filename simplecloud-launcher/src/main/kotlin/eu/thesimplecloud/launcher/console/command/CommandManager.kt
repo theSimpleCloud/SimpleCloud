@@ -16,6 +16,7 @@ import eu.thesimplecloud.api.utils.getEnumValues
 import eu.thesimplecloud.launcher.console.ConsoleSender
 import eu.thesimplecloud.launcher.event.command.CommandExecuteEvent
 import eu.thesimplecloud.launcher.event.command.CommandRegisteredEvent
+import eu.thesimplecloud.launcher.event.command.CommandUnregisteredEvent
 import eu.thesimplecloud.launcher.extension.sendMessage
 import org.reflections.Reflections
 import java.lang.NullPointerException
@@ -199,6 +200,14 @@ class CommandManager() {
             }
         } catch (e: Exception) {
             throw e
+        }
+    }
+
+    fun unregisterCommands(cloudModule: ICloudModule) {
+        val moduleCommands = this.commands.filter { it.cloudModule == cloudModule }
+        this.commands.removeAll(moduleCommands)
+        moduleCommands.forEach {
+            getCloudAPI()?.getEventManager()?.call(CommandUnregisteredEvent(it))
         }
     }
 
