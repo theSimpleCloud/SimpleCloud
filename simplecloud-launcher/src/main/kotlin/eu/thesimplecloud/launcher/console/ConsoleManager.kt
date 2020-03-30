@@ -50,6 +50,7 @@ class ConsoleManager(var applicationName: String, private val commandManager: Co
                     handleInput(readLine)
                 }
             } catch (ex: UserInterruptException) {
+            }  catch (ex: IllegalStateException) {
             }
         }
         thread?.start()
