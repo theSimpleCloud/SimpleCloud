@@ -18,6 +18,7 @@ class CommandData(
         val commandType: CommandType,
         val permission: String,
         val aliases: Array<String>,
+        val isLegacy: Boolean,
         val parameterDataList: MutableList<CommandParameterData> = ArrayList()
 ) {
 
@@ -33,5 +34,7 @@ class CommandData(
     fun getIndexOfParameter(parameterName: String): Int {
         return getPathWithCloudPrefixIfRequired().split(" ").indexOf("<$parameterName>")
     }
+
+    fun hasCloudPrefix() = this.commandType != CommandType.INGAME
 
 }

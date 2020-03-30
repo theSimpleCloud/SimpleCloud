@@ -32,7 +32,7 @@ class CommandManager() {
 
 
     val commands = ArrayList<CommandData>()
-    private val allowedTypesWithoutCommandArgument = listOf(ICommandSender::class.java)
+    private val allowedTypesWithoutCommandArgument = listOf(ICommandSender::class.java, Array<String>::class.java)
 
     fun handleCommand(readLine: String, commandSender: ICommandSender) {
         val readLine = if (readLine.trim().equals("cloud", true)) "cloud help" else readLine.trim()
@@ -82,6 +82,7 @@ class CommandManager() {
             if (parameterData.name == null) {
                 when (parameterData.type) {
                     ICommandSender::class.java -> list.add(commandSender)
+                    Array<String>::class.java -> list.add(messageArray.drop(if (matchingCommandData.hasCloudPrefix()) 2 else 1).toTypedArray())
                 }
                 continue
             }
@@ -148,8 +149,10 @@ class CommandManager() {
     fun isParamater(s: String) = s.startsWith("<") && s.endsWith(">")
 
     fun getCommandDataByMinimumArgumentLength(length: Int) = this.commands.filter { it.getPathWithCloudPrefixIfRequired().split(" ").size >= length }
+            .union(this.commands.filter { it.isLegacy })
 
     fun getCommandDataByArgumentLength(length: Int) = this.commands.filter { it.getPathWithCloudPrefixIfRequired().trim().split(" ").size == length }
+            .union(this.commands.filter { it.isLegacy })
 
     fun registerAllCommands(cloudModule: ICloudModule, vararg packages: String) {
         packages.forEach { pack ->
@@ -180,12 +183,13 @@ class CommandManager() {
                 val commandSubPath = method.getAnnotation(CommandSubPath::class.java)
                 commandSubPath ?: continue
                 val path = if (commandSubPath.path.isBlank()) classAnnotation.name else classAnnotation.name + " " + commandSubPath.path
-                val commandData = CommandData(cloudModule, path, commandSubPath.description, command, method, classAnnotation.commandType, classAnnotation.permission, classAnnotation.aliases)
+                val isLegacyCommand = method.parameters.map { it.type }.contains(Array<String>::class.java)
+                val commandData = CommandData(cloudModule, path, commandSubPath.description, command, method, classAnnotation.commandType, classAnnotation.permission, classAnnotation.aliases, isLegacyCommand)
                 for (parameter in method.parameters) {
                     val commandArgument = parameter.getAnnotation(CommandArgument::class.java)
                     if (commandArgument == null) {
                         if (!allowedTypesWithoutCommandArgument.contains(parameter.type) || !allowedTypesWithoutCommandArgument.any { it.isAssignableFrom(parameter.type) }) {
-                            throw CommandRegistrationException("Forbidden parameter type without CommandArgument annotation.")
+                            throw CommandRegistrationException("Forbidden parameter type without CommandArgument annotation: ${parameter.type.name}")
                         }
                     }
                     commandData.parameterDataList.add(CommandParameterData(parameter.type, commandArgument?.name))

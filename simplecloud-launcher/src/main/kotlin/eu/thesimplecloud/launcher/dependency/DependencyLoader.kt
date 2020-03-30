@@ -176,7 +176,8 @@ class DependencyLoader : IDependencyLoader {
             pomContent ?: continue
             val reader = MavenXpp3Reader()
             val model = reader.read(ByteArrayInputStream(pomContent.toByteArray()))
-            for (mavenSubDependency in model.dependencies.filter { it.groupId != "junit" }.filter { it.scope != "test" }.filter { !it.isOptional }.filter { it.scope != "provided" }) {
+            val subDependencies = model.dependencies.filter { it.groupId != "junit" }.filter { it.scope == null || it.scope == "compile" }.filter { !it.isOptional }
+            for (mavenSubDependency in subDependencies) {
                 if (mavenSubDependency.groupId.contains("$") || mavenSubDependency.artifactId.contains("$")) {
                     continue
                 }
@@ -200,11 +201,9 @@ class DependencyLoader : IDependencyLoader {
                     }
                 }
                 newVersion ?: continue
-                if (!mavenSubDependency.isOptional && mavenSubDependency.scope != "test") {
-                    val subDependency = Dependency(mavenSubDependency.groupId, mavenSubDependency.artifactId, newVersion)
-                    dependencyList.add(subDependency)
-                    appendSubDependenciesOfDependency(subDependency, dependencyList, useWeb)
-                }
+                val subDependency = Dependency(mavenSubDependency.groupId, mavenSubDependency.artifactId, newVersion)
+                dependencyList.add(subDependency)
+                appendSubDependenciesOfDependency(subDependency, dependencyList, useWeb)
             }
             break
         }

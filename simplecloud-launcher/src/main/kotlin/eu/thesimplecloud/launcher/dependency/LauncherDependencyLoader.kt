@@ -10,10 +10,7 @@ class LauncherDependencyLoader {
         dependencyLoader.addDependencies(
                 Dependency("org.jline", "jline", "3.14.0"),
                 Dependency("org.litote.kmongo", "kmongo", "3.11.2"),
-                Dependency("eu.thesimplecloud.clientserverapi", "clientserverapi", "2.3.5-SNAPSHOT"),
-                Dependency("org.reflections", "reflections", "0.9.10"),
-                Dependency("com.google.code.gson", "gson", "2.8.6"),
-                Dependency("commons-io", "commons-io", "2.6"),
+                Dependency("eu.thesimplecloud.clientserverapi", "clientserverapi", "2.3.6-SNAPSHOT"),
                 Dependency("org.slf4j", "slf4j-simple", "1.7.10"),
                 Dependency("com.github.ajalt", "clikt", "2.2.0"))
         dependencyLoader.installDependencies()
