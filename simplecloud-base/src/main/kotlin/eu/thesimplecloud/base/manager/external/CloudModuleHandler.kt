@@ -57,6 +57,7 @@ class CloudModuleHandler : ICloudModuleHandler {
         //unregister all listeners etc.
         CloudAPI.instance.getEventManager().unregisterAllListenersByCloudModule(cloudModule)
         Manager.instance.packetRegistry.unregisterAllPackets(cloudModule)
+        Launcher.instance.commandManager.unregisterCommands(cloudModule)
 
         ResourceFinder.removeFromClassLoader(cloudModuleData.file)
 
