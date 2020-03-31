@@ -154,13 +154,14 @@ class Wrapper : ICloudApplication {
     /**
      * Updates the memory the wrapper currently uses according to the registered service processes.
      */
-    fun updateUsedMemory() {
+    fun updateWrapperData() {
         val usedMemory = this.cloudServiceProcessManager.getAllProcesses().sumBy { it.getCloudService().getMaxMemory() }
         val thisWrapper = this.getThisWrapper()
         thisWrapper as IWritableWrapperInfo
         thisWrapper.setUsedMemory(usedMemory)
+        thisWrapper.setCurrentlyStartingServices(this.processQueue?.getStartingOrQueuedServiceAmount() ?: 0)
         if (this.communicationClient.isOpen())
-            this.communicationClient.sendUnitQuery(PacketIOUpdateWrapperInfo(thisWrapper))
+            this.communicationClient.sendUnitQuery(PacketIOUpdateWrapperInfo(thisWrapper)).awaitUninterruptibly()
     }
 
     override fun onEnable() {
@@ -173,7 +174,7 @@ class Wrapper : ICloudApplication {
 
     fun startProcessQueue() {
         check(processQueue == null) { "Cannot start process queue when it is already running" }
-        this.processQueue = CloudServiceProcessQueue(getThisWrapper().getMaxSimultaneouslyStartingServices())
+        this.processQueue = CloudServiceProcessQueue()
         this.processQueue?.startThread()
     }
 }

@@ -86,7 +86,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
             Wrapper.instance.communicationClient.sendUnitQuery(PacketIOUpdateCloudService(this.cloudService)).awaitUninterruptibly()
             CloudAPI.instance.getCloudServiceManager().removeCloudService(this.cloudService.getName())
             Wrapper.instance.communicationClient.sendUnitQuery(PacketIORemoveCloudService(this.cloudService.getName()))
-            Wrapper.instance.updateUsedMemory()
+            Wrapper.instance.updateWrapperData()
         }
 
         if (!cloudService.isStatic()) {

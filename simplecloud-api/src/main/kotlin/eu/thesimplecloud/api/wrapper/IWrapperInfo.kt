@@ -45,4 +45,9 @@ interface IWrapperInfo : IAuthenticatable, ICommandExecutable {
      */
     fun hasTemplatesReceived(): Boolean
 
+    /**
+     * Returns the amount of services this wrapper is currently starting
+     */
+    fun getCurrentlyStartingServices(): Int
+
 }

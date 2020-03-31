@@ -22,4 +22,9 @@ interface IWritableWrapperInfo : IWrapperInfo {
      */
     fun setTemplatesReceived(boolean: Boolean)
 
+    /**
+     * Sets the amount of services this wrapper is currently starting
+     */
+    fun setCurrentlyStartingServices(startingServices: Int)
+
 }

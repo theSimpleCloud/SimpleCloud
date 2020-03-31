@@ -31,7 +31,9 @@ interface IWrapperManager {
      * Returns the [IWrapperInfo] that has enough memory, is authenticated and has received all templates.
      */
     fun getWrapperByUnusedMemory(memory: Int): IWrapperInfo? {
-        val wrappers = getAllWrappers().filter { it.isAuthenticated() }.filter { it.hasTemplatesReceived() }.filter { it.hasEnoughMemory(memory) }
+        val wrappers = getAllWrappers()
+                .filter { it.isAuthenticated() && it.hasTemplatesReceived() && it.hasEnoughMemory(memory) }
+                .filter { it.getCurrentlyStartingServices() != it.getMaxSimultaneouslyStartingServices() }
         return wrappers.minBy { it.getUsedMemory().toDouble() / it.getMaxMemory() }
     }
 

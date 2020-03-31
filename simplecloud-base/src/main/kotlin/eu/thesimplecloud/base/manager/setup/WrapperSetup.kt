@@ -34,7 +34,7 @@ class WrapperSetup : ISetup {
             Launcher.instance.consoleSender.sendMessage("manager.setup.wrapper.question.host.success", "Host set.")
             return true
         }
-        if (IpValidator().validate(host)) {
+        if (!IpValidator().validate(host)) {
             Launcher.instance.consoleSender.sendMessage("manager.setup.wrapper.question.host.invalid", "The specified host is invalid.")
             return false
         }
