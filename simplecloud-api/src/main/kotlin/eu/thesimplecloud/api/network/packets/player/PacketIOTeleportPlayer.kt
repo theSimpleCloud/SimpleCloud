@@ -1,12 +1,11 @@
 package eu.thesimplecloud.api.network.packets.player
 
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.location.SimpleLocation
+import eu.thesimplecloud.api.player.ICloudPlayer
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
-import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.location.ServiceLocation
-import eu.thesimplecloud.api.location.SimpleLocation
-import eu.thesimplecloud.api.player.ICloudPlayer
 import java.util.*
 import kotlin.NoSuchElementException
 

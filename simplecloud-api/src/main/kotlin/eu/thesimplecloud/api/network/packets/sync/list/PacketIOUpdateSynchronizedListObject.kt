@@ -6,7 +6,6 @@ import eu.thesimplecloud.api.sync.list.ISynchronizedObjectList
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
-import java.lang.Exception
 
 class PacketIOUpdateSynchronizedListObject() : JsonPacket() {
 

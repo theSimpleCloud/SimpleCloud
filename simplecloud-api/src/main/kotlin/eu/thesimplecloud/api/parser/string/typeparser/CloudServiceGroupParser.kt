@@ -1,8 +1,8 @@
 package eu.thesimplecloud.api.parser.string.typeparser
 
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.api.parser.string.IStringTypeParser
+import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 
 class CloudServiceGroupParser : IStringTypeParser<ICloudServiceGroup> {
 

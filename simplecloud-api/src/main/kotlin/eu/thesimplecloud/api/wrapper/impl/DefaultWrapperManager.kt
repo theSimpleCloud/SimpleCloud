@@ -1,35 +1,18 @@
 package eu.thesimplecloud.api.wrapper.impl
 
-import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.event.wrapper.WrapperUpdatedEvent
+import eu.thesimplecloud.api.sync.list.AbstractSynchronizedObjectList
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.api.wrapper.IWrapperManager
-import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
-import java.util.concurrent.CopyOnWriteArrayList
 
-open class DefaultWrapperManager : IWrapperManager {
+open class DefaultWrapperManager : AbstractSynchronizedObjectList<IWrapperInfo>(), IWrapperManager {
 
-    private val wrappers = CopyOnWriteArrayList<IWrapperInfo>()
-
-    override fun updateWrapper(wrapper: IWrapperInfo) {
-        val cachedWrapper = getWrapperByHost(wrapper.getHost())
-        if (cachedWrapper == null) {
-            this.wrappers.add(wrapper)
-            return
-        }
-        cachedWrapper as IWritableWrapperInfo
-        cachedWrapper.setMaxMemory(wrapper.getMaxMemory())
-        cachedWrapper.setMaxSimultaneouslyStartingServices(wrapper.getMaxSimultaneouslyStartingServices())
-        cachedWrapper.setUsedMemory(wrapper.getUsedMemory())
-        cachedWrapper.setAuthenticated(wrapper.isAuthenticated())
-        cachedWrapper.setTemplatesReceived(wrapper.hasTemplatesReceived())
-        cachedWrapper.setCurrentlyStartingServices(wrapper.getCurrentlyStartingServices())
-        CloudAPI.instance.getEventManager().call(WrapperUpdatedEvent(cachedWrapper))
+    override fun getIdentificationName(): String {
+        return "simplecloud-wrappers"
     }
 
-    override fun removeWrapper(wrapper: IWrapperInfo) {
-        this.wrappers.remove(wrapper)
+    override fun getCachedObjectByUpdateValue(value: IWrapperInfo): IWrapperInfo? {
+        return getWrapperByHost(value.getHost())
     }
 
-    override fun getAllWrappers(): Collection<IWrapperInfo> = this.wrappers
+
 }

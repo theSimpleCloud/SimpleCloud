@@ -1,11 +1,10 @@
 package eu.thesimplecloud.api.parser.string
 
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.api.parser.ITypeFromClassParser
 import eu.thesimplecloud.api.parser.string.typeparser.*
-import eu.thesimplecloud.api.utils.getEnumValues
 import eu.thesimplecloud.api.utils.enumValueOf
-import java.lang.IllegalArgumentException
+import eu.thesimplecloud.api.utils.getEnumValues
+import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import java.util.*
 
 class StringParser : ITypeFromClassParser<String>{

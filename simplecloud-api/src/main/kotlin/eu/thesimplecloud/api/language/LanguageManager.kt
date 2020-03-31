@@ -1,7 +1,7 @@
 package eu.thesimplecloud.api.language
 
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
+import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import java.io.File
 
 class LanguageManager(var language: String) {

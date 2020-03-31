@@ -11,9 +11,7 @@ import eu.thesimplecloud.clientserverapi.client.INettyClient
 import eu.thesimplecloud.clientserverapi.lib.packet.IPacket
 import eu.thesimplecloud.clientserverapi.server.INettyServer
 import java.lang.reflect.Modifier
-import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
-import kotlin.collections.ArrayList
 
 abstract class AbstractSynchronizedObjectList<T : ISynchronizedListObject> : ISynchronizedObjectList<T> {
 

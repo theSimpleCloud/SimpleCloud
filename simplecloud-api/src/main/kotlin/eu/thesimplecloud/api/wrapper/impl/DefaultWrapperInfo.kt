@@ -1,8 +1,8 @@
 package eu.thesimplecloud.api.wrapper.impl
 
+import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
 import eu.thesimplecloud.clientserverapi.lib.json.GsonExclude
 import eu.thesimplecloud.clientserverapi.lib.json.JsonData
-import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
 
 data class DefaultWrapperInfo(
         private val name: String,

@@ -1,17 +1,14 @@
 package eu.thesimplecloud.base.manager.impl
 
-import eu.thesimplecloud.api.extension.sendPacketToAllAuthenticatedClients
-import eu.thesimplecloud.base.manager.startup.Manager
-import eu.thesimplecloud.api.network.packets.wrapper.PacketIOUpdateWrapperInfo
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.api.wrapper.impl.DefaultWrapperManager
+import eu.thesimplecloud.base.manager.startup.Manager
 
 class WrapperManagerImpl : DefaultWrapperManager() {
 
-    override fun updateWrapper(wrapper: IWrapperInfo) {
-        super.updateWrapper(wrapper)
-        Manager.instance.wrapperFileHandler.save(wrapper)
-        Manager.instance.communicationServer.getClientManager().sendPacketToAllAuthenticatedClients(PacketIOUpdateWrapperInfo(wrapper))
+    override fun update(value: IWrapperInfo, fromPacket: Boolean) {
+        super.update(value, fromPacket)
+        Manager.instance.wrapperFileHandler.save(value)
     }
 
 }

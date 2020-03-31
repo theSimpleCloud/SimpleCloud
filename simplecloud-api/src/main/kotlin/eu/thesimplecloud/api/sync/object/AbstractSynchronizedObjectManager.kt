@@ -3,7 +3,6 @@ package eu.thesimplecloud.api.sync.`object`
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.event.sync.`object`.SynchronizedObjectUpdatedEvent
 import eu.thesimplecloud.api.utils.getAllFieldsFromClassAndSubClasses
-import java.lang.IllegalArgumentException
 import java.lang.reflect.Modifier
 import java.util.concurrent.ConcurrentHashMap
 

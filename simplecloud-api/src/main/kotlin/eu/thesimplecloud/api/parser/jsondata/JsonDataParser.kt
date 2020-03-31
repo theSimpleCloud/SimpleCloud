@@ -1,7 +1,7 @@
 package eu.thesimplecloud.api.parser.jsondata
 
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.api.parser.ITypeFromClassParser
+import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 
 class JsonDataParser : ITypeFromClassParser<JsonData> {
 

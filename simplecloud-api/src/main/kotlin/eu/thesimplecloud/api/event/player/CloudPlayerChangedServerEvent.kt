@@ -1,12 +1,8 @@
 package eu.thesimplecloud.api.event.player
 
-import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.eventapi.IEvent
-import eu.thesimplecloud.api.eventapi.ISynchronizedEvent
 import eu.thesimplecloud.api.player.ICloudPlayer
 import eu.thesimplecloud.api.service.ICloudService
-import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
-import java.util.*
 
 /**
  * This event is called when a player changed his server. The event will only be called on services that receive updates of the player.

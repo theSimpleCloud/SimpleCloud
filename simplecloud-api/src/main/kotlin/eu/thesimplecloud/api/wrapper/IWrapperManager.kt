@@ -1,37 +1,24 @@
 package eu.thesimplecloud.api.wrapper
 
-interface IWrapperManager {
+import eu.thesimplecloud.api.sync.list.ISynchronizedObjectList
 
-    /**
-     * Updates or adds a [IWrapperInfo]
-     */
-    fun updateWrapper(wrapper: IWrapperInfo)
-
-    /**
-     * Removes the specified [IWrapperInfo]
-     */
-    fun removeWrapper(wrapper: IWrapperInfo)
-
-    /**
-     * Returns all registered wrappers
-     */
-    fun getAllWrappers(): Collection<IWrapperInfo>
+interface IWrapperManager : ISynchronizedObjectList<IWrapperInfo> {
 
     /**
      * Returns the [IWrapperInfo] found by the specified name
      */
-    fun getWrapperByName(name: String): IWrapperInfo? = getAllWrappers().firstOrNull { it.getName().equals(name, true) }
+    fun getWrapperByName(name: String): IWrapperInfo? = getAllCachedObjects().firstOrNull { it.getName().equals(name, true) }
 
     /**
      * Returns the [IWrapperInfo] found by the specified host
      */
-    fun getWrapperByHost(host: String): IWrapperInfo? = getAllWrappers().firstOrNull { it.getHost().equals(host, true) }
+    fun getWrapperByHost(host: String): IWrapperInfo? = getAllCachedObjects().firstOrNull { it.getHost().equals(host, true) }
 
     /**
      * Returns the [IWrapperInfo] that has enough memory, is authenticated and has received all templates.
      */
     fun getWrapperByUnusedMemory(memory: Int): IWrapperInfo? {
-        val wrappers = getAllWrappers()
+        val wrappers = getAllCachedObjects()
                 .filter { it.isAuthenticated() && it.hasTemplatesReceived() && it.hasEnoughMemory(memory) }
                 .filter { it.getCurrentlyStartingServices() != it.getMaxSimultaneouslyStartingServices() }
         return wrappers.minBy { it.getUsedMemory().toDouble() / it.getMaxMemory() }

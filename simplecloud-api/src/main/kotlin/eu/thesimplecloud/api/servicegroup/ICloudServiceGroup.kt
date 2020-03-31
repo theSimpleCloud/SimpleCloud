@@ -1,9 +1,9 @@
 package eu.thesimplecloud.api.servicegroup
-import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceType
 import eu.thesimplecloud.api.service.ServiceVersion
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
 interface ICloudServiceGroup {
 

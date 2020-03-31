@@ -1,10 +1,9 @@
 package eu.thesimplecloud.api.utils
 
 import java.io.*
-import java.util.ArrayList
-import java.io.BufferedReader
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
+import java.util.*
 import kotlin.streams.toList
 
 

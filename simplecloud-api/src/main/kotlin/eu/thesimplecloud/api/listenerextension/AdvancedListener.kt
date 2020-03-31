@@ -1,6 +1,5 @@
 package eu.thesimplecloud.api.listenerextension
 
-import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.eventapi.BasicEventManager
 import eu.thesimplecloud.api.eventapi.CloudEventHandler
 import eu.thesimplecloud.api.eventapi.IEvent

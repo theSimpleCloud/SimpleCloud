@@ -1,13 +1,12 @@
 package eu.thesimplecloud.api.service.impl
 
 import eu.thesimplecloud.api.property.Property
+import eu.thesimplecloud.api.service.ICloudService
+import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.clientserverapi.lib.json.GsonExclude
 import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
-import eu.thesimplecloud.api.service.ICloudService
-import eu.thesimplecloud.api.service.ServiceState
-import jdk.nashorn.internal.runtime.PropertyMap
 import java.util.*
 import kotlin.collections.HashMap
 
