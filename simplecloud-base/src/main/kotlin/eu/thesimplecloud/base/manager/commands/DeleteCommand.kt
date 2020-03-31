@@ -1,16 +1,16 @@
 package eu.thesimplecloud.base.manager.commands
 
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.extension.sendPacketToAllAuthenticatedClients
+import eu.thesimplecloud.api.network.packets.template.PacketIODeleteTemplate
 import eu.thesimplecloud.base.manager.startup.Manager
+import eu.thesimplecloud.launcher.console.command.CommandType
 import eu.thesimplecloud.launcher.console.command.ICommandHandler
 import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
-import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.extension.sendPacketToAllAuthenticatedClients
-import eu.thesimplecloud.api.network.packets.template.PacketIODeleteTemplate
-import eu.thesimplecloud.launcher.console.command.CommandType
 import eu.thesimplecloud.launcher.extension.sendMessage
+import eu.thesimplecloud.launcher.startup.Launcher
 
 @Command("delete", CommandType.CONSOLE)
 class DeleteCommand : ICommandHandler {
@@ -67,6 +67,6 @@ class DeleteCommand : ICommandHandler {
         Launcher.instance.consoleSender.sendMessage("manager.command.delete.group.success", "Group %NAME%", name, " was deleted.")
     }
     */
-     
+
 
 }
