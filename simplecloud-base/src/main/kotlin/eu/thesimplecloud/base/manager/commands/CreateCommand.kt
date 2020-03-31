@@ -1,21 +1,18 @@
 package eu.thesimplecloud.base.manager.commands
 
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.template.impl.DefaultTemplate
 import eu.thesimplecloud.base.manager.setup.WrapperSetup
 import eu.thesimplecloud.base.manager.setup.groups.LobbyGroupSetup
 import eu.thesimplecloud.base.manager.setup.groups.ProxyGroupSetup
 import eu.thesimplecloud.base.manager.setup.groups.ServerGroupSetup
-import eu.thesimplecloud.base.manager.startup.Manager
+import eu.thesimplecloud.launcher.console.command.CommandType
 import eu.thesimplecloud.launcher.console.command.ICommandHandler
 import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
-import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.extension.sendPacketToAllAuthenticatedClients
-import eu.thesimplecloud.api.network.packets.template.PacketIOUpdateTemplate
-import eu.thesimplecloud.api.template.impl.DefaultTemplate
-import eu.thesimplecloud.launcher.console.command.CommandType
 import eu.thesimplecloud.launcher.extension.sendMessage
+import eu.thesimplecloud.launcher.startup.Launcher
 
 @Command("create", CommandType.CONSOLE)
 class CreateCommand : ICommandHandler {

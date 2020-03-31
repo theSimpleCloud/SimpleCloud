@@ -3,7 +3,6 @@ package eu.thesimplecloud.launcher.updater
 import eu.thesimplecloud.api.depedency.Dependency
 import eu.thesimplecloud.launcher.dependency.DependencyLoader
 import java.io.File
-import java.lang.RuntimeException
 
 abstract class AbstractUpdater(
         private val groupId: String,

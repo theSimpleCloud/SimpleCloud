@@ -4,7 +4,6 @@ import eu.thesimplecloud.api.event.player.CloudPlayerUpdatedEvent
 import eu.thesimplecloud.api.eventapi.CloudEventHandler
 import eu.thesimplecloud.api.eventapi.IListener
 import eu.thesimplecloud.api.property.Property
-import eu.thesimplecloud.module.permission.PermissionPool
 import eu.thesimplecloud.module.permission.player.PermissionPlayer
 import eu.thesimplecloud.module.permission.player.getPermissionPlayer
 

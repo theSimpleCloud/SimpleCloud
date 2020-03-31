@@ -1,26 +1,23 @@
 package eu.thesimplecloud.launcher.console.command
 
-import com.google.gson.GsonBuilder
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.command.ICommandSender
-import eu.thesimplecloud.launcher.console.command.annotations.Command
-import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
-import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
-import eu.thesimplecloud.launcher.exception.CommandRegistrationException
-import eu.thesimplecloud.launcher.invoker.MethodInvokeHelper
 import eu.thesimplecloud.api.external.ICloudModule
 import eu.thesimplecloud.api.parser.string.StringParser
 import eu.thesimplecloud.api.player.ICloudPlayer
 import eu.thesimplecloud.api.utils.getEnumValues
 import eu.thesimplecloud.launcher.console.ConsoleSender
+import eu.thesimplecloud.launcher.console.command.annotations.Command
+import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
+import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 import eu.thesimplecloud.launcher.event.command.CommandExecuteEvent
 import eu.thesimplecloud.launcher.event.command.CommandRegisteredEvent
 import eu.thesimplecloud.launcher.event.command.CommandUnregisteredEvent
+import eu.thesimplecloud.launcher.exception.CommandRegistrationException
 import eu.thesimplecloud.launcher.extension.sendMessage
+import eu.thesimplecloud.launcher.invoker.MethodInvokeHelper
+import eu.thesimplecloud.launcher.startup.Launcher
 import org.reflections.Reflections
-import java.lang.NullPointerException
-import kotlin.collections.ArrayList
 
 
 /**

@@ -1,5 +1,12 @@
 package eu.thesimplecloud.base.wrapper.startup
 
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.client.CloudClientType
+import eu.thesimplecloud.api.directorypaths.DirectoryPaths
+import eu.thesimplecloud.api.network.packets.wrapper.PacketIOUpdateWrapperInfo
+import eu.thesimplecloud.api.wrapper.IWrapperInfo
+import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
+import eu.thesimplecloud.base.manager.external.CloudModuleHandler
 import eu.thesimplecloud.base.wrapper.impl.CloudAPIImpl
 import eu.thesimplecloud.base.wrapper.logger.LoggerMessageListenerImpl
 import eu.thesimplecloud.base.wrapper.network.packets.template.PacketOutGetTemplates
@@ -7,24 +14,16 @@ import eu.thesimplecloud.base.wrapper.process.CloudServiceProcessManager
 import eu.thesimplecloud.base.wrapper.process.filehandler.ServiceVersionLoader
 import eu.thesimplecloud.base.wrapper.process.queue.CloudServiceProcessQueue
 import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.ServiceConfiguratorManager
+import eu.thesimplecloud.client.packets.PacketOutCloudClientLogin
 import eu.thesimplecloud.clientserverapi.client.INettyClient
 import eu.thesimplecloud.clientserverapi.client.NettyClient
 import eu.thesimplecloud.launcher.application.ICloudApplication
-import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.api.client.CloudClientType
-import eu.thesimplecloud.client.packets.PacketOutCloudClientLogin
-import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.directorypaths.DirectoryPaths
-import eu.thesimplecloud.api.network.packets.wrapper.PacketIOUpdateWrapperInfo
-import eu.thesimplecloud.api.wrapper.IWrapperInfo
-import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
-import eu.thesimplecloud.base.manager.external.CloudModuleHandler
 import eu.thesimplecloud.launcher.config.LauncherConfig
 import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.external.module.CloudModuleFileContent
+import eu.thesimplecloud.launcher.startup.Launcher
 import org.apache.commons.io.FileUtils
 import java.io.File
-import java.lang.IllegalStateException
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 

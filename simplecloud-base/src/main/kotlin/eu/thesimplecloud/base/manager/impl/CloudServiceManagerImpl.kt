@@ -1,17 +1,15 @@
 package eu.thesimplecloud.base.manager.impl
 
 import eu.thesimplecloud.api.extension.sendPacketToAllAuthenticatedClients
-import eu.thesimplecloud.api.extension.sendPacketToAllAuthenticatedNonWrapperClients
 import eu.thesimplecloud.api.network.packets.service.PacketIORemoveCloudService
-import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.api.network.packets.service.PacketIOStopCloudService
 import eu.thesimplecloud.api.network.packets.service.PacketIOUpdateCloudService
 import eu.thesimplecloud.api.network.packets.service.PacketIOWrapperStartService
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.service.impl.AbstractCloudServiceManager
+import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
-import java.lang.IllegalStateException
 
 class CloudServiceManagerImpl : AbstractCloudServiceManager() {
 

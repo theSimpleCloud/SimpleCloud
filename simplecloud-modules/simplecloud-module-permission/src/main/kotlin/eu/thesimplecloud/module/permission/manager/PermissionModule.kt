@@ -15,7 +15,6 @@ import eu.thesimplecloud.module.permission.permission.Permission
 import eu.thesimplecloud.module.permission.player.IPermissionPlayer
 import eu.thesimplecloud.module.permission.player.PermissionPlayer
 import java.io.File
-import java.lang.IllegalStateException
 
 class PermissionModule : ICloudModule {
     //TODO: mehrere gruppen mit ablaufzeit

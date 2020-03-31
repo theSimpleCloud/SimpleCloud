@@ -1,7 +1,5 @@
 package eu.thesimplecloud.launcher;
 
-import eu.thesimplecloud.api.external.ResourceFinder;
-
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;

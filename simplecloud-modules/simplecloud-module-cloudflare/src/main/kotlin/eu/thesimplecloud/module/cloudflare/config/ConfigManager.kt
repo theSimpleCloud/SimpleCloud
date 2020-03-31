@@ -1,9 +1,7 @@
 package eu.thesimplecloud.module.cloudflare.config
 
 import eu.thesimplecloud.clientserverapi.lib.json.JsonData
-import eu.thesimplecloud.module.cloudflare.CloudFlareModule
 import java.io.File
-import kotlin.contracts.contract
 
 /**
  * Created by IntelliJ IDEA.

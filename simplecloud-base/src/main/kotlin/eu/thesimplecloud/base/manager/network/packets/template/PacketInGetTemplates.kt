@@ -1,16 +1,15 @@
 package eu.thesimplecloud.base.manager.network.packets.template
 
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.directorypaths.DirectoryPaths
+import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.filetransfer.directory.IDirectorySync
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
-import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.directorypaths.DirectoryPaths
-import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
 import eu.thesimplecloud.launcher.extension.sendMessage
+import eu.thesimplecloud.launcher.startup.Launcher
 import java.io.File
-import java.lang.IllegalStateException
 
 class PacketInGetTemplates() : JsonPacket() {
 

@@ -3,10 +3,10 @@ package eu.thesimplecloud.launcher.logging
 import eu.thesimplecloud.launcher.screens.IScreenManager
 import eu.thesimplecloud.launcher.startup.Launcher
 import org.jline.reader.LineReader
-import org.jline.reader.LineReaderBuilder
-import org.jline.terminal.TerminalBuilder
 import org.jline.utils.InfoCmp
 import java.io.File
+import java.io.PrintWriter
+import java.io.StringWriter
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -16,8 +16,6 @@ import java.util.logging.FileHandler
 import java.util.logging.Level
 import java.util.logging.Logger
 import java.util.logging.SimpleFormatter
-import java.io.PrintWriter
-import java.io.StringWriter
 import kotlin.collections.ArrayList
 
 

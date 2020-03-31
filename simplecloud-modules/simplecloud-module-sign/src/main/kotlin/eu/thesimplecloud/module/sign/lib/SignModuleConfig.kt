@@ -1,6 +1,5 @@
 package eu.thesimplecloud.module.sign.lib
 
-import eu.thesimplecloud.api.location.ServiceLocation
 import eu.thesimplecloud.api.location.TemplateLocation
 import eu.thesimplecloud.api.sync.`object`.ISynchronizedObject
 

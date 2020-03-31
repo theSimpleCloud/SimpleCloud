@@ -1,10 +1,10 @@
 package eu.thesimplecloud.base.manager.filehandler
 
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.api.config.IFileHandler
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.api.wrapper.impl.DefaultWrapperInfo
+import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import java.io.File
 
 class WrapperFileHandler : IFileHandler<IWrapperInfo> {

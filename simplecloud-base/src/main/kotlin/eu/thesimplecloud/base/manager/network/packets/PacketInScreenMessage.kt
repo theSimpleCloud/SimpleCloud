@@ -1,12 +1,12 @@
 package eu.thesimplecloud.base.manager.network.packets
 
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.client.CloudClientType
+import eu.thesimplecloud.api.screen.ICommandExecutable
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.client.CloudClientType
-import eu.thesimplecloud.api.screen.ICommandExecutable
 
 class PacketInScreenMessage : JsonPacket() {
 

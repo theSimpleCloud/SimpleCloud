@@ -1,7 +1,6 @@
 package eu.thesimplecloud.module.cloudflare
 
 import eu.thesimplecloud.api.external.ICloudModule
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.module.cloudflare.config.ConfigManager
 
 /**

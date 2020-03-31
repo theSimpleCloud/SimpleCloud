@@ -2,7 +2,6 @@ package eu.thesimplecloud.base.manager.commands
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.command.ICommandSender
-import eu.thesimplecloud.api.extension.getAllAuthenticatedClients
 import eu.thesimplecloud.api.extension.sendPacketToAllAuthenticatedWrapperClients
 import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
 import eu.thesimplecloud.base.manager.external.CloudModuleHandler

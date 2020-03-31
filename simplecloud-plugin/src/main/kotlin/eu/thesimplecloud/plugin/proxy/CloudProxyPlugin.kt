@@ -12,7 +12,6 @@ import eu.thesimplecloud.plugin.startup.CloudPlugin
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.plugin.Plugin
 import java.net.InetSocketAddress
-import java.net.URLClassLoader
 
 class CloudProxyPlugin : Plugin(), ICloudProxyPlugin {
 

@@ -7,7 +7,6 @@ import eu.thesimplecloud.api.location.SimpleLocation
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
-import java.lang.IllegalArgumentException
 import java.util.*
 
 class PacketInTeleportOtherService : JsonPacket() {

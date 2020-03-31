@@ -1,7 +1,6 @@
 package eu.thesimplecloud.module.permission.service.bungee
 
 import eu.thesimplecloud.module.permission.PermissionPool
-import eu.thesimplecloud.plugin.extension.getCloudPlayer
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import net.md_5.bungee.api.event.PermissionCheckEvent
 import net.md_5.bungee.api.plugin.Listener

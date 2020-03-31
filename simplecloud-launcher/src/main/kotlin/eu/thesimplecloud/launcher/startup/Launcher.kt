@@ -1,6 +1,5 @@
 package eu.thesimplecloud.launcher.startup
 
-import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.external.ICloudModule
 import eu.thesimplecloud.api.language.LanguageManager

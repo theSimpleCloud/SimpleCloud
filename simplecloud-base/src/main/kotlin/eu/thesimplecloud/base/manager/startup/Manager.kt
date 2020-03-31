@@ -1,15 +1,23 @@
 package eu.thesimplecloud.base.manager.startup
 
 import com.mongodb.MongoClient
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.directorypaths.DirectoryPaths
+import eu.thesimplecloud.api.screen.ICommandExecutable
 import eu.thesimplecloud.base.MongoBuilder
 import eu.thesimplecloud.base.MongoController
 import eu.thesimplecloud.base.manager.config.MongoConfigLoader
-import eu.thesimplecloud.base.manager.filehandler.CloudServiceGroupFileHandler
 import eu.thesimplecloud.base.manager.config.TemplatesConfigLoader
+import eu.thesimplecloud.base.manager.external.CloudModuleHandler
+import eu.thesimplecloud.base.manager.external.ICloudModuleHandler
+import eu.thesimplecloud.base.manager.filehandler.CloudServiceGroupFileHandler
 import eu.thesimplecloud.base.manager.filehandler.WrapperFileHandler
 import eu.thesimplecloud.base.manager.impl.CloudAPIImpl
+import eu.thesimplecloud.base.manager.ingamecommands.IngameCommandUpdater
 import eu.thesimplecloud.base.manager.listener.CloudListener
 import eu.thesimplecloud.base.manager.mongo.MongoServerInformation
+import eu.thesimplecloud.base.manager.packet.IPacketRegistry
+import eu.thesimplecloud.base.manager.packet.PacketRegistry
 import eu.thesimplecloud.base.manager.player.IOfflineCloudPlayerHandler
 import eu.thesimplecloud.base.manager.player.OfflineCloudPlayerHandler
 import eu.thesimplecloud.base.manager.service.ServiceHandler
@@ -20,21 +28,11 @@ import eu.thesimplecloud.base.manager.startup.server.TemplateConnectionHandlerIm
 import eu.thesimplecloud.clientserverapi.server.INettyServer
 import eu.thesimplecloud.clientserverapi.server.NettyServer
 import eu.thesimplecloud.launcher.application.ICloudApplication
-import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.directorypaths.DirectoryPaths
-import eu.thesimplecloud.api.screen.ICommandExecutable
-import eu.thesimplecloud.base.manager.external.CloudModuleHandler
-import eu.thesimplecloud.base.manager.external.ICloudModuleHandler
-import eu.thesimplecloud.base.manager.ingamecommands.IngameCommandUpdater
-import eu.thesimplecloud.base.manager.packet.IPacketRegistry
-import eu.thesimplecloud.base.manager.packet.PacketRegistry
-import eu.thesimplecloud.clientserverapi.lib.debug.DebugMessage
 import eu.thesimplecloud.launcher.extension.sendMessage
+import eu.thesimplecloud.launcher.startup.Launcher
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
-import java.net.URLClassLoader
 import kotlin.concurrent.thread
 
 class Manager : ICloudApplication {

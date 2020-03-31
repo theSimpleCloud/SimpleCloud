@@ -2,7 +2,6 @@ package eu.thesimplecloud.module.permission.entity
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import eu.thesimplecloud.module.permission.permission.Permission
-import java.lang.IllegalStateException
 
 open class PermissionEntity : IPermissionEntity {
 

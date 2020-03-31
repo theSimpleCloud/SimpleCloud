@@ -1,7 +1,5 @@
 package eu.thesimplecloud.base.manager.service
 
-import eu.thesimplecloud.base.manager.startup.Manager
-import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.network.packets.service.PacketIOUpdateCloudService
 import eu.thesimplecloud.api.network.packets.service.PacketIOWrapperStartService
@@ -10,7 +8,9 @@ import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.service.impl.DefaultCloudService
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
+import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.launcher.extension.sendMessage
+import eu.thesimplecloud.launcher.startup.Launcher
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList

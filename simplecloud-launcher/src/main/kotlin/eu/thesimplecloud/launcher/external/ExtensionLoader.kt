@@ -2,9 +2,6 @@ package eu.thesimplecloud.launcher.external
 
 import eu.thesimplecloud.launcher.startup.Launcher
 import java.io.File
-import java.lang.reflect.InvocationTargetException
-import java.net.MalformedURLException
-import java.net.URL
 import java.net.URLClassLoader
 
 class ExtensionLoader<C> {

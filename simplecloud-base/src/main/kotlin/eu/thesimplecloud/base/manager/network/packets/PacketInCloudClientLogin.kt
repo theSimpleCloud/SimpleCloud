@@ -1,19 +1,18 @@
 package eu.thesimplecloud.base.manager.network.packets
 
-import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
-import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
-import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
-import eu.thesimplecloud.clientserverapi.lib.promise.combineAllPromises
-import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnectedClient
-import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnectedClientValue
-import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.client.CloudClientType
 import eu.thesimplecloud.api.network.packets.service.PacketIOUpdateCloudService
 import eu.thesimplecloud.api.network.packets.servicegroup.PacketIOUpdateCloudServiceGroup
 import eu.thesimplecloud.api.network.packets.template.PacketIOUpdateTemplate
 import eu.thesimplecloud.api.network.packets.wrapper.PacketIOUpdateWrapperInfo
+import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
+import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
+import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnectedClient
+import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnectedClientValue
 import eu.thesimplecloud.launcher.extension.sendMessage
+import eu.thesimplecloud.launcher.startup.Launcher
 
 class PacketInCloudClientLogin() : JsonPacket() {
 

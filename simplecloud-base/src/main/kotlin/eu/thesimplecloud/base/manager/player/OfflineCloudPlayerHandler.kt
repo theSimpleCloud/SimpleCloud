@@ -1,17 +1,19 @@
 package eu.thesimplecloud.base.manager.player
 
 import com.mongodb.client.model.Filters
-import eu.thesimplecloud.base.manager.mongo.MongoConnectionInformation
-import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.api.player.IOfflineCloudPlayer
 import eu.thesimplecloud.api.player.OfflineCloudPlayer
 import eu.thesimplecloud.api.property.Property
+import eu.thesimplecloud.base.manager.mongo.MongoConnectionInformation
 import eu.thesimplecloud.base.manager.player.exception.OfflinePlayerLoadException
+import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.litote.kmongo.createIndex
+import org.litote.kmongo.findOne
+import org.litote.kmongo.getCollection
 import java.util.*
-import org.litote.kmongo.*
 import kotlin.collections.HashMap
 
 class OfflineCloudPlayerHandler(mongoConnectionInformation: MongoConnectionInformation) : IOfflineCloudPlayerHandler {

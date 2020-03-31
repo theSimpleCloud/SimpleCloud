@@ -1,6 +1,5 @@
 package eu.thesimplecloud.base.wrapper.impl
 
-import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.api.location.ServiceLocation
 import eu.thesimplecloud.api.location.SimpleLocation
 import eu.thesimplecloud.api.player.AbstractCloudPlayerManager
@@ -8,6 +7,7 @@ import eu.thesimplecloud.api.player.ICloudPlayer
 import eu.thesimplecloud.api.player.IOfflineCloudPlayer
 import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.api.service.ICloudService
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import java.util.*
 
 class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {

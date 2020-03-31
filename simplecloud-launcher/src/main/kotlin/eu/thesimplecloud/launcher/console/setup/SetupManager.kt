@@ -1,15 +1,14 @@
 package eu.thesimplecloud.launcher.console.setup
 
+import eu.thesimplecloud.api.parser.string.StringParser
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupCancelled
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
-import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.api.parser.string.StringParser
 import eu.thesimplecloud.launcher.extension.sendMessage
+import eu.thesimplecloud.launcher.startup.Launcher
 import java.lang.reflect.Method
 import java.lang.reflect.Parameter
-import kotlin.collections.ArrayList
 
 class SetupManager(val launcher: Launcher) {
 

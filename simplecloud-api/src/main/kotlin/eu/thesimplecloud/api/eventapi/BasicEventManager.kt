@@ -4,11 +4,6 @@ import eu.thesimplecloud.api.external.ICloudModule
 import java.lang.reflect.Method
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.List
-import kotlin.collections.MutableList
-import kotlin.collections.filter
-import kotlin.collections.forEach
-import kotlin.collections.getOrPut
 
 open class BasicEventManager : IEventManager {
 

@@ -1,8 +1,5 @@
 package eu.thesimplecloud.base.manager.impl
 
-import eu.thesimplecloud.base.manager.startup.Manager
-import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
-import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.extension.sendPacketToAllAuthenticatedClients
 import eu.thesimplecloud.api.network.packets.servicegroup.PacketIORemoveCloudServiceGroup
@@ -10,8 +7,9 @@ import eu.thesimplecloud.api.network.packets.servicegroup.PacketIOUpdateCloudSer
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.api.servicegroup.impl.AbstractCloudServiceGroupManager
-import java.lang.IllegalArgumentException
-import java.lang.IllegalStateException
+import eu.thesimplecloud.base.manager.startup.Manager
+import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
 class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
 

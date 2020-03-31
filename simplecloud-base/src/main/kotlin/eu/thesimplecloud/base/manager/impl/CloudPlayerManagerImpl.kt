@@ -1,11 +1,6 @@
 package eu.thesimplecloud.base.manager.impl
 
 import com.google.common.collect.Maps
-import eu.thesimplecloud.base.manager.startup.Manager
-import eu.thesimplecloud.clientserverapi.lib.packet.packetsender.sendQuery
-import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
-import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
-import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnectedClient
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.exception.NoSuchPlayerException
 import eu.thesimplecloud.api.exception.NoSuchServiceException
@@ -20,7 +15,12 @@ import eu.thesimplecloud.api.player.OfflineCloudPlayer
 import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceType
+import eu.thesimplecloud.base.manager.startup.Manager
+import eu.thesimplecloud.clientserverapi.lib.packet.packetsender.sendQuery
+import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.flatten
+import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnectedClient
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList

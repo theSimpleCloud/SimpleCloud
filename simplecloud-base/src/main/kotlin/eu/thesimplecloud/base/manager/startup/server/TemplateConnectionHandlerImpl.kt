@@ -1,10 +1,10 @@
 package eu.thesimplecloud.base.manager.startup.server
 
+import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.handler.IConnectionHandler
-import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.launcher.extension.sendMessage
+import eu.thesimplecloud.launcher.startup.Launcher
 
 class TemplateConnectionHandlerImpl : IConnectionHandler {
 

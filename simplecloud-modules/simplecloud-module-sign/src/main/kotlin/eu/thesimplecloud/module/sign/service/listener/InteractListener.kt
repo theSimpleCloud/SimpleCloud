@@ -1,10 +1,8 @@
 package eu.thesimplecloud.module.sign.service.listener
 
 import eu.thesimplecloud.api.service.ServiceState
-import eu.thesimplecloud.module.sign.lib.SignModuleConfig
 import eu.thesimplecloud.module.sign.service.SpigotPluginMain
 import eu.thesimplecloud.plugin.extension.getCloudPlayer
-import eu.thesimplecloud.plugin.extension.toCloudLocation
 import org.bukkit.block.Sign
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
