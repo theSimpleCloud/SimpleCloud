@@ -115,13 +115,13 @@ class Manager : ICloudApplication {
     override fun onEnable() {
         GlobalScope.launch { Launcher.instance.commandManager.registerAllCommands(instance, "eu.thesimplecloud.base.manager.commands") }
         Launcher.instance.setupManager.waitFroAllSetups()
-        this.wrapperFileHandler.loadAll().forEach { CloudAPI.instance.getWrapperManager().updateWrapper(it) }
+        this.wrapperFileHandler.loadAll().forEach { CloudAPI.instance.getWrapperManager().update(it) }
         this.cloudServiceGroupFileHandler.loadAll().forEach { CloudAPI.instance.getCloudServiceGroupManager().updateGroup(it) }
         this.templatesConfigLoader.loadConfig().templates.forEach { CloudAPI.instance.getTemplateManager().updateTemplate(it) }
 
-        if (CloudAPI.instance.getWrapperManager().getAllWrappers().isNotEmpty()) {
+        if (CloudAPI.instance.getWrapperManager().getAllCachedObjects().isNotEmpty()) {
             Launcher.instance.consoleSender.sendMessage("manager.startup.loaded.wrappers", "Loaded following wrappers:")
-            CloudAPI.instance.getWrapperManager().getAllWrappers().forEach { Launcher.instance.consoleSender.sendMessage("- ${it.getName()}") }
+            CloudAPI.instance.getWrapperManager().getAllCachedObjects().forEach { Launcher.instance.consoleSender.sendMessage("- ${it.getName()}") }
         }
 
         if (CloudAPI.instance.getTemplateManager().getAllTemplates().isNotEmpty()) {

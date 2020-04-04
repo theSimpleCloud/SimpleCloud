@@ -31,7 +31,7 @@ data class DefaultCloudService(
     private val closedPromise = CommunicationPromise<Unit>(enableTimeout = false)
 
     private var serviceState = ServiceState.PREPARED
-    private var onlinePlayers = 0
+    private var onlineCount = 0
     private var authenticated = false
     @GsonExclude
     private var lastUpdate = System.currentTimeMillis()
@@ -64,10 +64,12 @@ data class DefaultCloudService(
         this.serviceState = serviceState
     }
 
-    override fun getOnlinePlayers(): Int = this.onlinePlayers
+    override fun getOnlineCount(): Int {
+        return this.onlineCount
+    }
 
     override fun setOnlinePlayers(amount: Int) {
-        this.onlinePlayers = amount
+        this.onlineCount = amount
     }
 
     override fun getMOTD(): String = this.motd

@@ -33,8 +33,9 @@ class CommunicationConnectionHandlerImpl : IConnectionHandler {
 
         if (clientValue is IWritableWrapperInfo) {
             clientValue.setTemplatesReceived(false)
+            clientValue.setCurrentlyStartingServices(0)
             clientValue.setUsedMemory(0)
-            CloudAPI.instance.getWrapperManager().updateWrapper(clientValue)
+            CloudAPI.instance.getWrapperManager().update(clientValue)
         }
 
         if (clientValue is ICloudService)

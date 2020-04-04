@@ -37,7 +37,7 @@ class ReloadCommand : ICommandHandler {
             val cachedWrapper = CloudAPI.instance.getWrapperManager().getWrapperByHost(it.getHost()) as IWritableWrapperInfo
             cachedWrapper.setMaxSimultaneouslyStartingServices(it.getMaxSimultaneouslyStartingServices())
             cachedWrapper.setMaxMemory(it.getMaxMemory())
-            CloudAPI.instance.getWrapperManager().updateWrapper(cachedWrapper)
+            CloudAPI.instance.getWrapperManager().update(cachedWrapper)
         }
         loadedWrappers.forEach { commandSender.sendMessage("manager.command.reload.wrapper-success", "Reloaded wrapper %WRAPPER%", it.getName(), ".") }
 

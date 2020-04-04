@@ -1,9 +1,7 @@
 package eu.thesimplecloud.base.wrapper.startup
 
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.client.CloudClientType
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
-import eu.thesimplecloud.api.network.packets.wrapper.PacketIOUpdateWrapperInfo
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
 import eu.thesimplecloud.base.manager.external.CloudModuleHandler
@@ -14,7 +12,6 @@ import eu.thesimplecloud.base.wrapper.process.CloudServiceProcessManager
 import eu.thesimplecloud.base.wrapper.process.filehandler.ServiceVersionLoader
 import eu.thesimplecloud.base.wrapper.process.queue.CloudServiceProcessQueue
 import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.ServiceConfiguratorManager
-import eu.thesimplecloud.client.packets.PacketOutCloudClientLogin
 import eu.thesimplecloud.clientserverapi.client.INettyClient
 import eu.thesimplecloud.clientserverapi.client.NettyClient
 import eu.thesimplecloud.launcher.application.ICloudApplication
@@ -35,6 +32,7 @@ class Wrapper : ICloudApplication {
             private set
     }
 
+    @Volatile
     var thisWrapperName: String? = null
     var processQueue: CloudServiceProcessQueue? = null
     val serviceConfigurationManager = ServiceConfiguratorManager()
@@ -74,12 +72,11 @@ class Wrapper : ICloudApplication {
                 val wrapperInfo = getThisWrapper()
                 //set authenticated to false to prevent service starting
                 wrapperInfo.setAuthenticated(false)
-                communicationClient.sendUnitQuery(PacketIOUpdateWrapperInfo(wrapperInfo)).syncUninterruptibly()
+                CloudAPI.instance.getWrapperManager().update(wrapperInfo)
             }
             this.processQueue?.clearQueue()
             stopAllRunningServicesAndWaitFor()
             if (this.templateClient != null) {
-                FileUtils.deleteDirectory(File(DirectoryPaths.paths.templatesPath))
                 FileUtils.deleteDirectory(File(DirectoryPaths.paths.modulesPath))
             }
             this.communicationClient.shutdown()
@@ -122,7 +119,14 @@ class Wrapper : ICloudApplication {
         } else {
             reloadExistingModules()
         }
-        this.communicationClient.sendUnitQuery(PacketOutCloudClientLogin(CloudClientType.WRAPPER))
+
+    }
+
+    fun getThreadByName(threadName: String): Thread? {
+        for (t in Thread.getAllStackTraces().keys) {
+            if (t.name == threadName) return t
+        }
+        return null
     }
 
     private fun startTemplateClient(templateClient: NettyClient) {
@@ -132,6 +136,9 @@ class Wrapper : ICloudApplication {
                 Launcher.instance.consoleSender.sendMessage("wrapper.template.requesting", "Requesting templates...")
                 templateClient.sendUnitQuery(PacketOutGetTemplates(), TimeUnit.SECONDS.toMillis((60 * 2) + 30)).addResultListener {
                     reloadExistingModules()
+                    val thisWrapper = getThisWrapper() as IWritableWrapperInfo
+                    thisWrapper.setTemplatesReceived(true)
+                    CloudAPI.instance.getWrapperManager().update(thisWrapper)
                     Launcher.instance.consoleSender.sendMessage("wrapper.template.received", "Templates received.")
                 }.addFailureListener {
                     Launcher.instance.logger.severe("An error occurred while requesting templates:")
@@ -160,7 +167,7 @@ class Wrapper : ICloudApplication {
         thisWrapper.setUsedMemory(usedMemory)
         thisWrapper.setCurrentlyStartingServices(this.processQueue?.getStartingOrQueuedServiceAmount() ?: 0)
         if (this.communicationClient.isOpen())
-            this.communicationClient.sendUnitQuery(PacketIOUpdateWrapperInfo(thisWrapper)).awaitUninterruptibly()
+            CloudAPI.instance.getWrapperManager().update(thisWrapper)
     }
 
     override fun onEnable() {

@@ -23,6 +23,10 @@ class CloudAPIImpl : CloudAPI() {
     private val synchronizedObjectManager = SynchronizedObjectManagerImpl(Wrapper.instance.communicationClient)
     private val synchronizedObjectListManager = SynchronizedObjectListManager()
 
+    init {
+        getSynchronizedObjectListManager().registerSynchronizedObjectList(getWrapperManager(), false)
+    }
+
     override fun getCloudServiceGroupManager(): ICloudServiceGroupManager = this.cloudServiceGroupManager
 
     override fun getCloudServiceManager(): ICloudServiceManager = this.cloudServiceManager
@@ -39,5 +43,5 @@ class CloudAPIImpl : CloudAPI() {
 
     override fun getSynchronizedObjectListManager(): ISynchronizedObjectListManager = this.synchronizedObjectListManager
 
-    override fun getThisSidesName(): String = Wrapper.instance.getThisWrapper().getName()
+    override fun getThisSidesName(): String = Wrapper.instance.thisWrapperName ?: "Wrapper"
 }

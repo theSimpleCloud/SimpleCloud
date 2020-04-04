@@ -15,6 +15,7 @@ open class DefaultGroupSetup {
             if (CloudAPI.instance.getTemplateManager().getTemplateByName(groupName) == null) {
                 val template = DefaultTemplate(groupName)
                 CloudAPI.instance.getTemplateManager().updateTemplate(template)
+                template.getDirectory().mkdirs()
             }
             Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.template.created", "Template %TEMPLATE%", groupName, " created.")
             return groupName

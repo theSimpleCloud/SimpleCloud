@@ -6,7 +6,7 @@ import eu.thesimplecloud.clientserverapi.lib.packet.packettype.ObjectPacket
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.combineAllPromises
 
-class PacketIOGetAllCachedListObjects() : ObjectPacket<String>() {
+class PacketIOGetAllCachedSynchronizedListObjects() : ObjectPacket<String>() {
 
     constructor(name: String) : this() {
         this.value = name

@@ -123,7 +123,13 @@ interface ICloudService : IAuthenticatable, IBootstrap, ICommandExecutable, IPro
     /**
      * Returns the amount of players that are currently on this service
      */
-    fun getOnlinePlayers(): Int
+    @Deprecated("Use getOnlineCount instead", ReplaceWith("getOnlineCount()"))
+    fun getOnlinePlayers(): Int = getOnlineCount()
+
+    /**
+     * Returns the amount of players that are currently on this service
+     */
+    fun getOnlineCount(): Int
 
     /**
      * Sets the amount of online players.

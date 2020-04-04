@@ -1,6 +1,7 @@
 package eu.thesimplecloud.base.wrapper.network.packets
 
-import eu.thesimplecloud.api.network.packets.wrapper.PacketIOUpdateWrapperInfo
+
+import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
 import eu.thesimplecloud.base.wrapper.startup.Wrapper
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
@@ -9,7 +10,7 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
 class PacketInSetWrapperName : ObjectPacket<String>() {
 
-    override suspend fun handle(connection: IConnection) : ICommunicationPromise<Unit> {
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<Unit> {
         val name = this.value ?: return contentException("value")
         Wrapper.instance.thisWrapperName = name
         Wrapper.instance.startProcessQueue()
@@ -17,7 +18,7 @@ class PacketInSetWrapperName : ObjectPacket<String>() {
             val thisWrapper = Wrapper.instance.getThisWrapper()
             thisWrapper as IWritableWrapperInfo
             thisWrapper.setTemplatesReceived(true)
-            Wrapper.instance.communicationClient.sendUnitQuery(PacketIOUpdateWrapperInfo(thisWrapper))
+            CloudAPI.instance.getWrapperManager().update(thisWrapper)
         }
         return unit()
     }

@@ -37,6 +37,7 @@ class OfflineCloudPlayerHandler(mongoConnectionInformation: MongoConnectionInfor
         return fromLoadOfflinePlayer(this.loadCollection.findOne("{ \$text: { \$search: \"$name\",\$caseSensitive :false } }"))
     }
 
+    @Synchronized
     override fun saveCloudPlayer(offlineCloudPlayer: OfflineCloudPlayer) {
         if (getOfflinePlayer(offlineCloudPlayer.getUniqueId()) != null)
             this.saveCollection.replaceOne(Filters.eq("uniqueId", offlineCloudPlayer.getUniqueId()), offlineCloudPlayer)

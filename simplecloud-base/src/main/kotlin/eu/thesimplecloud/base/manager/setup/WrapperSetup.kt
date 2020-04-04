@@ -68,7 +68,7 @@ class WrapperSetup : ISetup {
     @SetupFinished
     fun finished(){
         val wrapperInfo = DefaultWrapperInfo(name, host, maxSimultaneouslyStartingServices, memory)
-        CloudAPI.instance.getWrapperManager().updateWrapper(wrapperInfo)
+        CloudAPI.instance.getWrapperManager().update(wrapperInfo)
         Launcher.instance.consoleSender.sendMessage("manager.setup.wrapper.finished", "Wrapper %NAME%", name, " created.")
     }
 

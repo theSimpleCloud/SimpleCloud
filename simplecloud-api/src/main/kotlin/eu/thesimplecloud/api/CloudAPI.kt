@@ -7,12 +7,14 @@ import eu.thesimplecloud.api.wrapper.impl.DefaultWrapperManager
 
 abstract class CloudAPI : ICloudAPI {
 
+    private val wrapperManager: IWrapperManager = DefaultWrapperManager()
+    private val templateManager: ITemplateManager = DefaultTemplateManager()
+
     init {
         instance = this
     }
 
-    private val wrapperManager: IWrapperManager = DefaultWrapperManager()
-    private val templateManager: ITemplateManager = DefaultTemplateManager()
+
 
     override fun getWrapperManager(): IWrapperManager = this.wrapperManager
 

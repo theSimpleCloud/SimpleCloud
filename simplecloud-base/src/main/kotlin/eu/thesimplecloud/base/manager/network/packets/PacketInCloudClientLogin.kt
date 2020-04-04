@@ -5,10 +5,10 @@ import eu.thesimplecloud.api.client.CloudClientType
 import eu.thesimplecloud.api.network.packets.service.PacketIOUpdateCloudService
 import eu.thesimplecloud.api.network.packets.servicegroup.PacketIOUpdateCloudServiceGroup
 import eu.thesimplecloud.api.network.packets.template.PacketIOUpdateTemplate
-import eu.thesimplecloud.api.network.packets.wrapper.PacketIOUpdateWrapperInfo
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
+import eu.thesimplecloud.clientserverapi.lib.promise.combineAllPromises
 import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnectedClient
 import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnectedClientValue
 import eu.thesimplecloud.launcher.extension.sendMessage
@@ -21,12 +21,11 @@ class PacketInCloudClientLogin() : JsonPacket() {
         val cloudClientType = this.jsonData.getObject("cloudClientType", CloudClientType::class.java)
                 ?: return contentException("cloudClientType")
         connection as IConnectedClient<IConnectedClientValue>
-        val wrapperPromises = CloudAPI.instance.getWrapperManager().getAllWrappers().map { connection.sendUnitQuery(PacketIOUpdateWrapperInfo(it)) }
+        CloudAPI.instance.getSynchronizedObjectListManager().synchronizeListWithConnection(CloudAPI.instance.getWrapperManager(), connection).awaitUninterruptibly()
         val templatePromises = CloudAPI.instance.getTemplateManager().getAllTemplates().map { connection.sendUnitQuery(PacketIOUpdateTemplate(it)) }
         val groupPromises = CloudAPI.instance.getCloudServiceGroupManager().getAllGroups().map { connection.sendUnitQuery(PacketIOUpdateCloudServiceGroup(it)) }
         val servicePromises = CloudAPI.instance.getCloudServiceManager().getAllCloudServices().map { connection.sendUnitQuery(PacketIOUpdateCloudService(it)) }
-        wrapperPromises.union(templatePromises)
-                .union(groupPromises)
+        templatePromises.union(groupPromises)
                 .union(servicePromises)
                 .combineAllPromises()
                 .awaitUninterruptibly()
@@ -46,8 +45,9 @@ class PacketInCloudClientLogin() : JsonPacket() {
                         ?: return failure(NoSuchElementException("Wrapper not found"))
                 connection.setClientValue(wrapperInfo)
                 wrapperInfo.setAuthenticated(true)
-                CloudAPI.instance.getWrapperManager().updateWrapper(wrapperInfo)
-                connection.sendUnitQuery(PacketOutSetWrapperName(wrapperInfo.getName()))
+                CloudAPI.instance.getWrapperManager().update(wrapperInfo)
+                CloudAPI.instance.getWrapperManager().updateToConnection(wrapperInfo, connection).awaitUninterruptibly()
+                connection.sendUnitQuery(PacketOutSetWrapperName(wrapperInfo.getName())).awaitUninterruptibly()
                 Launcher.instance.consoleSender.sendMessage("manager.login.wrapper", "Wrapper %WRAPPER%", wrapperInfo.getName(), " logged in.")
             }
         }

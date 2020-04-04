@@ -102,7 +102,7 @@ class EditCommand : ICommandHandler {
             try {
                 field.set(wrapper, type)
                 commandSender.sendMessage("manager.command.edit.wrapper.success", "Wrapper edited.")
-                CloudAPI.instance.getWrapperManager().updateWrapper(wrapper)
+                CloudAPI.instance.getWrapperManager().update(wrapper)
             } catch (e: Exception) {
                 commandSender.sendMessage("manager.command.edit.wrapper.invalid-value", "Invalid value. Expected type: %TYPE%", field.type.simpleName)
                 return

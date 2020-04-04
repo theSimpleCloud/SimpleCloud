@@ -4,7 +4,7 @@ import eu.thesimplecloud.api.eventapi.ICancellable
 import eu.thesimplecloud.api.eventapi.IEvent
 import eu.thesimplecloud.api.player.ICloudPlayer
 
-class CloudPlayerManagerLoginEvent(
+class CloudPlayerLoginRequestEvent(
         val cloudPlayer: ICloudPlayer
 ) : IEvent, ICancellable {
 

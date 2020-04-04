@@ -23,6 +23,10 @@ class CloudAPIImpl : CloudAPI() {
     private val synchronizedObjectManager = SynchronizedObjectManagerImpl(CloudPlugin.instance.communicationClient)
     private val synchronizedObjectListManager = SynchronizedObjectListManager()
 
+    init {
+        getSynchronizedObjectListManager().registerSynchronizedObjectList(getWrapperManager(), false)
+    }
+
     override fun getCloudServiceGroupManager(): ICloudServiceGroupManager = this.cloudServiceGroupManager
 
     override fun getCloudServiceManager(): ICloudServiceManager = this.cloudServiceManager

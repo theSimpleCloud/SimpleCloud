@@ -24,7 +24,7 @@ class PacketInGetTemplates() : JsonPacket() {
         Launcher.instance.consoleSender.sendMessage("manager.templates.synchronization.complete", "Synchronized templates with Wrapper %WRAPPER%", wrapperByHost.getName(), ".")
         wrapperByHost as IWritableWrapperInfo
         wrapperByHost.setTemplatesReceived(true)
-        CloudAPI.instance.getWrapperManager().updateWrapper(wrapperByHost)
+        CloudAPI.instance.getWrapperManager().update(wrapperByHost)
         return unit()
     }
 
