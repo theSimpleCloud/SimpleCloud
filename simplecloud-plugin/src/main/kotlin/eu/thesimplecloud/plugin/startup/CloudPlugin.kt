@@ -95,6 +95,7 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
     override fun onDisable() {
     }
 
+    @Synchronized
     fun updateThisService() {
         this.communicationClient.sendUnitQuery(PacketIOUpdateCloudService(thisService()))
     }

@@ -123,7 +123,9 @@ class ServiceHandler : IServiceHandler {
         } else {
             val requiredWrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(service.getWrapperName())
                     ?: return null
-            if (requiredWrapper.hasEnoughMemory(service.getMaxMemory()) && requiredWrapper.isAuthenticated() && requiredWrapper.hasTemplatesReceived()) {
+            if (requiredWrapper.hasEnoughMemory(service.getMaxMemory()) && requiredWrapper.isAuthenticated()
+                    && requiredWrapper.hasTemplatesReceived()
+                    && requiredWrapper.getCurrentlyStartingServices() != requiredWrapper.getMaxSimultaneouslyStartingServices()) {
                 return requiredWrapper
             }
             return null
