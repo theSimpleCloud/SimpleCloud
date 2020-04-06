@@ -9,6 +9,7 @@ interface IPermissionEntity {
      * Returns whether the group has the specified [permission]
      */
     fun hasPermission(permission: String): Boolean {
+        if (permission.isBlank()) return true
         val permissionObj = getAllNotExpiredPermissions().firstOrNull { it.permissionString == permission } ?: return hasAllRights()
         return permissionObj.active
     }

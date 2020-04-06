@@ -47,10 +47,11 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
         this.communicationClient.addClassLoader(this::class.java.classLoader)
 
         nettyThread = thread(true, isDaemon = false, contextClassLoader = this::class.java.classLoader) {
+            println("<------Starting cloud client----------->")
             this.communicationClient.start().then {
                 println("<-------- Connection is now set up -------->")
                 this.communicationClient.sendUnitQuery(PacketOutCloudClientLogin(CloudClientType.SERVICE, thisServiceName))
-            }
+            }.addFailureListener { println("<-------- Failed to connect to server -------->") }.addFailureListener { throw it }
         }
 
         Runtime.getRuntime().addShutdownHook(Thread {
