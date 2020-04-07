@@ -91,7 +91,7 @@ interface ICloudService : IAuthenticatable, IBootstrap, ICommandExecutable, IPro
      * Returns the percentage of occupied slots
      */
     fun getOnlinePercentage(): Double {
-        return getOnlinePlayers().toDouble() / getMaxPlayers()
+        return getOnlineCount().toDouble() / getMaxPlayers()
     }
 
     /**
@@ -134,7 +134,7 @@ interface ICloudService : IAuthenticatable, IBootstrap, ICommandExecutable, IPro
     /**
      * Sets the amount of online players.
      */
-    fun setOnlinePlayers(amount: Int)
+    fun setOnlineCount(amount: Int)
 
     /**
      * Returns the maximum amount of players for this service
@@ -159,7 +159,7 @@ interface ICloudService : IAuthenticatable, IBootstrap, ICommandExecutable, IPro
     /**
      * Returns whether this service is full.
      */
-    fun isFull() = getOnlinePlayers() >= getMaxPlayers()
+    fun isFull() = getOnlineCount() >= getMaxPlayers()
 
     /**
      * Returns the promise that will be called once the service is starting.

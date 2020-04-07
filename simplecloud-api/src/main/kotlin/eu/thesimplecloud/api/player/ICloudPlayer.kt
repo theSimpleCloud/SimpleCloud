@@ -8,6 +8,7 @@ import eu.thesimplecloud.api.location.SimpleLocation
 import eu.thesimplecloud.api.player.connection.IPlayerConnection
 import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.api.service.ICloudService
+import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
 interface ICloudPlayer : IOfflineCloudPlayer, ICommandSender {
@@ -21,6 +22,33 @@ interface ICloudPlayer : IOfflineCloudPlayer, ICommandSender {
      * Sends a message to this player.
      */
     fun sendMessage(cloudText: CloudText) = CloudAPI.instance.getCloudPlayerManager().sendMessageToPlayer(this, cloudText)
+
+    /**
+     * Sends multiple messages ordered to a player.
+     */
+    fun sendMessagesOrdered(messages: Iterable<String>): ICommunicationPromise<Unit> {
+        return sendMessagesOrdered(messages.map { CloudText(it) })
+    }
+
+    /**
+     * Sends multiple messages ordered to a player.
+     */
+    fun sendMessagesOrdered(messages: List<CloudText>): ICommunicationPromise<Unit> {
+        if (messages.isEmpty()) return CommunicationPromise.of(Unit)
+        val completePromise = CommunicationPromise<Unit>(200L * messages.size)
+        sendNextMessage(messages.iterator(), completePromise)
+        return completePromise
+    }
+
+    private fun sendNextMessage(iterator: Iterator<CloudText>, completePromise: ICommunicationPromise<Unit>) {
+        if (!iterator.hasNext()) {
+            completePromise.trySuccess(Unit)
+            return
+        }
+        val cloudText = iterator.next()
+        sendMessage(cloudText).then { sendNextMessage(iterator, completePromise) }
+                .addFailureListener { cause -> completePromise.tryFailure(cause) }
+    }
 
     /**
      * Sends a message to this player.

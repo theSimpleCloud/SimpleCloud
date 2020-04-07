@@ -70,7 +70,7 @@ class ServiceHandler : IServiceHandler {
             val inLobbyServices = allServices.filter { it.getState() == ServiceState.VISIBLE }
             val stoppableServices = inLobbyServices
                     .filter { (it.getLastUpdate() + TimeUnit.MINUTES.toMillis(3)) < System.currentTimeMillis() }
-                    .filter { it.getOnlinePlayers() <= 0 }
+                    .filter { it.getOnlineCount() <= 0 }
             if (inLobbyServices.size > serviceGroup.getMinimumOnlineServiceCount()) {
                 val amountToStop = inLobbyServices.size - serviceGroup.getMinimumOnlineServiceCount()
                 for (i in 0 until min(amountToStop, stoppableServices.size)) {

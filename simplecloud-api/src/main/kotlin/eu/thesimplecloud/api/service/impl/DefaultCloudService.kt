@@ -68,7 +68,7 @@ data class DefaultCloudService(
         return this.onlineCount
     }
 
-    override fun setOnlinePlayers(amount: Int) {
+    override fun setOnlineCount(amount: Int) {
         this.onlineCount = amount
     }
 

@@ -21,7 +21,8 @@ class BukkitCloudSign(
 
     private var placeholders = listOf<Placeholder<ICloudService>>(
             Placeholder("SERVICE") { it.getName() },
-            Placeholder("ONLINE_PLAYERS") { it.getOnlinePlayers().toString() },
+            Placeholder("ONLINE_PLAYERS") { it.getOnlineCount().toString() },
+            Placeholder("ONLINE_COUNT") { it.getOnlineCount().toString() },
             Placeholder("MOTD") { it.getMOTD() },
             Placeholder("HOST") { it.getHost() },
             Placeholder("PORT") { it.getPort().toString() },

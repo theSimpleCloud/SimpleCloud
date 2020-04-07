@@ -113,7 +113,7 @@ class BungeePluginMain : Plugin() {
 
     fun getOnlinePlayers(): Int {
         var onlinePlayers = 0
-        thisService.getServiceGroup().getAllServices().forEach { onlinePlayers += it.getOnlinePlayers() }
+        thisService.getServiceGroup().getAllServices().forEach { onlinePlayers += it.getOnlineCount() }
         return onlinePlayers
     }
 

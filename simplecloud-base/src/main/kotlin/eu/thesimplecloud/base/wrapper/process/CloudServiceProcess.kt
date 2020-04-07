@@ -79,7 +79,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
     private fun processStopped(){
         Launcher.instance.consoleSender.sendMessage("wrapper.service.stopped", "Service %NAME%", cloudService.getName(), " was stopped.")
         Wrapper.instance.cloudServiceProcessManager.unregisterServiceProcess(this)
-        this.cloudService.setOnlinePlayers(0)
+        this.cloudService.setOnlineCount(0)
         this.cloudService.setState(ServiceState.CLOSED)
         if (Wrapper.instance.communicationClient.isOpen()) {
             Wrapper.instance.communicationClient.sendUnitQuery(PacketIOUpdateCloudService(this.cloudService)).awaitUninterruptibly()

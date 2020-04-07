@@ -25,7 +25,7 @@ abstract class AbstractCloudServiceManager : ICloudServiceManager {
         val nowConnected = !cashedService.isAuthenticated() && cloudService.isAuthenticated()
 
         cashedService.setMOTD(cloudService.getMOTD())
-        cashedService.setOnlinePlayers(cloudService.getOnlinePlayers())
+        cashedService.setOnlineCount(cloudService.getOnlineCount())
         cashedService.setState(cloudService.getState())
         cashedService.setAuthenticated(cloudService.isAuthenticated())
         cashedService.setLastUpdate(System.currentTimeMillis())
