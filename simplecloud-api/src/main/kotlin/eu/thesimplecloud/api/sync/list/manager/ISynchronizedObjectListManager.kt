@@ -29,7 +29,7 @@ interface ISynchronizedObjectListManager {
      */
     fun synchronizeListWithConnection(synchronizedObjectList: ISynchronizedObjectList<out ISynchronizedListObject>, connection: IConnection): ICommunicationPromise<Unit> {
         return synchronizedObjectList.getAllCachedObjects()
-                .map { connection.sendUnitQuery(PacketIOUpdateSynchronizedListObject(synchronizedObjectList.getIdentificationName(), it)) }
+                .map { connection.sendUnitQuery(PacketIOUpdateSynchronizedListObject(synchronizedObjectList.getIdentificationName(), it.obj)) }
                 .combineAllPromises()
     }
 

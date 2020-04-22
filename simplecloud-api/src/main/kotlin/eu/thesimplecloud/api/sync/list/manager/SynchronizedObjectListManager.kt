@@ -18,7 +18,7 @@ class SynchronizedObjectListManager : ISynchronizedObjectListManager {
         if (syncContent && CloudAPI.instance.isManager()) {
             val oldObject = getSynchronizedObjectList(synchronizedObjectList.getIdentificationName())
             oldObject?.let { oldList ->
-                oldList.getAllCachedObjects().forEach { oldList.remove(it) }
+                oldList.getAllCachedObjects().forEach { oldList.remove(it.obj) }
             }
         }
         this.nameToSynchronizedObjectList[synchronizedObjectList.getIdentificationName()] = synchronizedObjectList
@@ -29,7 +29,7 @@ class SynchronizedObjectListManager : ISynchronizedObjectListManager {
             } else {
                 //manager
                 synchronizedObjectList as ISynchronizedObjectList<ISynchronizedListObject>
-                synchronizedObjectList.getAllCachedObjects().forEach { synchronizedObjectList.update(it) }
+                synchronizedObjectList.getAllCachedObjects().forEach { synchronizedObjectList.update(it.obj) }
             }
         }
         return CommunicationPromise.of(Unit)

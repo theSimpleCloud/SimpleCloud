@@ -10,7 +10,7 @@ class GroupToLayout {
 
     fun getLayoutByGroupName(groupName: String): SignLayout? {
         val signLayoutName = this.groupToLayout[groupName] ?: return null
-        return SignModuleConfig.INSTANCE.getSignLayoutByName(signLayoutName)
+        return SignModuleConfig.INSTANCE.obj.getSignLayoutByName(signLayoutName)
     }
 
 }

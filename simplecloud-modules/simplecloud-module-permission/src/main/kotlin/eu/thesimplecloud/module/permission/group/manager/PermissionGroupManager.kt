@@ -1,5 +1,6 @@
 package eu.thesimplecloud.module.permission.group.manager
 
+import eu.thesimplecloud.api.sync.`object`.SynchronizedObjectHolder
 import eu.thesimplecloud.api.sync.list.AbstractSynchronizedObjectList
 import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.module.permission.group.IPermissionGroup
@@ -12,13 +13,13 @@ class PermissionGroupManager() : AbstractSynchronizedObjectList<PermissionGroup>
 
     override fun getIdentificationName(): String = "simplecloud-module-permission"
 
-    override fun getCachedObjectByUpdateValue(value: PermissionGroup): PermissionGroup? {
-        return getPermissionGroupByName(value.getName())
+    override fun getCachedObjectByUpdateValue(value: PermissionGroup): SynchronizedObjectHolder<PermissionGroup>? {
+        return this.values.firstOrNull { it.obj.getName() == value.getName() }
     }
 
-    override fun getAllPermissionGroups(): Collection<IPermissionGroup> = this.values
+    override fun getAllPermissionGroups(): Collection<IPermissionGroup> = this.values.map { it.obj }
 
-    override fun getPermissionGroupByName(name: String): PermissionGroup? = this.values.firstOrNull { it.getName() == name }
+    override fun getPermissionGroupByName(name: String): IPermissionGroup? = this.values.firstOrNull { it.obj.getName() == name }?.obj
 
     override fun getDefaultPermissionGroupName(): String = this.defaultPermissionGroupName
 

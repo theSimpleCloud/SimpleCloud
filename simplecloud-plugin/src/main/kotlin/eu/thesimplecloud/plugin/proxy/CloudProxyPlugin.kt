@@ -53,9 +53,9 @@ class CloudProxyPlugin : Plugin(), ICloudProxyPlugin {
     override fun onLoad() {
         ProxyServer.getInstance().reconnectHandler = ReconnectHandlerImpl()
         CloudPlugin(this)
-        val synchronizedObjectPromise = CloudAPI.instance.getSynchronizedObjectManager().requestSynchronizedObject("simplecloud-ingamecommands", SynchronizedIngameCommandNamesContainer::class.java)
+        val synchronizedObjectPromise = CloudAPI.instance.getSingleSynchronizedObjectManager().requestSingleSynchronizedObject("simplecloud-ingamecommands", SynchronizedIngameCommandNamesContainer::class.java)
         synchronizedObjectPromise.addResultListener {
-            this.synchronizedIngameCommandNamesContainer = it
+            this.synchronizedIngameCommandNamesContainer = it.obj
         }
     }
 

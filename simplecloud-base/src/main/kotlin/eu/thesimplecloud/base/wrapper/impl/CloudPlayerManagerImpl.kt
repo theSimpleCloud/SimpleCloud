@@ -5,10 +5,12 @@ import eu.thesimplecloud.api.location.SimpleLocation
 import eu.thesimplecloud.api.player.AbstractCloudPlayerManager
 import eu.thesimplecloud.api.player.ICloudPlayer
 import eu.thesimplecloud.api.player.IOfflineCloudPlayer
+import eu.thesimplecloud.api.player.SimpleCloudPlayer
 import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import java.util.*
+import java.util.function.Predicate
 
 class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
 
@@ -73,6 +75,10 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
     }
 
     override fun getOfflineCloudPlayer(uniqueId: UUID): ICommunicationPromise<IOfflineCloudPlayer> {
+        throw UnsupportedOperationException("Players are not supported in the wrapper")
+    }
+
+    override fun getOnlinePlayersFiltered(predicate: Predicate<ICloudPlayer>): ICommunicationPromise<List<SimpleCloudPlayer>> {
         throw UnsupportedOperationException("Players are not supported in the wrapper")
     }
 }

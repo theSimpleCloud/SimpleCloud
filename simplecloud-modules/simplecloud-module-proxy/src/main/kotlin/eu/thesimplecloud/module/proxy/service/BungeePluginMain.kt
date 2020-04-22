@@ -2,6 +2,7 @@ package eu.thesimplecloud.module.proxy.service
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.player.text.CloudText
+import eu.thesimplecloud.api.sync.`object`.SynchronizedObjectHolder
 import eu.thesimplecloud.module.proxy.config.Config
 import eu.thesimplecloud.module.proxy.config.DefaultConfig
 import eu.thesimplecloud.module.proxy.config.ProxyGroupConfiguration
@@ -24,17 +25,17 @@ import java.util.concurrent.TimeUnit
  */
 class BungeePluginMain : Plugin() {
 
-    var config: Config = DefaultConfig.get()
+    var configHolder: SynchronizedObjectHolder<Config> = SynchronizedObjectHolder(DefaultConfig.get())
     val thisService = CloudPlugin.instance.thisService()
     val serviceGroupName = thisService.getGroupName()
 
     var tablistStarted = false
 
     override fun onEnable() {
-        CloudAPI.instance.getSynchronizedObjectManager()
-                .requestSynchronizedObject("simplecloud-module-proxy-config", Config::class.java)
+        CloudAPI.instance.getSingleSynchronizedObjectManager()
+                .requestSingleSynchronizedObject("simplecloud-module-proxy-config", Config::class.java)
                 .addResultListener {
-                    config = it
+                    configHolder = it
                 }
 
         proxy.pluginManager.registerListener(this, BungeeListener(this))
@@ -102,13 +103,13 @@ class BungeePluginMain : Plugin() {
     }
 
     fun getTablistConfiguration(): TablistConfiguration? {
-        return config.tablistConfigurations.firstOrNull {
+        return configHolder.obj.tablistConfigurations.firstOrNull {
             it.proxies.mapToLowerCase().contains(serviceGroupName.toLowerCase())
         }
     }
 
     fun getProxyConfiguration(): ProxyGroupConfiguration? {
-        return config.proxyGroupConfigurations.firstOrNull { it.proxyGroup == serviceGroupName }
+        return configHolder.obj.proxyGroupConfigurations.firstOrNull { it.proxyGroup == serviceGroupName }
     }
 
     fun getOnlinePlayers(): Int {

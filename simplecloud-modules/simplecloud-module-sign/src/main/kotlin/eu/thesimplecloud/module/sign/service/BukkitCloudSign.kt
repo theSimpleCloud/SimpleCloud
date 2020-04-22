@@ -59,11 +59,12 @@ class BukkitCloudSign(
         val currentServer = this.currentServer
         val sign = location.block.state as Sign
         clearSign(false)
+        val signConfig = SignModuleConfig.INSTANCE.obj
         val signLayout = when {
-            serviceGroup.isInMaintenance() -> SignModuleConfig.INSTANCE.getMaintenanceLayout()
-            currentServer == null -> SignModuleConfig.INSTANCE.getSearchingLayout()
-            currentServer.getState() == ServiceState.STARTING -> SignModuleConfig.INSTANCE.getStartingLayout()
-            else -> SignModuleConfig.INSTANCE.getSignLayoutByGroupName(cloudSign.forGroup)
+            serviceGroup.isInMaintenance() -> signConfig.getMaintenanceLayout()
+            currentServer == null -> signConfig.getSearchingLayout()
+            currentServer.getState() == ServiceState.STARTING -> signConfig.getStartingLayout()
+            else -> signConfig.getSignLayoutByGroupName(cloudSign.forGroup)
                     ?: SignLayout("none", emptyList())
         }
 

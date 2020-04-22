@@ -4,7 +4,6 @@ import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
-import eu.thesimplecloud.base.manager.external.CloudModuleHandler
 import eu.thesimplecloud.base.wrapper.impl.CloudAPIImpl
 import eu.thesimplecloud.base.wrapper.logger.LoggerMessageListenerImpl
 import eu.thesimplecloud.base.wrapper.network.packets.template.PacketOutGetTemplates
@@ -14,10 +13,13 @@ import eu.thesimplecloud.base.wrapper.process.queue.CloudServiceProcessQueue
 import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.ServiceConfiguratorManager
 import eu.thesimplecloud.clientserverapi.client.INettyClient
 import eu.thesimplecloud.clientserverapi.client.NettyClient
+import eu.thesimplecloud.clientserverapi.lib.packet.IPacket
 import eu.thesimplecloud.launcher.application.ICloudApplication
 import eu.thesimplecloud.launcher.config.LauncherConfig
+import eu.thesimplecloud.launcher.exception.module.ModuleHandler
 import eu.thesimplecloud.launcher.extension.sendMessage
-import eu.thesimplecloud.launcher.external.module.CloudModuleFileContent
+import eu.thesimplecloud.launcher.external.module.LoadedModuleFileContent
+import eu.thesimplecloud.launcher.external.module.ModuleClassLoader
 import eu.thesimplecloud.launcher.startup.Launcher
 import org.apache.commons.io.FileUtils
 import java.io.File
@@ -42,15 +44,19 @@ class Wrapper : ICloudApplication {
     var templateClient: INettyClient? = null
         private set
     val serviceVersionLoader = ServiceVersionLoader()
-    var existingModules: List<Pair<CloudModuleFileContent, File>> = ArrayList()
+    var existingModules: List<LoadedModuleFileContent> = ArrayList()
         private set
+    val appClassLoader: ModuleClassLoader
 
     init {
         instance = this
+        this.appClassLoader = this::class.java.classLoader as ModuleClassLoader
         Launcher.instance.logger.addLoggerMessageListener(LoggerMessageListenerImpl())
         val launcherConfig = Launcher.instance.launcherConfigLoader.loadConfig()
         this.communicationClient = NettyClient(launcherConfig.host, launcherConfig.port, ConnectionHandlerImpl())
-        this.communicationClient.addClassLoader(Thread.currentThread().contextClassLoader)
+        this.communicationClient.setPacketSearchClassLoader(Launcher.instance.getNewClassLoaderWithLauncherAndBase())
+        this.communicationClient.setClassLoaderToSearchObjectPacketClasses(appClassLoader)
+        this.communicationClient.setPacketClassConverter { Class.forName(it.name, true, appClassLoader) as Class<out IPacket> }
         CloudAPIImpl()
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.client.packets")
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.base.wrapper.network.packets")
@@ -114,19 +120,13 @@ class Wrapper : ICloudApplication {
         if (!isStartedInManagerDirectory()) {
             val templateClient = NettyClient(launcherConfig.host, launcherConfig.port + 1, ConnectionHandlerImpl())
             this.templateClient = templateClient
-            templateClient.addClassLoader(Thread.currentThread().contextClassLoader)
+            templateClient.setPacketSearchClassLoader(Launcher.instance.getNewClassLoaderWithLauncherAndBase())
+            templateClient.setClassLoaderToSearchObjectPacketClasses(appClassLoader)
             Launcher.instance.scheduler.schedule({ startTemplateClient(templateClient) }, 100, TimeUnit.MILLISECONDS)
         } else {
             reloadExistingModules()
         }
 
-    }
-
-    fun getThreadByName(threadName: String): Thread? {
-        for (t in Thread.getAllStackTraces().keys) {
-            if (t.name == threadName) return t
-        }
-        return null
     }
 
     private fun startTemplateClient(templateClient: NettyClient) {
@@ -149,12 +149,12 @@ class Wrapper : ICloudApplication {
     }
 
     fun reloadExistingModules() {
-        this.existingModules = CloudModuleHandler().getAllCloudModuleFileContents()
+        this.existingModules = ModuleHandler().getAllCloudModuleFileContents()
     }
 
     fun isWrapperNameSet(): Boolean = thisWrapperName != null
 
-    fun getThisWrapper(): IWrapperInfo = CloudAPI.instance.getWrapperManager().getWrapperByName(this.thisWrapperName!!)
+    fun getThisWrapper(): IWrapperInfo = CloudAPI.instance.getWrapperManager().getWrapperByName(this.thisWrapperName!!)?.obj
             ?: throw IllegalStateException("Unable to find self wrapper.")
 
     /**

@@ -3,11 +3,12 @@ package eu.thesimplecloud.api.eventapi
 import eu.thesimplecloud.api.external.ICloudModule
 import org.junit.Assert
 import org.junit.Test
+import org.mockito.Mockito.*
 
 class EventApiTest {
 
     val eventManager = BasicEventManager()
-    val cloudModule = object: ICloudModule {
+    val cloudModule = object : ICloudModule {
         override fun onEnable() {
         }
 
@@ -17,9 +18,8 @@ class EventApiTest {
     }
 
 
-
     @Test
-    fun testListenerCall(){
+    fun testListenerCall() {
         val testListener = TestListener()
         eventManager.registerListener(cloudModule, testListener)
         val testEvent = TestEvent("test123")
@@ -28,7 +28,7 @@ class EventApiTest {
     }
 
     @Test
-    fun testUnregister(){
+    fun testUnregister() {
         val testListener = TestListener()
         eventManager.registerListener(cloudModule, testListener)
         eventManager.unregisterListener(testListener)
@@ -38,13 +38,33 @@ class EventApiTest {
     }
 
     @Test
-    fun testUnregisterAll(){
+    fun testUnregisterByModule() {
+        val testListener = TestListener()
+        eventManager.registerListener(cloudModule, testListener)
+        eventManager.unregisterAllListenersByCloudModule(cloudModule)
+        val testEvent = TestEvent("12test")
+        eventManager.call(testEvent)
+        Assert.assertEquals(null, testListener.testString)
+    }
+
+    @Test
+    fun testUnregisterAll() {
         val testListener = TestListener()
         val testEvent = TestEvent("12test")
         eventManager.registerListener(cloudModule, testListener)
         eventManager.unregisterAll()
         eventManager.call(testEvent)
         Assert.assertEquals(null, testListener.testString)
+    }
+
+    @Test
+    fun testRegisterSingleEvent() {
+        val listenerObj = object : IListener {}
+        val eventExecutor = spy(IEventExecutor::class.java)
+        eventManager.registerEvent(cloudModule, TestEvent::class.java, listenerObj, eventExecutor)
+        val testEvent = TestEvent("")
+        eventManager.call(testEvent)
+        verify(eventExecutor, times(1)).execute(testEvent)
     }
 
     class TestEvent(val testString: String) : IEvent

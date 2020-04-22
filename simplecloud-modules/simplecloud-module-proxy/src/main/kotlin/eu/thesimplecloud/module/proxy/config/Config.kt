@@ -1,6 +1,6 @@
 package eu.thesimplecloud.module.proxy.config
 
-import eu.thesimplecloud.api.sync.`object`.ISynchronizedObject
+import eu.thesimplecloud.api.sync.`object`.ISingleSynchronizedObject
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,7 +13,7 @@ data class Config(
         val tablistConfigurations: List<TablistConfiguration>,
         val maintenanceKickMessage: String,
         val fullProxyKickMessage: String
-) : ISynchronizedObject {
+) : ISingleSynchronizedObject {
 
     override fun getName(): String {
         return "simplecloud-module-proxy-config"

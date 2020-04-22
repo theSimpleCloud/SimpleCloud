@@ -5,7 +5,7 @@ import eu.thesimplecloud.api.screen.ICommandExecutable
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.utils.IAuthenticatable
 import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
-import eu.thesimplecloud.base.manager.impl.SynchronizedObjectManagerImpl
+import eu.thesimplecloud.base.manager.impl.SingleSynchronizedObjectManagerImpl
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.handler.IConnectionHandler
 import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnectedClient
@@ -41,7 +41,7 @@ class CommunicationConnectionHandlerImpl : IConnectionHandler {
         if (clientValue is ICloudService)
             CloudAPI.instance.getCloudServiceManager().updateCloudService(clientValue)
 
-        val synchronizedObjectManager = CloudAPI.instance.getSynchronizedObjectManager() as SynchronizedObjectManagerImpl
+        val synchronizedObjectManager = CloudAPI.instance.getSingleSynchronizedObjectManager() as SingleSynchronizedObjectManagerImpl
         synchronizedObjectManager.unregisterClient(connection)
     }
 

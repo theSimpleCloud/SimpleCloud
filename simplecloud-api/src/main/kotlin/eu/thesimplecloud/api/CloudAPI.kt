@@ -20,11 +20,9 @@ abstract class CloudAPI : ICloudAPI {
 
     override fun getTemplateManager(): ITemplateManager = this.templateManager
 
-    fun isWindows(): Boolean = System.getProperty("os.name").toLowerCase().contains("windows")
-
     companion object {
         @JvmStatic
-        lateinit var instance: CloudAPI
+        lateinit var instance: ICloudAPI
             private set
     }
 }

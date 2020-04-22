@@ -12,7 +12,7 @@ public class KotlinInstallerMain {
 
     public static void main(String[] args) throws IOException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         System.out.println("Installing kotlin...");
-        installKotlin("1.3.71");
+        installKotlin("1.3.72");
         LauncherMainKt.main(args);
     }
 

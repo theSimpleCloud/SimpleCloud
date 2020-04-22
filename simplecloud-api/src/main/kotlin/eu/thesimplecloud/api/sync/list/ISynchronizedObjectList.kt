@@ -1,6 +1,7 @@
 package eu.thesimplecloud.api.sync.list
 
 import eu.thesimplecloud.api.network.packets.sync.list.PacketIOUpdateSynchronizedListObject
+import eu.thesimplecloud.api.sync.`object`.SynchronizedObjectHolder
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
@@ -14,7 +15,7 @@ interface ISynchronizedObjectList<T : ISynchronizedListObject> {
     /**
      * Returns all cached objects.
      */
-    fun getAllCachedObjects(): Collection<T>
+    fun getAllCachedObjects(): Collection<SynchronizedObjectHolder<T>>
 
     /**
      * Updates an object
@@ -24,7 +25,7 @@ interface ISynchronizedObjectList<T : ISynchronizedListObject> {
     /**
      * Returns the cashed value found by the [value] to update.
      */
-    fun getCachedObjectByUpdateValue(value: T): T?
+    fun getCachedObjectByUpdateValue(value: T): SynchronizedObjectHolder<T>?
 
     /**
      * Removes the [value] object from the cache.

@@ -2,11 +2,12 @@ package eu.thesimplecloud.base.manager.impl
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.eventapi.IEventManager
+import eu.thesimplecloud.api.external.ICloudModule
 import eu.thesimplecloud.api.player.ICloudPlayerManager
 import eu.thesimplecloud.api.screen.ICommandExecuteManager
 import eu.thesimplecloud.api.service.ICloudServiceManager
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroupManager
-import eu.thesimplecloud.api.sync.`object`.ISynchronizedObjectManager
+import eu.thesimplecloud.api.sync.`object`.ISingleSynchronizedObjectManager
 import eu.thesimplecloud.api.sync.list.manager.ISynchronizedObjectListManager
 import eu.thesimplecloud.api.sync.list.manager.SynchronizedObjectListManager
 import eu.thesimplecloud.api.template.ITemplateManager
@@ -23,7 +24,7 @@ class CloudAPIImpl : CloudAPI() {
     private val templateManager = TemplateManagerImpl()
     private val wrapperManager = WrapperManagerImpl()
     private val eventManager = EventManagerImpl()
-    private val synchronizedObjectManager = SynchronizedObjectManagerImpl()
+    private val synchronizedObjectManager = SingleSynchronizedObjectManagerImpl()
     private val synchronizedObjectListManager = SynchronizedObjectListManager()
 
     init {
@@ -41,7 +42,7 @@ class CloudAPIImpl : CloudAPI() {
 
     override fun getCommandExecuteManager(): ICommandExecuteManager = this.commandExecuteManager
 
-    override fun getSynchronizedObjectManager(): ISynchronizedObjectManager = this.synchronizedObjectManager
+    override fun getSingleSynchronizedObjectManager(): ISingleSynchronizedObjectManager = this.synchronizedObjectManager
 
     override fun getThisSidesCommunicationBootstrap(): ICommunicationBootstrap = Manager.instance.communicationServer
 
@@ -52,6 +53,8 @@ class CloudAPIImpl : CloudAPI() {
     override fun getWrapperManager(): IWrapperManager = this.wrapperManager
 
     override fun getThisSidesName(): String = "Manager"
+
+    override fun getThisSidesCloudModule(): ICloudModule = Manager.instance
 
 
 }

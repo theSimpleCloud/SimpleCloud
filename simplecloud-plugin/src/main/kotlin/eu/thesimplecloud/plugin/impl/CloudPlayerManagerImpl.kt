@@ -7,6 +7,7 @@ import eu.thesimplecloud.api.network.packets.player.*
 import eu.thesimplecloud.api.player.AbstractCloudPlayerManager
 import eu.thesimplecloud.api.player.ICloudPlayer
 import eu.thesimplecloud.api.player.IOfflineCloudPlayer
+import eu.thesimplecloud.api.player.SimpleCloudPlayer
 import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceType
@@ -27,6 +28,7 @@ import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import java.util.*
+import java.util.function.Predicate
 
 class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
 
@@ -183,6 +185,10 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
 
     override fun getOfflineCloudPlayer(uniqueId: UUID): ICommunicationPromise<IOfflineCloudPlayer> {
         return CloudPlugin.instance.communicationClient.sendQuery(PacketIOGetOfflinePlayer(uniqueId))
+    }
+
+    override fun getOnlinePlayersFiltered(predicate: Predicate<ICloudPlayer>): ICommunicationPromise<List<SimpleCloudPlayer>> {
+        return CloudPlugin.instance.communicationClient.sendQuery(PacketIOGetOnlinePlayersFiltered(predicate))
     }
 
 

@@ -19,7 +19,7 @@ class PacketIOExecuteCommand() : JsonPacket() {
         val command = this.jsonData.getString("command") ?: return contentException("command")
         val commandExecutable: ICommandExecutable? = when(cloudClientType) {
             CloudClientType.WRAPPER -> {
-                CloudAPI.instance.getWrapperManager().getWrapperByName(serviceName)
+                CloudAPI.instance.getWrapperManager().getWrapperByName(serviceName)?.obj
             }
             CloudClientType.SERVICE -> {
                 CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(serviceName)

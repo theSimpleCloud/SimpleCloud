@@ -18,5 +18,6 @@
       "artifactId": "de.flapdoodle.embed.mongo",
       "version": "2.2.0"
     }
-  ]
+  ],
+  "depend": []
 }

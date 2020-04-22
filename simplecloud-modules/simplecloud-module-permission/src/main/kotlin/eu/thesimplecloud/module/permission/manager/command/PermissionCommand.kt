@@ -39,7 +39,7 @@ class PermissionCommand : ICommandHandler {
     private fun getPermissionPlayerByName(name: String): IPermissionPlayer? {
         val offlinePlayer = CloudAPI.instance.getCloudPlayerManager().getOfflineCloudPlayer(name).awaitUninterruptibly().getNow()
                 ?: return null
-        return offlinePlayer.getPermissionPlayer()
+        return offlinePlayer.getPermissionPlayer(this::class.java.classLoader)
     }
 
 

@@ -2,6 +2,7 @@ package eu.thesimplecloud.launcher.startup
 
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.external.ICloudModule
+import eu.thesimplecloud.api.external.ResourceFinder
 import eu.thesimplecloud.api.language.LanguageManager
 import eu.thesimplecloud.launcher.application.ApplicationStarter
 import eu.thesimplecloud.launcher.application.CloudApplicationType
@@ -21,6 +22,7 @@ import eu.thesimplecloud.launcher.updater.LauncherUpdater
 import eu.thesimplecloud.launcher.updater.UpdateExecutor
 import java.io.File
 import java.io.IOException
+import java.net.URLClassLoader
 import java.util.concurrent.Executors
 import kotlin.system.exitProcess
 
@@ -83,7 +85,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
             this.logger.warning("Auto updater is disabled.")
         }
         this.languageManager.loadFile()
-        this.commandManager.registerAllCommands(launcherCloudModule, "eu.thesimplecloud.launcher.commands")
+        this.commandManager.registerAllCommands(launcherCloudModule, currentClassLoader, "eu.thesimplecloud.launcher.commands")
         this.consoleManager.startThread()
         if (!this.languageManager.fileExistBeforeLoad())
             this.setupManager.queueSetup(LanguageSetup())
@@ -146,7 +148,15 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
         if (System.getProperty("simplecloud.launcher.update-mode") != null) {
             return File("launcher-update.jar")
         }
-        return File(Launcher::class.java.protectionDomain.codeSource.location.toURI().path)
+        return File(Launcher::class.java.protectionDomain.codeSource.location.toURI())
+    }
+
+    fun getBaseFile(): File {
+        return File("storage/base.jar")
+    }
+
+    fun getNewClassLoaderWithLauncherAndBase(): URLClassLoader {
+        return ResourceFinder.createClassLoaderByFiles(this.getBaseFile(), this.getLauncherFile())
     }
 
 }

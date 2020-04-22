@@ -41,7 +41,7 @@ class PacketInCloudClientLogin() : JsonPacket() {
                 Launcher.instance.consoleSender.sendMessage("manager.login.service", "Service %SERVICE%", cloudService.getName(), " logged in.")
             }
             CloudClientType.WRAPPER -> {
-                val wrapperInfo = CloudAPI.instance.getWrapperManager().getWrapperByHost(host)
+                val wrapperInfo = CloudAPI.instance.getWrapperManager().getWrapperByHost(host)?.obj
                         ?: return failure(NoSuchElementException("Wrapper not found"))
                 connection.setClientValue(wrapperInfo)
                 wrapperInfo.setAuthenticated(true)

@@ -31,7 +31,7 @@ class BungeeListener(val plugin: BungeePluginMain) : Listener {
             plugin.startTablist()
         }
 
-        val config = plugin.config
+        val config = plugin.configHolder.obj
         val proxyConfiguration = plugin.getProxyConfiguration()?: return
 
         if (plugin.thisService.getServiceGroup().isInMaintenance()) {
@@ -75,7 +75,7 @@ class BungeeListener(val plugin: BungeePluginMain) : Listener {
     fun on(event: ProxyPingEvent) {
         val response = event.response
 
-        val config = plugin.config
+        val config = plugin.configHolder
 
         val proxyConfiguration = plugin.getProxyConfiguration() ?: return
         val motdConfiguration = if (plugin.thisService.getServiceGroup().isInMaintenance())

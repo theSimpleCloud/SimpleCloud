@@ -13,7 +13,7 @@ class IngameCommandUpdater : IListener {
     private val synchronizedIngameCommandNamesContainer = SynchronizedIngameCommandNamesContainer()
 
     init {
-        CloudAPI.instance.getSynchronizedObjectManager().updateObject(this.synchronizedIngameCommandNamesContainer)
+        CloudAPI.instance.getSingleSynchronizedObjectManager().updateObject(this.synchronizedIngameCommandNamesContainer)
         CloudAPI.instance.getEventManager().registerListener(Manager.instance, this)
     }
 

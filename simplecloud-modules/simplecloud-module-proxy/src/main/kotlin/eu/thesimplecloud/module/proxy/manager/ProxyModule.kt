@@ -38,7 +38,7 @@ class ProxyModule : ICloudModule{
         }
 
         val config = JsonData.fromJsonFile(configFile)!!.getObject(Config::class.java)
-        CloudAPI.instance.getSynchronizedObjectManager().updateObject(config)
+        CloudAPI.instance.getSingleSynchronizedObjectManager().updateObject(config)
         this.config = config
     }
 

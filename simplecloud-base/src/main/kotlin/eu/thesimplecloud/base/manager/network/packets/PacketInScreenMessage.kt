@@ -17,7 +17,7 @@ class PacketInScreenMessage : JsonPacket() {
 
         val commandExecutable: ICommandExecutable? = when (cloudClientType) {
             CloudClientType.SERVICE -> CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(name)
-            CloudClientType.WRAPPER -> CloudAPI.instance.getWrapperManager().getWrapperByName(name)
+            CloudClientType.WRAPPER -> CloudAPI.instance.getWrapperManager().getWrapperByName(name)?.obj
         }
         commandExecutable ?: return failure(NoSuchElementException("Cannot find service / wrapper by name: $name"))
 

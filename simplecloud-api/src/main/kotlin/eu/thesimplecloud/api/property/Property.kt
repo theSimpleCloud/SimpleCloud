@@ -15,11 +15,16 @@ class Property<T : Any>(
     val valueAsString: String = JsonData.fromObject(value).getAsJsonString()
 
     @JsonIgnore
-    fun getValue(): T {
+    fun getValue(classLoader: ClassLoader): T {
         savedValue?.let {
-            savedValue = JsonData.fromJsonString(valueAsString).getObject(Class.forName(className) as Class<T>)
+            savedValue = JsonData.fromJsonString(valueAsString).getObject(Class.forName(className, true, classLoader) as Class<T>)
         }
         return savedValue!!
+    }
+
+    @JsonIgnore
+    fun getValue(): T {
+        return getValue(this::class.java.classLoader)
     }
 
 }

@@ -14,7 +14,7 @@ import java.io.File
 class PacketInGetTemplates() : JsonPacket() {
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Unit> {
-        val wrapperByHost = CloudAPI.instance.getWrapperManager().getWrapperByHost(connection.getHost()!!)
+        val wrapperByHost = CloudAPI.instance.getWrapperManager().getWrapperByHost(connection.getHost()!!)?.obj
                 ?: throw IllegalStateException("No Wrapper object found for Wrapper by host " + connection.getHost())
         Launcher.instance.consoleSender.sendMessage("manager.templates.synchronization", "Synchronizing templates with Wrapper %WRAPPER%", wrapperByHost.getName(), "...")
         val templatesDirectorySync = connection.getCommunicationBootstrap().getDirectorySyncManager().getDirectorySync(File(DirectoryPaths.paths.templatesPath))

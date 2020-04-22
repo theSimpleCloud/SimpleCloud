@@ -2,6 +2,7 @@ package eu.thesimplecloud.api.external
 
 import sun.misc.URLClassPath
 import java.io.File
+import java.io.FileNotFoundException
 import java.io.InputStream
 import java.lang.reflect.Field
 import java.net.MalformedURLException
@@ -46,6 +47,25 @@ class ResourceFinder {
         }
 
         private fun getThreadClassLoader() = Thread.currentThread().contextClassLoader as URLClassLoader
+
+
+
+        @Throws(FileNotFoundException::class)
+        fun getFileFromClass(clazz: Class<*>): File {
+            val resource = clazz.getResource("/${clazz.name.replace('.', '/')}.class").toString()
+            if (!resource.contains("!")) throw FileNotFoundException("Unable to find file by class ${clazz.name}")
+            val path = try {
+                val split = resource.split(":")
+                split.drop(2).joinToString(":").split("!")[0]
+            } catch (ex: Exception) {
+                throw FileNotFoundException("Unable to find file by class ${clazz.name}")
+            }
+            return File(path)
+        }
+
+        fun createClassLoaderByFiles(vararg files: File): URLClassLoader {
+            return URLClassLoader(files.map { it.toURI().toURL() }.toTypedArray())
+        }
 
     }
 }

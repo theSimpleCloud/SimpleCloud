@@ -1,5 +1,8 @@
 package eu.thesimplecloud.base.wrapper.impl
 
+import eu.thesimplecloud.api.event.service.CloudServiceConnectedEvent
+import eu.thesimplecloud.api.event.service.CloudServiceUnregisteredEvent
+import eu.thesimplecloud.api.listenerextension.cloudListener
 import eu.thesimplecloud.api.network.packets.service.PacketIOStopCloudService
 import eu.thesimplecloud.api.network.packets.service.PacketIOUpdateCloudService
 import eu.thesimplecloud.api.service.ICloudService
@@ -21,14 +24,18 @@ class CloudServiceManagerImpl : AbstractCloudServiceManager() {
         } else {
             Wrapper.instance.communicationClient.sendUnitQuery(PacketIOStopCloudService(cloudService.getName()))
         }
-        return cloudService.closedPromise()
+        return cloudListener<CloudServiceUnregisteredEvent>()
+                .addCondition { it.cloudService == cloudService }
+                .toPromise()
     }
 
     override fun startService(cloudService: ICloudService): ICommunicationPromise<Unit> {
         val processQueue = Wrapper.instance.processQueue
         checkNotNull(processQueue) { "Process-Queue was null while trying to add a service to the queue." }
         processQueue.addToQueue(cloudService)
-        return cloudService.connectedPromise()
+        return cloudListener<CloudServiceConnectedEvent>()
+                .addCondition { it.cloudService == cloudService }
+                .toPromise()
     }
 
 }

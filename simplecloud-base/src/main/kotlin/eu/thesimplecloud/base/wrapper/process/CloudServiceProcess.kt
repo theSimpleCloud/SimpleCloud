@@ -3,6 +3,8 @@ package eu.thesimplecloud.base.wrapper.process
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.client.CloudClientType
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
+import eu.thesimplecloud.api.event.service.CloudServiceUnregisteredEvent
+import eu.thesimplecloud.api.listenerextension.cloudListener
 import eu.thesimplecloud.api.network.packets.service.PacketIORemoveCloudService
 import eu.thesimplecloud.api.network.packets.service.PacketIOUpdateCloudService
 import eu.thesimplecloud.api.service.ICloudService
@@ -132,7 +134,9 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
                     forceStop()
             }, 7, TimeUnit.SECONDS)
         }
-        return getCloudService().closedPromise()
+        return cloudListener<CloudServiceUnregisteredEvent>()
+                .addCondition { it.cloudService == this.cloudService }
+                .toPromise()
     }
 
     override fun executeCommand(command: String) {

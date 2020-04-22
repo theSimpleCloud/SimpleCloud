@@ -16,7 +16,7 @@ class PacketIOGetAllCachedSynchronizedListObjects() : ObjectPacket<String>() {
         val value = this.value ?: return contentException("value")
         val synchronizedObjectList = CloudAPI.instance.getSynchronizedObjectListManager().getSynchronizedObjectList(value)
         synchronizedObjectList ?: return failure(NoSuchElementException("No list object found by the specified name: $value"))
-        val allPromises = synchronizedObjectList.getAllCachedObjects().map { connection.sendUnitQuery(PacketIOUpdateSynchronizedListObject(value, it)) }
+        val allPromises = synchronizedObjectList.getAllCachedObjects().map { connection.sendUnitQuery(PacketIOUpdateSynchronizedListObject(value, it.obj)) }
         return allPromises.combineAllPromises()
     }
 }

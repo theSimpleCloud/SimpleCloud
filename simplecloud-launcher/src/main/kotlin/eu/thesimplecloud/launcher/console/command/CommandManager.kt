@@ -1,6 +1,7 @@
 package eu.thesimplecloud.launcher.console.command
 
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.ICloudAPI
 import eu.thesimplecloud.api.command.ICommandSender
 import eu.thesimplecloud.api.external.ICloudModule
 import eu.thesimplecloud.api.parser.string.StringParser
@@ -152,12 +153,13 @@ class CommandManager() {
     fun getCommandDataByArgumentLength(length: Int) = this.commands.filter { it.getPathWithCloudPrefixIfRequired().trim().split(" ").size == length }
             .union(this.commands.filter { it.isLegacy })
 
-    fun registerAllCommands(cloudModule: ICloudModule, vararg packages: String) {
+    fun registerAllCommands(cloudModule: ICloudModule, classLoader: ClassLoader, vararg packages: String) {
         packages.forEach { pack ->
-            val reflection = Reflections(pack, Launcher.instance.currentClassLoader)
+            val reflection = Reflections(pack, Launcher.instance.getNewClassLoaderWithLauncherAndBase())
             reflection.getSubTypesOf(ICommandHandler::class.java).forEach {
+                val classToUse = Class.forName(it.name, true, classLoader) as Class<out ICommandHandler>
                 try {
-                    registerCommand(cloudModule, it.getDeclaredConstructor().newInstance())
+                    registerCommand(cloudModule, classToUse.getDeclaredConstructor().newInstance())
                 } catch (e: InstantiationException) {
                     e.printStackTrace()
                 } catch (e: IllegalAccessException) {
@@ -210,7 +212,7 @@ class CommandManager() {
 
     fun getAllIngameCommandPrefixes(): Collection<String> = this.commands.filter { it.commandType == CommandType.INGAME }.map { it.getAllPathsWithAliases().map { path -> path.split(" ")[0] } }.flatten().toSet().union(listOf("cloud"))
 
-    private fun getCloudAPI(): CloudAPI? {
+    private fun getCloudAPI(): ICloudAPI? {
         return try {
             CloudAPI.instance
         } catch (ex: Exception) {

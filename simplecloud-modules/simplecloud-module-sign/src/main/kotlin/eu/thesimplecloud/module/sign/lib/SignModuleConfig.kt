@@ -1,13 +1,14 @@
 package eu.thesimplecloud.module.sign.lib
 
 import eu.thesimplecloud.api.location.TemplateLocation
-import eu.thesimplecloud.api.sync.`object`.ISynchronizedObject
+import eu.thesimplecloud.api.sync.`object`.ISingleSynchronizedObject
+import eu.thesimplecloud.api.sync.`object`.SynchronizedObjectHolder
 
 class SignModuleConfig(
         val cloudSigns: MutableList<CloudSign>,
         val groupToLayout: GroupToLayout,
         val signLayouts: MutableList<SignLayout>
-) : ISynchronizedObject {
+) : ISingleSynchronizedObject {
 
     override fun getName(): String = "simplecloud-module-sign-config"
 
@@ -36,6 +37,6 @@ class SignModuleConfig(
     }
 
     companion object {
-        lateinit var INSTANCE: SignModuleConfig
+        lateinit var INSTANCE: SynchronizedObjectHolder<SignModuleConfig>
     }
 }

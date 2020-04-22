@@ -55,6 +55,7 @@ class PermissionModule : ICloudModule {
         if (cloudPlayer != null) {
             permissionPlayer.update()
             offlineCloudPlayerHandler.saveCloudPlayer(cloudPlayer.toOfflinePlayer() as OfflineCloudPlayer)
+            cloudPlayer.sendMessage("§cYou were updated.")
         } else {
             val offlinePlayer = offlineCloudPlayerHandler.getOfflinePlayer(permissionPlayer.getName()) ?: return
             offlinePlayer.setProperty(PermissionPlayer.PROPERTY_NAME, Property(permissionPlayer))

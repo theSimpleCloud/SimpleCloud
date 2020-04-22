@@ -44,7 +44,7 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.plugin.network.packets")
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.client.packets")
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.api.network.packets")
-        this.communicationClient.addClassLoader(this::class.java.classLoader)
+        this.communicationClient.setPacketSearchClassLoader(this::class.java.classLoader)
 
         nettyThread = thread(true, isDaemon = false, contextClassLoader = this::class.java.classLoader) {
             println("<------Starting cloud client----------->")
@@ -105,7 +105,7 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
      * Prevents the service from updating its state by itself.
      */
     @Synchronized
-    fun disableUpdatingState() {
+    fun disableStateUpdating() {
         this.updateState = false
     }
 

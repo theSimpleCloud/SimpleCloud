@@ -33,18 +33,18 @@ class TemplateCopier : ITemplateCopier {
         generateServiceFile(cloudService, serviceTmpDir)
 
         val modulesByCopyType = Wrapper.instance.existingModules
-                .filter { it.first.moduleCopyType != ModuleCopyType.NONE }.toMutableList()
+                .filter { it.content.moduleCopyType != ModuleCopyType.NONE }.toMutableList()
         if (!cloudService.isLobby())
-            modulesByCopyType.removeIf { it.first.moduleCopyType == ModuleCopyType.LOBBY }
+            modulesByCopyType.removeIf { it.content.moduleCopyType == ModuleCopyType.LOBBY }
         if (!cloudService.isProxy())
-            modulesByCopyType.removeIf { it.first.moduleCopyType == ModuleCopyType.PROXY }
+            modulesByCopyType.removeIf { it.content.moduleCopyType == ModuleCopyType.PROXY }
         if (cloudService.isProxy())
-            modulesByCopyType.removeIf { it.first.moduleCopyType == ModuleCopyType.SERVER }
+            modulesByCopyType.removeIf { it.content.moduleCopyType == ModuleCopyType.SERVER }
 
         val moduleNamesToCopy = getModulesToCopyOfTemplateAndSubTemplates(template)
-        val modulesByName = Wrapper.instance.existingModules.filter { moduleNamesToCopy.contains(it.first.name) }
+        val modulesByName = Wrapper.instance.existingModules.filter { moduleNamesToCopy.contains(it.content.name) }
 
-        modulesByCopyType.union(modulesByName).distinctBy { it.first.name }.forEach { FileUtils.copyFile(it.second, File(serviceTmpDir, "/plugins/" + it.second.name)) }
+        modulesByCopyType.union(modulesByName).distinctBy { it.content.name }.forEach { FileUtils.copyFile(it.file, File(serviceTmpDir, "/plugins/" + it.file.name)) }
 
     }
 

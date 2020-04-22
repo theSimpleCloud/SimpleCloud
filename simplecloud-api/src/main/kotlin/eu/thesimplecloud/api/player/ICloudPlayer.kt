@@ -194,6 +194,13 @@ interface ICloudPlayer : IOfflineCloudPlayer, ICommandSender {
     fun clone(): ICloudPlayer
 
     /**
+     * Returns a new [SimpleCloudPlayer] by the data of this player.
+     */
+    fun toSimplePlayer(): SimpleCloudPlayer {
+        return SimpleCloudPlayer(getName(), getUniqueId())
+    }
+
+    /**
      * Updates this player to the network
      */
     fun update() = CloudAPI.instance.getCloudPlayerManager().updateCloudPlayer(this)

@@ -8,10 +8,7 @@ import eu.thesimplecloud.api.exception.UnreachableServiceException
 import eu.thesimplecloud.api.location.ServiceLocation
 import eu.thesimplecloud.api.location.SimpleLocation
 import eu.thesimplecloud.api.network.packets.player.*
-import eu.thesimplecloud.api.player.AbstractCloudPlayerManager
-import eu.thesimplecloud.api.player.ICloudPlayer
-import eu.thesimplecloud.api.player.IOfflineCloudPlayer
-import eu.thesimplecloud.api.player.OfflineCloudPlayer
+import eu.thesimplecloud.api.player.*
 import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceType
@@ -23,6 +20,7 @@ import eu.thesimplecloud.clientserverapi.lib.promise.flatten
 import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnectedClient
 import java.util.*
 import java.util.concurrent.TimeUnit
+import java.util.function.Predicate
 import kotlin.collections.ArrayList
 
 class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
@@ -157,6 +155,10 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
         if (onlineCloudPlayer != null) return CommunicationPromise.of(onlineCloudPlayer)
         val offlinePlayer = Manager.instance.offlineCloudPlayerHandler.getOfflinePlayer(uniqueId)
         return CommunicationPromise.ofNullable(offlinePlayer, NoSuchPlayerException("Player not found"))
+    }
+
+    override fun getOnlinePlayersFiltered(predicate: Predicate<ICloudPlayer>): ICommunicationPromise<List<SimpleCloudPlayer>> {
+        return CommunicationPromise.of(getAllCachedCloudPlayers().filter { predicate.test(it) }.map { it.toSimplePlayer() })
     }
 
     private fun getProxyClientOfCloudPlayer(cloudPlayer: ICloudPlayer): IConnectedClient<*>? {

@@ -39,6 +39,7 @@ class OfflineCloudPlayerHandler(mongoConnectionInformation: MongoConnectionInfor
 
     @Synchronized
     override fun saveCloudPlayer(offlineCloudPlayer: OfflineCloudPlayer) {
+        if (offlineCloudPlayer::class.java != OfflineCloudPlayer::class.java) throw IllegalStateException("Cannot save player of type " + offlineCloudPlayer::class.java.simpleName)
         if (getOfflinePlayer(offlineCloudPlayer.getUniqueId()) != null)
             this.saveCollection.replaceOne(Filters.eq("uniqueId", offlineCloudPlayer.getUniqueId()), offlineCloudPlayer)
         else
@@ -54,7 +55,7 @@ class OfflineCloudPlayerHandler(mongoConnectionInformation: MongoConnectionInfor
                 val valueString = it.value.toString()
                 val jsonData = JsonData.fromJsonString(valueString)
                 val className = jsonData.getString("className")!!
-                val clazz = Class.forName(className)
+                val clazz = Manager.instance.cloudModuleHandler.findModuleClass(className)
                 val value = jsonData.getObject("savedValue", clazz)!!
                 Property(value)
             }

@@ -8,7 +8,9 @@ import eu.thesimplecloud.api.location.SimpleLocation
 import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
+import eu.thesimplecloud.clientserverapi.lib.promise.toListPromise
 import java.util.*
+import java.util.function.Predicate
 
 interface ICloudPlayerManager {
 
@@ -192,6 +194,43 @@ interface ICloudPlayerManager {
      * - [NoSuchPlayerException] if the [IOfflineCloudPlayer] cannot be found by the specified [uniqueId]
      */
     fun getOfflineCloudPlayer(uniqueId: UUID): ICommunicationPromise<IOfflineCloudPlayer>
+
+    /**
+     * Returns a list of the requested players.
+     */
+    fun getOfflineCloudPlayersByNames(names: List<String>): ICommunicationPromise<List<IOfflineCloudPlayer>> {
+        val playerPromises = names.map { getOfflineCloudPlayer(it) }
+        return playerPromises.toListPromise()
+    }
+
+    /**
+     * Returns a list of the requested players.
+     */
+    fun getOfflineCloudPlayersByUniqueIds(uniqueIds: List<UUID>): ICommunicationPromise<List<IOfflineCloudPlayer>> {
+        val playerPromises = uniqueIds.map { getOfflineCloudPlayer(it) }
+        return playerPromises.toListPromise()
+    }
+
+    /**
+     * Returns a list of the requested players.
+     */
+    fun getCloudPlayersByNames(names: List<String>): ICommunicationPromise<List<ICloudPlayer>> {
+        val playerPromises = names.map { getCloudPlayer(it) }
+        return playerPromises.toListPromise()
+    }
+
+    /**
+     * Returns a list of the requested players.
+     */
+    fun getCloudPlayersByUniqueIds(uniqueIds: List<UUID>): ICommunicationPromise<List<ICloudPlayer>> {
+        val playerPromises = uniqueIds.map { getCloudPlayer(it) }
+        return playerPromises.toListPromise()
+    }
+
+    /**
+     * Filters all [ICloudPlayer]s.
+     */
+    fun getOnlinePlayersFiltered(predicate: Predicate<ICloudPlayer>): ICommunicationPromise<List<SimpleCloudPlayer>>
 
     /**
      * Returns the amount of players connected to the network
