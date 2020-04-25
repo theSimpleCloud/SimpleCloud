@@ -22,13 +22,13 @@ class ProxyCommand(val module: ProxyModule): ICommandHandler {
 
     private val propertyPrefix = "module.proxy.command."
 
-    @CommandSubPath("reload")
+    @CommandSubPath("reload", "Reloads the proxy module")
     fun handleReload(sender: ICommandSender) {
         module.loadConfig()
         sender.sendMessage("${propertyPrefix}reload", "Config reloaded successfully.")
     }
 
-    @CommandSubPath("<proxyName> whitelist add <playerName>")
+    @CommandSubPath("<proxyName> whitelist add <playerName>", "Adds a player to whitelist")
     fun handleWhitelistAdd(sender: ICommandSender, @CommandArgument("proxyName") proxyName: String,
                            @CommandArgument("playerName") playerName: String) {
         val proxyConfiguration = module.getProxyConfiguration(proxyName)
@@ -54,7 +54,7 @@ class ProxyCommand(val module: ProxyModule): ICommandHandler {
                 "Added %player%", playerName ," to the whitelist.")
     }
 
-    @CommandSubPath("<proxyName> whitelist remove <playerName>")
+    @CommandSubPath("<proxyName> whitelist remove <playerName>", "Removes a player from whitelist")
     fun handleWhitelistRemove(sender: ICommandSender, @CommandArgument("proxyName") proxyName: String,
                            @CommandArgument("playerName") playerName: String) {
         val proxyConfiguration = module.getProxyConfiguration(proxyName)

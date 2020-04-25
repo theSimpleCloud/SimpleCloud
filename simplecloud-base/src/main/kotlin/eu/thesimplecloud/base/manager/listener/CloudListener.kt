@@ -1,9 +1,13 @@
 package eu.thesimplecloud.base.manager.listener
 
+import eu.thesimplecloud.api.event.player.CloudPlayerDisconnectEvent
+import eu.thesimplecloud.api.event.player.CloudPlayerLoginEvent
+import eu.thesimplecloud.api.event.player.CloudPlayerUnregisteredEvent
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.api.eventapi.CloudEventHandler
 import eu.thesimplecloud.api.eventapi.IListener
 import eu.thesimplecloud.api.event.service.CloudServiceUnregisteredEvent
+import eu.thesimplecloud.base.manager.events.CloudPlayerLoginRequestEvent
 import eu.thesimplecloud.launcher.extension.sendMessage
 
 class CloudListener : IListener {
@@ -18,6 +22,26 @@ class CloudListener : IListener {
             }
         }
         Launcher.instance.screenManager.unregisterScreen(event.cloudService.getName())
+    }
+
+    @CloudEventHandler
+    fun on(event: CloudPlayerLoginEvent) {
+        event.getCloudPlayer().then {
+            Launcher.instance.consoleSender
+                    .sendMessage("manager.player.connected", "Player %NAME%", it.getName(), "(%UUID% ", it.getUniqueId().toString(),
+                            "/ %IP%", it.getPlayerConnection().getAddress().getHostname(), ") connected.")
+        }
+
+    }
+
+    @CloudEventHandler
+    fun on(event: CloudPlayerUnregisteredEvent) {
+        val player = event.cloudPlayer
+
+        Launcher.instance.consoleSender
+                .sendMessage("manager.player.disconnected", "Player %NAME%", player.getName(), "(%UUID% ", player.getUniqueId().toString(),
+                        "/ %IP%", player.getPlayerConnection().getAddress().getHostname(), ") disconnected.")
+
     }
 
 }

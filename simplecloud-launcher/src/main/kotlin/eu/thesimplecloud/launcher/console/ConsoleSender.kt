@@ -23,6 +23,10 @@ class ConsoleSender : ICommandSender {
         return CommunicationPromise.of(Unit)
     }
 
+    override fun hasPermission(permission: String): ICommunicationPromise<Boolean> {
+        return CommunicationPromise.of(true)
+    }
+
     private fun filerColorCodes(message: String): String {
         val builder = StringBuilder()
         val charArray = message.toCharArray()

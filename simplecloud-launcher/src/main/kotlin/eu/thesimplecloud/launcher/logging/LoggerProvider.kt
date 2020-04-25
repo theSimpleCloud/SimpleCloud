@@ -2,10 +2,12 @@ package eu.thesimplecloud.launcher.logging
 
 import eu.thesimplecloud.launcher.screens.IScreenManager
 import eu.thesimplecloud.launcher.startup.Launcher
-import org.jline.reader.LineReader
+import org.fusesource.jansi.Ansi
+import org.jline.utils.InfoCmp
+/*import org.jline.reader.LineReader
 import org.jline.reader.LineReaderBuilder
 import org.jline.terminal.TerminalBuilder
-import org.jline.utils.InfoCmp
+import org.jline.utils.InfoCmp*/
 import java.io.File
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
@@ -105,11 +107,6 @@ class LoggerProvider(val screenManager: IScreenManager) : Logger("SimpleCloudLog
         lineReader.terminal.puts(InfoCmp.Capability.carriage_return)
         lineReader.terminal.writer().println(coloredMessage);
         lineReader.terminal.flush();
-
-        if (lineReader.isReading) {
-            lineReader.callWidget(LineReader.REDRAW_LINE)
-            lineReader.callWidget(LineReader.REDISPLAY)
-        }
 
     }
 

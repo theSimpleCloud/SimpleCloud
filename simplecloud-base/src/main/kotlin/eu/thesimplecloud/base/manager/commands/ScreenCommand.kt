@@ -9,7 +9,7 @@ import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.startup.Launcher
 
-@Command("screen", CommandType.CONSOLE)
+@Command("screen", CommandType.CONSOLE, "simplecloud.command.screen")
 class ScreenCommand : ICommandHandler {
 
     @CommandSubPath("join <name>", "Joins a screen")

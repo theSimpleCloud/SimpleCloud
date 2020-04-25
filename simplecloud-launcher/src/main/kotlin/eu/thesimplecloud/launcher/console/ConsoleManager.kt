@@ -3,6 +3,8 @@ package eu.thesimplecloud.launcher.console
 import eu.thesimplecloud.launcher.console.command.CommandManager
 import eu.thesimplecloud.launcher.logging.LogType
 import eu.thesimplecloud.launcher.startup.Launcher
+import org.fusesource.jansi.Ansi
+
 import org.jline.reader.LineReader
 import org.jline.reader.LineReaderBuilder
 import org.jline.reader.UserInterruptException
@@ -14,7 +16,7 @@ import org.jline.terminal.TerminalBuilder
  * Date: 06.09.2019
  * Time: 21:29
  */
-class ConsoleManager(var applicationName: String, private val commandManager: CommandManager, private val consoleSender: ConsoleSender) : IConsoleManager {
+class ConsoleManager(var applicationName: String, val commandManager: CommandManager, val consoleSender: ConsoleSender) : IConsoleManager {
 
 
     var thread: Thread? = null
@@ -25,6 +27,8 @@ class ConsoleManager(var applicationName: String, private val commandManager: Co
     fun buildPrompt() = Launcher.instance.logger.getColoredString("§c${applicationName}§f@§eSimpleCloud§f> ", LogType.EMPTY)
 
     private fun createLineReader(): LineReader {
+        val consoleCompleter = ConsoleCompleter(this)
+
         val terminal = TerminalBuilder.builder()
                 .system(true)
                 .streams(System.`in`, System.out)
@@ -33,6 +37,7 @@ class ConsoleManager(var applicationName: String, private val commandManager: Co
                 .build()
 
         return LineReaderBuilder.builder()
+                .completer(consoleCompleter)
                 .terminal(terminal)
                 .option(LineReader.Option.DISABLE_EVENT_EXPANSION, true)
                 .option(LineReader.Option.AUTO_REMOVE_SLASH, false)
@@ -40,13 +45,14 @@ class ConsoleManager(var applicationName: String, private val commandManager: Co
     }
 
     override fun startThread() {
+
         var prompt = buildPrompt()
 
         thread = Thread {
             var readLine = ""
             try {
                 while (!Thread.currentThread().isInterrupted) {
-                    readLine = lineReader.readLine("%{$prompt%}")
+                    readLine = lineReader.readLine(prompt)
                     handleInput(readLine)
                 }
             } catch (ex: UserInterruptException) {
@@ -81,6 +87,7 @@ class ConsoleManager(var applicationName: String, private val commandManager: Co
         //add cloud to execute a cloud command
         commandManager.handleCommand("cloud $readLine", consoleSender)
     }
+
 
     override fun stopThread() {
         lineReader.terminal.reader().shutdown()

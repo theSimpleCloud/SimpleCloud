@@ -1,6 +1,5 @@
 package eu.thesimplecloud.launcher.console.command
 
-import com.google.gson.GsonBuilder
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.command.ICommandSender
 import eu.thesimplecloud.launcher.console.command.annotations.Command
@@ -14,6 +13,7 @@ import eu.thesimplecloud.api.parser.string.StringParser
 import eu.thesimplecloud.api.player.ICloudPlayer
 import eu.thesimplecloud.api.utils.getEnumValues
 import eu.thesimplecloud.launcher.console.ConsoleSender
+import eu.thesimplecloud.launcher.console.command.provider.DefaultCommandSuggestionProvider
 import eu.thesimplecloud.launcher.event.command.CommandExecuteEvent
 import eu.thesimplecloud.launcher.event.command.CommandRegisteredEvent
 import eu.thesimplecloud.launcher.event.command.CommandUnregisteredEvent
@@ -66,7 +66,7 @@ class CommandManager() {
             return
         }
         if (commandSender is ICloudPlayer) {
-            if (!commandSender.hasPermission(matchingCommandData.permission).awaitUninterruptibly().get()) {
+            if (matchingCommandData.permission.trim().isNotEmpty() && !commandSender.hasPermission(matchingCommandData.permission).awaitUninterruptibly().get()) {
                 commandSender.sendMessage("command.player.no-permission", "§cYou don't have the permission to execute this command.")
                 return
             }
@@ -147,6 +147,42 @@ class CommandManager() {
         }
     }
 
+    fun getAvailableTabCompleteArgs(message: String, sender: ICommandSender): List<String> {
+        val messageArray = message.split(" ")
+        val suggestions = HashSet<String>()
+        val dataList = getAvailableArgsMatchingCommandData(messageArray.dropLast(1).joinToString(" "))
+
+        dataList.forEach {
+            if (sender is ICloudPlayer && it.commandType == CommandType.CONSOLE) {
+                return@forEach
+            }
+            if (sender !is ICloudPlayer && it.commandType == CommandType.INGAME) {
+                return@forEach
+            }
+
+            val path = it.getPathWithCloudPrefixIfRequired()
+            val pathArray = path.split(" ")
+
+            if (pathArray.size == messageArray.lastIndex) {
+                return@forEach
+            }
+
+            val currentPathValue = pathArray[messageArray.lastIndex]
+
+            val permission = it.permission
+            if (permission.isEmpty() || sender.hasPermission(permission).awaitUninterruptibly().getNow()) {
+                if (isParamater(currentPathValue)) {
+                    val commandParameterData = it.getParameterDataByNameWithBraces(currentPathValue)?: return@forEach
+                    suggestions.addAll(commandParameterData.provider.getSuggestions(sender, messageArray.last()))
+                } else {
+                    suggestions.add(currentPathValue)
+                }
+            }
+        }
+
+        return suggestions.filter { it.toLowerCase().startsWith(messageArray.last().toLowerCase()) }
+    }
+
     fun isParamater(s: String) = s.startsWith("<") && s.endsWith(">")
 
     fun getCommandDataByMinimumArgumentLength(length: Int) = this.commands.filter { it.getPathWithCloudPrefixIfRequired().split(" ").size >= length }
@@ -193,7 +229,7 @@ class CommandManager() {
                             throw CommandRegistrationException("Forbidden parameter type without CommandArgument annotation: ${parameter.type.name}")
                         }
                     }
-                    commandData.parameterDataList.add(CommandParameterData(parameter.type, commandArgument?.name))
+                    commandData.parameterDataList.add(CommandParameterData(parameter.type, commandArgument?.suggestionProvider?.java?.getDeclaredConstructor()?.newInstance()?: DefaultCommandSuggestionProvider(), commandArgument?.name))
                 }
                 commands.add(commandData)
                 getCloudAPI()?.getEventManager()?.call(CommandRegisteredEvent(commandData))

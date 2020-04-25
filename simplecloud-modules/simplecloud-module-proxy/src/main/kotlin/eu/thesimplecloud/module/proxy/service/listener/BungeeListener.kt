@@ -76,8 +76,6 @@ class BungeeListener(val plugin: BungeePluginMain) : Listener {
     fun on(event: ProxyPingEvent) {
         val response = event.response
 
-        val config = plugin.config
-
         val proxyConfiguration = plugin.getProxyConfiguration() ?: return
         val motdConfiguration = if (plugin.thisService.getServiceGroup().isInMaintenance())
             proxyConfiguration.maintenanceMotds else proxyConfiguration.motds

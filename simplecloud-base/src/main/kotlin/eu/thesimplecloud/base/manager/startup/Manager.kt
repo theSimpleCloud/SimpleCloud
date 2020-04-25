@@ -29,6 +29,7 @@ import eu.thesimplecloud.base.manager.external.ICloudModuleHandler
 import eu.thesimplecloud.base.manager.ingamecommands.IngameCommandUpdater
 import eu.thesimplecloud.base.manager.packet.IPacketRegistry
 import eu.thesimplecloud.base.manager.packet.PacketRegistry
+import eu.thesimplecloud.base.manager.player.PlayerUnregisterScheduler
 import eu.thesimplecloud.clientserverapi.lib.debug.DebugMessage
 import eu.thesimplecloud.launcher.extension.sendMessage
 import kotlinx.coroutines.GlobalScope
@@ -55,6 +56,7 @@ class Manager : ICloudApplication {
     val templateServer: INettyServer<ICommandExecutable>
     val packetRegistry: IPacketRegistry = PacketRegistry()
     val cloudModuleHandler: ICloudModuleHandler = CloudModuleHandler()
+    val playerUnregisterScheduler = PlayerUnregisterScheduler()
 
     companion object {
         @JvmStatic
@@ -98,6 +100,7 @@ class Manager : ICloudApplication {
         this.templateServer.getDirectorySyncManager().createDirectorySync(File(DirectoryPaths.paths.modulesPath), DirectoryPaths.paths.modulesPath)
         this.serviceHandler.startThread()
         thread(start = true, isDaemon = false) { templateServer.start() }
+        this.playerUnregisterScheduler.startScheduler()
     }
 
     private fun startMongoDBServer(mongoServerInformation: MongoServerInformation): MongoController {

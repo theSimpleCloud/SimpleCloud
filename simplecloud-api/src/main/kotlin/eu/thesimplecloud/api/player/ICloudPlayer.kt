@@ -122,16 +122,7 @@ interface ICloudPlayer : IOfflineCloudPlayer, ICommandSender {
      */
     fun teleport(location: ServiceLocation): ICommunicationPromise<Unit> = CloudAPI.instance.getCloudPlayerManager().teleportPlayer(this, location)
 
-    /**
-     * Checks whether this player has the specified [permission]
-     * @return a promise that is completed when the permission is checked, or
-     * when an exception is encountered. [ICommunicationPromise.isSuccess] indicates success
-     * or failure.
-     * The promise will fail with:
-     * - [UnreachableServiceException] if the proxy server the player is connected is not reachable.
-     * - [NoSuchPlayerException] if the player cannot be found on the proxy.
-     */
-    fun hasPermission(permission: String): ICommunicationPromise<Boolean> = CloudAPI.instance.getCloudPlayerManager().hasPermission(this, permission)
+    override fun hasPermission(permission: String): ICommunicationPromise<Boolean> = CloudAPI.instance.getCloudPlayerManager().hasPermission(this, permission)
 
     /**
      *

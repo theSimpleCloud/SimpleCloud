@@ -1,5 +1,9 @@
 package eu.thesimplecloud.launcher.console.command.annotations
 
+import eu.thesimplecloud.launcher.console.command.provider.DefaultCommandSuggestionProvider
+import eu.thesimplecloud.launcher.console.command.provider.ICommandSuggestionProvider
+import kotlin.reflect.KClass
+
 /**
  * Created by IntelliJ IDEA.
  * User: Philipp.Eistrach
@@ -8,5 +12,5 @@ package eu.thesimplecloud.launcher.console.command.annotations
  */
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class CommandArgument(val name: String) {
+annotation class CommandArgument(val name: String, val suggestionProvider: KClass<out ICommandSuggestionProvider> = DefaultCommandSuggestionProvider::class) {
 }
