@@ -2,8 +2,8 @@ package eu.thesimplecloud.module.notify
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.event.service.CloudServiceConnectedEvent
-import eu.thesimplecloud.api.event.service.CloudServiceJoinableEvent
 import eu.thesimplecloud.api.event.service.CloudServiceRegisteredEvent
+import eu.thesimplecloud.api.event.service.CloudServiceStartedEvent
 import eu.thesimplecloud.api.event.service.CloudServiceUnregisteredEvent
 import eu.thesimplecloud.api.eventapi.CloudEventHandler
 import eu.thesimplecloud.api.eventapi.IListener
@@ -26,7 +26,7 @@ class CloudListener(val module: NotifyModule) : IListener {
     }
 
     @CloudEventHandler
-    fun on(event: CloudServiceJoinableEvent) {
+    fun on(event: CloudServiceStartedEvent) {
         sendMessage(event.cloudService, module.config.serviceStartedMessage, true)
     }
 

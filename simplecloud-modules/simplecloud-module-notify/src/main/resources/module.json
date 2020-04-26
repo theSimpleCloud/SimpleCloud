@@ -4,5 +4,6 @@
   "mainClass": "eu.thesimplecloud.module.notify.NotifyModule",
   "moduleCopyType": "NONE",
   "repositories": [],
-  "dependencies": []
+  "dependencies": [],
+  "depend": []
 }

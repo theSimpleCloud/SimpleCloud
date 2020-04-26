@@ -43,7 +43,7 @@ class CloudSpigotPlugin : JavaPlugin(), ICloudServerPlugin {
         object : BukkitRunnable(){
             override fun run() {
                 val service = CloudPlugin.instance.thisService()
-                service.setOnlinePlayers(server.onlinePlayers.size)
+                service.setOnlineCount(server.onlinePlayers.size)
                 service.update()
             }
         }.runTaskTimerAsynchronously(this, 20*30, 20*30)
