@@ -8,23 +8,19 @@ import java.util.*
 import kotlin.collections.HashMap
 
 open class OfflineCloudPlayer(
-        private val name: String,
-        private val uniqueId: UUID,
+        name: String,
+        uniqueId: UUID,
         private val firstLogin: Long,
         private val lastLogin: Long,
         private val onlineTime: Long,
         protected val playerConnection: DefaultPlayerConnection,
         var propertyMap: MutableMap<String, Property<*>> = HashMap()
-) : IOfflineCloudPlayer {
-
-
-    override fun getName(): String = this.name
+): SimpleCloudPlayer(name, uniqueId), IOfflineCloudPlayer {
 
     @JsonIgnore
     override fun getProperties(): Map<String, Property<*>> {
         return this.propertyMap
     }
-    override fun getUniqueId(): UUID = this.uniqueId
 
     override fun getLastLogin(): Long = this.lastLogin
 

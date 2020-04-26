@@ -1,15 +1,14 @@
 package eu.thesimplecloud.base.manager.setup.groups
 
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.service.ServiceVersion
+import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
-import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.service.ServiceVersion
-import eu.thesimplecloud.api.template.ITemplate
-import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.launcher.extension.sendMessage
+import eu.thesimplecloud.launcher.startup.Launcher
 import kotlin.properties.Delegates
 
 class ProxyGroupSetup : DefaultGroupSetup(), ISetup {
@@ -110,7 +109,7 @@ class ProxyGroupSetup : DefaultGroupSetup(), ISetup {
 
     @SetupQuestion(9, "manager.setup.proxy-group.question.wrapper", "On which wrapper shall services of this group run?")
     fun wrapperQuestion(string: String): Boolean {
-        val wrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(string)
+        val wrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(string)?.obj
         if (wrapper == null){
             Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.wrapper.not-exist", "The specified wrapper does not exist.")
             return false
@@ -143,7 +142,7 @@ class ProxyGroupSetup : DefaultGroupSetup(), ISetup {
 
     @SetupFinished
     fun finished() {
-        CloudAPI.instance.getCloudServiceGroupManager().createProxyGroup(name, templateName, memory, maxPlayers, minimumOnlineServices, maximumOnlineServices, true, static, percent, wrapper.getName(), startPort, serviceVersion, 0)
+        CloudAPI.instance.getCloudServiceGroupManager().createProxyGroup(name, templateName, memory, maxPlayers, minimumOnlineServices, maximumOnlineServices, true, static, percent, wrapper.getName(), startPort, serviceVersion, 10)
         Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.finished", "Group %NAME%", name, " created.")
     }
 

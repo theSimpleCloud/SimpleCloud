@@ -5,7 +5,6 @@ import eu.thesimplecloud.api.location.SimpleLocation
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import org.bukkit.Bukkit
 import org.bukkit.Location
-import java.lang.IllegalStateException
 
 /**
  * Returns the bukkit location with the content of this location.

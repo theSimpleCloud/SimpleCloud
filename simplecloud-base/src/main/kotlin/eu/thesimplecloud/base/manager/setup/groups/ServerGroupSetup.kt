@@ -1,15 +1,14 @@
 package eu.thesimplecloud.base.manager.setup.groups
 
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.service.ServiceVersion
+import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
-import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.service.ServiceVersion
-import eu.thesimplecloud.api.template.ITemplate
-import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.launcher.extension.sendMessage
+import eu.thesimplecloud.launcher.startup.Launcher
 import kotlin.properties.Delegates
 
 class ServerGroupSetup : DefaultGroupSetup(), ISetup {
@@ -123,7 +122,7 @@ class ServerGroupSetup : DefaultGroupSetup(), ISetup {
     fun wrapperQuestion(string: String): Boolean {
         if (string.isBlank())
             return true
-        val wrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(string)
+        val wrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(string)?.obj
         if (wrapper == null){
             Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.wrapper.not-exist", "The specified wrapper does not exist.")
             return false

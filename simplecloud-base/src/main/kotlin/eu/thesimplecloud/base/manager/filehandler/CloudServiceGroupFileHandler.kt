@@ -1,6 +1,5 @@
 package eu.thesimplecloud.base.manager.filehandler
 
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.api.config.IFileHandler
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.service.ServiceType
@@ -8,6 +7,7 @@ import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.api.servicegroup.impl.DefaultLobbyGroup
 import eu.thesimplecloud.api.servicegroup.impl.DefaultProxyGroup
 import eu.thesimplecloud.api.servicegroup.impl.DefaultServerGroup
+import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import java.io.File
 
 class CloudServiceGroupFileHandler : IFileHandler<ICloudServiceGroup> {

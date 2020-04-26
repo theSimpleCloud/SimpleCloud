@@ -21,11 +21,11 @@ abstract class AbstractCloudServiceManager : ICloudServiceManager {
             return
         }
         val nowStarting = cashedService.getState() == ServiceState.PREPARED && cloudService.getState() == ServiceState.STARTING
-        val nowJoinable = !cashedService.isJoinable() && cloudService.isJoinable()
+        val nowOnline = !cashedService.isOnline() && cloudService.isOnline()
         val nowConnected = !cashedService.isAuthenticated() && cloudService.isAuthenticated()
 
         cashedService.setMOTD(cloudService.getMOTD())
-        cashedService.setOnlinePlayers(cloudService.getOnlinePlayers())
+        cashedService.setOnlineCount(cloudService.getOnlineCount())
         cashedService.setState(cloudService.getState())
         cashedService.setAuthenticated(cloudService.isAuthenticated())
         cashedService.setLastUpdate(System.currentTimeMillis())
@@ -38,15 +38,12 @@ abstract class AbstractCloudServiceManager : ICloudServiceManager {
 
         if (nowStarting) {
             CloudAPI.instance.getEventManager().call(CloudServiceStartingEvent(cashedService))
-            cashedService.startingPromise().trySuccess(Unit)
         }
         if (nowConnected) {
             CloudAPI.instance.getEventManager().call(CloudServiceConnectedEvent(cashedService))
-            cashedService.connectedPromise().trySuccess(Unit)
         }
-        if (nowJoinable) {
-            CloudAPI.instance.getEventManager().call(CloudServiceJoinableEvent(cashedService))
-            cashedService.joinablePromise().trySuccess(Unit)
+        if (nowOnline) {
+            CloudAPI.instance.getEventManager().call(CloudServiceStartedEvent(cashedService))
         }
     }
 
@@ -54,7 +51,6 @@ abstract class AbstractCloudServiceManager : ICloudServiceManager {
         getCloudServiceByName(name)?.let {
             this.services.remove(it)
             CloudAPI.instance.getEventManager().call(CloudServiceUnregisteredEvent(it))
-            it.closedPromise().trySuccess(Unit)
         }
     }
 

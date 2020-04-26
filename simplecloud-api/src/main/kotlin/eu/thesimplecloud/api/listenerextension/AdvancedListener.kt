@@ -1,40 +1,73 @@
 package eu.thesimplecloud.api.listenerextension
 
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.eventapi.BasicEventManager
-import eu.thesimplecloud.api.eventapi.CloudEventHandler
 import eu.thesimplecloud.api.eventapi.IEvent
+import eu.thesimplecloud.api.eventapi.IEventExecutor
 import eu.thesimplecloud.api.eventapi.IListener
-import eu.thesimplecloud.api.external.ICloudModule
+import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
+import io.netty.util.concurrent.GlobalEventExecutor
+import java.util.concurrent.TimeUnit
 
-class AdvancedListener<T : IEvent>(cloudModule: ICloudModule, val eventManager: BasicEventManager) : IAdvancedListener<T> {
+open class AdvancedListener<T : IEvent>(
+        eventClass: Class<out IEvent>,
+        autoUnregister: Boolean = true,
+        unregisterTimeInSeconds: Long = 5 * 60
+) : IAdvancedListener<T> {
 
     private val conditions = ArrayList<(T) -> Boolean>()
     private val actions = ArrayList<(T) -> Unit>()
+    private val listenerObj = object : IListener {}
 
     init {
-        eventManager.registerListener(cloudModule, object : IListener {
 
-            @CloudEventHandler
-            fun on(event: T) {
-                println(event::class.java.simpleName)
+        CloudAPI.instance.getEventManager().registerEvent(
+                CloudAPI.instance.getThisSidesCloudModule(),
+                eventClass,
+                listenerObj, object : IEventExecutor {
+            override fun execute(event: IEvent) {
+                if (!eventClass.isAssignableFrom(event.javaClass))
+                    return
+                event as T
+                if (conditions.all { it(event) }) actions.forEach { it(event) }
             }
-
         })
+        if (autoUnregister) {
+            GlobalEventExecutor.INSTANCE.schedule({
+                this.unregister()
+            }, unregisterTimeInSeconds, TimeUnit.SECONDS)
+        }
     }
 
-    override fun addCondition(predicate: (T) -> Boolean) {
+    override fun addCondition(predicate: (T) -> Boolean): IAdvancedListener<T> {
         this.conditions.add(predicate)
+        return this
     }
 
-    override fun addAction(function: (T) -> Unit) {
+    override fun addAction(function: (T) -> Unit): IAdvancedListener<T> {
         this.actions.add(function)
+        return this
     }
 
-    override fun unregisterWhen(advancedListener: IAdvancedListener<*>) {
+    override fun unregisterWhen(advancedListener: IAdvancedListener<*>): IAdvancedListener<T> {
+        advancedListener.addAction { this.unregister() }
+        return this
     }
 
     override fun unregister() {
+        CloudAPI.instance.getEventManager().unregisterListener(listenerObj)
+    }
+
+    override fun unregisterAfterCall(): IAdvancedListener<T> {
+        this.addAction { this.unregister() }
+        return this
+    }
+
+    override fun toPromise(): ICommunicationPromise<Unit> {
+        val newPromise = CommunicationPromise<Unit>()
+        this.addAction { newPromise.trySuccess(Unit) }
+        this.unregisterAfterCall()
+        return newPromise
     }
 
 

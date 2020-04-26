@@ -1,21 +1,20 @@
 package eu.thesimplecloud.base.manager.network.packets.template
 
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.directorypaths.DirectoryPaths
+import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.filetransfer.directory.IDirectorySync
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
-import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.directorypaths.DirectoryPaths
-import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
 import eu.thesimplecloud.launcher.extension.sendMessage
+import eu.thesimplecloud.launcher.startup.Launcher
 import java.io.File
-import java.lang.IllegalStateException
 
 class PacketInGetTemplates() : JsonPacket() {
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Unit> {
-        val wrapperByHost = CloudAPI.instance.getWrapperManager().getWrapperByHost(connection.getHost()!!)
+        val wrapperByHost = CloudAPI.instance.getWrapperManager().getWrapperByHost(connection.getHost()!!)?.obj
                 ?: throw IllegalStateException("No Wrapper object found for Wrapper by host " + connection.getHost())
         Launcher.instance.consoleSender.sendMessage("manager.templates.synchronization", "Synchronizing templates with Wrapper %WRAPPER%", wrapperByHost.getName(), "...")
         val templatesDirectorySync = connection.getCommunicationBootstrap().getDirectorySyncManager().getDirectorySync(File(DirectoryPaths.paths.templatesPath))
@@ -25,7 +24,7 @@ class PacketInGetTemplates() : JsonPacket() {
         Launcher.instance.consoleSender.sendMessage("manager.templates.synchronization.complete", "Synchronized templates with Wrapper %WRAPPER%", wrapperByHost.getName(), ".")
         wrapperByHost as IWritableWrapperInfo
         wrapperByHost.setTemplatesReceived(true)
-        CloudAPI.instance.getWrapperManager().updateWrapper(wrapperByHost)
+        CloudAPI.instance.getWrapperManager().update(wrapperByHost)
         return unit()
     }
 

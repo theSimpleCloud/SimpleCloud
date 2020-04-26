@@ -4,5 +4,6 @@
   "mainClass": "eu.thesimplecloud.module.permission.manager.PermissionModule",
   "moduleCopyType": "ALL",
   "repositories": [],
-  "dependencies": []
+  "dependencies": [],
+  "depend": []
 }

@@ -25,7 +25,7 @@ class InternalWrapperModule : ICloudModule {
 
         if (wrapperManager.getWrapperByHost(config.host) == null) {
             val wrapperInfo = DefaultWrapperInfo("InternalWrapper", config.host, 2, 2048)
-            CloudAPI.instance.getWrapperManager().updateWrapper(wrapperInfo)
+            CloudAPI.instance.getWrapperManager().update(wrapperInfo)
         }
         thread(start = true, isDaemon = false) {
             Launcher.instance.consoleSender.sendMessage("moudle.internalwrapper.starting", "Starting internal wrapper...")

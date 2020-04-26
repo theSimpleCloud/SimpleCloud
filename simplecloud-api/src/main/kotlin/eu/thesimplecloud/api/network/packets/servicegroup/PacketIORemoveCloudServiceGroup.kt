@@ -1,9 +1,9 @@
 package eu.thesimplecloud.api.network.packets.servicegroup
 
+import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
-import eu.thesimplecloud.api.CloudAPI
 
 class PacketIORemoveCloudServiceGroup() : JsonPacket() {
 

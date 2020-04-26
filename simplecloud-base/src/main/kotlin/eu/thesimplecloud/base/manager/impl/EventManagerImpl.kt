@@ -3,7 +3,6 @@ package eu.thesimplecloud.base.manager.impl
 import eu.thesimplecloud.api.eventapi.BasicEventManager
 import eu.thesimplecloud.api.eventapi.IEvent
 import eu.thesimplecloud.api.eventapi.ISynchronizedEvent
-import eu.thesimplecloud.api.extension.sendPacketToAllAuthenticatedClients
 import eu.thesimplecloud.api.extension.sendPacketToAllAuthenticatedNonWrapperClients
 import eu.thesimplecloud.api.network.packets.event.PacketIOCallEvent
 import eu.thesimplecloud.base.manager.startup.Manager

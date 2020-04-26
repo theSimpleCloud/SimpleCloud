@@ -1,8 +1,8 @@
 package eu.thesimplecloud.launcher.setups
 
-import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
+import eu.thesimplecloud.launcher.startup.Launcher
 
 class LanguageSetup : ISetup {
 

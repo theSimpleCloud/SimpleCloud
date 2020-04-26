@@ -1,3 +1,5 @@
 package eu.thesimplecloud.api.sync.list
 
-interface ISynchronizedListObject
+import eu.thesimplecloud.api.sync.`object`.ISynchronizedObject
+
+interface ISynchronizedListObject : ISynchronizedObject

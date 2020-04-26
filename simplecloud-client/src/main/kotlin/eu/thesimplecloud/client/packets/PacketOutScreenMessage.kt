@@ -1,9 +1,9 @@
 package eu.thesimplecloud.client.packets
 
-import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
-import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
 import eu.thesimplecloud.api.client.CloudClientType
 import eu.thesimplecloud.api.screen.ICommandExecutable
+import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
+import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
 
 class PacketOutScreenMessage(cloudClientType: CloudClientType, commandExecutable: ICommandExecutable, message: String) : JsonPacket() {
 

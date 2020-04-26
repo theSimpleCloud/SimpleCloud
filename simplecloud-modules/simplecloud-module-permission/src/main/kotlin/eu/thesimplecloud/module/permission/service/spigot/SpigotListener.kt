@@ -1,9 +1,6 @@
 package eu.thesimplecloud.module.permission.service.spigot
 
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
-import eu.thesimplecloud.module.permission.PermissionPool
 import eu.thesimplecloud.module.permission.service.spigot.util.ReflectionUtils
-import eu.thesimplecloud.plugin.extension.getCloudPlayer
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener

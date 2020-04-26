@@ -1,9 +1,9 @@
 package eu.thesimplecloud.api.servicegroup
-import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceType
 import eu.thesimplecloud.api.service.ServiceVersion
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
 interface ICloudServiceGroup {
 
@@ -125,7 +125,13 @@ interface ICloudServiceGroup {
     /**
      * Returns the amount of online players in this group
      */
-    fun getOnlinePlayers(): Int = getAllServices().sumBy { it.getOnlinePlayers() }
+    @Deprecated("Use getOnlineCount instead", ReplaceWith("getOnlineCount()"))
+    fun getOnlinePlayers(): Int = getAllServices().sumBy { it.getOnlineCount()}
+
+    /**
+     * Returns the amount of online players in this group
+     */
+    fun getOnlineCount(): Int = getAllServices().sumBy { it.getOnlineCount() }
 
     /**
      * Stops all services by this group.

@@ -14,7 +14,7 @@ import eu.thesimplecloud.launcher.extension.sendMessage
 @Command("start", CommandType.CONSOLE_AND_INGAME, "simplecloud.command.start")
 class StartCommand : ICommandHandler {
 
-    @CommandSubPath("<group>", "Starts a service.")
+    @CommandSubPath("<group>", "Starts a service")
     fun startService(commandSender: ICommandSender, @CommandArgument("group", ServiceGroupCommandSuggestionProvider::class) cloudServiceGroup: ICloudServiceGroup) {
         cloudServiceGroup.startNewService()
         commandSender.sendMessage("manager.command.start.success", "Trying to start a new service of group %GROUP%", cloudServiceGroup.getName())

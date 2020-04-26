@@ -1,32 +1,26 @@
 package eu.thesimplecloud.api.wrapper.impl
 
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.event.wrapper.WrapperUpdatedEvent
+import eu.thesimplecloud.api.sync.`object`.SynchronizedObjectHolder
+import eu.thesimplecloud.api.sync.list.AbstractSynchronizedObjectList
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.api.wrapper.IWrapperManager
-import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
-import java.util.*
-import java.util.concurrent.CopyOnWriteArrayList
 
-open class DefaultWrapperManager : IWrapperManager {
+open class DefaultWrapperManager : AbstractSynchronizedObjectList<IWrapperInfo>(), IWrapperManager {
 
-    private val wrappers = CopyOnWriteArrayList<IWrapperInfo>()
-
-    override fun updateWrapper(wrapper: IWrapperInfo) {
-        val cashedWrapper = getWrapperByHost(wrapper.getHost())
-        if (cashedWrapper == null) {
-            this.wrappers.add(wrapper)
-            return
-        }
-        cashedWrapper as IWritableWrapperInfo
-        cashedWrapper.setMaxMemory(wrapper.getMaxMemory())
-        cashedWrapper.setMaxSimultaneouslyStartingServices(wrapper.getMaxSimultaneouslyStartingServices())
-        cashedWrapper.setUsedMemory(wrapper.getUsedMemory())
-        cashedWrapper.setAuthenticated(wrapper.isAuthenticated())
-        cashedWrapper.setTemplatesReceived(wrapper.hasTemplatesReceived())
+    override fun getIdentificationName(): String {
+        return "simplecloud-wrappers"
     }
 
-    override fun removeWrapper(wrapper: IWrapperInfo) {
-        this.wrappers.remove(wrapper)
+    override fun update(value: IWrapperInfo, fromPacket: Boolean) {
+        super.update(value, fromPacket)
+        CloudAPI.instance.getEventManager().call(WrapperUpdatedEvent(getCachedObjectByUpdateValue(value)!!.obj))
     }
 
-    override fun getAllWrappers(): Collection<IWrapperInfo> = this.wrappers
+    override fun getCachedObjectByUpdateValue(value: IWrapperInfo): SynchronizedObjectHolder<IWrapperInfo>? {
+        return getWrapperByHost(value.getHost())
+    }
+
+
 }

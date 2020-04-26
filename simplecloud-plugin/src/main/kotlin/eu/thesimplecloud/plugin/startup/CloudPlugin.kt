@@ -1,22 +1,18 @@
 package eu.thesimplecloud.plugin.startup
 
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.client.CloudClientType
+import eu.thesimplecloud.api.external.ICloudModule
+import eu.thesimplecloud.api.network.packets.service.PacketIOUpdateCloudService
+import eu.thesimplecloud.api.service.ICloudService
+import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.client.packets.PacketOutCloudClientLogin
 import eu.thesimplecloud.clientserverapi.client.INettyClient
 import eu.thesimplecloud.clientserverapi.client.NettyClient
 import eu.thesimplecloud.clientserverapi.lib.json.JsonData
-import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.client.CloudClientType
-import eu.thesimplecloud.api.external.ICloudModule
-import eu.thesimplecloud.api.external.ResourceFinder
-import eu.thesimplecloud.api.network.packets.service.PacketIOUpdateCloudService
-import eu.thesimplecloud.api.player.text.CloudText
-import eu.thesimplecloud.api.service.ICloudService
-import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.plugin.ICloudServicePlugin
 import eu.thesimplecloud.plugin.impl.CloudAPIImpl
-import sun.misc.Resource
 import java.io.File
-import java.net.URLClassLoader
 import kotlin.concurrent.thread
 
 
@@ -48,13 +44,14 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.plugin.network.packets")
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.client.packets")
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.api.network.packets")
-        this.communicationClient.addClassLoader(this::class.java.classLoader)
+        this.communicationClient.setPacketSearchClassLoader(this::class.java.classLoader)
 
         nettyThread = thread(true, isDaemon = false, contextClassLoader = this::class.java.classLoader) {
+            println("<------Starting cloud client----------->")
             this.communicationClient.start().then {
                 println("<-------- Connection is now set up -------->")
                 this.communicationClient.sendUnitQuery(PacketOutCloudClientLogin(CloudClientType.SERVICE, thisServiceName))
-            }
+            }.addFailureListener { println("<-------- Failed to connect to server -------->") }.addFailureListener { throw it }
         }
 
         Runtime.getRuntime().addShutdownHook(Thread {
@@ -99,6 +96,7 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
     override fun onDisable() {
     }
 
+    @Synchronized
     fun updateThisService() {
         this.communicationClient.sendUnitQuery(PacketIOUpdateCloudService(thisService()))
     }
@@ -107,7 +105,7 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
      * Prevents the service from updating its state by itself.
      */
     @Synchronized
-    fun disableUpdatingState() {
+    fun disableStateUpdating() {
         this.updateState = false
     }
 

@@ -2,7 +2,6 @@ package eu.thesimplecloud.base.manager.setup.mongo
 
 import eu.thesimplecloud.base.manager.config.MongoConfig
 import eu.thesimplecloud.base.manager.config.MongoConfigLoader
-import eu.thesimplecloud.base.manager.mongo.MongoConnectionInformation
 import eu.thesimplecloud.base.manager.mongo.MongoServerInformation
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished

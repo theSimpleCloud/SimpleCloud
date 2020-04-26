@@ -1,8 +1,8 @@
 package eu.thesimplecloud.api.wrapper.impl
 
+import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
 import eu.thesimplecloud.clientserverapi.lib.json.GsonExclude
 import eu.thesimplecloud.clientserverapi.lib.json.JsonData
-import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
 
 data class DefaultWrapperInfo(
         private val name: String,
@@ -19,6 +19,9 @@ data class DefaultWrapperInfo(
 
     @GsonExclude
     private var templatesReceived = false
+
+    @GsonExclude
+    private var currentlyStartingServices = 0
 
     override fun setUsedMemory(memory: Int) {
         this.usedMemory = memory
@@ -50,12 +53,18 @@ data class DefaultWrapperInfo(
 
     override fun hasTemplatesReceived(): Boolean = this.templatesReceived
 
+    override fun getCurrentlyStartingServices(): Int = this.currentlyStartingServices
+
     override fun setTemplatesReceived(boolean: Boolean) {
         this.templatesReceived = boolean
     }
 
+    override fun setCurrentlyStartingServices(startingServices: Int) {
+        this.currentlyStartingServices = startingServices
+    }
+
     override fun toString(): String {
-        return JsonData.fromObjectWithGsonExclude(this).getAsJsonString()
+        return JsonData.fromObject(this).getAsJsonString()
     }
 
 }

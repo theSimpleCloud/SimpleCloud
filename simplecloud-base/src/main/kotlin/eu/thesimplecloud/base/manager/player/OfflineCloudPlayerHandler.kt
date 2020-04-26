@@ -1,17 +1,19 @@
 package eu.thesimplecloud.base.manager.player
 
 import com.mongodb.client.model.Filters
-import eu.thesimplecloud.base.manager.mongo.MongoConnectionInformation
-import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.api.player.IOfflineCloudPlayer
 import eu.thesimplecloud.api.player.OfflineCloudPlayer
 import eu.thesimplecloud.api.property.Property
+import eu.thesimplecloud.base.manager.mongo.MongoConnectionInformation
 import eu.thesimplecloud.base.manager.player.exception.OfflinePlayerLoadException
+import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.litote.kmongo.createIndex
+import org.litote.kmongo.findOne
+import org.litote.kmongo.getCollection
 import java.util.*
-import org.litote.kmongo.*
 import kotlin.collections.HashMap
 
 class OfflineCloudPlayerHandler(mongoConnectionInformation: MongoConnectionInformation) : IOfflineCloudPlayerHandler {
@@ -34,7 +36,9 @@ class OfflineCloudPlayerHandler(mongoConnectionInformation: MongoConnectionInfor
         return fromLoadOfflinePlayer(this.loadCollection.findOne("{ \$text: { \$search: \"$name\",\$caseSensitive :false } }"))
     }
 
+    @Synchronized
     override fun saveCloudPlayer(offlineCloudPlayer: OfflineCloudPlayer) {
+        if (offlineCloudPlayer::class.java != OfflineCloudPlayer::class.java) throw IllegalStateException("Cannot save player of type " + offlineCloudPlayer::class.java.simpleName)
         if (getOfflinePlayer(offlineCloudPlayer.getUniqueId()) != null)
             this.saveCollection.replaceOne(Filters.eq("uniqueId", offlineCloudPlayer.getUniqueId()), offlineCloudPlayer)
         else
@@ -50,7 +54,7 @@ class OfflineCloudPlayerHandler(mongoConnectionInformation: MongoConnectionInfor
                 val valueString = it.value.toString()
                 val jsonData = JsonData.fromJsonString(valueString)
                 val className = jsonData.getString("className")!!
-                val clazz = Class.forName(className)
+                val clazz = Manager.instance.cloudModuleHandler.findModuleClass(className)
                 val value = jsonData.getObject("savedValue", clazz)!!
                 Property(value)
             }

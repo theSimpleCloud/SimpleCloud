@@ -1,16 +1,14 @@
 package eu.thesimplecloud.base.manager.setup.groups
 
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.service.ServiceVersion
+import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
-import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.service.ServiceVersion
-import eu.thesimplecloud.api.template.ITemplate
-import eu.thesimplecloud.api.template.impl.DefaultTemplate
-import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.launcher.extension.sendMessage
+import eu.thesimplecloud.launcher.startup.Launcher
 import kotlin.properties.Delegates
 
 class LobbyGroupSetup : DefaultGroupSetup(), ISetup {
@@ -126,7 +124,7 @@ class LobbyGroupSetup : DefaultGroupSetup(), ISetup {
     fun wrapperQuestion(string: String): Boolean {
         if (string.isBlank())
             return true
-        val wrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(string)
+        val wrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(string)?.obj
         if (wrapper == null) {
             Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.wrapper.not-exist", "The specified wrapper does not exist.")
             return false
@@ -166,7 +164,7 @@ class LobbyGroupSetup : DefaultGroupSetup(), ISetup {
 
     @SetupFinished
     fun finished() {
-        CloudAPI.instance.getCloudServiceGroupManager().createLobbyGroup(name, templateName, memory, maxPlayers, minimumOnlineServices, maximumOnlineServices, true, static, percent, wrapper?.getName(), priority, permission, serviceVersion, 0)
+        CloudAPI.instance.getCloudServiceGroupManager().createLobbyGroup(name, templateName, memory, maxPlayers, minimumOnlineServices, maximumOnlineServices, true, static, percent, wrapper?.getName(), priority, permission, serviceVersion, 9)
         Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.finished", "Group %NAME%", name, " created.")
     }
 

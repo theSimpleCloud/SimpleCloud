@@ -1,10 +1,11 @@
 package eu.thesimplecloud.api.wrapper
 
 import eu.thesimplecloud.api.screen.ICommandExecutable
+import eu.thesimplecloud.api.sync.list.ISynchronizedListObject
 import eu.thesimplecloud.api.utils.IAuthenticatable
 
 
-interface IWrapperInfo : IAuthenticatable, ICommandExecutable {
+interface IWrapperInfo : IAuthenticatable, ICommandExecutable, ISynchronizedListObject {
 
     /**
      * Returns the host of this wrapper.
@@ -44,5 +45,10 @@ interface IWrapperInfo : IAuthenticatable, ICommandExecutable {
      * Returns whether the wrapper has received the templates.
      */
     fun hasTemplatesReceived(): Boolean
+
+    /**
+     * Returns the amount of services this wrapper is currently starting
+     */
+    fun getCurrentlyStartingServices(): Int
 
 }

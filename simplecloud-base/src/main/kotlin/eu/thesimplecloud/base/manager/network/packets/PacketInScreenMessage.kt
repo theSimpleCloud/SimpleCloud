@@ -1,12 +1,12 @@
 package eu.thesimplecloud.base.manager.network.packets
 
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.client.CloudClientType
+import eu.thesimplecloud.api.screen.ICommandExecutable
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.client.CloudClientType
-import eu.thesimplecloud.api.screen.ICommandExecutable
 
 class PacketInScreenMessage : JsonPacket() {
 
@@ -17,7 +17,7 @@ class PacketInScreenMessage : JsonPacket() {
 
         val commandExecutable: ICommandExecutable? = when (cloudClientType) {
             CloudClientType.SERVICE -> CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(name)
-            CloudClientType.WRAPPER -> CloudAPI.instance.getWrapperManager().getWrapperByName(name)
+            CloudClientType.WRAPPER -> CloudAPI.instance.getWrapperManager().getWrapperByName(name)?.obj
         }
         commandExecutable ?: return failure(NoSuchElementException("Cannot find service / wrapper by name: $name"))
 

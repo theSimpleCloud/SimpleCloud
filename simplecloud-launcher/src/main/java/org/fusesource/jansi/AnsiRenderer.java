@@ -15,11 +15,11 @@
  */
 package org.fusesource.jansi;
 
-import java.io.IOException;
-import java.util.Locale;
-
 import org.fusesource.jansi.Ansi.Attribute;
 import org.fusesource.jansi.Ansi.Color;
+
+import java.io.IOException;
+import java.util.Locale;
 
 /**
  * Renders ANSI color escape-codes in strings by parsing out some special syntax to pick up the correct fluff to use.

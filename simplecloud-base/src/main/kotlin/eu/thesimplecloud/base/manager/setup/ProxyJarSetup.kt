@@ -1,12 +1,12 @@
 package eu.thesimplecloud.base.manager.setup
 
+import eu.thesimplecloud.api.service.ServiceVersion
+import eu.thesimplecloud.api.utils.Downloader
 import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
-import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.api.utils.Downloader
-import eu.thesimplecloud.api.service.ServiceVersion
 import eu.thesimplecloud.launcher.extension.sendMessage
+import eu.thesimplecloud.launcher.startup.Launcher
 import java.io.File
 
 class ProxyJarSetup(private val proxyFile: File) : ISetup {

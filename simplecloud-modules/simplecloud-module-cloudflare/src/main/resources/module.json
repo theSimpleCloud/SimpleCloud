@@ -4,5 +4,6 @@
   "mainClass": "eu.thesimplecloud.module.cloudflare.CloudFlareModule",
   "moduleCopyType": "NONE",
   "repositories": [],
-  "dependencies": []
+  "dependencies": [],
+  "depend": []
 }

@@ -1,11 +1,11 @@
 package eu.thesimplecloud.launcher.commands
 
-import eu.thesimplecloud.launcher.console.command.annotations.Command
-import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.launcher.console.command.ICommandHandler
 import eu.thesimplecloud.api.command.ICommandSender
 import eu.thesimplecloud.launcher.console.command.CommandType
+import eu.thesimplecloud.launcher.console.command.ICommandHandler
+import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
+import eu.thesimplecloud.launcher.startup.Launcher
 
 /**
  * Created by IntelliJ IDEA.

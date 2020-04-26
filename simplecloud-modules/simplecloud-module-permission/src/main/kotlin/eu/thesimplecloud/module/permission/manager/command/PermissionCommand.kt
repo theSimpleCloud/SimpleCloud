@@ -2,9 +2,6 @@ package eu.thesimplecloud.module.permission.manager.command
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.command.ICommandSender
-import eu.thesimplecloud.api.player.OfflineCloudPlayer
-import eu.thesimplecloud.api.property.Property
-import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.launcher.console.command.CommandType
 import eu.thesimplecloud.launcher.console.command.ICommandHandler
 import eu.thesimplecloud.launcher.console.command.annotations.Command
@@ -17,10 +14,8 @@ import eu.thesimplecloud.module.permission.group.PermissionGroup
 import eu.thesimplecloud.module.permission.manager.PermissionModule
 import eu.thesimplecloud.module.permission.permission.Permission
 import eu.thesimplecloud.module.permission.player.IPermissionPlayer
-import eu.thesimplecloud.module.permission.player.PermissionPlayer
 import eu.thesimplecloud.module.permission.player.PlayerPermissionGroupInfo
 import eu.thesimplecloud.module.permission.player.getPermissionPlayer
-import java.lang.Exception
 import java.util.concurrent.TimeUnit
 
 @Command("perms", CommandType.CONSOLE_AND_INGAME, "simplecloud.module.permission")
@@ -45,7 +40,7 @@ class PermissionCommand : ICommandHandler {
     private fun getPermissionPlayerByName(name: String): IPermissionPlayer? {
         val offlinePlayer = CloudAPI.instance.getCloudPlayerManager().getOfflineCloudPlayer(name).awaitUninterruptibly().getNow()
                 ?: return null
-        return offlinePlayer.getPermissionPlayer()
+        return offlinePlayer.getPermissionPlayer(this::class.java.classLoader)
     }
 
 

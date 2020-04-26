@@ -1,5 +1,9 @@
 package eu.thesimplecloud.base.wrapper.startup
 
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.directorypaths.DirectoryPaths
+import eu.thesimplecloud.api.wrapper.IWrapperInfo
+import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
 import eu.thesimplecloud.base.wrapper.impl.CloudAPIImpl
 import eu.thesimplecloud.base.wrapper.logger.LoggerMessageListenerImpl
 import eu.thesimplecloud.base.wrapper.network.packets.template.PacketOutGetTemplates
@@ -9,22 +13,16 @@ import eu.thesimplecloud.base.wrapper.process.queue.CloudServiceProcessQueue
 import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.ServiceConfiguratorManager
 import eu.thesimplecloud.clientserverapi.client.INettyClient
 import eu.thesimplecloud.clientserverapi.client.NettyClient
+import eu.thesimplecloud.clientserverapi.lib.packet.IPacket
 import eu.thesimplecloud.launcher.application.ICloudApplication
-import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.api.client.CloudClientType
-import eu.thesimplecloud.client.packets.PacketOutCloudClientLogin
-import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.directorypaths.DirectoryPaths
-import eu.thesimplecloud.api.network.packets.wrapper.PacketIOUpdateWrapperInfo
-import eu.thesimplecloud.api.wrapper.IWrapperInfo
-import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
-import eu.thesimplecloud.base.manager.external.CloudModuleHandler
 import eu.thesimplecloud.launcher.config.LauncherConfig
+import eu.thesimplecloud.launcher.exception.module.ModuleHandler
 import eu.thesimplecloud.launcher.extension.sendMessage
-import eu.thesimplecloud.launcher.external.module.CloudModuleFileContent
+import eu.thesimplecloud.launcher.external.module.LoadedModuleFileContent
+import eu.thesimplecloud.launcher.external.module.ModuleClassLoader
+import eu.thesimplecloud.launcher.startup.Launcher
 import org.apache.commons.io.FileUtils
 import java.io.File
-import java.lang.IllegalStateException
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 
@@ -36,6 +34,7 @@ class Wrapper : ICloudApplication {
             private set
     }
 
+    @Volatile
     var thisWrapperName: String? = null
     var processQueue: CloudServiceProcessQueue? = null
     val serviceConfigurationManager = ServiceConfiguratorManager()
@@ -45,15 +44,19 @@ class Wrapper : ICloudApplication {
     var templateClient: INettyClient? = null
         private set
     val serviceVersionLoader = ServiceVersionLoader()
-    var existingModules: List<Pair<CloudModuleFileContent, File>> = ArrayList()
+    var existingModules: List<LoadedModuleFileContent> = ArrayList()
         private set
+    val appClassLoader: ModuleClassLoader
 
     init {
         instance = this
+        this.appClassLoader = this::class.java.classLoader as ModuleClassLoader
         Launcher.instance.logger.addLoggerMessageListener(LoggerMessageListenerImpl())
         val launcherConfig = Launcher.instance.launcherConfigLoader.loadConfig()
         this.communicationClient = NettyClient(launcherConfig.host, launcherConfig.port, ConnectionHandlerImpl())
-        this.communicationClient.addClassLoader(Thread.currentThread().contextClassLoader)
+        this.communicationClient.setPacketSearchClassLoader(Launcher.instance.getNewClassLoaderWithLauncherAndBase())
+        this.communicationClient.setClassLoaderToSearchObjectPacketClasses(appClassLoader)
+        this.communicationClient.setPacketClassConverter { Class.forName(it.name, true, appClassLoader) as Class<out IPacket> }
         CloudAPIImpl()
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.client.packets")
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.base.wrapper.network.packets")
@@ -75,12 +78,11 @@ class Wrapper : ICloudApplication {
                 val wrapperInfo = getThisWrapper()
                 //set authenticated to false to prevent service starting
                 wrapperInfo.setAuthenticated(false)
-                communicationClient.sendUnitQuery(PacketIOUpdateWrapperInfo(wrapperInfo)).syncUninterruptibly()
+                CloudAPI.instance.getWrapperManager().update(wrapperInfo)
             }
             this.processQueue?.clearQueue()
             stopAllRunningServicesAndWaitFor()
             if (this.templateClient != null) {
-                FileUtils.deleteDirectory(File(DirectoryPaths.paths.templatesPath))
                 FileUtils.deleteDirectory(File(DirectoryPaths.paths.modulesPath))
             }
             this.communicationClient.shutdown()
@@ -118,12 +120,13 @@ class Wrapper : ICloudApplication {
         if (!isStartedInManagerDirectory()) {
             val templateClient = NettyClient(launcherConfig.host, launcherConfig.port + 1, ConnectionHandlerImpl())
             this.templateClient = templateClient
-            templateClient.addClassLoader(Thread.currentThread().contextClassLoader)
+            templateClient.setPacketSearchClassLoader(Launcher.instance.getNewClassLoaderWithLauncherAndBase())
+            templateClient.setClassLoaderToSearchObjectPacketClasses(appClassLoader)
             Launcher.instance.scheduler.schedule({ startTemplateClient(templateClient) }, 100, TimeUnit.MILLISECONDS)
         } else {
             reloadExistingModules()
         }
-        this.communicationClient.sendUnitQuery(PacketOutCloudClientLogin(CloudClientType.WRAPPER))
+
     }
 
     private fun startTemplateClient(templateClient: NettyClient) {
@@ -133,6 +136,9 @@ class Wrapper : ICloudApplication {
                 Launcher.instance.consoleSender.sendMessage("wrapper.template.requesting", "Requesting templates...")
                 templateClient.sendUnitQuery(PacketOutGetTemplates(), TimeUnit.SECONDS.toMillis((60 * 2) + 30)).addResultListener {
                     reloadExistingModules()
+                    val thisWrapper = getThisWrapper() as IWritableWrapperInfo
+                    thisWrapper.setTemplatesReceived(true)
+                    CloudAPI.instance.getWrapperManager().update(thisWrapper)
                     Launcher.instance.consoleSender.sendMessage("wrapper.template.received", "Templates received.")
                 }.addFailureListener {
                     Launcher.instance.logger.severe("An error occurred while requesting templates:")
@@ -143,24 +149,25 @@ class Wrapper : ICloudApplication {
     }
 
     fun reloadExistingModules() {
-        this.existingModules = CloudModuleHandler().getAllCloudModuleFileContents()
+        this.existingModules = ModuleHandler().getAllCloudModuleFileContents()
     }
 
     fun isWrapperNameSet(): Boolean = thisWrapperName != null
 
-    fun getThisWrapper(): IWrapperInfo = CloudAPI.instance.getWrapperManager().getWrapperByName(this.thisWrapperName!!)
+    fun getThisWrapper(): IWrapperInfo = CloudAPI.instance.getWrapperManager().getWrapperByName(this.thisWrapperName!!)?.obj
             ?: throw IllegalStateException("Unable to find self wrapper.")
 
     /**
      * Updates the memory the wrapper currently uses according to the registered service processes.
      */
-    fun updateUsedMemory() {
+    fun updateWrapperData() {
         val usedMemory = this.cloudServiceProcessManager.getAllProcesses().sumBy { it.getCloudService().getMaxMemory() }
         val thisWrapper = this.getThisWrapper()
         thisWrapper as IWritableWrapperInfo
         thisWrapper.setUsedMemory(usedMemory)
+        thisWrapper.setCurrentlyStartingServices(this.processQueue?.getStartingOrQueuedServiceAmount() ?: 0)
         if (this.communicationClient.isOpen())
-            this.communicationClient.sendUnitQuery(PacketIOUpdateWrapperInfo(thisWrapper))
+            CloudAPI.instance.getWrapperManager().update(thisWrapper)
     }
 
     override fun onEnable() {
@@ -173,7 +180,7 @@ class Wrapper : ICloudApplication {
 
     fun startProcessQueue() {
         check(processQueue == null) { "Cannot start process queue when it is already running" }
-        this.processQueue = CloudServiceProcessQueue(getThisWrapper().getMaxSimultaneouslyStartingServices())
+        this.processQueue = CloudServiceProcessQueue()
         this.processQueue?.startThread()
     }
 }

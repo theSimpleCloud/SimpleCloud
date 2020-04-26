@@ -1,17 +1,18 @@
 package eu.thesimplecloud.base.manager.impl
 
+import eu.thesimplecloud.api.event.service.CloudServiceConnectedEvent
+import eu.thesimplecloud.api.event.service.CloudServiceUnregisteredEvent
 import eu.thesimplecloud.api.extension.sendPacketToAllAuthenticatedClients
-import eu.thesimplecloud.api.extension.sendPacketToAllAuthenticatedNonWrapperClients
+import eu.thesimplecloud.api.listenerextension.cloudListener
 import eu.thesimplecloud.api.network.packets.service.PacketIORemoveCloudService
-import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.api.network.packets.service.PacketIOStopCloudService
 import eu.thesimplecloud.api.network.packets.service.PacketIOUpdateCloudService
 import eu.thesimplecloud.api.network.packets.service.PacketIOWrapperStartService
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.service.impl.AbstractCloudServiceManager
+import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
-import java.lang.IllegalStateException
 
 class CloudServiceManagerImpl : AbstractCloudServiceManager() {
 
@@ -29,7 +30,10 @@ class CloudServiceManagerImpl : AbstractCloudServiceManager() {
         val wrapper = cloudService.getWrapper()
         val wrapperClient = Manager.instance.communicationServer.getClientManager().getClientByClientValue(wrapper)
         wrapperClient?.sendUnitQuery(PacketIOStopCloudService(cloudService.getName()))
-        return cloudService.closedPromise()
+        return cloudListener<CloudServiceUnregisteredEvent>()
+                .addCondition { it.cloudService == cloudService }
+                .unregisterAfterCall()
+                .toPromise()
     }
 
     override fun startService(cloudService: ICloudService): ICommunicationPromise<Unit> {
@@ -38,6 +42,9 @@ class CloudServiceManagerImpl : AbstractCloudServiceManager() {
         val wrapperClient = Manager.instance.communicationServer.getClientManager().getClientByClientValue(wrapper)
         check(wrapperClient != null) { "Can not find client of wrapper to start service ${cloudService.getName()} on." }
         wrapperClient.sendUnitQuery(PacketIOWrapperStartService(cloudService.getName()))
-        return cloudService.connectedPromise()
+        return cloudListener<CloudServiceConnectedEvent>()
+                .addCondition { it.cloudService == cloudService }
+                .unregisterAfterCall()
+                .toPromise()
     }
 }

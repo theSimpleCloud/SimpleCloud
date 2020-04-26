@@ -1,11 +1,11 @@
 package eu.thesimplecloud.base.manager.network.packets.player
 
 import eu.thesimplecloud.base.manager.events.CloudPlayerLoginRequestEvent
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.exception.NoSuchPlayerException
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.ObjectPacket
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
-import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.exception.NoSuchPlayerException
 import java.util.*
 
 class PacketInPlayerLoginRequest() : ObjectPacket<UUID>() {

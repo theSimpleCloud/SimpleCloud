@@ -23,7 +23,7 @@ class SignsCommand : ICommandHandler {
 
     @CommandSubPath("layouts", "Lists all layouts")
     fun handleLayouts(commandSender: ICommandSender) {
-        val names = SignModuleConfig.INSTANCE.signLayouts.map { it.name }
+        val names = SignModuleConfig.INSTANCE.obj.signLayouts.map { it.name }
                 .filter { it != "SEARCHING" }
                 .filter { it != "STARTING" }
                 .filter { it != "MAINTENANCE" }
@@ -38,7 +38,7 @@ class SignsCommand : ICommandHandler {
             commandSender.sendMessage("manager.command.signs.group-not-found", "§cGroup not found.")
             return
         }
-        val signModuleConfig = SignModuleConfig.INSTANCE
+        val signModuleConfig = SignModuleConfig.INSTANCE.obj
         val signLayout = signModuleConfig.getSignLayoutByName(layoutName)
         if (signLayout == null) {
             commandSender.sendMessage("manager.command.signs.layout-not-found", "§cLayout not found.")

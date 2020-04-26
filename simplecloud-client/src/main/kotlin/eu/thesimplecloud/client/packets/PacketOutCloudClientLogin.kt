@@ -1,8 +1,8 @@
 package eu.thesimplecloud.client.packets
 
+import eu.thesimplecloud.api.client.CloudClientType
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
-import eu.thesimplecloud.api.client.CloudClientType
 
 class PacketOutCloudClientLogin() : JsonPacket() {
 

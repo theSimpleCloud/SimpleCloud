@@ -1,8 +1,8 @@
 package eu.thesimplecloud.api.servicegroup.impl
 
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.api.service.ServiceVersion
 import eu.thesimplecloud.api.servicegroup.grouptype.ICloudLobbyGroup
+import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 
 class DefaultLobbyGroup(
         name: String,

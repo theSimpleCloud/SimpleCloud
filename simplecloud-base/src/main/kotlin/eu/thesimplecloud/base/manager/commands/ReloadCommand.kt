@@ -2,10 +2,8 @@ package eu.thesimplecloud.base.manager.commands
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.command.ICommandSender
-import eu.thesimplecloud.api.extension.getAllAuthenticatedClients
 import eu.thesimplecloud.api.extension.sendPacketToAllAuthenticatedWrapperClients
 import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
-import eu.thesimplecloud.base.manager.external.CloudModuleHandler
 import eu.thesimplecloud.base.manager.network.packets.PacketOutReloadExistingModules
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.launcher.console.command.CommandType
@@ -21,10 +19,8 @@ class ReloadCommand : ICommandHandler {
     @CommandSubPath("", "Reloads the cloud")
     fun handleReload(commandSender: ICommandSender) {
         //disable
-        val cloudModuleHandler = Manager.instance.cloudModuleHandler as CloudModuleHandler
-        val loadedModules = cloudModuleHandler.getLoadedModules()
-        val reloadableModules = loadedModules.filter { it.cloudModule.isReloadable() }
-        reloadableModules.forEach { cloudModuleHandler.unloadModule(it.cloudModule) }
+        Manager.instance.cloudModuleHandler.unloadAllReloadableModules()
+        Manager.instance.appClassLoader.clearCachedClasses()
 
         val loadedWrappers = Manager.instance.wrapperFileHandler.loadAll().toMutableList()
         val unknownWrappers = loadedWrappers.filter { CloudAPI.instance.getWrapperManager().getWrapperByHost(it.getHost()) == null }
@@ -35,10 +31,10 @@ class ReloadCommand : ICommandHandler {
         }
         loadedWrappers.toMutableList().removeAll(unknownWrappers)
         loadedWrappers.forEach {
-            val cachedWrapper = CloudAPI.instance.getWrapperManager().getWrapperByHost(it.getHost()) as IWritableWrapperInfo
+            val cachedWrapper = CloudAPI.instance.getWrapperManager().getWrapperByHost(it.getHost())?.obj as IWritableWrapperInfo
             cachedWrapper.setMaxSimultaneouslyStartingServices(it.getMaxSimultaneouslyStartingServices())
             cachedWrapper.setMaxMemory(it.getMaxMemory())
-            CloudAPI.instance.getWrapperManager().updateWrapper(cachedWrapper)
+            CloudAPI.instance.getWrapperManager().update(cachedWrapper)
         }
         loadedWrappers.forEach { commandSender.sendMessage("manager.command.reload.wrapper-success", "Reloaded wrapper %WRAPPER%", it.getName(), ".") }
 
@@ -58,7 +54,7 @@ class ReloadCommand : ICommandHandler {
         Manager.instance.communicationServer.getClientManager().sendPacketToAllAuthenticatedWrapperClients(PacketOutReloadExistingModules())
 
         //enable
-        thread(start = true, isDaemon = false) { cloudModuleHandler.loadAllUnloadedModules() }
+        thread(start = true, isDaemon = false) { Manager.instance.cloudModuleHandler.loadAllUnloadedModules() }
     }
 
 }

@@ -15,7 +15,6 @@ import eu.thesimplecloud.module.permission.permission.Permission
 import eu.thesimplecloud.module.permission.player.IPermissionPlayer
 import eu.thesimplecloud.module.permission.player.PermissionPlayer
 import java.io.File
-import java.lang.IllegalStateException
 
 class PermissionModule : ICloudModule {
     //TODO: mehrere gruppen mit ablaufzeit
@@ -56,6 +55,7 @@ class PermissionModule : ICloudModule {
         if (cloudPlayer != null) {
             permissionPlayer.update()
             offlineCloudPlayerHandler.saveCloudPlayer(cloudPlayer.toOfflinePlayer() as OfflineCloudPlayer)
+            cloudPlayer.sendMessage("§cYou were updated.")
         } else {
             val offlinePlayer = offlineCloudPlayerHandler.getOfflinePlayer(permissionPlayer.getName()) ?: return
             offlinePlayer.setProperty(PermissionPlayer.PROPERTY_NAME, Property(permissionPlayer))

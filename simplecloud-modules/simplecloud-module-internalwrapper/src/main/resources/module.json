@@ -4,5 +4,6 @@
   "mainClass": "eu.thesimplecloud.module.internalwrapper.InternalWrapperModule",
   "moduleCopyType": "NONE",
   "repositories": [],
-  "dependencies": []
+  "dependencies": [],
+  "depend": []
 }

@@ -37,7 +37,7 @@ interface ICloudServiceManager {
     /**
      * Returns a list of services found by the specified group name which are in LOBBY state and are not full
      */
-    fun getNotFullServicesInLobbyStateByGroupName(groupName: String): List<ICloudService> = getCloudServicesInLobbyStateByGroupName(groupName).filter { it.getOnlinePlayers() < it.getMaxPlayers() }
+    fun getNotFullServicesInLobbyStateByGroupName(groupName: String): List<ICloudService> = getCloudServicesInLobbyStateByGroupName(groupName).filter { it.getOnlineCount() < it.getMaxPlayers() }
 
     /**
      * Returns a list of all services running on the specified wrapper

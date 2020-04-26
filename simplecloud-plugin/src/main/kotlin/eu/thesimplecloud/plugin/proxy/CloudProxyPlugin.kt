@@ -54,9 +54,9 @@ class CloudProxyPlugin : Plugin(), ICloudProxyPlugin {
     override fun onLoad() {
         ProxyServer.getInstance().reconnectHandler = ReconnectHandlerImpl()
         CloudPlugin(this)
-        val synchronizedObjectPromise = CloudAPI.instance.getSynchronizedObjectManager().requestSynchronizedObject("simplecloud-ingamecommands", SynchronizedIngameCommandNamesContainer::class.java)
+        val synchronizedObjectPromise = CloudAPI.instance.getSingleSynchronizedObjectManager().requestSingleSynchronizedObject("simplecloud-ingamecommands", SynchronizedIngameCommandNamesContainer::class.java)
         synchronizedObjectPromise.addResultListener {
-            this.synchronizedIngameCommandNamesContainer = it
+            this.synchronizedIngameCommandNamesContainer = it.obj
         }
     }
 
@@ -69,6 +69,7 @@ class CloudProxyPlugin : Plugin(), ICloudProxyPlugin {
             info.serverPriority.clear()
         }
 
+        CloudAPI.instance.getCloudServiceManager().getAllCloudServices().forEach { addServiceToProxy(it) }
         CloudPlugin.instance.onEnable()
         CloudAPI.instance.getEventManager().registerListener(CloudPlugin.instance, CloudListener())
         ProxyServer.getInstance().pluginManager.registerListener(this, BungeeListener())
@@ -84,7 +85,7 @@ class CloudProxyPlugin : Plugin(), ICloudProxyPlugin {
     private fun synchronizeOnlineCountTask() {
         proxy.scheduler.schedule(this, {
             val service = CloudPlugin.instance.thisService()
-            service.setOnlinePlayers(proxy.onlineCount)
+            service.setOnlineCount(proxy.onlineCount)
             service.update()
         },30, 30, TimeUnit.SECONDS)
     }

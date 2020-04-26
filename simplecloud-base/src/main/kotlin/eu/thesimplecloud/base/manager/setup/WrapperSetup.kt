@@ -1,13 +1,13 @@
 package eu.thesimplecloud.base.manager.setup
 
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.wrapper.impl.DefaultWrapperInfo
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
+import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.launcher.utils.IpValidator
-import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.wrapper.impl.DefaultWrapperInfo
-import eu.thesimplecloud.launcher.extension.sendMessage
 
 class WrapperSetup : ISetup {
 
@@ -34,7 +34,7 @@ class WrapperSetup : ISetup {
             Launcher.instance.consoleSender.sendMessage("manager.setup.wrapper.question.host.success", "Host set.")
             return true
         }
-        if (IpValidator().validate(host)) {
+        if (!IpValidator().validate(host)) {
             Launcher.instance.consoleSender.sendMessage("manager.setup.wrapper.question.host.invalid", "The specified host is invalid.")
             return false
         }
@@ -68,7 +68,7 @@ class WrapperSetup : ISetup {
     @SetupFinished
     fun finished(){
         val wrapperInfo = DefaultWrapperInfo(name, host, maxSimultaneouslyStartingServices, memory)
-        CloudAPI.instance.getWrapperManager().updateWrapper(wrapperInfo)
+        CloudAPI.instance.getWrapperManager().update(wrapperInfo)
         Launcher.instance.consoleSender.sendMessage("manager.setup.wrapper.finished", "Wrapper %NAME%", name, " created.")
     }
 

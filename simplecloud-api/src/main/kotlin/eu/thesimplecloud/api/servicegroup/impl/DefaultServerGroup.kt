@@ -1,8 +1,8 @@
 package eu.thesimplecloud.api.servicegroup.impl
 
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.api.service.ServiceVersion
 import eu.thesimplecloud.api.servicegroup.grouptype.ICloudServerGroup
+import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 
 open class DefaultServerGroup(
         name: String,

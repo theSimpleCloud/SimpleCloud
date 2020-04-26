@@ -2,9 +2,8 @@ package eu.thesimplecloud.launcher.extension
 
 import eu.thesimplecloud.api.command.ICommandSender
 import eu.thesimplecloud.launcher.startup.Launcher
-import java.lang.IllegalArgumentException
 
-    /**
+/**
      * Sends a message by a property to this player
      * All '&' will be replaced to '§'
      */

@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.kotlin.jvm' version '1.3.71'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.72'
 }
 
 
@@ -11,7 +11,7 @@ repositories {
 allprojects {
     
     group 'eu.thesimplecloud.simplecloud'
-    version '1.0.5-SNAPSHOT'
+    version '1.0.7-SNAPSHOT'
 
     sourceCompatibility = 1.8
 
@@ -21,6 +21,10 @@ allprojects {
         maven {
             url "https://repo.thesimplecloud.eu/artifactory/gradle-dev-local/"
         }
+    }
+
+    project.ext {
+        depedencyClientServerAPIVersion = '2.3.23-SNAPSHOT'
     }
 
     buildscript {
@@ -39,14 +43,9 @@ allprojects {
             jvmTarget = "1.8"
         }
     }
-
-    project.ext {
-        depedencyClientServerAPIVersion = '2.3.6-SNAPSHOT'
-    }
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion)
 }

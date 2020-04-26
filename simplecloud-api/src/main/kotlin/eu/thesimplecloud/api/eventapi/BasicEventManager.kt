@@ -1,31 +1,37 @@
 package eu.thesimplecloud.api.eventapi
 
+import com.google.common.collect.Maps
+import eu.thesimplecloud.api.eventapi.exception.EventException
 import eu.thesimplecloud.api.external.ICloudModule
 import java.lang.reflect.Method
-import java.util.HashMap
+import java.util.concurrent.CopyOnWriteArrayList
 
 open class BasicEventManager : IEventManager {
 
     /**
      * The map with all [IEvent]s and the listener methods.
      */
-    private val listeners = HashMap<Class<out IEvent>, MutableList<EventData>>()
+    private val listeners = Maps.newConcurrentMap<Class<out IEvent>, MutableList<RegisteredEvent>>()
 
     override fun registerListener(cloudModule: ICloudModule, listener: IListener) {
         for (method in getValidMethods(listener::class.java)) {
-            addMethodData(method.parameterTypes[0] as Class<out IEvent>, EventData(cloudModule, listener, method))
+            val eventClass = method.parameterTypes[0] as Class<out IEvent>
+            addRegisteredEvent(RegisteredEvent.fromEventMethod(cloudModule, eventClass, listener, method))
         }
+    }
+
+    override fun registerEvent(cloudModule: ICloudModule, eventClass: Class<out IEvent>, listener: IListener, eventExecutor: IEventExecutor) {
+        addRegisteredEvent(RegisteredEvent(cloudModule, eventClass, listener, eventExecutor))
     }
 
     override fun unregisterListener(listener: IListener) {
-        for (method in getValidMethods(listener::class.java)) {
-            removeMethodData(method.parameterTypes[0] as Class<out IEvent>, method)
-        }
+        val list = this.listeners.values.map { it.filter { it.listener == listener } }.flatten()
+        list.forEach { removeRegisteredEvent(it) }
     }
 
     override fun call(event: IEvent, fromPacket: Boolean) {
-        this.listeners[event::class.java]?.forEach { methodData ->
-            methodData.method.invoke(methodData.listener, event)
+        this.listeners[event::class.java]?.forEach { registeredEvent ->
+            registeredEvent.eventExecutor.execute(event)
         }
     }
 
@@ -51,25 +57,42 @@ open class BasicEventManager : IEventManager {
     }
 
     /**
-     * Adds the [EventData] to the listeners map.
+     * Adds the [RegisteredEvent] to the listeners map.
      *
-     * @param eventClass the event class of the method parameter.
-     * @param eventData the [EventData] that should be registered.
+     * @param registeredEvent the [RegisteredEvent] that should be registered.
      */
-    private fun addMethodData(eventClass: Class<out IEvent>, eventData: EventData) {
-        this.listeners.getOrPut(eventClass, { ArrayList() }).add(eventData)
+    private fun addRegisteredEvent(registeredEvent: RegisteredEvent) {
+        this.listeners.getOrPut(registeredEvent.eventClass, { CopyOnWriteArrayList() }).add(registeredEvent)
     }
 
     /**
-     * Removes the [EventData] to the listeners map.
+     * Removes the [RegisteredEvent] from the listeners map.
      *
-     * @param parameterType the event class of the method parameter.
-     * @param method the [EventData] that should be unregistered.
+     * @param registeredEvent the [RegisteredEvent] that should be removed.
      */
-    private fun removeMethodData(parameterType: Class<out IEvent>, method: Method) {
-        this.listeners[parameterType]?.removeIf { methodData -> methodData.method == method }
+    private fun removeRegisteredEvent(registeredEvent: RegisteredEvent) {
+        this.listeners[registeredEvent.eventClass]?.remove(registeredEvent)
     }
 
-    data class EventData(val cloudModule: ICloudModule, val listener: IListener, val method: Method)
+    data class RegisteredEvent(val cloudModule: ICloudModule, val eventClass: Class<out IEvent>, val listener: IListener, val eventExecutor: IEventExecutor) {
+
+        companion object {
+            fun fromEventMethod(cloudModule: ICloudModule, eventClass: Class<out IEvent>, listener: IListener, method: Method): RegisteredEvent {
+                return RegisteredEvent(cloudModule, eventClass, listener, object : IEventExecutor {
+
+                    override fun execute(event: IEvent) {
+                        if (!eventClass.isAssignableFrom(event.javaClass))
+                            return
+                        try {
+                            method.invoke(listener, event)
+                        } catch (ex: Exception) {
+                            throw EventException(event, ex)
+                        }
+                    }
+                })
+            }
+        }
+
+    }
 
 }

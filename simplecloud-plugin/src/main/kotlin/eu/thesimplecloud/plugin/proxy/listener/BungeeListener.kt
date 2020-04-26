@@ -62,7 +62,7 @@ class BungeeListener : Listener {
 
         //update service
         val thisService = CloudPlugin.instance.thisService()
-        thisService.setOnlinePlayers(thisService.getOnlinePlayers() + 1)
+        thisService.setOnlineCount(thisService.getOnlineCount() + 1)
         thisService.update()
 
         //call event
@@ -88,7 +88,7 @@ class BungeeListener : Listener {
 
         //update service
         val thisService = CloudPlugin.instance.thisService()
-        thisService.setOnlinePlayers(thisService.getOnlinePlayers() - 1)
+        thisService.setOnlineCount(thisService.getOnlineCount() - 1)
         thisService.update()
     }
 
@@ -123,7 +123,7 @@ class BungeeListener : Listener {
             proxiedPlayer.disconnect(CloudTextBuilder().build(CloudText("§cService does not exist.")))
             return
         }
-        service.setOnlinePlayers(service.getOnlinePlayers() + 1)
+        service.setOnlineCount(service.getOnlineCount() + 1)
         service.update()
 
         //update player
@@ -137,7 +137,7 @@ class BungeeListener : Listener {
     @EventHandler
     fun on(event: ServerDisconnectEvent) {
         val service = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(event.target.name) ?: return
-        service.setOnlinePlayers(service.getOnlinePlayers() - 1)
+        service.setOnlineCount(service.getOnlineCount() - 1)
         service.update()
     }
 

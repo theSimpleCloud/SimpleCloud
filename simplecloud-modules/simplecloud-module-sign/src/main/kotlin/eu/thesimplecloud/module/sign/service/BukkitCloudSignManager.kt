@@ -20,7 +20,7 @@ class BukkitCloudSignManager {
 
         Bukkit.getScheduler().scheduleSyncRepeatingTask(SpigotPluginMain.INSTANCE, {
             val signModuleConfig = try {
-                SignModuleConfig.INSTANCE
+                SignModuleConfig.INSTANCE.obj
             } catch (e: Exception) {
                 println("[SimpleCloud-Signs] WARNING: Module config not instantiated.")
                 return@scheduleSyncRepeatingTask

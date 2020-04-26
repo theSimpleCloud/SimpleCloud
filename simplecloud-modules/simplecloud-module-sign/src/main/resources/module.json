@@ -4,5 +4,6 @@
   "mainClass": "eu.thesimplecloud.module.sign.manager.SignsModule",
   "moduleCopyType": "LOBBY",
   "repositories": [],
-  "dependencies": []
+  "dependencies": [],
+  "depend": []
 }

@@ -1,8 +1,8 @@
 package eu.thesimplecloud.base.wrapper.process.serviceconfigurator
 
+import eu.thesimplecloud.api.service.ServiceVersion
 import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.configurators.DefaultProxyConfigurator
 import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.configurators.DefaultServerConfigurator
-import eu.thesimplecloud.api.service.ServiceVersion
 
 class ServiceConfiguratorManager {
 

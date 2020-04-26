@@ -1,16 +1,16 @@
 package eu.thesimplecloud.base.manager.commands
 
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.extension.sendPacketToAllAuthenticatedClients
+import eu.thesimplecloud.api.network.packets.template.PacketIODeleteTemplate
 import eu.thesimplecloud.base.manager.startup.Manager
+import eu.thesimplecloud.launcher.console.command.CommandType
 import eu.thesimplecloud.launcher.console.command.ICommandHandler
 import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
-import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.extension.sendPacketToAllAuthenticatedClients
-import eu.thesimplecloud.api.network.packets.template.PacketIODeleteTemplate
-import eu.thesimplecloud.launcher.console.command.CommandType
 import eu.thesimplecloud.launcher.extension.sendMessage
+import eu.thesimplecloud.launcher.startup.Launcher
 
 @Command("delete", CommandType.CONSOLE, "simplecloud.command.delete")
 class DeleteCommand : ICommandHandler {
@@ -39,17 +39,34 @@ class DeleteCommand : ICommandHandler {
     @CommandSubPath("group <name>", "Deletes a group")
     fun deleteGroup(@CommandArgument("name") name: String) {
         val serviceGroup = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(name)
-        if (serviceGroup == null){
+        if (serviceGroup == null) {
             Launcher.instance.consoleSender.sendMessage("manager.command.delete.group.not-exist", "Group %NAME%", name, " does not exist.")
             return
         }
+        if (!CloudAPI.instance.getCloudServiceGroupManager().deleteServiceGroup(serviceGroup).isSuccess) {
+            Launcher.instance.consoleSender.sendMessage("manager.command.delete.group.services-running", "Can not delete group %NAME%", name, " while services of this group are running.")
+            return
+        }
+        Launcher.instance.consoleSender.sendMessage("manager.command.delete.group.success", "Group %NAME%", name, " was deleted.")
+    }
+
+    /*
+    @CommandSubPath("group <wrapper>", "Deletes a wrapper")
+    fun deleteWrapper(@CommandArgument("wrapper") name: String) {
+        val wrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(name)
+        if (wrapper == null) {
+            Launcher.instance.consoleSender.sendMessage("manager.command.delete.wrapper.not-exist", "Wrapper %NAME%", name, " does not exist.")
+            return
+        }
         try {
-            CloudAPI.instance.getCloudServiceGroupManager().deleteServiceGroup(serviceGroup)
+            CloudAPI.instance.getWrapperManager().remove()
         } catch (e: IllegalStateException) {
             Launcher.instance.consoleSender.sendMessage("manager.command.delete.group.services-running", "Can not delete group %NAME%", name, " while services of this group are running.")
             return
         }
         Launcher.instance.consoleSender.sendMessage("manager.command.delete.group.success", "Group %NAME%", name, " was deleted.")
     }
+    */
+
 
 }

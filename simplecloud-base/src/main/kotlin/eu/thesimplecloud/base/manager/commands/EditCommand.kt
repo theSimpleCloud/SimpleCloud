@@ -1,12 +1,7 @@
 package eu.thesimplecloud.base.manager.commands
 
-import eu.thesimplecloud.launcher.console.command.ICommandHandler
-import eu.thesimplecloud.api.command.ICommandSender
-import eu.thesimplecloud.launcher.console.command.annotations.Command
-import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
-import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
-import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.command.ICommandSender
 import eu.thesimplecloud.api.parser.string.StringParser
 import eu.thesimplecloud.api.template.ITemplate
 import eu.thesimplecloud.api.utils.getAllFieldsFromClassAndSubClasses
@@ -16,7 +11,12 @@ import eu.thesimplecloud.launcher.console.command.CommandType
 import eu.thesimplecloud.launcher.console.command.provider.ServiceGroupCommandSuggestionProvider
 import eu.thesimplecloud.launcher.console.command.provider.TemplateCommandSuggestionProvider
 import eu.thesimplecloud.launcher.console.command.provider.WrapperCommandSuggestionProvider
+import eu.thesimplecloud.launcher.console.command.ICommandHandler
+import eu.thesimplecloud.launcher.console.command.annotations.Command
+import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
+import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 import eu.thesimplecloud.launcher.extension.sendMessage
+import eu.thesimplecloud.launcher.startup.Launcher
 import java.lang.reflect.Field
 
 @Command("edit", CommandType.CONSOLE_AND_INGAME, "simplecloud.command.edit")
@@ -105,9 +105,9 @@ class EditCommand : ICommandHandler {
                 return
             }
             try {
-                field.set(wrapper, type)
+                field.set(wrapper.obj, type)
                 commandSender.sendMessage("manager.command.edit.wrapper.success", "Wrapper edited.")
-                CloudAPI.instance.getWrapperManager().updateWrapper(wrapper)
+                CloudAPI.instance.getWrapperManager().update(wrapper.obj)
             } catch (e: Exception) {
                 commandSender.sendMessage("manager.command.edit.wrapper.invalid-value", "Invalid value. Expected type: %TYPE%", field.type.simpleName)
                 return

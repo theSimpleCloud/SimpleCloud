@@ -1,11 +1,11 @@
 package eu.thesimplecloud.launcher.setups
 
-import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.launcher.application.CloudApplicationType
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupCancelled
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
+import eu.thesimplecloud.launcher.startup.Launcher
 import kotlin.concurrent.thread
 
 class StartSetup : ISetup {

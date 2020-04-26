@@ -1,11 +1,11 @@
 package eu.thesimplecloud.base.manager.impl
 
-import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.api.client.CloudClientType
 import eu.thesimplecloud.api.network.packets.screen.PacketIOExecuteCommand
 import eu.thesimplecloud.api.screen.ICommandExecutable
 import eu.thesimplecloud.api.screen.ICommandExecuteManager
 import eu.thesimplecloud.api.service.ICloudService
+import eu.thesimplecloud.base.manager.startup.Manager
 
 class CommandExecuteManagerImpl : ICommandExecuteManager {
 

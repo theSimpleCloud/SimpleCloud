@@ -1,13 +1,10 @@
 package eu.thesimplecloud.api.service.impl
 
 import eu.thesimplecloud.api.property.Property
-import eu.thesimplecloud.clientserverapi.lib.json.GsonExclude
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
-import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
-import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
-import jdk.nashorn.internal.runtime.PropertyMap
+import eu.thesimplecloud.clientserverapi.lib.json.GsonExclude
+import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -22,17 +19,8 @@ data class DefaultCloudService(
         private var motd: String
 ) : ICloudService {
 
-    @GsonExclude
-    private val startingPromise = CommunicationPromise<Unit>(enableTimeout = false)
-    @GsonExclude
-    private val connectedPromise = CommunicationPromise<Unit>(enableTimeout = false)
-    @GsonExclude
-    private val joinablePromise = CommunicationPromise<Unit>(enableTimeout = false)
-    @GsonExclude
-    private val closedPromise = CommunicationPromise<Unit>(enableTimeout = false)
-
     private var serviceState = ServiceState.PREPARED
-    private var onlinePlayers = 0
+    private var onlineCount = 0
     private var authenticated = false
     @GsonExclude
     private var lastUpdate = System.currentTimeMillis()
@@ -65,10 +53,12 @@ data class DefaultCloudService(
         this.serviceState = serviceState
     }
 
-    override fun getOnlinePlayers(): Int = this.onlinePlayers
+    override fun getOnlineCount(): Int {
+        return this.onlineCount
+    }
 
-    override fun setOnlinePlayers(amount: Int) {
-        this.onlinePlayers = amount
+    override fun setOnlineCount(amount: Int) {
+        this.onlineCount = amount
     }
 
     override fun getMOTD(): String = this.motd
@@ -90,14 +80,6 @@ data class DefaultCloudService(
     override fun setLastUpdate(timeStamp: Long) {
         this.lastUpdate = timeStamp
     }
-
-    override fun startingPromise(): ICommunicationPromise<Unit> = this.startingPromise
-
-    override fun connectedPromise(): ICommunicationPromise<Unit> = this.connectedPromise
-
-    override fun joinablePromise(): ICommunicationPromise<Unit> = this.joinablePromise
-
-    override fun closedPromise(): ICommunicationPromise<Unit> = this.closedPromise
 
 
     override fun toString(): String {

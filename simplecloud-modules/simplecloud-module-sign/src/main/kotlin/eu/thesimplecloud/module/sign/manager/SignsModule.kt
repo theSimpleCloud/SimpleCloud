@@ -5,6 +5,7 @@ import eu.thesimplecloud.api.event.sync.`object`.SynchronizedObjectUpdatedEvent
 import eu.thesimplecloud.api.eventapi.CloudEventHandler
 import eu.thesimplecloud.api.eventapi.IListener
 import eu.thesimplecloud.api.external.ICloudModule
+import eu.thesimplecloud.api.sync.`object`.SynchronizedObjectHolder
 import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.module.sign.lib.*
@@ -35,9 +36,9 @@ class SignsModule : ICloudModule {
 
             @CloudEventHandler
             fun on(event: SynchronizedObjectUpdatedEvent) {
-                val signModuleConfig = event.synchronizedObject
-                if (signModuleConfig is SignModuleConfig) {
-                    saveConfigToFiles(signModuleConfig)
+                val signModuleConfigHolder = event.synchronizedObject
+                if (signModuleConfigHolder.obj is SignModuleConfig) {
+                    saveConfigToFiles(signModuleConfigHolder.obj as SignModuleConfig)
                 }
             }
 
@@ -46,7 +47,7 @@ class SignsModule : ICloudModule {
 
     fun reloadConfig() {
         val signModuleConfig = loadConfigFromFiles()
-        SignModuleConfig.INSTANCE = signModuleConfig
+        SignModuleConfig.INSTANCE = SynchronizedObjectHolder(signModuleConfig)
         signModuleConfig.update()
     }
 

@@ -1,13 +1,13 @@
 package eu.thesimplecloud.api.network.packets.servicegroup
 
-import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
-import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
-import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.api.service.ServiceType
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.api.servicegroup.impl.DefaultLobbyGroup
 import eu.thesimplecloud.api.servicegroup.impl.DefaultProxyGroup
 import eu.thesimplecloud.api.servicegroup.impl.DefaultServerGroup
+import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
+import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
 abstract class PacketIOCloudServiceGroupData() : JsonPacket() {
 

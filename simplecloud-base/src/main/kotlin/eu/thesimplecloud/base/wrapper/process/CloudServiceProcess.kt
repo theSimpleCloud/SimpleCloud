@@ -1,12 +1,10 @@
 package eu.thesimplecloud.base.wrapper.process
 
-import eu.thesimplecloud.base.wrapper.process.filehandler.TemplateCopier
-import eu.thesimplecloud.base.wrapper.startup.Wrapper
-import eu.thesimplecloud.client.packets.PacketOutScreenMessage
-import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.client.CloudClientType
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
+import eu.thesimplecloud.api.event.service.CloudServiceUnregisteredEvent
+import eu.thesimplecloud.api.listenerextension.cloudListener
 import eu.thesimplecloud.api.network.packets.service.PacketIORemoveCloudService
 import eu.thesimplecloud.api.network.packets.service.PacketIOUpdateCloudService
 import eu.thesimplecloud.api.service.ICloudService
@@ -14,16 +12,19 @@ import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.service.impl.DefaultCloudService
 import eu.thesimplecloud.api.servicegroup.grouptype.ICloudProxyGroup
 import eu.thesimplecloud.api.utils.ManifestLoader
+import eu.thesimplecloud.base.wrapper.process.filehandler.TemplateCopier
+import eu.thesimplecloud.base.wrapper.startup.Wrapper
+import eu.thesimplecloud.client.packets.PacketOutScreenMessage
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.launcher.dependency.DependencyLoader
 import eu.thesimplecloud.launcher.extension.sendMessage
+import eu.thesimplecloud.launcher.startup.Launcher
 import org.apache.commons.io.FileUtils
 import java.io.BufferedReader
 import java.io.File
 import java.io.IOException
 import java.io.InputStreamReader
-import java.lang.IllegalStateException
 import java.util.concurrent.TimeUnit
 
 
@@ -80,13 +81,13 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
     private fun processStopped(){
         Launcher.instance.consoleSender.sendMessage("wrapper.service.stopped", "Service %NAME%", cloudService.getName(), " was stopped.")
         Wrapper.instance.cloudServiceProcessManager.unregisterServiceProcess(this)
-        this.cloudService.setOnlinePlayers(0)
+        this.cloudService.setOnlineCount(0)
         this.cloudService.setState(ServiceState.CLOSED)
         if (Wrapper.instance.communicationClient.isOpen()) {
             Wrapper.instance.communicationClient.sendUnitQuery(PacketIOUpdateCloudService(this.cloudService)).awaitUninterruptibly()
             CloudAPI.instance.getCloudServiceManager().removeCloudService(this.cloudService.getName())
             Wrapper.instance.communicationClient.sendUnitQuery(PacketIORemoveCloudService(this.cloudService.getName()))
-            Wrapper.instance.updateUsedMemory()
+            Wrapper.instance.updateWrapperData()
         }
 
         if (!cloudService.isStatic()) {
@@ -133,7 +134,9 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
                     forceStop()
             }, 7, TimeUnit.SECONDS)
         }
-        return getCloudService().closedPromise()
+        return cloudListener<CloudServiceUnregisteredEvent>()
+                .addCondition { it.cloudService == this.cloudService }
+                .toPromise()
     }
 
     override fun executeCommand(command: String) {

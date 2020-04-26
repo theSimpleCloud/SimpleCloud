@@ -32,7 +32,7 @@ class BungeeListener(val plugin: BungeePluginMain) : Listener {
             plugin.startTablist()
         }
 
-        val config = plugin.config
+        val config = plugin.configHolder.obj
         val proxyConfiguration = plugin.getProxyConfiguration()?: return
 
         if (plugin.thisService.getServiceGroup().isInMaintenance()) {

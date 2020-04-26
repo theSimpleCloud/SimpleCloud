@@ -1,19 +1,19 @@
 package eu.thesimplecloud.api
 
 import eu.thesimplecloud.api.eventapi.IEventManager
+import eu.thesimplecloud.api.external.ICloudModule
 import eu.thesimplecloud.api.network.packets.PacketIOExecuteFunction
 import eu.thesimplecloud.api.player.ICloudPlayerManager
-import eu.thesimplecloud.api.screen.ICommandExecuteManager
 import eu.thesimplecloud.api.screen.ICommandExecutable
+import eu.thesimplecloud.api.screen.ICommandExecuteManager
 import eu.thesimplecloud.api.service.ICloudServiceManager
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroupManager
-import eu.thesimplecloud.api.sync.`object`.ISynchronizedObjectManager
+import eu.thesimplecloud.api.sync.`object`.ISingleSynchronizedObjectManager
 import eu.thesimplecloud.api.sync.list.manager.ISynchronizedObjectListManager
 import eu.thesimplecloud.api.template.ITemplateManager
 import eu.thesimplecloud.api.wrapper.IWrapperManager
 import eu.thesimplecloud.clientserverapi.client.INettyClient
 import eu.thesimplecloud.clientserverapi.lib.bootstrap.ICommunicationBootstrap
-import eu.thesimplecloud.clientserverapi.lib.packet.packetsender.sendQuery
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
@@ -59,9 +59,9 @@ interface ICloudAPI {
     fun getTemplateManager(): ITemplateManager
 
     /**
-     * Returns the [ISynchronizedObjectManager] used to manage the templates
+     * Returns the [ISingleSynchronizedObjectManager] used to manage the templates
      */
-    fun getSynchronizedObjectManager(): ISynchronizedObjectManager
+    fun getSingleSynchronizedObjectManager(): ISingleSynchronizedObjectManager
 
     /**
      * Returns the [ICommunicationBootstrap] of this side.
@@ -83,6 +83,16 @@ interface ICloudAPI {
      * Returns whether this side is a manager.
      */
     fun isManager(): Boolean = getThisSidesName() == "Manager"
+
+    /**
+     * Returns whether the application is executed on windows.
+     */
+    fun isWindows(): Boolean = System.getProperty("os.name").toLowerCase().contains("windows")
+
+    /**
+     * Returns then cloud module fot this side.
+     */
+    fun getThisSidesCloudModule(): ICloudModule
 
 }
 

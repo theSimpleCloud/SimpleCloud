@@ -1,14 +1,14 @@
 package eu.thesimplecloud.base.manager.listener
 
-import eu.thesimplecloud.api.event.player.CloudPlayerDisconnectEvent
 import eu.thesimplecloud.api.event.player.CloudPlayerLoginEvent
 import eu.thesimplecloud.api.event.player.CloudPlayerUnregisteredEvent
-import eu.thesimplecloud.launcher.startup.Launcher
+import eu.thesimplecloud.api.event.service.CloudServiceUnregisteredEvent
 import eu.thesimplecloud.api.eventapi.CloudEventHandler
 import eu.thesimplecloud.api.eventapi.IListener
-import eu.thesimplecloud.api.event.service.CloudServiceUnregisteredEvent
-import eu.thesimplecloud.base.manager.events.CloudPlayerLoginRequestEvent
+import eu.thesimplecloud.base.manager.startup.Manager
+import eu.thesimplecloud.launcher.event.module.ModuleUnloadedEvent
 import eu.thesimplecloud.launcher.extension.sendMessage
+import eu.thesimplecloud.launcher.startup.Launcher
 
 class CloudListener : IListener {
 
@@ -22,6 +22,11 @@ class CloudListener : IListener {
             }
         }
         Launcher.instance.screenManager.unregisterScreen(event.cloudService.getName())
+    }
+
+    @CloudEventHandler
+    fun on(event: ModuleUnloadedEvent) {
+        Manager.instance.packetRegistry.unregisterAllPackets(event.module.cloudModule)
     }
 
     @CloudEventHandler

@@ -1,6 +1,5 @@
 package eu.thesimplecloud.api.servicegroup
 
-import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceType
 import eu.thesimplecloud.api.service.ServiceVersion
@@ -10,7 +9,7 @@ import eu.thesimplecloud.api.servicegroup.grouptype.ICloudServerGroup
 import eu.thesimplecloud.api.servicegroup.impl.DefaultLobbyGroup
 import eu.thesimplecloud.api.servicegroup.impl.DefaultProxyGroup
 import eu.thesimplecloud.api.servicegroup.impl.DefaultServerGroup
-import kotlin.NoSuchElementException
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
 interface ICloudServiceGroupManager {
 

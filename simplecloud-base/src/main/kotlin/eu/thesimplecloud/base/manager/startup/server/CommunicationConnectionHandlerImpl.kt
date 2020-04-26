@@ -1,16 +1,16 @@
 package eu.thesimplecloud.base.manager.startup.server
 
-import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
-import eu.thesimplecloud.clientserverapi.lib.handler.IConnectionHandler
-import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnectedClient
-import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.screen.ICommandExecutable
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.utils.IAuthenticatable
 import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
-import eu.thesimplecloud.base.manager.impl.SynchronizedObjectManagerImpl
+import eu.thesimplecloud.base.manager.impl.SingleSynchronizedObjectManagerImpl
+import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
+import eu.thesimplecloud.clientserverapi.lib.handler.IConnectionHandler
+import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnectedClient
 import eu.thesimplecloud.launcher.extension.sendMessage
+import eu.thesimplecloud.launcher.startup.Launcher
 
 class CommunicationConnectionHandlerImpl : IConnectionHandler {
 
@@ -33,14 +33,15 @@ class CommunicationConnectionHandlerImpl : IConnectionHandler {
 
         if (clientValue is IWritableWrapperInfo) {
             clientValue.setTemplatesReceived(false)
+            clientValue.setCurrentlyStartingServices(0)
             clientValue.setUsedMemory(0)
-            CloudAPI.instance.getWrapperManager().updateWrapper(clientValue)
+            CloudAPI.instance.getWrapperManager().update(clientValue)
         }
 
         if (clientValue is ICloudService)
             CloudAPI.instance.getCloudServiceManager().updateCloudService(clientValue)
 
-        val synchronizedObjectManager = CloudAPI.instance.getSynchronizedObjectManager() as SynchronizedObjectManagerImpl
+        val synchronizedObjectManager = CloudAPI.instance.getSingleSynchronizedObjectManager() as SingleSynchronizedObjectManagerImpl
         synchronizedObjectManager.unregisterClient(connection)
     }
 
