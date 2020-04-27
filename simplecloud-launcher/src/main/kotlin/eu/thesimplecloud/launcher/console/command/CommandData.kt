@@ -22,6 +22,10 @@ class CommandData(
         val parameterDataList: MutableList<CommandParameterData> = ArrayList()
 ) {
 
+    fun getParameterDataByName(name: String) = this.parameterDataList.firstOrNull { it.name == name }
+
+    fun getParameterDataByNameWithBraces(name: String) = getParameterDataByName(name.drop(1).dropLast(1))
+
     fun getPathWithCloudPrefixIfRequired() = getPathWithCloudPrefixIfRequired(this.path)
 
     fun getPathWithCloudPrefixIfRequired(path: String) = (if (commandType == CommandType.INGAME) "" else "cloud ") + path

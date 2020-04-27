@@ -7,6 +7,7 @@ import eu.thesimplecloud.launcher.console.command.ICommandHandler
 import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
+import eu.thesimplecloud.launcher.console.command.provider.CloudPlayerCommandSuggestionProvider
 import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.module.permission.PermissionPool
 import eu.thesimplecloud.module.permission.group.PermissionGroup
@@ -22,7 +23,7 @@ class PermissionCommand : ICommandHandler {
 
 
     @CommandSubPath("user <user>", "Shows information about a user")
-    fun on(commandSender: ICommandSender, @CommandArgument("user") user: String) {
+    fun on(commandSender: ICommandSender, @CommandArgument("user", CloudPlayerCommandSuggestionProvider::class) user: String) {
         val permissionPlayer = getPermissionPlayerByName(user)
         if (permissionPlayer == null) {
             commandSender.sendMessage("manager.command.perms.user-not-exist", "&cUser not found.")
@@ -43,9 +44,8 @@ class PermissionCommand : ICommandHandler {
     }
 
 
-
     @CommandSubPath("user <user> group add <group> <days>", "Adds a group to a user")
-    fun on(commandSender: ICommandSender, @CommandArgument("user") user: String, @CommandArgument("group") group: String, @CommandArgument("days") days: String) {
+    fun on(commandSender: ICommandSender, @CommandArgument("user", CloudPlayerCommandSuggestionProvider::class) user: String, @CommandArgument("group", PermissionGroupCommandSuggestionProvider::class) group: String, @CommandArgument("days") days: String) {
         val permissionPlayer = getPermissionPlayerByName(user)
         if (permissionPlayer == null) {
             commandSender.sendMessage("manager.command.perms.user-not-exist", "&cUser not found.")
@@ -78,7 +78,7 @@ class PermissionCommand : ICommandHandler {
     }
 
     @CommandSubPath("user <user> group remove <group>", "Removes a group from a user")
-    fun on(commandSender: ICommandSender, @CommandArgument("user") user: String, @CommandArgument("group") group: String) {
+    fun on(commandSender: ICommandSender, @CommandArgument("user", CloudPlayerCommandSuggestionProvider::class) user: String, @CommandArgument("group", PermissionGroupCommandSuggestionProvider::class) group: String) {
         val permissionPlayer = getPermissionPlayerByName(user)
         if (permissionPlayer == null) {
             commandSender.sendMessage("manager.command.perms.user-not-exist", "&cUser not found.")
@@ -95,7 +95,7 @@ class PermissionCommand : ICommandHandler {
     }
 
     @CommandSubPath("user <user> permission add <permission> <days> <active>", "Adds a permission to a user")
-    fun onPermission(commandSender: ICommandSender, @CommandArgument("user") user: String, @CommandArgument("permission") permission: String, @CommandArgument("days") days: String, @CommandArgument("active") active: String) {
+    fun onPermission(commandSender: ICommandSender, @CommandArgument("user", CloudPlayerCommandSuggestionProvider::class) user: String, @CommandArgument("permission") permission: String, @CommandArgument("days") days: String, @CommandArgument("active") active: String) {
         val permissionPlayer = getPermissionPlayerByName(user)
         if (permissionPlayer == null) {
             commandSender.sendMessage("manager.command.perms.user-not-exist", "&cUser not found.")
@@ -124,12 +124,12 @@ class PermissionCommand : ICommandHandler {
     }
 
     @CommandSubPath("user <user> permission add <permission> <days>", "Adds a permission to a user")
-    fun onPermission(commandSender: ICommandSender, @CommandArgument("user") user: String, @CommandArgument("permission") permission: String, @CommandArgument("days") days: String) {
+    fun onPermission(commandSender: ICommandSender, @CommandArgument("user", CloudPlayerCommandSuggestionProvider::class) user: String, @CommandArgument("permission") permission: String, @CommandArgument("days") days: String) {
         onPermission(commandSender, user, permission, days, true.toString())
     }
 
     @CommandSubPath("user <user> permission remove <permission>", "Removes a permission from a user")
-    fun onPermission(commandSender: ICommandSender, @CommandArgument("user") user: String, @CommandArgument("permission") permission: String) {
+    fun onPermission(commandSender: ICommandSender, @CommandArgument("user", CloudPlayerCommandSuggestionProvider::class) user: String, @CommandArgument("permission") permission: String) {
         val permissionPlayer = getPermissionPlayerByName(user)
         if (permissionPlayer == null) {
             commandSender.sendMessage("manager.command.perms.user-not-exist", "&cUser not found.")
@@ -168,7 +168,7 @@ class PermissionCommand : ICommandHandler {
     }
 
     @CommandSubPath("group <group>", "Shows information about a group")
-    fun handleGroup(commandSender: ICommandSender, @CommandArgument("group") group: String) {
+    fun handleGroup(commandSender: ICommandSender, @CommandArgument("group", PermissionGroupCommandSuggestionProvider::class) group: String) {
         val permissionGroup = getPermissionGroupByName(group)
         if (permissionGroup == null) {
             commandSender.sendMessage("manager.command.perms.group-not-exist", "&cGroup not found.")
@@ -181,7 +181,7 @@ class PermissionCommand : ICommandHandler {
     }
 
     @CommandSubPath("group <group> permission add <permission> <active>", "Adds a permission to a group")
-    fun handleGroupPermissionAdd(commandSender: ICommandSender, @CommandArgument("group") group: String, @CommandArgument("permission") permission: String, @CommandArgument("active") active: String) {
+    fun handleGroupPermissionAdd(commandSender: ICommandSender, @CommandArgument("group", PermissionGroupCommandSuggestionProvider::class) group: String, @CommandArgument("permission") permission: String, @CommandArgument("active") active: String) {
         val permissionGroup = getPermissionGroupByName(group)
         if (permissionGroup == null) {
             commandSender.sendMessage("manager.command.perms.group-not-exist", "&cGroup not found.")
@@ -194,12 +194,12 @@ class PermissionCommand : ICommandHandler {
     }
 
     @CommandSubPath("group <group> permission add <permission>", "Adds a permission to a group")
-    fun handleGroupPermissionAdd(commandSender: ICommandSender, @CommandArgument("group") group: String, @CommandArgument("permission") permission: String) {
+    fun handleGroupPermissionAdd(commandSender: ICommandSender, @CommandArgument("group", PermissionGroupCommandSuggestionProvider::class) group: String, @CommandArgument("permission") permission: String) {
         handleGroupPermissionAdd(commandSender, group, permission, true.toString())
     }
 
     @CommandSubPath("group <group> permission remove <permission>", "Removes a permission from a group")
-    fun handleGroupPermissionRemove(commandSender: ICommandSender, @CommandArgument("group") group: String, @CommandArgument("permission") permission: String) {
+    fun handleGroupPermissionRemove(commandSender: ICommandSender, @CommandArgument("group", PermissionGroupCommandSuggestionProvider::class) group: String, @CommandArgument("permission") permission: String) {
         val permissionGroup = getPermissionGroupByName(group)
         if (permissionGroup == null) {
             commandSender.sendMessage("manager.command.perms.group-not-exist", "&cGroup not found.")
@@ -216,7 +216,7 @@ class PermissionCommand : ICommandHandler {
     }
 
     @CommandSubPath("group <group> inheritance add <otherGroup>", "Inherits the group from the other group")
-    fun handleInheritanceAdd(commandSender: ICommandSender, @CommandArgument("group") group: String, @CommandArgument("otherGroup") otherGroup: String) {
+    fun handleInheritanceAdd(commandSender: ICommandSender, @CommandArgument("group", PermissionGroupCommandSuggestionProvider::class) group: String, @CommandArgument("otherGroup", PermissionGroupCommandSuggestionProvider::class) otherGroup: String) {
         val permissionGroup = getPermissionGroupByName(group)
         if (permissionGroup == null) {
             commandSender.sendMessage("manager.command.perms.group-not-exist", "&cGroup not found.")
@@ -245,7 +245,7 @@ class PermissionCommand : ICommandHandler {
     }
 
     @CommandSubPath("group <group> inheritance remove <otherGroup>", "Removes the inheritance from the group to the other group")
-    fun handleInheritanceRemove(commandSender: ICommandSender, @CommandArgument("group") group: String, @CommandArgument("otherGroup") otherGroup: String) {
+    fun handleInheritanceRemove(commandSender: ICommandSender, @CommandArgument("group", PermissionGroupCommandSuggestionProvider::class) group: String, @CommandArgument("otherGroup", PermissionGroupCommandSuggestionProvider::class) otherGroup: String) {
         val permissionGroup = getPermissionGroupByName(group)
         if (permissionGroup == null) {
             commandSender.sendMessage("manager.command.perms.group-not-exist", "&cGroup not found.")

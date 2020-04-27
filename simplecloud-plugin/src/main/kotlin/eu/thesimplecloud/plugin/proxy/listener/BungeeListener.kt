@@ -10,13 +10,16 @@ import eu.thesimplecloud.api.player.connection.DefaultPlayerAddress
 import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
 import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.api.service.ServiceState
+import eu.thesimplecloud.clientserverapi.lib.packet.packetsender.sendQuery
 import eu.thesimplecloud.plugin.extension.getCloudPlayer
 import eu.thesimplecloud.plugin.network.packets.PacketOutCreateCloudPlayer
+import eu.thesimplecloud.plugin.network.packets.PacketOutGetTabSuggestions
 import eu.thesimplecloud.plugin.network.packets.PacketOutPlayerConnectToServer
 import eu.thesimplecloud.plugin.network.packets.PacketOutPlayerLoginRequest
 import eu.thesimplecloud.plugin.proxy.CloudProxyPlugin
 import eu.thesimplecloud.plugin.proxy.text.CloudTextBuilder
 import eu.thesimplecloud.plugin.startup.CloudPlugin
+import net.md_5.bungee.api.connection.ProxiedPlayer
 import net.md_5.bungee.api.event.*
 import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.event.EventHandler
@@ -27,13 +30,16 @@ class BungeeListener : Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     fun on(event: LoginEvent) {
         val connection = event.connection
+
         if (!CloudPlugin.instance.communicationClient.isOpen()) {
+            event.isCancelled = true
             event.setCancelReason(CloudTextBuilder().build(CloudText("§cProxy still starting.")))
             return
         }
-        val promise = CloudAPI.instance.getCloudPlayerManager().getCloudPlayer(event.connection.uniqueId).awaitUninterruptibly()
-        if (promise.isSuccess) {
-            event.setCancelReason(CloudTextBuilder().build(CloudText("§cYou are already registered in the network")))
+        val playerPromise = CloudAPI.instance.getCloudPlayerManager().getCloudPlayer(event.connection.uniqueId).awaitUninterruptibly()
+        if (playerPromise.isSuccess) {
+            event.isCancelled = true
+            event.setCancelReason(CloudTextBuilder().build(CloudText("§cYou are already registered on the network")))
             return
         }
         val playerAddress = DefaultPlayerAddress(connection.address.hostString, connection.address.port)
@@ -41,15 +47,18 @@ class BungeeListener : Listener {
 
         //send login request
         CloudPlugin.instance.communicationClient.sendUnitQuery(PacketOutCreateCloudPlayer(playerConnection, CloudPlugin.instance.thisServiceName)).awaitUninterruptibly()
+        val loginRequestPromise = CloudPlugin.instance.communicationClient.sendUnitQuery(PacketOutPlayerLoginRequest(connection.uniqueId)).awaitUninterruptibly()
+        loginRequestPromise.addFailureListener {
+            event.isCancelled = true
+            event.setCancelReason(CloudTextBuilder().build(CloudText("§cLogin failed: " + it.message)))
+        }
     }
 
     @EventHandler
     fun on(event: PostLoginEvent) {
         val proxiedPlayer = event.player
         proxiedPlayer.reconnectServer = null
-        CloudPlugin.instance.communicationClient.sendUnitQuery(PacketOutPlayerLoginRequest(proxiedPlayer.uniqueId)).addFailureListener {
-            proxiedPlayer.disconnect(CloudTextBuilder().build(CloudText("§cLogin failed: " + it.message)))
-        }
+
 
         //update service
         val thisService = CloudPlugin.instance.thisService()
@@ -151,6 +160,22 @@ class BungeeListener : Listener {
         event.isCancelled = true
     }
 
+    @EventHandler
+    fun on(event: TabCompleteEvent) {
+        val player = event.sender as ProxiedPlayer
 
+        val commandString = event.cursor.replace("/", "")
+        if (commandString.isEmpty()) return
+
+        val suggestions = CloudPlugin.instance.communicationClient.sendQuery<Array<String>>(PacketOutGetTabSuggestions(player.uniqueId, commandString)).awaitUninterruptibly().getNow()
+        if (suggestions.isEmpty()) {
+            return
+        }
+        event.suggestions.addAll(suggestions)
+
+
+
+
+    }
 
 }

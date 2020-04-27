@@ -113,14 +113,10 @@ class BungeePluginMain : Plugin() {
     }
 
     fun getOnlinePlayers(): Int {
-        var onlinePlayers = 0
-        thisService.getServiceGroup().getAllServices().forEach { onlinePlayers += it.getOnlineCount() }
-        return onlinePlayers
+        return thisService.getServiceGroup().getOnlineCount()
     }
 
     fun replaceString(message: String): String {
-        val configuration = getProxyConfiguration() ?: return ""
-
         val replacesMessage = message
                 .replace("%ONLINE_PLAYERS%", getOnlinePlayers().toString())
                 .replace("%MAX_PLAYERS%", thisService.getMaxPlayers().toString())

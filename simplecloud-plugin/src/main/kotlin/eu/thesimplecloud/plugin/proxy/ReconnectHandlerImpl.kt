@@ -9,7 +9,7 @@ class ReconnectHandlerImpl : ReconnectHandler {
     }
 
     override fun getServer(player: ProxiedPlayer): ServerInfo? {
-        return null
+        return CloudProxyPlugin.instance.lobbyConnector.getLobbyServer(player)
     }
 
     override fun setServer(player: ProxiedPlayer?) {

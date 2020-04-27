@@ -4,6 +4,11 @@ plugins {
     id 'maven-publish'
     id 'maven'
 }
+
+configurations {
+    jar.archiveName = 'SimpleCloud-Proxy.jar'
+}
+
 repositories {
     mavenCentral()
     mavenLocal()

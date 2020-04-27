@@ -7,6 +7,7 @@ import eu.thesimplecloud.launcher.console.command.ICommandHandler
 import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
+import eu.thesimplecloud.launcher.console.command.provider.ServiceGroupCommandSuggestionProvider
 import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.module.sign.lib.SignModuleConfig
 import eu.thesimplecloud.module.sign.manager.SignsModule
@@ -31,7 +32,7 @@ class SignsCommand : ICommandHandler {
     }
 
     @CommandSubPath("group <group> layout <layout>", "Sets the layout for this group.")
-    fun handleLayout(commandSender: ICommandSender, @CommandArgument("group") groupName: String, @CommandArgument("layout") layoutName: String) {
+    fun handleLayout(commandSender: ICommandSender, @CommandArgument("group", ServiceGroupCommandSuggestionProvider::class) groupName: String, @CommandArgument("layout") layoutName: String) {
         val serviceGroup = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(groupName)
         if (serviceGroup == null) {
             commandSender.sendMessage("manager.command.signs.group-not-found", "§cGroup not found.")

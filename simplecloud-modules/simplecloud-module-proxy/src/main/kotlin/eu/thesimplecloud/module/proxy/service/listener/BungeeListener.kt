@@ -4,6 +4,7 @@ import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.module.proxy.extensions.mapToLowerCase
 import eu.thesimplecloud.module.proxy.service.BungeePluginMain
 import eu.thesimplecloud.plugin.proxy.text.CloudTextBuilder
+import eu.thesimplecloud.plugin.startup.CloudPlugin
 import net.md_5.bungee.api.ServerPing
 import net.md_5.bungee.api.event.ProxyPingEvent
 import net.md_5.bungee.api.event.ServerConnectEvent
@@ -74,8 +75,6 @@ class BungeeListener(val plugin: BungeePluginMain) : Listener {
     @EventHandler
     fun on(event: ProxyPingEvent) {
         val response = event.response
-
-        val config = plugin.configHolder
 
         val proxyConfiguration = plugin.getProxyConfiguration() ?: return
         val motdConfiguration = if (plugin.thisService.getServiceGroup().isInMaintenance())

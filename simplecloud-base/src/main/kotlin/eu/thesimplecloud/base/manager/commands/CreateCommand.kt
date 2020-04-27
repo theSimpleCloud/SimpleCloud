@@ -14,7 +14,7 @@ import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.startup.Launcher
 
-@Command("create", CommandType.CONSOLE)
+@Command("create", CommandType.CONSOLE, "simplecloud.command.create")
 class CreateCommand : ICommandHandler {
 
     val templateManager = CloudAPI.instance.getTemplateManager()

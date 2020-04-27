@@ -12,7 +12,7 @@ import eu.thesimplecloud.launcher.extension.sendMessage
 class HubCommand : ICommandHandler {
 
     @CommandSubPath
-    fun handleCommand(sender: ICommandSender) {
+    fun handleCommand(sender: ICommandSender, args: Array<String>) {
         val player = sender as ICloudPlayer
         if (player.getConnectedServer()?.isLobby() == true) {
             player.sendMessage("ingame.command.hub.already-lobby", "&cYou are already on a lobby server.")

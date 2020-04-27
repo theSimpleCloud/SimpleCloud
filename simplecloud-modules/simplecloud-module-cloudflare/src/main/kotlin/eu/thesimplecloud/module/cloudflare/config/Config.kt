@@ -7,9 +7,10 @@ package eu.thesimplecloud.module.cloudflare.config
  * Time: 17:37
  */
 data class Config(
-        val email: String,
-        val apiToken: String,
-        val domainName: String,
-        val zoneID: String,
-        val subDomain: String
-)
+        val cloudFlareDatas: List<CloudFlareData>
+) {
+
+    fun getCloudFlareDataByDomainName(domainName: String): CloudFlareData? {
+        return cloudFlareDatas.firstOrNull { it.domainName == domainName }
+    }
+}

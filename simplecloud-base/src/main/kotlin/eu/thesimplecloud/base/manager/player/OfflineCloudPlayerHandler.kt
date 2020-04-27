@@ -24,7 +24,6 @@ class OfflineCloudPlayerHandler(mongoConnectionInformation: MongoConnectionInfor
     init {
         //make a first request (the first request will take a very long time when using embed mongodb. Following requests will be way faster)
         GlobalScope.launch {
-            loadCollection.findOne()
             loadCollection.createIndex("{ name: \"text\" }")
         }
     }

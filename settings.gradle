@@ -16,4 +16,6 @@ findProject(':simplecloud-modules:simplecloud-module-sign')?.name = 'simplecloud
 include 'simplecloud-modules:simplecloud-module-internalwrapper'
 findProject(':simplecloud-modules:simplecloud-module-internalwrapper')?.name = 'simplecloud-module-internalwrapper'
 include 'simplecloud-updater'
+include 'simplecloud-modules:simplecloud-module-notify'
+findProject(':simplecloud-modules:simplecloud-module-notify')?.name = 'simplecloud-module-notify'
 

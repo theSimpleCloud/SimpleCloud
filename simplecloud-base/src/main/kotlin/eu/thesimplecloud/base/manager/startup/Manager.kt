@@ -19,6 +19,7 @@ import eu.thesimplecloud.base.manager.packet.IPacketRegistry
 import eu.thesimplecloud.base.manager.packet.PacketRegistry
 import eu.thesimplecloud.base.manager.player.IOfflineCloudPlayerHandler
 import eu.thesimplecloud.base.manager.player.OfflineCloudPlayerHandler
+import eu.thesimplecloud.base.manager.player.PlayerUnregisterScheduler
 import eu.thesimplecloud.base.manager.service.ServiceHandler
 import eu.thesimplecloud.base.manager.setup.mongo.MongoDBUseEmbedSetup
 import eu.thesimplecloud.base.manager.startup.server.CommunicationConnectionHandlerImpl
@@ -57,6 +58,7 @@ class Manager : ICloudApplication {
     val communicationServer: INettyServer<ICommandExecutable>
     val templateServer: INettyServer<ICommandExecutable>
     val packetRegistry: IPacketRegistry = PacketRegistry()
+    val playerUnregisterScheduler = PlayerUnregisterScheduler()
     val cloudModuleHandler: IModuleHandler = ModuleHandler()
     val appClassLoader: ApplicationClassLoader
 
@@ -110,6 +112,7 @@ class Manager : ICloudApplication {
         this.templateServer.getDirectorySyncManager().createDirectorySync(File(DirectoryPaths.paths.modulesPath), DirectoryPaths.paths.modulesPath)
         this.serviceHandler.startThread()
         thread(start = true, isDaemon = false) { templateServer.start() }
+        this.playerUnregisterScheduler.startScheduler()
     }
 
     private fun moveToApplicationClassLoader(clazz: Class<out IPacket>): Class<out IPacket> {

@@ -1,0 +1,9 @@
+{
+  "name": "SimpleCloud-Notify",
+  "author": "Fllip",
+  "mainClass": "eu.thesimplecloud.module.notify.NotifyModule",
+  "moduleCopyType": "NONE",
+  "repositories": [],
+  "dependencies": [],
+  "depend": []
+}

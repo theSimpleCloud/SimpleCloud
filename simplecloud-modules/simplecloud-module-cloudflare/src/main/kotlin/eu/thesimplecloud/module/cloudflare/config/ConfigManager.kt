@@ -11,10 +11,10 @@ import java.io.File
  */
 class ConfigManager() {
 
-    fun createDefaultConfig(): Config {
+    private fun createDefaultConfig(): Config {
         val file = File("CloudFlare", "config.json")
         if (!file.exists()) {
-            val config = Config("user@thesimplecloud.eu", "", "thesimplecloud.eu", "", "@")
+            val config = Config(listOf(CloudFlareData("proxy", "user@thesimplecloud.eu", "", "thesimplecloud.eu", "", "@")))
             JsonData().append("data", config).saveAsFile(file)
             return config
         }

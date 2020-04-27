@@ -9,7 +9,7 @@ import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 import eu.thesimplecloud.launcher.extension.sendMessage
 
-@Command("info", CommandType.CONSOLE)
+@Command("info", CommandType.CONSOLE, "simplecloud.command.info")
 class InfoCommand : ICommandHandler {
 
     @CommandSubPath("wrapper <name>", "Prints some information about the specified wrapper")
