@@ -1,7 +1,7 @@
 package eu.thesimplecloud.base.manager.mongo
 
 import com.mongodb.ConnectionString
-import com.mongodb.MongoClient
+import com.mongodb.client.MongoClient
 import org.litote.kmongo.KMongo
 
 open class MongoConnectionInformation(
@@ -14,13 +14,14 @@ open class MongoConnectionInformation(
 ) {
 
     private fun getConnectionString(): ConnectionString {
+        if (password.isBlank() || userName.isBlank()) {
+            return ConnectionString("mongodb://$host:$port/$databaseName")
+        }
+
         return ConnectionString("mongodb://$userName:$password@$host:$port/$databaseName")
     }
 
     fun createMongoClient(): MongoClient {
-        if (password.isBlank() || userName.isBlank()) {
-            return KMongo.createClient(host, port)
-        }
         return KMongo.createClient(getConnectionString())
     }
 }
