@@ -148,6 +148,7 @@ class Wrapper : ICloudApplication {
         }
     }
 
+    @Synchronized
     fun reloadExistingModules() {
         this.existingModules = ModuleHandler().getAllCloudModuleFileContents()
     }
