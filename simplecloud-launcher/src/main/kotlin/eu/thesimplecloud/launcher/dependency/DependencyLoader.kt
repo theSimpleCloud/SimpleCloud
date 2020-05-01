@@ -182,6 +182,9 @@ class DependencyLoader : IDependencyLoader {
                     continue
                 }
                 val newVersion = when {
+                    mavenSubDependency.groupId == model.parent?.groupId -> {
+                        model.parent.version
+                    }
                     mavenSubDependency.version == null -> {
                         if (useWeb)
                             getLatestVersionOfDependencyFromWeb(mavenSubDependency.groupId, mavenSubDependency.artifactId)

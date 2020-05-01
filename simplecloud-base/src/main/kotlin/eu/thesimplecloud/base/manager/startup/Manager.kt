@@ -1,6 +1,6 @@
 package eu.thesimplecloud.base.manager.startup
 
-import com.mongodb.client.MongoClient
+import com.mongodb.MongoClient
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.screen.ICommandExecutable

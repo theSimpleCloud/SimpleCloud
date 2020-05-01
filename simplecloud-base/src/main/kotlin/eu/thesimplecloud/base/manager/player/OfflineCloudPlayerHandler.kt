@@ -39,10 +39,11 @@ class OfflineCloudPlayerHandler(mongoConnectionInformation: MongoConnectionInfor
     @Synchronized
     override fun saveCloudPlayer(offlineCloudPlayer: OfflineCloudPlayer) {
         if (offlineCloudPlayer::class.java != OfflineCloudPlayer::class.java) throw IllegalStateException("Cannot save player of type " + offlineCloudPlayer::class.java.simpleName)
-        if (getOfflinePlayer(offlineCloudPlayer.getUniqueId()) != null)
+        if (getOfflinePlayer(offlineCloudPlayer.getUniqueId()) != null) {
             this.saveCollection.replaceOne(Filters.eq("uniqueId", offlineCloudPlayer.getUniqueId()), offlineCloudPlayer)
-        else
+        } else {
             this.saveCollection.insertOne(offlineCloudPlayer)
+        }
 
     }
 

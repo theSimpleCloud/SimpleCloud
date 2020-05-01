@@ -2,7 +2,6 @@ package eu.thesimplecloud.api.command
 
 import eu.thesimplecloud.api.exception.NoSuchPlayerException
 import eu.thesimplecloud.api.exception.UnreachableServiceException
-import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
 interface ICommandSender {
@@ -23,5 +22,12 @@ interface ICommandSender {
      * - [NoSuchPlayerException] if the sender cannot be found on the proxy.
      */
     fun hasPermission(permission: String): ICommunicationPromise<Boolean>
+
+    /**
+     * Checks if the sender has the specified [permission]
+     * This methods block until the result is ready
+     * @return whether the player has the permission or false if there was an error
+     */
+    fun hasPermissionSync(permission: String): Boolean = hasPermission(permission).getBlockingOrNull() ?: false
 
 }

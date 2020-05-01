@@ -1,7 +1,8 @@
 package eu.thesimplecloud.base.manager.mongo
 
+
 import com.mongodb.ConnectionString
-import com.mongodb.client.MongoClient
+import com.mongodb.MongoClient
 import org.litote.kmongo.KMongo
 
 open class MongoConnectionInformation(
@@ -22,6 +23,10 @@ open class MongoConnectionInformation(
     }
 
     fun createMongoClient(): MongoClient {
+        //return KMongo.createClient(MongoClientSettings.builder().applyConnectionString(getConnectionString())
+        //              .codecRegistry(CodecRegistries.fromRegistries(
+        //                CodecRegistries.fromCodecs(UuidCodec(UuidRepresentation.STANDARD))
+        //      )).build())
         return KMongo.createClient(getConnectionString())
     }
 }
