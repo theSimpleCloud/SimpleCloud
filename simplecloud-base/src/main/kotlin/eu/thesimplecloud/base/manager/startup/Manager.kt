@@ -38,6 +38,8 @@ import eu.thesimplecloud.launcher.startup.Launcher
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
+import java.util.logging.Level
+import java.util.logging.Logger
 import kotlin.concurrent.thread
 
 class Manager : ICloudApplication {
@@ -69,6 +71,7 @@ class Manager : ICloudApplication {
     }
 
     init {
+        Logger.getLogger("org.mongodb.driver").level = Level.SEVERE
         instance = this
         CloudAPIImpl()
         CloudAPI.instance.getEventManager().registerListener(this, CloudListener())

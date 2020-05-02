@@ -54,18 +54,17 @@ class DependencyLoader : IDependencyLoader {
             allDependencies.add(dependency)
             appendSubDependenciesOfDependency(dependency, allDependencies, true)
         }
-        allDependencies.filter { it.groupId != "junit" }.let { dependencies -> removeAllRedundantDependencies(dependencies).forEach { downloadDependency(it) } }
+        allDependencies.filter { it.groupId != "junit" &&  it.groupId != "org.slf4j" }.let { dependencies -> removeAllRedundantDependencies(dependencies).forEach { downloadDependency(it) } }
 
     }
 
     override fun installDependencies() {
         Dependency.POM_DIR.mkdirs()
         checkDependenciesToDownloadDependencies()
-        downloadDependencies(this.dependencies.toList())
-        val allDependencies = ArrayList<Dependency>()
-        allDependencies.addAll(this.dependencies)
+        val allDependencies = this.dependencies.filter { it.groupId != "org.slf4j" }.toMutableList()
+        downloadDependencies(allDependencies)
         this.dependencies.forEach { appendSubDependenciesOfDependency(it, allDependencies, false) }
-        allDependencies.filter { it.groupId != "junit" }.let { dependencies -> removeAllRedundantDependencies(dependencies).forEach { installDependency(it) } }
+        allDependencies.filter { it.groupId != "junit" &&  it.groupId != "org.slf4j" }.let { dependencies -> removeAllRedundantDependencies(dependencies).forEach { installDependency(it) } }
 
     }
 
@@ -176,7 +175,7 @@ class DependencyLoader : IDependencyLoader {
             pomContent ?: continue
             val reader = MavenXpp3Reader()
             val model = reader.read(ByteArrayInputStream(pomContent.toByteArray()))
-            val subDependencies = model.dependencies.filter { it.groupId != "junit" }.filter { it.scope == null || it.scope == "compile" }.filter { !it.isOptional }
+            val subDependencies = model.dependencies.filter { it.groupId != "junit" && it.groupId != "org.slf4j" && it.artifactId != "slf4j-simple" }.filter { it.scope == null || it.scope == "compile" }.filter { !it.isOptional }
             for (mavenSubDependency in subDependencies) {
                 if (mavenSubDependency.groupId.contains("$") || mavenSubDependency.artifactId.contains("$")) {
                     continue

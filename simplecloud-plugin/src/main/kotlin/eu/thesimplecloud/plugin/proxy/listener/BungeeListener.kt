@@ -65,6 +65,12 @@ class BungeeListener : Listener {
         thisService.setOnlineCount(thisService.getOnlineCount() + 1)
         thisService.update()
 
+        //check for lobby
+        if (CloudProxyPlugin.instance.lobbyConnector.getLobbyServer(proxiedPlayer) == null) {
+            event.player.disconnect(CloudTextBuilder().build(CloudText("§cNo fallback server found")))
+            return
+        }
+
         //call event
         CloudAPI.instance.getEventManager().call(CloudPlayerLoginEvent(proxiedPlayer.uniqueId, proxiedPlayer.name))
     }
@@ -97,12 +103,12 @@ class BungeeListener : Listener {
         val proxiedPlayer = event.player
         val target = event.target
         val cloudService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(target.name)
-        if (cloudService == null){
+        if (cloudService == null) {
             proxiedPlayer.sendMessage(CloudTextBuilder().build(CloudText("§cServer is not registered in the cloud.")))
             event.isCancelled = true
             return
         }
-        if (cloudService.getState() == ServiceState.STARTING){
+        if (cloudService.getState() == ServiceState.STARTING) {
             proxiedPlayer.sendMessage(CloudTextBuilder().build(CloudText("§cServer is still starting.")))
             event.isCancelled = true
             return
@@ -119,7 +125,7 @@ class BungeeListener : Listener {
     fun on(event: ServerConnectedEvent) {
         val proxiedPlayer = event.player
         val service = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(event.server.info.name)
-        if (service == null){
+        if (service == null) {
             proxiedPlayer.disconnect(CloudTextBuilder().build(CloudText("§cService does not exist.")))
             return
         }
@@ -152,7 +158,7 @@ class BungeeListener : Listener {
         }
         val fallback = CloudProxyPlugin.instance.lobbyConnector.getLobbyServer(event.player, listOf(event.kickedFrom.name))
         if (fallback == null) {
-           event.player.disconnect(CloudTextBuilder().build(CloudText("§cNo fallback server found")))
+            event.player.disconnect(CloudTextBuilder().build(CloudText("§cNo fallback server found")))
             return
         }
         event.player.sendMessage(*event.kickReasonComponent)
@@ -172,8 +178,6 @@ class BungeeListener : Listener {
             return
         }
         event.suggestions.addAll(suggestions)
-
-
 
 
     }

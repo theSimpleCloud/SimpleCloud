@@ -2,6 +2,8 @@ package eu.thesimplecloud.api.player
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.command.ICommandSender
+import eu.thesimplecloud.api.event.player.permission.CloudPlayerPermissionCheckEvent
+import eu.thesimplecloud.api.event.player.permission.PermissionState
 import eu.thesimplecloud.api.exception.*
 import eu.thesimplecloud.api.location.ServiceLocation
 import eu.thesimplecloud.api.location.SimpleLocation
@@ -150,7 +152,15 @@ interface ICloudPlayer : IOfflineCloudPlayer, ICommandSender {
      */
     fun teleport(location: ServiceLocation): ICommunicationPromise<Unit> = CloudAPI.instance.getCloudPlayerManager().teleportPlayer(this, location)
 
-    override fun hasPermission(permission: String): ICommunicationPromise<Boolean> = CloudAPI.instance.getCloudPlayerManager().hasPermission(this, permission)
+    override fun hasPermission(permission: String): ICommunicationPromise<Boolean> {
+        val event = CloudPlayerPermissionCheckEvent(this, permission, PermissionState.UNKNOWN)
+        CloudAPI.instance.getEventManager().call(event)
+        return if (event.state == PermissionState.UNKNOWN) {
+            CloudAPI.instance.getCloudPlayerManager().hasPermission(this, permission)
+        } else {
+            CommunicationPromise.of(event.state.name.toBoolean())
+        }
+    }
 
     /**
      *

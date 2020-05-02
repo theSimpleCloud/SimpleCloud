@@ -2,14 +2,12 @@ package eu.thesimplecloud.base.manager.player
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.player.ICloudPlayer
-import eu.thesimplecloud.base.manager.impl.CloudAPIImpl
 import eu.thesimplecloud.base.manager.network.packets.player.PacketOutGetPlayerOnlineStatus
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.clientserverapi.lib.packet.packetsender.sendQuery
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.launcher.startup.Launcher
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 /**
@@ -22,7 +20,7 @@ class PlayerUnregisterScheduler {
 
     fun startScheduler() {
         Launcher.instance.scheduler.scheduleAtFixedRate({
-            CloudAPI.instance.getCloudPlayerManager().getAllCachedCloudPlayers().forEach {player ->
+            CloudAPI.instance.getCloudPlayerManager().getAllCachedCloudPlayers().forEach { player ->
 
                 checkPlayerOnlineStatus(player).then {
                     if (!it) {
@@ -31,7 +29,7 @@ class PlayerUnregisterScheduler {
                 }
 
             }
-        },30L, 30, TimeUnit.SECONDS)
+        }, 30L, 30, TimeUnit.SECONDS)
     }
 
     private fun checkPlayerOnlineStatus(cloudPlayer: ICloudPlayer): ICommunicationPromise<Boolean> {
