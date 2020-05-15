@@ -24,7 +24,7 @@ allprojects {
     }
 
     project.ext {
-        depedencyClientServerAPIVersion = '2.3.32-SNAPSHOT'
+        depedencyClientServerAPIVersion = '2.3.33-SNAPSHOT'
     }
 
     buildscript {
