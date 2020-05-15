@@ -11,6 +11,7 @@ import eu.thesimplecloud.plugin.proxy.listener.IngameCommandListener
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.plugin.Plugin
+import java.lang.IllegalArgumentException
 import java.net.InetSocketAddress
 import java.util.concurrent.TimeUnit
 
@@ -34,6 +35,10 @@ class CloudProxyPlugin : Plugin(), ICloudProxyPlugin {
     }
 
     override fun addServiceToProxy(cloudService: ICloudService) {
+        if (ProxyServer.getInstance().getServerInfo(cloudService.getName()) != null) {
+            throw IllegalArgumentException("Service is already registered!")
+        }
+
         val serviceState = cloudService.getState()
         if (cloudService.getServiceType().isProxy() || serviceState == ServiceState.CLOSED || serviceState == ServiceState.PREPARED)
             return
@@ -61,13 +66,12 @@ class CloudProxyPlugin : Plugin(), ICloudProxyPlugin {
     }
 
     override fun onEnable() {
-        CloudAPI.instance.getCloudServiceManager().getAllCloudServices().forEach { addServiceToProxy(it) }
-
         ProxyServer.getInstance().configurationAdapter.servers.clear()
         ProxyServer.getInstance().servers.clear()
         for (info in ProxyServer.getInstance().configurationAdapter.listeners) {
             info.serverPriority.clear()
         }
+        println(ProxyServer.getInstance().servers.map { it.value.name })
 
         CloudAPI.instance.getCloudServiceManager().getAllCloudServices().forEach { addServiceToProxy(it) }
         CloudPlugin.instance.onEnable()

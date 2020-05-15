@@ -11,14 +11,6 @@ import eu.thesimplecloud.plugin.startup.CloudPlugin
 class CloudListener : IListener {
 
     @CloudEventHandler
-    fun on(serviceEvent: CloudServiceUpdatedEvent) {
-        val cloudServicePlugin = CloudPlugin.instance.cloudServicePlugin
-        if (cloudServicePlugin is ICloudProxyPlugin) {
-            cloudServicePlugin.addServiceToProxy(serviceEvent.cloudService)
-        }
-    }
-
-    @CloudEventHandler
     fun on(serviceEvent: CloudServiceRegisteredEvent) {
         val cloudServicePlugin = CloudPlugin.instance.cloudServicePlugin
         if (cloudServicePlugin is ICloudProxyPlugin) {
