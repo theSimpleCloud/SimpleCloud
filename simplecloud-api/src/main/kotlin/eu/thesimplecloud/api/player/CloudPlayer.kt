@@ -54,6 +54,7 @@ class CloudPlayer(
 
     override fun clone(): ICloudPlayer = CloudPlayer(getName(), getUniqueId(), getFirstLogin(), getLastLogin(), getOnlineTime(), connectedProxyName, connectedServerName, this.playerConnection, propertyMap)
 
+    @Synchronized
     fun setOffline() {
         this.online = false
     }
