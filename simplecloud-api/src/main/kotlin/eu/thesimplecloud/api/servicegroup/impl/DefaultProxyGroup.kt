@@ -40,7 +40,7 @@ class DefaultProxyGroup(
     }
 
     override fun toString(): String {
-        return JsonData.fromObjectWithGsonExclude(this).getAsJsonString()
+        return JsonData.fromObject(this).getAsJsonString()
     }
 
 }

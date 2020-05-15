@@ -23,34 +23,7 @@ interface ICloudPlayer : IOfflineCloudPlayer, ICommandSender {
     /**
      * Sends a message to this player.
      */
-    fun sendMessage(cloudText: CloudText) = CloudAPI.instance.getCloudPlayerManager().sendMessageToPlayer(this, cloudText)
-
-    /**
-     * Sends multiple messages ordered to a player.
-     */
-    fun sendMessagesOrdered(messages: Iterable<String>): ICommunicationPromise<Unit> {
-        return sendMessagesOrdered(messages.map { CloudText(it) })
-    }
-
-    /**
-     * Sends multiple messages ordered to a player.
-     */
-    fun sendMessagesOrdered(messages: List<CloudText>): ICommunicationPromise<Unit> {
-        if (messages.isEmpty()) return CommunicationPromise.of(Unit)
-        val completePromise = CommunicationPromise<Unit>(200L * messages.size)
-        sendNextMessage(messages.iterator(), completePromise)
-        return completePromise
-    }
-
-    private fun sendNextMessage(iterator: Iterator<CloudText>, completePromise: ICommunicationPromise<Unit>) {
-        if (!iterator.hasNext()) {
-            completePromise.trySuccess(Unit)
-            return
-        }
-        val cloudText = iterator.next()
-        sendMessage(cloudText).then { sendNextMessage(iterator, completePromise) }
-                .addFailureListener { cause -> completePromise.tryFailure(cause) }
-    }
+    fun sendMessage(cloudText: CloudText): ICommunicationPromise<Unit>
 
     /**
      * Sends a message to this player.

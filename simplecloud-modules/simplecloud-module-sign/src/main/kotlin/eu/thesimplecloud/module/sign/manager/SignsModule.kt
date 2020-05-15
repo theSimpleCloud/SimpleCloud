@@ -88,7 +88,7 @@ class SignsModule : ICloudModule {
         FileUtils.deleteDirectory(this.layoutsDir)
         this.layoutsDir.mkdirs()
         signModuleConfig.signLayouts.forEach {
-            JsonData.fromObjectWithGsonExclude(it).saveAsFile(File(this.layoutsDir, it.name + ".json"))
+            JsonData.fromObject(it).saveAsFile(File(this.layoutsDir, it.name + ".json"))
         }
         JsonData.fromObject(signModuleConfig.cloudSigns).saveAsFile(this.signsFile)
         JsonData.fromObject(signModuleConfig.groupToLayout).saveAsFile(this.groupToLayoutsFile)

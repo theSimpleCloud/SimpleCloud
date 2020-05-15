@@ -46,11 +46,18 @@ class BungeeListener : Listener {
         val playerConnection = DefaultPlayerConnection(playerAddress, connection.name, connection.uniqueId, connection.isOnlineMode, connection.version)
 
         //send login request
-        CloudPlugin.instance.communicationClient.sendUnitQuery(PacketOutCreateCloudPlayer(playerConnection, CloudPlugin.instance.thisServiceName)).awaitUninterruptibly()
-        val loginRequestPromise = CloudPlugin.instance.communicationClient.sendUnitQuery(PacketOutPlayerLoginRequest(connection.uniqueId)).awaitUninterruptibly()
-        loginRequestPromise.addFailureListener {
+        val createPromise = CloudPlugin.instance.communicationClient
+                .sendQuery<CloudPlayer>(PacketOutCreateCloudPlayer(playerConnection, CloudPlugin.instance.thisServiceName)).awaitUninterruptibly()
+        if (!createPromise.isSuccess) {
             event.isCancelled = true
-            event.setCancelReason(CloudTextBuilder().build(CloudText("§cLogin failed: " + it.message)))
+            event.setCancelReason(CloudTextBuilder().build(CloudText("§cFailed to create player: ${createPromise.cause().message}")))
+            throw createPromise.cause()
+        }
+        val loginRequestPromise = CloudPlugin.instance.communicationClient.sendUnitQuery(PacketOutPlayerLoginRequest(connection.uniqueId)).awaitUninterruptibly()
+        if (!loginRequestPromise.isSuccess) {
+            loginRequestPromise.cause().printStackTrace()
+            event.isCancelled = true
+            event.setCancelReason(CloudTextBuilder().build(CloudText("§cLogin failed: " + loginRequestPromise.cause().message)))
         }
     }
 
@@ -101,7 +108,15 @@ class BungeeListener : Listener {
     @EventHandler
     fun on(event: ServerConnectEvent) {
         val proxiedPlayer = event.player
-        val target = event.target
+        val target = if (event.target.name == "fallback")
+            CloudProxyPlugin.instance.lobbyConnector.getLobbyServer(proxiedPlayer)
+        else
+            event.target
+        if (target == null) {
+            event.player.disconnect(CloudTextBuilder().build(CloudText("§cNo fallback server found")))
+            return
+        }
+        event.target = target
         val cloudService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(target.name)
         if (cloudService == null) {
             proxiedPlayer.sendMessage(CloudTextBuilder().build(CloudText("§cServer is not registered in the cloud.")))

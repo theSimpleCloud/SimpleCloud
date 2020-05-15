@@ -93,13 +93,14 @@ class BungeePluginMain : Plugin() {
 
     fun sendHeaderAndFooter(header: String, footer: String) {
         proxy.players.forEach {
-            sendHeaderAndFooter(it, header, footer)
+            if (it.server != null)
+                sendHeaderAndFooter(it, header, footer)
         }
     }
 
     fun sendHeaderAndFooter(player: ProxiedPlayer, header: String, footer: String) {
-        player.setTabHeader(CloudTextBuilder().build(CloudText(replaceString(header, player)))
-                , CloudTextBuilder().build(CloudText(replaceString(footer, player))))
+        player.setTabHeader(CloudTextBuilder().build(CloudText(replaceString(header, player))),
+                CloudTextBuilder().build(CloudText(replaceString(footer, player))))
     }
 
     fun getTablistConfiguration(): TablistConfiguration? {

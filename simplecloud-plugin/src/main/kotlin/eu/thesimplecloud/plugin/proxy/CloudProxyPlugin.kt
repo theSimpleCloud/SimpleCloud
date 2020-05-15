@@ -12,6 +12,7 @@ import eu.thesimplecloud.plugin.startup.CloudPlugin
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.plugin.Plugin
 import java.net.InetSocketAddress
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 class CloudProxyPlugin : Plugin(), ICloudProxyPlugin {
@@ -42,9 +43,21 @@ class CloudProxyPlugin : Plugin(), ICloudProxyPlugin {
             return
         println("Registered service ${cloudService.getName()}")
         val socketAddress = InetSocketAddress(cloudService.getHost(), cloudService.getPort())
-        val info = ProxyServer.getInstance().constructServerInfo(cloudService.getName(), socketAddress,
-                cloudService.getUniqueId().toString(), false)
-        ProxyServer.getInstance().servers[cloudService.getName()] = info
+        registerService(cloudService.getName(), cloudService.getUniqueId(), socketAddress)
+    }
+
+    private fun registerFallbackService() {
+        registerService(
+                "fallback",
+                UUID.fromString("00000000-0000-0000-0000-000000000000"),
+                InetSocketAddress("127.0.0.1", 0)
+        )
+    }
+
+    private fun registerService(name: String, uniqueId: UUID, socketAddress: InetSocketAddress) {
+        val info = ProxyServer.getInstance().constructServerInfo(name, socketAddress,
+                uniqueId.toString(), false)
+        ProxyServer.getInstance().servers[name] = info
     }
 
     override fun removeServiceFromProxy(cloudService: ICloudService) {
@@ -61,7 +74,6 @@ class CloudProxyPlugin : Plugin(), ICloudProxyPlugin {
     }
 
     override fun onEnable() {
-        CloudAPI.instance.getCloudServiceManager().getAllCloudServices().forEach { addServiceToProxy(it) }
 
         ProxyServer.getInstance().configurationAdapter.servers.clear()
         ProxyServer.getInstance().servers.clear()
@@ -69,6 +81,7 @@ class CloudProxyPlugin : Plugin(), ICloudProxyPlugin {
             info.serverPriority.clear()
         }
 
+        registerFallbackService()
         CloudAPI.instance.getCloudServiceManager().getAllCloudServices().forEach { addServiceToProxy(it) }
         CloudPlugin.instance.onEnable()
         CloudAPI.instance.getEventManager().registerListener(CloudPlugin.instance, CloudListener())
@@ -87,7 +100,7 @@ class CloudProxyPlugin : Plugin(), ICloudProxyPlugin {
             val service = CloudPlugin.instance.thisService()
             service.setOnlineCount(proxy.onlineCount)
             service.update()
-        },30, 30, TimeUnit.SECONDS)
+        }, 30, 30, TimeUnit.SECONDS)
     }
 
 }
