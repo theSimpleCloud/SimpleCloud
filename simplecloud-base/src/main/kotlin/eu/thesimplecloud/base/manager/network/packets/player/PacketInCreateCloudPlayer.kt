@@ -23,6 +23,6 @@ class PacketInCreateCloudPlayer() : JsonPacket() {
         }
         CloudAPI.instance.getCloudPlayerManager().updateCloudPlayer(cloudPlayer)
         Manager.instance.offlineCloudPlayerHandler.saveCloudPlayer(cloudPlayer.toOfflinePlayer() as OfflineCloudPlayer)
-        return unit()
+        return success(cloudPlayer)
     }
 }

@@ -9,10 +9,10 @@ import java.io.File
 
 class WrapperFileHandler : IFileHandler<IWrapperInfo> {
 
-    val directory = File(DirectoryPaths.paths.wrappersPath)
+    private val directory = File(DirectoryPaths.paths.wrappersPath)
 
     override fun save(value: IWrapperInfo) {
-        JsonData.fromObjectWithGsonExclude(value).saveAsFile(getFile(value))
+        JsonData.fromObject(value).saveAsFile(getFile(value))
     }
 
     override fun delete(value: IWrapperInfo) {

@@ -83,7 +83,7 @@ data class DefaultCloudService(
 
 
     override fun toString(): String {
-        return JsonData.fromObjectWithGsonExclude(this).getAsJsonString()
+        return JsonData.fromObject(this).getAsJsonString()
     }
 
     override fun getProperties(): Map<String, Property<*>> = this.propertyMap

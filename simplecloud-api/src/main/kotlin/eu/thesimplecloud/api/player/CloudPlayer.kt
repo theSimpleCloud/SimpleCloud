@@ -1,9 +1,13 @@
 package eu.thesimplecloud.api.player
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
 import eu.thesimplecloud.api.player.connection.IPlayerConnection
+import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.clientserverapi.lib.json.JsonData
+import eu.thesimplecloud.clientserverapi.lib.json.PacketExclude
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import java.util.*
 
 class CloudPlayer(
@@ -28,7 +32,17 @@ class CloudPlayer(
 
     private var online = true
 
+    @JsonIgnore
+    @PacketExclude
+    private var playerMessageQueue: PlayerMessageQueue? = null
+
     override fun getPlayerConnection(): IPlayerConnection = this.playerConnection
+
+    @Synchronized
+    override fun sendMessage(cloudText: CloudText): ICommunicationPromise<Unit> {
+        if (playerMessageQueue == null) playerMessageQueue = PlayerMessageQueue(this)
+        return this.playerMessageQueue!!.queueMessage(cloudText)
+    }
 
     override fun getConnectedProxyName(): String = this.connectedProxyName
 
@@ -58,6 +72,6 @@ class CloudPlayer(
     }
 
     override fun toString(): String {
-        return JsonData.fromObjectWithGsonExclude(this).getAsJsonString()
+        return JsonData.fromObject(this).getAsJsonString()
     }
 }

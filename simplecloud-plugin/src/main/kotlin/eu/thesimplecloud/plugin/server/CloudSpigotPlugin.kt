@@ -7,7 +7,6 @@ import eu.thesimplecloud.plugin.startup.CloudPlugin
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitRunnable
-import java.util.concurrent.TimeUnit
 
 class CloudSpigotPlugin : JavaPlugin(), ICloudServerPlugin {
 
@@ -40,13 +39,13 @@ class CloudSpigotPlugin : JavaPlugin(), ICloudServerPlugin {
     }
 
     private fun synchronizeOnlineCountTask() {
-        object : BukkitRunnable(){
+        object : BukkitRunnable() {
             override fun run() {
                 val service = CloudPlugin.instance.thisService()
                 service.setOnlineCount(server.onlinePlayers.size)
                 service.update()
             }
-        }.runTaskTimerAsynchronously(this, 20*30, 20*30)
+        }.runTaskTimerAsynchronously(this, 20 * 30, 20 * 30)
     }
 
 }

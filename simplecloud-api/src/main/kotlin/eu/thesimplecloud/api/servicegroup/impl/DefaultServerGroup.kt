@@ -36,6 +36,6 @@ open class DefaultServerGroup(
     override fun getHiddenAtProxyGroups(): List<String> = this.hiddenAtProxyGroups
 
     override fun toString(): String {
-        return JsonData.fromObjectWithGsonExclude(this).getAsJsonString()
+        return JsonData.fromObject(this).getAsJsonString()
     }
 }
