@@ -1,7 +1,7 @@
 package eu.thesimplecloud.base.wrapper.process
 
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.client.CloudClientType
+import eu.thesimplecloud.api.client.NetworkComponentType
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.event.service.CloudServiceUnregisteredEvent
 import eu.thesimplecloud.api.listenerextension.cloudListener
@@ -66,7 +66,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
                 val s = bufferedReader.readLine() ?: continue
                 if (!s.equals("", ignoreCase = true) && !s.equals(" ", ignoreCase = true) && !s.equals(">", ignoreCase = true)
                         && !s.equals(" >", ignoreCase = true) && !s.contains("InitialHandler has pinged")) {
-                    Wrapper.instance.communicationClient.sendUnitQuery(PacketOutScreenMessage(CloudClientType.SERVICE, getCloudService(), s))
+                    Wrapper.instance.communicationClient.sendUnitQuery(PacketOutScreenMessage(NetworkComponentType.SERVICE, getCloudService(), s))
                     Launcher.instance.logger.console("[${cloudService.getName()}]$s")
                 }
             } catch (e: IOException) {

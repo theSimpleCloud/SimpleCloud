@@ -2,6 +2,7 @@ package eu.thesimplecloud.api
 
 import eu.thesimplecloud.api.eventapi.IEventManager
 import eu.thesimplecloud.api.external.ICloudModule
+import eu.thesimplecloud.api.message.IMessageChannelManager
 import eu.thesimplecloud.api.network.packets.PacketIOExecuteFunction
 import eu.thesimplecloud.api.player.ICloudPlayerManager
 import eu.thesimplecloud.api.screen.ICommandExecutable
@@ -11,6 +12,7 @@ import eu.thesimplecloud.api.servicegroup.ICloudServiceGroupManager
 import eu.thesimplecloud.api.sync.`object`.ISingleSynchronizedObjectManager
 import eu.thesimplecloud.api.sync.list.manager.ISynchronizedObjectListManager
 import eu.thesimplecloud.api.template.ITemplateManager
+import eu.thesimplecloud.api.utils.IConnectedCloudProcess
 import eu.thesimplecloud.api.wrapper.IWrapperManager
 import eu.thesimplecloud.clientserverapi.client.INettyClient
 import eu.thesimplecloud.clientserverapi.lib.bootstrap.ICommunicationBootstrap
@@ -74,10 +76,20 @@ interface ICloudAPI {
     fun getSynchronizedObjectListManager(): ISynchronizedObjectListManager
 
     /**
+     * Return the [IMessageChannelManager]
+     */
+    fun getMessageChannelManager(): IMessageChannelManager
+
+    /**
      * Returns the name of this side
-     * e.g Manager / Wrapper / Lobby-1
+     * e.g Manager / Wrapper-1 / Lobby-1
      */
     fun getThisSidesName(): String
+
+    /**
+     * Returns the [IConnectedCloudProcess] of this side.
+     */
+    fun getThisSidesCloudProcess(): IConnectedCloudProcess
 
     /**
      * Returns whether this side is a manager.

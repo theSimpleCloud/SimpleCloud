@@ -1,7 +1,7 @@
 package eu.thesimplecloud.plugin.startup
 
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.client.CloudClientType
+import eu.thesimplecloud.api.client.NetworkComponentType
 import eu.thesimplecloud.api.external.ICloudModule
 import eu.thesimplecloud.api.network.packets.service.PacketIOUpdateCloudService
 import eu.thesimplecloud.api.service.ICloudService
@@ -50,7 +50,7 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
             println("<------Starting cloud client----------->")
             this.communicationClient.start().then {
                 println("<-------- Connection is now set up -------->")
-                this.communicationClient.sendUnitQuery(PacketOutCloudClientLogin(CloudClientType.SERVICE, thisServiceName))
+                this.communicationClient.sendUnitQuery(PacketOutCloudClientLogin(NetworkComponentType.SERVICE, thisServiceName))
             }.addFailureListener { println("<-------- Failed to connect to server -------->") }.addFailureListener { throw it }
         }
 

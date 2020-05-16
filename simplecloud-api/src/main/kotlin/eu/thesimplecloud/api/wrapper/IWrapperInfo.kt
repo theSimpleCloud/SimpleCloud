@@ -1,11 +1,12 @@
 package eu.thesimplecloud.api.wrapper
 
-import eu.thesimplecloud.api.screen.ICommandExecutable
+
+import eu.thesimplecloud.api.client.NetworkComponentType
 import eu.thesimplecloud.api.sync.list.ISynchronizedListObject
-import eu.thesimplecloud.api.utils.IAuthenticatable
+import eu.thesimplecloud.api.utils.IConnectedCloudProcess
 
 
-interface IWrapperInfo : IAuthenticatable, ICommandExecutable, ISynchronizedListObject {
+interface IWrapperInfo : IConnectedCloudProcess, ISynchronizedListObject {
 
     /**
      * Returns the host of this wrapper.
@@ -50,5 +51,7 @@ interface IWrapperInfo : IAuthenticatable, ICommandExecutable, ISynchronizedList
      * Returns the amount of services this wrapper is currently starting
      */
     fun getCurrentlyStartingServices(): Int
+
+    override fun getNetworkComponentType(): NetworkComponentType = NetworkComponentType.WRAPPER
 
 }

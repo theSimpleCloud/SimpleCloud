@@ -19,7 +19,6 @@ import eu.thesimplecloud.plugin.network.packets.PacketOutPlayerLoginRequest
 import eu.thesimplecloud.plugin.proxy.CloudProxyPlugin
 import eu.thesimplecloud.plugin.proxy.text.CloudTextBuilder
 import eu.thesimplecloud.plugin.startup.CloudPlugin
-import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import net.md_5.bungee.api.event.*
 import net.md_5.bungee.api.plugin.Listener

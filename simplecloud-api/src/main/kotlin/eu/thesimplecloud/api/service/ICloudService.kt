@@ -1,6 +1,7 @@
 package eu.thesimplecloud.api.service
 
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.client.NetworkComponentType
 import eu.thesimplecloud.api.event.service.CloudServiceConnectedEvent
 import eu.thesimplecloud.api.event.service.CloudServiceStartedEvent
 import eu.thesimplecloud.api.event.service.CloudServiceStartingEvent
@@ -8,15 +9,14 @@ import eu.thesimplecloud.api.event.service.CloudServiceUnregisteredEvent
 import eu.thesimplecloud.api.eventapi.CloudEventHandler
 import eu.thesimplecloud.api.eventapi.IListener
 import eu.thesimplecloud.api.property.IPropertyMap
-import eu.thesimplecloud.api.screen.ICommandExecutable
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.api.template.ITemplate
-import eu.thesimplecloud.api.utils.IAuthenticatable
+import eu.thesimplecloud.api.utils.IConnectedCloudProcess
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.clientserverapi.lib.bootstrap.IBootstrap
 import java.util.*
 
-interface ICloudService : IAuthenticatable, IBootstrap, ICommandExecutable, IPropertyMap {
+interface ICloudService : IConnectedCloudProcess, IBootstrap, IPropertyMap {
 
     /**
      * Returns the service group name of this service
@@ -165,6 +165,8 @@ interface ICloudService : IAuthenticatable, IBootstrap, ICommandExecutable, IPro
      * Returns whether this service is full.
      */
     fun isFull() = getOnlineCount() >= getMaxPlayers()
+
+    override fun getNetworkComponentType(): NetworkComponentType = NetworkComponentType.SERVICE
 
     /**
      * Adds a callback that wll be called when the server is starting.
