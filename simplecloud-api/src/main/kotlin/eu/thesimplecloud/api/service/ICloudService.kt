@@ -11,12 +11,12 @@ import eu.thesimplecloud.api.eventapi.IListener
 import eu.thesimplecloud.api.property.IPropertyMap
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.api.template.ITemplate
-import eu.thesimplecloud.api.utils.IConnectedCloudProcess
+import eu.thesimplecloud.api.utils.INetworkComponent
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.clientserverapi.lib.bootstrap.IBootstrap
 import java.util.*
 
-interface ICloudService : IConnectedCloudProcess, IBootstrap, IPropertyMap {
+interface ICloudService : INetworkComponent, IBootstrap, IPropertyMap {
 
     /**
      * Returns the service group name of this service

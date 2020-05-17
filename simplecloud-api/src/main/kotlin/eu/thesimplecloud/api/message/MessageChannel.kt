@@ -1,7 +1,7 @@
 package eu.thesimplecloud.api.message
 
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.utils.IConnectedCloudProcess
+import eu.thesimplecloud.api.utils.INetworkComponent
 import eu.thesimplecloud.clientserverapi.lib.json.GsonCreator
 import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import java.util.concurrent.CopyOnWriteArraySet
@@ -31,9 +31,9 @@ class MessageChannel<T>(private val name: String, private val clazz: Class<T>) :
             throw IllegalArgumentException("Invalid message class on message channel ${message.channel}: Expected ${clazz.name} but was ${message.className} ")
         val jsonData = JsonData.fromJsonString(message.messageString)
         val msg = jsonData.getObject(clazz)
-        val connectedProcess = message.senderReference.getConnectedProcess()
+        val networkComponent = message.senderReference.getNetworkComponent()
                 ?: throw IllegalArgumentException("Connected process of ${message.senderReference.name} is null")
-        this.listeners.forEach { it.messageReceived(msg, connectedProcess) }
+        this.listeners.forEach { it.messageReceived(msg, networkComponent) }
     }
 
     override fun getName(): String {
@@ -44,8 +44,8 @@ class MessageChannel<T>(private val name: String, private val clazz: Class<T>) :
         return this.clazz
     }
 
-    override fun sendMessage(msg: T, receivers: List<IConnectedCloudProcess>) {
-        val thisComponent = CloudAPI.instance.getThisSidesCloudProcess()
+    override fun sendMessage(msg: T, receivers: List<INetworkComponent>) {
+        val thisComponent = CloudAPI.instance.getThisSidesNetworkComponent()
         val messageString = GSON.toJson(msg)
         val message = Message(getName(), clazz.name, messageString, thisComponent.toNetworkComponentReference(), receivers.map { it.toNetworkComponentReference() })
         return (CloudAPI.instance.getMessageChannelManager() as MessageChannelManager)

@@ -12,7 +12,7 @@ import eu.thesimplecloud.api.servicegroup.ICloudServiceGroupManager
 import eu.thesimplecloud.api.sync.`object`.ISingleSynchronizedObjectManager
 import eu.thesimplecloud.api.sync.list.manager.ISynchronizedObjectListManager
 import eu.thesimplecloud.api.template.ITemplateManager
-import eu.thesimplecloud.api.utils.IConnectedCloudProcess
+import eu.thesimplecloud.api.utils.INetworkComponent
 import eu.thesimplecloud.api.wrapper.IWrapperManager
 import eu.thesimplecloud.clientserverapi.client.INettyClient
 import eu.thesimplecloud.clientserverapi.lib.bootstrap.ICommunicationBootstrap
@@ -87,9 +87,9 @@ interface ICloudAPI {
     fun getThisSidesName(): String
 
     /**
-     * Returns the [IConnectedCloudProcess] of this side.
+     * Returns the [INetworkComponent] of this side.
      */
-    fun getThisSidesCloudProcess(): IConnectedCloudProcess
+    fun getThisSidesNetworkComponent(): INetworkComponent
 
     /**
      * Returns whether this side is a manager.

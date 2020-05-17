@@ -29,7 +29,7 @@ class MessageChannelManager : IMessageChannelManager {
             val server = CloudAPI.instance.getThisSidesCommunicationBootstrap() as INettyServer<*>
             val allNotManagerReceivers = message.receivers
                     .filter { it.cloudClientType != NetworkComponentType.MANAGER }
-                    .mapNotNull { it.getConnectedProcess() }
+                    .mapNotNull { it.getNetworkComponent() }
             allNotManagerReceivers.forEach {
                 val client = server.getClientManager().getClientByClientValue(it)
                 client?.sendUnitQuery(packetToSend)
@@ -44,7 +44,7 @@ class MessageChannelManager : IMessageChannelManager {
         val channel = this.channels[message.channel]
         if (CloudAPI.instance.isManager()){
             sendMessage(message)
-            if (message.receivers.contains(NetworkComponentReference.MANAGER_COMPONENT))
+            if (message.receivers.contains(NetworkComponentReference.MANAGER_COMPONENT_REFERENCE))
                 channel?.notifyListeners(message)
         } else {
             channel?.notifyListeners(message)

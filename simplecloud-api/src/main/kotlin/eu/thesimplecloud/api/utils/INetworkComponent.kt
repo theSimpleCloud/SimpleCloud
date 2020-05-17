@@ -4,11 +4,11 @@ import eu.thesimplecloud.api.client.NetworkComponentReference
 import eu.thesimplecloud.api.client.NetworkComponentType
 import eu.thesimplecloud.api.screen.ICommandExecutable
 
-interface IConnectedCloudProcess : IAuthenticatable, ICommandExecutable {
+interface INetworkComponent : IAuthenticatable, ICommandExecutable {
 
     companion object {
         @JvmStatic
-        val MANAGER_CLOUD_PROCESS = object : IConnectedCloudProcess {
+        val MANAGER_COMPONENT = object : INetworkComponent {
             override fun getNetworkComponentType(): NetworkComponentType {
                 return NetworkComponentType.MANAGER
             }
@@ -30,7 +30,7 @@ interface IConnectedCloudProcess : IAuthenticatable, ICommandExecutable {
             }
 
             override fun toNetworkComponentReference(): NetworkComponentReference {
-                return NetworkComponentReference.MANAGER_COMPONENT
+                return NetworkComponentReference.MANAGER_COMPONENT_REFERENCE
             }
         }
     }

@@ -1,18 +1,18 @@
 package eu.thesimplecloud.api.client
 
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.utils.IConnectedCloudProcess
+import eu.thesimplecloud.api.utils.INetworkComponent
 
 data class NetworkComponentReference(val cloudClientType: NetworkComponentType, val name: String) {
 
     companion object {
         @JvmStatic
-        val MANAGER_COMPONENT = NetworkComponentReference(NetworkComponentType.MANAGER, "Manager")
+        val MANAGER_COMPONENT_REFERENCE = NetworkComponentReference(NetworkComponentType.MANAGER, "Manager")
 
 
     }
 
-    fun getConnectedProcess(): IConnectedCloudProcess? {
+    fun getNetworkComponent(): INetworkComponent? {
         return when (cloudClientType) {
             NetworkComponentType.WRAPPER -> {
                 CloudAPI.instance.getWrapperManager().getWrapperByName(name)?.obj
@@ -21,7 +21,7 @@ data class NetworkComponentReference(val cloudClientType: NetworkComponentType, 
                 CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(name)
             }
             NetworkComponentType.MANAGER -> {
-                IConnectedCloudProcess.MANAGER_CLOUD_PROCESS
+                INetworkComponent.MANAGER_COMPONENT
             }
         }
     }

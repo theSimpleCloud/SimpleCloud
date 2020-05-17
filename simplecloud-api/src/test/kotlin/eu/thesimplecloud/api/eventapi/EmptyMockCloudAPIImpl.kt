@@ -9,7 +9,7 @@ import eu.thesimplecloud.api.service.ICloudServiceManager
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroupManager
 import eu.thesimplecloud.api.sync.`object`.ISingleSynchronizedObjectManager
 import eu.thesimplecloud.api.sync.list.manager.ISynchronizedObjectListManager
-import eu.thesimplecloud.api.utils.IConnectedCloudProcess
+import eu.thesimplecloud.api.utils.INetworkComponent
 import eu.thesimplecloud.clientserverapi.lib.bootstrap.ICommunicationBootstrap
 import org.mockito.Mockito.mock
 
@@ -54,8 +54,8 @@ open class EmptyMockCloudAPIImpl : CloudAPI() {
         return ""
     }
 
-    override fun getThisSidesCloudProcess(): IConnectedCloudProcess {
-        return mock(IConnectedCloudProcess::class.java)
+    override fun getThisSidesNetworkComponent(): INetworkComponent {
+        return mock(INetworkComponent::class.java)
     }
 
     override fun getThisSidesCloudModule(): ICloudModule {
