@@ -111,8 +111,7 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
 
     fun getGroupName(): String {
         val array = this.thisServiceName.split("-".toRegex())
-        array.dropLast(1)
-        return array.joinToString("-")
+        return array.dropLast(1).joinToString("-")
     }
 
 
