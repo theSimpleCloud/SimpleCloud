@@ -4,7 +4,7 @@ import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.utils.Nameable
 import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnectedClientValue
 
-interface ICommandExecutable : IConnectedClientValue, Nameable {
+interface ICommandExecutable : Nameable, IConnectedClientValue {
 
     /**
      * Executes a command on this [ICommandExecutable]

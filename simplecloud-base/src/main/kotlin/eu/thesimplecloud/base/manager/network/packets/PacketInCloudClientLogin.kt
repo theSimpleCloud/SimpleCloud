@@ -1,7 +1,7 @@
 package eu.thesimplecloud.base.manager.network.packets
 
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.client.CloudClientType
+import eu.thesimplecloud.api.client.NetworkComponentType
 import eu.thesimplecloud.api.network.packets.service.PacketIOUpdateCloudService
 import eu.thesimplecloud.api.network.packets.servicegroup.PacketIOUpdateCloudServiceGroup
 import eu.thesimplecloud.api.network.packets.template.PacketIOUpdateTemplate
@@ -18,7 +18,7 @@ class PacketInCloudClientLogin() : JsonPacket() {
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Unit> {
         val host = connection.getHost()!!
-        val cloudClientType = this.jsonData.getObject("cloudClientType", CloudClientType::class.java)
+        val cloudClientType = this.jsonData.getObject("cloudClientType", NetworkComponentType::class.java)
                 ?: return contentException("cloudClientType")
         connection as IConnectedClient<IConnectedClientValue>
         CloudAPI.instance.getSynchronizedObjectListManager().synchronizeListWithConnection(CloudAPI.instance.getWrapperManager(), connection).awaitUninterruptibly()
@@ -30,7 +30,7 @@ class PacketInCloudClientLogin() : JsonPacket() {
                 .combineAllPromises()
                 .awaitUninterruptibly()
         when (cloudClientType) {
-            CloudClientType.SERVICE -> {
+            NetworkComponentType.SERVICE -> {
                 val name = this.jsonData.getString("name") ?: return contentException("name")
                 val cloudService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(name)
                         ?: return failure(NoSuchElementException("Service not found"))
@@ -40,7 +40,7 @@ class PacketInCloudClientLogin() : JsonPacket() {
                 connection.sendUnitQuery(PacketIOUpdateCloudService(cloudService)).awaitUninterruptibly()
                 Launcher.instance.consoleSender.sendMessage("manager.login.service", "Service %SERVICE%", cloudService.getName(), " logged in.")
             }
-            CloudClientType.WRAPPER -> {
+            NetworkComponentType.WRAPPER -> {
                 val wrapperInfo = CloudAPI.instance.getWrapperManager().getWrapperByHost(host)?.obj
                         ?: return failure(NoSuchElementException("Wrapper not found"))
                 connection.setClientValue(wrapperInfo)

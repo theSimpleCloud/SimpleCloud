@@ -2,12 +2,11 @@ package eu.thesimplecloud.api.player
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.player.text.CloudText
-import eu.thesimplecloud.clientserverapi.lib.json.GsonExclude
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import java.util.concurrent.ConcurrentLinkedQueue
 
-class PlayerMessageQueue(@GsonExclude private val player: ICloudPlayer) {
+class PlayerMessageQueue(private val player: ICloudPlayer) {
 
     private val queue = ConcurrentLinkedQueue<QueuedText>()
 

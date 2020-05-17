@@ -1,5 +1,7 @@
 package eu.thesimplecloud.api
 
+import eu.thesimplecloud.api.message.IMessageChannelManager
+import eu.thesimplecloud.api.message.MessageChannelManager
 import eu.thesimplecloud.api.template.ITemplateManager
 import eu.thesimplecloud.api.template.impl.DefaultTemplateManager
 import eu.thesimplecloud.api.wrapper.IWrapperManager
@@ -9,6 +11,7 @@ abstract class CloudAPI : ICloudAPI {
 
     private val wrapperManager: IWrapperManager = DefaultWrapperManager()
     private val templateManager: ITemplateManager = DefaultTemplateManager()
+    private val messageChannelManager: IMessageChannelManager = MessageChannelManager()
 
     init {
         instance = this
@@ -19,6 +22,8 @@ abstract class CloudAPI : ICloudAPI {
     override fun getWrapperManager(): IWrapperManager = this.wrapperManager
 
     override fun getTemplateManager(): ITemplateManager = this.templateManager
+
+    override fun getMessageChannelManager(): IMessageChannelManager = this.messageChannelManager
 
     companion object {
         @JvmStatic

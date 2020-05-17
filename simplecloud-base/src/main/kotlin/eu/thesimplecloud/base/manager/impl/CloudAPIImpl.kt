@@ -11,6 +11,7 @@ import eu.thesimplecloud.api.sync.`object`.ISingleSynchronizedObjectManager
 import eu.thesimplecloud.api.sync.list.manager.ISynchronizedObjectListManager
 import eu.thesimplecloud.api.sync.list.manager.SynchronizedObjectListManager
 import eu.thesimplecloud.api.template.ITemplateManager
+import eu.thesimplecloud.api.utils.INetworkComponent
 import eu.thesimplecloud.api.wrapper.IWrapperManager
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.clientserverapi.lib.bootstrap.ICommunicationBootstrap
@@ -53,6 +54,10 @@ class CloudAPIImpl : CloudAPI() {
     override fun getWrapperManager(): IWrapperManager = this.wrapperManager
 
     override fun getThisSidesName(): String = "Manager"
+
+    override fun getThisSidesNetworkComponent(): INetworkComponent {
+        return INetworkComponent.MANAGER_COMPONENT
+    }
 
     override fun getThisSidesCloudModule(): ICloudModule = Manager.instance
 

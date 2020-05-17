@@ -2,7 +2,7 @@ package eu.thesimplecloud.api.utils
 
 import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnectedClientValue
 
-interface IAuthenticatable : IConnectedClientValue {
+interface IAuthenticatable {
 
     /**
      * Returns whether this [IConnectedClientValue] is authenticated

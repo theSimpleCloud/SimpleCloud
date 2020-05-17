@@ -11,6 +11,7 @@ import eu.thesimplecloud.api.servicegroup.ICloudServiceGroupManager
 import eu.thesimplecloud.api.sync.`object`.ISingleSynchronizedObjectManager
 import eu.thesimplecloud.api.sync.list.manager.ISynchronizedObjectListManager
 import eu.thesimplecloud.api.sync.list.manager.SynchronizedObjectListManager
+import eu.thesimplecloud.api.utils.INetworkComponent
 import eu.thesimplecloud.client.impl.SingleSynchronizedObjectManagerImpl
 import eu.thesimplecloud.clientserverapi.lib.bootstrap.ICommunicationBootstrap
 import eu.thesimplecloud.plugin.startup.CloudPlugin
@@ -45,6 +46,10 @@ class CloudAPIImpl(private val cloudPlayerManager: ICloudPlayerManager) : CloudA
     override fun getSynchronizedObjectListManager(): ISynchronizedObjectListManager = this.synchronizedObjectListManager
 
     override fun getThisSidesName(): String = CloudPlugin.instance.thisServiceName
+
+    override fun getThisSidesNetworkComponent(): INetworkComponent {
+        return CloudPlugin.instance.thisService()
+    }
 
     override fun getThisSidesCloudModule(): ICloudModule = CloudPlugin.instance
 

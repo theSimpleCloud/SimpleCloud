@@ -1,6 +1,6 @@
 package eu.thesimplecloud.base.wrapper.impl
 
-import eu.thesimplecloud.api.client.CloudClientType
+import eu.thesimplecloud.api.client.NetworkComponentType
 import eu.thesimplecloud.api.network.packets.screen.PacketIOExecuteCommand
 import eu.thesimplecloud.api.screen.ICommandExecutable
 import eu.thesimplecloud.api.screen.ICommandExecuteManager
@@ -21,7 +21,7 @@ class CommandExecuteManagerImpl : ICommandExecuteManager {
             Launcher.instance.executeCommand(command)
             return
         }
-        val cloudClientType = if (commandExecutable is ICloudService) CloudClientType.SERVICE else CloudClientType.WRAPPER
+        val cloudClientType = if (commandExecutable is ICloudService) NetworkComponentType.SERVICE else NetworkComponentType.WRAPPER
         Wrapper.instance.communicationClient.sendUnitQuery(PacketIOExecuteCommand(cloudClientType, commandExecutable.getName(), command))
     }
 }
