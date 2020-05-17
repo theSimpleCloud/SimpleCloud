@@ -44,8 +44,14 @@ class PermissionCommand : ICommandHandler {
     }
 
 
+    @CommandSubPath("user <user> group add <group>", "Adds a group to a user lifetime")
+    fun onAdd(commandSender: ICommandSender, @CommandArgument("user", CloudPlayerCommandSuggestionProvider::class) user: String, @CommandArgument("group", PermissionGroupCommandSuggestionProvider::class) group: String) {
+        this.onAdd(commandSender, user, group, "lifetime")
+    }
+
+
     @CommandSubPath("user <user> group add <group> <days>", "Adds a group to a user")
-    fun on(commandSender: ICommandSender, @CommandArgument("user", CloudPlayerCommandSuggestionProvider::class) user: String, @CommandArgument("group", PermissionGroupCommandSuggestionProvider::class) group: String, @CommandArgument("days") days: String) {
+    fun onAdd(commandSender: ICommandSender, @CommandArgument("user", CloudPlayerCommandSuggestionProvider::class) user: String, @CommandArgument("group", PermissionGroupCommandSuggestionProvider::class) group: String, @CommandArgument("days") days: String) {
         val permissionPlayer = getPermissionPlayerByName(user)
         if (permissionPlayer == null) {
             commandSender.sendMessage("manager.command.perms.user-not-exist", "&cUser not found.")
