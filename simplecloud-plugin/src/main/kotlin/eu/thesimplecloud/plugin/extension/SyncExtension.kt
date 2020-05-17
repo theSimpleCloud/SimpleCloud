@@ -1,6 +1,6 @@
 package eu.thesimplecloud.plugin.extension
 
-import eu.thesimplecloud.plugin.proxy.CloudProxyPlugin
+import eu.thesimplecloud.plugin.proxy.bungee.CloudBungeePlugin
 import eu.thesimplecloud.plugin.proxy.ICloudProxyPlugin
 import eu.thesimplecloud.plugin.server.CloudSpigotPlugin
 import eu.thesimplecloud.plugin.startup.CloudPlugin
@@ -12,7 +12,7 @@ fun syncBukkit(function: () -> Unit) = Bukkit.getScheduler().runTask(CloudSpigot
 
 fun syncService(function: () -> Unit) {
     if (CloudPlugin.instance.cloudServicePlugin is ICloudProxyPlugin) {
-        ProxyServer.getInstance().scheduler.schedule(CloudProxyPlugin.instance, function, 0, TimeUnit.MILLISECONDS)
+        ProxyServer.getInstance().scheduler.schedule(CloudBungeePlugin.instance, function, 0, TimeUnit.MILLISECONDS)
     } else {
         Bukkit.getScheduler().runTask(CloudSpigotPlugin.instance, function)
     }

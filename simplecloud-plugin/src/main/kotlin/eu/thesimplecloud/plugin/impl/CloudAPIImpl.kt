@@ -3,6 +3,7 @@ package eu.thesimplecloud.plugin.impl
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.eventapi.IEventManager
 import eu.thesimplecloud.api.external.ICloudModule
+import eu.thesimplecloud.api.player.ICloudPlayer
 import eu.thesimplecloud.api.player.ICloudPlayerManager
 import eu.thesimplecloud.api.screen.ICommandExecuteManager
 import eu.thesimplecloud.api.service.ICloudServiceManager
@@ -14,12 +15,11 @@ import eu.thesimplecloud.client.impl.SingleSynchronizedObjectManagerImpl
 import eu.thesimplecloud.clientserverapi.lib.bootstrap.ICommunicationBootstrap
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 
-class CloudAPIImpl : CloudAPI() {
+class CloudAPIImpl(private val cloudPlayerManager: ICloudPlayerManager) : CloudAPI() {
 
     private val cloudServiceManager = CloudServiceManagerImpl()
     private val cloudServiceGroupManager = CloudServiceGroupManagerImpl()
     private val commandExecuteManagerImpl = CommandExecuteManagerImpl()
-    private val cloudPlayerManager = CloudPlayerManagerImpl()
     private val eventManager = EventManagerImpl()
     private val synchronizedObjectManager = SingleSynchronizedObjectManagerImpl(CloudPlugin.instance.communicationClient)
     private val synchronizedObjectListManager = SynchronizedObjectListManager()

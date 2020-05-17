@@ -1,4 +1,4 @@
-package eu.thesimplecloud.module.proxy.service
+package eu.thesimplecloud.module.proxy.service.bungee
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.player.text.CloudText
@@ -8,8 +8,9 @@ import eu.thesimplecloud.module.proxy.config.DefaultConfig
 import eu.thesimplecloud.module.proxy.config.ProxyGroupConfiguration
 import eu.thesimplecloud.module.proxy.config.TablistConfiguration
 import eu.thesimplecloud.module.proxy.extensions.mapToLowerCase
-import eu.thesimplecloud.module.proxy.service.listener.BungeeListener
-import eu.thesimplecloud.plugin.proxy.text.CloudTextBuilder
+import eu.thesimplecloud.module.proxy.service.ProxyHandler
+import eu.thesimplecloud.module.proxy.service.bungee.listener.BungeeListener
+import eu.thesimplecloud.plugin.proxy.bungee.text.CloudTextBuilder
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.connection.ProxiedPlayer
@@ -25,19 +26,14 @@ import java.util.concurrent.TimeUnit
  */
 class BungeePluginMain : Plugin() {
 
-    var configHolder: SynchronizedObjectHolder<Config> = SynchronizedObjectHolder(DefaultConfig.get())
-    val thisService = CloudPlugin.instance.thisService()
-    val serviceGroupName = thisService.getGroupName()
 
     var tablistStarted = false
+    lateinit var proxyHandler: ProxyHandler
 
     override fun onEnable() {
-        CloudAPI.instance.getSingleSynchronizedObjectManager()
-                .requestSingleSynchronizedObject("simplecloud-module-proxy-config", Config::class.java)
-                .addResultListener {
-                    configHolder = it
-                }
+        proxyHandler = ProxyHandler()
 
+        proxyHandler.onEnable()
         proxy.pluginManager.registerListener(this, BungeeListener(this))
     }
 
@@ -47,15 +43,13 @@ class BungeePluginMain : Plugin() {
     fun startTablist() {
 
         tablistStarted = true
-        getTablistConfiguration()?.animationDelayInSeconds?.let {
+        proxyHandler.getTablistConfiguration()?.animationDelayInSeconds?.let {
             proxy.scheduler.schedule(this, Runnable {
-                val tablistConfiguration = getTablistConfiguration() ?: return@Runnable
+                val tablistConfiguration = proxyHandler.getTablistConfiguration() ?: return@Runnable
 
                 if (proxy.players.isEmpty()) {
                     return@Runnable
                 }
-
-                var onlinePlayers = getOnlinePlayers()
 
                 headerCounter++
                 footerCounter++
@@ -91,7 +85,7 @@ class BungeePluginMain : Plugin() {
         return Pair(header, footer)
     }
 
-    fun sendHeaderAndFooter(header: String, footer: String) {
+    private fun sendHeaderAndFooter(header: String, footer: String) {
         proxy.players.forEach {
             if (it.server != null)
                 sendHeaderAndFooter(it, header, footer)
@@ -99,36 +93,9 @@ class BungeePluginMain : Plugin() {
     }
 
     fun sendHeaderAndFooter(player: ProxiedPlayer, header: String, footer: String) {
-        player.setTabHeader(CloudTextBuilder().build(CloudText(replaceString(header, player))),
-                CloudTextBuilder().build(CloudText(replaceString(footer, player))))
-    }
-
-    fun getTablistConfiguration(): TablistConfiguration? {
-        return configHolder.obj.tablistConfigurations.firstOrNull {
-            it.proxies.mapToLowerCase().contains(serviceGroupName.toLowerCase())
-        }
-    }
-
-    fun getProxyConfiguration(): ProxyGroupConfiguration? {
-        return configHolder.obj.proxyGroupConfigurations.firstOrNull { it.proxyGroup == serviceGroupName }
-    }
-
-    fun getOnlinePlayers(): Int {
-        return thisService.getServiceGroup().getOnlineCount()
-    }
-
-    fun replaceString(message: String): String {
-        val replacesMessage = message
-                .replace("%ONLINE_PLAYERS%", getOnlinePlayers().toString())
-                .replace("%MAX_PLAYERS%", thisService.getMaxPlayers().toString())
-                .replace("%PROXY%", thisService.getName())
-
-        return ChatColor.translateAlternateColorCodes('&', replacesMessage)
-    }
-
-    fun replaceString(message: String, player: ProxiedPlayer): String {
-        return replaceString(message)
-                .replace("%SERVER%", player.server.info.name)
+        val serverName = player.server.info.name
+        player.setTabHeader(CloudTextBuilder().build(CloudText(proxyHandler.replaceString(header, serverName))),
+                CloudTextBuilder().build(CloudText(proxyHandler.replaceString(footer, serverName))))
     }
 
 }

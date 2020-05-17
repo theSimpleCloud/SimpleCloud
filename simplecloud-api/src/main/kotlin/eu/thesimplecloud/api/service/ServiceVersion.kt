@@ -4,10 +4,12 @@ enum class ServiceVersion(val serviceVersionType: ServiceVersionType, val downlo
 
     //Proxy Versions default minecraft
 
-    BUNGEECORD(ServiceVersionType.PROXY_DEFAULT, "https://ci.md-5.net/job/BungeeCord/lastSuccessfulBuild/artifact/bootstrap/target/BungeeCord.jar"),
-    TRAVERTINE(ServiceVersionType.PROXY_DEFAULT, "https://papermc.io/ci/job/Travertine/lastSuccessfulBuild/artifact/Travertine-Proxy/bootstrap/target/Travertine.jar"),
-    WATERFALL(ServiceVersionType.PROXY_DEFAULT, "https://papermc.io/ci/job/Waterfall/lastSuccessfulBuild/artifact/Waterfall-Proxy/bootstrap/target/Waterfall.jar"),
-    HEXACORD(ServiceVersionType.PROXY_DEFAULT, "https://yivesmirror.com/files/hexacord/HexaCord-v246.jar"),
+    BUNGEECORD(ServiceVersionType.BUNGEE_DEFAULT, "https://ci.md-5.net/job/BungeeCord/lastSuccessfulBuild/artifact/bootstrap/target/BungeeCord.jar"),
+    TRAVERTINE(ServiceVersionType.BUNGEE_DEFAULT, "https://papermc.io/ci/job/Travertine/lastSuccessfulBuild/artifact/Travertine-Proxy/bootstrap/target/Travertine.jar"),
+    WATERFALL(ServiceVersionType.BUNGEE_DEFAULT, "https://papermc.io/ci/job/Waterfall/lastSuccessfulBuild/artifact/Waterfall-Proxy/bootstrap/target/Waterfall.jar"),
+    HEXACORD(ServiceVersionType.BUNGEE_DEFAULT, "https://yivesmirror.com/files/hexacord/HexaCord-v246.jar"),
+
+    VELOCITY(ServiceVersionType.VELOCITY_DEFAULT, "https://ci.velocitypowered.com/job/velocity/lastSuccessfulBuild/artifact/proxy/build/libs/velocity-proxy-1.0.8-SNAPSHOT-all.jar"),
 
     SPIGOT_1_7_10(ServiceVersionType.SERVER_DEFAULT, "https://cdn.getbukkit.org/spigot/spigot-1.7.10-SNAPSHOT-b1657.jar"),
     SPIGOT_1_8_8(ServiceVersionType.SERVER_DEFAULT, "https://cdn.getbukkit.org/spigot/spigot-1.8.8-R0.1-SNAPSHOT-latest.jar"),
@@ -33,7 +35,8 @@ enum class ServiceVersion(val serviceVersionType: ServiceVersionType, val downlo
 
 
     enum class ServiceVersionType() {
-        PROXY_DEFAULT,
+        BUNGEE_DEFAULT,
+        VELOCITY_DEFAULT,
         SERVER_DEFAULT,
 
         PROXY_POCKET_EDITION,

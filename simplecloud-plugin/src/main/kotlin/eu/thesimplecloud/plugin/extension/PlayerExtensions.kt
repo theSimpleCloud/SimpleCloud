@@ -19,6 +19,11 @@ fun ProxiedPlayer.getCloudPlayer(): ICloudPlayer = CloudAPI.instance.getCloudPla
 fun Player.getCloudPlayer(): ICloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(this.uniqueId) ?: throw NoSuchPlayerException("Cannot find CloudPlayer by uuid: $uniqueId")
 
 /**
+ * Returns the CloudPlayer found by the players uuid
+ */
+fun com.velocitypowered.api.proxy.Player.getCloudPlayer(): ICloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(this.uniqueId) ?: throw NoSuchPlayerException("Cannot find CloudPlayer by uuid: $uniqueId")
+
+/**
  * Returns the PrxiedPlayer found by the uuid of the [ICloudPlayer]
  */
 fun ICloudPlayer.getProxiedPlayer(): ProxiedPlayer = ProxyServer.getInstance().getPlayer(this.getUniqueId()) ?: throw NoSuchPlayerException("Cannot find ProxiedPlayer by uuid: ${getUniqueId()}")

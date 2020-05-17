@@ -1,4 +1,4 @@
-package eu.thesimplecloud.plugin.proxy.text
+package eu.thesimplecloud.plugin.proxy.bungee.text
 
 import eu.thesimplecloud.api.player.text.CloudText
 import net.md_5.bungee.api.chat.ClickEvent
@@ -52,11 +52,14 @@ class CloudTextBuilder {
         }
         text = stringBuilder.toString()
         textComponent.text = text
-        if (cloudText.hover != null) {
-            textComponent.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentBuilder(cloudText.hover).create())
+
+        val hover = cloudText.hover
+        if (hover != null) {
+            textComponent.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentBuilder(hover).create())
         }
-        if (cloudText.click != null) {
-            textComponent.clickEvent = ClickEvent(ClickEvent.Action.valueOf(cloudText.clickEventType.toString()), cloudText.click)
+        val click = cloudText.click
+        if (click != null) {
+            textComponent.clickEvent = ClickEvent(ClickEvent.Action.valueOf(cloudText.clickEventType.toString()), click)
         }
 
         val appendedCloudText = cloudText.appendedCloudText

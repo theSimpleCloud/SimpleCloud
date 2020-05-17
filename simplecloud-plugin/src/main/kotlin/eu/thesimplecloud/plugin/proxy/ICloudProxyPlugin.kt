@@ -7,8 +7,6 @@ interface ICloudProxyPlugin : ICloudServicePlugin {
 
     fun addServiceToProxy(cloudService: ICloudService)
 
-
     fun removeServiceFromProxy(cloudService: ICloudService)
-
 
 }

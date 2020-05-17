@@ -1,10 +1,10 @@
-package eu.thesimplecloud.plugin.proxy.listener
+package eu.thesimplecloud.plugin.proxy.bungee.listener
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.event.player.CloudPlayerCommandExecuteEvent
 import eu.thesimplecloud.plugin.extension.getCloudPlayer
 import eu.thesimplecloud.plugin.network.packets.PacketOutPlayerExecuteCommand
-import eu.thesimplecloud.plugin.proxy.CloudProxyPlugin
+import eu.thesimplecloud.plugin.proxy.bungee.CloudBungeePlugin
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import net.md_5.bungee.api.event.ChatEvent
@@ -20,7 +20,7 @@ class IngameCommandListener : Listener {
         if (event.isCommand){
             val rawCommand = event.message.replaceFirst("/", "")
             val commandStart = rawCommand.split(" ")[0]
-            if (CloudProxyPlugin.instance.synchronizedIngameCommandNamesContainer.names.contains(commandStart.toLowerCase())) {
+            if (CloudBungeePlugin.instance.synchronizedIngameCommandNamesContainer.names.contains(commandStart.toLowerCase())) {
                 CloudPlugin.instance.communicationClient.sendUnitQuery(PacketOutPlayerExecuteCommand(player.getCloudPlayer(), rawCommand))
                 event.isCancelled = true
             }

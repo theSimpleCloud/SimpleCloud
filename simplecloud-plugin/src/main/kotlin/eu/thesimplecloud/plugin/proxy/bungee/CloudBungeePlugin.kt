@@ -1,13 +1,16 @@
-package eu.thesimplecloud.plugin.proxy
+package eu.thesimplecloud.plugin.proxy.bungee
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.ingamecommand.SynchronizedIngameCommandNamesContainer
+import eu.thesimplecloud.api.player.ICloudPlayerManager
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.servicegroup.grouptype.ICloudServerGroup
+import eu.thesimplecloud.plugin.impl.player.CloudPlayerManagerBungee
 import eu.thesimplecloud.plugin.listener.CloudListener
-import eu.thesimplecloud.plugin.proxy.listener.BungeeListener
-import eu.thesimplecloud.plugin.proxy.listener.IngameCommandListener
+import eu.thesimplecloud.plugin.proxy.ICloudProxyPlugin
+import eu.thesimplecloud.plugin.proxy.bungee.listener.BungeeListener
+import eu.thesimplecloud.plugin.proxy.bungee.listener.IngameCommandListener
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.plugin.Plugin
@@ -15,8 +18,9 @@ import java.lang.IllegalArgumentException
 import java.net.InetSocketAddress
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.reflect.KClass
 
-class CloudProxyPlugin : Plugin(), ICloudProxyPlugin {
+class CloudBungeePlugin : Plugin(), ICloudProxyPlugin {
 
     val lobbyConnector = LobbyConnector()
     var synchronizedIngameCommandNamesContainer = SynchronizedIngameCommandNamesContainer()
@@ -24,7 +28,7 @@ class CloudProxyPlugin : Plugin(), ICloudProxyPlugin {
 
     companion object {
         @JvmStatic
-        lateinit var instance: CloudProxyPlugin
+        lateinit var instance: CloudBungeePlugin
     }
 
     init {
@@ -40,8 +44,7 @@ class CloudProxyPlugin : Plugin(), ICloudProxyPlugin {
             throw IllegalArgumentException("Service is already registered!")
         }
 
-        val serviceState = cloudService.getState()
-        if (cloudService.getServiceType().isProxy() || serviceState == ServiceState.CLOSED || serviceState == ServiceState.PREPARED)
+        if (cloudService.getServiceType().isProxy() || !cloudService.isOnline())
             return
         val cloudServiceGroup = cloudService.getServiceGroup()
         if ((cloudServiceGroup as ICloudServerGroup).getHiddenAtProxyGroups().contains(CloudPlugin.instance.getGroupName()))
@@ -86,8 +89,8 @@ class CloudProxyPlugin : Plugin(), ICloudProxyPlugin {
         }
 
         registerFallbackService()
-        CloudAPI.instance.getCloudServiceManager().getAllCloudServices().forEach { addServiceToProxy(it) }
         CloudPlugin.instance.onEnable()
+        CloudAPI.instance.getCloudServiceManager().getAllCloudServices().forEach { addServiceToProxy(it) }
         CloudAPI.instance.getEventManager().registerListener(CloudPlugin.instance, CloudListener())
         ProxyServer.getInstance().pluginManager.registerListener(this, BungeeListener())
         ProxyServer.getInstance().pluginManager.registerListener(this, IngameCommandListener())
@@ -105,6 +108,10 @@ class CloudProxyPlugin : Plugin(), ICloudProxyPlugin {
             service.setOnlineCount(proxy.onlineCount)
             service.update()
         }, 30, 30, TimeUnit.SECONDS)
+    }
+
+    override fun getCloudPlayerManagerClass(): KClass<out ICloudPlayerManager> {
+        return CloudPlayerManagerBungee::class
     }
 
 }

@@ -1,4 +1,4 @@
-package eu.thesimplecloud.plugin.proxy
+package eu.thesimplecloud.plugin.proxy.bungee
 
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.ReconnectHandler

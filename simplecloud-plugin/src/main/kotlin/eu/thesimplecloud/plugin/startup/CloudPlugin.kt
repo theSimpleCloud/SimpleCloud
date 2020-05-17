@@ -39,7 +39,7 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
         if (!loadConfig())
             cloudServicePlugin.shutdown()
         println("<---------- Service-Name: $thisServiceName ---------->")
-        CloudAPIImpl()
+        CloudAPIImpl(cloudServicePlugin.getCloudPlayerManagerClass().java.newInstance())
 
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.plugin.network.packets")
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.client.packets")

@@ -1,0 +1,134 @@
+package eu.thesimplecloud.plugin.proxy.velocity.listener
+
+import com.velocitypowered.api.event.PostOrder
+import com.velocitypowered.api.event.ResultedEvent
+import com.velocitypowered.api.event.Subscribe
+import com.velocitypowered.api.event.connection.DisconnectEvent
+import com.velocitypowered.api.event.connection.LoginEvent
+import com.velocitypowered.api.event.connection.PostLoginEvent
+import com.velocitypowered.api.event.player.KickedFromServerEvent
+import com.velocitypowered.api.event.player.ServerConnectedEvent
+import com.velocitypowered.api.event.player.ServerPreConnectEvent
+import eu.thesimplecloud.api.player.connection.DefaultPlayerAddress
+import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
+import eu.thesimplecloud.api.player.text.CloudText
+import eu.thesimplecloud.plugin.proxy.CancelMessageType
+import eu.thesimplecloud.plugin.proxy.ProxyEventHandler
+import eu.thesimplecloud.plugin.proxy.velocity.CloudVelocityPlugin
+import eu.thesimplecloud.plugin.proxy.velocity.text.CloudTextBuilder
+import java.util.*
+
+/**
+ * Created by IntelliJ IDEA.
+ * User: Philipp.Eistrach
+ * Date: 15.05.2020
+ * Time: 21:32
+ */
+class VelocityListener(val plugin: CloudVelocityPlugin) {
+
+    @Subscribe(order = PostOrder.FIRST)
+    fun handle(event: LoginEvent) {
+        val player = event.player
+
+        val playerAddress = DefaultPlayerAddress(player.remoteAddress.hostString, player.remoteAddress.port)
+        val playerConnection = DefaultPlayerConnection(playerAddress, player.username, player.uniqueId, plugin.proxyServer.configuration.isOnlineMode, player.protocolVersion.protocol)
+
+
+        ProxyEventHandler.handleLogin(playerConnection) {
+            event.result = ResultedEvent.ComponentResult.denied(CloudTextBuilder().build(CloudText(it)))
+        }
+    }
+
+    @Subscribe
+    fun handle(event: PostLoginEvent) {
+        val player = event.player
+
+        ProxyEventHandler.handlePostLogin(player.uniqueId, player.username)
+
+        if (plugin.lobbyConnector.getLobbyServer(player) == null) {
+            event.player.disconnect(CloudTextBuilder().build(CloudText("§cNo fallback server found")))
+        }
+    }
+
+
+    @Subscribe
+    fun handle(event: DisconnectEvent) {
+        val player = event.player
+
+        ProxyEventHandler.handleDisconnect(player.uniqueId, player.username)
+    }
+
+    @Subscribe
+    fun handle(event: ServerPreConnectEvent) {
+        val player = event.player
+
+        val target = if (event.originalServer.serverInfo.name == "fallback")
+            plugin.lobbyConnector.getLobbyServer(player)
+        else
+            event.originalServer
+        if (target == null) {
+            event.player.disconnect(CloudTextBuilder().build(CloudText("§cNo fallback server found")))
+            return
+        }
+        val serverNameTo = target.serverInfo.name
+        event.result = ServerPreConnectEvent.ServerResult.allowed(plugin.proxyServer.getServer(serverNameTo).orElse(null))
+
+        var serverNameFrom: String? = null
+
+        val currentServer = player.currentServer
+        if (currentServer.isPresent) {
+            serverNameFrom = currentServer.get().serverInfo.name
+        }
+
+        ProxyEventHandler.handleServerPreConnect(player.uniqueId, serverNameFrom, serverNameTo) { message, cancelMessageType ->
+            if (cancelMessageType == CancelMessageType.MESSAGE) {
+                player.sendMessage(CloudTextBuilder().build(CloudText(message)))
+            } else {
+                player.disconnect(CloudTextBuilder().build(CloudText(message)))
+            }
+            event.result = ServerPreConnectEvent.ServerResult.denied()
+        }
+    }
+
+    @Subscribe
+    fun handle(event: ServerConnectedEvent) {
+        val player = event.player
+        ProxyEventHandler.handleServerConnect(player.uniqueId, event.server.serverInfo.name) {
+            player.disconnect(CloudTextBuilder().build(CloudText("§cService does not exist.")))
+        }
+    }
+
+    @Subscribe
+    fun handle(event: KickedFromServerEvent) {
+        val kickReasonString: String
+        var kickReasonComponent = event.originalReason
+        if (!kickReasonComponent.isPresent()) {
+            kickReasonString = ""
+            kickReasonComponent = Optional.of(CloudTextBuilder().build(CloudText("")))
+        } else {
+            kickReasonString = kickReasonComponent.get().insertion()!!
+        }
+
+        val player = event.player
+        val kickedServerName = event.server.serverInfo.name
+        ProxyEventHandler.handleServerKick(kickReasonString, kickedServerName) { message, cancelMessageType ->
+            if (cancelMessageType == CancelMessageType.MESSAGE) {
+                player.sendMessage(CloudTextBuilder().build(CloudText(message)))
+            } else {
+                player.disconnect(CloudTextBuilder().build(CloudText(message)))
+            }
+        }
+
+        val fallback = plugin.lobbyConnector.getLobbyServer(player, listOf(kickedServerName))
+        if (fallback == null) {
+            player.disconnect(CloudTextBuilder().build(CloudText("§cNo fallback server found")))
+            return
+        }
+
+        player.sendMessage(kickReasonComponent.get())
+        event.result = KickedFromServerEvent.ServerKickResult {
+            player.createConnectionRequest(fallback).connectWithIndication().getNow(false)
+        }
+    }
+
+}

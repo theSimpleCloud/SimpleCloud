@@ -6,7 +6,7 @@ import eu.thesimplecloud.base.core.utils.FileCopier
 import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.IServiceConfigurator
 import java.io.File
 
-class DefaultProxyConfigurator : IServiceConfigurator {
+class DefaultBungeeConfigurator : IServiceConfigurator {
 
     override fun configureService(cloudService: ICloudService, serviceTmpDirectory: File) {
         val bungeeConfigFile = File(serviceTmpDirectory, "config.yml")
