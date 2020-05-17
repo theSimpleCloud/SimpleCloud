@@ -40,7 +40,7 @@ class ProxyEventHandler() {
 
             //send login request
             val createPromise = CloudPlugin.instance.communicationClient
-                    .sendQuery<CloudPlayer>(PacketOutCreateCloudPlayer(playerConnection, CloudPlugin.instance.thisServiceName)).awaitUninterruptibly()
+                    .sendQuery<CloudPlayer>(PacketOutCreateCloudPlayer(playerConnection, CloudPlugin.instance.thisServiceName), 1000).awaitUninterruptibly()
             if (!createPromise.isSuccess) {
                 cancelEvent("§cFailed to create player: ${createPromise.cause().message}")
                 throw createPromise.cause()
