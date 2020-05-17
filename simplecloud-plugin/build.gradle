@@ -37,8 +37,8 @@ dependencies {
     }
     implementation 'org.spigotmc:spigot-api:1.15.1-R0.1-SNAPSHOT'
     implementation 'net.md-5:bungeecord-api:1.12-SNAPSHOT'
-    implementation 'com.velocitypowered:velocity-api:1.0.0-SNAPSHOT'
-    annotationProcessor 'com.velocitypowered:velocity-api:1.0.0-SNAPSHOT'
+    implementation 'com.velocitypowered:velocity-api:1.1.0-SNAPSHOT'
+    annotationProcessor 'com.velocitypowered:velocity-api:1.1.0-SNAPSHOT'
 }
 
 configurations {

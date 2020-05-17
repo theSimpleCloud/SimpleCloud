@@ -11,7 +11,6 @@ import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.ingamecommand.SynchronizedIngameCommandNamesContainer
 import eu.thesimplecloud.api.player.ICloudPlayerManager
 import eu.thesimplecloud.api.service.ICloudService
-import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.servicegroup.grouptype.ICloudServerGroup
 import eu.thesimplecloud.plugin.impl.player.CloudPlayerManagerVelocity
 import eu.thesimplecloud.plugin.listener.CloudListener
@@ -19,12 +18,9 @@ import eu.thesimplecloud.plugin.proxy.ICloudProxyPlugin
 import eu.thesimplecloud.plugin.proxy.velocity.listener.IngameCommandListener
 import eu.thesimplecloud.plugin.proxy.velocity.listener.VelocityListener
 import eu.thesimplecloud.plugin.startup.CloudPlugin
-import java.lang.IllegalArgumentException
 import java.net.InetSocketAddress
-import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
-import kotlin.system.exitProcess
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,7 +29,7 @@ import kotlin.system.exitProcess
  * Time: 21:11
  */
 
-@Plugin(id = "simplecloud_plugin_velocity")
+@Plugin(id = "simplecloud_plugin")
 class CloudVelocityPlugin @Inject constructor(val proxyServer: ProxyServer) : ICloudProxyPlugin {
 
     companion object {
@@ -45,8 +41,7 @@ class CloudVelocityPlugin @Inject constructor(val proxyServer: ProxyServer) : IC
         private set
     val lobbyConnector = LobbyConnector()
 
-    @Subscribe
-    fun handleInit(event: ProxyInitializeEvent) {
+    init {
         instance = this
 
         CloudPlugin(this)
@@ -54,6 +49,10 @@ class CloudVelocityPlugin @Inject constructor(val proxyServer: ProxyServer) : IC
         synchronizedObjectPromise.addResultListener {
             this.synchronizedIngameCommandNamesContainer = it.obj
         }
+    }
+
+    @Subscribe
+    fun handleInit(event: ProxyInitializeEvent) {
 
         //registerFallbackService()
         CloudPlugin.instance.onEnable()

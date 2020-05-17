@@ -21,6 +21,10 @@ repositories {
     maven {
         url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
     }
+    maven {
+        name 'velocity'
+        url 'https://repo.velocitypowered.com/snapshots/'
+    }
 }
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
@@ -34,6 +38,8 @@ dependencies {
     implementation 'net.md-5:bungeecord-api:1.12-SNAPSHOT' // The full Spigot server with no shadowing. Requires mavenLocal.
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.0.1'
+    implementation 'com.velocitypowered:velocity-api:1.0.0-SNAPSHOT'
+    annotationProcessor 'com.velocitypowered:velocity-api:1.0.0-SNAPSHOT'
 
 }
 
