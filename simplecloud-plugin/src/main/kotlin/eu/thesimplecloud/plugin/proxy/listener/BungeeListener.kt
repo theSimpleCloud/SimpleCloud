@@ -45,9 +45,9 @@ class BungeeListener : Listener {
         val playerAddress = DefaultPlayerAddress(connection.address.hostString, connection.address.port)
         val playerConnection = DefaultPlayerConnection(playerAddress, connection.name, connection.uniqueId, connection.isOnlineMode, connection.version)
 
-        //send login request
+        //send login request with 1 second timeout because the first mongodb request can take up to 800 ms
         val createPromise = CloudPlugin.instance.communicationClient
-                .sendQuery<CloudPlayer>(PacketOutCreateCloudPlayer(playerConnection, CloudPlugin.instance.thisServiceName)).awaitUninterruptibly()
+                .sendQuery<CloudPlayer>(PacketOutCreateCloudPlayer(playerConnection, CloudPlugin.instance.thisServiceName), 1000).awaitUninterruptibly()
         if (!createPromise.isSuccess) {
             event.isCancelled = true
             event.setCancelReason(CloudTextBuilder().build(CloudText("§cFailed to create player: ${createPromise.cause().message}")))
