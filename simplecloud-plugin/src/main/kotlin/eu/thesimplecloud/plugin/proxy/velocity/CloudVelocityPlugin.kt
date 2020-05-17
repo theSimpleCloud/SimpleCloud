@@ -37,6 +37,7 @@ class CloudVelocityPlugin @Inject constructor(val proxyServer: ProxyServer) : IC
         lateinit var instance: CloudVelocityPlugin
     }
 
+    @Volatile
     var synchronizedIngameCommandNamesContainer = SynchronizedIngameCommandNamesContainer()
         private set
     val lobbyConnector = LobbyConnector()

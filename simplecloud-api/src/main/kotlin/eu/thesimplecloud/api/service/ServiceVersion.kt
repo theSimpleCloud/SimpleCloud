@@ -9,7 +9,7 @@ enum class ServiceVersion(val serviceVersionType: ServiceVersionType, val downlo
     WATERFALL(ServiceVersionType.BUNGEE_DEFAULT, "https://papermc.io/ci/job/Waterfall/lastSuccessfulBuild/artifact/Waterfall-Proxy/bootstrap/target/Waterfall.jar"),
     HEXACORD(ServiceVersionType.BUNGEE_DEFAULT, "https://yivesmirror.com/files/hexacord/HexaCord-v246.jar"),
 
-    VELOCITY(ServiceVersionType.VELOCITY_DEFAULT, "https://ci.velocitypowered.com/job/velocity/lastSuccessfulBuild/artifact/proxy/build/libs/velocity-proxy-1.0.8-SNAPSHOT-all.jar"),
+    VELOCITY(ServiceVersionType.VELOCITY_DEFAULT, "https://ci.velocitypowered.com/job/velocity-1.1.0/lastSuccessfulBuild/artifact/proxy/build/libs/velocity-proxy-1.1.0-SNAPSHOT-all.jars"),
 
     SPIGOT_1_7_10(ServiceVersionType.SERVER_DEFAULT, "https://cdn.getbukkit.org/spigot/spigot-1.7.10-SNAPSHOT-b1657.jar"),
     SPIGOT_1_8_8(ServiceVersionType.SERVER_DEFAULT, "https://cdn.getbukkit.org/spigot/spigot-1.8.8-R0.1-SNAPSHOT-latest.jar"),

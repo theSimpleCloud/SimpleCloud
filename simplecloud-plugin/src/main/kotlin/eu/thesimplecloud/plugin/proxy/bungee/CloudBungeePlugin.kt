@@ -23,6 +23,8 @@ import kotlin.reflect.KClass
 class CloudBungeePlugin : Plugin(), ICloudProxyPlugin {
 
     val lobbyConnector = LobbyConnector()
+
+    @Volatile
     var synchronizedIngameCommandNamesContainer = SynchronizedIngameCommandNamesContainer()
         private set
 
