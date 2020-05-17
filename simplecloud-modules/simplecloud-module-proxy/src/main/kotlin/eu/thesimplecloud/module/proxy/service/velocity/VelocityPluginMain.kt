@@ -32,10 +32,8 @@ class VelocityPluginMain @Inject constructor(val proxyServer: ProxyServer) {
     fun handleInit(event: ProxyInitializeEvent) {
         proxyHandler = ProxyHandler()
 
-        proxyServer.scheduler.buildTask(this) {
-            proxyHandler.onEnable()
-            proxyServer.eventManager.register(this, VelocityListener(this))
-        }.delay(5, TimeUnit.SECONDS).schedule()
+        proxyHandler.onEnable()
+        proxyServer.eventManager.register(this, VelocityListener(this))
     }
 
     private var headerCounter = 0

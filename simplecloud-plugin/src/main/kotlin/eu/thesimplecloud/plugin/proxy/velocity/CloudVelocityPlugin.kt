@@ -33,7 +33,7 @@ import kotlin.system.exitProcess
  * Time: 21:11
  */
 
-@Plugin(id = "simplecloud_plugin_velocity")
+@Plugin(id = "simplecloud_plugin")
 class CloudVelocityPlugin @Inject constructor(val proxyServer: ProxyServer) : ICloudProxyPlugin {
 
     companion object {
@@ -41,6 +41,7 @@ class CloudVelocityPlugin @Inject constructor(val proxyServer: ProxyServer) : IC
         lateinit var instance: CloudVelocityPlugin
     }
 
+    @Volatile
     var synchronizedIngameCommandNamesContainer = SynchronizedIngameCommandNamesContainer()
         private set
     val lobbyConnector = LobbyConnector()
