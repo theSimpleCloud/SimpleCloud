@@ -30,7 +30,7 @@ class IngameCommandListener(val plugin: CloudVelocityPlugin) {
 
         if (CloudVelocityPlugin.instance.synchronizedIngameCommandNamesContainer.names.contains(commandStart.toLowerCase())) {
             CloudPlugin.instance.communicationClient.sendUnitQuery(PacketOutPlayerExecuteCommand(player.getCloudPlayer(), command))
-            event.result = CommandExecuteEvent.CommandResult.allowed()
+            event.result = CommandExecuteEvent.CommandResult.denied()
         }
         CloudAPI.instance.getEventManager().call(CloudPlayerCommandExecuteEvent(player.uniqueId, player.username, command))
     }
