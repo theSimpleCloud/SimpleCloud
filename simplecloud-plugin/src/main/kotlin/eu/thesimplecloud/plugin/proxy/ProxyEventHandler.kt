@@ -12,6 +12,7 @@ import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.clientserverapi.lib.packet.packetsender.sendQuery
 import eu.thesimplecloud.plugin.network.packets.PacketOutCreateCloudPlayer
+import eu.thesimplecloud.plugin.network.packets.PacketOutGetTabSuggestions
 import eu.thesimplecloud.plugin.network.packets.PacketOutPlayerConnectToServer
 import eu.thesimplecloud.plugin.network.packets.PacketOutPlayerLoginRequest
 import eu.thesimplecloud.plugin.startup.CloudPlugin
@@ -131,7 +132,13 @@ class ProxyEventHandler() {
             }
         }
 
+        fun handleTabComplete(uuid: UUID, rawCommand: String): Array<String> {
+            val commandString = rawCommand.replace("/", "")
+            if (commandString.isEmpty()) return emptyArray()
 
+            val suggestions = CloudPlugin.instance.communicationClient.sendQuery<Array<String>>(PacketOutGetTabSuggestions(uuid, commandString)).awaitUninterruptibly().getNow()
+            return suggestions
+        }
 
         private fun changeOnlineCount(serverName: String) {
             val service = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(serverName) ?: return

@@ -127,20 +127,4 @@ class BungeeListener : Listener {
         event.isCancelled = true
     }
 
-    @EventHandler
-    fun on(event: TabCompleteEvent) {
-        val player = event.sender as ProxiedPlayer
-
-        val commandString = event.cursor.replace("/", "")
-        if (commandString.isEmpty()) return
-
-        val suggestions = CloudPlugin.instance.communicationClient.sendQuery<Array<String>>(PacketOutGetTabSuggestions(player.uniqueId, commandString)).awaitUninterruptibly().getNow()
-        if (suggestions.isEmpty()) {
-            return
-        }
-        event.suggestions.addAll(suggestions)
-
-
-    }
-
 }
