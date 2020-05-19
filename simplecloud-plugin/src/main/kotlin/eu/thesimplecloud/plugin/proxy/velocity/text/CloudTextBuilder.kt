@@ -50,11 +50,11 @@ class CloudTextBuilder {
             i++
         }
         text = stringBuilder.toString()
-        val component = TextComponent.of(text)
+        val component = TextComponent.builder(text)
 
         val hover = cloudText.hover
         if (hover != null) {
-            component.hoverEvent(HoverEvent.of(HoverEvent.Action.SHOW_TEXT, TextComponent.of(hover)))
+            component.hoverEvent(HoverEvent.showText(TextComponent.of(hover)))
         }
         val click = cloudText.click
         if (click != null) {
@@ -67,7 +67,7 @@ class CloudTextBuilder {
             component.append(componentToAppend)
         }
 
-        return component
+        return component.build()
     }
 
 }

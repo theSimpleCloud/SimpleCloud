@@ -6,10 +6,12 @@ import com.velocitypowered.api.event.player.TabCompleteEvent
 import com.velocitypowered.api.proxy.Player
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.event.player.CloudPlayerCommandExecuteEvent
+import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.plugin.extension.getCloudPlayer
 import eu.thesimplecloud.plugin.network.packets.PacketOutPlayerExecuteCommand
 import eu.thesimplecloud.plugin.proxy.ProxyEventHandler
 import eu.thesimplecloud.plugin.proxy.velocity.CloudVelocityPlugin
+import eu.thesimplecloud.plugin.proxy.velocity.text.CloudTextBuilder
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 
 /**
