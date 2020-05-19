@@ -15,7 +15,7 @@ import eu.thesimplecloud.api.servicegroup.grouptype.ICloudServerGroup
 import eu.thesimplecloud.plugin.impl.player.CloudPlayerManagerVelocity
 import eu.thesimplecloud.plugin.listener.CloudListener
 import eu.thesimplecloud.plugin.proxy.ICloudProxyPlugin
-import eu.thesimplecloud.plugin.proxy.velocity.listener.IngameCommandListener
+import eu.thesimplecloud.plugin.proxy.velocity.commands.VelocityCommand
 import eu.thesimplecloud.plugin.proxy.velocity.listener.VelocityListener
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import java.net.InetSocketAddress
@@ -61,13 +61,10 @@ class CloudVelocityPlugin @Inject constructor(val proxyServer: ProxyServer) : IC
 
     @Subscribe
     fun handleInit(event: ProxyInitializeEvent) {
-
-        //registerFallbackService()
         CloudPlugin.instance.onEnable()
         CloudAPI.instance.getCloudServiceManager().getAllCloudServices().forEach { addServiceToProxy(it) }
         CloudAPI.instance.getEventManager().registerListener(CloudPlugin.instance, CloudListener())
         proxyServer.eventManager.register(this, VelocityListener(this))
-        //proxyServer.eventManager.register(this, IngameCommandListener(this))
 
         synchronizeOnlineCountTask()
     }
