@@ -8,10 +8,9 @@ import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.nio.charset.StandardCharsets
-import java.nio.file.Files
-import java.nio.file.Paths
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 import java.util.logging.FileHandler
 import java.util.logging.Level
 import java.util.logging.Logger
@@ -28,9 +27,11 @@ import kotlin.collections.ArrayList
 @Suppress("NON_EXHAUSTIVE_WHEN")
 class LoggerProvider(val screenManager: IScreenManager) : Logger("SimpleCloudLogger", null) {
 
-    val dataFormat = SimpleDateFormat("[HH:mm:ss]")
+    private val dataFormat = SimpleDateFormat("[HH:mm:ss]")
 
     private val loggerMessageListeners = ArrayList<ILoggerMessageListener>()
+
+    private val logsDir = File("logs/")
 
     init {
         level = Level.ALL
@@ -38,8 +39,8 @@ class LoggerProvider(val screenManager: IScreenManager) : Logger("SimpleCloudLog
 
         System.setProperty("java.util.logging.SimpleFormatter.format", "[%1\$tT] [%4$-7s] %5\$s %n")
 
-        if (!Files.exists(Paths.get("logs")))
-            Files.createDirectory(Paths.get("logs"))
+        if (!logsDir.exists())
+            logsDir.mkdirs()
 
         val file = File("logs/")
         val simpleFormatter = SimpleFormatter()
@@ -50,6 +51,18 @@ class LoggerProvider(val screenManager: IScreenManager) : Logger("SimpleCloudLog
         fileHandler.formatter = simpleFormatter
 
         addHandler(fileHandler)
+
+        deleteOldLogs()
+    }
+
+    private fun deleteOldLogs() {
+        val allLogFiles = (logsDir.listFiles() ?: emptyArray()).filterNotNull()
+        allLogFiles.filter { isOlderThanTenDays(it) }.forEach { it.delete() }
+    }
+
+    private fun isOlderThanTenDays(logFile: File): Boolean {
+        val tenDaysInMillis = TimeUnit.DAYS.toMillis(10)
+        return (System.currentTimeMillis() - logFile.lastModified()) > tenDaysInMillis
     }
 
     fun addLoggerMessageListener(loggerMessageListener: ILoggerMessageListener) {

@@ -32,7 +32,7 @@ class VelocityCommand(private val commandStart: String) : Command {
 
     override fun suggest(source: CommandSource?, args: Array<out String>): MutableList<String> {
         val player = source as? Player?: return super.suggest(source, args)
-        val rawCommand = args.union(listOf(commandStart)).joinToString(" ")
+        val rawCommand = listOf(commandStart).union(args.toList()).joinToString(" ")
         return ProxyEventHandler.handleTabComplete(player.uniqueId, rawCommand).toMutableList()
     }
 
