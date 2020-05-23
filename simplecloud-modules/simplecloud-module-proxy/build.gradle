@@ -25,6 +25,10 @@ repositories {
         name 'velocity'
         url 'https://repo.velocitypowered.com/snapshots/'
     }
+    maven {
+        name 'spongepowered'
+        url 'https://repo.spongepowered.org/maven/'
+    }
 }
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
