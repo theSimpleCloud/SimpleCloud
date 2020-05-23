@@ -1,5 +1,7 @@
 package eu.thesimplecloud.base.wrapper.startup
 
+import java.net.ServerSocket
+
 class PortManager {
 
     val START_PORT = 50_000
@@ -14,6 +16,11 @@ class PortManager {
             port++
         }
         usedPorts.add(port)
+
+        /*val serverSocket = ServerSocket(0)
+        serverSocket.localPort
+        serverSocket.close()*/
+
         return port
     }
 

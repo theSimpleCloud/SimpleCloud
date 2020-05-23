@@ -24,6 +24,7 @@ class VelocityPermissionProvider : PermissionProvider {
                 println("WARNING: PermissionPlayer is NULL (${player.username})")
                 return Tristate.FALSE
             }
+
             return Tristate.fromBoolean(permissionPlayer.hasPermission(permission))
         }
 
