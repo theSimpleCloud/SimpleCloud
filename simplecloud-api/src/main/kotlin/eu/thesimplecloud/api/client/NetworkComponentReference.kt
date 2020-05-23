@@ -15,7 +15,7 @@ data class NetworkComponentReference(val cloudClientType: NetworkComponentType, 
     fun getNetworkComponent(): INetworkComponent? {
         return when (cloudClientType) {
             NetworkComponentType.WRAPPER -> {
-                CloudAPI.instance.getWrapperManager().getWrapperByName(name)?.obj
+                CloudAPI.instance.getWrapperManager().getWrapperByName(name)
             }
             NetworkComponentType.SERVICE -> {
                 CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(name)

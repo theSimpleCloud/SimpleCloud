@@ -1,9 +1,6 @@
 package eu.thesimplecloud.base.manager.commands
 
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.extension.sendPacketToAllAuthenticatedClients
-import eu.thesimplecloud.api.network.packets.template.PacketIODeleteTemplate
-import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.launcher.console.command.CommandType
 import eu.thesimplecloud.launcher.console.command.ICommandHandler
 import eu.thesimplecloud.launcher.console.command.annotations.Command
@@ -15,7 +12,7 @@ import eu.thesimplecloud.launcher.startup.Launcher
 @Command("delete", CommandType.CONSOLE, "simplecloud.command.delete")
 class DeleteCommand : ICommandHandler {
 
-    val templateManager = CloudAPI.instance.getTemplateManager()
+    private val templateManager = CloudAPI.instance.getTemplateManager()
 
     @CommandSubPath("template <name>", "Deletes a template")
     fun deleteTemplate(@CommandArgument("name") name: String) {
@@ -23,16 +20,15 @@ class DeleteCommand : ICommandHandler {
             Launcher.instance.consoleSender.sendMessage("manager.command.delete.template.not-exist", "Template %NAME%", name, " does not exist.")
             return
         }
-        if (CloudAPI.instance.getCloudServiceGroupManager().getAllGroups().any { it.getTemplateName().equals(name, true) }) {
+        if (CloudAPI.instance.getCloudServiceGroupManager().getAllCachedObjects().any { it.getTemplateName().equals(name, true) }) {
             Launcher.instance.consoleSender.sendMessage("manager.command.delete.template.in-use.group", "Template %NAME%", name, " is in use by registered service groups. Delete them first.")
             return
         }
-        if (CloudAPI.instance.getCloudServiceManager().getAllCloudServices().any { it.getTemplateName().equals(name, true) }) {
+        if (CloudAPI.instance.getCloudServiceManager().getAllCachedObjects().any { it.getTemplateName().equals(name, true) }) {
             Launcher.instance.consoleSender.sendMessage("manager.command.delete.template.in-use.service", "Template %NAME%", name, " is in use by registered services. Stop them first.")
             return
         }
-        templateManager.removeTemplate(name)
-        Manager.instance.communicationServer.getClientManager().sendPacketToAllAuthenticatedClients(PacketIODeleteTemplate(name))
+        templateManager.deleteTemplate(name)
         Launcher.instance.consoleSender.sendMessage("manager.command.delete.template.success", "Template %NAME%", name, " was deleted.")
     }
 
@@ -43,7 +39,8 @@ class DeleteCommand : ICommandHandler {
             Launcher.instance.consoleSender.sendMessage("manager.command.delete.group.not-exist", "Group %NAME%", name, " does not exist.")
             return
         }
-        if (!CloudAPI.instance.getCloudServiceGroupManager().deleteServiceGroup(serviceGroup).isSuccess) {
+        val result = runCatching { CloudAPI.instance.getCloudServiceGroupManager().delete(serviceGroup) }
+        if (result.isFailure) {
             Launcher.instance.consoleSender.sendMessage("manager.command.delete.group.services-running", "Can not delete group %NAME%", name, " while services of this group are running.")
             return
         }

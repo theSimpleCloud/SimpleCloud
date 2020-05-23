@@ -2,11 +2,10 @@ package eu.thesimplecloud.api.wrapper
 
 
 import eu.thesimplecloud.api.client.NetworkComponentType
-import eu.thesimplecloud.api.sync.list.ISynchronizedListObject
 import eu.thesimplecloud.api.utils.INetworkComponent
 
 
-interface IWrapperInfo : INetworkComponent, ISynchronizedListObject {
+interface IWrapperInfo : INetworkComponent {
 
     /**
      * Returns the host of this wrapper.

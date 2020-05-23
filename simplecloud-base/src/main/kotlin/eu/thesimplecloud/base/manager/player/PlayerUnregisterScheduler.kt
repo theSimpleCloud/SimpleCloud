@@ -20,11 +20,11 @@ class PlayerUnregisterScheduler {
 
     fun startScheduler() {
         Launcher.instance.scheduler.scheduleAtFixedRate({
-            CloudAPI.instance.getCloudPlayerManager().getAllCachedCloudPlayers().forEach { player ->
+            CloudAPI.instance.getCloudPlayerManager().getAllCachedObjects().forEach { player ->
 
                 checkPlayerOnlineStatus(player).then {
                     if (!it) {
-                        CloudAPI.instance.getCloudPlayerManager().removeCloudPlayer(player)
+                        CloudAPI.instance.getCloudPlayerManager().delete(player)
                     }
                 }
 

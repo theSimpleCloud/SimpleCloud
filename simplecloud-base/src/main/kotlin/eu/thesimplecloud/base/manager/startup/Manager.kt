@@ -143,22 +143,22 @@ class Manager : ICloudApplication {
         GlobalScope.launch { Launcher.instance.commandManager.registerAllCommands(instance, appClassLoader, "eu.thesimplecloud.base.manager.commands") }
         Launcher.instance.setupManager.waitFroAllSetups()
         this.wrapperFileHandler.loadAll().forEach { CloudAPI.instance.getWrapperManager().update(it) }
-        this.cloudServiceGroupFileHandler.loadAll().forEach { CloudAPI.instance.getCloudServiceGroupManager().updateGroup(it) }
-        this.templatesConfigLoader.loadConfig().templates.forEach { CloudAPI.instance.getTemplateManager().updateTemplate(it) }
+        this.cloudServiceGroupFileHandler.loadAll().forEach { CloudAPI.instance.getCloudServiceGroupManager().update(it) }
+        this.templatesConfigLoader.loadConfig().templates.forEach { CloudAPI.instance.getTemplateManager().update(it) }
 
         if (CloudAPI.instance.getWrapperManager().getAllCachedObjects().isNotEmpty()) {
             Launcher.instance.consoleSender.sendMessage("manager.startup.loaded.wrappers", "Loaded following wrappers:")
-            CloudAPI.instance.getWrapperManager().getAllCachedObjects().forEach { Launcher.instance.consoleSender.sendMessage("- ${it.obj.getName()}") }
+            CloudAPI.instance.getWrapperManager().getAllCachedObjects().forEach { Launcher.instance.consoleSender.sendMessage("- ${it.getName()}") }
         }
 
-        if (CloudAPI.instance.getTemplateManager().getAllTemplates().isNotEmpty()) {
+        if (CloudAPI.instance.getTemplateManager().getAllCachedObjects().isNotEmpty()) {
             Launcher.instance.consoleSender.sendMessage("manager.startup.loaded.templates", "Loaded following templates:")
-            CloudAPI.instance.getTemplateManager().getAllTemplates().forEach { Launcher.instance.consoleSender.sendMessage("- ${it.getName()}") }
+            CloudAPI.instance.getTemplateManager().getAllCachedObjects().forEach { Launcher.instance.consoleSender.sendMessage("- ${it.getName()}") }
         }
 
-        if (CloudAPI.instance.getCloudServiceGroupManager().getAllGroups().isNotEmpty()) {
+        if (CloudAPI.instance.getCloudServiceGroupManager().getAllCachedObjects().isNotEmpty()) {
             Launcher.instance.consoleSender.sendMessage("manager.startup.loaded.groups", "Loaded following groups:")
-            CloudAPI.instance.getCloudServiceGroupManager().getAllGroups().forEach { Launcher.instance.consoleSender.sendMessage("- ${it.getName()}") }
+            CloudAPI.instance.getCloudServiceGroupManager().getAllCachedObjects().forEach { Launcher.instance.consoleSender.sendMessage("- ${it.getName()}") }
         }
         thread(start = true, isDaemon = false) {
             this.cloudModuleHandler.loadAllUnloadedModules()

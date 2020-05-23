@@ -4,18 +4,12 @@ import eu.thesimplecloud.api.event.service.CloudServiceConnectedEvent
 import eu.thesimplecloud.api.event.service.CloudServiceUnregisteredEvent
 import eu.thesimplecloud.api.listenerextension.cloudListener
 import eu.thesimplecloud.api.network.packets.service.PacketIOStopCloudService
-import eu.thesimplecloud.api.network.packets.service.PacketIOUpdateCloudService
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.impl.AbstractCloudServiceManager
 import eu.thesimplecloud.base.wrapper.startup.Wrapper
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
 class CloudServiceManagerImpl : AbstractCloudServiceManager() {
-
-    override fun updateCloudService(cloudService: ICloudService, fromPacket: Boolean) {
-        super.updateCloudService(cloudService, fromPacket)
-        if (!fromPacket) Wrapper.instance.communicationClient.sendUnitQuery(PacketIOUpdateCloudService(cloudService))
-    }
 
     override fun stopService(cloudService: ICloudService): ICommunicationPromise<Unit> {
         if (cloudService.getWrapperName() == Wrapper.instance.thisWrapperName) {

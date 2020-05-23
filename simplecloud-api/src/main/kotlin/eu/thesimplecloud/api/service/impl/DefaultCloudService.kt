@@ -92,5 +92,9 @@ data class DefaultCloudService(
         this.propertyMap[name] = property
     }
 
+    override fun removeProperty(name: String) {
+        this.propertyMap.remove(name)
+    }
+
 
 }

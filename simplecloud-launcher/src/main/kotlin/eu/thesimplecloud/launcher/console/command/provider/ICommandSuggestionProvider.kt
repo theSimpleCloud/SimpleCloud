@@ -1,7 +1,6 @@
 package eu.thesimplecloud.launcher.console.command.provider
 
 import eu.thesimplecloud.api.command.ICommandSender
-import eu.thesimplecloud.api.player.ICloudPlayer
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,6 +10,13 @@ import eu.thesimplecloud.api.player.ICloudPlayer
  */
 interface ICommandSuggestionProvider {
 
-    fun getSuggestions(sender: ICommandSender, lastArgument: String): List<String>
+    /**
+     * Returns the suggestions for an argument
+     * @param sender the sender og the tab request
+     * @param fullCommand the full command so far including the last argument
+     * @param lastArgument the last argument of the [fullCommand]
+     * @return a list with arguments to suggest
+     */
+    fun getSuggestions(sender: ICommandSender, fullCommand: String, lastArgument: String): List<String>
 
 }

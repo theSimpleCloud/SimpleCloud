@@ -1,58 +1,81 @@
 package eu.thesimplecloud.api.service.impl
 
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.cachelist.AbstractCacheList
+import eu.thesimplecloud.api.cachelist.ICacheObjectUpdater
 import eu.thesimplecloud.api.event.service.*
+import eu.thesimplecloud.api.eventapi.IEvent
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ICloudServiceManager
 import eu.thesimplecloud.api.service.ServiceState
-import java.util.concurrent.CopyOnWriteArrayList
 
-abstract class AbstractCloudServiceManager : ICloudServiceManager {
+abstract class AbstractCloudServiceManager : AbstractCacheList<ICloudService>(), ICloudServiceManager {
 
-    private val services = CopyOnWriteArrayList<ICloudService>()
+    private val updater = object: ICacheObjectUpdater<ICloudService> {
 
-    override fun updateCloudService(cloudService: ICloudService, fromPacket: Boolean) {
-        val cashedService = getCloudServiceByName(cloudService.getName())
-        if (cashedService == null){
-            cloudService.setLastUpdate(System.currentTimeMillis())
-            this.services.add(cloudService)
-            CloudAPI.instance.getEventManager().call(CloudServiceRegisteredEvent(cloudService))
-            CloudAPI.instance.getEventManager().call(CloudServiceUpdatedEvent(cloudService))
-            return
+        override fun getCachedObjectByUpdateValue(value: ICloudService): ICloudService? {
+            return getCloudServiceByName(value.getName())
         }
-        val nowStarting = cashedService.getState() == ServiceState.PREPARED && cloudService.getState() == ServiceState.STARTING
-        val nowOnline = !cashedService.isOnline() && cloudService.isOnline()
-        val nowConnected = !cashedService.isAuthenticated() && cloudService.isAuthenticated()
 
-        cashedService.setMOTD(cloudService.getMOTD())
-        cashedService.setOnlineCount(cloudService.getOnlineCount())
-        cashedService.setState(cloudService.getState())
-        cashedService.setAuthenticated(cloudService.isAuthenticated())
-        cashedService.setLastUpdate(System.currentTimeMillis())
-        cashedService as DefaultCloudService
-        cashedService.setWrapperName(cloudService.getWrapperName())
-        cashedService.setPort(cloudService.getPort())
-        cashedService.propertyMap = HashMap(cloudService.getProperties())
+        override fun determineEventsToCall(updateValue: ICloudService, cachedValue: ICloudService?): List<IEvent> {
+            val serviceToUse = cachedValue ?: updateValue
+            if (cachedValue == null){
+                return listOf(CloudServiceRegisteredEvent(serviceToUse), CloudServiceUpdatedEvent(serviceToUse))
+            }
+            val nowStarting = cachedValue.getState() == ServiceState.PREPARED && updateValue.getState() == ServiceState.STARTING
+            val nowOnline = !cachedValue.isOnline() && updateValue.isOnline()
+            val nowConnected = !cachedValue.isAuthenticated() && updateValue.isAuthenticated()
 
-        CloudAPI.instance.getEventManager().call(CloudServiceUpdatedEvent(cashedService))
+            val events = ArrayList<IEvent>()
+            events.add(CloudServiceUpdatedEvent(cachedValue))
 
-        if (nowStarting) {
-            CloudAPI.instance.getEventManager().call(CloudServiceStartingEvent(cashedService))
+            if (nowStarting) {
+                events.add(CloudServiceStartingEvent(cachedValue))
+            }
+            if (nowConnected) {
+                events.add(CloudServiceConnectedEvent(cachedValue))
+            }
+            if (nowOnline) {
+                events.add(CloudServiceStartedEvent(cachedValue))
+            }
+            return events
         }
-        if (nowConnected) {
-            CloudAPI.instance.getEventManager().call(CloudServiceConnectedEvent(cashedService))
+
+        override fun mergeUpdateValue(updateValue: ICloudService, cachedValue: ICloudService) {
+            cachedValue.setMOTD(updateValue.getMOTD())
+            cachedValue.setOnlineCount(updateValue.getOnlineCount())
+            cachedValue.setState(updateValue.getState())
+            cachedValue.setAuthenticated(updateValue.isAuthenticated())
+            cachedValue.setLastUpdate(System.currentTimeMillis())
+            cachedValue as DefaultCloudService
+            cachedValue.setWrapperName(updateValue.getWrapperName())
+            cachedValue.setPort(updateValue.getPort())
+            cachedValue.propertyMap = HashMap(updateValue.getProperties())
         }
-        if (nowOnline) {
-            CloudAPI.instance.getEventManager().call(CloudServiceStartedEvent(cashedService))
+
+        override fun addNewValue(value: ICloudService) {
+            value.setLastUpdate(System.currentTimeMillis())
+            values.add(value)
         }
+
+        override fun getIdentificationName(): String {
+            return "service-cache"
+        }
+
     }
 
-    override fun removeCloudService(name: String) {
+    override fun getUpdater(): ICacheObjectUpdater<ICloudService> {
+        return this.updater
+    }
+
+    override fun deleteCloudService(name: String) {
         getCloudServiceByName(name)?.let {
-            this.services.remove(it)
-            CloudAPI.instance.getEventManager().call(CloudServiceUnregisteredEvent(it))
+            this.delete(it)
         }
     }
 
-    override fun getAllCloudServices(): Collection<ICloudService> = this.services
+    override fun delete(value: ICloudService, fromPacket: Boolean) {
+        super<AbstractCacheList>.delete(value, fromPacket)
+        CloudAPI.instance.getEventManager().call(CloudServiceUnregisteredEvent(value))
+    }
 }

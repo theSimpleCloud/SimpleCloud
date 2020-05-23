@@ -5,16 +5,17 @@ import eu.thesimplecloud.api.command.ICommandSender
 import eu.thesimplecloud.api.parser.string.StringParser
 import eu.thesimplecloud.api.template.ITemplate
 import eu.thesimplecloud.api.utils.getAllFieldsFromClassAndSubClasses
+import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.base.manager.commands.provider.EditGroupParameterCommandSuggestionProvider
 import eu.thesimplecloud.base.manager.commands.provider.EditWrapperParameterCommandSuggestionProvider
 import eu.thesimplecloud.launcher.console.command.CommandType
-import eu.thesimplecloud.launcher.console.command.provider.ServiceGroupCommandSuggestionProvider
-import eu.thesimplecloud.launcher.console.command.provider.TemplateCommandSuggestionProvider
-import eu.thesimplecloud.launcher.console.command.provider.WrapperCommandSuggestionProvider
 import eu.thesimplecloud.launcher.console.command.ICommandHandler
 import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
+import eu.thesimplecloud.launcher.console.command.provider.ServiceGroupCommandSuggestionProvider
+import eu.thesimplecloud.launcher.console.command.provider.TemplateCommandSuggestionProvider
+import eu.thesimplecloud.launcher.console.command.provider.WrapperCommandSuggestionProvider
 import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.startup.Launcher
 import java.lang.reflect.Field
@@ -55,7 +56,7 @@ class EditCommand : ICommandHandler {
             try {
                 field.set(serviceGroup, type)
                 commandSender.sendMessage("manager.command.edit.group.success", "Group edited.")
-                CloudAPI.instance.getCloudServiceGroupManager().updateGroup(serviceGroup)
+                CloudAPI.instance.getCloudServiceGroupManager().update(serviceGroup)
             } catch (e: Exception) {
                 commandSender.sendMessage("manager.command.edit.group.invalid-value", "Invalid value. Expected type: %TYPE%", field.type.simpleName)
                 return
@@ -77,9 +78,8 @@ class EditCommand : ICommandHandler {
     //wrapper
 
     @CommandSubPath("wrapper <name> <parameter>", "Shows the parameters value")
-    fun editWrapper(commandSender: ICommandSender, @CommandArgument("name", WrapperCommandSuggestionProvider::class) name: String, @CommandArgument("parameter", EditWrapperParameterCommandSuggestionProvider::class) parameter: String) {
-        val fields = getFieldsOfWrapper(name) ?: return
-        val wrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(name)!!
+    fun editWrapper(commandSender: ICommandSender, @CommandArgument("name", WrapperCommandSuggestionProvider::class) wrapper: IWrapperInfo, @CommandArgument("parameter", EditWrapperParameterCommandSuggestionProvider::class) parameter: String) {
+        val fields = getFieldsOfWrapper(wrapper) ?: return
         val lowerCaseFieldNames = fields.map { it.name.toLowerCase() }
         if (lowerCaseFieldNames.contains(parameter.toLowerCase())) {
             val field = fields[lowerCaseFieldNames.indexOf(parameter.toLowerCase())]
@@ -92,9 +92,8 @@ class EditCommand : ICommandHandler {
     }
 
     @CommandSubPath("wrapper <name> <parameter> <value>", "Edits a wrapper.")
-    fun editWrapper(commandSender: ICommandSender, @CommandArgument("name", WrapperCommandSuggestionProvider::class) name: String, @CommandArgument("parameter", EditWrapperParameterCommandSuggestionProvider::class) parameter: String, @CommandArgument("value") value: String) {
-        val fields = getFieldsOfWrapper(name) ?: return
-        val wrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(name)!!
+    fun editWrapper(commandSender: ICommandSender, @CommandArgument("name", WrapperCommandSuggestionProvider::class) wrapper: IWrapperInfo, @CommandArgument("parameter", EditWrapperParameterCommandSuggestionProvider::class) parameter: String, @CommandArgument("value") value: String) {
+        val fields = getFieldsOfWrapper(wrapper) ?: return
         val lowerCaseFieldNames = fields.map { it.name.toLowerCase() }
         if (lowerCaseFieldNames.contains(parameter.toLowerCase())) {
             val field = fields[lowerCaseFieldNames.indexOf(parameter.toLowerCase())]
@@ -105,9 +104,9 @@ class EditCommand : ICommandHandler {
                 return
             }
             try {
-                field.set(wrapper.obj, type)
+                field.set(wrapper, type)
                 commandSender.sendMessage("manager.command.edit.wrapper.success", "Wrapper edited.")
-                CloudAPI.instance.getWrapperManager().update(wrapper.obj)
+                CloudAPI.instance.getWrapperManager().update(wrapper)
             } catch (e: Exception) {
                 commandSender.sendMessage("manager.command.edit.wrapper.invalid-value", "Invalid value. Expected type: %TYPE%", field.type.simpleName)
                 return
@@ -117,12 +116,7 @@ class EditCommand : ICommandHandler {
         }
     }
 
-    private fun getFieldsOfWrapper(wrapperName: String): List<Field>? {
-        val wrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(wrapperName)
-        if (wrapper == null) {
-            Launcher.instance.consoleSender.sendMessage("manager.command.edit.wrapper.not-exist", "The specified wrapper does not exist.")
-            return null
-        }
+    private fun getFieldsOfWrapper(wrapper: IWrapperInfo): List<Field>? {
         val allFields = wrapper::class.java.getAllFieldsFromClassAndSubClasses().filter { !Collection::class.java.isAssignableFrom(it.type) }
         return allFields.filterNot { it.name == "name" || it.name == "host" }
     }
@@ -143,7 +137,7 @@ class EditCommand : ICommandHandler {
             return
         }
         template.addInheritanceTemplate(otherTemplate)
-        CloudAPI.instance.getTemplateManager().updateTemplate(template)
+        CloudAPI.instance.getTemplateManager().update(template)
         commandSender.sendMessage("manager.command.edit.template.inheritance.add.success", "Template %NAME%", template.getName(), " is now inheriting from %OTHER_NAME%", otherTemplate.getName())
     }
 
@@ -154,7 +148,7 @@ class EditCommand : ICommandHandler {
             return
         }
         template.removeInheritanceTemplate(otherTemplate)
-        CloudAPI.instance.getTemplateManager().updateTemplate(template)
+        CloudAPI.instance.getTemplateManager().update(template)
         commandSender.sendMessage("manager.command.edit.template.inheritance.remove.success", "Template %NAME%", template.getName(), " is no longer inheriting from %OTHER_NAME%", otherTemplate.getName())
     }
 
@@ -166,7 +160,7 @@ class EditCommand : ICommandHandler {
             return
         }
         template.addModuleNameToCopy(module)
-        CloudAPI.instance.getTemplateManager().updateTemplate(template)
+        CloudAPI.instance.getTemplateManager().update(template)
         commandSender.sendMessage("manager.command.edit.template.modules.add.success", "Added module %MODULE%", module, " to template %TEMPLATE%", template.getName())
     }
 
@@ -177,7 +171,7 @@ class EditCommand : ICommandHandler {
             return
         }
         template.removeModuleNameToCopy(module)
-        CloudAPI.instance.getTemplateManager().updateTemplate(template)
+        CloudAPI.instance.getTemplateManager().update(template)
         commandSender.sendMessage("manager.command.edit.template.inheritance.remove.success", "Module %MODULE%", module, " was removed from template %TEMPLATE%", template.getName())
     }
 

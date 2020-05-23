@@ -30,7 +30,7 @@ class BukkitCloudSignManager {
 
             this.bukkitCloudSigns.forEach { it.checkForExpiredService() }
 
-            val allServerGroups = CloudAPI.instance.getCloudServiceGroupManager().getAllGroups()
+            val allServerGroups = CloudAPI.instance.getCloudServiceGroupManager().getAllCachedObjects()
                     .filter { it.getServiceType() != ServiceType.PROXY }
             for (serviceGroup in allServerGroups) {
                 val waitingServices = getWaitingServices(serviceGroup)

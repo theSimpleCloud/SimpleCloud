@@ -8,5 +8,5 @@ class WrapperInfoParser : IStringTypeParser<IWrapperInfo> {
 
     override fun allowedTypes(): List<Class<out IWrapperInfo>> = listOf(IWrapperInfo::class.java)
 
-    override fun parse(string: String): IWrapperInfo? = CloudAPI.instance.getWrapperManager().getWrapperByName(string)?.obj
+    override fun parse(string: String): IWrapperInfo? = CloudAPI.instance.getWrapperManager().getWrapperByName(string)
 }

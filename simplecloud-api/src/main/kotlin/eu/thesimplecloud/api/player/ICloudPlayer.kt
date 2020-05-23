@@ -177,6 +177,6 @@ interface ICloudPlayer : IOfflineCloudPlayer, ICommandSender {
     /**
      * Updates this player to the network
      */
-    fun update() = CloudAPI.instance.getCloudPlayerManager().updateCloudPlayer(this)
+    fun update() = CloudAPI.instance.getCloudPlayerManager().update(this)
 
 }

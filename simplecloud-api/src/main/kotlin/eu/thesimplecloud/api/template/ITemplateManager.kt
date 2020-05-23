@@ -1,32 +1,18 @@
 package eu.thesimplecloud.api.template
 
+import eu.thesimplecloud.api.cachelist.ICacheList
 
-interface ITemplateManager {
 
-
-    /**
-     * Adds or updates the specified template
-     */
-    fun updateTemplate(template: ITemplate)
+interface ITemplateManager : ICacheList<ITemplate> {
 
     /**
      * Removes the template found by the specified name
      */
-    fun removeTemplate(name: String)
-
-    /**
-     * Returns a list containing all registered templates
-     */
-    fun getAllTemplates() : Collection<ITemplate>
+    fun deleteTemplate(name: String)
 
     /**
      * Returns the first template found by the specified name
      */
-    fun getTemplateByName(name: String): ITemplate? = getAllTemplates().firstOrNull { it.getName().equals(name, true) }
-
-    /**
-     * Clears the cache
-     */
-    fun clearCache()
+    fun getTemplateByName(name: String): ITemplate? = getAllCachedObjects().firstOrNull { it.getName().equals(name, true) }
 
 }

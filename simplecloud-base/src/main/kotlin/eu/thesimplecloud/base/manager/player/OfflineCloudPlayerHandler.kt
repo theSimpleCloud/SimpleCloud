@@ -72,7 +72,7 @@ class OfflineCloudPlayerHandler(mongoConnectionInformation: MongoConnectionInfor
                 val valueString = it.value.toString()
                 val jsonData = JsonData.fromJsonString(valueString)
                 val className = jsonData.getString("className")!!
-                val clazz = Manager.instance.cloudModuleHandler.findModuleClass(className)
+                val clazz = this.findClass(className)
                 val value = jsonData.getObject("savedValue", clazz)!!
                 Property(value)
             }
@@ -80,6 +80,12 @@ class OfflineCloudPlayerHandler(mongoConnectionInformation: MongoConnectionInfor
         } catch (ex: Exception) {
             throw OfflinePlayerLoadException("Error while loading OfflinePlayer ${loadOfflineCloudPlayer.name}:", ex)
         }
+    }
+
+    private fun findClass(className: String): Class<*> {
+        val clazz = runCatching {  Class.forName(className) }.getOrNull()
+        if (clazz != null) return clazz
+        return Manager.instance.cloudModuleHandler.findModuleClass(className)
     }
 
 

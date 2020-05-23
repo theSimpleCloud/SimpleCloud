@@ -1,5 +1,6 @@
 package eu.thesimplecloud.api
 
+import eu.thesimplecloud.api.cachelist.manager.ICacheListManager
 import eu.thesimplecloud.api.eventapi.IEventManager
 import eu.thesimplecloud.api.external.ICloudModule
 import eu.thesimplecloud.api.message.IMessageChannelManager
@@ -79,6 +80,11 @@ interface ICloudAPI {
      * Return the [IMessageChannelManager]
      */
     fun getMessageChannelManager(): IMessageChannelManager
+
+    /**
+     * Returns the [ICacheListManager]
+     */
+    fun getCacheListManager(): ICacheListManager
 
     /**
      * Returns the name of this side

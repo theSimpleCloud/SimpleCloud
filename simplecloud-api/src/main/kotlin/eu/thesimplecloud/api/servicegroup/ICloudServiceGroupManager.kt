@@ -1,5 +1,6 @@
 package eu.thesimplecloud.api.servicegroup
 
+import eu.thesimplecloud.api.cachelist.ICacheList
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceType
 import eu.thesimplecloud.api.service.ServiceVersion
@@ -11,12 +12,7 @@ import eu.thesimplecloud.api.servicegroup.impl.DefaultProxyGroup
 import eu.thesimplecloud.api.servicegroup.impl.DefaultServerGroup
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
-interface ICloudServiceGroupManager {
-
-    /**
-     * Updates or adds a [ICloudServiceGroup]
-     */
-    fun updateGroup(cloudServiceGroup: ICloudServiceGroup, fromPacket: Boolean = false)
+interface ICloudServiceGroupManager : ICacheList<ICloudServiceGroup> {
 
 
     /**
@@ -134,14 +130,9 @@ interface ICloudServiceGroupManager {
     fun createServiceGroup(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<Unit>
 
     /**
-     * Returns a list of all registered [ICloudServiceGroup]
-     */
-    fun getAllGroups(): Collection<ICloudServiceGroup>
-
-    /**
      * Returns the [ICloudServiceGroup] found by the specified name
      */
-    fun getServiceGroupByName(name: String): ICloudServiceGroup? = getAllGroups().firstOrNull { it.getName().equals(name, true) }
+    fun getServiceGroupByName(name: String): ICloudServiceGroup? = getAllCachedObjects().firstOrNull { it.getName().equals(name, true) }
 
     /**
      * Returns the [ICloudServerGroup] found by the specified name
@@ -161,22 +152,17 @@ interface ICloudServiceGroupManager {
     /**
      * Returns all registered proxy groups
      */
-    fun getProxyGroups(): List<ICloudProxyGroup> = getAllGroups().filter { it.getServiceType() == ServiceType.PROXY }.map { it as ICloudProxyGroup }
+    fun getProxyGroups(): List<ICloudProxyGroup> = getAllCachedObjects().filter { it.getServiceType() == ServiceType.PROXY }.map { it as ICloudProxyGroup }
 
     /**
      * Returns all registered lobby groups
      */
-    fun getLobbyGroups(): List<ICloudLobbyGroup> = getAllGroups().filter { it.getServiceType() == ServiceType.LOBBY }.map { it as ICloudLobbyGroup }
+    fun getLobbyGroups(): List<ICloudLobbyGroup> = getAllCachedObjects().filter { it.getServiceType() == ServiceType.LOBBY }.map { it as ICloudLobbyGroup }
 
     /**
      * Returns all registered server groups
      */
-    fun getServerGroups(): List<ICloudServerGroup> = getAllGroups().filter { it.getServiceType() == ServiceType.SERVER }.map { it as ICloudServerGroup }
-
-    /**
-     * Clears the cache of all [ICloudServiceGroup]s
-     */
-    fun clearCache()
+    fun getServerGroups(): List<ICloudServerGroup> = getAllCachedObjects().filter { it.getServiceType() == ServiceType.SERVER }.map { it as ICloudServerGroup }
 
     /**
      * Starts a new service by the specified group
@@ -187,13 +173,5 @@ interface ICloudServiceGroupManager {
      * - [NoSuchElementException] if the specified group is not registered.
      */
     fun startNewService(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<ICloudService>
-
-    /**
-     * Deletes the specified [cloudServiceGroup] group from the cloud.
-     * @return a promise that will be completed when the deletion is done or an error occurs. [ICommunicationPromise.isSuccess] indicates whether the deletion was successful.
-     * The promise will fail with
-     * - [IllegalStateException] if services of the specified group are still registered.
-     */
-    fun deleteServiceGroup(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<Unit>
 
 }

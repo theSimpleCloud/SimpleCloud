@@ -172,7 +172,7 @@ class CommandManager() {
             if (permission.isEmpty() || sender.hasPermission(permission).awaitUninterruptibly().getNow()) {
                 if (isParamater(currentPathValue)) {
                     val commandParameterData = it.getParameterDataByNameWithBraces(currentPathValue)?: return@forEach
-                    suggestions.addAll(commandParameterData.provider.getSuggestions(sender, messageArray.last()))
+                    suggestions.addAll(commandParameterData.provider.getSuggestions(sender, message, messageArray.last()))
                 } else {
                     suggestions.add(currentPathValue)
                 }

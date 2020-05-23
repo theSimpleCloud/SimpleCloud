@@ -1,7 +1,6 @@
 package eu.thesimplecloud.module.notify
 
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.event.service.CloudServiceConnectedEvent
 import eu.thesimplecloud.api.event.service.CloudServiceRegisteredEvent
 import eu.thesimplecloud.api.event.service.CloudServiceStartedEvent
 import eu.thesimplecloud.api.event.service.CloudServiceUnregisteredEvent
@@ -45,7 +44,7 @@ class CloudListener(val module: NotifyModule) : IListener {
             cloudText.addClickEvent(CloudText.ClickEventType.RUN_COMMAND, "/server " + service.getName())
         }
 
-        CloudAPI.instance.getCloudPlayerManager().getAllCachedCloudPlayers().forEach { cloudPlayer ->
+        CloudAPI.instance.getCloudPlayerManager().getAllCachedObjects().forEach { cloudPlayer ->
             cloudPlayer.hasPermission(permission).then {
                 if (it) {
                     cloudPlayer.sendMessage(cloudText)

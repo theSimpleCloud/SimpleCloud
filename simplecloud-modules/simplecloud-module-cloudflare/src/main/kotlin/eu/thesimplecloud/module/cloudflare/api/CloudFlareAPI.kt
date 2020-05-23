@@ -1,8 +1,6 @@
 package eu.thesimplecloud.module.cloudflare.api
 
 import com.google.gson.JsonArray
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.clientserverapi.lib.json.JsonData
@@ -10,14 +8,8 @@ import eu.thesimplecloud.module.cloudflare.config.CloudFlareData
 import eu.thesimplecloud.module.cloudflare.config.Config
 import java.io.DataOutputStream
 import java.io.IOException
-import java.io.InputStream
-import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
-import java.nio.charset.StandardCharsets
-import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,7 +25,7 @@ class CloudFlareAPI(val config: Config) {
     private val dnsCache = ArrayList<CloudFlareDNSCache>()
 
     fun createForAlreadyStartedServices() {
-        CloudAPI.instance.getCloudServiceManager().getAllCloudServices().filter { it.isProxy() }.forEach {
+        CloudAPI.instance.getCloudServiceManager().getAllCachedObjects().filter { it.isProxy() }.forEach {
             createForService(it)
         }
     }
