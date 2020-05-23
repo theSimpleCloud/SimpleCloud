@@ -4,8 +4,6 @@ import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.event.player.CloudPlayerDisconnectEvent
 import eu.thesimplecloud.api.event.player.CloudPlayerLoginEvent
 import eu.thesimplecloud.api.exception.NoSuchPlayerException
-import eu.thesimplecloud.api.network.packets.player.PacketIORemoveCloudPlayer
-import eu.thesimplecloud.api.network.packets.player.PacketIOUpdateCloudPlayer
 import eu.thesimplecloud.api.player.CloudPlayer
 import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
 import eu.thesimplecloud.api.service.ICloudService
@@ -69,20 +67,21 @@ class ProxyEventHandler() {
             cloudPlayer?.let {
                 cloudPlayer as CloudPlayer
                 cloudPlayer.setOffline()
-                cloudPlayer.let { CloudAPI.instance.getCloudPlayerManager().removeCloudPlayer(it) }
+                cloudPlayer.let { CloudAPI.instance.getCloudPlayerManager().delete(it) }
                 //send update that the player is now offline
-                CloudPlugin.instance.communicationClient.sendUnitQuery(PacketIOUpdateCloudPlayer(cloudPlayer)).addCompleteListener {
-                    CloudPlugin.instance.communicationClient.sendUnitQuery(PacketIORemoveCloudPlayer(cloudPlayer.getUniqueId()))
+                val client = CloudPlugin.instance.communicationClient
+                CloudAPI.instance.getCloudPlayerManager().sendUpdateToConnection(cloudPlayer, client).addCompleteListener {
+                    CloudAPI.instance.getCloudPlayerManager().sendDeleteToConnection(cloudPlayer, client)
                 }
             }
 
-            changeOnlineCount(CloudPlugin.instance.thisService())
+            subtractOneFromOnlineCount(CloudPlugin.instance.thisService())
         }
 
 
         fun handleServerPreConnect(uniqueId: UUID, serverNameFrom: String?, serverNameTo: String, cancelEvent: (String, CancelMessageType) -> Unit) {
             if (serverNameFrom != null) {
-                changeOnlineCount(serverNameFrom)
+                subtractOneFromOnlineCount(serverNameFrom)
             }
 
             val cloudService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(serverNameTo)
@@ -140,12 +139,12 @@ class ProxyEventHandler() {
             return suggestions
         }
 
-        private fun changeOnlineCount(serverName: String) {
+        private fun subtractOneFromOnlineCount(serverName: String) {
             val service = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(serverName) ?: return
-            changeOnlineCount(service)
+            subtractOneFromOnlineCount(service)
         }
 
-        private fun changeOnlineCount(service: ICloudService) {
+        private fun subtractOneFromOnlineCount(service: ICloudService) {
             service.setOnlineCount(service.getOnlineCount() - 1)
             service.update()
         }

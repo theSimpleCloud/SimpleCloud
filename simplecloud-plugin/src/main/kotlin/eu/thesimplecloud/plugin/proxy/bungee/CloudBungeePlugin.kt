@@ -4,7 +4,6 @@ import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.ingamecommand.SynchronizedIngameCommandNamesContainer
 import eu.thesimplecloud.api.player.ICloudPlayerManager
 import eu.thesimplecloud.api.service.ICloudService
-import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.servicegroup.grouptype.ICloudServerGroup
 import eu.thesimplecloud.plugin.impl.player.CloudPlayerManagerBungee
 import eu.thesimplecloud.plugin.listener.CloudListener
@@ -14,7 +13,6 @@ import eu.thesimplecloud.plugin.proxy.bungee.listener.IngameCommandListener
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.plugin.Plugin
-import java.lang.IllegalArgumentException
 import java.net.InetSocketAddress
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -92,7 +90,7 @@ class CloudBungeePlugin : Plugin(), ICloudProxyPlugin {
 
         registerFallbackService()
         CloudPlugin.instance.onEnable()
-        CloudAPI.instance.getCloudServiceManager().getAllCloudServices().forEach { addServiceToProxy(it) }
+        CloudAPI.instance.getCloudServiceManager().getAllCachedObjects().forEach { addServiceToProxy(it) }
         CloudAPI.instance.getEventManager().registerListener(CloudPlugin.instance, CloudListener())
         ProxyServer.getInstance().pluginManager.registerListener(this, BungeeListener())
         ProxyServer.getInstance().pluginManager.registerListener(this, IngameCommandListener())

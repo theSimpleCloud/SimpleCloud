@@ -3,7 +3,6 @@ package eu.thesimplecloud.plugin.impl
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.eventapi.IEventManager
 import eu.thesimplecloud.api.external.ICloudModule
-import eu.thesimplecloud.api.player.ICloudPlayer
 import eu.thesimplecloud.api.player.ICloudPlayerManager
 import eu.thesimplecloud.api.screen.ICommandExecuteManager
 import eu.thesimplecloud.api.service.ICloudServiceManager
@@ -26,7 +25,11 @@ class CloudAPIImpl(private val cloudPlayerManager: ICloudPlayerManager) : CloudA
     private val synchronizedObjectListManager = SynchronizedObjectListManager()
 
     init {
-        getSynchronizedObjectListManager().registerSynchronizedObjectList(getWrapperManager(), false)
+        getCacheListManager().registerCacheList(getWrapperManager())
+        getCacheListManager().registerCacheList(getCloudServiceManager())
+        getCacheListManager().registerCacheList(getCloudServiceGroupManager())
+        getCacheListManager().registerCacheList(getTemplateManager())
+        getCacheListManager().registerCacheList(getCloudPlayerManager())
     }
 
     override fun getCloudServiceGroupManager(): ICloudServiceGroupManager = this.cloudServiceGroupManager

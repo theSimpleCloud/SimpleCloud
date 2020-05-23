@@ -31,7 +31,7 @@ class ReloadCommand : ICommandHandler {
         }
         loadedWrappers.toMutableList().removeAll(unknownWrappers)
         loadedWrappers.forEach {
-            val cachedWrapper = CloudAPI.instance.getWrapperManager().getWrapperByHost(it.getHost())?.obj as IWritableWrapperInfo
+            val cachedWrapper = CloudAPI.instance.getWrapperManager().getWrapperByHost(it.getHost()) as IWritableWrapperInfo
             cachedWrapper.setMaxSimultaneouslyStartingServices(it.getMaxSimultaneouslyStartingServices())
             cachedWrapper.setMaxMemory(it.getMaxMemory())
             CloudAPI.instance.getWrapperManager().update(cachedWrapper)
@@ -47,7 +47,7 @@ class ReloadCommand : ICommandHandler {
             }
         }
         loadedGroups.toMutableList().removeAll(unknownGroups)
-        loadedGroups.forEach { CloudAPI.instance.getCloudServiceGroupManager().updateGroup(it) }
+        loadedGroups.forEach { CloudAPI.instance.getCloudServiceGroupManager().update(it) }
         loadedGroups.forEach { commandSender.sendMessage("manager.command.reload.group-success", "Reloaded group %GROUP%", it.getName(), ".") }
 
         //send all wrappers a packet to reload the modules list

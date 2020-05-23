@@ -8,6 +8,7 @@ import eu.thesimplecloud.api.exception.UnreachableServiceException
 import eu.thesimplecloud.api.location.ServiceLocation
 import eu.thesimplecloud.api.location.SimpleLocation
 import eu.thesimplecloud.api.network.packets.player.*
+import eu.thesimplecloud.api.network.packets.sync.cachelist.PacketIOUpdateCacheObject
 import eu.thesimplecloud.api.player.*
 import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.api.service.ICloudService
@@ -29,36 +30,36 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
      * This maps contains player unique ids and service names.
      * The uuid is the unique id of the player.
      */
-    val playerUpdates = Maps.newConcurrentMap<UUID, MutableList<String>>()
+    private val playerUpdates = Maps.newConcurrentMap<UUID, MutableList<String>>()
 
-    override fun updateCloudPlayer(cloudPlayer: ICloudPlayer, fromPacket: Boolean) {
-        super.updateCloudPlayer(cloudPlayer, fromPacket)
+    override fun update(value: ICloudPlayer, fromPacket: Boolean) {
+        super.update(value, fromPacket)
 
-        val proxyClient = cloudPlayer.getConnectedProxy()?.let { Manager.instance.communicationServer.getClientManager().getClientByClientValue(it) }
-        val serverClient = cloudPlayer.getConnectedServer()?.let { Manager.instance.communicationServer.getClientManager().getClientByClientValue(it) }
-        val playerUpdatePacket = PacketIOUpdateCloudPlayer(cloudPlayer)
+        val proxyClient = value.getConnectedProxy()?.let { Manager.instance.communicationServer.getClientManager().getClientByClientValue(it) }
+        val serverClient = value.getConnectedServer()?.let { Manager.instance.communicationServer.getClientManager().getClientByClientValue(it) }
+        val playerUpdatePacket = PacketIOUpdateCacheObject(getUpdater().getIdentificationName(), value, PacketIOUpdateCacheObject.Action.UPDATE)
 
         proxyClient?.sendUnitQuery(playerUpdatePacket)
         serverClient?.sendUnitQuery(playerUpdatePacket)
 
-        val requestedPlayerUpdatesServices = playerUpdates[cloudPlayer.getUniqueId()]
+        val requestedPlayerUpdatesServices = playerUpdates[value.getUniqueId()]
         requestedPlayerUpdatesServices?.mapNotNull { getCloudClientByServiceName(it) }?.forEach { it.sendUnitQuery(playerUpdatePacket) }
     }
 
-    override fun removeCloudPlayer(cloudPlayer: ICloudPlayer) {
-        super.removeCloudPlayer(cloudPlayer)
+    override fun delete(value: ICloudPlayer, fromPacket: Boolean) {
+        super.delete(value, fromPacket)
 
-        val proxyClient = cloudPlayer.getConnectedProxy()?.let { Manager.instance.communicationServer.getClientManager().getClientByClientValue(it) }
-        val serverClient = cloudPlayer.getConnectedServer()?.let { Manager.instance.communicationServer.getClientManager().getClientByClientValue(it) }
-        val playerRemovePacket = PacketIORemoveCloudPlayer(cloudPlayer.getUniqueId())
+        val proxyClient = value.getConnectedProxy()?.let { Manager.instance.communicationServer.getClientManager().getClientByClientValue(it) }
+        val serverClient = value.getConnectedServer()?.let { Manager.instance.communicationServer.getClientManager().getClientByClientValue(it) }
+        val playerRemovePacket = PacketIOUpdateCacheObject(getUpdater().getIdentificationName(), value, PacketIOUpdateCacheObject.Action.DELETE)
         proxyClient?.sendUnitQuery(playerRemovePacket)
         serverClient?.sendUnitQuery(playerRemovePacket)
 
-        val requestedPlayerUpdatesServices = playerUpdates[cloudPlayer.getUniqueId()]
+        val requestedPlayerUpdatesServices = playerUpdates[value.getUniqueId()]
         requestedPlayerUpdatesServices?.mapNotNull { getCloudClientByServiceName(it) }?.forEach { it.sendUnitQuery(playerRemovePacket) }
 
-        playerUpdates.remove(cloudPlayer.getUniqueId())
-        Manager.instance.offlineCloudPlayerHandler.saveCloudPlayer(cloudPlayer.toOfflinePlayer() as OfflineCloudPlayer)
+        playerUpdates.remove(value.getUniqueId())
+        Manager.instance.offlineCloudPlayerHandler.saveCloudPlayer(value.toOfflinePlayer() as OfflineCloudPlayer)
     }
 
     override fun getCloudPlayer(uniqueId: UUID): ICommunicationPromise<ICloudPlayer> {
@@ -158,7 +159,7 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
     }
 
     override fun getOnlinePlayersFiltered(predicate: Predicate<ICloudPlayer>): ICommunicationPromise<List<SimpleCloudPlayer>> {
-        return CommunicationPromise.of(getAllCachedCloudPlayers().filter { predicate.test(it) }.map { it.toSimplePlayer() })
+        return CommunicationPromise.of(getAllCachedObjects().filter { predicate.test(it) }.map { it.toSimplePlayer() })
     }
 
     private fun getProxyClientOfCloudPlayer(cloudPlayer: ICloudPlayer): IConnectedClient<*>? {

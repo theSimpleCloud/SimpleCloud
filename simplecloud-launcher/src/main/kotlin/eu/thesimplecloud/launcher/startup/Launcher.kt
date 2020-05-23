@@ -65,7 +65,17 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
         instance = this
         if (System.getProperty("simplecloud.version") == null)
             System.setProperty("simplecloud.version", Launcher::class.java.`package`.implementationVersion)
-        Thread.setDefaultUncaughtExceptionHandler { thread, cause -> this.logger.exception(cause) }
+        Thread.setDefaultUncaughtExceptionHandler { thread, cause ->
+            try {
+                this.logger.exception(cause)
+            } catch (e: Exception) {
+                println("An error occurred logging an exception")
+                println("Exception while logging:")
+                e.printStackTrace()
+                println("Exception to log:")
+                cause.printStackTrace()
+            }
+        }
         System.setProperty("user.language", "en")
         val launcherConfig = this.launcherConfigLoader.loadConfig()
         DirectoryPaths.paths = launcherConfig.directoryPaths

@@ -2,11 +2,8 @@ package eu.thesimplecloud.base.manager.impl
 
 import eu.thesimplecloud.api.event.service.CloudServiceConnectedEvent
 import eu.thesimplecloud.api.event.service.CloudServiceUnregisteredEvent
-import eu.thesimplecloud.api.extension.sendPacketToAllAuthenticatedClients
 import eu.thesimplecloud.api.listenerextension.cloudListener
-import eu.thesimplecloud.api.network.packets.service.PacketIORemoveCloudService
 import eu.thesimplecloud.api.network.packets.service.PacketIOStopCloudService
-import eu.thesimplecloud.api.network.packets.service.PacketIOUpdateCloudService
 import eu.thesimplecloud.api.network.packets.service.PacketIOWrapperStartService
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
@@ -15,16 +12,6 @@ import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
 class CloudServiceManagerImpl : AbstractCloudServiceManager() {
-
-    override fun updateCloudService(cloudService: ICloudService, fromPacket: Boolean) {
-        super.updateCloudService(cloudService, fromPacket)
-        Manager.instance.communicationServer.getClientManager().sendPacketToAllAuthenticatedClients(PacketIOUpdateCloudService(cloudService))
-    }
-
-    override fun removeCloudService(name: String) {
-        super.removeCloudService(name)
-        Manager.instance.communicationServer.getClientManager().sendPacketToAllAuthenticatedClients(PacketIORemoveCloudService(name))
-    }
 
     override fun stopService(cloudService: ICloudService): ICommunicationPromise<Unit> {
         val wrapper = cloudService.getWrapper()

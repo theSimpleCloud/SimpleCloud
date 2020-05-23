@@ -12,7 +12,7 @@ interface IPermissionPlayerManager {
     /**
      * Returns a list of all cached permission players
      */
-    fun getAllCachedPermissionPlayers(): List<IPermissionPlayer> = CloudAPI.instance.getCloudPlayerManager().getAllCachedCloudPlayers().mapNotNull { it.getProperty<PermissionPlayer>(PermissionPlayer.PROPERTY_NAME)?.getValue() }
+    fun getAllCachedPermissionPlayers(): List<IPermissionPlayer> = CloudAPI.instance.getCloudPlayerManager().getAllCachedObjects().mapNotNull { it.getProperty<PermissionPlayer>(PermissionPlayer.PROPERTY_NAME)?.getValue() }
 
     /**
      * Returns the first [IPermissionPlayer] found by the specified [name]

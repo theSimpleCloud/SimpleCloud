@@ -1,6 +1,7 @@
 package eu.thesimplecloud.api.wrapper.impl
 
 import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
+import eu.thesimplecloud.clientserverapi.lib.json.GsonCreator
 import eu.thesimplecloud.clientserverapi.lib.json.GsonExclude
 import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 
@@ -64,7 +65,7 @@ data class DefaultWrapperInfo(
     }
 
     override fun toString(): String {
-        return JsonData.fromObject(this).getAsJsonString()
+        return JsonData.fromObject(this, GsonCreator().create()).getAsJsonString()
     }
 
 }

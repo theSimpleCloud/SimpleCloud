@@ -12,7 +12,7 @@ import eu.thesimplecloud.api.command.ICommandSender
 class WrapperCommandSuggestionProvider: ICommandSuggestionProvider {
 
     override fun getSuggestions(sender: ICommandSender, fullCommand: String, lastArgument: String): List<String> {
-        return CloudAPI.instance.getWrapperManager().getAllCachedObjects().map { it.obj.getName() }
+        return CloudAPI.instance.getWrapperManager().getAllCachedObjects().map { it.getName() }
     }
 
 }

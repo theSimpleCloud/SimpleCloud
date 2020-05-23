@@ -1,6 +1,5 @@
 package eu.thesimplecloud.base.wrapper.startup
 
-import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.client.NetworkComponentType
 import eu.thesimplecloud.client.packets.PacketOutCloudClientLogin
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
@@ -13,9 +12,7 @@ class ConnectionHandlerImpl : IConnectionHandler {
         Launcher.instance.consoleSender.sendMessage("wrapper.connected", "Connected to the manager.")
 
         if (connection === Wrapper.instance.communicationClient) {
-            Wrapper.instance.communicationClient.sendUnitQuery(PacketOutCloudClientLogin(NetworkComponentType.WRAPPER)).then {
-                CloudAPI.instance.getSynchronizedObjectListManager().registerSynchronizedObjectList(CloudAPI.instance.getWrapperManager())
-            }
+            Wrapper.instance.communicationClient.sendUnitQuery(PacketOutCloudClientLogin(NetworkComponentType.WRAPPER))
         }
     }
 

@@ -21,7 +21,7 @@ class PacketInCreateCloudPlayer() : JsonPacket() {
         } else {
             CloudPlayer(playerConnection.getName(), playerConnection.getUniqueId(), offlinePlayer.getFirstLogin(), System.currentTimeMillis(), offlinePlayer.getOnlineTime(), proxyName, null, playerConnection, offlinePlayer.getProperties().toMutableMap())
         }
-        CloudAPI.instance.getCloudPlayerManager().updateCloudPlayer(cloudPlayer)
+        CloudAPI.instance.getCloudPlayerManager().update(cloudPlayer)
         Manager.instance.offlineCloudPlayerHandler.saveCloudPlayer(cloudPlayer.toOfflinePlayer() as OfflineCloudPlayer)
         return success(cloudPlayer)
     }

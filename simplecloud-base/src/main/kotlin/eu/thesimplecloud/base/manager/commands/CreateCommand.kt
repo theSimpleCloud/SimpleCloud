@@ -50,7 +50,7 @@ class CreateCommand : ICommandHandler {
             return
         }
         val template = DefaultTemplate(name)
-        templateManager.updateTemplate(template)
+        templateManager.update(template)
         Launcher.instance.consoleSender.sendMessage("manager.command.create.template.success", "Template %NAME%", name, " created")
 
         //---create directories

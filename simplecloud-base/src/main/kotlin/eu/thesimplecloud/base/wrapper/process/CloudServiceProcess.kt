@@ -5,8 +5,6 @@ import eu.thesimplecloud.api.client.NetworkComponentType
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.event.service.CloudServiceUnregisteredEvent
 import eu.thesimplecloud.api.listenerextension.cloudListener
-import eu.thesimplecloud.api.network.packets.service.PacketIORemoveCloudService
-import eu.thesimplecloud.api.network.packets.service.PacketIOUpdateCloudService
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.service.impl.DefaultCloudService
@@ -44,7 +42,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
             this.cloudService.setPort(Wrapper.instance.portManager.getUnusedPort())
         }
         this.cloudService.setState(ServiceState.STARTING)
-        CloudAPI.instance.getCloudServiceManager().updateCloudService(this.cloudService)
+        CloudAPI.instance.getCloudServiceManager().update(this.cloudService)
 
         TemplateCopier().copyTemplate(cloudService, cloudService.getTemplate())
 
@@ -67,7 +65,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
                 if (!s.equals("", ignoreCase = true) && !s.equals(" ", ignoreCase = true) && !s.equals(">", ignoreCase = true)
                         && !s.equals(" >", ignoreCase = true) && !s.contains("InitialHandler has pinged")) {
                     Wrapper.instance.communicationClient.sendUnitQuery(PacketOutScreenMessage(NetworkComponentType.SERVICE, getCloudService(), s))
-                    Launcher.instance.logger.console("[${cloudService.getName()}]$s")
+                    //Launcher.instance.logger.console("[${cloudService.getName()}]$s")
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -84,9 +82,8 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
         this.cloudService.setOnlineCount(0)
         this.cloudService.setState(ServiceState.CLOSED)
         if (Wrapper.instance.communicationClient.isOpen()) {
-            Wrapper.instance.communicationClient.sendUnitQuery(PacketIOUpdateCloudService(this.cloudService)).awaitUninterruptibly()
-            CloudAPI.instance.getCloudServiceManager().removeCloudService(this.cloudService.getName())
-            Wrapper.instance.communicationClient.sendUnitQuery(PacketIORemoveCloudService(this.cloudService.getName()))
+            CloudAPI.instance.getCloudServiceManager().sendUpdateToConnection(this.cloudService, Wrapper.instance.communicationClient).awaitUninterruptibly()
+            CloudAPI.instance.getCloudServiceManager().delete(this.cloudService)
             Wrapper.instance.updateWrapperData()
         }
 

@@ -12,7 +12,7 @@ import eu.thesimplecloud.api.command.ICommandSender
 class ServiceCommandSuggestionProvider: ICommandSuggestionProvider {
 
     override fun getSuggestions(sender: ICommandSender, fullCommand: String, lastArgument: String): List<String> {
-        return CloudAPI.instance.getCloudServiceManager().getAllCloudServices().map { it.getName() }
+        return CloudAPI.instance.getCloudServiceManager().getAllCachedObjects().map { it.getName() }
     }
 
 }

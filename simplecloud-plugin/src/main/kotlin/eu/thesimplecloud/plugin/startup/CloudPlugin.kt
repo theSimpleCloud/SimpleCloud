@@ -3,7 +3,6 @@ package eu.thesimplecloud.plugin.startup
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.client.NetworkComponentType
 import eu.thesimplecloud.api.external.ICloudModule
-import eu.thesimplecloud.api.network.packets.service.PacketIOUpdateCloudService
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.client.packets.PacketOutCloudClientLogin
@@ -66,7 +65,7 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
     /**
      * Returns whether the config was loaded successful
      */
-    fun loadConfig(): Boolean {
+    private fun loadConfig(): Boolean {
         val jsonData = JsonData.fromJsonFile(File("SIMPLE-CLOUD.json")) ?: return false
         thisServiceName = jsonData.getString("serviceName") ?: return false
         val host = jsonData.getString("managerHost") ?: return false
@@ -98,7 +97,7 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
 
     @Synchronized
     fun updateThisService() {
-        this.communicationClient.sendUnitQuery(PacketIOUpdateCloudService(thisService()))
+        thisService().update()
     }
 
     /**

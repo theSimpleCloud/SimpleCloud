@@ -1,7 +1,6 @@
 package eu.thesimplecloud.base.manager.service
 
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.network.packets.service.PacketIOUpdateCloudService
 import eu.thesimplecloud.api.network.packets.service.PacketIOWrapperStartService
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
@@ -27,7 +26,7 @@ class ServiceHandler : IServiceHandler {
         for (i in 0 until count) {
             val service = DefaultCloudService(cloudServiceGroup.getName(), getNumberForNewService(cloudServiceGroup), UUID.randomUUID(), cloudServiceGroup.getTemplateName(), cloudServiceGroup.getWrapperName()
                     ?: "", -1, cloudServiceGroup.getMaxMemory(), "Cloud service")
-            CloudAPI.instance.getCloudServiceManager().updateCloudService(service)
+            CloudAPI.instance.getCloudServiceManager().update(service)
             list.add(service)
             addServiceToQueue(service)
         }
@@ -50,7 +49,7 @@ class ServiceHandler : IServiceHandler {
     }
 
     private fun startMinServices() {
-        for (serviceGroup in CloudAPI.instance.getCloudServiceGroupManager().getAllGroups()) {
+        for (serviceGroup in CloudAPI.instance.getCloudServiceGroupManager().getAllCachedObjects()) {
             val allServices = serviceGroup.getAllServices()
             //don't exclude closed services because they will be deleted in a moment.
             val inLobbyServices = allServices.filter { it.getState() != ServiceState.INVISIBLE }
@@ -65,7 +64,7 @@ class ServiceHandler : IServiceHandler {
     }
 
     private fun stopRedundantServices() {
-        for (serviceGroup in CloudAPI.instance.getCloudServiceGroupManager().getAllGroups()) {
+        for (serviceGroup in CloudAPI.instance.getCloudServiceGroupManager().getAllCachedObjects()) {
             val allServices = serviceGroup.getAllServices()
             val inLobbyServices = allServices.filter { it.getState() == ServiceState.VISIBLE }
             val stoppableServices = inLobbyServices
@@ -105,7 +104,7 @@ class ServiceHandler : IServiceHandler {
                             service as DefaultCloudService
                             service.setWrapperName(wrapper.getName())
                             service.update()
-                            wrapperClient.sendUnitQuery(PacketIOUpdateCloudService(service)).awaitUninterruptibly()
+                            CloudAPI.instance.getCloudServiceManager().sendUpdateToConnection(service, wrapperClient).awaitUninterruptibly()
                             wrapperClient.sendUnitQuery(PacketIOWrapperStartService(service.getName())).awaitUninterruptibly()
                             Launcher.instance.consoleSender.sendMessage("manager.service.start", "Told Wrapper %WRAPPER%", wrapper.getName(), " to start service %SERVICE%", service.getName())
                             this.serviceQueue.remove(service)
@@ -121,7 +120,7 @@ class ServiceHandler : IServiceHandler {
         if (service.getWrapperName().isBlank()) {
             return CloudAPI.instance.getWrapperManager().getWrapperByUnusedMemory(service.getMaxMemory())
         } else {
-            val requiredWrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(service.getWrapperName())?.obj
+            val requiredWrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(service.getWrapperName())
                     ?: return null
             if (requiredWrapper.hasEnoughMemory(service.getMaxMemory()) && requiredWrapper.isAuthenticated()
                     && requiredWrapper.hasTemplatesReceived()

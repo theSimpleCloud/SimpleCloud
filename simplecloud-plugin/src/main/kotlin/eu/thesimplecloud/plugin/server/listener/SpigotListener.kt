@@ -1,7 +1,6 @@
 package eu.thesimplecloud.plugin.server.listener
 
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.plugin.extension.getCloudPlayer
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -48,7 +47,7 @@ class SpigotListener : Listener {
         val cloudPlayer = playerManager.getCachedCloudPlayer(player.uniqueId)
 
         if (cloudPlayer != null) {
-            playerManager.removeCloudPlayer(cloudPlayer)
+            playerManager.delete(cloudPlayer)
         }
     }
 

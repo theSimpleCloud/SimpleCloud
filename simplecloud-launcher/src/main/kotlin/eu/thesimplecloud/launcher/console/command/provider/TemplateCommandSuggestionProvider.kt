@@ -12,7 +12,7 @@ import eu.thesimplecloud.api.command.ICommandSender
 class TemplateCommandSuggestionProvider: ICommandSuggestionProvider {
 
     override fun getSuggestions(sender: ICommandSender, fullCommand: String, lastArgument: String): List<String> {
-        return CloudAPI.instance.getTemplateManager().getAllTemplates().map { it.getName() }
+        return CloudAPI.instance.getTemplateManager().getAllCachedObjects().map { it.getName() }
     }
 
 }

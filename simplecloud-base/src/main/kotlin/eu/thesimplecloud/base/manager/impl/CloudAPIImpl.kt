@@ -29,7 +29,11 @@ class CloudAPIImpl : CloudAPI() {
     private val synchronizedObjectListManager = SynchronizedObjectListManager()
 
     init {
-        getSynchronizedObjectListManager().registerSynchronizedObjectList(wrapperManager)
+        getCacheListManager().registerCacheList(getWrapperManager())
+        getCacheListManager().registerCacheList(getCloudServiceManager())
+        getCacheListManager().registerCacheList(getCloudServiceGroupManager())
+        getCacheListManager().registerCacheList(getTemplateManager())
+        getCacheListManager().registerCacheList(getCloudPlayerManager())
     }
 
 

@@ -155,7 +155,7 @@ class Wrapper : ICloudApplication {
 
     fun isWrapperNameSet(): Boolean = thisWrapperName != null
 
-    fun getThisWrapper(): IWrapperInfo = CloudAPI.instance.getWrapperManager().getWrapperByName(this.thisWrapperName!!)?.obj
+    fun getThisWrapper(): IWrapperInfo = CloudAPI.instance.getWrapperManager().getWrapperByName(this.thisWrapperName!!)
             ?: throw IllegalStateException("Unable to find self wrapper.")
 
     /**

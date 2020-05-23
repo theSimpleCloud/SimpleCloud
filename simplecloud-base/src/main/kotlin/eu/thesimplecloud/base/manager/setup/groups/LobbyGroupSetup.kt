@@ -124,7 +124,7 @@ class LobbyGroupSetup : DefaultGroupSetup(), ISetup {
     fun wrapperQuestion(string: String): Boolean {
         if (string.isBlank())
             return true
-        val wrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(string)?.obj
+        val wrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(string)
         if (wrapper == null) {
             Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.wrapper.not-exist", "The specified wrapper does not exist.")
             return false

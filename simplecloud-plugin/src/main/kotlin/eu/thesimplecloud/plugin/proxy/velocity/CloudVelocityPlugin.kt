@@ -62,7 +62,7 @@ class CloudVelocityPlugin @Inject constructor(val proxyServer: ProxyServer) : IC
     @Subscribe
     fun handleInit(event: ProxyInitializeEvent) {
         CloudPlugin.instance.onEnable()
-        CloudAPI.instance.getCloudServiceManager().getAllCloudServices().forEach { addServiceToProxy(it) }
+        CloudAPI.instance.getCloudServiceManager().getAllCachedObjects().forEach { addServiceToProxy(it) }
         CloudAPI.instance.getEventManager().registerListener(CloudPlugin.instance, CloudListener())
         proxyServer.eventManager.register(this, VelocityListener(this))
 

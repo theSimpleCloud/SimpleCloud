@@ -18,6 +18,11 @@ interface IPropertyMap {
     fun <T : Any> setProperty(name: String, property: Property<T>)
 
     /**
+     * Removes the [Property] found by the specified [name].
+     */
+    fun removeProperty(name: String)
+
+    /**
      * Returns whether this player has the specified [property]
      */
     fun hasProperty(property: String) = getProperties().keys.contains(property)

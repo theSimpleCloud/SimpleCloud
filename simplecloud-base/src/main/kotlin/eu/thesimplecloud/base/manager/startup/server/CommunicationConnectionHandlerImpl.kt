@@ -3,6 +3,7 @@ package eu.thesimplecloud.base.manager.startup.server
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.screen.ICommandExecutable
 import eu.thesimplecloud.api.service.ICloudService
+import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.utils.IAuthenticatable
 import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
 import eu.thesimplecloud.base.manager.impl.SingleSynchronizedObjectManagerImpl
@@ -32,6 +33,7 @@ class CommunicationConnectionHandlerImpl : IConnectionHandler {
         clientValue.setAuthenticated(false)
 
         if (clientValue is IWritableWrapperInfo) {
+            unregisterServicesRunningOnWrapper(clientValue)
             clientValue.setTemplatesReceived(false)
             clientValue.setCurrentlyStartingServices(0)
             clientValue.setUsedMemory(0)
@@ -39,10 +41,21 @@ class CommunicationConnectionHandlerImpl : IConnectionHandler {
         }
 
         if (clientValue is ICloudService)
-            CloudAPI.instance.getCloudServiceManager().updateCloudService(clientValue)
+            CloudAPI.instance.getCloudServiceManager().update(clientValue)
 
         val synchronizedObjectManager = CloudAPI.instance.getSingleSynchronizedObjectManager() as SingleSynchronizedObjectManagerImpl
         synchronizedObjectManager.unregisterClient(connection)
+    }
+
+    private fun unregisterServicesRunningOnWrapper(clientValue: IWritableWrapperInfo) {
+        val services = CloudAPI.instance.getCloudServiceManager().getServicesRunningOnWrapper(clientValue.getName())
+        services.forEach {
+            it.setState(ServiceState.CLOSED)
+            it.setOnlineCount(0)
+            it.setAuthenticated(false)
+            it.update()
+        }
+        services.forEach { CloudAPI.instance.getCloudServiceManager().delete(it) }
     }
 
     override fun onFailure(connection: IConnection, ex: Throwable) {

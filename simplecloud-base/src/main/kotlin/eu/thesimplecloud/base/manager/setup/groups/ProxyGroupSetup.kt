@@ -109,7 +109,7 @@ class ProxyGroupSetup : DefaultGroupSetup(), ISetup {
 
     @SetupQuestion(9, "manager.setup.proxy-group.question.wrapper", "On which wrapper shall services of this group run?")
     fun wrapperQuestion(string: String): Boolean {
-        val wrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(string)?.obj
+        val wrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(string)
         if (wrapper == null){
             Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.wrapper.not-exist", "The specified wrapper does not exist.")
             return false

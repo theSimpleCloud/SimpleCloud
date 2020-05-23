@@ -1,6 +1,7 @@
 package eu.thesimplecloud.api.player
 
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.cachelist.ICacheList
 import eu.thesimplecloud.api.exception.*
 import eu.thesimplecloud.api.executeOnManager
 import eu.thesimplecloud.api.location.ServiceLocation
@@ -12,32 +13,17 @@ import eu.thesimplecloud.clientserverapi.lib.promise.toListPromise
 import java.util.*
 import java.util.function.Predicate
 
-interface ICloudPlayerManager {
-
-    /**
-     * Updates a [ICloudPlayer].
-     */
-    fun updateCloudPlayer(cloudPlayer: ICloudPlayer, fromPacket: Boolean = false)
-
-    /**
-     * Removes a [ICloudPlayer] from the cache.
-     */
-    fun removeCloudPlayer(cloudPlayer: ICloudPlayer)
-
-    /**
-     * Returns all cached [ICloudPlayer]s.
-     */
-    fun getAllCachedCloudPlayers(): Collection<ICloudPlayer>
+interface ICloudPlayerManager : ICacheList<ICloudPlayer> {
 
     /**
      * Returns the cached [ICloudPlayer] found by the specified [uniqueId]
      */
-    fun getCachedCloudPlayer(uniqueId: UUID): ICloudPlayer? = getAllCachedCloudPlayers().firstOrNull { it.getUniqueId() == uniqueId }
+    fun getCachedCloudPlayer(uniqueId: UUID): ICloudPlayer? = getAllCachedObjects().firstOrNull { it.getUniqueId() == uniqueId }
 
     /**
      * Returns the cached [ICloudPlayer] found by the specified [name]
      */
-    fun getCachedCloudPlayer(name: String): ICloudPlayer? = getAllCachedCloudPlayers().firstOrNull { it.getName().equals(name, true) }
+    fun getCachedCloudPlayer(name: String): ICloudPlayer? = getAllCachedObjects().firstOrNull { it.getName().equals(name, true) }
 
     /**
      * Returns a promise that will be completed with the requested [ICloudPlayer]
@@ -235,7 +221,7 @@ interface ICloudPlayerManager {
     /**
      * Returns the amount of players connected to the network
      */
-    fun getNetworkOnlinePlayerCount(): ICommunicationPromise<Int> = CloudAPI.instance.executeOnManager { CloudAPI.instance.getCloudPlayerManager().getAllCachedCloudPlayers().size }
+    fun getNetworkOnlinePlayerCount(): ICommunicationPromise<Int> = CloudAPI.instance.executeOnManager { CloudAPI.instance.getCloudPlayerManager().getAllCachedObjects().size }
 
     /*
     /**
