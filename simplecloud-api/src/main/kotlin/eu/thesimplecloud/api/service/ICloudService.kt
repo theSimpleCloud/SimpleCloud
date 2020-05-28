@@ -6,8 +6,6 @@ import eu.thesimplecloud.api.event.service.CloudServiceConnectedEvent
 import eu.thesimplecloud.api.event.service.CloudServiceStartedEvent
 import eu.thesimplecloud.api.event.service.CloudServiceStartingEvent
 import eu.thesimplecloud.api.event.service.CloudServiceUnregisteredEvent
-import eu.thesimplecloud.api.eventapi.CloudEventHandler
-import eu.thesimplecloud.api.eventapi.IListener
 import eu.thesimplecloud.api.listenerextension.cloudListener
 import eu.thesimplecloud.api.property.IPropertyMap
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
@@ -15,6 +13,7 @@ import eu.thesimplecloud.api.template.ITemplate
 import eu.thesimplecloud.api.utils.INetworkComponent
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.clientserverapi.lib.bootstrap.IBootstrap
+import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import java.util.*
 
@@ -72,12 +71,13 @@ interface ICloudService : INetworkComponent, IBootstrap, IPropertyMap {
     /**
      * Returns the name of the wrapper this service is running on
      */
-    fun getWrapperName(): String
+    fun getWrapperName(): String?
 
     /**
      * Returns the wrapper this service is running on
      */
-    fun getWrapper(): IWrapperInfo = CloudAPI.instance.getWrapperManager().getWrapperByName(getWrapperName()) ?: throw IllegalStateException("Can't find the wrapper where the service ${getName()} is running on. Wrapper-Name: ${getWrapperName()}")
+    fun getWrapper(): IWrapperInfo = getWrapperName()?.let { CloudAPI.instance.getWrapperManager().getWrapperByName(it) }
+            ?: throw IllegalStateException("Can't find the wrapper where the service ${getName()} is running on. Wrapper-Name: ${getWrapperName()}")
 
     /**
      * Returns the host of this service
@@ -159,7 +159,7 @@ interface ICloudService : INetworkComponent, IBootstrap, IPropertyMap {
     fun setMOTD(motd: String)
 
     /**
-     * Returns weather this service joinable for players.
+     * Returns weather this service is joinable for players.
      */
     fun isOnline() = getState() == ServiceState.VISIBLE || getState() == ServiceState.INVISIBLE
 
@@ -171,45 +171,44 @@ interface ICloudService : INetworkComponent, IBootstrap, IPropertyMap {
     override fun getNetworkComponentType(): NetworkComponentType = NetworkComponentType.SERVICE
 
     /**
-     * Adds a callback that wll be called when the server is starting.
+     * Creates a promise that completes when the service is starting.
      */
-    fun addStartingCallback(callback: Runnable) {
-        val thisService = this
-        val listenerObj = object: IListener {
-
-            @CloudEventHandler
-            fun handle(event: CloudServiceStartingEvent) {
-                if (event.cloudService === thisService) {
-                    callback.run()
-                }
-            }
-
-        }
-        CloudAPI.instance.getEventManager().registerListener(CloudAPI.instance.getThisSidesCloudModule(), listenerObj)
+    fun createStartingPromise(): ICommunicationPromise<CloudServiceStartingEvent> {
+        if (isActive() || getState() == ServiceState.CLOSED)
+            return CommunicationPromise.of(CloudServiceStartingEvent(this))
+        return cloudListener<CloudServiceStartingEvent>()
+                .addCondition { it.cloudService === this@ICloudService }
+                .toPromise()
     }
 
     /**
-     * Adds a callback that wll be called when the server is connected to the manager.
+     * Creates a promise that completes when the service is connected to the manager.
      */
-    fun createConnectedPromise(): ICommunicationPromise<Unit> {
+    fun createConnectedPromise(): ICommunicationPromise<CloudServiceConnectedEvent> {
+        if (isAuthenticated() || getState() == ServiceState.CLOSED)
+            return CommunicationPromise.of(CloudServiceConnectedEvent(this))
         return cloudListener<CloudServiceConnectedEvent>()
                 .addCondition { it.cloudService === this@ICloudService }
                 .toPromise()
     }
 
     /**
-     * Adds a callback that wll be called when the server is started.
+     * Creates a promise that completes when the service is started.
      */
-    fun createStartedPromise(): ICommunicationPromise<Unit> {
+    fun createStartedPromise(): ICommunicationPromise<CloudServiceStartedEvent> {
+        if (isOnline() || getState() == ServiceState.CLOSED)
+            return CommunicationPromise.of(CloudServiceStartedEvent(this))
         return cloudListener<CloudServiceStartedEvent>()
                 .addCondition { it.cloudService === this@ICloudService }
                 .toPromise()
     }
 
     /**
-     * Adds a callback that wll be called when the server is connected to the manager.
+     * Creates a promise that completes when the service is closed.
      */
-    fun createClosedPromise(): ICommunicationPromise<Unit> {
+    fun createClosedPromise(): ICommunicationPromise<CloudServiceUnregisteredEvent> {
+        if (getState() == ServiceState.CLOSED)
+            return CommunicationPromise.of(CloudServiceUnregisteredEvent(this))
         return cloudListener<CloudServiceUnregisteredEvent>()
                 .addCondition { it.cloudService === this@ICloudService }
                 .toPromise()

@@ -5,6 +5,7 @@ import eu.thesimplecloud.api.event.player.CloudPlayerDisconnectEvent
 import eu.thesimplecloud.api.event.player.CloudPlayerLoginEvent
 import eu.thesimplecloud.api.exception.NoSuchPlayerException
 import eu.thesimplecloud.api.player.CloudPlayer
+import eu.thesimplecloud.api.player.PlayerServerConnectState
 import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
@@ -79,26 +80,38 @@ class ProxyEventHandler() {
         }
 
 
-        fun handleServerPreConnect(uniqueId: UUID, serverNameFrom: String?, serverNameTo: String, cancelEvent: (String, CancelMessageType) -> Unit) {
-            if (serverNameFrom != null) {
-                subtractOneFromOnlineCount(serverNameFrom)
-            }
+        fun handleServerPreConnect(uniqueId: UUID, serverNameFrom: String?, serverNameTo: String, cancelEvent: (String, CancelType) -> Unit) {
 
             val cloudService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(serverNameTo)
             if (cloudService == null) {
-                cancelEvent("§cServer is not registered in the cloud.", CancelMessageType.KICK)
+                cancelEvent("§cServer is not registered in the cloud.", CancelType.KICK)
                 return
+            }
+            if (cloudService.getServiceGroup().isInMaintenance()) {
+                val cloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(uniqueId)
+                if (cloudPlayer == null) {
+                    cancelEvent("§cUnable to find cloud player.", CancelType.KICK)
+                    return
+                }
+                if (!cloudPlayer.hasPermissionSync("cloud.maintenance.join")) {
+                    cancelEvent("§cThis service is in maintenance.", CancelType.MESSAGE)
+                    return
+                }
             }
 
             if (cloudService.getState() == ServiceState.STARTING) {
-                cancelEvent("§cServer is still starting.", CancelMessageType.MESSAGE)
+                cancelEvent("§cServer is still starting.", CancelType.MESSAGE)
                 return
+            }
+
+            if (serverNameFrom != null) {
+                subtractOneFromOnlineCount(serverNameFrom)
             }
 
             CloudPlugin.instance.communicationClient.sendUnitQuery(PacketOutPlayerConnectToServer(uniqueId, serverNameTo))
                     .awaitUninterruptibly()
                     .addFailureListener {
-                        cancelEvent("§cCan't connect to server: " + it.message, CancelMessageType.MESSAGE)
+                        cancelEvent("§cCan't connect to server: " + it.message, CancelType.MESSAGE)
                     }
 
 
@@ -107,6 +120,7 @@ class ProxyEventHandler() {
             val cloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(uniqueId) ?: throw NoSuchPlayerException("Cannot find CloudPlayer by uuid: $uniqueId")
             val clonedPlayer = cloudPlayer.clone() as CloudPlayer
             clonedPlayer.setConnectedServerName(cloudService.getName())
+            clonedPlayer.setServerConnectState(PlayerServerConnectState.CONNECTING)
             clonedPlayer.update()
         }
 
@@ -119,13 +133,19 @@ class ProxyEventHandler() {
             }
             service.setOnlineCount(service.getOnlineCount() + 1)
             service.update()
+
+            val cloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(uniqueId)
+            cloudPlayer ?: return
+            val clonedPlayer = cloudPlayer.clone() as CloudPlayer
+            clonedPlayer.setServerConnectState(PlayerServerConnectState.CONNECTED)
+            clonedPlayer.update()
         }
 
-        fun handleServerKick(kickReasonString: String, serverName: String, cancelEvent: (String, CancelMessageType) -> Unit) {
+        fun handleServerKick(kickReasonString: String, serverName: String, cancelEvent: (String, CancelType) -> Unit) {
             if (kickReasonString.isNotEmpty() && kickReasonString.contains("Outdated server") || kickReasonString.contains("Outdated client")) {
                 val cloudService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(serverName)
                 if (cloudService == null || cloudService.isLobby()) {
-                    cancelEvent("§cYou are using an unsupported version.", CancelMessageType.KICK)
+                    cancelEvent("§cYou are using an unsupported version.", CancelType.KICK)
                     return
                 }
             }
@@ -135,7 +155,7 @@ class ProxyEventHandler() {
             val commandString = rawCommand.replace("/", "")
             if (commandString.isEmpty()) return emptyArray()
 
-            val suggestions = CloudPlugin.instance.communicationClient.sendQuery<Array<String>>(PacketOutGetTabSuggestions(uuid, commandString)).awaitUninterruptibly().getNow()
+            val suggestions = CloudPlugin.instance.communicationClient.sendQuery<Array<String>>(PacketOutGetTabSuggestions(uuid, commandString)).getBlocking()
             return suggestions
         }
 

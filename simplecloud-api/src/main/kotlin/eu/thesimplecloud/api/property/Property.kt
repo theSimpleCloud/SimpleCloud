@@ -9,10 +9,13 @@ class Property<T : Any>(
         value: T
 ) {
     @GsonExclude
+    @Volatile
     var savedValue: T? = value
+
     val className = value::class.java.name
+
     @JsonIgnore
-    val valueAsString: String = JsonData.fromObject(value).getAsJsonString()
+    private val valueAsString: String = JsonData.fromObject(value).getAsJsonString()
 
     @JsonIgnore
     fun getValue(classLoader: ClassLoader): T {
@@ -25,6 +28,11 @@ class Property<T : Any>(
     @JsonIgnore
     fun getValue(): T {
         return getValue(this::class.java.classLoader)
+    }
+
+    @JsonIgnore
+    fun resetValue() {
+        this.savedValue = null
     }
 
 }

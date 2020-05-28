@@ -46,7 +46,7 @@ class SpigotListener : Listener {
         val playerManager = CloudAPI.instance.getCloudPlayerManager()
         val cloudPlayer = playerManager.getCachedCloudPlayer(player.uniqueId)
 
-        if (cloudPlayer != null) {
+        if (cloudPlayer != null && !cloudPlayer.isUpdatesEnabled()) {
             playerManager.delete(cloudPlayer)
         }
     }

@@ -8,7 +8,7 @@ import eu.thesimplecloud.api.service.ICloudService
  * This event is called when a player changed his server. The event will only be called on services that receive updates of the player.
  * @see [ICloudPlayer.enableUpdates]
  */
-class CloudPlayerChangedServerEvent(
+class CloudPlayerServerConnectEvent(
         /**
          * The player involved in this event.
          */

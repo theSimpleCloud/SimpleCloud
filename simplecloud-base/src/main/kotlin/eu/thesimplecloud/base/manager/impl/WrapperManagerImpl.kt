@@ -6,8 +6,8 @@ import eu.thesimplecloud.base.manager.startup.Manager
 
 class WrapperManagerImpl : DefaultWrapperManager() {
 
-    override fun update(value: IWrapperInfo, fromPacket: Boolean) {
-        super.update(value, fromPacket)
+    override fun update(value: IWrapperInfo, fromPacket: Boolean, isCalledFromDelete: Boolean) {
+        super.update(value, fromPacket, isCalledFromDelete)
         Manager.instance.wrapperFileHandler.save(value)
     }
 

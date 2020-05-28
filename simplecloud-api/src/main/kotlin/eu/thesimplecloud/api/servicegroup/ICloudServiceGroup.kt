@@ -140,8 +140,9 @@ interface ICloudServiceGroup {
 
     /**
      * Deletes this service group from the cloud
-     * [ICommunicationPromise.isSuccess] will indicate whether the deletion was successful
+     * @throws IllegalStateException if services of this group are registered
      */
+    @Throws(IllegalStateException::class)
     fun delete() = CloudAPI.instance.getCloudServiceGroupManager().delete(this)
 
     /**

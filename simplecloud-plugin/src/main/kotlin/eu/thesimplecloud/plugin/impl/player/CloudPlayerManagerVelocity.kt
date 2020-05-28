@@ -4,11 +4,15 @@ import com.velocitypowered.api.proxy.Player
 import com.velocitypowered.api.proxy.server.RegisteredServer
 import com.velocitypowered.api.util.MessagePosition
 import com.velocitypowered.api.util.title.TextTitle
-import eu.thesimplecloud.api.exception.*
+import eu.thesimplecloud.api.exception.NoSuchPlayerException
+import eu.thesimplecloud.api.exception.NoSuchServiceException
+import eu.thesimplecloud.api.exception.PlayerConnectException
+import eu.thesimplecloud.api.exception.UnreachableServiceException
 import eu.thesimplecloud.api.location.ServiceLocation
 import eu.thesimplecloud.api.location.SimpleLocation
 import eu.thesimplecloud.api.network.packets.player.*
 import eu.thesimplecloud.api.player.ICloudPlayer
+import eu.thesimplecloud.api.player.connection.ConnectionResponse
 import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceType
@@ -16,8 +20,8 @@ import eu.thesimplecloud.clientserverapi.lib.packet.packetsender.sendQuery
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.plugin.network.packets.PacketOutTeleportOtherService
-import eu.thesimplecloud.plugin.proxy.velocity.text.CloudTextBuilder
 import eu.thesimplecloud.plugin.proxy.velocity.CloudVelocityPlugin
+import eu.thesimplecloud.plugin.proxy.velocity.text.CloudTextBuilder
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import java.util.*
 
@@ -38,11 +42,12 @@ class CloudPlayerManagerVelocity : AbstractServiceCloudPlayerManager() {
         return CommunicationPromise.of(Unit)
     }
 
-    override fun connectPlayer(cloudPlayer: ICloudPlayer, cloudService: ICloudService): ICommunicationPromise<Unit> {
+    override fun connectPlayer(cloudPlayer: ICloudPlayer, cloudService: ICloudService): ICommunicationPromise<ConnectionResponse> {
+        require(getCachedCloudPlayer(cloudPlayer.getUniqueId()) === cloudPlayer) { "CloudPlayer must be the cached player." }
         if (cloudService.getServiceType() == ServiceType.PROXY) return CommunicationPromise.failed(IllegalArgumentException("Cannot send a player to a proxy service"))
-        if (cloudPlayer.getConnectedServerName() == cloudService.getName()) return CommunicationPromise.of(Unit)
+        if (cloudPlayer.getConnectedServerName() == cloudService.getName()) return CommunicationPromise.of(ConnectionResponse(cloudPlayer.getUniqueId(), true))
         if (cloudPlayer.getConnectedProxyName() != CloudPlugin.instance.thisServiceName) {
-            return CloudPlugin.instance.communicationClient.sendQuery(PacketIOConnectCloudPlayer(cloudPlayer, cloudService))
+            return CloudPlugin.instance.communicationClient.sendQuery(PacketIOConnectCloudPlayer(cloudPlayer, cloudService), 500)
         }
 
         val server = getServerInfoByCloudService(cloudService)
@@ -51,9 +56,12 @@ class CloudPlayerManagerVelocity : AbstractServiceCloudPlayerManager() {
         val player = getPlayerByCloudPlayer(cloudPlayer)
         player
                 ?: return CommunicationPromise.failed(NoSuchElementException("Unable to find the player on the proxy service"))
-        val communicationPromise = CommunicationPromise<Unit>()
+        val communicationPromise = CommunicationPromise<ConnectionResponse>()
         player.createConnectionRequest(server).connectWithIndication().thenAccept {
-            if (it) communicationPromise.trySuccess(Unit) else communicationPromise.tryFailure(PlayerConnectException("Unable to connect the player to the service"))
+            if (it)
+                communicationPromise.trySuccess(ConnectionResponse(cloudPlayer.getUniqueId(), false))
+            else
+                communicationPromise.tryFailure(PlayerConnectException("Unable to connect the player to the service"))
         }
         return communicationPromise
     }
@@ -86,11 +94,12 @@ class CloudPlayerManagerVelocity : AbstractServiceCloudPlayerManager() {
     }
 
     override fun forcePlayerCommandExecution(cloudPlayer: ICloudPlayer, command: String) {
+        println("1 spoofing input $command")
         if (cloudPlayer.getConnectedProxyName() != CloudPlugin.instance.thisServiceName) {
             CloudPlugin.instance.communicationClient.sendUnitQuery(PacketIOCloudPlayerForceCommandExecution(cloudPlayer, command))
             return
         }
-
+        println("2 spoofing input $command")
         getPlayerByCloudPlayer(cloudPlayer)?.spoofChatInput("/$command")
     }
 
@@ -109,7 +118,10 @@ class CloudPlayerManagerVelocity : AbstractServiceCloudPlayerManager() {
 
     override fun teleportPlayer(cloudPlayer: ICloudPlayer, location: ServiceLocation): ICommunicationPromise<Unit> {
         if (location.getService() == null) return CommunicationPromise.failed(NoSuchServiceException("Service to connect the player to cannot be found."))
-        return CloudPlugin.instance.communicationClient.sendUnitQuery(PacketOutTeleportOtherService(cloudPlayer.getUniqueId(), location.serviceName, location as SimpleLocation))
+        return CloudPlugin.instance.communicationClient.sendUnitQuery(
+                PacketOutTeleportOtherService(cloudPlayer.getUniqueId(), location.serviceName, location as SimpleLocation),
+                1000
+        )
     }
 
     override fun hasPermission(cloudPlayer: ICloudPlayer, permission: String): ICommunicationPromise<Boolean> {

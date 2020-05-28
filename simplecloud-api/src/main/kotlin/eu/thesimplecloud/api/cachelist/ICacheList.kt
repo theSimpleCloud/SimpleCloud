@@ -13,7 +13,7 @@ interface ICacheList<T : Any> {
      * @param value the value to update
      * @param fromPacket whether this method was called by a packet
      */
-    fun update(value: T, fromPacket: Boolean = false) {
+    fun update(value: T, fromPacket: Boolean = false, isCalledFromDelete: Boolean = false) {
         val updater = getUpdater()
         val cachedValue = updater.getCachedObjectByUpdateValue(value)
         val eventsToCall = updater.determineEventsToCall(value, cachedValue)
@@ -24,8 +24,9 @@ interface ICacheList<T : Any> {
         }
         eventsToCall.forEach { CloudAPI.instance.getEventManager().call(it) }
         if (shallSpreadUpdates())
-            if (CloudAPI.instance.isManager() || !fromPacket)
-                updater.sendUpdatesToOtherComponents(value, PacketIOUpdateCacheObject.Action.UPDATE)
+            if (!isCalledFromDelete)
+                if (CloudAPI.instance.isManager() || !fromPacket)
+                    updater.sendUpdatesToOtherComponents(value, PacketIOUpdateCacheObject.Action.UPDATE)
     }
 
     /**

@@ -24,8 +24,8 @@ import java.util.function.Predicate
  */
 abstract class AbstractServiceCloudPlayerManager : AbstractCloudPlayerManager() {
 
-    override fun update(value: ICloudPlayer, fromPacket: Boolean) {
-        super.update(value, fromPacket)
+    override fun update(value: ICloudPlayer, fromPacket: Boolean, isCalledFromDelete: Boolean) {
+        super.update(value, fromPacket, isCalledFromDelete)
         if (!fromPacket)
             CloudPlugin.instance.communicationClient.sendUnitQuery(
                     PacketIOUpdateCacheObject(getUpdater().getIdentificationName(), value, PacketIOUpdateCacheObject.Action.UPDATE)
@@ -49,6 +49,7 @@ abstract class AbstractServiceCloudPlayerManager : AbstractCloudPlayerManager() 
     }
 
     override fun setUpdates(cloudPlayer: ICloudPlayer, update: Boolean, serviceName: String) {
+        super.setUpdates(cloudPlayer, update, serviceName)
         CloudPlugin.instance.communicationClient.sendUnitQuery(PacketIOSetCloudPlayerUpdates(cloudPlayer, update, serviceName))
     }
 

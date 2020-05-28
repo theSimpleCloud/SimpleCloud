@@ -1,20 +1,12 @@
 package eu.thesimplecloud.plugin.proxy.bungee.listener
 
-import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.player.CloudPlayer
 import eu.thesimplecloud.api.player.connection.DefaultPlayerAddress
 import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
 import eu.thesimplecloud.api.player.text.CloudText
-import eu.thesimplecloud.clientserverapi.lib.packet.packetsender.sendQuery
-import eu.thesimplecloud.plugin.extension.getCloudPlayer
-import eu.thesimplecloud.plugin.network.packets.PacketOutGetTabSuggestions
-import eu.thesimplecloud.plugin.proxy.CancelMessageType
+import eu.thesimplecloud.plugin.proxy.CancelType
 import eu.thesimplecloud.plugin.proxy.ProxyEventHandler
 import eu.thesimplecloud.plugin.proxy.bungee.CloudBungeePlugin
 import eu.thesimplecloud.plugin.proxy.bungee.text.CloudTextBuilder
-import eu.thesimplecloud.plugin.startup.CloudPlugin
-import net.md_5.bungee.api.connection.ProxiedPlayer
-import net.md_5.bungee.api.connection.Server
 import net.md_5.bungee.api.event.*
 import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.event.EventHandler
@@ -71,21 +63,15 @@ class BungeeListener : Listener {
         event.target = target
 
 
-        val name: String?
-
-        val server = proxiedPlayer.server
-        if (server != null) {
-            name = server.info.name
-        } else {
-            name = null
-        }
+        val name: String? = proxiedPlayer.server?.info?.name
 
         ProxyEventHandler.handleServerPreConnect(proxiedPlayer.uniqueId, name, target.name) { message, cancelMessageType ->
-            if (cancelMessageType == CancelMessageType.MESSAGE) {
+            if (cancelMessageType == CancelType.MESSAGE) {
                 proxiedPlayer.sendMessage(CloudTextBuilder().build(CloudText(message)))
             } else {
                 proxiedPlayer.disconnect(CloudTextBuilder().build(CloudText(message)))
             }
+            event.isCancelled = true
         }
     }
 
@@ -109,7 +95,7 @@ class BungeeListener : Listener {
         val proxiedPlayer = event.player
         val kickedServerName = event.kickedFrom.name
         ProxyEventHandler.handleServerKick(kickReasonString, kickedServerName) { message, cancelMessageType ->
-            if (cancelMessageType == CancelMessageType.MESSAGE) {
+            if (cancelMessageType == CancelType.MESSAGE) {
                 proxiedPlayer.sendMessage(CloudTextBuilder().build(CloudText(message)))
             } else {
                 proxiedPlayer.disconnect(CloudTextBuilder().build(CloudText(message)))

@@ -12,7 +12,7 @@ import com.velocitypowered.api.event.player.ServerPreConnectEvent
 import eu.thesimplecloud.api.player.connection.DefaultPlayerAddress
 import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
 import eu.thesimplecloud.api.player.text.CloudText
-import eu.thesimplecloud.plugin.proxy.CancelMessageType
+import eu.thesimplecloud.plugin.proxy.CancelType
 import eu.thesimplecloud.plugin.proxy.ProxyEventHandler
 import eu.thesimplecloud.plugin.proxy.velocity.CloudVelocityPlugin
 import eu.thesimplecloud.plugin.proxy.velocity.text.CloudTextBuilder
@@ -81,7 +81,7 @@ class VelocityListener(val plugin: CloudVelocityPlugin) {
         }
 
         ProxyEventHandler.handleServerPreConnect(player.uniqueId, serverNameFrom, serverNameTo) { message, cancelMessageType ->
-            if (cancelMessageType == CancelMessageType.MESSAGE) {
+            if (cancelMessageType == CancelType.MESSAGE) {
                 player.sendMessage(CloudTextBuilder().build(CloudText(message)))
             } else {
                 player.disconnect(CloudTextBuilder().build(CloudText(message)))
@@ -112,7 +112,7 @@ class VelocityListener(val plugin: CloudVelocityPlugin) {
         val player = event.player
         val kickedServerName = event.server.serverInfo.name
         ProxyEventHandler.handleServerKick(kickReasonString, kickedServerName) { message, cancelMessageType ->
-            if (cancelMessageType == CancelMessageType.MESSAGE) {
+            if (cancelMessageType == CancelType.MESSAGE) {
                 player.sendMessage(CloudTextBuilder().build(CloudText(message)))
             } else {
                 player.disconnect(CloudTextBuilder().build(CloudText(message)))

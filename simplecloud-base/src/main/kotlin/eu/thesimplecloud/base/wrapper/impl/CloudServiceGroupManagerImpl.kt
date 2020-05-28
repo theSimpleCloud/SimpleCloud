@@ -12,8 +12,8 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
 class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
 
-    override fun createServiceGroup(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<Unit> {
-        return Wrapper.instance.communicationClient.sendUnitQuery(PacketIOCreateServiceGroup(cloudServiceGroup))
+    override fun createServiceGroup(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<ICloudServiceGroup> {
+        return Wrapper.instance.communicationClient.sendQuery(PacketIOCreateServiceGroup(cloudServiceGroup))
     }
 
     override fun startNewService(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<ICloudService> {

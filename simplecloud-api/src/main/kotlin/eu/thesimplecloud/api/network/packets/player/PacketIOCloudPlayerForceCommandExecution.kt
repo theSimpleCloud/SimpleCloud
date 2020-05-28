@@ -17,7 +17,8 @@ class PacketIOCloudPlayerForceCommandExecution() : JsonPacket() {
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Unit> {
         val playerUniqueId = this.jsonData.getObject("playerUniqueId", UUID::class.java) ?: return contentException("playerUniqueId")
         val command = this.jsonData.getString("command") ?: return contentException("command")
-        CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(playerUniqueId)?.forceCommandExecution(command)
+        val cloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(playerUniqueId)
+        cloudPlayer?.forceCommandExecution(command)
         return unit()
     }
 }

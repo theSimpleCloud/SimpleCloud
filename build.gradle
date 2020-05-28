@@ -21,10 +21,13 @@ allprojects {
         maven {
             url "https://repo.thesimplecloud.eu/artifactory/gradle-dev-local/"
         }
+        maven {
+            url "https://libraries.minecraft.net"
+        }
     }
 
     project.ext {
-        depedencyClientServerAPIVersion = '2.4.6-SNAPSHOT'
+        depedencyClientServerAPIVersion = '2.4.11-SNAPSHOT'
     }
 
     buildscript {

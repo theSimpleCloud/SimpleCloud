@@ -61,7 +61,7 @@ class Manager : ICloudApplication {
     val templateServer: INettyServer<ICommandExecutable>
     val packetRegistry: IPacketRegistry = PacketRegistry()
     val playerUnregisterScheduler = PlayerUnregisterScheduler()
-    val cloudModuleHandler: IModuleHandler = ModuleHandler()
+    val cloudModuleHandler: IModuleHandler
     val appClassLoader: ApplicationClassLoader
 
     companion object {
@@ -77,6 +77,7 @@ class Manager : ICloudApplication {
         CloudAPI.instance.getEventManager().registerListener(this, CloudListener())
         CloudAPI.instance.getEventManager().registerListener(this, ModuleEventListener())
         this.appClassLoader = this::class.java.classLoader as ApplicationClassLoader
+        this.cloudModuleHandler = ModuleHandler(appClassLoader)
         this.appClassLoader.moduleHandler = this.cloudModuleHandler
         this.cloudModuleHandler.setCreateModuleClassLoader { urls, name -> ModuleClassLoader(urls, this.appClassLoader, name, this.cloudModuleHandler) }
         this.ingameCommandUpdater = IngameCommandUpdater()

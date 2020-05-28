@@ -6,6 +6,7 @@ import eu.thesimplecloud.api.player.AbstractCloudPlayerManager
 import eu.thesimplecloud.api.player.ICloudPlayer
 import eu.thesimplecloud.api.player.IOfflineCloudPlayer
 import eu.thesimplecloud.api.player.SimpleCloudPlayer
+import eu.thesimplecloud.api.player.connection.ConnectionResponse
 import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
@@ -26,7 +27,7 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
         throw UnsupportedOperationException("Players are not supported in the wrapper")
     }
 
-    override fun connectPlayer(cloudPlayer: ICloudPlayer, cloudService: ICloudService): ICommunicationPromise<Unit> {
+    override fun connectPlayer(cloudPlayer: ICloudPlayer, cloudService: ICloudService): ICommunicationPromise<ConnectionResponse> {
         throw UnsupportedOperationException("Players are not supported in the wrapper")
     }
 

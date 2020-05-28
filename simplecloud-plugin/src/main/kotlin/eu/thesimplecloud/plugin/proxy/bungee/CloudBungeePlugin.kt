@@ -44,7 +44,7 @@ class CloudBungeePlugin : Plugin(), ICloudProxyPlugin {
             throw IllegalArgumentException("Service is already registered!")
         }
 
-        if (cloudService.getServiceType().isProxy() || !cloudService.isOnline())
+        if (cloudService.getServiceType().isProxy())
             return
         val cloudServiceGroup = cloudService.getServiceGroup()
         if ((cloudServiceGroup as ICloudServerGroup).getHiddenAtProxyGroups().contains(CloudPlugin.instance.getGroupName()))
@@ -90,7 +90,7 @@ class CloudBungeePlugin : Plugin(), ICloudProxyPlugin {
 
         registerFallbackService()
         CloudPlugin.instance.onEnable()
-        CloudAPI.instance.getCloudServiceManager().getAllCachedObjects().forEach { addServiceToProxy(it) }
+        CloudAPI.instance.getCloudServiceManager().getAllCachedObjects().filter { it.isActive() }.forEach { addServiceToProxy(it) }
         CloudAPI.instance.getEventManager().registerListener(CloudPlugin.instance, CloudListener())
         ProxyServer.getInstance().pluginManager.registerListener(this, BungeeListener())
         ProxyServer.getInstance().pluginManager.registerListener(this, IngameCommandListener())

@@ -11,19 +11,19 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
 
 
-    override fun createServiceGroup(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<Unit> {
-        val promise = CommunicationPromise<Unit>()
+    override fun createServiceGroup(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<ICloudServiceGroup> {
+        val promise = CommunicationPromise<ICloudServiceGroup>()
         if (getServiceGroupByName(cloudServiceGroup.getName()) == null) {
             update(cloudServiceGroup)
-            promise.trySuccess(Unit)
+            promise.trySuccess(cloudServiceGroup)
         } else {
             promise.setFailure(IllegalArgumentException("Name of the specified group is already registered."))
         }
         return promise
     }
 
-    override fun update(value: ICloudServiceGroup, fromPacket: Boolean) {
-        super.update(value, fromPacket)
+    override fun update(value: ICloudServiceGroup, fromPacket: Boolean, isCalledFromDelete: Boolean) {
+        super.update(value, fromPacket, isCalledFromDelete)
         Manager.instance.cloudServiceGroupFileHandler.save(value)
     }
 

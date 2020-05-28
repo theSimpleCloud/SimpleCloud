@@ -6,13 +6,13 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.module.permission.PermissionPool
 import eu.thesimplecloud.module.permission.entity.PermissionEntity
 import java.util.*
-import kotlin.collections.ArrayList
+import java.util.concurrent.CopyOnWriteArrayList
 
 class PermissionPlayer(
         private val name: String,
         private val uniqueId: UUID,
         @JsonInclude
-        private val permissionGroupInfoList: MutableList<PlayerPermissionGroupInfo> = ArrayList()
+        private val permissionGroupInfoList: MutableList<PlayerPermissionGroupInfo> = CopyOnWriteArrayList()
 ) : PermissionEntity(), IPermissionPlayer {
 
     override fun getName(): String = this.name

@@ -4,19 +4,13 @@ package eu.thesimplecloud.api.player
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.cachelist.AbstractCacheList
 import eu.thesimplecloud.api.cachelist.ICacheObjectUpdater
-import eu.thesimplecloud.api.event.player.CloudPlayerChangedServerEvent
-import eu.thesimplecloud.api.event.player.CloudPlayerRegisteredEvent
-import eu.thesimplecloud.api.event.player.CloudPlayerUnregisteredEvent
-import eu.thesimplecloud.api.event.player.CloudPlayerUpdatedEvent
+import eu.thesimplecloud.api.event.player.*
 import eu.thesimplecloud.api.eventapi.IEvent
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import java.util.*
-import kotlin.Boolean
 import kotlin.NoSuchElementException
-import kotlin.String
 import kotlin.collections.HashMap
-import kotlin.collections.List
 
 abstract class AbstractCloudPlayerManager : AbstractCacheList<ICloudPlayer>(spreadUpdates = false), ICloudPlayerManager {
 
@@ -40,8 +34,12 @@ abstract class AbstractCloudPlayerManager : AbstractCacheList<ICloudPlayer>(spre
 
             if (updateValue.getConnectedServerName() != null && updateValue.getConnectedServerName() != cachedValue.getConnectedServerName()) {
                 val oldServer = cachedValue.getConnectedServer()
-                events.add(CloudPlayerChangedServerEvent(playerToUse, oldServer, updateValue.getConnectedServer()!!))
+                events.add(CloudPlayerServerConnectEvent(playerToUse, oldServer, updateValue.getConnectedServer()!!))
             }
+            if (cachedValue.getServerConnectState() == PlayerServerConnectState.CONNECTING && updateValue.getServerConnectState() == PlayerServerConnectState.CONNECTED) {
+                events.add(CloudPlayerServerConnectedEvent(playerToUse, updateValue.getConnectedServer()!!))
+            }
+
             return events
         }
 
@@ -50,6 +48,7 @@ abstract class AbstractCloudPlayerManager : AbstractCacheList<ICloudPlayer>(spre
             cachedValue.setConnectedProxyName(updateValue.getConnectedProxyName())
             cachedValue.setConnectedServerName(updateValue.getConnectedServerName())
             cachedValue.propertyMap = HashMap(updateValue.getProperties())
+            cachedValue.setServerConnectState(updateValue.getServerConnectState())
         }
 
         override fun addNewValue(value: ICloudPlayer) {

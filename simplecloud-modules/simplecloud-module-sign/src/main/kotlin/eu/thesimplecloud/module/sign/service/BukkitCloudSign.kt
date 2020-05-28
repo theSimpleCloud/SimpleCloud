@@ -28,7 +28,7 @@ class BukkitCloudSign(
             Placeholder("PORT") { it.getPort().toString() },
             Placeholder("STATE") { it.getState().name },
             Placeholder("NUMBER") { it.getServiceNumber().toString() },
-            Placeholder("WRAPPER") { it.getWrapperName() }
+            Placeholder("WRAPPER") { it.getWrapperName()!! }
     )
     private var groupPlaceholders = listOf<Placeholder<ICloudServiceGroup>>(
             Placeholder("GROUP") { it.getName() },

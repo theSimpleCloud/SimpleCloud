@@ -6,7 +6,7 @@ package eu.thesimplecloud.plugin.proxy
  * Date: 16.05.2020
  * Time: 00:11
  */
-enum class CancelMessageType {
+enum class CancelType {
 
     MESSAGE, KICK;
 

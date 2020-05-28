@@ -7,6 +7,7 @@ import eu.thesimplecloud.api.event.player.permission.PermissionState
 import eu.thesimplecloud.api.exception.*
 import eu.thesimplecloud.api.location.ServiceLocation
 import eu.thesimplecloud.api.location.SimpleLocation
+import eu.thesimplecloud.api.player.connection.ConnectionResponse
 import eu.thesimplecloud.api.player.connection.IPlayerConnection
 import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.api.service.ICloudService
@@ -19,6 +20,11 @@ interface ICloudPlayer : IOfflineCloudPlayer, ICommandSender {
      * Returns the [IPlayerConnection] of this player.
      */
     fun getPlayerConnection(): IPlayerConnection
+
+    /**
+     * Returns the state of the state of the connection to a server.
+     */
+    fun getServerConnectState(): PlayerServerConnectState
 
     /**
      * Sends a message to this player.
@@ -40,7 +46,7 @@ interface ICloudPlayer : IOfflineCloudPlayer, ICommandSender {
      * - [NoSuchServiceException] if the proxy service the player is connected to is not reachable
      * - [IllegalArgumentException] if the specified [cloudService] is a proxy service.
      */
-    fun connect(cloudService: ICloudService): ICommunicationPromise<Unit> = CloudAPI.instance.getCloudPlayerManager().connectPlayer(this, cloudService)
+    fun connect(cloudService: ICloudService): ICommunicationPromise<ConnectionResponse> = CloudAPI.instance.getCloudPlayerManager().connectPlayer(this, cloudService)
 
     /**
      * Kicks this player form the network.
@@ -178,5 +184,10 @@ interface ICloudPlayer : IOfflineCloudPlayer, ICommandSender {
      * Updates this player to the network
      */
     fun update() = CloudAPI.instance.getCloudPlayerManager().update(this)
+
+    /**
+     * Returns whether updates for this player are enables on this network component
+     */
+    fun isUpdatesEnabled(): Boolean
 
 }

@@ -54,6 +54,7 @@ class ReloadCommand : ICommandHandler {
         Manager.instance.communicationServer.getClientManager().sendPacketToAllAuthenticatedWrapperClients(PacketOutReloadExistingModules())
 
         //enable
+        Manager.instance.appClassLoader.clearCachedClasses()
         thread(start = true, isDaemon = false) { Manager.instance.cloudModuleHandler.loadAllUnloadedModules() }
     }
 

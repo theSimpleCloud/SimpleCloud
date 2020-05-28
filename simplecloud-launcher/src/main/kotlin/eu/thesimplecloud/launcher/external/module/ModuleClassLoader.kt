@@ -1,12 +1,15 @@
 package eu.thesimplecloud.launcher.external.module
 
+import com.google.common.collect.Maps
 import eu.thesimplecloud.launcher.exception.module.IModuleHandler
 import java.net.URL
 import java.net.URLClassLoader
 
 open class ModuleClassLoader(urls: Array<URL>, parent: ClassLoader, val moduleName: String, var moduleHandler: IModuleHandler?) : URLClassLoader(urls, parent) {
 
-    protected val cachedClasses: MutableMap<String, Class<*>> = HashMap()
+    @Volatile
+    private var closed: Boolean = false
+    protected val cachedClasses: MutableMap<String, Class<*>> = Maps.newConcurrentMap()
 
     companion object {
         init {
@@ -15,6 +18,7 @@ open class ModuleClassLoader(urls: Array<URL>, parent: ClassLoader, val moduleNa
     }
 
     override fun findClass(name: String): Class<*> {
+        if (closed) throw IllegalStateException("ModuleClassLoaders is already closed")
         return findClass0(name, true)
     }
 
@@ -35,5 +39,12 @@ open class ModuleClassLoader(urls: Array<URL>, parent: ClassLoader, val moduleNa
         }
         throw ClassNotFoundException(name)
     }
+
+    override fun close() {
+        super.close()
+        this.closed = true
+    }
+
+    fun isClosed(): Boolean = this.closed
 
 }

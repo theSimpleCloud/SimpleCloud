@@ -83,9 +83,14 @@ class OfflineCloudPlayerHandler(mongoConnectionInformation: MongoConnectionInfor
     }
 
     private fun findClass(className: String): Class<*> {
-        val clazz = runCatching {  Class.forName(className) }.getOrNull()
+        val clazz = kotlin.runCatching {
+            Manager.instance.cloudModuleHandler.findModuleClass(className)
+        }.getOrNull()
         if (clazz != null) return clazz
-        return Manager.instance.cloudModuleHandler.findModuleClass(className)
+
+        val classLoader = Manager.instance.appClassLoader
+        return Class.forName(className, true, classLoader)
+
     }
 
 

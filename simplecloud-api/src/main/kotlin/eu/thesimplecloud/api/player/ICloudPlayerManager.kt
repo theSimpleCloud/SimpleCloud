@@ -6,6 +6,7 @@ import eu.thesimplecloud.api.exception.*
 import eu.thesimplecloud.api.executeOnManager
 import eu.thesimplecloud.api.location.ServiceLocation
 import eu.thesimplecloud.api.location.SimpleLocation
+import eu.thesimplecloud.api.player.connection.ConnectionResponse
 import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
@@ -58,7 +59,7 @@ interface ICloudPlayerManager : ICacheList<ICloudPlayer> {
      * - [NoSuchPlayerException] if the player cannot be found on the proxy service.
      * - [PlayerConnectException] if the proxy was unable to connect the player to the service.
      */
-    fun connectPlayer(cloudPlayer: ICloudPlayer, cloudService: ICloudService): ICommunicationPromise<Unit>
+    fun connectPlayer(cloudPlayer: ICloudPlayer, cloudService: ICloudService): ICommunicationPromise<ConnectionResponse>
 
     /**
      * Kicks the specified player with the specified message from the network.
@@ -95,7 +96,11 @@ interface ICloudPlayerManager : ICacheList<ICloudPlayer> {
      * @param cloudPlayer the player
      * @param update whether updates shall be sent.
      */
-    fun setUpdates(cloudPlayer: ICloudPlayer, update: Boolean, serviceName: String)
+    fun setUpdates(cloudPlayer: ICloudPlayer, update: Boolean, serviceName: String) {
+        require(getCachedCloudPlayer(cloudPlayer.getUniqueId()) === cloudPlayer) {
+            "CloudPlayer must be in the cache of CloudPlayerManager"
+        }
+    }
 
     /**
      * Teleports the specified [cloudPlayer] to the specified [location].
@@ -184,7 +189,7 @@ interface ICloudPlayerManager : ICacheList<ICloudPlayer> {
     /**
      * Returns a list of the requested players.
      */
-    fun getOfflineCloudPlayersByNames(names: List<String>): ICommunicationPromise<List<IOfflineCloudPlayer>> {
+    fun getOfflineCloudPlayersByNames(names: List<String>): ICommunicationPromise<List<IOfflineCloudPlayer?>> {
         val playerPromises = names.map { getOfflineCloudPlayer(it) }
         return playerPromises.toListPromise()
     }
@@ -192,7 +197,7 @@ interface ICloudPlayerManager : ICacheList<ICloudPlayer> {
     /**
      * Returns a list of the requested players.
      */
-    fun getOfflineCloudPlayersByUniqueIds(uniqueIds: List<UUID>): ICommunicationPromise<List<IOfflineCloudPlayer>> {
+    fun getOfflineCloudPlayersByUniqueIds(uniqueIds: List<UUID>): ICommunicationPromise<List<IOfflineCloudPlayer?>> {
         val playerPromises = uniqueIds.map { getOfflineCloudPlayer(it) }
         return playerPromises.toListPromise()
     }
@@ -200,7 +205,7 @@ interface ICloudPlayerManager : ICacheList<ICloudPlayer> {
     /**
      * Returns a list of the requested players.
      */
-    fun getCloudPlayersByNames(names: List<String>): ICommunicationPromise<List<ICloudPlayer>> {
+    fun getCloudPlayersByNames(names: List<String>): ICommunicationPromise<List<ICloudPlayer?>> {
         val playerPromises = names.map { getCloudPlayer(it) }
         return playerPromises.toListPromise()
     }
@@ -208,7 +213,7 @@ interface ICloudPlayerManager : ICacheList<ICloudPlayer> {
     /**
      * Returns a list of the requested players.
      */
-    fun getCloudPlayersByUniqueIds(uniqueIds: List<UUID>): ICommunicationPromise<List<ICloudPlayer>> {
+    fun getCloudPlayersByUniqueIds(uniqueIds: List<UUID>): ICommunicationPromise<List<ICloudPlayer?>> {
         val playerPromises = uniqueIds.map { getCloudPlayer(it) }
         return playerPromises.toListPromise()
     }

@@ -38,7 +38,7 @@ class CommandManager() {
         val readLine = if (readLine.trim().equals("cloud", true)) "cloud help" else readLine.trim()
 
         if (readLine.toLowerCase().startsWith("cloud") && commandSender is ICloudPlayer) {
-            if (!commandSender.hasPermission("cloud.command.use").awaitUninterruptibly().getNow()) {
+            if (!commandSender.hasPermission("cloud.command.use").getBlocking()) {
                 commandSender.sendMessage("command.cloud.no-permission", "&cYou don't have the permission to execute this command.")
                 return
             }
@@ -169,7 +169,7 @@ class CommandManager() {
             val currentPathValue = pathArray[messageArray.lastIndex]
 
             val permission = it.permission
-            if (permission.isEmpty() || sender.hasPermission(permission).awaitUninterruptibly().getNow()) {
+            if (permission.isEmpty() || sender.hasPermission(permission).getBlocking()) {
                 if (isParamater(currentPathValue)) {
                     val commandParameterData = it.getParameterDataByNameWithBraces(currentPathValue)?: return@forEach
                     suggestions.addAll(commandParameterData.provider.getSuggestions(sender, message, messageArray.last()))

@@ -20,6 +20,7 @@ import java.util.jar.JarEntry
 import java.util.jar.JarFile
 
 open class ModuleHandler(
+        private val parentClassLoader: ClassLoader = ClassLoader.getSystemClassLoader(),
         private val handleException: (Throwable) -> Unit = { throw it }
 ) : IModuleHandler {
 
@@ -28,7 +29,7 @@ open class ModuleHandler(
     private val loadedModules = CopyOnWriteArrayList<LoadedModule>()
 
 
-    private var createModuleClassLoader: (Array<URL>, String) -> URLClassLoader = { urls, name -> ModuleClassLoader(urls, ClassLoader.getSystemClassLoader(), name, this) }
+    private var createModuleClassLoader: (Array<URL>, String) -> URLClassLoader = { urls, name -> ModuleClassLoader(urls, parentClassLoader, name, this) }
 
     override fun setCreateModuleClassLoader(function: (Array<URL>, String) -> URLClassLoader) {
         this.createModuleClassLoader = function
@@ -248,6 +249,14 @@ open class ModuleHandler(
 
         this.loadedModules.remove(loadedModule)
         CloudAPI.instance.getEventManager().call(ModuleUnloadedEvent(loadedModule))
+
+        //reset all property values
+        CloudAPI.instance.getCloudPlayerManager().getAllCachedObjects().forEach {
+            player -> player.getProperties().forEach { it.value.resetValue() }
+        }
+        CloudAPI.instance.getCloudServiceManager().getAllCachedObjects().forEach {
+            group -> group.getProperties().forEach { it.value.resetValue() }
+        }
     }
 
     override fun getLoadedModules(): List<LoadedModule> = this.loadedModules

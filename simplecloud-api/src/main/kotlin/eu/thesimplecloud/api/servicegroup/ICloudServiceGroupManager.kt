@@ -127,7 +127,7 @@ interface ICloudServiceGroupManager : ICacheList<ICloudServiceGroup> {
      * The promise will fail with:
      * - [IllegalArgumentException] if the group is already registered.
      */
-    fun createServiceGroup(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<Unit>
+    fun createServiceGroup(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<ICloudServiceGroup>
 
     /**
      * Returns the [ICloudServiceGroup] found by the specified name

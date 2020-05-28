@@ -9,8 +9,8 @@ class TemplateManagerImpl : DefaultTemplateManager() {
 
     private val templatesConfigLoader = TemplatesConfigLoader()
 
-    override fun update(value: ITemplate, fromPacket: Boolean) {
-        super.update(value, fromPacket)
+    override fun update(value: ITemplate, fromPacket: Boolean, isCalledFromDelete: Boolean) {
+        super.update(value, fromPacket, isCalledFromDelete)
         val templateConfig = this.templatesConfigLoader.loadConfig()
         templateConfig.templates.removeIf { it.getName().equals(value.getName(), true) }
         templateConfig.templates.add(value as DefaultTemplate)
