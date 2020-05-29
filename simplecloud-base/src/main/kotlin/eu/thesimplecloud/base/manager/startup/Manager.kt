@@ -104,6 +104,7 @@ class Manager : ICloudApplication {
         this.templateServer.addPacketsByPackage("eu.thesimplecloud.base.manager.network.packets.template")
         thread(start = true, isDaemon = false) { communicationServer.start() }
         createDirectories()
+        Logger.getLogger("org.mongodb.driver").level = Level.SEVERE
         Launcher.instance.logger.console("Waiting for MongoDB...")
         this.mongoController?.startedPromise?.awaitUninterruptibly()
         mongoClient = mongoConfig.mongoServerInformation.createMongoClient()

@@ -128,9 +128,14 @@ open class ModuleHandler(
         return constructor.newInstance()
     }
 
-    fun loadModuleClass(classLoader: ClassLoader, mainClassName: String): Class<out ICloudModule> {
+    private fun loadModuleClass(classLoader: ClassLoader, mainClassName: String): Class<out ICloudModule> {
         val mainClass = classLoader.loadClass(mainClassName)
         return mainClass.asSubclass(ICloudModule::class.java)
+    }
+
+    fun loadModuleClassFromFile(mainClassName: String, file: File): Class<out ICloudModule> {
+        val urlClassLoader = URLClassLoader(arrayOf(file.toURI().toURL()))
+        return loadModuleClass(urlClassLoader, mainClassName)
     }
 
     private fun getModuleLoadOrder(fileContents: List<LoadedModuleFileContent>): List<LoadedModuleFileContent> {
@@ -251,11 +256,11 @@ open class ModuleHandler(
         CloudAPI.instance.getEventManager().call(ModuleUnloadedEvent(loadedModule))
 
         //reset all property values
-        CloudAPI.instance.getCloudPlayerManager().getAllCachedObjects().forEach {
-            player -> player.getProperties().forEach { it.value.resetValue() }
+        CloudAPI.instance.getCloudPlayerManager().getAllCachedObjects().forEach { player ->
+            player.getProperties().forEach { it.value.resetValue() }
         }
-        CloudAPI.instance.getCloudServiceManager().getAllCachedObjects().forEach {
-            group -> group.getProperties().forEach { it.value.resetValue() }
+        CloudAPI.instance.getCloudServiceManager().getAllCachedObjects().forEach { group ->
+            group.getProperties().forEach { it.value.resetValue() }
         }
     }
 
