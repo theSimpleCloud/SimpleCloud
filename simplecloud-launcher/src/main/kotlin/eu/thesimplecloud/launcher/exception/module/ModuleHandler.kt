@@ -69,6 +69,13 @@ open class ModuleHandler(
             val loadedModule = LoadedModule(cloudModule, file, content, classLoader)
             this.loadedModules.add(loadedModule)
             CloudAPI.instance.getEventManager().call(ModuleLoadedEvent(loadedModule))
+
+            CloudAPI.instance.getCloudPlayerManager().getAllCachedObjects().forEach { player ->
+                player.getProperties().forEach { it.value.loadValue(this.parentClassLoader) }
+            }
+            CloudAPI.instance.getCloudServiceManager().getAllCachedObjects().forEach { group ->
+                group.getProperties().forEach { it.value.loadValue(this.parentClassLoader) }
+            }
             return loadedModule
         } catch (ex: Exception) {
             throw ModuleLoadException(file.path, ex)

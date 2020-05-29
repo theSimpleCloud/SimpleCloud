@@ -54,7 +54,11 @@ class CommandManager() {
                 list.filter { it.commandType != CommandType.CONSOLE }.forEach { commandSender.sendMessage("§8>> §7${covertPathFunction(it)}") }
             }
             if (list.isEmpty()) {
-                Launcher.instance.logger.warning("This command could not be found! Type \"help\" for help.")
+                if (commandSender is ICloudPlayer) {
+                    commandSender.sendMessage("This command could not be found! Type \"help\" for help.")
+                } else {
+                    Launcher.instance.logger.warning("This command could not be found! Type \"help\" for help.")
+                }
                 return
             }
 
