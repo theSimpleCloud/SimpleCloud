@@ -2,12 +2,12 @@ package eu.thesimplecloud.base.manager.config
 
 import eu.thesimplecloud.api.config.AbstractJsonDataConfigLoader
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
-import eu.thesimplecloud.base.manager.mongo.MongoServerInformation
+import eu.thesimplecloud.base.manager.mongo.MongoConnectionInformation
 import java.io.File
 
-class MongoConfigLoader : AbstractJsonDataConfigLoader<MongoConfig>(
-        MongoConfig::class.java,
+class MongoConfigLoader : AbstractJsonDataConfigLoader<MongoConnectionInformation>(
+        MongoConnectionInformation::class.java,
         File(DirectoryPaths.paths.storagePath + "mongo.json"),
-        { MongoConfig( false, MongoServerInformation("127.0.0.1", 45678, "cloud", "simplecloud", "cloudpassword", "", "admin", "admin")) }
+        { MongoConnectionInformation("127.0.0.1", 45678, "cloud", "simplecloud", "cloudpassword", "") }
 ) {
 }

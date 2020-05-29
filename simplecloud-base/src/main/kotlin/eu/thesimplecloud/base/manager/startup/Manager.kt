@@ -4,7 +4,6 @@ import com.mongodb.MongoClient
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.screen.ICommandExecutable
-import eu.thesimplecloud.base.MongoBuilder
 import eu.thesimplecloud.base.MongoController
 import eu.thesimplecloud.base.manager.config.MongoConfigLoader
 import eu.thesimplecloud.base.manager.config.TemplatesConfigLoader
@@ -14,14 +13,13 @@ import eu.thesimplecloud.base.manager.impl.CloudAPIImpl
 import eu.thesimplecloud.base.manager.ingamecommands.IngameCommandUpdater
 import eu.thesimplecloud.base.manager.listener.CloudListener
 import eu.thesimplecloud.base.manager.listener.ModuleEventListener
-import eu.thesimplecloud.base.manager.mongo.MongoServerInformation
 import eu.thesimplecloud.base.manager.packet.IPacketRegistry
 import eu.thesimplecloud.base.manager.packet.PacketRegistry
 import eu.thesimplecloud.base.manager.player.IOfflineCloudPlayerHandler
 import eu.thesimplecloud.base.manager.player.OfflineCloudPlayerHandler
 import eu.thesimplecloud.base.manager.player.PlayerUnregisterScheduler
 import eu.thesimplecloud.base.manager.service.ServiceHandler
-import eu.thesimplecloud.base.manager.setup.mongo.MongoDBUseEmbedSetup
+import eu.thesimplecloud.base.manager.setup.mongo.MongoDBConnectionSetup
 import eu.thesimplecloud.base.manager.startup.server.CommunicationConnectionHandlerImpl
 import eu.thesimplecloud.base.manager.startup.server.ServerHandlerImpl
 import eu.thesimplecloud.base.manager.startup.server.TemplateConnectionHandlerImpl
@@ -82,12 +80,10 @@ class Manager : ICloudApplication {
         this.cloudModuleHandler.setCreateModuleClassLoader { urls, name -> ModuleClassLoader(urls, this.appClassLoader, name, this.cloudModuleHandler) }
         this.ingameCommandUpdater = IngameCommandUpdater()
         if (!MongoConfigLoader().doesConfigFileExist()) {
-            Launcher.instance.setupManager.queueSetup(MongoDBUseEmbedSetup())
+            Launcher.instance.setupManager.queueSetup(MongoDBConnectionSetup())
             Launcher.instance.setupManager.waitFroAllSetups()
         }
-        val mongoConfig = MongoConfigLoader().loadConfig()
-        if (mongoConfig.embedMongo)
-            mongoController = startMongoDBServer(mongoConfig.mongoServerInformation)
+        val mongoConnectionInformation = MongoConfigLoader().loadConfig()
 
         val launcherConfig = Launcher.instance.launcherConfigLoader.loadConfig()
         this.communicationServer = NettyServer<ICommandExecutable>(launcherConfig.host, launcherConfig.port, CommunicationConnectionHandlerImpl(), ServerHandlerImpl())
@@ -107,10 +103,10 @@ class Manager : ICloudApplication {
         Logger.getLogger("org.mongodb.driver").level = Level.SEVERE
         Launcher.instance.logger.console("Waiting for MongoDB...")
         this.mongoController?.startedPromise?.awaitUninterruptibly()
-        mongoClient = mongoConfig.mongoServerInformation.createMongoClient()
+        mongoClient = mongoConnectionInformation.createMongoClient()
         Launcher.instance.logger.console("Connected to MongoDB")
 
-        this.offlineCloudPlayerHandler = OfflineCloudPlayerHandler(mongoConfig.mongoServerInformation)
+        this.offlineCloudPlayerHandler = OfflineCloudPlayerHandler(mongoConnectionInformation)
 
         this.templateServer.getDirectorySyncManager().setTmpZipDirectory(File(DirectoryPaths.paths.zippedTemplatesPath))
         this.templateServer.getDirectorySyncManager().createDirectorySync(File(DirectoryPaths.paths.templatesPath), DirectoryPaths.paths.templatesPath)
@@ -125,20 +121,6 @@ class Manager : ICloudApplication {
         val loadedClass = appClassLoader.loadClass(clazz.name)
         appClassLoader.setCachedClass(loadedClass)
         return loadedClass as Class<out IPacket>
-    }
-
-    private fun startMongoDBServer(mongoServerInformation: MongoServerInformation): MongoController {
-        val mongoController = MongoController(MongoBuilder()
-                .setHost(mongoServerInformation.host)
-                .setPort(mongoServerInformation.port)
-                .setAdminUserName(mongoServerInformation.adminUserName)
-                .setAdminPassword(mongoServerInformation.adminPassword)
-                .setDatabase(mongoServerInformation.databaseName)
-                .setDirectory(".mongo")
-                .setUserName(mongoServerInformation.userName)
-                .setUserPassword(mongoServerInformation.password))
-        mongoController.start()
-        return mongoController
     }
 
     override fun onEnable() {
