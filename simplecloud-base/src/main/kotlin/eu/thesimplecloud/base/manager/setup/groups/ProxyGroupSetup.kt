@@ -80,7 +80,7 @@ class ProxyGroupSetup : DefaultGroupSetup(), ISetup {
     }
 
 
-    @SetupQuestion(6, "manager.setup.service-group.question.minimum-online", "How many services shall always be online? (in LOBBY state)")
+    @SetupQuestion(6, "manager.setup.service-group.question.minimum-online", "How many services shall always be online? (VISIBLE)")
     fun minimumOnlineQuestion(minimumOnlineServices: Int): Boolean {
         if (minimumOnlineServices < 0) {
             Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.minimum-online.too-low", "The specified number is too low.")

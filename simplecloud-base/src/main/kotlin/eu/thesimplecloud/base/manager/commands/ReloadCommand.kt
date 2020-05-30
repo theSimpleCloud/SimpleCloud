@@ -13,7 +13,7 @@ import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 import eu.thesimplecloud.launcher.extension.sendMessage
 import kotlin.concurrent.thread
 
-@Command("reload", CommandType.CONSOLE, "simplecloud.command.reload", ["rl"])
+@Command("reload", CommandType.CONSOLE, "cloud.command.reload", ["rl"])
 class ReloadCommand : ICommandHandler {
 
     @CommandSubPath("", "Reloads the cloud")

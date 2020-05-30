@@ -17,7 +17,7 @@ import eu.thesimplecloud.module.proxy.manager.ProxyModule
  * Time: 17:51
  */
 
-@Command("proxy", CommandType.CONSOLE_AND_INGAME, "simplecloud.module.proxy")
+@Command("proxy", CommandType.CONSOLE_AND_INGAME, "cloud.module.proxy")
 class ProxyCommand(val module: ProxyModule): ICommandHandler {
 
     private val propertyPrefix = "module.proxy.command."

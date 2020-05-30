@@ -20,7 +20,7 @@ import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.startup.Launcher
 import java.lang.reflect.Field
 
-@Command("edit", CommandType.CONSOLE_AND_INGAME, "simplecloud.command.edit")
+@Command("edit", CommandType.CONSOLE_AND_INGAME, "cloud.command.edit")
 class EditCommand : ICommandHandler {
 
     //group

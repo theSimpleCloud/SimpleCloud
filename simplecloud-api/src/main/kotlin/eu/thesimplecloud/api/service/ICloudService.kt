@@ -130,12 +130,6 @@ interface ICloudService : INetworkComponent, IBootstrap, IPropertyMap {
     /**
      * Returns the amount of players that are currently on this service
      */
-    @Deprecated("Use getOnlineCount instead", ReplaceWith("getOnlineCount()"))
-    fun getOnlinePlayers(): Int = getOnlineCount()
-
-    /**
-     * Returns the amount of players that are currently on this service
-     */
     fun getOnlineCount(): Int
 
     /**

@@ -3,6 +3,7 @@ import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceType
 import eu.thesimplecloud.api.service.ServiceVersion
+import eu.thesimplecloud.api.template.ITemplate
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
 interface ICloudServiceGroup {
@@ -18,6 +19,12 @@ interface ICloudServiceGroup {
      * e.g. Lobby
      */
     fun getTemplateName(): String
+
+    /**
+     * Returns the template that this service uses
+     * e.g. Lobby
+     */
+    fun getTemplate(): ITemplate = CloudAPI.instance.getTemplateManager().getTemplateByName(getTemplateName()) ?: throw IllegalStateException("Can't find the template of an registered group (group: ${getName()} templates: ${CloudAPI.instance.getTemplateManager().getAllCachedObjects().joinToString { it.getName() }})")
 
     /**
      * Sets the name of the template for this service group

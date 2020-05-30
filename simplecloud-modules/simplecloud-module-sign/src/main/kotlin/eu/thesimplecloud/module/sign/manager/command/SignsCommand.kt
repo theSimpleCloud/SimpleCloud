@@ -12,7 +12,7 @@ import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.module.sign.lib.SignModuleConfig
 import eu.thesimplecloud.module.sign.manager.SignsModule
 
-@Command("signs", CommandType.CONSOLE_AND_INGAME, "simplecloud.command.signs")
+@Command("signs", CommandType.CONSOLE_AND_INGAME, "cloud.command.signs")
 class SignsCommand : ICommandHandler {
 
     @CommandSubPath("reload", "Reloads the config")

@@ -17,7 +17,7 @@ import eu.thesimplecloud.api.service.ICloudService
  */
 class CloudListener(val module: NotifyModule) : IListener {
 
-    private val permission = "simplecloud.module.notify.messages"
+    private val permission = "cloud.module.notify.messages"
 
     @CloudEventHandler
     fun on(event: CloudServiceRegisteredEvent) {

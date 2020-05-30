@@ -93,7 +93,7 @@ class LobbyGroupSetup : DefaultGroupSetup(), ISetup {
     }
 
 
-    @SetupQuestion(6, "manager.setup.service-group.question.minimum-online", "How many services shall always be online? (in LOBBY state)")
+    @SetupQuestion(6, "manager.setup.service-group.question.minimum-online", "How many services shall always be online? (VISIBLE)")
     fun minimumOnlineQuestion(minimumOnlineServices: Int): Boolean {
         if (minimumOnlineServices < 0) {
             Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.minimum-online.too-low", "The specified number is too low.")
@@ -122,7 +122,7 @@ class LobbyGroupSetup : DefaultGroupSetup(), ISetup {
 
     @SetupQuestion(9, "manager.setup.server-group.question.wrapper", "On which wrapper shall services of this group run? (Needed when the group is static. Otherwise you can leave it empty for the wrapper with the lowest workload.)")
     fun wrapperQuestion(string: String): Boolean {
-        if (string.isBlank())
+        if (string.isBlank() && !static)
             return true
         val wrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(string)
         if (wrapper == null) {
