@@ -3,6 +3,7 @@ package eu.thesimplecloud.launcher.exception.module
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.external.ICloudModule
+import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.launcher.dependency.DependencyLoader
 import eu.thesimplecloud.launcher.event.module.ModuleLoadedEvent
@@ -70,12 +71,6 @@ open class ModuleHandler(
             this.loadedModules.add(loadedModule)
             CloudAPI.instance.getEventManager().call(ModuleLoadedEvent(loadedModule))
 
-            CloudAPI.instance.getCloudPlayerManager().getAllCachedObjects().forEach { player ->
-                player.getProperties().forEach { it.value.loadValue(this.parentClassLoader) }
-            }
-            CloudAPI.instance.getCloudServiceManager().getAllCachedObjects().forEach { group ->
-                group.getProperties().forEach { it.value.loadValue(this.parentClassLoader) }
-            }
             return loadedModule
         } catch (ex: Exception) {
             throw ModuleLoadException(file.path, ex)
@@ -264,10 +259,10 @@ open class ModuleHandler(
 
         //reset all property values
         CloudAPI.instance.getCloudPlayerManager().getAllCachedObjects().forEach { player ->
-            player.getProperties().forEach { it.value.resetValue() }
+            player.getProperties().forEach { (it.value as Property).resetValue() }
         }
         CloudAPI.instance.getCloudServiceManager().getAllCachedObjects().forEach { group ->
-            group.getProperties().forEach { it.value.resetValue() }
+            group.getProperties().forEach { (it.value as Property).resetValue() }
         }
     }
 

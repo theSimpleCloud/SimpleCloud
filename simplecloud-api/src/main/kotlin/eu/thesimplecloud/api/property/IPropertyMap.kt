@@ -5,17 +5,18 @@ interface IPropertyMap {
     /**
      * Returns all properties
      */
-    fun getProperties(): Map<String, Property<*>>
+    fun getProperties(): Map<String, IProperty<*>>
 
     /**
      * Returns the property by the specified [name].
      */
-    fun <T : Any> getProperty(name: String): Property<T>? = getProperties()[name] as Property<T>?
+    fun <T : Any> getProperty(name: String): IProperty<T>? = getProperties()[name] as IProperty<T>?
 
     /**
-     * Sets the specified [property] as property linked to the specified [name].
+     * Sets the specified [value] as property linked to the specified [name].
+     * @return the created property
      */
-    fun <T : Any> setProperty(name: String, property: Property<T>)
+    fun <T : Any> setProperty(name: String, value: T): IProperty<T>
 
     /**
      * Removes the [Property] found by the specified [name].

@@ -8,7 +8,7 @@ import eu.thesimplecloud.clientserverapi.lib.json.PacketExclude
 
 class Property<T : Any>(
         value: T
-) {
+) : IProperty<T> {
     @GsonExclude
     @PacketExclude
     @Volatile
@@ -21,34 +21,21 @@ class Property<T : Any>(
 
     @JsonIgnore
     @Synchronized
-    fun getValue(classLoader: ClassLoader): T {
-
+    override fun getValue(callerClassLoader: ClassLoader): T {
         if (savedValue == null) {
-            val clazz = Class.forName(className, true, classLoader) as Class<T>
+            val clazz = Class.forName(
+                    className,
+                    true,
+                    callerClassLoader
+            ) as Class<T>
             savedValue = JsonData.fromJsonString(valueAsString).getObject(clazz)
         }
-        try {
-            return savedValue!!
-        } catch (e: Exception) {
-            throw e
-        }
-    }
-
-    @JsonIgnore
-    fun getValue(): T {
-        return getValue(this::class.java.classLoader)
+        return savedValue!!
     }
 
     @JsonIgnore
     fun resetValue() {
         this.savedValue = null
-    }
-
-    @JsonIgnore
-    fun loadValue(classLoader: ClassLoader) {
-        if (this.savedValue == null) {
-            runCatching { getValue(classLoader) }
-        }
     }
 
 }

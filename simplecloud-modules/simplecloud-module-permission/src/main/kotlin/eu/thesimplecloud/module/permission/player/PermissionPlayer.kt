@@ -1,7 +1,6 @@
 package eu.thesimplecloud.module.permission.player
 
 import com.fasterxml.jackson.annotation.JsonInclude
-import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.module.permission.PermissionPool
 import eu.thesimplecloud.module.permission.entity.PermissionEntity
@@ -27,7 +26,7 @@ class PermissionPlayer(
 
     override fun update(): ICommunicationPromise<Unit> {
         return getCloudPlayer().then {
-            it.setProperty(PROPERTY_NAME, Property(this))
+            it.setProperty(PROPERTY_NAME, this)
             it.update()
         }
     }

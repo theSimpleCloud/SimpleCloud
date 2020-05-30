@@ -3,8 +3,6 @@ package eu.thesimplecloud.launcher.console
 import eu.thesimplecloud.launcher.console.command.CommandManager
 import eu.thesimplecloud.launcher.logging.LogType
 import eu.thesimplecloud.launcher.startup.Launcher
-import org.fusesource.jansi.Ansi
-
 import org.jline.reader.LineReader
 import org.jline.reader.LineReaderBuilder
 import org.jline.reader.UserInterruptException
@@ -85,7 +83,11 @@ class ConsoleManager(var applicationName: String, val commandManager: CommandMan
         }
         if (readLine.isBlank()) return
         //add cloud to execute a cloud command
-        commandManager.handleCommand("cloud $readLine", consoleSender)
+        try {
+            commandManager.handleCommand("cloud $readLine", consoleSender)
+        } catch (e: Exception) {
+            Launcher.instance.logger.exception(e)
+        }
     }
 
 

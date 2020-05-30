@@ -6,6 +6,7 @@ import eu.thesimplecloud.api.cachelist.AbstractCacheList
 import eu.thesimplecloud.api.cachelist.ICacheObjectUpdater
 import eu.thesimplecloud.api.event.player.*
 import eu.thesimplecloud.api.eventapi.IEvent
+import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import java.util.*
@@ -47,7 +48,7 @@ abstract class AbstractCloudPlayerManager : AbstractCacheList<ICloudPlayer>(spre
             cachedValue as CloudPlayer
             cachedValue.setConnectedProxyName(updateValue.getConnectedProxyName())
             cachedValue.setConnectedServerName(updateValue.getConnectedServerName())
-            cachedValue.propertyMap = HashMap(updateValue.getProperties())
+            cachedValue.propertyMap = HashMap(updateValue.getProperties() as Map<String, Property<*>>)
             cachedValue.setServerConnectState(updateValue.getServerConnectState())
         }
 

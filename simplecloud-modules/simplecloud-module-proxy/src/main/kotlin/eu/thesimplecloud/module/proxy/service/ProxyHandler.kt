@@ -17,8 +17,8 @@ import eu.thesimplecloud.plugin.startup.CloudPlugin
  */
 class ProxyHandler() {
 
-    val JOIN_MAINTENANCE_PERMISSION = "simplecloud.maintenance.join"
-    val JOIN_FULL_PERMISSION = "simplecloud.full.join"
+    val JOIN_MAINTENANCE_PERMISSION = "cloud.maintenance.join"
+    val JOIN_FULL_PERMISSION = "cloud.full.join"
 
 
     var configHolder: SynchronizedObjectHolder<Config> = SynchronizedObjectHolder(DefaultConfig.get())
