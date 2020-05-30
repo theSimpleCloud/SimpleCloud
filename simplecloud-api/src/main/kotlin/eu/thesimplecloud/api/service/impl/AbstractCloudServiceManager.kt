@@ -5,6 +5,7 @@ import eu.thesimplecloud.api.cachelist.AbstractCacheList
 import eu.thesimplecloud.api.cachelist.ICacheObjectUpdater
 import eu.thesimplecloud.api.event.service.*
 import eu.thesimplecloud.api.eventapi.IEvent
+import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ICloudServiceManager
 import eu.thesimplecloud.api.service.ServiceState
@@ -50,7 +51,7 @@ abstract class AbstractCloudServiceManager : AbstractCacheList<ICloudService>(),
             cachedValue as DefaultCloudService
             cachedValue.setWrapperName(updateValue.getWrapperName())
             cachedValue.setPort(updateValue.getPort())
-            cachedValue.propertyMap = HashMap(updateValue.getProperties())
+            cachedValue.propertyMap = HashMap(updateValue.getProperties() as Map<String, Property<*>>)
         }
 
         override fun addNewValue(value: ICloudService) {

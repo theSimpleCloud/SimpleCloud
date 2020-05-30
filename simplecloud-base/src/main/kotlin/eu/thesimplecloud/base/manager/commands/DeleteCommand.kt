@@ -9,7 +9,7 @@ import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.startup.Launcher
 
-@Command("delete", CommandType.CONSOLE, "simplecloud.command.delete")
+@Command("delete", CommandType.CONSOLE, "cloud.command.delete")
 class DeleteCommand : ICommandHandler {
 
     private val templateManager = CloudAPI.instance.getTemplateManager()

@@ -9,7 +9,7 @@ import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 import eu.thesimplecloud.launcher.extension.sendMessage
 
-@Command("execute", CommandType.CONSOLE_AND_INGAME, "simplecloud.command.execute", ["exec"])
+@Command("execute", CommandType.CONSOLE_AND_INGAME, "cloud.command.execute", ["exec"])
 class ExecuteCommand : ICommandHandler {
 
     @CommandSubPath("", "Execute a command on the specified service")

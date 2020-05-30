@@ -28,7 +28,7 @@ class InternalWrapperModule : ICloudModule {
             CloudAPI.instance.getWrapperManager().update(wrapperInfo)
         }
         thread(start = true, isDaemon = false) {
-            Launcher.instance.consoleSender.sendMessage("moudle.internalwrapper.starting", "Starting internal wrapper...")
+            Launcher.instance.consoleSender.sendMessage("module.internalwrapper.starting", "Starting internal wrapper...")
             val processBuilder = ProcessBuilder("java", "-jar", launcherJarFile.absolutePath, "--start-application=WRAPPER", "--disable-auto-updater")
             processBuilder.directory(File("."))
             val process = processBuilder.start()

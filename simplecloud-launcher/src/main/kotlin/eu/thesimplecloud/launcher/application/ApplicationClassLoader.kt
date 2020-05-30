@@ -11,6 +11,12 @@ class ApplicationClassLoader(
         moduleHandler: IModuleHandler
 ) : ModuleClassLoader(urls, parent, "Cloud-Application-$applicationName", moduleHandler) {
 
+    companion object {
+        init {
+            ClassLoader.registerAsParallelCapable()
+        }
+    }
+
     fun clearCachedClasses() {
         this.cachedClasses.clear()
     }

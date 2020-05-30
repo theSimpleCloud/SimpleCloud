@@ -15,6 +15,6 @@ class CloudServiceManagerImpl : AbstractCloudServiceManager() {
         return cloudListener<CloudServiceUnregisteredEvent>()
                 .addCondition { it.cloudService == cloudService }
                 .unregisterAfterCall()
-                .toPromise()
+                .toUnitPromise()
     }
 }

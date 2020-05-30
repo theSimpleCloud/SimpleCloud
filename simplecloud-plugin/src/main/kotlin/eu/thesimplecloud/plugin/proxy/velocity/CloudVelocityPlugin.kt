@@ -62,7 +62,7 @@ class CloudVelocityPlugin @Inject constructor(val proxyServer: ProxyServer) : IC
     @Subscribe
     fun handleInit(event: ProxyInitializeEvent) {
         CloudPlugin.instance.onEnable()
-        CloudAPI.instance.getCloudServiceManager().getAllCachedObjects().forEach { addServiceToProxy(it) }
+        CloudAPI.instance.getCloudServiceManager().getAllCachedObjects().filter { it.isActive() }.forEach { addServiceToProxy(it) }
         CloudAPI.instance.getEventManager().registerListener(CloudPlugin.instance, CloudListener())
         proxyServer.eventManager.register(this, VelocityListener(this))
 
@@ -79,7 +79,7 @@ class CloudVelocityPlugin @Inject constructor(val proxyServer: ProxyServer) : IC
         if (proxyServer.getServer(cloudService.getName()).isPresent) {
             throw IllegalArgumentException("Service is already registered!")
         }
-        if (cloudService.getServiceType().isProxy() || !cloudService.isOnline())
+        if (cloudService.getServiceType().isProxy())
             return
         val cloudServiceGroup = cloudService.getServiceGroup()
         if ((cloudServiceGroup as ICloudServerGroup).getHiddenAtProxyGroups().contains(CloudPlugin.instance.getGroupName()))

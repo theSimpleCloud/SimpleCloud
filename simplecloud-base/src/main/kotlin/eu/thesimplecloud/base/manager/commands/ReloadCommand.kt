@@ -14,7 +14,7 @@ import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 import eu.thesimplecloud.launcher.extension.sendMessage
 import kotlin.concurrent.thread
 
-@Command("reload", CommandType.CONSOLE, "simplecloud.command.reload", ["rl"])
+@Command("reload", CommandType.CONSOLE, "cloud.command.reload", ["rl"])
 class ReloadCommand : ICommandHandler {
 
     @CommandSubPath("", "Reloads the cloud")
@@ -55,6 +55,7 @@ class ReloadCommand : ICommandHandler {
         Manager.instance.communicationServer.getClientManager().sendPacketToAllAuthenticatedWrapperClients(PacketOutReloadExistingModules())
 
         //enable
+        Manager.instance.appClassLoader.clearCachedClasses()
         thread(start = true, isDaemon = false) { Manager.instance.cloudModuleHandler.loadAllUnloadedModules() }
     }
 

@@ -5,6 +5,7 @@ import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
 import eu.thesimplecloud.api.player.connection.IPlayerConnection
 import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.api.property.Property
+import eu.thesimplecloud.clientserverapi.lib.json.GsonExclude
 import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.clientserverapi.lib.json.PacketExclude
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
@@ -30,13 +31,31 @@ class CloudPlayer(
         propertyMap
 ), ICloudPlayer {
 
+    @Volatile
+    private var connectState: PlayerServerConnectState = PlayerServerConnectState.CONNECTING
+
+    @Volatile
     private var online = true
 
     @JsonIgnore
     @PacketExclude
+    @Volatile
+    private var updatesEnabled = false
+
+    @JsonIgnore
+    @PacketExclude
+    @GsonExclude
     private var playerMessageQueue: PlayerMessageQueue? = null
 
     override fun getPlayerConnection(): IPlayerConnection = this.playerConnection
+
+    override fun getServerConnectState(): PlayerServerConnectState {
+        return this.connectState
+    }
+
+    fun setServerConnectState(connectState: PlayerServerConnectState) {
+        this.connectState = connectState
+    }
 
     @Synchronized
     override fun sendMessage(cloudText: CloudText): ICommunicationPromise<Unit> {
@@ -53,6 +72,20 @@ class CloudPlayer(
     override fun isOnline(): Boolean = this.online
 
     override fun clone(): ICloudPlayer = CloudPlayer(getName(), getUniqueId(), getFirstLogin(), getLastLogin(), getOnlineTime(), connectedProxyName, connectedServerName, this.playerConnection, propertyMap)
+
+    override fun enableUpdates() {
+        super.enableUpdates()
+        this.updatesEnabled = true
+    }
+
+    override fun disableUpdates() {
+        super.disableUpdates()
+        this.updatesEnabled = false
+    }
+
+    override fun isUpdatesEnabled(): Boolean {
+        return this.updatesEnabled
+    }
 
     @Synchronized
     fun setOffline() {

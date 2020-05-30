@@ -2,7 +2,7 @@ package eu.thesimplecloud.api.listenerextension
 
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
-interface IAdvancedListener<T> {
+interface IAdvancedListener<T : Any> {
 
     /**
      * Adds a condition to this listener
@@ -36,6 +36,11 @@ interface IAdvancedListener<T> {
     /**
      * Returns a promise that completes when the listener was called.
      */
-    fun toPromise(): ICommunicationPromise<Unit>
+    fun toPromise(): ICommunicationPromise<T>
+
+    /**
+     * Returns a promise that completes when the listener was called.
+     */
+    fun toUnitPromise(): ICommunicationPromise<Unit>
 
 }

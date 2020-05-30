@@ -21,7 +21,11 @@ class PacketIOUpdateCacheObject() : JsonPacket() {
                 ?: return contentException("valueClass")
         val action = this.jsonData.getObject("action", Action::class.java)
                 ?: return contentException("action")
-        val valueClass = Class.forName(valueClassName)
+        val valueClass = Class.forName(
+                valueClassName,
+                true,
+                connection.getCommunicationBootstrap().getClassLoaderToSearchObjectPacketsClasses()
+        )
         val value = this.jsonData.getObject("value", valueClass) ?: return contentException("value")
 
         when (action) {

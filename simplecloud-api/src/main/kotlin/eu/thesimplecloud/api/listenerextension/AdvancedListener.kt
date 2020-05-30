@@ -63,8 +63,15 @@ open class AdvancedListener<T : IEvent>(
         return this
     }
 
-    override fun toPromise(): ICommunicationPromise<Unit> {
-        val newPromise = CommunicationPromise<Unit>()
+    override fun toPromise(): ICommunicationPromise<T> {
+        val newPromise = CommunicationPromise<T>(enableTimeout = false)
+        this.addAction { newPromise.trySuccess(it) }
+        this.unregisterAfterCall()
+        return newPromise
+    }
+
+    override fun toUnitPromise(): ICommunicationPromise<Unit> {
+        val newPromise = CommunicationPromise<Unit>(enableTimeout = false)
         this.addAction { newPromise.trySuccess(Unit) }
         this.unregisterAfterCall()
         return newPromise

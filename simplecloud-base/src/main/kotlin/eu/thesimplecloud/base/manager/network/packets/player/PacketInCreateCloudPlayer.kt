@@ -4,6 +4,7 @@ import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.player.CloudPlayer
 import eu.thesimplecloud.api.player.OfflineCloudPlayer
 import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
+import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
@@ -19,7 +20,17 @@ class PacketInCreateCloudPlayer() : JsonPacket() {
         val cloudPlayer = if (offlinePlayer == null) {
             CloudPlayer(playerConnection.getName(), playerConnection.getUniqueId(), System.currentTimeMillis(), System.currentTimeMillis(), 0L, proxyName, null, playerConnection, HashMap())
         } else {
-            CloudPlayer(playerConnection.getName(), playerConnection.getUniqueId(), offlinePlayer.getFirstLogin(), System.currentTimeMillis(), offlinePlayer.getOnlineTime(), proxyName, null, playerConnection, offlinePlayer.getProperties().toMutableMap())
+            CloudPlayer(
+                    playerConnection.getName(),
+                    playerConnection.getUniqueId(),
+                    offlinePlayer.getFirstLogin(),
+                    System.currentTimeMillis(),
+                    offlinePlayer.getOnlineTime(),
+                    proxyName,
+                    null,
+                    playerConnection,
+                    (offlinePlayer.getProperties() as Map<String, Property<*>>).toMutableMap()
+            )
         }
         CloudAPI.instance.getCloudPlayerManager().update(cloudPlayer)
         Manager.instance.offlineCloudPlayerHandler.saveCloudPlayer(cloudPlayer.toOfflinePlayer() as OfflineCloudPlayer)

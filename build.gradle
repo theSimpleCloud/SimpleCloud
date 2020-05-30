@@ -11,7 +11,7 @@ repositories {
 allprojects {
     
     group 'eu.thesimplecloud.simplecloud'
-    version '1.0.9-SNAPSHOT'
+    version '1.1.0-SNAPSHOT'
 
     sourceCompatibility = 1.8
 
@@ -21,10 +21,13 @@ allprojects {
         maven {
             url "https://repo.thesimplecloud.eu/artifactory/gradle-dev-local/"
         }
+        maven {
+            url "https://libraries.minecraft.net"
+        }
     }
 
     project.ext {
-        depedencyClientServerAPIVersion = '2.4.6-SNAPSHOT'
+        depedencyClientServerAPIVersion = '2.4.11-SNAPSHOT'
     }
 
     buildscript {
@@ -43,6 +46,29 @@ allprojects {
             jvmTarget = "1.8"
         }
     }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'java-library'
+    apply plugin: 'maven-publish'
+    apply plugin: 'org.jetbrains.kotlin.jvm'
+
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        archiveClassifier.set('sources')
+        from sourceSets.main.allSource
+    }
+
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        archiveClassifier.set('javadoc')
+        from javadoc.destinationDir
+    }
+
+    artifacts {
+        archives sourcesJar
+        archives javadocJar
+    }
+
 }
 
 dependencies {

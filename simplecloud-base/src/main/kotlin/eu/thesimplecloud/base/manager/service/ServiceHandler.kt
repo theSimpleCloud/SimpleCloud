@@ -6,6 +6,7 @@ import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.service.impl.DefaultCloudService
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
+import eu.thesimplecloud.api.template.ITemplate
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.launcher.extension.sendMessage
@@ -24,13 +25,19 @@ class ServiceHandler : IServiceHandler {
         require(count >= 1) { "Count must be positive." }
         val list = ArrayList<ICloudService>()
         for (i in 0 until count) {
-            val service = DefaultCloudService(cloudServiceGroup.getName(), getNumberForNewService(cloudServiceGroup), UUID.randomUUID(), cloudServiceGroup.getTemplateName(), cloudServiceGroup.getWrapperName()
-                    ?: "", -1, cloudServiceGroup.getMaxMemory(), "Cloud service")
-            CloudAPI.instance.getCloudServiceManager().update(service)
-            list.add(service)
-            addServiceToQueue(service)
+            list.add(startService(cloudServiceGroup, cloudServiceGroup.getTemplate(), getNumberForNewService(cloudServiceGroup), cloudServiceGroup.getMaxMemory()))
         }
         return list
+    }
+
+    override fun startService(cloudServiceGroup: ICloudServiceGroup, template: ITemplate, serviceNumber: Int, memory: Int): ICloudService {
+        val serviceName = cloudServiceGroup.getName() + "-" + serviceNumber
+        val runningService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(serviceName)
+        if (runningService != null) throw IllegalArgumentException("Service to start ($serviceName) is already registered")
+        val service = DefaultCloudService(cloudServiceGroup.getName(), serviceNumber, UUID.randomUUID(), template.getName(), cloudServiceGroup.getWrapperName(), -1, memory, "Cloud service")
+        CloudAPI.instance.getCloudServiceManager().update(service)
+        addServiceToQueue(service)
+        return service
     }
 
     private fun addServiceToQueue(service: ICloudService) {
@@ -93,10 +100,10 @@ class ServiceHandler : IServiceHandler {
                 val priorityToServices = this.serviceQueue.groupBy { it.getServiceGroup().getStartPriority() }
                 val maxPriority = priorityToServices.keys.max()
                 if (maxPriority != null) {
-                    for (priority in 0..maxPriority) {
+                    for (priority in maxPriority downTo 0) {
                         val services = priorityToServices[priority] ?: emptyList()
                         //false will be listed first -> services with wrapper will be listed first
-                        val sortedServices = services.sortedBy { it.getWrapperName().isEmpty() }
+                        val sortedServices = services.sortedBy { it.getWrapperName() == null }
                         for (service in sortedServices) {
                             val wrapper = getWrapperForService(service) ?: continue
                             val wrapperClient = Manager.instance.communicationServer.getClientManager().getClientByClientValue(wrapper)
@@ -117,10 +124,10 @@ class ServiceHandler : IServiceHandler {
     }
 
     private fun getWrapperForService(service: ICloudService): IWrapperInfo? {
-        if (service.getWrapperName().isBlank()) {
+        if (service.getWrapperName() == null) {
             return CloudAPI.instance.getWrapperManager().getWrapperByUnusedMemory(service.getMaxMemory())
         } else {
-            val requiredWrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(service.getWrapperName())
+            val requiredWrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(service.getWrapperName()!!)
                     ?: return null
             if (requiredWrapper.hasEnoughMemory(service.getMaxMemory()) && requiredWrapper.isAuthenticated()
                     && requiredWrapper.hasTemplatesReceived()

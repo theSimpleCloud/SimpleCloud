@@ -10,6 +10,7 @@ import eu.thesimplecloud.api.location.SimpleLocation
 import eu.thesimplecloud.api.network.packets.player.*
 import eu.thesimplecloud.api.network.packets.sync.cachelist.PacketIOUpdateCacheObject
 import eu.thesimplecloud.api.player.*
+import eu.thesimplecloud.api.player.connection.ConnectionResponse
 import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceType
@@ -20,7 +21,6 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.flatten
 import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnectedClient
 import java.util.*
-import java.util.concurrent.TimeUnit
 import java.util.function.Predicate
 import kotlin.collections.ArrayList
 
@@ -32,15 +32,17 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
      */
     private val playerUpdates = Maps.newConcurrentMap<UUID, MutableList<String>>()
 
-    override fun update(value: ICloudPlayer, fromPacket: Boolean) {
-        super.update(value, fromPacket)
+    override fun update(value: ICloudPlayer, fromPacket: Boolean, isCalledFromDelete: Boolean) {
+        super.update(value, fromPacket, isCalledFromDelete)
 
         val proxyClient = value.getConnectedProxy()?.let { Manager.instance.communicationServer.getClientManager().getClientByClientValue(it) }
         val serverClient = value.getConnectedServer()?.let { Manager.instance.communicationServer.getClientManager().getClientByClientValue(it) }
         val playerUpdatePacket = PacketIOUpdateCacheObject(getUpdater().getIdentificationName(), value, PacketIOUpdateCacheObject.Action.UPDATE)
 
-        proxyClient?.sendUnitQuery(playerUpdatePacket)
-        serverClient?.sendUnitQuery(playerUpdatePacket)
+        if (proxyClient?.isOpen() == true)
+            proxyClient.sendUnitQuery(playerUpdatePacket)
+        if (serverClient?.isOpen() == true)
+            serverClient.sendUnitQuery(playerUpdatePacket)
 
         val requestedPlayerUpdatesServices = playerUpdates[value.getUniqueId()]
         requestedPlayerUpdatesServices?.mapNotNull { getCloudClientByServiceName(it) }?.forEach { it.sendUnitQuery(playerUpdatePacket) }
@@ -72,16 +74,16 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
 
     override fun sendMessageToPlayer(cloudPlayer: ICloudPlayer, cloudText: CloudText): ICommunicationPromise<Unit> {
         val proxyClient = getProxyClientOfCloudPlayer(cloudPlayer)
-        return proxyClient?.sendUnitQuery(PacketIOSendMessageToCloudPlayer(cloudPlayer, cloudText)) ?:
-                CommunicationPromise.failed(UnreachableServiceException("Proxy service is unreachable"))
+        return proxyClient?.sendUnitQuery(PacketIOSendMessageToCloudPlayer(cloudPlayer, cloudText))
+                ?: CommunicationPromise.failed(UnreachableServiceException("Proxy service is unreachable"))
     }
 
-    override fun connectPlayer(cloudPlayer: ICloudPlayer, cloudService: ICloudService): ICommunicationPromise<Unit> {
+    override fun connectPlayer(cloudPlayer: ICloudPlayer, cloudService: ICloudService): ICommunicationPromise<ConnectionResponse> {
         if (cloudService.getServiceType() == ServiceType.PROXY) return CommunicationPromise.failed(IllegalArgumentException("Cannot send player to a proxy service"))
-        if (cloudPlayer.getConnectedServerName() == cloudService.getName()) return CommunicationPromise.of(Unit)
+        if (cloudPlayer.getConnectedServerName() == cloudService.getName()) return CommunicationPromise.of(ConnectionResponse(cloudPlayer.getUniqueId(), true))
         val proxyClient = getProxyClientOfCloudPlayer(cloudPlayer)
         proxyClient ?: return CommunicationPromise.failed(UnreachableServiceException("Proxy service is unreachable"))
-        return proxyClient.sendUnitQuery(PacketIOConnectCloudPlayer(cloudPlayer, cloudService))
+        return proxyClient.sendQuery(PacketIOConnectCloudPlayer(cloudPlayer, cloudService), 500)
     }
 
     override fun kickPlayer(cloudPlayer: ICloudPlayer, message: String) {
@@ -96,7 +98,7 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
 
     override fun forcePlayerCommandExecution(cloudPlayer: ICloudPlayer, command: String) {
         val proxyClient = getProxyClientOfCloudPlayer(cloudPlayer)
-        proxyClient?.sendUnitQuery(PacketIOCloudPlayerForceCommandExecution())
+        proxyClient?.sendUnitQuery(PacketIOCloudPlayerForceCommandExecution(cloudPlayer, command))
     }
 
     override fun sendActionbar(cloudPlayer: ICloudPlayer, actionbar: String) {
@@ -105,42 +107,51 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
     }
 
     override fun setUpdates(cloudPlayer: ICloudPlayer, update: Boolean, serviceName: String) {
-        val list = playerUpdates.getOrPut(cloudPlayer.getUniqueId()) { ArrayList() }
+        super.setUpdates(cloudPlayer, update, serviceName)
+        if (!update && !this.playerUpdates.containsKey(cloudPlayer.getUniqueId())) return
+        val list = this.playerUpdates.getOrPut(cloudPlayer.getUniqueId()) { ArrayList() }
         if (update) list.add(serviceName) else list.remove(serviceName)
     }
 
     override fun teleportPlayer(cloudPlayer: ICloudPlayer, location: SimpleLocation): ICommunicationPromise<Unit> {
         val serverClient = getServerClientOfPlayer(cloudPlayer)
-        serverClient ?: return CommunicationPromise.failed(UnreachableServiceException("The server the player is connected to is not reachable"))
+        serverClient
+                ?: return CommunicationPromise.failed(UnreachableServiceException("The server the player is connected to is not reachable"))
         return serverClient.sendUnitQuery(PacketIOTeleportPlayer(cloudPlayer, location))
     }
 
     override fun teleportPlayer(cloudPlayer: ICloudPlayer, location: ServiceLocation): ICommunicationPromise<Unit> {
-        val service = location.getService() ?: return CommunicationPromise.failed(NoSuchServiceException("Service to connect the player to cannot be found"))
+        val service = location.getService()
+                ?: return CommunicationPromise.failed(NoSuchServiceException("Service to connect the player to cannot be found"))
         return if (service.getName() == cloudPlayer.getConnectedServerName()) {
             cloudPlayer.teleport(location as SimpleLocation).addFailureListener { cloudPlayer.sendMessage("§cTeleportation failed: " + it.message) }
         } else {
-            cloudPlayer.connect(service).thenDelayed(500, TimeUnit.MILLISECONDS) {
+            cloudPlayer.connect(service).then {
+                it.createConnectedPromise()
+            }.flatten(3000).then {
                 cloudPlayer.teleport(location as SimpleLocation)
-            }.flatten().addFailureListener { cloudPlayer.sendMessage("§cTeleportation failed: " + it.message) }
+            }.flatten(1500).addFailureListener { cloudPlayer.sendMessage("§cTeleportation failed: " + it.message) }
         }
     }
 
     override fun hasPermission(cloudPlayer: ICloudPlayer, permission: String): ICommunicationPromise<Boolean> {
         val proxyClient = getProxyClientOfCloudPlayer(cloudPlayer)
-        proxyClient ?: return CommunicationPromise.failed(UnreachableServiceException("The proxy the player is connected to is not reachable"))
+        proxyClient
+                ?: return CommunicationPromise.failed(UnreachableServiceException("The proxy the player is connected to is not reachable"))
         return proxyClient.sendQuery(PacketIOPlayerHasPermission(cloudPlayer.getUniqueId(), permission))
     }
 
     override fun getLocationOfPlayer(cloudPlayer: ICloudPlayer): ICommunicationPromise<ServiceLocation> {
         val serverClient = getServerClientOfPlayer(cloudPlayer)
-        serverClient ?: return CommunicationPromise.failed(UnreachableServiceException("The server the player is connected to is not reachable"))
+        serverClient
+                ?: return CommunicationPromise.failed(UnreachableServiceException("The server the player is connected to is not reachable"))
         return serverClient.sendQuery<ServiceLocation>(PacketIOGetPlayerLocation(cloudPlayer))
     }
 
     override fun sendPlayerToLobby(cloudPlayer: ICloudPlayer): ICommunicationPromise<Unit> {
         val proxyClient = getProxyClientOfCloudPlayer(cloudPlayer)
-        proxyClient ?: return CommunicationPromise.failed(UnreachableServiceException("The proxy the player is connected to is not reachable"))
+        proxyClient
+                ?: return CommunicationPromise.failed(UnreachableServiceException("The proxy the player is connected to is not reachable"))
         return proxyClient.sendQuery(PacketIOSendPlayerToLobby(cloudPlayer.getUniqueId()))
     }
 
@@ -173,6 +184,13 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
     private fun getCloudClientByServiceName(serviceName: String): IConnectedClient<*>? {
         val cloudService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(serviceName)
         return cloudService?.let { Manager.instance.communicationServer.getClientManager().getClientByClientValue(it) }
+    }
+
+    /**
+     * Resets the requested player updates for the specified [serviceName]
+     */
+    fun resetPlayerUpdates(serviceName: String) {
+        this.playerUpdates.values.forEach { it.remove(serviceName) }
     }
 
 }

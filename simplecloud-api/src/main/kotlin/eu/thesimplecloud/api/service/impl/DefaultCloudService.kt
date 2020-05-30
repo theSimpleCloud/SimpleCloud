@@ -1,5 +1,6 @@
 package eu.thesimplecloud.api.service.impl
 
+import eu.thesimplecloud.api.property.IProperty
 import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
@@ -13,7 +14,7 @@ data class DefaultCloudService(
         private val serviceNumber: Int,
         private val uniqueId: UUID,
         private val templateName: String,
-        private var wrapperName: String,
+        private var wrapperName: String?,
         private var port: Int,
         private val maxMemory: Int,
         private var motd: String
@@ -41,9 +42,9 @@ data class DefaultCloudService(
         this.port = port
     }
 
-    override fun getWrapperName(): String = this.wrapperName
+    override fun getWrapperName(): String? = this.wrapperName
 
-    fun setWrapperName(wrapperName: String) {
+    fun setWrapperName(wrapperName: String?) {
         this.wrapperName = wrapperName
     }
 
@@ -86,10 +87,13 @@ data class DefaultCloudService(
         return JsonData.fromObject(this).getAsJsonString()
     }
 
-    override fun getProperties(): Map<String, Property<*>> = this.propertyMap
+    override fun getProperties(): Map<String, IProperty<*>> = this.propertyMap
 
-    override fun <T : Any> setProperty(name: String, property: Property<T>) {
+    override fun <T : Any> setProperty(name: String, value: T): IProperty<T> {
+        require(value !is Property<*>) { "Cannot set ${value::class.java.name} as property" }
+        val property = Property(value)
         this.propertyMap[name] = property
+        return property
     }
 
     override fun removeProperty(name: String) {

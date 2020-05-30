@@ -1,4 +1,4 @@
-package eu.thesimplecloud.base.manager.commands.ingame
+package eu.thesimplecloud.module.hubcommand
 
 import eu.thesimplecloud.api.command.ICommandSender
 import eu.thesimplecloud.api.player.ICloudPlayer
@@ -7,6 +7,7 @@ import eu.thesimplecloud.launcher.console.command.ICommandHandler
 import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 import eu.thesimplecloud.launcher.extension.sendMessage
+
 
 @Command("hub", CommandType.INGAME, aliases = ["lobby", "leave", "l"])
 class HubCommand : ICommandHandler {

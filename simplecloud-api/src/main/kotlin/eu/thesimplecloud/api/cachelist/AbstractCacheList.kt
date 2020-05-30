@@ -11,6 +11,7 @@ abstract class AbstractCacheList<T : Any>(private val spreadUpdates: Boolean = t
     }
 
     override fun delete(value: T, fromPacket: Boolean) {
+        super.update(value, fromPacket = true, isCalledFromDelete = true)
         super.delete(value, fromPacket)
         this.values.remove(getUpdater().getCachedObjectByUpdateValue(value))
     }

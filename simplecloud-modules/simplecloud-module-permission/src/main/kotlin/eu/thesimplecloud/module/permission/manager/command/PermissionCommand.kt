@@ -18,7 +18,7 @@ import eu.thesimplecloud.module.permission.player.PlayerPermissionGroupInfo
 import eu.thesimplecloud.module.permission.player.getPermissionPlayer
 import java.util.concurrent.TimeUnit
 
-@Command("perms", CommandType.CONSOLE_AND_INGAME, "simplecloud.module.permission")
+@Command("perms", CommandType.CONSOLE_AND_INGAME, "cloud.module.permission")
 class PermissionCommand : ICommandHandler {
 
 

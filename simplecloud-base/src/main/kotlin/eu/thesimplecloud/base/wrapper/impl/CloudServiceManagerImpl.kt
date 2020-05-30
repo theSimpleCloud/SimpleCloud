@@ -20,7 +20,7 @@ class CloudServiceManagerImpl : AbstractCloudServiceManager() {
         }
         return cloudListener<CloudServiceUnregisteredEvent>()
                 .addCondition { it.cloudService == cloudService }
-                .toPromise()
+                .toUnitPromise()
     }
 
     override fun startService(cloudService: ICloudService): ICommunicationPromise<Unit> {
@@ -29,7 +29,7 @@ class CloudServiceManagerImpl : AbstractCloudServiceManager() {
         processQueue.addToQueue(cloudService)
         return cloudListener<CloudServiceConnectedEvent>()
                 .addCondition { it.cloudService == cloudService }
-                .toPromise()
+                .toUnitPromise()
     }
 
 }

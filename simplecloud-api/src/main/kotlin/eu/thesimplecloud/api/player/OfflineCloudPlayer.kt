@@ -3,6 +3,7 @@ package eu.thesimplecloud.api.player
 import com.fasterxml.jackson.annotation.JsonIgnore
 import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
 import eu.thesimplecloud.api.player.connection.IPlayerConnection
+import eu.thesimplecloud.api.property.IProperty
 import eu.thesimplecloud.api.property.Property
 import java.util.*
 import kotlin.collections.HashMap
@@ -18,7 +19,7 @@ open class OfflineCloudPlayer(
 ): SimpleCloudPlayer(name, uniqueId), IOfflineCloudPlayer {
 
     @JsonIgnore
-    override fun getProperties(): Map<String, Property<*>> {
+    override fun getProperties(): Map<String, IProperty<*>> {
         return this.propertyMap
     }
 
@@ -30,8 +31,11 @@ open class OfflineCloudPlayer(
 
     override fun getLastPlayerConnection(): IPlayerConnection = this.playerConnection
 
-    override fun <T : Any> setProperty(name: String, property: Property<T>) {
+    override fun <T : Any> setProperty(name: String, value: T): IProperty<T> {
+        require(value !is Property<*>) { "Cannot set ${value::class.java.name} as property" }
+        val property = Property(value)
         this.propertyMap[name] = property
+        return property
     }
 
     override fun removeProperty(name: String) {

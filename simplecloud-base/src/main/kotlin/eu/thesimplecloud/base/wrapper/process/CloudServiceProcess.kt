@@ -79,10 +79,16 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
     private fun processStopped(){
         Launcher.instance.consoleSender.sendMessage("wrapper.service.stopped", "Service %NAME%", cloudService.getName(), " was stopped.")
         Wrapper.instance.cloudServiceProcessManager.unregisterServiceProcess(this)
-        this.cloudService.setOnlineCount(0)
-        this.cloudService.setState(ServiceState.CLOSED)
         if (Wrapper.instance.communicationClient.isOpen()) {
-            CloudAPI.instance.getCloudServiceManager().sendUpdateToConnection(this.cloudService, Wrapper.instance.communicationClient).awaitUninterruptibly()
+            //CloudAPI.instance.getCloudServiceManager().sendUpdateToConnection(this.cloudService, Wrapper.instance.communicationClient).awaitUninterruptibly()
+            var tries = 0
+            while (this.cloudService.isAuthenticated()) {
+                Thread.sleep(100)
+                tries++
+                if (tries == 30) break
+            }
+            this.cloudService.setOnlineCount(0)
+            this.cloudService.setState(ServiceState.CLOSED)
             CloudAPI.instance.getCloudServiceManager().delete(this.cloudService)
             Wrapper.instance.updateWrapperData()
         }
@@ -133,7 +139,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
         }
         return cloudListener<CloudServiceUnregisteredEvent>()
                 .addCondition { it.cloudService == this.cloudService }
-                .toPromise()
+                .toUnitPromise()
     }
 
     override fun executeCommand(command: String) {

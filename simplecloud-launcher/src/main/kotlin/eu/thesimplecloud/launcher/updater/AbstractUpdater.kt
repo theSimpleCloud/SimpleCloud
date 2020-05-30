@@ -7,19 +7,27 @@ import java.io.File
 abstract class AbstractUpdater(
         private val groupId: String,
         private val artifactId: String,
-        private val updateFile: File
+        protected val updateFile: File
 ) : IUpdater {
 
-    private val latestVersionByLazy by lazy { DependencyLoader.INSTANCE.getLatestVersionOfDependencyFromWeb(groupId, artifactId, getRepositoryURL()) }
+    private var versionToInstall: String? = null
 
-    override fun getVersionToInstall(): String? = latestVersionByLazy
+    private var wasVersionToInstallCalled: Boolean = false
+
+    override fun getVersionToInstall(): String? {
+        if (!wasVersionToInstallCalled) {
+            this.wasVersionToInstallCalled = true
+            this.versionToInstall = DependencyLoader().getLatestVersionOfDependencyFromWeb(groupId, artifactId, getRepositoryURL())
+        }
+        return this.versionToInstall
+    }
 
     override fun downloadJarsForUpdate() {
-        val latestVersion = getVersionToInstall() ?: throw RuntimeException("Cannot perform update. Is the server down? (repo: ${getRepositoryURL()})")
+        val latestVersion = getVersionToInstall()
+                ?: throw RuntimeException("Cannot perform update. Is the server down? (repo: ${getRepositoryURL()})")
         val dependency = Dependency(groupId, artifactId, latestVersion)
         dependency.download(getRepositoryURL(), updateFile)
     }
-
 
 
 }

@@ -9,18 +9,23 @@ import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.service.impl.AbstractCloudServiceManager
 import eu.thesimplecloud.base.manager.startup.Manager
+import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
 class CloudServiceManagerImpl : AbstractCloudServiceManager() {
 
     override fun stopService(cloudService: ICloudService): ICommunicationPromise<Unit> {
+        if (cloudService.getState() == ServiceState.PREPARED) {
+            return CommunicationPromise.failed(IllegalStateException("Service is not running"))
+        }
         val wrapper = cloudService.getWrapper()
-        val wrapperClient = Manager.instance.communicationServer.getClientManager().getClientByClientValue(wrapper)
+        val wrapperClient = Manager.instance.communicationServer.getClientManager()
+                .getClientByClientValue(wrapper)
         wrapperClient?.sendUnitQuery(PacketIOStopCloudService(cloudService.getName()))
         return cloudListener<CloudServiceUnregisteredEvent>()
                 .addCondition { it.cloudService == cloudService }
                 .unregisterAfterCall()
-                .toPromise()
+                .toUnitPromise()
     }
 
     override fun startService(cloudService: ICloudService): ICommunicationPromise<Unit> {
@@ -32,6 +37,6 @@ class CloudServiceManagerImpl : AbstractCloudServiceManager() {
         return cloudListener<CloudServiceConnectedEvent>()
                 .addCondition { it.cloudService == cloudService }
                 .unregisterAfterCall()
-                .toPromise()
+                .toUnitPromise()
     }
 }

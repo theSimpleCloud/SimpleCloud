@@ -16,7 +16,7 @@ import eu.thesimplecloud.launcher.startup.Launcher
  * Date: 07.09.2019
  * Time: 16:07
  */
-@Command("help", CommandType.CONSOLE_AND_INGAME, "simplecloud.command.help")
+@Command("help", CommandType.CONSOLE_AND_INGAME, "cloud.command.help")
 class HelpCommand() : ICommandHandler {
 
     @CommandSubPath

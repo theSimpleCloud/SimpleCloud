@@ -25,7 +25,7 @@ interface ICommandSender {
 
     /**
      * Checks if the sender has the specified [permission]
-     * This methods block until the result is ready
+     * This method blocks until the result is ready
      * @return whether the player has the permission or false if there was an error
      */
     fun hasPermissionSync(permission: String): Boolean = hasPermission(permission).getBlockingOrNull() ?: false

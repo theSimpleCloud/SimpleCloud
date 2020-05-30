@@ -1,8 +1,7 @@
 package eu.thesimplecloud.base.manager.setup.mongo
 
-import eu.thesimplecloud.base.manager.config.MongoConfig
 import eu.thesimplecloud.base.manager.config.MongoConfigLoader
-import eu.thesimplecloud.base.manager.mongo.MongoServerInformation
+import eu.thesimplecloud.base.manager.mongo.MongoConnectionInformation
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
@@ -63,8 +62,8 @@ class MongoDBConnectionSetup : ISetup {
 
     @SetupFinished
     fun finished() {
-        val mongoServerInformation = MongoServerInformation(this.host!!, this.port!!, this.databaseName!!, this.username!!, this.password!!, "cloud_", "/", "/")
-        MongoConfigLoader().saveConfig(MongoConfig(false, mongoServerInformation))
+        val mongoConnectionInformation = MongoConnectionInformation(this.host!!, this.port!!, this.databaseName!!, this.username!!, this.password!!, "cloud_")
+        MongoConfigLoader().saveConfig(mongoConnectionInformation)
     }
 
 

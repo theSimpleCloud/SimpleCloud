@@ -19,6 +19,10 @@ repositories {
         name 'velocity'
         url 'https://repo.velocitypowered.com/snapshots/'
     }
+    maven {
+        name 'spongepowered'
+        url 'https://repo.spongepowered.org/maven/'
+    }
 }
 
 dependencies {
@@ -50,6 +54,7 @@ compileKotlin {
 }
 
 jar {
+    dependsOn ':simplecloud-client:jar'
     // This line of code recursively collects and copies all of a project's files
     // and adds them to the JAR itself. One can extend this task, to skip certain
     // files or particular types at will

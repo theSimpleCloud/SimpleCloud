@@ -20,3 +20,7 @@ compileKotlin {
         jvmTarget = "1.8"
     }
 }
+
+jar {
+    dependsOn ':simplecloud-api:jar'
+}

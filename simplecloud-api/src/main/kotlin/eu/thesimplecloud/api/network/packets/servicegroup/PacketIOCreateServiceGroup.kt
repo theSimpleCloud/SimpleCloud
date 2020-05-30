@@ -9,7 +9,7 @@ class PacketIOCreateServiceGroup : PacketIOCloudServiceGroupData {
     constructor(cloudServiceGroup: ICloudServiceGroup) : super(cloudServiceGroup)
     constructor() : super()
 
-    override fun handleData(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<Unit> {
+    override fun handleData(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<ICloudServiceGroup> {
         return CloudAPI.instance.getCloudServiceGroupManager().createServiceGroup(cloudServiceGroup)
     }
 }

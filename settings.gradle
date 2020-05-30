@@ -18,4 +18,6 @@ findProject(':simplecloud-modules:simplecloud-module-internalwrapper')?.name = '
 include 'simplecloud-updater'
 include 'simplecloud-modules:simplecloud-module-notify'
 findProject(':simplecloud-modules:simplecloud-module-notify')?.name = 'simplecloud-module-notify'
+include 'simplecloud-modules:simplecloud-module-hubcommand'
+findProject(':simplecloud-modules:simplecloud-module-hubcommand')?.name = 'simplecloud-module-hubcommand'
 

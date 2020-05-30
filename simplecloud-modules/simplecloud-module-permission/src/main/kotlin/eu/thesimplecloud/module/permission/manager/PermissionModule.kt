@@ -3,7 +3,6 @@ package eu.thesimplecloud.module.permission.manager
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.external.ICloudModule
 import eu.thesimplecloud.api.player.OfflineCloudPlayer
-import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.launcher.startup.Launcher
@@ -57,7 +56,7 @@ class PermissionModule : ICloudModule {
             offlineCloudPlayerHandler.saveCloudPlayer(cloudPlayer.toOfflinePlayer() as OfflineCloudPlayer)
         } else {
             val offlinePlayer = offlineCloudPlayerHandler.getOfflinePlayer(permissionPlayer.getName()) ?: return
-            offlinePlayer.setProperty(PermissionPlayer.PROPERTY_NAME, Property(permissionPlayer))
+            offlinePlayer.setProperty(PermissionPlayer.PROPERTY_NAME, permissionPlayer)
             offlineCloudPlayerHandler.saveCloudPlayer(offlinePlayer as OfflineCloudPlayer)
         }
     }

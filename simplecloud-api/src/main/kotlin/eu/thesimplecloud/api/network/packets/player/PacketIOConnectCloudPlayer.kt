@@ -3,6 +3,7 @@ package eu.thesimplecloud.api.network.packets.player
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.exception.UnreachableServiceException
 import eu.thesimplecloud.api.player.ICloudPlayer
+import eu.thesimplecloud.api.player.connection.ConnectionResponse
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
@@ -16,7 +17,7 @@ class PacketIOConnectCloudPlayer() : JsonPacket() {
         this.jsonData.append("playerUniqueId", cloudPlayer.getUniqueId()).append("serviceName", service.getName())
     }
 
-    override suspend fun handle(connection: IConnection): ICommunicationPromise<Unit> {
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<ConnectionResponse> {
         val playerUniqueId = this.jsonData.getObject("playerUniqueId", UUID::class.java) ?: return contentException("playerUniqueId")
         val serviceName = this.jsonData.getString("serviceName") ?: return contentException("serviceName")
         val cloudService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(serviceName) ?: return failure(UnreachableServiceException(""))

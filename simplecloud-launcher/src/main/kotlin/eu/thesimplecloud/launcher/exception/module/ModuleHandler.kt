@@ -3,6 +3,7 @@ package eu.thesimplecloud.launcher.exception.module
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.external.ICloudModule
+import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.launcher.dependency.DependencyLoader
 import eu.thesimplecloud.launcher.event.module.ModuleLoadedEvent
@@ -20,6 +21,7 @@ import java.util.jar.JarEntry
 import java.util.jar.JarFile
 
 open class ModuleHandler(
+        private val parentClassLoader: ClassLoader = ClassLoader.getSystemClassLoader(),
         private val handleException: (Throwable) -> Unit = { throw it }
 ) : IModuleHandler {
 
@@ -28,7 +30,7 @@ open class ModuleHandler(
     private val loadedModules = CopyOnWriteArrayList<LoadedModule>()
 
 
-    private var createModuleClassLoader: (Array<URL>, String) -> URLClassLoader = { urls, name -> ModuleClassLoader(urls, ClassLoader.getSystemClassLoader(), name, this) }
+    private var createModuleClassLoader: (Array<URL>, String) -> URLClassLoader = { urls, name -> ModuleClassLoader(urls, parentClassLoader, name, this) }
 
     override fun setCreateModuleClassLoader(function: (Array<URL>, String) -> URLClassLoader) {
         this.createModuleClassLoader = function
@@ -68,6 +70,7 @@ open class ModuleHandler(
             val loadedModule = LoadedModule(cloudModule, file, content, classLoader)
             this.loadedModules.add(loadedModule)
             CloudAPI.instance.getEventManager().call(ModuleLoadedEvent(loadedModule))
+
             return loadedModule
         } catch (ex: Exception) {
             throw ModuleLoadException(file.path, ex)
@@ -127,9 +130,14 @@ open class ModuleHandler(
         return constructor.newInstance()
     }
 
-    fun loadModuleClass(classLoader: ClassLoader, mainClassName: String): Class<out ICloudModule> {
+    private fun loadModuleClass(classLoader: ClassLoader, mainClassName: String): Class<out ICloudModule> {
         val mainClass = classLoader.loadClass(mainClassName)
         return mainClass.asSubclass(ICloudModule::class.java)
+    }
+
+    fun loadModuleClassFromFile(mainClassName: String, file: File): Class<out ICloudModule> {
+        val urlClassLoader = URLClassLoader(arrayOf(file.toURI().toURL()))
+        return loadModuleClass(urlClassLoader, mainClassName)
     }
 
     private fun getModuleLoadOrder(fileContents: List<LoadedModuleFileContent>): List<LoadedModuleFileContent> {
@@ -248,6 +256,14 @@ open class ModuleHandler(
 
         this.loadedModules.remove(loadedModule)
         CloudAPI.instance.getEventManager().call(ModuleUnloadedEvent(loadedModule))
+
+        //reset all property values
+        CloudAPI.instance.getCloudPlayerManager().getAllCachedObjects().forEach { player ->
+            player.getProperties().forEach { (it.value as Property).resetValue() }
+        }
+        CloudAPI.instance.getCloudServiceManager().getAllCachedObjects().forEach { group ->
+            group.getProperties().forEach { (it.value as Property).resetValue() }
+        }
     }
 
     override fun getLoadedModules(): List<LoadedModule> = this.loadedModules
