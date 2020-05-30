@@ -9,6 +9,7 @@ import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.launcher.console.command.CommandType
 import eu.thesimplecloud.launcher.console.command.ICommandHandler
 import eu.thesimplecloud.launcher.console.command.annotations.Command
+import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 import eu.thesimplecloud.launcher.extension.sendMessage
 import kotlin.concurrent.thread
@@ -55,6 +56,19 @@ class ReloadCommand : ICommandHandler {
 
         //enable
         thread(start = true, isDaemon = false) { Manager.instance.cloudModuleHandler.loadAllUnloadedModules() }
+    }
+
+    @CommandSubPath("module <name>", "Reloads a specific module")
+    fun handleReloadModule(commandSender: ICommandSender, @CommandArgument("name") moduleName: String) {
+        val module = Manager.instance.cloudModuleHandler.getLoadedModuleByName(moduleName)
+
+        if (module == null) {
+            commandSender.sendMessage("manager.command.reload.module.not-exists", "Module to reload doesn't exists.")
+            return
+        }
+
+        Manager.instance.cloudModuleHandler.unloadModule(module.cloudModule)
+        Manager.instance.cloudModuleHandler.loadModule(module.file)
     }
 
 }

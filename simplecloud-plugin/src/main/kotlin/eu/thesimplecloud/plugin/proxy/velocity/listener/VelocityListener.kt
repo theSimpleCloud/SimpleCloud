@@ -102,7 +102,7 @@ class VelocityListener(val plugin: CloudVelocityPlugin) {
     fun handle(event: KickedFromServerEvent) {
         val kickReasonString: String
         var kickReasonComponent = event.originalReason
-        if (!kickReasonComponent.isPresent()) {
+        if (!kickReasonComponent.isPresent) {
             kickReasonString = ""
             kickReasonComponent = Optional.of(CloudTextBuilder().build(CloudText("")))
         } else {
