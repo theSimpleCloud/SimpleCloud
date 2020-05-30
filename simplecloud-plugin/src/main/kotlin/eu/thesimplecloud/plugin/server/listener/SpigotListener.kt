@@ -21,7 +21,6 @@ class SpigotListener : Listener {
 
         val hostAddress = event.realAddress.hostAddress
         if (hostAddress != "127.0.0.1" && !CloudAPI.instance.getWrapperManager().getAllCachedObjects().any { it.getHost() == hostAddress }) {
-        //if (!playerIsOnProxy(player.uniqueId, hostAddress)) {
             event.disallow(PlayerLoginEvent.Result.KICK_OTHER, UNKNOWN_ADRESS)
             return
         }
@@ -50,11 +49,5 @@ class SpigotListener : Listener {
             playerManager.delete(cloudPlayer)
         }
     }
-
-    /*private fun playerIsOnProxy(uuid: UUID, connectedAddress: String): Boolean {
-        val cloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCloudPlayer(uuid).getBlockingOrNull()?: return false
-
-        return cloudPlayer.getPlayerConnection().getAddress().getHostname() == connectedAddress
-    }*/
-
+    
 }
