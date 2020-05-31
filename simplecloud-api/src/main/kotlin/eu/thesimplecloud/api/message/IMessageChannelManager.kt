@@ -11,6 +11,6 @@ interface IMessageChannelManager {
     /**
      * Return the [IMessageChannel] found by the specified [name]
      */
-    fun getMessageChannelByName(name: String): IMessageChannel<*>?
+    fun <T> getMessageChannelByName(name: String): IMessageChannel<T>?
 
 }

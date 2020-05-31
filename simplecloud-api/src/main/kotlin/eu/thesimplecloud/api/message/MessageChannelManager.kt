@@ -19,8 +19,8 @@ class MessageChannelManager : IMessageChannelManager {
         return messageChannel
     }
 
-    override fun getMessageChannelByName(name: String): IMessageChannel<*>? {
-        return this.channels[name]
+    override fun <T> getMessageChannelByName(name: String): IMessageChannel<T>? {
+        return this.channels[name] as IMessageChannel<T>
     }
 
     fun sendMessage(message: Message) {
@@ -28,7 +28,7 @@ class MessageChannelManager : IMessageChannelManager {
         if (CloudAPI.instance.isManager()) {
             val server = CloudAPI.instance.getThisSidesCommunicationBootstrap() as INettyServer<*>
             val allNotManagerReceivers = message.receivers
-                    .filter { it.cloudClientType != NetworkComponentType.MANAGER }
+                    .filter { it.componentType != NetworkComponentType.MANAGER }
                     .mapNotNull { it.getNetworkComponent() }
             allNotManagerReceivers.forEach {
                 val client = server.getClientManager().getClientByClientValue(it)

@@ -1,32 +1,5 @@
-plugins {
-    id 'java'
-    id 'org.jetbrains.kotlin.jvm'
-    id 'maven-publish'
-    id 'maven'
-}
-
-repositories {
-    maven {
-        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
-    }
-    maven {
-        url = 'https://oss.sonatype.org/content/repositories/snapshots'
-    }
-    maven {
-        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
-    }
-    maven {
-        name 'velocity'
-        url 'https://repo.velocitypowered.com/snapshots/'
-    }
-    maven {
-        name 'spongepowered'
-        url 'https://repo.spongepowered.org/maven/'
-    }
-}
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
     implementation group: 'org.reflections', name: 'reflections', version: '0.9.12'
     compile(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion) {
         transitive = false
@@ -34,7 +7,6 @@ dependencies {
     compile(project(":simplecloud-api")) {
         transitive = false
     }
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
     compile(project(":simplecloud-client")) {
         transitive = false
@@ -43,14 +15,6 @@ dependencies {
     implementation 'net.md-5:bungeecord-api:1.12-SNAPSHOT'
     implementation 'com.velocitypowered:velocity-api:1.1.0-SNAPSHOT'
     annotationProcessor 'com.velocitypowered:velocity-api:1.1.0-SNAPSHOT'
-}
-
-configurations {
-    jar.archiveName = 'SimpleCloud-Plugin.jar'
-}
-
-compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
 }
 
 jar {

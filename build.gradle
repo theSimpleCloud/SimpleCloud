@@ -9,21 +9,43 @@ repositories {
 }
 
 allprojects {
-    
+
     group 'eu.thesimplecloud.simplecloud'
-    version '1.1.0-SNAPSHOT'
+    version '1.1.2-SNAPSHOT'
 
     sourceCompatibility = 1.8
 
     repositories {
-        mavenLocal()
         mavenCentral()
+
         maven {
             url "https://repo.thesimplecloud.eu/artifactory/gradle-dev-local/"
         }
+
         maven {
             url "https://libraries.minecraft.net"
         }
+
+        maven {
+            name 'velocity'
+            url 'https://repo.velocitypowered.com/snapshots/'
+        }
+
+        maven {
+            name 'spongepowered'
+            url 'https://repo.spongepowered.org/maven'
+        }
+
+        maven {
+            name 'bungeecord-repo'
+            url 'https://oss.sonatype.org/content/repositories/snapshots'
+        }
+
+        maven {
+            name 'spigotmc-repo'
+            url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+        }
+
     }
 
     project.ext {
@@ -33,17 +55,6 @@ allprojects {
     buildscript {
         repositories {
             mavenLocal()
-        }
-    }
-
-    compileKotlin {
-        kotlinOptions {
-            jvmTarget = "1.8"
-        }
-    }
-    compileTestKotlin {
-        kotlinOptions {
-            jvmTarget = "1.8"
         }
     }
 }
@@ -69,9 +80,21 @@ subprojects {
         archives javadocJar
     }
 
-}
+    dependencies {
+        testCompile group: 'junit', name: 'junit', version: '4.13'
+        implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+        implementation(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion)
+    }
 
-dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    implementation(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion)
+    compileKotlin {
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
+    }
+    compileTestKotlin {
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
+    }
+
 }

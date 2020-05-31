@@ -3,7 +3,7 @@ package eu.thesimplecloud.api.client
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.utils.INetworkComponent
 
-data class NetworkComponentReference(val cloudClientType: NetworkComponentType, val name: String) {
+data class NetworkComponentReference(val componentType: NetworkComponentType, val name: String) {
 
     companion object {
         @JvmStatic
@@ -13,7 +13,7 @@ data class NetworkComponentReference(val cloudClientType: NetworkComponentType, 
     }
 
     fun getNetworkComponent(): INetworkComponent? {
-        return when (cloudClientType) {
+        return when (componentType) {
             NetworkComponentType.WRAPPER -> {
                 CloudAPI.instance.getWrapperManager().getWrapperByName(name)
             }
