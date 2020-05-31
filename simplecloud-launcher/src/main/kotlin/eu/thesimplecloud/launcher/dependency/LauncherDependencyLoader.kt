@@ -16,6 +16,7 @@ class LauncherDependencyLoader {
                 Dependency("org.jetbrains.kotlinx", "kotlinx-coroutines-core", "1.3.5"),
                 Dependency("com.google.code.gson", "gson", "2.8.6"),
                 Dependency("io.netty", "netty-all", "4.1.49.Final"),
+                Dependency("org.reflections", "reflections", "0.9.12"),
                 Dependency("com.github.ajalt", "clikt", "2.2.0"))
         dependencyLoader.installDependencies()
     }

@@ -17,6 +17,11 @@ dependencies {
     annotationProcessor 'com.velocitypowered:velocity-api:1.1.0-SNAPSHOT'
 }
 
+
+configurations {
+    jar.archiveName = 'SimpleCloud-Plugin.jar'
+}
+
 jar {
     dependsOn ':simplecloud-client:jar'
     // This line of code recursively collects and copies all of a project's files
