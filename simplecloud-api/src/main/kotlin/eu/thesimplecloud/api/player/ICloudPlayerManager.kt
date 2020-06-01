@@ -12,7 +12,6 @@ import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.toListPromise
 import java.util.*
-import java.util.function.Predicate
 
 interface ICloudPlayerManager : ICacheList<ICloudPlayer> {
 
@@ -219,21 +218,13 @@ interface ICloudPlayerManager : ICacheList<ICloudPlayer> {
     }
 
     /**
-     * Filters all [ICloudPlayer]s.
+     * Returns all [ICloudPlayer]s.
      */
-    fun getOnlinePlayersFiltered(predicate: Predicate<ICloudPlayer>): ICommunicationPromise<List<SimpleCloudPlayer>>
+    fun getAllOnlinePlayers(): ICommunicationPromise<List<SimpleCloudPlayer>>
 
     /**
      * Returns the amount of players connected to the network
      */
     fun getNetworkOnlinePlayerCount(): ICommunicationPromise<Int> = CloudAPI.instance.executeOnManager { CloudAPI.instance.getCloudPlayerManager().getAllCachedObjects().size }
 
-    /*
-    /**
-     * Returns all Player Connections matching the specified [predicate]
-     */
-    fun getCloudPlayersFiltered(predicate: (ICloudPlayer) -> Boolean): ICommunicationPromise<List<IPlayerConnection>> {
-        return CloudAPI.instance.executeOnManager { CloudAPI.instance.getCloudPlayerManager().getAllCachedCloudPlayers().filter { predicate(it) }.map { it.getPlayerConnection() } }
-    }
-    */
 }

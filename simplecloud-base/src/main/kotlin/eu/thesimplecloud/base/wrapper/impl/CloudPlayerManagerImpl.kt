@@ -11,7 +11,6 @@ import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import java.util.*
-import java.util.function.Predicate
 
 class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
 
@@ -79,7 +78,7 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
         throw UnsupportedOperationException("Players are not supported in the wrapper")
     }
 
-    override fun getOnlinePlayersFiltered(predicate: Predicate<ICloudPlayer>): ICommunicationPromise<List<SimpleCloudPlayer>> {
+    override fun getAllOnlinePlayers(): ICommunicationPromise<List<SimpleCloudPlayer>> {
         throw UnsupportedOperationException("Players are not supported in the wrapper")
     }
 }

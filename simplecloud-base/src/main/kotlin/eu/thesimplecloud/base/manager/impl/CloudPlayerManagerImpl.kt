@@ -21,7 +21,6 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.flatten
 import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnectedClient
 import java.util.*
-import java.util.function.Predicate
 import kotlin.collections.ArrayList
 
 class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
@@ -169,8 +168,8 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
         return CommunicationPromise.ofNullable(offlinePlayer, NoSuchPlayerException("Player not found"))
     }
 
-    override fun getOnlinePlayersFiltered(predicate: Predicate<ICloudPlayer>): ICommunicationPromise<List<SimpleCloudPlayer>> {
-        return CommunicationPromise.of(getAllCachedObjects().filter { predicate.test(it) }.map { it.toSimplePlayer() })
+    override fun getAllOnlinePlayers(): ICommunicationPromise<List<SimpleCloudPlayer>> {
+        return CommunicationPromise.of(getAllCachedObjects().map { it.toSimplePlayer() })
     }
 
     private fun getProxyClientOfCloudPlayer(cloudPlayer: ICloudPlayer): IConnectedClient<*>? {

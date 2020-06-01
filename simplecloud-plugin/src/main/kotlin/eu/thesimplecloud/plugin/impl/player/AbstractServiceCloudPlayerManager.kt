@@ -1,8 +1,8 @@
 package eu.thesimplecloud.plugin.impl.player
 
+import eu.thesimplecloud.api.network.packets.player.PacketIOGetAllOnlinePlayers
 import eu.thesimplecloud.api.network.packets.player.PacketIOGetCloudPlayer
 import eu.thesimplecloud.api.network.packets.player.PacketIOGetOfflinePlayer
-import eu.thesimplecloud.api.network.packets.player.PacketIOGetOnlinePlayersFiltered
 import eu.thesimplecloud.api.network.packets.player.PacketIOSetCloudPlayerUpdates
 import eu.thesimplecloud.api.network.packets.sync.cachelist.PacketIOUpdateCacheObject
 import eu.thesimplecloud.api.player.AbstractCloudPlayerManager
@@ -14,7 +14,6 @@ import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import java.util.*
-import java.util.function.Predicate
 
 /**
  * Created by IntelliJ IDEA.
@@ -61,8 +60,9 @@ abstract class AbstractServiceCloudPlayerManager : AbstractCloudPlayerManager() 
         return CloudPlugin.instance.communicationClient.sendQuery(PacketIOGetOfflinePlayer(uniqueId))
     }
 
-    override fun getOnlinePlayersFiltered(predicate: Predicate<ICloudPlayer>): ICommunicationPromise<List<SimpleCloudPlayer>> {
-        return CloudPlugin.instance.communicationClient.sendQuery(PacketIOGetOnlinePlayersFiltered(predicate))
+    override fun getAllOnlinePlayers(): ICommunicationPromise<List<SimpleCloudPlayer>> {
+        return CloudPlugin.instance.communicationClient.sendQuery<Array<SimpleCloudPlayer>>(PacketIOGetAllOnlinePlayers())
+                .then { it.toList() }
     }
 
 }
