@@ -15,6 +15,6 @@ interface IVersionConverter {
     /**
      * Coverts from [getFromVersion] to [getToVersion]
      */
-    fun covert()
+    fun convert()
 
 }

@@ -1,8 +1,8 @@
 package eu.thesimplecloud.base.manager.service
 
 import eu.thesimplecloud.api.service.ICloudService
+import eu.thesimplecloud.api.service.startconfiguration.IServiceStartConfiguration
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
-import eu.thesimplecloud.api.template.ITemplate
 
 interface IServiceHandler {
 
@@ -14,10 +14,8 @@ interface IServiceHandler {
 
     /**
      * Starts the specified service.
-     * @param cloudServiceGroup the group of the service to start
-     * @param template the template the service shall use
-     * @param serviceNumber the number of the service e.g Lobby-2 -> 2 is the serviceNumber
-     * @param memory the amount of memory the server shall use in MB
+     * @param startConfiguration the configuration with the information to start the new service.
+     * @return the new service
      */
-    fun startService(cloudServiceGroup: ICloudServiceGroup, template: ITemplate, serviceNumber: Int, memory: Int): ICloudService
+    fun startService(startConfiguration: IServiceStartConfiguration): ICloudService
 }

@@ -17,6 +17,7 @@ data class DefaultCloudService(
         private var wrapperName: String?,
         private var port: Int,
         private val maxMemory: Int,
+        private val maxPlayers: Int,
         private var motd: String
 ) : ICloudService {
 
@@ -60,6 +61,10 @@ data class DefaultCloudService(
 
     override fun setOnlineCount(amount: Int) {
         this.onlineCount = amount
+    }
+
+    override fun getMaxPlayers(): Int {
+        return this.maxPlayers
     }
 
     override fun getMOTD(): String = this.motd

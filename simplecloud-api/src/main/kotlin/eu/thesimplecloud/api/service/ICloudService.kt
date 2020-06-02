@@ -140,7 +140,7 @@ interface ICloudService : INetworkComponent, IBootstrap, IPropertyMap {
     /**
      * Returns the maximum amount of players for this service
      */
-    fun getMaxPlayers(): Int = getServiceGroup().getMaxPlayers()
+    fun getMaxPlayers(): Int
 
     /**
      * Returns the MOTD of this service.

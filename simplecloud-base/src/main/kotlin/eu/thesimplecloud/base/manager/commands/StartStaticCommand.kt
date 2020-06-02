@@ -2,6 +2,7 @@ package eu.thesimplecloud.base.manager.commands
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.command.ICommandSender
+import eu.thesimplecloud.api.service.startconfiguration.ServiceStartConfiguration
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.launcher.console.command.CommandType
 import eu.thesimplecloud.launcher.console.command.ICommandHandler
@@ -38,7 +39,7 @@ class StartStaticCommand : ICommandHandler {
             return
         }
 
-        Manager.instance.serviceHandler.startService(serviceGroup, serviceGroup.getTemplate(), number, serviceGroup.getMaxMemory())
+        Manager.instance.serviceHandler.startService(ServiceStartConfiguration(serviceGroup).setServiceNumber(number))
         commandSender.sendMessage("manager.command.startstatic.success",
                 "Starting service...")
     }

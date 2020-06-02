@@ -4,6 +4,8 @@ import eu.thesimplecloud.api.cachelist.ICacheList
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceType
 import eu.thesimplecloud.api.service.ServiceVersion
+import eu.thesimplecloud.api.service.startconfiguration.IServiceStartConfiguration
+import eu.thesimplecloud.api.service.startconfiguration.ServiceStartConfiguration
 import eu.thesimplecloud.api.servicegroup.grouptype.ICloudLobbyGroup
 import eu.thesimplecloud.api.servicegroup.grouptype.ICloudProxyGroup
 import eu.thesimplecloud.api.servicegroup.grouptype.ICloudServerGroup
@@ -172,6 +174,18 @@ interface ICloudServiceGroupManager : ICacheList<ICloudServiceGroup> {
      * The promise will fail with:
      * - [NoSuchElementException] if the specified group is not registered.
      */
-    fun startNewService(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<ICloudService>
+    fun startNewService(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<ICloudService> {
+        return startNewService(ServiceStartConfiguration(cloudServiceGroup))
+    }
+
+    /**
+     * Starts a new service by the specified [serviceStartConfiguration]
+     * @return a promise that is completed when the service was registered with its name, or
+     * when an exception is encountered. [ICommunicationPromise.isSuccess] indicates success
+     * or failure.
+     * The promise will fail with:
+     * - [IllegalArgumentException] if the service to start is already running
+     */
+    fun startNewService(serviceStartConfiguration: IServiceStartConfiguration): ICommunicationPromise<ICloudService>
 
 }

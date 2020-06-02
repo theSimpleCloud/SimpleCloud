@@ -50,6 +50,9 @@ class ProxyEventHandler() {
                 loginRequestPromise.cause().printStackTrace()
                 cancelEvent("§cLogin failed: " + loginRequestPromise.cause().message)
             }
+
+            //update player to cache to avoid bugs
+            CloudAPI.instance.getCloudPlayerManager().update(createPromise.getNow()!!, true)
         }
 
         fun handlePostLogin(uniqueId: UUID, name: String) {

@@ -3,6 +3,8 @@ import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceType
 import eu.thesimplecloud.api.service.ServiceVersion
+import eu.thesimplecloud.api.service.startconfiguration.IServiceStartConfiguration
+import eu.thesimplecloud.api.service.startconfiguration.ServiceStartConfiguration
 import eu.thesimplecloud.api.template.ITemplate
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
@@ -122,7 +124,12 @@ interface ICloudServiceGroup {
      * The promise will fail with:
      * - [NoSuchElementException] if the group does not exist.
      */
-    fun startNewService(): ICommunicationPromise<ICloudService> = CloudAPI.instance.getCloudServiceGroupManager().startNewService(this)
+    fun startNewService(): ICommunicationPromise<ICloudService> = createStartConfiguration().startService()
+
+    /**
+     * Returns a new [IServiceStartConfiguration]
+     */
+    fun createStartConfiguration(): IServiceStartConfiguration = ServiceStartConfiguration(this)
 
     /**
      * Returns a list of all registered services by this group

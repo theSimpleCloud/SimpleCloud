@@ -5,8 +5,9 @@ import eu.thesimplecloud.api.network.packets.service.PacketIOWrapperStartService
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.service.impl.DefaultCloudService
+import eu.thesimplecloud.api.service.startconfiguration.IServiceStartConfiguration
+import eu.thesimplecloud.api.service.startconfiguration.ServiceStartConfiguration
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
-import eu.thesimplecloud.api.template.ITemplate
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.launcher.extension.sendMessage
@@ -25,16 +26,29 @@ class ServiceHandler : IServiceHandler {
         require(count >= 1) { "Count must be positive." }
         val list = ArrayList<ICloudService>()
         for (i in 0 until count) {
-            list.add(startService(cloudServiceGroup, cloudServiceGroup.getTemplate(), getNumberForNewService(cloudServiceGroup), cloudServiceGroup.getMaxMemory()))
+            list.add(startService(ServiceStartConfiguration(cloudServiceGroup)))
         }
         return list
     }
 
-    override fun startService(cloudServiceGroup: ICloudServiceGroup, template: ITemplate, serviceNumber: Int, memory: Int): ICloudService {
+    override fun startService(startConfiguration: IServiceStartConfiguration): ICloudService {
+        startConfiguration as ServiceStartConfiguration
+        val cloudServiceGroup = startConfiguration.getServiceGroup()
+        val serviceNumber = startConfiguration.serviceNumber ?: getNumberForNewService(cloudServiceGroup)
         val serviceName = cloudServiceGroup.getName() + "-" + serviceNumber
         val runningService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(serviceName)
         if (runningService != null) throw IllegalArgumentException("Service to start ($serviceName) is already registered")
-        val service = DefaultCloudService(cloudServiceGroup.getName(), serviceNumber, UUID.randomUUID(), template.getName(), cloudServiceGroup.getWrapperName(), -1, memory, "Cloud service")
+        val service = DefaultCloudService(
+                cloudServiceGroup.getName(),
+                serviceNumber,
+                UUID.randomUUID(),
+                startConfiguration.template,
+                cloudServiceGroup.getWrapperName(),
+                -1,
+                startConfiguration.maxMemory,
+                startConfiguration.maxPlayers,
+                "Cloud service"
+        )
         CloudAPI.instance.getCloudServiceManager().update(service)
         addServiceToQueue(service)
         return service

@@ -1,7 +1,7 @@
 package eu.thesimplecloud.base.manager.impl
 
-import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.service.ICloudService
+import eu.thesimplecloud.api.service.startconfiguration.IServiceStartConfiguration
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.api.servicegroup.impl.AbstractCloudServiceGroupManager
 import eu.thesimplecloud.base.manager.startup.Manager
@@ -27,11 +27,14 @@ class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
         Manager.instance.cloudServiceGroupFileHandler.save(value)
     }
 
-    override fun startNewService(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<ICloudService> {
-        if (CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(cloudServiceGroup.getName()) == null)
-            return CommunicationPromise.failed(NoSuchElementException("Group is not registered."))
-        val services = Manager.instance.serviceHandler.startServicesByGroup(cloudServiceGroup)
-        return CommunicationPromise.of(services.first())
+    override fun startNewService(serviceStartConfiguration: IServiceStartConfiguration): ICommunicationPromise<ICloudService> {
+        val service = try {
+            Manager.instance.serviceHandler.startService(serviceStartConfiguration)
+        } catch (ex: IllegalArgumentException) {
+            //catch IllegalArgumentException. It will be thrown when the service to start is already registered.
+            return CommunicationPromise.failed(ex)
+        }
+        return CommunicationPromise.of(service)
     }
 
     override fun delete(value: ICloudServiceGroup, fromPacket: Boolean) {
