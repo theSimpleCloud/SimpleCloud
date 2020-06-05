@@ -47,7 +47,7 @@ open class DefaultWrapperManager : AbstractCacheList<IWrapperInfo>(), IWrapperMa
             cachedValue as IWritableWrapperInfo
 
             cachedValue.setMaxMemory(updateValue.getMaxMemory())
-            cachedValue.setUsedMemory(updateValue.getUnusedMemory())
+            cachedValue.setUsedMemory(updateValue.getUsedMemory())
 
             cachedValue.setCurrentlyStartingServices(updateValue.getCurrentlyStartingServices())
             cachedValue.setMaxSimultaneouslyStartingServices(updateValue.getMaxSimultaneouslyStartingServices())

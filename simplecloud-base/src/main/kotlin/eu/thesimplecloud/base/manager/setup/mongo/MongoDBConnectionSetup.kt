@@ -29,7 +29,6 @@ import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
 import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.launcher.utils.IpValidator
 
 class MongoDBConnectionSetup : ISetup {
 
@@ -41,7 +40,11 @@ class MongoDBConnectionSetup : ISetup {
 
     @SetupQuestion(0, "manager.setup.mongodb-connection.question.host", "Please provide the host of the mongodb installation.")
     fun host(host: String): Boolean {
-        if (!IpValidator().validate(host)) {
+        //if (!IpValidator().validate(host)) {
+        //    Launcher.instance.consoleSender.sendMessage("manager.setup.mongodb-connection.host-invalid", "The entered host is invalid.")
+        //    return false
+        //}
+        if (host.isNotEmpty()) {
             Launcher.instance.consoleSender.sendMessage("manager.setup.mongodb-connection.host-invalid", "The entered host is invalid.")
             return false
         }

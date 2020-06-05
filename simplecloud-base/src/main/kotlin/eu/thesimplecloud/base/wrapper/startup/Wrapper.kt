@@ -104,9 +104,15 @@ class Wrapper : ICloudApplication {
             }
             this.processQueue?.clearQueue()
             stopAllRunningServicesAndWaitFor()
+            Thread.sleep(300)
             if (this.templateClient != null) {
-                FileUtils.deleteDirectory(File(DirectoryPaths.paths.modulesPath))
+                try {
+                    FileUtils.deleteDirectory(File(DirectoryPaths.paths.modulesPath))
+                } catch (e: Exception) {
+
+                }
             }
+            FileUtils.deleteDirectory(File(DirectoryPaths.paths.tempPath))
             this.communicationClient.shutdown()
             this.templateClient?.shutdown()
         })

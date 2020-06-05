@@ -33,7 +33,7 @@ allprojects {
         mavenCentral()
 
         maven {
-            url "https://repo.thesimplecloud.eu/artifactory/gradle-dev-local/"
+            url "https://repo.thesimplecloud.eu/artifactory/gradle-release-local/"
         }
 
         maven {
@@ -63,7 +63,7 @@ allprojects {
     }
 
     project.ext {
-        depedencyClientServerAPIVersion = '2.4.11-SNAPSHOT'
+        depedencyClientServerAPIVersion = '2.4.13-SNAPSHOT'
     }
 
     buildscript {

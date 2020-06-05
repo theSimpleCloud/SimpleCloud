@@ -161,13 +161,17 @@ interface ICloudServiceGroup {
     /**
      * Returns the amount of online players in this group
      */
-    @Deprecated("Use getOnlineCount instead", ReplaceWith("getOnlineCount()"))
-    fun getOnlinePlayers(): Int = getAllServices().sumBy { it.getOnlineCount()}
+    fun getOnlinePlayerCount(): Int = getAllServices().sumBy { it.getOnlineCount() }
 
     /**
-     * Returns the amount of online players in this group
+     * Returns the amount of registered services
      */
-    fun getOnlineCount(): Int = getAllServices().sumBy { it.getOnlineCount() }
+    fun getRegisteredServiceCount(): Int = getAllServices().size
+
+    /**
+     * Returns the amount of online services
+     */
+    fun getOnlineServiceCount(): Int = getAllServices().filter { it.isOnline() }.size
 
     /**
      * Stops all services by this group.

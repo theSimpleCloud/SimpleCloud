@@ -64,7 +64,7 @@ class ProxyHandler() {
     }
 
     fun getOnlinePlayers(): Int {
-        return CloudPlugin.instance.thisService().getServiceGroup().getOnlineCount()
+        return CloudPlugin.instance.thisService().getServiceGroup().getOnlinePlayerCount()
     }
 
     fun replaceString(message: String): String {
