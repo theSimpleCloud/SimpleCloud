@@ -23,6 +23,7 @@
 package eu.thesimplecloud.base.wrapper.startup
 
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.client.NetworkComponentType
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
@@ -33,6 +34,7 @@ import eu.thesimplecloud.base.wrapper.process.CloudServiceProcessManager
 import eu.thesimplecloud.base.wrapper.process.filehandler.ServiceVersionLoader
 import eu.thesimplecloud.base.wrapper.process.queue.CloudServiceProcessQueue
 import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.ServiceConfiguratorManager
+import eu.thesimplecloud.client.packets.PacketOutCloudClientLogin
 import eu.thesimplecloud.clientserverapi.client.INettyClient
 import eu.thesimplecloud.clientserverapi.client.NettyClient
 import eu.thesimplecloud.clientserverapi.lib.packet.IPacket
@@ -144,6 +146,7 @@ class Wrapper : ICloudApplication {
             } catch (e: InterruptedException) {
             }
         }
+        this.communicationClient.sendUnitQuery(PacketOutCloudClientLogin(NetworkComponentType.WRAPPER), 4000).syncUninterruptibly()
 
         if (!isStartedInManagerDirectory()) {
             val templateClient = NettyClient(launcherConfig.host, launcherConfig.port + 1, ConnectionHandlerImpl())
