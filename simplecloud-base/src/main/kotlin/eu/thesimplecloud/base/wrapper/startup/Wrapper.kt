@@ -165,7 +165,8 @@ class Wrapper : ICloudApplication {
         thread(start = true, isDaemon = false) {
             templateClient.start().then {
                 Launcher.instance.consoleSender.sendMessage("wrapper.template.requesting", "Requesting templates...")
-                templateClient.sendUnitQuery(PacketOutGetTemplates(), TimeUnit.SECONDS.toMillis((60 * 2) + 30)).addResultListener {
+                templateClient.sendUnitQuery(PacketOutGetTemplates(), TimeUnit.SECONDS.toMillis((60 * 2) + 30))
+                        .thenDelayed(3, TimeUnit.SECONDS) {
                     reloadExistingModules()
                     val thisWrapper = getThisWrapper() as IWritableWrapperInfo
                     thisWrapper.setTemplatesReceived(true)

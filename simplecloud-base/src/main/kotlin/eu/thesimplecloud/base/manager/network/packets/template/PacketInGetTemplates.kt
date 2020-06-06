@@ -24,7 +24,6 @@ package eu.thesimplecloud.base.manager.network.packets.template
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
-import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.filetransfer.directory.IDirectorySync
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
@@ -44,9 +43,6 @@ class PacketInGetTemplates() : JsonPacket() {
         syncDirectory(templatesDirectorySync, connection)
         syncDirectory(modulesDirectorySync, connection)
         Launcher.instance.consoleSender.sendMessage("manager.templates.synchronization.complete", "Synchronized templates with Wrapper %WRAPPER%", wrapperByHost.getName(), ".")
-        wrapperByHost as IWritableWrapperInfo
-        wrapperByHost.setTemplatesReceived(true)
-        CloudAPI.instance.getWrapperManager().update(wrapperByHost)
         return unit()
     }
 
