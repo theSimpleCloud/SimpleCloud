@@ -44,7 +44,7 @@ class MongoDBConnectionSetup : ISetup {
         //    Launcher.instance.consoleSender.sendMessage("manager.setup.mongodb-connection.host-invalid", "The entered host is invalid.")
         //    return false
         //}
-        if (host.isNotEmpty()) {
+        if (host.isEmpty()) {
             Launcher.instance.consoleSender.sendMessage("manager.setup.mongodb-connection.host-invalid", "The entered host is invalid.")
             return false
         }
