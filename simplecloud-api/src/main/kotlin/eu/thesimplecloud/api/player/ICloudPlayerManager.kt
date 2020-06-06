@@ -1,45 +1,51 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2020 The SimpleCloud authors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
 package eu.thesimplecloud.api.player
 
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.exception.NoSuchWorldException
-import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
+import eu.thesimplecloud.api.cachelist.ICacheList
+import eu.thesimplecloud.api.exception.*
+import eu.thesimplecloud.api.executeOnManager
 import eu.thesimplecloud.api.location.ServiceLocation
 import eu.thesimplecloud.api.location.SimpleLocation
+import eu.thesimplecloud.api.player.connection.ConnectionResponse
 import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.api.service.ICloudService
-import eu.thesimplecloud.api.exception.UnreachableServiceException
-import eu.thesimplecloud.api.exception.NoSuchPlayerException
-import eu.thesimplecloud.api.exception.PlayerConnectException
-import eu.thesimplecloud.api.exception.NoSuchServiceException
-import eu.thesimplecloud.api.executeOnManager
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
+import eu.thesimplecloud.clientserverapi.lib.promise.toListPromise
 import java.util.*
 
-interface ICloudPlayerManager {
-
-    /**
-     * Updates a [ICloudPlayer].
-     */
-    fun updateCloudPlayer(cloudPlayer: ICloudPlayer, fromPacket: Boolean = false)
-
-    /**
-     * Removes a [ICloudPlayer] from the cache.
-     */
-    fun removeCloudPlayer(cloudPlayer: ICloudPlayer)
-
-    /**
-     * Returns all cached [ICloudPlayer]s.
-     */
-    fun getAllCachedCloudPlayers(): Collection<ICloudPlayer>
+interface ICloudPlayerManager : ICacheList<ICloudPlayer> {
 
     /**
      * Returns the cached [ICloudPlayer] found by the specified [uniqueId]
      */
-    fun getCachedCloudPlayer(uniqueId: UUID): ICloudPlayer? = getAllCachedCloudPlayers().firstOrNull { it.getUniqueId() == uniqueId }
+    fun getCachedCloudPlayer(uniqueId: UUID): ICloudPlayer? = getAllCachedObjects().firstOrNull { it.getUniqueId() == uniqueId }
 
     /**
      * Returns the cached [ICloudPlayer] found by the specified [name]
      */
-    fun getCachedCloudPlayer(name: String): ICloudPlayer? = getAllCachedCloudPlayers().firstOrNull { it.getName().equals(name, true) }
+    fun getCachedCloudPlayer(name: String): ICloudPlayer? = getAllCachedObjects().firstOrNull { it.getName().equals(name, true) }
 
     /**
      * Returns a promise that will be completed with the requested [ICloudPlayer]
@@ -57,8 +63,9 @@ interface ICloudPlayerManager {
      * Sends a message to a player.
      * @param cloudPlayer the player that shall receive the message
      * @param cloudText the text to send.
+     * @return a promise that completes when the message was sent.
      */
-    fun sendMessageToPlayer(cloudPlayer: ICloudPlayer, cloudText: CloudText)
+    fun sendMessageToPlayer(cloudPlayer: ICloudPlayer, cloudText: CloudText): ICommunicationPromise<Unit>
 
     /**
      * Sends the [cloudPlayer] to the specified [cloudService]
@@ -73,7 +80,7 @@ interface ICloudPlayerManager {
      * - [NoSuchPlayerException] if the player cannot be found on the proxy service.
      * - [PlayerConnectException] if the proxy was unable to connect the player to the service.
      */
-    fun connectPlayer(cloudPlayer: ICloudPlayer, cloudService: ICloudService): ICommunicationPromise<Unit>
+    fun connectPlayer(cloudPlayer: ICloudPlayer, cloudService: ICloudService): ICommunicationPromise<ConnectionResponse>
 
     /**
      * Kicks the specified player with the specified message from the network.
@@ -110,7 +117,11 @@ interface ICloudPlayerManager {
      * @param cloudPlayer the player
      * @param update whether updates shall be sent.
      */
-    fun setUpdates(cloudPlayer: ICloudPlayer, update: Boolean, serviceName: String)
+    fun setUpdates(cloudPlayer: ICloudPlayer, update: Boolean, serviceName: String) {
+        require(getCachedCloudPlayer(cloudPlayer.getUniqueId()) === cloudPlayer) {
+            "CloudPlayer must be in the cache of CloudPlayerManager"
+        }
+    }
 
     /**
      * Teleports the specified [cloudPlayer] to the specified [location].
@@ -197,16 +208,45 @@ interface ICloudPlayerManager {
     fun getOfflineCloudPlayer(uniqueId: UUID): ICommunicationPromise<IOfflineCloudPlayer>
 
     /**
+     * Returns a list of the requested players.
+     */
+    fun getOfflineCloudPlayersByNames(names: List<String>): ICommunicationPromise<List<IOfflineCloudPlayer?>> {
+        val playerPromises = names.map { getOfflineCloudPlayer(it) }
+        return playerPromises.toListPromise()
+    }
+
+    /**
+     * Returns a list of the requested players.
+     */
+    fun getOfflineCloudPlayersByUniqueIds(uniqueIds: List<UUID>): ICommunicationPromise<List<IOfflineCloudPlayer?>> {
+        val playerPromises = uniqueIds.map { getOfflineCloudPlayer(it) }
+        return playerPromises.toListPromise()
+    }
+
+    /**
+     * Returns a list of the requested players.
+     */
+    fun getCloudPlayersByNames(names: List<String>): ICommunicationPromise<List<ICloudPlayer?>> {
+        val playerPromises = names.map { getCloudPlayer(it) }
+        return playerPromises.toListPromise()
+    }
+
+    /**
+     * Returns a list of the requested players.
+     */
+    fun getCloudPlayersByUniqueIds(uniqueIds: List<UUID>): ICommunicationPromise<List<ICloudPlayer?>> {
+        val playerPromises = uniqueIds.map { getCloudPlayer(it) }
+        return playerPromises.toListPromise()
+    }
+
+    /**
+     * Returns all [ICloudPlayer]s.
+     */
+    fun getAllOnlinePlayers(): ICommunicationPromise<List<SimpleCloudPlayer>>
+
+    /**
      * Returns the amount of players connected to the network
      */
-    fun getNetworkOnlinePlayerCount(): ICommunicationPromise<Int> = CloudAPI.instance.executeOnManager { CloudAPI.instance.getCloudPlayerManager().getAllCachedCloudPlayers().size }
+    fun getNetworkOnlinePlayerCount(): ICommunicationPromise<Int> = CloudAPI.instance.executeOnManager { CloudAPI.instance.getCloudPlayerManager().getAllCachedObjects().size }
 
-    /*
-    /**
-     * Returns all Player Connections matching the specified [predicate]
-     */
-    fun getCloudPlayersFiltered(predicate: (ICloudPlayer) -> Boolean): ICommunicationPromise<List<IPlayerConnection>> {
-        return CloudAPI.instance.executeOnManager { CloudAPI.instance.getCloudPlayerManager().getAllCachedCloudPlayers().filter { predicate(it) }.map { it.getPlayerConnection() } }
-    }
-    */
 }

@@ -1,18 +1,45 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2020 The SimpleCloud authors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
 package eu.thesimplecloud.api.service
 
-import eu.thesimplecloud.clientserverapi.lib.bootstrap.IBootstrap
-import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.client.NetworkComponentType
+import eu.thesimplecloud.api.event.service.CloudServiceConnectedEvent
+import eu.thesimplecloud.api.event.service.CloudServiceStartedEvent
+import eu.thesimplecloud.api.event.service.CloudServiceStartingEvent
+import eu.thesimplecloud.api.event.service.CloudServiceUnregisteredEvent
+import eu.thesimplecloud.api.listenerextension.cloudListener
 import eu.thesimplecloud.api.property.IPropertyMap
-import eu.thesimplecloud.api.screen.ICommandExecutable
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.api.template.ITemplate
-import eu.thesimplecloud.api.utils.IAuthenticatable
+import eu.thesimplecloud.api.utils.INetworkComponent
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
-import java.lang.IllegalStateException
+import eu.thesimplecloud.clientserverapi.lib.bootstrap.IBootstrap
+import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import java.util.*
 
-interface ICloudService : IAuthenticatable, IBootstrap, ICommandExecutable, IPropertyMap {
+interface ICloudService : INetworkComponent, IBootstrap, IPropertyMap {
 
     /**
      * Returns the service group name of this service
@@ -51,7 +78,7 @@ interface ICloudService : IAuthenticatable, IBootstrap, ICommandExecutable, IPro
      * Returns the template that this service uses
      * e.g. Lobby
      */
-    fun getTemplate(): ITemplate = CloudAPI.instance.getTemplateManager().getTemplateByName(getTemplateName()) ?: throw IllegalStateException("Can't find the template of an registered service (templates: ${CloudAPI.instance.getTemplateManager().getAllTemplates().joinToString { it.getName() }})")
+    fun getTemplate(): ITemplate = CloudAPI.instance.getTemplateManager().getTemplateByName(getTemplateName()) ?: throw IllegalStateException("Can't find the template of an registered service (templates: ${CloudAPI.instance.getTemplateManager().getAllCachedObjects().joinToString { it.getName() }})")
 
     /**
      * Returns the service group of this service
@@ -66,12 +93,13 @@ interface ICloudService : IAuthenticatable, IBootstrap, ICommandExecutable, IPro
     /**
      * Returns the name of the wrapper this service is running on
      */
-    fun getWrapperName(): String
+    fun getWrapperName(): String?
 
     /**
      * Returns the wrapper this service is running on
      */
-    fun getWrapper(): IWrapperInfo = CloudAPI.instance.getWrapperManager().getWrapperByName(getWrapperName()) ?: throw IllegalStateException("Can't find the wrapper where the service ${getName()} is running on. Wrapper-Name: ${getWrapperName()}")
+    fun getWrapper(): IWrapperInfo = getWrapperName()?.let { CloudAPI.instance.getWrapperManager().getWrapperByName(it) }
+            ?: throw IllegalStateException("Can't find the wrapper where the service ${getName()} is running on. Wrapper-Name: ${getWrapperName()}")
 
     /**
      * Returns the host of this service
@@ -92,7 +120,7 @@ interface ICloudService : IAuthenticatable, IBootstrap, ICommandExecutable, IPro
      * Returns the percentage of occupied slots
      */
     fun getOnlinePercentage(): Double {
-        return getOnlinePlayers().toDouble() / getMaxPlayers()
+        return getOnlineCount().toDouble() / getMaxPlayers()
     }
 
     /**
@@ -124,17 +152,17 @@ interface ICloudService : IAuthenticatable, IBootstrap, ICommandExecutable, IPro
     /**
      * Returns the amount of players that are currently on this service
      */
-    fun getOnlinePlayers(): Int
+    fun getOnlineCount(): Int
 
     /**
      * Sets the amount of online players.
      */
-    fun setOnlinePlayers(amount: Int)
+    fun setOnlineCount(amount: Int)
 
     /**
      * Returns the maximum amount of players for this service
      */
-    fun getMaxPlayers(): Int = getServiceGroup().getMaxPlayers()
+    fun getMaxPlayers(): Int
 
     /**
      * Returns the MOTD of this service.
@@ -147,34 +175,60 @@ interface ICloudService : IAuthenticatable, IBootstrap, ICommandExecutable, IPro
     fun setMOTD(motd: String)
 
     /**
-     * Returns weather this service joinable for players.
+     * Returns weather this service is joinable for players.
      */
-    fun isJoinable() = getState() == ServiceState.VISIBLE || getState() == ServiceState.INVISIBLE
+    fun isOnline() = getState() == ServiceState.VISIBLE || getState() == ServiceState.INVISIBLE
 
     /**
      * Returns whether this service is full.
      */
-    fun isFull() = getOnlinePlayers() >= getMaxPlayers()
+    fun isFull() = getOnlineCount() >= getMaxPlayers()
+
+    override fun getNetworkComponentType(): NetworkComponentType = NetworkComponentType.SERVICE
 
     /**
-     * Returns the promise that will be called once the service is starting.
+     * Creates a promise that completes when the service is starting.
      */
-    fun startingPromise(): ICommunicationPromise<Unit>
+    fun createStartingPromise(): ICommunicationPromise<CloudServiceStartingEvent> {
+        if (isActive() || getState() == ServiceState.CLOSED)
+            return CommunicationPromise.of(CloudServiceStartingEvent(this))
+        return cloudListener<CloudServiceStartingEvent>()
+                .addCondition { it.cloudService === this@ICloudService }
+                .toPromise()
+    }
 
     /**
-     * Returns the promise that will be called once the service is connected in to the manager.
+     * Creates a promise that completes when the service is connected to the manager.
      */
-    fun connectedPromise(): ICommunicationPromise<Unit>
+    fun createConnectedPromise(): ICommunicationPromise<CloudServiceConnectedEvent> {
+        if (isAuthenticated() || getState() == ServiceState.CLOSED)
+            return CommunicationPromise.of(CloudServiceConnectedEvent(this))
+        return cloudListener<CloudServiceConnectedEvent>()
+                .addCondition { it.cloudService === this@ICloudService }
+                .toPromise()
+    }
 
     /**
-     * Returns the promise that will be called once the service is joinable. ([isJoinable] changed to true)
+     * Creates a promise that completes when the service is started.
      */
-    fun joinablePromise(): ICommunicationPromise<Unit>
+    fun createStartedPromise(): ICommunicationPromise<CloudServiceStartedEvent> {
+        if (isOnline() || getState() == ServiceState.CLOSED)
+            return CommunicationPromise.of(CloudServiceStartedEvent(this))
+        return cloudListener<CloudServiceStartedEvent>()
+                .addCondition { it.cloudService === this@ICloudService }
+                .toPromise()
+    }
 
     /**
-     * Returns the promise that will be called once the service is closed.
+     * Creates a promise that completes when the service is closed.
      */
-    fun closedPromise(): ICommunicationPromise<Unit>
+    fun createClosedPromise(): ICommunicationPromise<CloudServiceUnregisteredEvent> {
+        if (getState() == ServiceState.CLOSED)
+            return CommunicationPromise.of(CloudServiceUnregisteredEvent(this))
+        return cloudListener<CloudServiceUnregisteredEvent>()
+                .addCondition { it.cloudService === this@ICloudService }
+                .toPromise()
+    }
 
     /**
      * Returns whether this service is a lobby service.
@@ -189,7 +243,7 @@ interface ICloudService : IAuthenticatable, IBootstrap, ICommandExecutable, IPro
     /**
      * Updates this service to the network
      */
-    fun update() = CloudAPI.instance.getCloudServiceManager().updateCloudService(this)
+    fun update() = CloudAPI.instance.getCloudServiceManager().update(this)
 
     override fun isActive(): Boolean = getState() != ServiceState.PREPARED && getState() != ServiceState.CLOSED
 

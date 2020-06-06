@@ -1,18 +1,39 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2020 The SimpleCloud authors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
 package eu.thesimplecloud.base.manager.setup.groups
 
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.service.ServiceVersion
+import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
-import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.service.ServiceVersion
-import eu.thesimplecloud.api.template.ITemplate
-import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.launcher.extension.sendMessage
+import eu.thesimplecloud.launcher.startup.Launcher
 import kotlin.properties.Delegates
 
-class ProxyGroupSetup : ISetup {
+class ProxyGroupSetup : DefaultGroupSetup(), ISetup {
 
     private lateinit var serviceVersion: ServiceVersion
     private var startPort by Delegates.notNull<Int>()
@@ -37,16 +58,19 @@ class ProxyGroupSetup : ISetup {
         return true
     }
 
-    @SetupQuestion(1, "manager.setup.service-group.question.template", "Which template shall the group use?")
-    fun templateQuestion(template: ITemplate) {
-        this.templateName = template.getName()
-        Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.template.success", "Template set.")
+    @SetupQuestion(1, "manager.setup.service-group.question.template", "Which template shall the group use? (create = Creates a template with the group's name)")
+    fun templateQuestion(templateName: String): Boolean {
+        val template = createTemplate(templateName, this.name)
+        if (template != null) {
+            this.templateName = template
+        }
+        return template != null
     }
 
-    @SetupQuestion(2, "manager.setup.proxy-group.question.type", "Which proxy shall the group use? (Bungeecord, Travertine, Waterfall, Hexacord)")
+    @SetupQuestion(2, "manager.setup.proxy-group.question.type", "Which proxy shall the group use? (Bungeecord, Travertine, Waterfall, Hexacord, Velocity)")
     fun typeQuestion(string: String): Boolean {
         val serviceVersion = JsonData.fromObject(string.toUpperCase()).getObjectOrNull(ServiceVersion::class.java)
-        if (serviceVersion == null || serviceVersion.serviceVersionType != ServiceVersion.ServiceVersionType.PROXY_DEFAULT) {
+        if (serviceVersion == null || (serviceVersion.serviceVersionType != ServiceVersion.ServiceVersionType.BUNGEE_DEFAULT && serviceVersion.serviceVersionType != ServiceVersion.ServiceVersionType.VELOCITY_DEFAULT)) {
             Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.version.unsupported", "The specified version is not supported.")
             return false
         }
@@ -78,7 +102,7 @@ class ProxyGroupSetup : ISetup {
     }
 
 
-    @SetupQuestion(6, "manager.setup.service-group.question.minimum-online", "How many services shall always be online? (in LOBBY state)")
+    @SetupQuestion(6, "manager.setup.service-group.question.minimum-online", "How many services shall always be online? (VISIBLE)")
     fun minimumOnlineQuestion(minimumOnlineServices: Int): Boolean {
         if (minimumOnlineServices < 0) {
             Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.minimum-online.too-low", "The specified number is too low.")
@@ -140,7 +164,7 @@ class ProxyGroupSetup : ISetup {
 
     @SetupFinished
     fun finished() {
-        CloudAPI.instance.getCloudServiceGroupManager().createProxyGroup(name, templateName, memory, maxPlayers, minimumOnlineServices, maximumOnlineServices, true, static, percent, wrapper.getName(), startPort, serviceVersion, 0)
+        CloudAPI.instance.getCloudServiceGroupManager().createProxyGroup(name, templateName, memory, maxPlayers, minimumOnlineServices, maximumOnlineServices, true, static, percent, wrapper.getName(), startPort, serviceVersion, 10)
         Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.finished", "Group %NAME%", name, " created.")
     }
 

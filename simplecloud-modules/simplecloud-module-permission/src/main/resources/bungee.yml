@@ -1,5 +1,5 @@
 name: SimpleCloud-Permissions
-version: ${project.version}
+version: 1.0
 author: Wetterbericht
 depend: [SimpleCloudAPI]
 

@@ -9,19 +9,10 @@
   ],
   "dependencies": [
     {
-      "groupId": "io.netty",
-      "artifactId": "netty-all",
-      "version": "4.1.4.Final"
-    },
-    {
       "groupId": "org.jetbrains.kotlinx",
       "artifactId": "kotlinx-coroutines-core",
-      "version": "1.3.3"
-    },
-    {
-      "groupId": "de.flapdoodle.embed",
-      "artifactId": "de.flapdoodle.embed.mongo",
-      "version": "2.2.0"
+      "version": "1.3.5"
     }
-  ]
+  ],
+  "depend": []
 }

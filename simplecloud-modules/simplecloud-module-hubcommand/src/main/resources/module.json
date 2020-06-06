@@ -1,0 +1,9 @@
+{
+  "name": "SimpleCloud-HubCommand",
+  "author": "Wetterbericht",
+  "mainClass": "eu.thesimplecloud.module.hubcommand.HubCommandModule",
+  "moduleCopyType": "NONE",
+  "repositories": [],
+  "dependencies": [],
+  "depend": []
+}

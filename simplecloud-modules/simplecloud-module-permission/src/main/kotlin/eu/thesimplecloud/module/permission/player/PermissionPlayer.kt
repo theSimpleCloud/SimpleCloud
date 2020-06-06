@@ -1,18 +1,39 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2020 The SimpleCloud authors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
 package eu.thesimplecloud.module.permission.player
 
 import com.fasterxml.jackson.annotation.JsonInclude
-import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.module.permission.PermissionPool
 import eu.thesimplecloud.module.permission.entity.PermissionEntity
 import java.util.*
-import kotlin.collections.ArrayList
+import java.util.concurrent.CopyOnWriteArrayList
 
 class PermissionPlayer(
         private val name: String,
         private val uniqueId: UUID,
         @JsonInclude
-        private val permissionGroupInfoList: MutableList<PlayerPermissionGroupInfo> = ArrayList()
+        private val permissionGroupInfoList: MutableList<PlayerPermissionGroupInfo> = CopyOnWriteArrayList()
 ) : PermissionEntity(), IPermissionPlayer {
 
     override fun getName(): String = this.name
@@ -27,7 +48,7 @@ class PermissionPlayer(
 
     override fun update(): ICommunicationPromise<Unit> {
         return getCloudPlayer().then {
-            it.setProperty(PROPERTY_NAME, Property(this))
+            it.setProperty(PROPERTY_NAME, this)
             it.update()
         }
     }

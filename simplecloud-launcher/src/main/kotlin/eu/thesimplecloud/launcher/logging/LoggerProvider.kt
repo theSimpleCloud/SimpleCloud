@@ -1,22 +1,42 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2020 The SimpleCloud authors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
 package eu.thesimplecloud.launcher.logging
 
 import eu.thesimplecloud.launcher.screens.IScreenManager
 import eu.thesimplecloud.launcher.startup.Launcher
 import org.jline.reader.LineReader
-import org.jline.reader.LineReaderBuilder
-import org.jline.terminal.TerminalBuilder
+import org.jline.utils.InfoCmp
 import java.io.File
+import java.io.PrintWriter
+import java.io.StringWriter
 import java.nio.charset.StandardCharsets
-import java.nio.file.Files
-import java.nio.file.Paths
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 import java.util.logging.FileHandler
 import java.util.logging.Level
 import java.util.logging.Logger
 import java.util.logging.SimpleFormatter
-import java.io.PrintWriter
-import java.io.StringWriter
 import kotlin.collections.ArrayList
 
 
@@ -27,11 +47,13 @@ import kotlin.collections.ArrayList
  * Time: 17:02
  */
 @Suppress("NON_EXHAUSTIVE_WHEN")
-class LoggerProvider(var applicationName: String, val screenManager: IScreenManager) : Logger("SimpleCloudLogger", null) {
+class LoggerProvider(val screenManager: IScreenManager) : Logger("SimpleCloudLogger", null) {
 
-    val dataFormat = SimpleDateFormat("[HH:mm:ss]")
+    private val dataFormat = SimpleDateFormat("[HH:mm:ss]")
 
     private val loggerMessageListeners = ArrayList<ILoggerMessageListener>()
+
+    private val logsDir = File("logs/")
 
     init {
         level = Level.ALL
@@ -39,8 +61,8 @@ class LoggerProvider(var applicationName: String, val screenManager: IScreenMana
 
         System.setProperty("java.util.logging.SimpleFormatter.format", "[%1\$tT] [%4$-7s] %5\$s %n")
 
-        if (!Files.exists(Paths.get("logs")))
-            Files.createDirectory(Paths.get("logs"))
+        if (!logsDir.exists())
+            logsDir.mkdirs()
 
         val file = File("logs/")
         val simpleFormatter = SimpleFormatter()
@@ -51,6 +73,18 @@ class LoggerProvider(var applicationName: String, val screenManager: IScreenMana
         fileHandler.formatter = simpleFormatter
 
         addHandler(fileHandler)
+
+        deleteOldLogs()
+    }
+
+    private fun deleteOldLogs() {
+        val allLogFiles = (logsDir.listFiles() ?: emptyArray()).filterNotNull()
+        allLogFiles.filter { isOlderThanTenDays(it) }.forEach { it.delete() }
+    }
+
+    private fun isOlderThanTenDays(logFile: File): Boolean {
+        val tenDaysInMillis = TimeUnit.DAYS.toMillis(10)
+        return (System.currentTimeMillis() - logFile.lastModified()) > tenDaysInMillis
     }
 
     fun addLoggerMessageListener(loggerMessageListener: ILoggerMessageListener) {
@@ -100,18 +134,16 @@ class LoggerProvider(var applicationName: String, val screenManager: IScreenMana
         this.loggerMessageListeners.forEach { it.message(msg, logType) }
 
         val lineReader = Launcher.instance.consoleManager.lineReader
+
+        lineReader.terminal.puts(InfoCmp.Capability.carriage_return)
+        lineReader.terminal.writer().println(coloredMessage);
+        lineReader.terminal.flush();
+
         if (lineReader.isReading) {
-            lineReader.callWidget(LineReader.CLEAR)
-            lineReader.terminal.writer().println("\r" + coloredMessage)
             lineReader.callWidget(LineReader.REDRAW_LINE)
             lineReader.callWidget(LineReader.REDISPLAY)
-        } else {
-            lineReader.terminal.writer().println(coloredMessage);
         }
-        lineReader.terminal.flush()
 
-        //print("\r" + coloredMessage)
-        //updatePrompt(true)
     }
 
     private fun isMessageBlocked(logType: LogType): Boolean {

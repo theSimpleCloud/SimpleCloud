@@ -1,19 +1,44 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2020 The SimpleCloud authors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
 package eu.thesimplecloud.api
 
+import eu.thesimplecloud.api.cachelist.manager.ICacheListManager
 import eu.thesimplecloud.api.eventapi.IEventManager
+import eu.thesimplecloud.api.external.ICloudModule
+import eu.thesimplecloud.api.message.IMessageChannelManager
 import eu.thesimplecloud.api.network.packets.PacketIOExecuteFunction
 import eu.thesimplecloud.api.player.ICloudPlayerManager
-import eu.thesimplecloud.api.screen.ICommandExecuteManager
 import eu.thesimplecloud.api.screen.ICommandExecutable
+import eu.thesimplecloud.api.screen.ICommandExecuteManager
 import eu.thesimplecloud.api.service.ICloudServiceManager
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroupManager
-import eu.thesimplecloud.api.sync.`object`.ISynchronizedObjectManager
+import eu.thesimplecloud.api.sync.`object`.ISingleSynchronizedObjectManager
 import eu.thesimplecloud.api.sync.list.manager.ISynchronizedObjectListManager
 import eu.thesimplecloud.api.template.ITemplateManager
+import eu.thesimplecloud.api.utils.INetworkComponent
 import eu.thesimplecloud.api.wrapper.IWrapperManager
 import eu.thesimplecloud.clientserverapi.client.INettyClient
 import eu.thesimplecloud.clientserverapi.lib.bootstrap.ICommunicationBootstrap
-import eu.thesimplecloud.clientserverapi.lib.packet.packetsender.sendQuery
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
@@ -59,9 +84,9 @@ interface ICloudAPI {
     fun getTemplateManager(): ITemplateManager
 
     /**
-     * Returns the [ISynchronizedObjectManager] used to manage the templates
+     * Returns the [ISingleSynchronizedObjectManager] used to manage the templates
      */
-    fun getSynchronizedObjectManager(): ISynchronizedObjectManager
+    fun getSingleSynchronizedObjectManager(): ISingleSynchronizedObjectManager
 
     /**
      * Returns the [ICommunicationBootstrap] of this side.
@@ -74,15 +99,40 @@ interface ICloudAPI {
     fun getSynchronizedObjectListManager(): ISynchronizedObjectListManager
 
     /**
+     * Return the [IMessageChannelManager]
+     */
+    fun getMessageChannelManager(): IMessageChannelManager
+
+    /**
+     * Returns the [ICacheListManager]
+     */
+    fun getCacheListManager(): ICacheListManager
+
+    /**
      * Returns the name of this side
-     * e.g Manager / Wrapper / Lobby-1
+     * e.g Manager / Wrapper-1 / Lobby-1
      */
     fun getThisSidesName(): String
+
+    /**
+     * Returns the [INetworkComponent] of this side.
+     */
+    fun getThisSidesNetworkComponent(): INetworkComponent
 
     /**
      * Returns whether this side is a manager.
      */
     fun isManager(): Boolean = getThisSidesName() == "Manager"
+
+    /**
+     * Returns whether the application is executed on windows.
+     */
+    fun isWindows(): Boolean = System.getProperty("os.name").toLowerCase().contains("windows")
+
+    /**
+     * Returns then cloud module fot this side.
+     */
+    fun getThisSidesCloudModule(): ICloudModule
 
 }
 

@@ -1,3 +1,25 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2020 The SimpleCloud authors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
 package eu.thesimplecloud.module.sign.service
 
 import eu.thesimplecloud.api.CloudAPI
@@ -21,13 +43,14 @@ class BukkitCloudSign(
 
     private var placeholders = listOf<Placeholder<ICloudService>>(
             Placeholder("SERVICE") { it.getName() },
-            Placeholder("ONLINE_PLAYERS") { it.getOnlinePlayers().toString() },
+            Placeholder("ONLINE_PLAYERS") { it.getOnlineCount().toString() },
+            Placeholder("ONLINE_COUNT") { it.getOnlineCount().toString() },
             Placeholder("MOTD") { it.getMOTD() },
             Placeholder("HOST") { it.getHost() },
             Placeholder("PORT") { it.getPort().toString() },
             Placeholder("STATE") { it.getState().name },
             Placeholder("NUMBER") { it.getServiceNumber().toString() },
-            Placeholder("WRAPPER") { it.getWrapperName() }
+            Placeholder("WRAPPER") { it.getWrapperName()!! }
     )
     private var groupPlaceholders = listOf<Placeholder<ICloudServiceGroup>>(
             Placeholder("GROUP") { it.getName() },
@@ -58,11 +81,12 @@ class BukkitCloudSign(
         val currentServer = this.currentServer
         val sign = location.block.state as Sign
         clearSign(false)
+        val signConfig = SignModuleConfig.INSTANCE.obj
         val signLayout = when {
-            serviceGroup.isInMaintenance() -> SignModuleConfig.INSTANCE.getMaintenanceLayout()
-            currentServer == null -> SignModuleConfig.INSTANCE.getSearchingLayout()
-            currentServer.getState() == ServiceState.STARTING -> SignModuleConfig.INSTANCE.getStartingLayout()
-            else -> SignModuleConfig.INSTANCE.getSignLayoutByGroupName(cloudSign.forGroup)
+            serviceGroup.isInMaintenance() -> signConfig.getMaintenanceLayout()
+            currentServer == null -> signConfig.getSearchingLayout()
+            currentServer.getState() == ServiceState.STARTING -> signConfig.getStartingLayout()
+            else -> signConfig.getSignLayoutByGroupName(cloudSign.forGroup)
                     ?: SignLayout("none", emptyList())
         }
 

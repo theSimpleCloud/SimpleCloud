@@ -4,5 +4,6 @@
   "mainClass": "eu.thesimplecloud.module.proxy.manager.ProxyModule",
   "moduleCopyType": "PROXY",
   "repositories": [],
-  "dependencies": []
+  "dependencies": [],
+  "depend": []
 }

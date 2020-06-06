@@ -1,13 +1,33 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2020 The SimpleCloud authors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
 package eu.thesimplecloud.api.service.impl
 
+import eu.thesimplecloud.api.property.IProperty
 import eu.thesimplecloud.api.property.Property
-import eu.thesimplecloud.clientserverapi.lib.json.GsonExclude
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
-import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
-import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
-import jdk.nashorn.internal.runtime.PropertyMap
+import eu.thesimplecloud.clientserverapi.lib.json.GsonExclude
+import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -16,23 +36,15 @@ data class DefaultCloudService(
         private val serviceNumber: Int,
         private val uniqueId: UUID,
         private val templateName: String,
-        private var wrapperName: String,
+        private var wrapperName: String?,
         private var port: Int,
         private val maxMemory: Int,
+        private val maxPlayers: Int,
         private var motd: String
 ) : ICloudService {
 
-    @GsonExclude
-    private val startingPromise = CommunicationPromise<Unit>(enableTimeout = false)
-    @GsonExclude
-    private val connectedPromise = CommunicationPromise<Unit>(enableTimeout = false)
-    @GsonExclude
-    private val joinablePromise = CommunicationPromise<Unit>(enableTimeout = false)
-    @GsonExclude
-    private val closedPromise = CommunicationPromise<Unit>(enableTimeout = false)
-
     private var serviceState = ServiceState.PREPARED
-    private var onlinePlayers = 0
+    private var onlineCount = 0
     private var authenticated = false
     @GsonExclude
     private var lastUpdate = System.currentTimeMillis()
@@ -53,9 +65,9 @@ data class DefaultCloudService(
         this.port = port
     }
 
-    override fun getWrapperName(): String = this.wrapperName
+    override fun getWrapperName(): String? = this.wrapperName
 
-    fun setWrapperName(wrapperName: String) {
+    fun setWrapperName(wrapperName: String?) {
         this.wrapperName = wrapperName
     }
 
@@ -65,10 +77,16 @@ data class DefaultCloudService(
         this.serviceState = serviceState
     }
 
-    override fun getOnlinePlayers(): Int = this.onlinePlayers
+    override fun getOnlineCount(): Int {
+        return this.onlineCount
+    }
 
-    override fun setOnlinePlayers(amount: Int) {
-        this.onlinePlayers = amount
+    override fun setOnlineCount(amount: Int) {
+        this.onlineCount = amount
+    }
+
+    override fun getMaxPlayers(): Int {
+        return this.maxPlayers
     }
 
     override fun getMOTD(): String = this.motd
@@ -91,23 +109,22 @@ data class DefaultCloudService(
         this.lastUpdate = timeStamp
     }
 
-    override fun startingPromise(): ICommunicationPromise<Unit> = this.startingPromise
-
-    override fun connectedPromise(): ICommunicationPromise<Unit> = this.connectedPromise
-
-    override fun joinablePromise(): ICommunicationPromise<Unit> = this.joinablePromise
-
-    override fun closedPromise(): ICommunicationPromise<Unit> = this.closedPromise
-
 
     override fun toString(): String {
-        return JsonData.fromObjectWithGsonExclude(this).getAsJsonString()
+        return JsonData.fromObject(this).getAsJsonString()
     }
 
-    override fun getProperties(): Map<String, Property<*>> = this.propertyMap
+    override fun getProperties(): Map<String, IProperty<*>> = this.propertyMap
 
-    override fun <T : Any> setProperty(name: String, property: Property<T>) {
+    override fun <T : Any> setProperty(name: String, value: T): IProperty<T> {
+        require(value !is Property<*>) { "Cannot set ${value::class.java.name} as property" }
+        val property = Property(value)
         this.propertyMap[name] = property
+        return property
+    }
+
+    override fun removeProperty(name: String) {
+        this.propertyMap.remove(name)
     }
 
 

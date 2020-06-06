@@ -1,7 +1,30 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2020 The SimpleCloud authors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
 package eu.thesimplecloud.launcher.startup
 
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.external.ICloudModule
+import eu.thesimplecloud.api.external.ResourceFinder
 import eu.thesimplecloud.api.language.LanguageManager
 import eu.thesimplecloud.launcher.application.ApplicationStarter
 import eu.thesimplecloud.launcher.application.CloudApplicationType
@@ -17,11 +40,11 @@ import eu.thesimplecloud.launcher.screens.ScreenManagerImpl
 import eu.thesimplecloud.launcher.setups.AutoIpSetup
 import eu.thesimplecloud.launcher.setups.LanguageSetup
 import eu.thesimplecloud.launcher.setups.StartSetup
-import eu.thesimplecloud.launcher.updater.CloudUpdater
+import eu.thesimplecloud.launcher.updater.LauncherUpdater
 import eu.thesimplecloud.launcher.updater.UpdateExecutor
-import org.apache.commons.io.FileUtils
 import java.io.File
 import java.io.IOException
+import java.net.URLClassLoader
 import java.util.concurrent.Executors
 import kotlin.system.exitProcess
 
@@ -40,7 +63,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
             private set
     }
 
-    val launcherCloudModule = object : ICloudModule {
+    private val launcherCloudModule = object : ICloudModule {
         override fun onEnable() {
         }
 
@@ -49,7 +72,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
     }
     var activeApplication: ICloudApplication? = null
     val screenManager: IScreenManager = ScreenManagerImpl()
-    val logger = LoggerProvider("Launcher", screenManager)
+    val logger = LoggerProvider(screenManager)
     val commandManager: CommandManager
     val consoleSender = ConsoleSender()
     val consoleManager: ConsoleManager
@@ -57,43 +80,44 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
     val languageManager: LanguageManager
     val launcherConfigLoader = LauncherConfigLoader()
     val scheduler = Executors.newScheduledThreadPool(1)
+    var currentClassLoader: ClassLoader = ClassLoader.getSystemClassLoader()
+        private set
 
     init {
         instance = this
-        Thread.setDefaultUncaughtExceptionHandler { thread, cause -> this.logger.exception(cause) }
+        if (System.getProperty("simplecloud.version") == null)
+            System.setProperty("simplecloud.version", Launcher::class.java.`package`.implementationVersion)
+        Thread.setDefaultUncaughtExceptionHandler { thread, cause ->
+            try {
+                this.logger.exception(cause)
+            } catch (e: Exception) {
+                println("An error occurred logging an exception")
+                println("Exception while logging:")
+                e.printStackTrace()
+                println("Exception to log:")
+                cause.printStackTrace()
+            }
+        }
         System.setProperty("user.language", "en")
         val launcherConfig = this.launcherConfigLoader.loadConfig()
         DirectoryPaths.paths = launcherConfig.directoryPaths
         this.commandManager = CommandManager()
-        this.consoleManager = ConsoleManager(this.commandManager, this.consoleSender)
+        this.consoleManager = ConsoleManager("Launcher", this.commandManager, this.consoleSender)
         this.languageManager = LanguageManager("en_EN")
     }
 
     fun start() {
-        val oldLauncher = launcherStartArguments.update
-        if (oldLauncher != null) {
-            //wait 5 seconds for the launcher started this update to shut down
-            this.consoleSender.sendMessage("Waiting for launcher to shut down.")
-            Thread.sleep(5000)
-            this.consoleSender.sendMessage("Installing update...")
-            oldLauncher.delete()
-            val runningLauncher = File(Launcher::class.java.protectionDomain.codeSource.location.toURI())
-            FileUtils.copyFile(runningLauncher, oldLauncher)
-            val processBuilder = ProcessBuilder("java", "-jar", oldLauncher.absolutePath)
-            processBuilder.directory(File("."))
-            processBuilder.start()
-            runningLauncher.deleteOnExit()
-            this.shutdown()
-            return
-        }
-        if (launcherStartArguments.autoUpdater) {
-            UpdateExecutor().executeUpdateIfAvailable(CloudUpdater())
-            this.consoleSender.sendMessage("You are running the latest version of SimpleCloud.")
+        clearConsole()
+        currentClassLoader = Thread.currentThread().contextClassLoader
+        if (!launcherStartArguments.disableAutoUpdater) {
+            if (executeUpdateIfAvailable()) {
+                return
+            }
         } else {
             this.logger.warning("Auto updater is disabled.")
         }
         this.languageManager.loadFile()
-        this.commandManager.registerAllCommands(launcherCloudModule, "eu.thesimplecloud.launcher.commands")
+        this.commandManager.registerAllCommands(launcherCloudModule, currentClassLoader, "eu.thesimplecloud.launcher.commands")
         this.consoleManager.startThread()
         if (!this.languageManager.fileExistBeforeLoad())
             this.setupManager.queueSetup(LanguageSetup())
@@ -105,6 +129,18 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
 
         this.setupManager.waitFroAllSetups()
         this.launcherStartArguments.startApplication?.let { startApplication(it) }
+    }
+
+    private fun executeUpdateIfAvailable(): Boolean {
+        val updater = LauncherUpdater()
+        if (updater.isUpdateAvailable()) {
+            this.consoleSender.sendMessage("Found a new launcher version: " + updater.getVersionToInstall()!!)
+            UpdateExecutor().executeUpdate(updater)
+            return true
+        } else {
+            this.consoleSender.sendMessage("You are running on the latest version of SimpleCloud.")
+        }
+        return false
     }
 
     fun startApplication(cloudApplicationType: CloudApplicationType) {
@@ -139,5 +175,20 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
     }
 
     fun isWindows(): Boolean = System.getProperty("os.name").toLowerCase().contains("windows")
+
+    fun getLauncherFile(): File {
+        if (System.getProperty("simplecloud.launcher.update-mode") != null) {
+            return File("launcher-update.jar")
+        }
+        return File(Launcher::class.java.protectionDomain.codeSource.location.toURI())
+    }
+
+    fun getBaseFile(): File {
+        return File("storage/base.jar")
+    }
+
+    fun getNewClassLoaderWithLauncherAndBase(): URLClassLoader {
+        return ResourceFinder.createClassLoaderByFiles(this.getBaseFile(), this.getLauncherFile())
+    }
 
 }

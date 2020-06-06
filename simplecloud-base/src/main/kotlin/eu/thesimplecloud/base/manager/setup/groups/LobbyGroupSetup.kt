@@ -1,18 +1,39 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2020 The SimpleCloud authors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
 package eu.thesimplecloud.base.manager.setup.groups
 
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.service.ServiceVersion
+import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
-import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.service.ServiceVersion
-import eu.thesimplecloud.api.template.ITemplate
-import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.launcher.extension.sendMessage
+import eu.thesimplecloud.launcher.startup.Launcher
 import kotlin.properties.Delegates
 
-class LobbyGroupSetup : ISetup {
+class LobbyGroupSetup : DefaultGroupSetup(), ISetup {
 
     private lateinit var serviceVersion: ServiceVersion
     private var wrapper: IWrapperInfo? = null
@@ -39,15 +60,18 @@ class LobbyGroupSetup : ISetup {
         return true
     }
 
-    @SetupQuestion(1, "manager.setup.service-group.question.template", "Which template shall the group use?")
-    fun templateQuestion(template: ITemplate) {
-        this.templateName = template.getName()
-        Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.template.success", "Template set.")
+    @SetupQuestion(1, "manager.setup.service-group.question.template", "Which template shall the group use? (create = Creates a template with the group's name)")
+    fun templateQuestion(templateName: String): Boolean {
+        val template = createTemplate(templateName, this.name)
+        if (template != null) {
+            this.templateName = template
+        }
+        return template != null
     }
 
     @SetupQuestion(2, "manager.setup.service-group.question.type", "Which spigot shall the group use? (Spigot, Paper)")
     fun typeQuestion(string: String) {
-        if (!string.equals("paper", true) && !string.equals("spigot", true)){
+        if (!string.equals("paper", true) && !string.equals("spigot", true)) {
             Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.type.invalid", "Invalid response.")
             return
         }
@@ -55,8 +79,8 @@ class LobbyGroupSetup : ISetup {
         Launcher.instance.consoleSender.sendMessage("manager.setup.server-group.question.type.success", "Spigot set.")
     }
 
-    @SetupQuestion(3, "manager.setup.service-group.question.version", "Which version to you want to use? (1.7.10, 1.8.8, 1.9.4, 1.10.2, 1.11.2, 1.12.2, 1.13.2, 1.14.4)")
-    fun versionQuestion(answer: String) : Boolean {
+    @SetupQuestion(3, "manager.setup.service-group.question.version", "Which version to you want to use? (1.7.10, 1.8.8, 1.9.4, 1.10.2, 1.11.2, 1.12.2, 1.13.2, 1.14.4, 1.15.2)")
+    fun versionQuestion(answer: String): Boolean {
         val version = answer.replace(".", "_")
         val serviceVersion = JsonData.fromObject(type.toUpperCase() + "_" + version).getObjectOrNull(ServiceVersion::class.java)
         if (serviceVersion == null) {
@@ -91,7 +115,7 @@ class LobbyGroupSetup : ISetup {
     }
 
 
-    @SetupQuestion(6, "manager.setup.service-group.question.minimum-online", "How many services shall always be online? (in LOBBY state)")
+    @SetupQuestion(6, "manager.setup.service-group.question.minimum-online", "How many services shall always be online? (VISIBLE)")
     fun minimumOnlineQuestion(minimumOnlineServices: Int): Boolean {
         if (minimumOnlineServices < 0) {
             Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.minimum-online.too-low", "The specified number is too low.")
@@ -120,10 +144,10 @@ class LobbyGroupSetup : ISetup {
 
     @SetupQuestion(9, "manager.setup.server-group.question.wrapper", "On which wrapper shall services of this group run? (Needed when the group is static. Otherwise you can leave it empty for the wrapper with the lowest workload.)")
     fun wrapperQuestion(string: String): Boolean {
-        if (string.isBlank())
+        if (string.isBlank() && !static)
             return true
         val wrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(string)
-        if (wrapper == null){
+        if (wrapper == null) {
             Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.wrapper.not-exist", "The specified wrapper does not exist.")
             return false
         }
@@ -162,7 +186,7 @@ class LobbyGroupSetup : ISetup {
 
     @SetupFinished
     fun finished() {
-        CloudAPI.instance.getCloudServiceGroupManager().createLobbyGroup(name, templateName, memory, maxPlayers, minimumOnlineServices, maximumOnlineServices, true, static, percent, wrapper?.getName(), priority, permission, serviceVersion, 0)
+        CloudAPI.instance.getCloudServiceGroupManager().createLobbyGroup(name, templateName, memory, maxPlayers, minimumOnlineServices, maximumOnlineServices, true, static, percent, wrapper?.getName(), priority, permission, serviceVersion, 9)
         Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.finished", "Group %NAME%", name, " created.")
     }
 

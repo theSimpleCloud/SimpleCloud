@@ -1,3 +1,25 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2020 The SimpleCloud authors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
 package eu.thesimplecloud.launcher.dependency
 
 import com.fasterxml.jackson.databind.JsonNode
@@ -5,9 +27,9 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.api.depedency.Dependency
 import eu.thesimplecloud.api.external.ResourceFinder
+import eu.thesimplecloud.launcher.startup.Launcher
 import org.apache.maven.model.Model
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader
 import java.io.ByteArrayInputStream
@@ -54,18 +76,17 @@ class DependencyLoader : IDependencyLoader {
             allDependencies.add(dependency)
             appendSubDependenciesOfDependency(dependency, allDependencies, true)
         }
-        allDependencies.filter { it.groupId != "junit" }.let { dependencies -> removeAllRedundantDependencies(dependencies).forEach { downloadDependency(it) } }
+        allDependencies.filter { it.groupId != "junit" &&  it.groupId != "org.slf4j" }.let { dependencies -> removeAllRedundantDependencies(dependencies).forEach { downloadDependency(it) } }
 
     }
 
     override fun installDependencies() {
         Dependency.POM_DIR.mkdirs()
         checkDependenciesToDownloadDependencies()
-        downloadDependencies(this.dependencies.toList())
-        val allDependencies = ArrayList<Dependency>()
-        allDependencies.addAll(this.dependencies)
+        val allDependencies = this.dependencies.filter { it.groupId != "org.slf4j" }.toMutableList()
+        downloadDependencies(allDependencies)
         this.dependencies.forEach { appendSubDependenciesOfDependency(it, allDependencies, false) }
-        allDependencies.filter { it.groupId != "junit" }.let { dependencies -> removeAllRedundantDependencies(dependencies).forEach { installDependency(it) } }
+        allDependencies.filter { it.groupId != "junit" &&  it.groupId != "org.slf4j" }.let { dependencies -> removeAllRedundantDependencies(dependencies).forEach { installDependency(it) } }
 
     }
 
@@ -176,11 +197,15 @@ class DependencyLoader : IDependencyLoader {
             pomContent ?: continue
             val reader = MavenXpp3Reader()
             val model = reader.read(ByteArrayInputStream(pomContent.toByteArray()))
-            for (mavenSubDependency in model.dependencies.filter { it.groupId != "junit" }.filter { it.scope != "test" }.filter { !it.isOptional }.filter { it.scope != "provided" }) {
+            val subDependencies = model.dependencies.filter { it.groupId != "junit" && it.groupId != "org.slf4j" && it.artifactId != "slf4j-simple" }.filter { it.scope == null || it.scope == "compile" }.filter { !it.isOptional }
+            for (mavenSubDependency in subDependencies) {
                 if (mavenSubDependency.groupId.contains("$") || mavenSubDependency.artifactId.contains("$")) {
                     continue
                 }
                 val newVersion = when {
+                    mavenSubDependency.groupId == model.parent?.groupId -> {
+                        model.parent.version
+                    }
                     mavenSubDependency.version == null -> {
                         if (useWeb)
                             getLatestVersionOfDependencyFromWeb(mavenSubDependency.groupId, mavenSubDependency.artifactId)
@@ -200,11 +225,9 @@ class DependencyLoader : IDependencyLoader {
                     }
                 }
                 newVersion ?: continue
-                if (!mavenSubDependency.isOptional && mavenSubDependency.scope != "test") {
-                    val subDependency = Dependency(mavenSubDependency.groupId, mavenSubDependency.artifactId, newVersion)
-                    dependencyList.add(subDependency)
-                    appendSubDependenciesOfDependency(subDependency, dependencyList, useWeb)
-                }
+                val subDependency = Dependency(mavenSubDependency.groupId, mavenSubDependency.artifactId, newVersion)
+                dependencyList.add(subDependency)
+                appendSubDependenciesOfDependency(subDependency, dependencyList, useWeb)
             }
             break
         }
@@ -222,7 +245,6 @@ class DependencyLoader : IDependencyLoader {
     }
 
     fun getLatestVersionOfDependencyFromWeb(groupId: String, artifactId: String): String? {
-        val tmpDependency = Dependency(groupId, artifactId, "UNKNOWN")
         for (repository in repositories) {
             return getLatestVersionOfDependencyFromWeb(groupId, artifactId, repository) ?: continue
         }
@@ -238,7 +260,7 @@ class DependencyLoader : IDependencyLoader {
     private fun getLatestVersion(jsonString: String): String? {
         val jsonObject = JsonParser.parseString(jsonString) as JsonObject
         val versioning = jsonObject["versioning"]?.asJsonObject ?: return null
-        return versioning["release"]?.asString
+        return versioning["latest"]?.asString
     }
 
     private fun getVersionOfPlaceHolder(model: Model, mavenSubDependency: org.apache.maven.model.Dependency): String? {

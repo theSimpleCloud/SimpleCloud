@@ -1,27 +1,58 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2020 The SimpleCloud authors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
 package eu.thesimplecloud.plugin.impl
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.eventapi.IEventManager
+import eu.thesimplecloud.api.external.ICloudModule
 import eu.thesimplecloud.api.player.ICloudPlayerManager
 import eu.thesimplecloud.api.screen.ICommandExecuteManager
 import eu.thesimplecloud.api.service.ICloudServiceManager
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroupManager
-import eu.thesimplecloud.api.sync.`object`.ISynchronizedObjectManager
+import eu.thesimplecloud.api.sync.`object`.ISingleSynchronizedObjectManager
 import eu.thesimplecloud.api.sync.list.manager.ISynchronizedObjectListManager
 import eu.thesimplecloud.api.sync.list.manager.SynchronizedObjectListManager
-import eu.thesimplecloud.client.impl.SynchronizedObjectManagerImpl
+import eu.thesimplecloud.api.utils.INetworkComponent
+import eu.thesimplecloud.client.impl.SingleSynchronizedObjectManagerImpl
 import eu.thesimplecloud.clientserverapi.lib.bootstrap.ICommunicationBootstrap
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 
-class CloudAPIImpl : CloudAPI() {
+class CloudAPIImpl(private val cloudPlayerManager: ICloudPlayerManager) : CloudAPI() {
 
     private val cloudServiceManager = CloudServiceManagerImpl()
     private val cloudServiceGroupManager = CloudServiceGroupManagerImpl()
     private val commandExecuteManagerImpl = CommandExecuteManagerImpl()
-    private val cloudPlayerManager = CloudPlayerManagerImpl()
     private val eventManager = EventManagerImpl()
-    private val synchronizedObjectManager = SynchronizedObjectManagerImpl(CloudPlugin.instance.communicationClient)
+    private val synchronizedObjectManager = SingleSynchronizedObjectManagerImpl(CloudPlugin.instance.communicationClient)
     private val synchronizedObjectListManager = SynchronizedObjectListManager()
+
+    init {
+        getCacheListManager().registerCacheList(getWrapperManager())
+        getCacheListManager().registerCacheList(getCloudServiceManager())
+        getCacheListManager().registerCacheList(getCloudServiceGroupManager())
+        getCacheListManager().registerCacheList(getTemplateManager())
+        getCacheListManager().registerCacheList(getCloudPlayerManager())
+    }
 
     override fun getCloudServiceGroupManager(): ICloudServiceGroupManager = this.cloudServiceGroupManager
 
@@ -33,13 +64,19 @@ class CloudAPIImpl : CloudAPI() {
 
     override fun getCommandExecuteManager(): ICommandExecuteManager = this.commandExecuteManagerImpl
 
-    override fun getSynchronizedObjectManager(): ISynchronizedObjectManager = this.synchronizedObjectManager
+    override fun getSingleSynchronizedObjectManager(): ISingleSynchronizedObjectManager = this.synchronizedObjectManager
 
     override fun getThisSidesCommunicationBootstrap(): ICommunicationBootstrap = CloudPlugin.instance.communicationClient
 
     override fun getSynchronizedObjectListManager(): ISynchronizedObjectListManager = this.synchronizedObjectListManager
 
     override fun getThisSidesName(): String = CloudPlugin.instance.thisServiceName
+
+    override fun getThisSidesNetworkComponent(): INetworkComponent {
+        return CloudPlugin.instance.thisService()
+    }
+
+    override fun getThisSidesCloudModule(): ICloudModule = CloudPlugin.instance
 
 
 }

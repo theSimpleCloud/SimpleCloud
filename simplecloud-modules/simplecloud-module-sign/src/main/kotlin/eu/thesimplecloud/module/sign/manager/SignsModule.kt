@@ -1,3 +1,25 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2020 The SimpleCloud authors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
 package eu.thesimplecloud.module.sign.manager
 
 import eu.thesimplecloud.api.CloudAPI
@@ -5,6 +27,7 @@ import eu.thesimplecloud.api.event.sync.`object`.SynchronizedObjectUpdatedEvent
 import eu.thesimplecloud.api.eventapi.CloudEventHandler
 import eu.thesimplecloud.api.eventapi.IListener
 import eu.thesimplecloud.api.external.ICloudModule
+import eu.thesimplecloud.api.sync.`object`.SynchronizedObjectHolder
 import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.module.sign.lib.*
@@ -35,9 +58,9 @@ class SignsModule : ICloudModule {
 
             @CloudEventHandler
             fun on(event: SynchronizedObjectUpdatedEvent) {
-                val signModuleConfig = event.synchronizedObject
-                if (signModuleConfig is SignModuleConfig) {
-                    saveConfigToFiles(signModuleConfig)
+                val signModuleConfigHolder = event.synchronizedObject
+                if (signModuleConfigHolder.obj is SignModuleConfig) {
+                    saveConfigToFiles(signModuleConfigHolder.obj as SignModuleConfig)
                 }
             }
 
@@ -46,7 +69,7 @@ class SignsModule : ICloudModule {
 
     fun reloadConfig() {
         val signModuleConfig = loadConfigFromFiles()
-        SignModuleConfig.INSTANCE = signModuleConfig
+        SignModuleConfig.INSTANCE = SynchronizedObjectHolder(signModuleConfig)
         signModuleConfig.update()
     }
 
@@ -87,7 +110,7 @@ class SignsModule : ICloudModule {
         FileUtils.deleteDirectory(this.layoutsDir)
         this.layoutsDir.mkdirs()
         signModuleConfig.signLayouts.forEach {
-            JsonData.fromObjectWithGsonExclude(it).saveAsFile(File(this.layoutsDir, it.name + ".json"))
+            JsonData.fromObject(it).saveAsFile(File(this.layoutsDir, it.name + ".json"))
         }
         JsonData.fromObject(signModuleConfig.cloudSigns).saveAsFile(this.signsFile)
         JsonData.fromObject(signModuleConfig.groupToLayout).saveAsFile(this.groupToLayoutsFile)

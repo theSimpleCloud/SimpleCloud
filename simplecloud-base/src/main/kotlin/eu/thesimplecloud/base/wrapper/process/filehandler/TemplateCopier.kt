@@ -1,14 +1,36 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2020 The SimpleCloud authors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
 package eu.thesimplecloud.base.wrapper.process.filehandler
 
-import eu.thesimplecloud.base.wrapper.startup.Wrapper
-import eu.thesimplecloud.base.core.utils.FileCopier
-import eu.thesimplecloud.clientserverapi.client.NettyClient
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceType
 import eu.thesimplecloud.api.template.ITemplate
+import eu.thesimplecloud.base.core.utils.FileCopier
+import eu.thesimplecloud.base.wrapper.startup.Wrapper
+import eu.thesimplecloud.clientserverapi.client.NettyClient
+import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.launcher.external.module.ModuleCopyType
 import org.apache.commons.io.FileUtils
 import java.io.File
@@ -33,18 +55,18 @@ class TemplateCopier : ITemplateCopier {
         generateServiceFile(cloudService, serviceTmpDir)
 
         val modulesByCopyType = Wrapper.instance.existingModules
-                .filter { it.first.moduleCopyType != ModuleCopyType.NONE }.toMutableList()
+                .filter { it.content.moduleCopyType != ModuleCopyType.NONE }.toMutableList()
         if (!cloudService.isLobby())
-            modulesByCopyType.removeIf { it.first.moduleCopyType == ModuleCopyType.LOBBY }
+            modulesByCopyType.removeIf { it.content.moduleCopyType == ModuleCopyType.LOBBY }
         if (!cloudService.isProxy())
-            modulesByCopyType.removeIf { it.first.moduleCopyType == ModuleCopyType.PROXY }
+            modulesByCopyType.removeIf { it.content.moduleCopyType == ModuleCopyType.PROXY }
         if (cloudService.isProxy())
-            modulesByCopyType.removeIf { it.first.moduleCopyType == ModuleCopyType.SERVER }
+            modulesByCopyType.removeIf { it.content.moduleCopyType == ModuleCopyType.SERVER }
 
         val moduleNamesToCopy = getModulesToCopyOfTemplateAndSubTemplates(template)
-        val modulesByName = Wrapper.instance.existingModules.filter { moduleNamesToCopy.contains(it.first.name) }
+        val modulesByName = Wrapper.instance.existingModules.filter { moduleNamesToCopy.contains(it.content.name) }
 
-        modulesByCopyType.union(modulesByName).distinctBy { it.first.name }.forEach { FileUtils.copyFile(it.second, File(serviceTmpDir, "/plugins/" + it.second.name)) }
+        modulesByCopyType.union(modulesByName).distinctBy { it.content.name }.forEach { FileUtils.copyFile(it.file, File(serviceTmpDir, "/plugins/" + it.file.name)) }
 
     }
 

@@ -1,3 +1,25 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2020 The SimpleCloud authors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
 package eu.thesimplecloud.module.internalwrapper
 
 import eu.thesimplecloud.api.CloudAPI
@@ -19,19 +41,19 @@ class InternalWrapperModule : ICloudModule {
     private var commandExecutable: ICommandExecutable? = null
 
     override fun onEnable() {
-        val launcherJarFile = File(Launcher::class.java.protectionDomain.codeSource.location.toURI().path)
+        val launcherJarFile = Launcher.instance.getLauncherFile()
         val wrapperManager = CloudAPI.instance.getWrapperManager()
         val config = Launcher.instance.launcherConfigLoader.loadConfig()
 
         if (wrapperManager.getWrapperByHost(config.host) == null) {
             val wrapperInfo = DefaultWrapperInfo("InternalWrapper", config.host, 2, 2048)
-            CloudAPI.instance.getWrapperManager().updateWrapper(wrapperInfo)
+            CloudAPI.instance.getWrapperManager().update(wrapperInfo)
         }
         thread(start = true, isDaemon = false) {
-            Launcher.instance.consoleSender.sendMessage("moudle.internalwrapper.starting", "Starting internal wrapper...")
-            val processBuilder = ProcessBuilder("java", "-jar", launcherJarFile.absolutePath, "--start-application=WRAPPER")
+            Launcher.instance.consoleSender.sendMessage("module.internalwrapper.starting", "Starting internal wrapper...")
+            val processBuilder = ProcessBuilder("java", "-jar", launcherJarFile.absolutePath, "--start-application=WRAPPER", "--disable-auto-updater")
             processBuilder.directory(File("."))
-            val process = processBuilder.start() ?: return@thread
+            val process = processBuilder.start()
             this.process = process
             val bufferedReader = BufferedReader(InputStreamReader(process.inputStream))
             val commandExecutable = getCommandExecutable(process)

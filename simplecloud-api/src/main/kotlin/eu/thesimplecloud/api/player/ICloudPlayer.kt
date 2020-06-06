@@ -1,14 +1,40 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2020 The SimpleCloud authors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
 package eu.thesimplecloud.api.player
 
-import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.command.ICommandSender
+import eu.thesimplecloud.api.event.player.permission.CloudPlayerPermissionCheckEvent
+import eu.thesimplecloud.api.event.player.permission.PermissionState
 import eu.thesimplecloud.api.exception.*
 import eu.thesimplecloud.api.location.ServiceLocation
 import eu.thesimplecloud.api.location.SimpleLocation
+import eu.thesimplecloud.api.player.connection.ConnectionResponse
 import eu.thesimplecloud.api.player.connection.IPlayerConnection
 import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.api.service.ICloudService
+import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
 interface ICloudPlayer : IOfflineCloudPlayer, ICommandSender {
 
@@ -18,9 +44,14 @@ interface ICloudPlayer : IOfflineCloudPlayer, ICommandSender {
     fun getPlayerConnection(): IPlayerConnection
 
     /**
+     * Returns the state of the state of the connection to a server.
+     */
+    fun getServerConnectState(): PlayerServerConnectState
+
+    /**
      * Sends a message to this player.
      */
-    fun sendMessage(cloudText: CloudText) = CloudAPI.instance.getCloudPlayerManager().sendMessageToPlayer(this, cloudText)
+    fun sendMessage(cloudText: CloudText): ICommunicationPromise<Unit>
 
     /**
      * Sends a message to this player.
@@ -37,7 +68,7 @@ interface ICloudPlayer : IOfflineCloudPlayer, ICommandSender {
      * - [NoSuchServiceException] if the proxy service the player is connected to is not reachable
      * - [IllegalArgumentException] if the specified [cloudService] is a proxy service.
      */
-    fun connect(cloudService: ICloudService): ICommunicationPromise<Unit> = CloudAPI.instance.getCloudPlayerManager().connectPlayer(this, cloudService)
+    fun connect(cloudService: ICloudService): ICommunicationPromise<ConnectionResponse> = CloudAPI.instance.getCloudPlayerManager().connectPlayer(this, cloudService)
 
     /**
      * Kicks this player form the network.
@@ -122,16 +153,15 @@ interface ICloudPlayer : IOfflineCloudPlayer, ICommandSender {
      */
     fun teleport(location: ServiceLocation): ICommunicationPromise<Unit> = CloudAPI.instance.getCloudPlayerManager().teleportPlayer(this, location)
 
-    /**
-     * Checks whether this player has the specified [permission]
-     * @return a promise that is completed when the permission is checked, or
-     * when an exception is encountered. [ICommunicationPromise.isSuccess] indicates success
-     * or failure.
-     * The promise will fail with:
-     * - [UnreachableServiceException] if the proxy server the player is connected is not reachable.
-     * - [NoSuchPlayerException] if the player cannot be found on the proxy.
-     */
-    fun hasPermission(permission: String): ICommunicationPromise<Boolean> = CloudAPI.instance.getCloudPlayerManager().hasPermission(this, permission)
+    override fun hasPermission(permission: String): ICommunicationPromise<Boolean> {
+        val event = CloudPlayerPermissionCheckEvent(this, permission, PermissionState.UNKNOWN)
+        CloudAPI.instance.getEventManager().call(event)
+        return if (event.state == PermissionState.UNKNOWN) {
+            CloudAPI.instance.getCloudPlayerManager().hasPermission(this, permission)
+        } else {
+            CommunicationPromise.of(event.state.name.toBoolean())
+        }
+    }
 
     /**
      *
@@ -166,8 +196,20 @@ interface ICloudPlayer : IOfflineCloudPlayer, ICommandSender {
     fun clone(): ICloudPlayer
 
     /**
+     * Returns a new [SimpleCloudPlayer] by the data of this player.
+     */
+    fun toSimplePlayer(): SimpleCloudPlayer {
+        return SimpleCloudPlayer(getName(), getUniqueId())
+    }
+
+    /**
      * Updates this player to the network
      */
-    fun update() = CloudAPI.instance.getCloudPlayerManager().updateCloudPlayer(this)
+    fun update() = CloudAPI.instance.getCloudPlayerManager().update(this)
+
+    /**
+     * Returns whether updates for this player are enables on this network component
+     */
+    fun isUpdatesEnabled(): Boolean
 
 }

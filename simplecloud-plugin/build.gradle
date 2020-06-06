@@ -1,54 +1,51 @@
-plugins {
-    id 'java'
-    id 'org.jetbrains.kotlin.jvm'
-    id 'maven-publish'
-    id 'maven'
-}
 
-repositories {
-    maven {
-        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
-    }
-    maven {
-        url = 'https://oss.sonatype.org/content/repositories/snapshots'
-    }
-    maven {
-        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
-    }
-}
+/*
+ * MIT License
+ *
+ * Copyright (C) 2020 The SimpleCloud authors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-    implementation group: 'org.reflections', name: 'reflections', version: '0.9.10'
+    implementation group: 'org.reflections', name: 'reflections', version: '0.9.12'
     compile(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion) {
         transitive = false
     }
     compile(project(":simplecloud-api")) {
         transitive = false
     }
-    implementation group: 'io.netty', name: 'netty-all', version: '4.1.1.Final'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
     compile(project(":simplecloud-client")) {
         transitive = false
     }
-    implementation 'org.spigotmc:spigot-api:1.15.1-R0.1-SNAPSHOT'
-    // The full Spigot server with no shadowing. Requires mavenLocal.
-    implementation 'net.md-5:bungeecord-api:1.12-SNAPSHOT'
-    // The full Spigot server with no shadowing. Requires mavenLocal.
-    // https://mvnrepository.com/artifact/org.reflections/reflections
-
+    compileOnly 'org.spigotmc:spigot-api:1.15.1-R0.1-SNAPSHOT'
+    compileOnly 'net.md-5:bungeecord-api:1.12-SNAPSHOT'
+    compileOnly 'com.velocitypowered:velocity-api:1.1.0-SNAPSHOT'
+    annotationProcessor 'com.velocitypowered:velocity-api:1.1.0-SNAPSHOT'
 }
+
 
 configurations {
     jar.archiveName = 'SimpleCloud-Plugin.jar'
 }
 
-compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
-}
-
 jar {
+    dependsOn ':simplecloud-client:jar'
     // This line of code recursively collects and copies all of a project's files
     // and adds them to the JAR itself. One can extend this task, to skip certain
     // files or particular types at will
