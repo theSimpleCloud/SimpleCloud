@@ -20,22 +20,22 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.api.parser
+package eu.thesimplecloud.api.parser.string.typeparser
+
+import eu.thesimplecloud.api.parser.string.IStringTypeParser
 
 /**
- * Parses a object from one type to another
+ * Created by IntelliJ IDEA.
+ * Date: 07.06.2020
+ * Time: 14:45
+ * @author Frederick Baier
  */
-interface ITypeParser<T : Any, R : Any> {
+class DoubleParser : IStringTypeParser<Double> {
+    override fun parse(value: String): Double? {
+        return runCatching { value.toDouble() }.getOrNull()
+    }
 
-    /**
-     * Parses the object [T] to [R]
-     * @return null if the parse failed
-     */
-    fun parse(value: T): R?
-
-    /**
-     * Returns a list of types this parser can parse
-     */
-    fun allowedTypes(): List<Class<out R>>
-
+    override fun allowedTypes(): List<Class<out Double>> {
+        return listOf(Double::class.java)
+    }
 }

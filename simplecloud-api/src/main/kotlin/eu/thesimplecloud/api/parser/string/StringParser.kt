@@ -33,8 +33,19 @@ class StringParser : ITypeFromClassParser<String>{
 
     private val parsableTypes = listOf(String::class.java, Int::class.java, UUID::class.java)
 
-    private val customTypeParsers = mutableListOf(CloudLobbyGroupParser(), CloudProxyGroupParser(), CloudServerGroupParser(), CloudServiceGroupParser(),
-            CloudServiceParser(), WrapperInfoParser(), BooleanParser(), TemplateParser())
+    private val customTypeParsers = mutableListOf(
+            CloudLobbyGroupParser(),
+            CloudProxyGroupParser(),
+            CloudServerGroupParser(),
+            CloudServiceGroupParser(),
+            CloudServiceParser(),
+            WrapperInfoParser(),
+            BooleanParser(),
+            TemplateParser(),
+            IntParser(),
+            DoubleParser(),
+            FloatParser()
+    )
 
     override fun supportedTypes(): Set<Class<out Any>> = customTypeParsers.map { it.allowedTypes() }.flatten().union(parsableTypes)
 
