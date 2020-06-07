@@ -174,9 +174,15 @@ interface ICloudServiceGroup {
     fun getOnlineServiceCount(): Int = getAllServices().filter { it.isOnline() }.size
 
     /**
-     * Stops all services by this group.
+     * Stops all services of this group.
      */
+    @Deprecated(message = "Use shutdownAllServices instead", replaceWith = ReplaceWith("shutdownAllServices()"))
     fun stopAllServices() = getAllServices().forEach { it.shutdown() }
+
+    /**
+     * Stops all services of this group.
+     */
+    fun shutdownAllServices() = getAllServices().forEach { it.shutdown() }
 
     /**
      * Deletes this service group from the cloud
