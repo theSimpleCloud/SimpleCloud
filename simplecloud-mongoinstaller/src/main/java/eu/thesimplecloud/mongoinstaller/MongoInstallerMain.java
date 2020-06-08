@@ -58,6 +58,7 @@ public class MongoInstallerMain {
 
         String enumString = args[0];
         InstallerEnum installerEnum = InstallerEnum.valueOf(enumString);
+        printHeader(installerEnum);
 
         String adminUserPassword = new UserQuestion("Please provide the password for your admin user").waitForResult();
         String databaseName = new UserQuestion("Please provide the name for the new database").waitForResult();
@@ -90,6 +91,10 @@ public class MongoInstallerMain {
 
 
         System.out.println("Creating info file.");
+        createInfoFile(adminUserPassword, databaseName, userName, userPassword);
+    }
+
+    private static void createInfoFile(String adminUserPassword, String databaseName, String userName, String userPassword) throws IOException {
         File theFile = new File("mongo.txt");
         FileEditor editor = new FileEditor(theFile);
         editor.set("adminUserName", "admin");
@@ -99,6 +104,17 @@ public class MongoInstallerMain {
         editor.set("userName", userName);
         editor.set("userPassword", userPassword);
         editor.save();
+    }
+
+    private static void printHeader(InstallerEnum installerEnum) {
+        System.out.println("\n" +
+                "                                 _____           _        _ _           \n" +
+                "  /\\/\\   ___  _ __   __ _  ___   \\_   \\_ __  ___| |_ __ _| | | ___ _ __ \n" +
+                " /    \\ / _ \\| '_ \\ / _` |/ _ \\   / /\\/ '_ \\/ __| __/ _` | | |/ _ \\ '__|\n" +
+                "/ /\\/\\ \\ (_) | | | | (_| | (_) /\\/ /_ | | | \\__ \\ || (_| | | |  __/ |   \n" +
+                "\\/    \\/\\___/|_| |_|\\__, |\\___/\\____/ |_| |_|___/\\__\\__,_|_|_|\\___|_|   \n" +
+                "                    |___/                    ");
+        System.out.println("Installer: " + installerEnum.name());
     }
 
     private static void createUser(String adminPassword, String newDatabaseName, String newUserName, String newUserPassword) {
