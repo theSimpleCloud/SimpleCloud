@@ -107,7 +107,9 @@ public class MongoInstallerMain {
         final MongoDatabase db = mongo.getDatabase(newDatabaseName);
         final BasicDBObject createUserCommand = new BasicDBObject("createUser", newUserName)
                 .append("pwd", newUserPassword).append("roles",
-                Collections.singletonList(new BasicDBObject("role", "readWrite").append("db", newDatabaseName)));
+                        Collections.singletonList(
+                                new BasicDBObject("role", "readWrite").append("db", newDatabaseName)
+                        ));
         db.runCommand(createUserCommand);
     }
 
@@ -128,16 +130,17 @@ public class MongoInstallerMain {
     private static void createAdminUser(String adminUserPassword) {
         MongoClient mongo = new MongoClient("localhost", 27017);
         final MongoDatabase db = mongo.getDatabase("admin");
-        final BasicDBObject createUserCommand = new BasicDBObject("createUser", "admin").append("pwd", adminUserPassword)
-        .append("roles",
-                Arrays.asList(
-                        new BasicDBObject("role", "userAdmin").append("db", "admin"),
-                        new BasicDBObject("role", "dbAdmin").append("db", "admin"),
-                        new BasicDBObject("role", "userAdminAnyDatabase").append("db", "admin"),
-                        new BasicDBObject("role", "dbAdminAnyDatabase").append("db", "admin"),
-                        new BasicDBObject("role", "clusterAdmin").append("db", "admin"),
-                        new BasicDBObject("role", "dbOwner").append("db", "admin")
-                ));
+        final BasicDBObject createUserCommand = new BasicDBObject("createUser", "admin")
+                .append("pwd", adminUserPassword)
+                .append("roles",
+                        Arrays.asList(
+                                new BasicDBObject("role", "userAdmin").append("db", "admin"),
+                                new BasicDBObject("role", "dbAdmin").append("db", "admin"),
+                                new BasicDBObject("role", "userAdminAnyDatabase").append("db", "admin"),
+                                new BasicDBObject("role", "dbAdminAnyDatabase").append("db", "admin"),
+                                new BasicDBObject("role", "clusterAdmin").append("db", "admin"),
+                                new BasicDBObject("role", "dbOwner").append("db", "admin")
+                        ));
         db.runCommand(createUserCommand);
     }
 
