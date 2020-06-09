@@ -20,34 +20,10 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.base.wrapper.process
+package eu.thesimplecloud.api.exception
 
-import eu.thesimplecloud.api.service.ICloudService
-import eu.thesimplecloud.clientserverapi.lib.bootstrap.IBootstrap
-import java.io.File
-
-interface ICloudServiceProcess : IBootstrap {
-
-    /**
-     * Returns the [ICloudService] this process executes
-     */
-    fun getCloudService(): ICloudService
-
-    /**
-     * Terminates this process immediately (not recommended to use)
-     */
-    fun forceStop()
-
-    /**
-     * Returns the directory the service is executed in
-     */
-    fun getTempDirectory(): File
-
-    /**
-     * Executes a command on this service
-     */
-    fun executeCommand(command: String)
-
-
-
+/**
+ * This exception is thrown when a service is not available or not connected to the manager.
+ */
+class UnreachableComponentException(reason: String) : Exception(reason) {
 }

@@ -23,7 +23,7 @@
 package eu.thesimplecloud.api.command
 
 import eu.thesimplecloud.api.exception.NoSuchPlayerException
-import eu.thesimplecloud.api.exception.UnreachableServiceException
+import eu.thesimplecloud.api.exception.UnreachableComponentException
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
 interface ICommandSender {
@@ -40,7 +40,7 @@ interface ICommandSender {
      * when an exception is encountered. [ICommunicationPromise.isSuccess] indicates success
      * or failure. If the sender is a ConsoleSender this method returns true.
      * The promise will fail with:
-     * - [UnreachableServiceException] if the proxy server the sender is connected is not reachable.
+     * - [UnreachableComponentException] if the proxy server the sender is connected is not reachable.
      * - [NoSuchPlayerException] if the sender cannot be found on the proxy.
      */
     fun hasPermission(permission: String): ICommunicationPromise<Boolean>

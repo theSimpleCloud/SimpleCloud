@@ -68,4 +68,10 @@ interface ICloudServiceManager : ICacheList<ICloudService> {
      * @return a promise that completes when the service was stopped.
      */
     fun stopService(cloudService: ICloudService): ICommunicationPromise<Unit>
+
+    /**
+     * Copies the service to the template directory.
+     * @return q promise that completes when the service was copied.
+     */
+    fun copyService(cloudService: ICloudService, path: String): ICommunicationPromise<Unit>
 }

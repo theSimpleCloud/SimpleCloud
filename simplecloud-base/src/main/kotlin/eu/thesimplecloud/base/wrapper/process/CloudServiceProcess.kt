@@ -154,6 +154,10 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
         process?.destroyForcibly()
     }
 
+    override fun getTempDirectory(): File {
+        return serviceTmpDir
+    }
+
     override fun isActive(): Boolean = this.process?.isAlive ?: false
 
     override fun shutdown(): ICommunicationPromise<Unit> {

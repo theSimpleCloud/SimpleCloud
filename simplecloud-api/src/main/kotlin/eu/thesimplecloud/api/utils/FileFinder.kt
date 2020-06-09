@@ -20,10 +20,33 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.api.exception
+package eu.thesimplecloud.api.utils
+
+import org.apache.commons.io.FileUtils
+import org.apache.commons.io.filefilter.IOFileFilter
+import java.io.File
 
 /**
- * This exception is thrown when a service is not available or not connected to the manager.
+ * Created by IntelliJ IDEA.
+ * Date: 09.06.2020
+ * Time: 15:47
+ * @author Frederick Baier
  */
-class UnreachableServiceException(reason: String) : Exception(reason) {
+object FileFinder {
+
+    fun getAllFiles(directory: File): List<File> {
+        if (!directory.exists()) return emptyList()
+        val acceptAllFilter = object : IOFileFilter {
+            override fun accept(file: File?): Boolean {
+                return true
+            }
+
+            override fun accept(dir: File?, name: String?): Boolean {
+                return true
+            }
+        }
+        return FileUtils.listFilesAndDirs(directory, acceptAllFilter, acceptAllFilter)
+                .filter { !it.isDirectory }
+    }
+
 }

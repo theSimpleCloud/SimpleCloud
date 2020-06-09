@@ -25,7 +25,7 @@ package eu.thesimplecloud.plugin.impl.player
 import eu.thesimplecloud.api.exception.NoSuchPlayerException
 import eu.thesimplecloud.api.exception.NoSuchServiceException
 import eu.thesimplecloud.api.exception.PlayerConnectException
-import eu.thesimplecloud.api.exception.UnreachableServiceException
+import eu.thesimplecloud.api.exception.UnreachableComponentException
 import eu.thesimplecloud.api.location.ServiceLocation
 import eu.thesimplecloud.api.location.SimpleLocation
 import eu.thesimplecloud.api.network.packets.player.*
@@ -74,7 +74,7 @@ class CloudPlayerManagerBungee : AbstractServiceCloudPlayerManager() {
 
         val serverInfo = getServerInfoByCloudService(cloudService)
         serverInfo
-                ?: return CommunicationPromise.failed(UnreachableServiceException("Service is not registered on player's proxy"))
+                ?: return CommunicationPromise.failed(UnreachableComponentException("Service is not registered on player's proxy"))
         val proxiedPlayer = getProxiedPlayerByCloudPlayer(cloudPlayer)
         proxiedPlayer
                 ?: return CommunicationPromise.failed(NoSuchElementException("Unable to find the player on the proxy service"))

@@ -132,7 +132,7 @@ interface ICloudPlayer : IOfflineCloudPlayer, ICommandSender {
      * when an exception is encountered. [ICommunicationPromise.isSuccess] indicates success
      * or failure.
      * The promise will fail with:
-     * - [UnreachableServiceException] if the minecraft server the player is connected is not reachable
+     * - [UnreachableComponentException] if the minecraft server the player is connected is not reachable
      * - [NoSuchWorldException] if the world to teleport the player to does not exist or is not loaded.
      */
     fun teleport(location: SimpleLocation): ICommunicationPromise<Unit> = CloudAPI.instance.getCloudPlayerManager().teleportPlayer(this, location)
@@ -143,7 +143,7 @@ interface ICloudPlayer : IOfflineCloudPlayer, ICommandSender {
      * when an exception is encountered. [ICommunicationPromise.isSuccess] indicates success
      * or failure.
      * The promise will fail with:
-     * - [UnreachableServiceException] if the minecraft server the player is connected is not reachable.
+     * - [UnreachableComponentException] if the minecraft server the player is connected is not reachable.
      * - [NoSuchServiceException] if the service to connect the player to cannot be found.
      * - [NoSuchWorldException] if the world to teleport the player to does not exist or is not loaded.
      * - [IllegalStateException] if the player is not connected to a server.
@@ -169,7 +169,7 @@ interface ICloudPlayer : IOfflineCloudPlayer, ICommandSender {
      * when an exception is encountered. [ICommunicationPromise.isSuccess] indicates success
      * or failure.
      * The promise will fail with:
-     * - [UnreachableServiceException] if the player is not connected to a server or the server is not connected to the manager.
+     * - [UnreachableComponentException] if the player is not connected to a server or the server is not connected to the manager.
      */
     fun getLocation(): ICommunicationPromise<ServiceLocation> = CloudAPI.instance.getCloudPlayerManager().getLocationOfPlayer(this)
 
@@ -180,7 +180,7 @@ interface ICloudPlayer : IOfflineCloudPlayer, ICommandSender {
      * or failure.
      * The promise will fail with:
      * - [NoSuchPlayerException] if the player cannot be found on the proxy.
-     * - [UnreachableServiceException] if the proxy server the player is connected is not reachable.
+     * - [UnreachableComponentException] if the proxy server the player is connected is not reachable.
      * - [NoSuchServiceException] if no lobby was available to send the player to.
      */
     fun sendToLobby(): ICommunicationPromise<Unit> = CloudAPI.instance.getCloudPlayerManager().sendPlayerToLobby(this)

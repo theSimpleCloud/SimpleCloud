@@ -24,6 +24,7 @@ package eu.thesimplecloud.plugin.impl
 
 import eu.thesimplecloud.api.event.service.CloudServiceUnregisteredEvent
 import eu.thesimplecloud.api.listenerextension.cloudListener
+import eu.thesimplecloud.api.network.packets.service.PacketIOCopyService
 import eu.thesimplecloud.api.network.packets.service.PacketIOStopCloudService
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.impl.AbstractCloudServiceManager
@@ -38,5 +39,9 @@ class CloudServiceManagerImpl : AbstractCloudServiceManager() {
                 .addCondition { it.cloudService == cloudService }
                 .unregisterAfterCall()
                 .toUnitPromise()
+    }
+
+    override fun copyService(cloudService: ICloudService, path: String): ICommunicationPromise<Unit> {
+        return CloudPlugin.instance.communicationClient.sendUnitQuery(PacketIOCopyService(cloudService, path), 20 * 1000)
     }
 }
