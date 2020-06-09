@@ -37,7 +37,7 @@ import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 @Command("version", CommandType.CONSOLE)
 class VersionCommand : ICommandHandler {
 
-    @CommandSubPath
+    @CommandSubPath("", "Shows the version")
     fun handle(commandSender: ICommandSender) {
         commandSender.sendMessage("Version: ${System.getProperty("simplecloud.version")}")
     }
