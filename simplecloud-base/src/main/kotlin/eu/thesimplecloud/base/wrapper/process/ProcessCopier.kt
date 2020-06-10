@@ -26,6 +26,7 @@ import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.utils.FileFinder
 import eu.thesimplecloud.base.wrapper.startup.Wrapper
+import eu.thesimplecloud.clientserverapi.lib.defaultpackets.PacketIODeleteFile
 import eu.thesimplecloud.clientserverapi.lib.defaultpackets.PacketIOUnzipZipFile
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
@@ -71,11 +72,16 @@ class ProcessCopier(val cloudService: ICloudService) {
 
         //send file
         val savePath = DirectoryPaths.paths.zippedTemplatesPath + "T-" + cloudService.getName()
+        val dirToUnzip = cloudService.getTemplate().getDirectory().path
         return Wrapper.instance.communicationClient.sendFile(zipFile, savePath, 20 * 1000).thenDelayed(1200, TimeUnit.MILLISECONDS) {
+            val relativePathInTemplate = dirToCopy.path.replace(tempDirectory.path, "")
+            val dirToReplace = dirToUnzip + relativePathInTemplate
+            //delete folder to replace
+            Wrapper.instance.communicationClient.sendUnitQuery(PacketIODeleteFile(dirToReplace))
+        }.flatten(10 * 1000).thenDelayed(1000, TimeUnit.MILLISECONDS) {
             //unzip file
-            val dirToUnzip = cloudService.getTemplate().getDirectory().path
             Wrapper.instance.communicationClient.sendUnitQuery(PacketIOUnzipZipFile(savePath, dirToUnzip), 10 * 1000)
-        }.flatten(10 * 1000)
+        }.flatten().throwFailure()
 
     }
 
