@@ -50,8 +50,9 @@ class ProxyEventHandler() {
     companion object {
 
         fun handleLogin(playerConnection: DefaultPlayerConnection, cancelEvent: (String) -> Unit) {
-            if (!CloudPlugin.instance.communicationClient.isOpen()) {
-                cancelEvent("§cProxy still starting.")
+            val thisService = CloudPlugin.instance.thisService()
+            if (!thisService.isAuthenticated() || !thisService.isOnline()) {
+                cancelEvent("§cProxy is still starting.")
                 return
             }
             val playerPromise = CloudAPI.instance.getCloudPlayerManager().getCloudPlayer(playerConnection.getUniqueId()).awaitUninterruptibly()
