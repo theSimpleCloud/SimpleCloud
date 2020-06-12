@@ -135,7 +135,7 @@ class Manager : ICloudApplication {
         this.templateServer.getDirectorySyncManager().createDirectorySync(File(DirectoryPaths.paths.modulesPath), DirectoryPaths.paths.modulesPath)
         this.serviceHandler.startThread()
         thread(start = true, isDaemon = false) { templateServer.start() }
-        this.playerUnregisterScheduler.startScheduler()
+        //this.playerUnregisterScheduler.startScheduler()
     }
 
     private fun moveToApplicationClassLoader(clazz: Class<out IPacket>): Class<out IPacket> {
