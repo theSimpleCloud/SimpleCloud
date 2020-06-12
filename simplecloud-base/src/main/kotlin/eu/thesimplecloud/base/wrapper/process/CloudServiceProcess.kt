@@ -144,7 +144,8 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
                 "-Xms" + cloudService.getMaxMemory() + "M", "-Xmx" + cloudService.getMaxMemory() + "M", "-cp", classPathValue,
                 ManifestLoader.getMainClass(jarFile.absolutePath)!!)
 
-        if (cloudService.getServiceVersion().name.toLowerCase().contains("spigot")) {
+        val lowerCaseName = cloudService.getServiceVersion().name.toLowerCase()
+        if (lowerCaseName.contains("spigot") || lowerCaseName.contains("paper")) {
             commands.add("nogui")
         }
         return commands.toTypedArray()
