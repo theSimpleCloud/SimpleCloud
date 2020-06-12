@@ -75,5 +75,11 @@ class InfoCommand : ICommandHandler {
         commandSender.sendMessage(player.toString())
     }
 
+    @CommandSubPath("onlinecount", "Prints the number of online players")
+    fun handlePlayers(commandSender: ICommandSender) {
+        val onlineCount = CloudAPI.instance.getCloudPlayerManager().getAllCachedObjects().size
+        commandSender.sendMessage("manager.command.info.onlinecount", "Online count: %COUNT%", onlineCount.toString())
+    }
+
 
 }
