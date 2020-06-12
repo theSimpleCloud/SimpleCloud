@@ -38,12 +38,12 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 class PacketIOCopyService(): JsonPacket() {
 
     constructor(service: ICloudService, path: String): this() {
-        this.jsonData.append("service", service.getName()).append("path", path)
+        this.jsonLib.append("service", service.getName()).append("path", path)
     }
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
-        val serviceName = this.jsonData.getString("service") ?: return contentException("service")
-        val path = this.jsonData.getString("path") ?: return contentException("path")
+        val serviceName = this.jsonLib.getString("service") ?: return contentException("service")
+        val path = this.jsonLib.getString("path") ?: return contentException("path")
         val service = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(serviceName)
         service ?: return failure(NoSuchServiceException("Service is not registered"))
         return service.copy(path)

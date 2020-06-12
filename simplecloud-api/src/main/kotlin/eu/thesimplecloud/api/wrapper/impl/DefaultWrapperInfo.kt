@@ -23,9 +23,9 @@
 package eu.thesimplecloud.api.wrapper.impl
 
 import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
-import eu.thesimplecloud.clientserverapi.lib.json.GsonCreator
-import eu.thesimplecloud.clientserverapi.lib.json.GsonExclude
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
+import eu.thesimplecloud.jsonlib.GsonCreator
+import eu.thesimplecloud.jsonlib.JsonLib
+import eu.thesimplecloud.jsonlib.JsonLibExclude
 
 data class DefaultWrapperInfo(
         private val name: String,
@@ -34,16 +34,16 @@ data class DefaultWrapperInfo(
         private var maxMemory: Int
 ) : IWritableWrapperInfo {
 
-    @GsonExclude
+    @JsonLibExclude
     private var authenticated = false
 
-    @GsonExclude
+    @JsonLibExclude
     private var usedMemory: Int = 0
 
-    @GsonExclude
+    @JsonLibExclude
     private var templatesReceived = false
 
-    @GsonExclude
+    @JsonLibExclude
     private var currentlyStartingServices = 0
 
     override fun setUsedMemory(memory: Int) {
@@ -87,7 +87,7 @@ data class DefaultWrapperInfo(
     }
 
     override fun toString(): String {
-        return JsonData.fromObject(this, GsonCreator().create()).getAsJsonString()
+        return JsonLib.fromObject(this, GsonCreator().create()).getAsJsonString()
     }
 
 }

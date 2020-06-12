@@ -31,7 +31,7 @@ import java.util.*
 class PacketOutTeleportOtherService(playerUniqueId: UUID, serviceName: String, simpleLocation: SimpleLocation) : JsonPacket() {
 
     init {
-        this.jsonData.append("playerUniqueId", playerUniqueId).append("serviceName", serviceName).append("simpleLocation", simpleLocation)
+        this.jsonLib.append("playerUniqueId", playerUniqueId).append("serviceName", serviceName).append("simpleLocation", simpleLocation)
     }
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> = unit()

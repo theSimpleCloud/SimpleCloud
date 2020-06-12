@@ -63,7 +63,7 @@ allprojects {
     }
 
     project.ext {
-        depedencyClientServerAPIVersion = '2.4.19-SNAPSHOT'
+        depedencyClientServerAPIVersion = '3.0.2-SNAPSHOT'
     }
 
     buildscript {
@@ -103,6 +103,9 @@ subprojects {
         testCompile group: 'junit', name: 'junit', version: '4.13'
         implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
         compile(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion) {
+            transitive = false
+        }
+        compile(group: 'eu.thesimplecloud.jsonlib', name: 'json-lib', version: "1.0-SNAPSHOT") {
             transitive = false
         }
         compileOnly group: 'commons-io', name: 'commons-io', version: '2.6'

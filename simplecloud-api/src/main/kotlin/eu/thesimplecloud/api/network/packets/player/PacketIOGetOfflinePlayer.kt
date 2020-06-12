@@ -31,16 +31,16 @@ import java.util.*
 class PacketIOGetOfflinePlayer() : JsonPacket() {
 
     constructor(uniqueId: UUID): this() {
-        this.jsonData.append("uniqueId", uniqueId)
+        this.jsonLib.append("uniqueId", uniqueId)
     }
 
     constructor(name: String): this() {
-        this.jsonData.append("name", name)
+        this.jsonLib.append("name", name)
     }
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
-        val uniqueId = this.jsonData.getObject("uniqueId", UUID::class.java)
-        val name = this.jsonData.getString("name")
+        val uniqueId = this.jsonLib.getObject("uniqueId", UUID::class.java)
+        val name = this.jsonLib.getString("name")
         if (uniqueId == null && name == null) return contentException("name and uniqueId null")
         if (uniqueId != null) return CloudAPI.instance.getCloudPlayerManager().getOfflineCloudPlayer(uniqueId)
         return CloudAPI.instance.getCloudPlayerManager().getOfflineCloudPlayer(name!!)

@@ -36,12 +36,12 @@ import kotlin.NoSuchElementException
 class PacketIOConnectCloudPlayer() : JsonPacket() {
 
     constructor(cloudPlayer: ICloudPlayer, service: ICloudService) : this() {
-        this.jsonData.append("playerUniqueId", cloudPlayer.getUniqueId()).append("serviceName", service.getName())
+        this.jsonLib.append("playerUniqueId", cloudPlayer.getUniqueId()).append("serviceName", service.getName())
     }
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<ConnectionResponse> {
-        val playerUniqueId = this.jsonData.getObject("playerUniqueId", UUID::class.java) ?: return contentException("playerUniqueId")
-        val serviceName = this.jsonData.getString("serviceName") ?: return contentException("serviceName")
+        val playerUniqueId = this.jsonLib.getObject("playerUniqueId", UUID::class.java) ?: return contentException("playerUniqueId")
+        val serviceName = this.jsonLib.getString("serviceName") ?: return contentException("serviceName")
         val cloudService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(serviceName) ?: return failure(UnreachableComponentException(""))
         return CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(playerUniqueId)?.connect(cloudService) ?: return failure(NoSuchElementException("Player not found"))
     }

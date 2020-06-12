@@ -29,11 +29,11 @@ import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
 class PacketOutCloudClientLogin() : JsonPacket() {
 
     constructor(cloudClientType: NetworkComponentType, name: String) : this() {
-        this.jsonData.append("name", name).append("cloudClientType", cloudClientType)
+        this.jsonLib.append("name", name).append("cloudClientType", cloudClientType)
     }
 
     constructor(cloudClientType: NetworkComponentType) : this() {
-        this.jsonData.append("cloudClientType", cloudClientType)
+        this.jsonLib.append("cloudClientType", cloudClientType)
     }
 
     override suspend fun handle(connection: IConnection) = unit()

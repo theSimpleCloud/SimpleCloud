@@ -24,7 +24,7 @@ package eu.thesimplecloud.base.manager.setup
 
 import eu.thesimplecloud.api.service.ServiceVersion
 import eu.thesimplecloud.api.utils.Downloader
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
+import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
 import eu.thesimplecloud.launcher.extension.sendMessage
@@ -48,7 +48,7 @@ class ServerJarSetup(private val serverJar: File) : ISetup {
     @SetupQuestion(1, "manager.setup.server-jar.version.question", "Which version to you want to use? (1.7.10, 1.8.8, 1.9.4, 1.10.2, 1.11.2, 1.12.2, 1.13.2, 1.14.4, 1.15.2)")
     fun versionSetup(answer: String) : Boolean {
         val version = answer.replace(".", "_")
-        val serviceVersion = JsonData.fromObject(spigotType + "_" + version).getObjectOrNull(ServiceVersion::class.java)
+        val serviceVersion = JsonLib.fromObject(spigotType + "_" + version).getObjectOrNull(ServiceVersion::class.java)
         if (serviceVersion == null) {
             Launcher.instance.consoleSender.sendMessage("manager.setup.server-jar.version.unsupported", "The specified version is not supported.")
             return false

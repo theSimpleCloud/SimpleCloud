@@ -31,13 +31,13 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 class PacketIOUpdateSingleSynchronizedObject() : JsonPacket() {
 
     constructor(synchronizedObject: ISingleSynchronizedObject) : this() {
-        this.jsonData.append("class", synchronizedObject::class.java.name).append("synchronizedObject", synchronizedObject)
+        this.jsonLib.append("class", synchronizedObject::class.java.name).append("synchronizedObject", synchronizedObject)
     }
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
-        val className = this.jsonData.getString("class") ?: return contentException("class")
+        val className = this.jsonLib.getString("class") ?: return contentException("class")
         try {
-            val synchronizedObject = this.jsonData.getObject("synchronizedObject", Class.forName(
+            val synchronizedObject = this.jsonLib.getObject("synchronizedObject", Class.forName(
                     className,
                     true,
                     connection.getCommunicationBootstrap().getClassLoaderToSearchObjectPacketsClasses()

@@ -30,25 +30,25 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 class PacketIOUpdateCacheObject() : JsonPacket() {
 
     constructor(cacheListName: String, value: Any, action: Action) : this() {
-        this.jsonData.append("cacheListName", cacheListName)
+        this.jsonLib.append("cacheListName", cacheListName)
                 .append("value", value)
                 .append("valueClass", value::class.java.name)
                 .append("action", action)
     }
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
-        val cacheListName = this.jsonData.getString("cacheListName")
+        val cacheListName = this.jsonLib.getString("cacheListName")
                 ?: return contentException("cacheListName")
-        val valueClassName = this.jsonData.getString("valueClass")
+        val valueClassName = this.jsonLib.getString("valueClass")
                 ?: return contentException("valueClass")
-        val action = this.jsonData.getObject("action", Action::class.java)
+        val action = this.jsonLib.getObject("action", Action::class.java)
                 ?: return contentException("action")
         val valueClass = Class.forName(
                 valueClassName,
                 true,
                 connection.getCommunicationBootstrap().getClassLoaderToSearchObjectPacketsClasses()
         )
-        val value = this.jsonData.getObject("value", valueClass) ?: return contentException("value")
+        val value = this.jsonLib.getObject("value", valueClass) ?: return contentException("value")
 
         when (action) {
             Action.UPDATE -> {

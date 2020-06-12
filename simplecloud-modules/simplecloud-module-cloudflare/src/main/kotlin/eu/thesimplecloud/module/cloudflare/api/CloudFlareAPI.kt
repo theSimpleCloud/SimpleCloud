@@ -25,7 +25,7 @@ package eu.thesimplecloud.module.cloudflare.api
 import com.google.gson.JsonArray
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.service.ICloudService
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
+import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.module.cloudflare.config.CloudFlareData
 import eu.thesimplecloud.module.cloudflare.config.Config
 import java.io.DataOutputStream
@@ -97,7 +97,7 @@ class CloudFlareAPI(val config: Config) {
         }
     }
 
-    private fun createRecord(jsonData: JsonData, cloudFlareData: CloudFlareData): String? {
+    private fun createRecord(jsonLib: JsonLib, cloudFlareData: CloudFlareData): String? {
         try {
             val connection = URL(CLOUD_FLARE_API_URL + "zones/"
                     + cloudFlareData.zoneID + "/dns_records").openConnection() as HttpURLConnection
@@ -109,11 +109,11 @@ class CloudFlareAPI(val config: Config) {
             connection.setRequestProperty("Accept", "application/json")
             connection.setRequestProperty("Content-Type", "application/json")
             DataOutputStream(connection.outputStream).use { dataOutputStream ->
-                dataOutputStream.writeBytes(jsonData.getAsJsonString())
+                dataOutputStream.writeBytes(jsonLib.getAsJsonString())
                 dataOutputStream.flush()
             }
             if (connection.responseCode < 400) connection.inputStream else connection.errorStream.use { stream ->
-                val result = JsonData.fromInputStream(stream)
+                val result = JsonLib.fromInputStream(stream)
                 connection.disconnect()
                 val resultPath = result.getPath("result")
                 if (result.getBoolean("success")!! && resultPath != null) {
@@ -137,15 +137,15 @@ class CloudFlareAPI(val config: Config) {
         return null
     }
 
-    private fun getDefaultConfig(service: ICloudService, cloudFlareData: CloudFlareData): JsonData {
+    private fun getDefaultConfig(service: ICloudService, cloudFlareData: CloudFlareData): JsonLib {
         val name = if (cloudFlareData.subDomain.equals("@")) cloudFlareData.domainName else cloudFlareData.subDomain
 
-        return JsonData().append("type", "SRV").
+        return JsonLib.empty().append("type", "SRV").
         append("name", "_minecraft._tcp.${cloudFlareData.domainName}").
         append("content", "SRV 1 1 " + service.getPort().toString() + " " + service.getName() + "." + cloudFlareData.domainName).
         append("ttl", 1).
         append("proxied", false).
-        append("data", JsonData()
+        append("data", JsonLib.empty()
                 .append("service", "_minecraft")
                 .append("proto", "_tcp")
                 .append("name", name)
@@ -156,13 +156,13 @@ class CloudFlareAPI(val config: Config) {
                 .getAsJsonString())
     }
 
-    private fun getDefaultARecord(service: ICloudService, cloudFlareData: CloudFlareData): JsonData {
-        return JsonData().append("type", "A").
+    private fun getDefaultARecord(service: ICloudService, cloudFlareData: CloudFlareData): JsonLib {
+        return JsonLib.empty().append("type", "A").
                 append("name", "${service.getName()}.${cloudFlareData.domainName}").
                 append("content", service.getHost()).
                 append("ttl", 1).
                 append("proxied", false).
-                append("data", JsonData().getAsJsonString())
+                append("data", JsonLib.empty().getAsJsonString())
     }
 
     private fun getRecordsByServiceName(serviceName: String): List<CloudFlareRecord> {

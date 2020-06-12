@@ -28,7 +28,7 @@ import eu.thesimplecloud.api.eventapi.CloudEventHandler
 import eu.thesimplecloud.api.eventapi.IListener
 import eu.thesimplecloud.api.external.ICloudModule
 import eu.thesimplecloud.api.sync.`object`.SynchronizedObjectHolder
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
+import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.module.sign.lib.*
 import eu.thesimplecloud.module.sign.manager.command.SignsCommand
@@ -74,11 +74,11 @@ class SignsModule : ICloudModule {
     }
 
     private fun loadConfigFromFiles(): SignModuleConfig {
-        val cloudSigns: MutableList<CloudSign> = JsonData.fromJsonFile(signsFile)?.getObject(ArrayList::class.java) as ArrayList<CloudSign>?
+        val cloudSigns: MutableList<CloudSign> = JsonLib.fromJsonFile(signsFile)?.getObject(ArrayList::class.java) as ArrayList<CloudSign>?
                 ?: ArrayList()
         val layoutFiles = layoutsDir.listFiles() ?: emptyArray()
-        val layouts = layoutFiles.mapNotNull { JsonData.fromJsonFile(it)?.getObject(SignLayout::class.java) }.toMutableList()
-        val groupToLayout = JsonData.fromJsonFile(groupToLayoutsFile)?.getObject(GroupToLayout::class.java)
+        val layouts = layoutFiles.mapNotNull { JsonLib.fromJsonFile(it)?.getObject(SignLayout::class.java) }.toMutableList()
+        val groupToLayout = JsonLib.fromJsonFile(groupToLayoutsFile)?.getObject(GroupToLayout::class.java)
                 ?: GroupToLayout()
 
         if (layouts.isEmpty()) layouts.addAll(getDefaultLayoutList())
@@ -110,10 +110,10 @@ class SignsModule : ICloudModule {
         FileUtils.deleteDirectory(this.layoutsDir)
         this.layoutsDir.mkdirs()
         signModuleConfig.signLayouts.forEach {
-            JsonData.fromObject(it).saveAsFile(File(this.layoutsDir, it.name + ".json"))
+            JsonLib.fromObject(it).saveAsFile(File(this.layoutsDir, it.name + ".json"))
         }
-        JsonData.fromObject(signModuleConfig.cloudSigns).saveAsFile(this.signsFile)
-        JsonData.fromObject(signModuleConfig.groupToLayout).saveAsFile(this.groupToLayoutsFile)
+        JsonLib.fromObject(signModuleConfig.cloudSigns).saveAsFile(this.signsFile)
+        JsonLib.fromObject(signModuleConfig.groupToLayout).saveAsFile(this.groupToLayoutsFile)
     }
 
     override fun onDisable() {

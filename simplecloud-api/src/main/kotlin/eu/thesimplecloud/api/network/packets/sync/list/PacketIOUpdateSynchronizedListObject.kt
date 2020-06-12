@@ -32,14 +32,14 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 class PacketIOUpdateSynchronizedListObject() : JsonPacket() {
 
     constructor(name: String, obj: ISynchronizedListObject) : this() {
-        this.jsonData.append("name", name).append("obj", obj).append("className", obj::class.java.name)
+        this.jsonLib.append("name", name).append("obj", obj).append("className", obj::class.java.name)
     }
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
-        val name = this.jsonData.getString("name") ?: return contentException("name")
-        val className = this.jsonData.getString("className") ?: return contentException("className")
+        val name = this.jsonLib.getString("name") ?: return contentException("name")
+        val className = this.jsonLib.getString("className") ?: return contentException("className")
         try {
-            val synchronizedObject = this.jsonData.getObject("obj", Class.forName(className)) as ISynchronizedListObject?
+            val synchronizedObject = this.jsonLib.getObject("obj", Class.forName(className)) as ISynchronizedListObject?
                     ?: return contentException("obj")
             val synchronizedObjectList: ISynchronizedObjectList<ISynchronizedListObject>? = CloudAPI.instance.getSynchronizedObjectListManager().getSynchronizedObjectList(name)
             synchronizedObjectList ?: return failure(NoSuchElementException())

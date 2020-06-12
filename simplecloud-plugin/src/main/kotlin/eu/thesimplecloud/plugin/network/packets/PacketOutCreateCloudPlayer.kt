@@ -30,7 +30,7 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 class PacketOutCreateCloudPlayer() : JsonPacket() {
 
     constructor(defaultPlayerConnection: DefaultPlayerConnection, proxyName: String): this() {
-        this.jsonData.append("playerConnection", defaultPlayerConnection).append("proxyName", proxyName)
+        this.jsonLib.append("playerConnection", defaultPlayerConnection).append("proxyName", proxyName)
     }
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> = unit()

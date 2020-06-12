@@ -26,7 +26,7 @@ import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.external.ICloudModule
 import eu.thesimplecloud.api.player.OfflineCloudPlayer
 import eu.thesimplecloud.base.manager.startup.Manager
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
+import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.module.permission.PermissionPool
 import eu.thesimplecloud.module.permission.group.PermissionGroup
@@ -58,9 +58,9 @@ class PermissionModule : ICloudModule {
             val defaultGroup = PermissionGroup("default")
             permissionGroupManager.update(adminGroup)
             permissionGroupManager.update(defaultGroup)
-            JsonData.fromObject(permissionGroupManager).saveAsFile(GROUPS_FILE)
+            JsonLib.fromObject(permissionGroupManager).saveAsFile(GROUPS_FILE)
         }
-        val permissionGroupManager = JsonData.fromJsonFile(GROUPS_FILE)?.getObject(PermissionGroupManager::class.java)
+        val permissionGroupManager = JsonLib.fromJsonFile(GROUPS_FILE)?.getObject(PermissionGroupManager::class.java)
                 ?: throw IllegalStateException("PermissionGroupManager is null")
         PermissionPool(permissionGroupManager)
         CloudAPI.instance.getEventManager().registerListener(this, CloudListener())

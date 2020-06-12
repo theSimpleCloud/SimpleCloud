@@ -36,7 +36,7 @@ import java.util.*
 class PacketOutGetTabSuggestions(): JsonPacket() {
 
     constructor(uuid: UUID, command: String): this() {
-        this.jsonData
+        this.jsonLib
                 .append("uuid", uuid)
                 .append("command", command)
     }

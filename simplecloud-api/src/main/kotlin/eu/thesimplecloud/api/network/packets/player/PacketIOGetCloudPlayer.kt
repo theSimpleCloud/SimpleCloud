@@ -34,16 +34,16 @@ class PacketIOGetCloudPlayer() : JsonPacket() {
 
 
     constructor(name: String): this() {
-        this.jsonData.append("name", name)
+        this.jsonLib.append("name", name)
     }
 
     constructor(uniqueId: UUID): this() {
-        this.jsonData.append("uniqueId", uniqueId)
+        this.jsonLib.append("uniqueId", uniqueId)
     }
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<ICloudPlayer> {
-        val name = this.jsonData.getString("name")
-        val uniqueId = this.jsonData.getObject("uniqueId", UUID::class.java)
+        val name = this.jsonLib.getString("name")
+        val uniqueId = this.jsonLib.getObject("uniqueId", UUID::class.java)
         var cloudPlayer: ICloudPlayer? = null
         if (name != null) {
             cloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(name)

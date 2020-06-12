@@ -32,13 +32,13 @@ import java.util.*
 class PacketIOCloudPlayerForceCommandExecution() : JsonPacket() {
 
     constructor(cloudPlayer: ICloudPlayer, command: String) : this() {
-        this.jsonData.append("playerUniqueId", cloudPlayer.getUniqueId())
+        this.jsonLib.append("playerUniqueId", cloudPlayer.getUniqueId())
                 .append("command", command)
     }
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Unit> {
-        val playerUniqueId = this.jsonData.getObject("playerUniqueId", UUID::class.java) ?: return contentException("playerUniqueId")
-        val command = this.jsonData.getString("command") ?: return contentException("command")
+        val playerUniqueId = this.jsonLib.getObject("playerUniqueId", UUID::class.java) ?: return contentException("playerUniqueId")
+        val command = this.jsonLib.getString("command") ?: return contentException("command")
         val cloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(playerUniqueId)
         cloudPlayer?.forceCommandExecution(command)
         return unit()

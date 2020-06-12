@@ -23,11 +23,11 @@
 package eu.thesimplecloud.api.parser.jsondata
 
 import eu.thesimplecloud.api.parser.ITypeFromClassParser
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
+import eu.thesimplecloud.jsonlib.JsonLib
 
-class JsonDataParser : ITypeFromClassParser<JsonData> {
+class JsonDataParser : ITypeFromClassParser<JsonLib> {
 
     override fun supportedTypes(): Set<Class<out Any>> = emptySet()
 
-    override fun <R : Any> parseToObject(value: JsonData, clazz: Class<R>): R? = null
+    override fun <R : Any> parseToObject(value: JsonLib, clazz: Class<R>): R? = null
 }

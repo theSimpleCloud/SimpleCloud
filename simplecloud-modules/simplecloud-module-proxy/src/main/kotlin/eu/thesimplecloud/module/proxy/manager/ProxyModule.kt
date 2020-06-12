@@ -24,7 +24,7 @@ package eu.thesimplecloud.module.proxy.manager
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.external.ICloudModule
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
+import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.module.proxy.config.Config
 import eu.thesimplecloud.module.proxy.config.DefaultConfig
@@ -59,13 +59,13 @@ class ProxyModule : ICloudModule{
             this.config = config
         }
 
-        val config = JsonData.fromJsonFile(configFile)!!.getObject(Config::class.java)
+        val config = JsonLib.fromJsonFile(configFile)!!.getObject(Config::class.java)
         CloudAPI.instance.getSingleSynchronizedObjectManager().updateObject(config)
         this.config = config
     }
 
     fun saveConfig(config: Config) {
-        JsonData.fromObject(config).saveAsFile(configFile)
+        JsonLib.fromObject(config).saveAsFile(configFile)
     }
 
     fun saveConfig() {

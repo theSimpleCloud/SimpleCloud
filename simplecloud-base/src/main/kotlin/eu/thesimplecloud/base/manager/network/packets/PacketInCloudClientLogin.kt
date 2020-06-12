@@ -36,7 +36,7 @@ class PacketInCloudClientLogin() : JsonPacket() {
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Unit> {
         val host = connection.getHost()!!
-        val cloudClientType = this.jsonData.getObject("cloudClientType", NetworkComponentType::class.java)
+        val cloudClientType = this.jsonLib.getObject("cloudClientType", NetworkComponentType::class.java)
                 ?: return contentException("cloudClientType")
         connection as IConnectedClient<IConnectedClientValue>
         CloudAPI.instance.getWrapperManager().sendAllCachedObjectsToConnection(connection).awaitCoroutine()
@@ -45,7 +45,7 @@ class PacketInCloudClientLogin() : JsonPacket() {
         CloudAPI.instance.getCloudServiceGroupManager().sendAllCachedObjectsToConnection(connection).awaitCoroutine()
         when (cloudClientType) {
             NetworkComponentType.SERVICE -> {
-                val name = this.jsonData.getString("name") ?: return contentException("name")
+                val name = this.jsonLib.getString("name") ?: return contentException("name")
                 val cloudService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(name)
                         ?: return failure(NoSuchElementException("Service not found"))
                 connection.setClientValue(cloudService)

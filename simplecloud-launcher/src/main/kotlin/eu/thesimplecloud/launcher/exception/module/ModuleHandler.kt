@@ -26,7 +26,7 @@ import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.external.ICloudModule
 import eu.thesimplecloud.api.property.Property
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
+import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.launcher.dependency.DependencyLoader
 import eu.thesimplecloud.launcher.event.module.ModuleLoadedEvent
 import eu.thesimplecloud.launcher.event.module.ModuleUnloadedEvent
@@ -65,8 +65,8 @@ open class ModuleHandler(
             val entry: JarEntry = jar.getJarEntry(moduleFileName)
                     ?: throw ModuleLoadException("${file.path}: No '$moduleFileName.json' found.")
             val fileStream = jar.getInputStream(entry)
-            val jsonData = JsonData.fromInputStream(fileStream)
-            return jsonData.getObjectOrNull(ModuleFileContent::class.java)
+            val jsonLib = JsonLib.fromInputStream(fileStream)
+            return jsonLib.getObjectOrNull(ModuleFileContent::class.java)
                     ?: throw ModuleLoadException("${file.path}: Invalid '$moduleFileName.json'.")
         } catch (ex: Exception) {
             throw ModuleLoadException(file.path, ex)

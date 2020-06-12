@@ -26,8 +26,8 @@ import eu.thesimplecloud.api.property.IProperty
 import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
-import eu.thesimplecloud.clientserverapi.lib.json.GsonExclude
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
+import eu.thesimplecloud.jsonlib.JsonLib
+import eu.thesimplecloud.jsonlib.JsonLibExclude
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -46,7 +46,7 @@ data class DefaultCloudService(
     private var serviceState = ServiceState.PREPARED
     private var onlineCount = 0
     private var authenticated = false
-    @GsonExclude
+    @JsonLibExclude
     private var lastUpdate = System.currentTimeMillis()
 
     var propertyMap = HashMap<String, Property<*>>()
@@ -111,7 +111,7 @@ data class DefaultCloudService(
 
 
     override fun toString(): String {
-        return JsonData.fromObject(this).getAsJsonString()
+        return JsonLib.fromObject(this).getAsJsonString()
     }
 
     override fun getProperties(): Map<String, IProperty<*>> = this.propertyMap

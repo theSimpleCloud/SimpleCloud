@@ -24,8 +24,8 @@ package eu.thesimplecloud.api.message
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.utils.INetworkComponent
-import eu.thesimplecloud.clientserverapi.lib.json.GsonCreator
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
+import eu.thesimplecloud.jsonlib.GsonCreator
+import eu.thesimplecloud.jsonlib.JsonLib
 import java.util.concurrent.CopyOnWriteArraySet
 
 
@@ -51,8 +51,8 @@ class MessageChannel<T>(private val name: String, private val clazz: Class<T>) :
     fun notifyListeners(message: Message) {
         if (message.className != clazz.name)
             throw IllegalArgumentException("Invalid message class on message channel ${message.channel}: Expected ${clazz.name} but was ${message.className} ")
-        val jsonData = JsonData.fromJsonString(message.messageString)
-        val msg = jsonData.getObject(clazz)
+        val jsonLib = JsonLib.fromJsonString(message.messageString)
+        val msg = jsonLib.getObject(clazz)
         val networkComponent = message.senderReference.getNetworkComponent()
                 ?: throw IllegalArgumentException("Connected process of ${message.senderReference.name} is null")
         this.listeners.forEach { it.messageReceived(msg, networkComponent) }

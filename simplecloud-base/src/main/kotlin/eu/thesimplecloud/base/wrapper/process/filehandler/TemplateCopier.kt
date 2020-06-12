@@ -30,7 +30,7 @@ import eu.thesimplecloud.api.template.ITemplate
 import eu.thesimplecloud.base.core.utils.FileCopier
 import eu.thesimplecloud.base.wrapper.startup.Wrapper
 import eu.thesimplecloud.clientserverapi.client.NettyClient
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
+import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.launcher.external.module.ModuleCopyType
 import org.apache.commons.io.FileUtils
 import java.io.File
@@ -96,8 +96,8 @@ class TemplateCopier : ITemplateCopier {
     private fun generateServiceFile(cloudService: ICloudService, serviceTmpDir: File) {
         val communicationClient = Wrapper.instance.communicationClient
         communicationClient as NettyClient
-        JsonData().append("managerHost", communicationClient.getHost())
-                .append("managerPort", communicationClient.port)
+        JsonLib.empty().append("managerHost", communicationClient.getHost())
+                .append("managerPort", communicationClient.getPort())
                 .append("serviceName", cloudService.getName())
                 .saveAsFile(File(serviceTmpDir, "SIMPLE-CLOUD.json"))
     }

@@ -33,9 +33,9 @@ import eu.thesimplecloud.launcher.startup.Launcher
 class PacketInScreenMessage : JsonPacket() {
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Unit> {
-        val cloudClientType = this.jsonData.getObject("cloudClientType", NetworkComponentType::class.java) ?: return contentException("cloudClientType")
-        val name = this.jsonData.getString("name") ?: return contentException("name")
-        val message = this.jsonData.getString("message") ?: return contentException("message")
+        val cloudClientType = this.jsonLib.getObject("cloudClientType", NetworkComponentType::class.java) ?: return contentException("cloudClientType")
+        val name = this.jsonLib.getString("name") ?: return contentException("name")
+        val message = this.jsonLib.getString("message") ?: return contentException("message")
 
         val commandExecutable: ICommandExecutable? = when (cloudClientType) {
             NetworkComponentType.SERVICE -> CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(name)

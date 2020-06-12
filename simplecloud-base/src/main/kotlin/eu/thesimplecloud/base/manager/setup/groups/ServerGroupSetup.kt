@@ -25,7 +25,7 @@ package eu.thesimplecloud.base.manager.setup.groups
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.service.ServiceVersion
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
+import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
@@ -80,7 +80,7 @@ class ServerGroupSetup : DefaultGroupSetup(), ISetup {
     @SetupQuestion(3, "manager.setup.service-group.question.version", "Which version to you want to use? (1.7.10, 1.8.8, 1.9.4, 1.10.2, 1.11.2, 1.12.2, 1.13.2, 1.14.4, 1.15.2)")
     fun versionQuestion(answer: String) : Boolean {
         val version = answer.replace(".", "_")
-        val serviceVersion = JsonData.fromObject(type.toUpperCase() + "_" + version).getObjectOrNull(ServiceVersion::class.java)
+        val serviceVersion = JsonLib.fromObject(type.toUpperCase() + "_" + version).getObjectOrNull(ServiceVersion::class.java)
         if (serviceVersion == null) {
             Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.version.unsupported", "The specified version is not supported.")
             return false

@@ -23,15 +23,15 @@
 package eu.thesimplecloud.api.property
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import eu.thesimplecloud.clientserverapi.lib.json.GsonExclude
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.clientserverapi.lib.json.PacketExclude
+import eu.thesimplecloud.jsonlib.JsonLib
+import eu.thesimplecloud.jsonlib.JsonLibExclude
 
 
 class Property<T : Any>(
         value: T
 ) : IProperty<T> {
-    @GsonExclude
+    @JsonLibExclude
     @PacketExclude
     @Volatile
     var savedValue: T? = value
@@ -39,7 +39,7 @@ class Property<T : Any>(
     val className = value::class.java.name
 
     @JsonIgnore
-    private val valueAsString: String = JsonData.fromObject(value).getAsJsonString()
+    private val valueAsString: String = JsonLib.fromObject(value).getAsJsonString()
 
     @JsonIgnore
     @Synchronized
@@ -50,7 +50,7 @@ class Property<T : Any>(
                     true,
                     callerClassLoader
             ) as Class<T>
-            savedValue = JsonData.fromJsonString(valueAsString).getObject(clazz)
+            savedValue = JsonLib.fromJsonString(valueAsString).getObject(clazz)
         }
         return savedValue!!
     }

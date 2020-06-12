@@ -26,7 +26,7 @@ import eu.thesimplecloud.api.parser.ITypeFromClassParser
 import eu.thesimplecloud.api.parser.string.typeparser.*
 import eu.thesimplecloud.api.utils.enumValueOf
 import eu.thesimplecloud.api.utils.getEnumValues
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
+import eu.thesimplecloud.jsonlib.JsonLib
 import java.util.*
 
 class StringParser : ITypeFromClassParser<String>{
@@ -59,7 +59,7 @@ class StringParser : ITypeFromClassParser<String>{
             return clazz.enumValueOf(enumValues[indexOf]) as R
         }
         if (parsableTypes.contains(clazz)) {
-            return JsonData.fromObject(string).getObjectOrNull(clazz)
+            return JsonLib.fromObject(string).getObjectOrNull(clazz)
         }
         val parser = customTypeParsers.firstOrNull { it.allowedTypes().contains(clazz) }
         parser ?: throw IllegalArgumentException("Can't parse class to ${clazz.simpleName}: No parser found.")

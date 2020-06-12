@@ -32,12 +32,12 @@ import java.util.*
 class PacketIOKickCloudPlayer() : JsonPacket() {
 
     constructor(cloudPlayer: ICloudPlayer, message: String) : this() {
-        this.jsonData.append("playerUniqueId", cloudPlayer.getUniqueId()).append("message", message)
+        this.jsonLib.append("playerUniqueId", cloudPlayer.getUniqueId()).append("message", message)
     }
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Unit> {
-        val playerUniqueId = this.jsonData.getObject("playerUniqueId", UUID::class.java) ?: return contentException("playerUniqueId")
-        val message = this.jsonData.getString("message") ?: return contentException("message")
+        val playerUniqueId = this.jsonLib.getObject("playerUniqueId", UUID::class.java) ?: return contentException("playerUniqueId")
+        val message = this.jsonLib.getString("message") ?: return contentException("message")
         CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(playerUniqueId)?.kick(message)
         return unit()
     }
