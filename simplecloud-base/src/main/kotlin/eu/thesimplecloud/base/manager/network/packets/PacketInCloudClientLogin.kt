@@ -24,6 +24,7 @@ package eu.thesimplecloud.base.manager.network.packets
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.client.NetworkComponentType
+import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
@@ -61,6 +62,7 @@ class PacketInCloudClientLogin() : JsonPacket() {
                 wrapperInfo.setAuthenticated(true)
                 CloudAPI.instance.getWrapperManager().update(wrapperInfo)
                 CloudAPI.instance.getWrapperManager().sendUpdateToConnection(wrapperInfo, connection).awaitCoroutine()
+                connection.sendUnitQuery(PacketOutJvmArguments(Manager.instance.jvmArgumentsConfig)).awaitCoroutine()
                 connection.sendUnitQuery(PacketOutSetWrapperName(wrapperInfo.getName())).awaitCoroutine()
                 Launcher.instance.consoleSender.sendMessage("manager.login.wrapper", "Wrapper %WRAPPER%", wrapperInfo.getName(), " logged in.")
             }

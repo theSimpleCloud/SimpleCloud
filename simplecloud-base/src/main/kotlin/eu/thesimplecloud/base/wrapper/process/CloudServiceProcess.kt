@@ -139,10 +139,15 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
         val beginAndEnd = if (CloudAPI.instance.isWindows()) "\"" else ""
         val classPathValue = beginAndEnd + classPathValueList.joinToString(separator) + beginAndEnd
 
-        val commands = arrayListOf("java", "-Dcom.mojang.eula.agree=true", "-XX:+UseConcMarkSweepGC", "-XX:+CMSIncrementalMode",
-                "-XX:-UseAdaptiveSizePolicy", "-Djline.terminal=jline.UnsupportedTerminal",
+        val jvmArguments = Wrapper.instance.jvmArgumentsConfig.jvmArguments.filter { it.groups.contains("all") || it.groups.contains(this.cloudService.getGroupName()) }
+        val commands = mutableListOf("java")
+
+        jvmArguments.forEach { commands.addAll(it.arguments) }
+
+        val startArguments = arrayListOf("-Dcom.mojang.eula.agree=true", "-Djline.terminal=jline.UnsupportedTerminal",
                 "-Xms" + cloudService.getMaxMemory() + "M", "-Xmx" + cloudService.getMaxMemory() + "M", "-cp", classPathValue,
                 ManifestLoader.getMainClass(jarFile.absolutePath)!!)
+        commands.addAll(startArguments)
 
         val lowerCaseName = cloudService.getServiceVersion().name.toLowerCase()
         if (lowerCaseName.contains("spigot") || lowerCaseName.contains("paper")) {

@@ -40,7 +40,7 @@ class TemplateManagerImpl : DefaultTemplateManager() {
     }
 
     override fun delete(value: ITemplate, fromPacket: Boolean) {
-        super<DefaultTemplateManager>.delete(value, fromPacket)
+        super.delete(value, fromPacket)
 
         val templateConfig = this.templatesConfigLoader.loadConfig()
         templateConfig.templates.removeIf { it.getName().equals(value.getName(), true)}
