@@ -24,6 +24,7 @@ pipeline {
         stage('Create zip') {
             steps {
                 sh 'mkdir -p temp'
+                sh 'mkdir temp/modules'
                 sh 'cp simplecloud-modules/**/build/libs/*.jar temp/modules/';
                 sh 'cp simplecloud-launcher/build/libs/launcher.jar temp/launcher.jar';
                 zip archive: true, dir: 'temp', glob: '', zipFile: 'SimpleCloud-Latest.zip';
