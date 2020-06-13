@@ -23,7 +23,7 @@
 package eu.thesimplecloud.launcher.external.module
 
 import com.google.common.collect.Maps
-import eu.thesimplecloud.launcher.exception.module.IModuleHandler
+import eu.thesimplecloud.launcher.external.module.handler.IModuleHandler
 import java.net.URL
 import java.net.URLClassLoader
 
