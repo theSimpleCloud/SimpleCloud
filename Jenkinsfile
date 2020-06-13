@@ -38,5 +38,10 @@ pipeline {
                 sh './gradlew sourceJar';
             }
         }
+        stage('Publish') {
+           steps {
+                sh './gradlew artifactoryPublish';
+           }
+        }
     }
 }
