@@ -23,8 +23,8 @@
 package eu.thesimplecloud.launcher.application
 
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
-import eu.thesimplecloud.launcher.exception.module.ModuleHandler
 import eu.thesimplecloud.launcher.extension.sendMessage
+import eu.thesimplecloud.launcher.external.module.handler.ModuleHandler
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.launcher.updater.BaseUpdater
 import eu.thesimplecloud.launcher.updater.UpdateExecutor

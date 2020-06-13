@@ -20,7 +20,7 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.launcher.exception.module
+package eu.thesimplecloud.launcher.external.module.updater
 
 import eu.thesimplecloud.launcher.external.module.update.UpdateMethod
 import eu.thesimplecloud.launcher.external.module.update.UpdaterFileContent

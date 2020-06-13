@@ -20,7 +20,7 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.launcher.exception.module
+package eu.thesimplecloud.launcher.external.module.handler
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
@@ -30,12 +30,13 @@ import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.launcher.dependency.DependencyLoader
 import eu.thesimplecloud.launcher.event.module.ModuleLoadedEvent
 import eu.thesimplecloud.launcher.event.module.ModuleUnloadedEvent
-import eu.thesimplecloud.launcher.exception.module.exception.ModuleLoadException
+import eu.thesimplecloud.launcher.exception.module.ModuleLoadException
 import eu.thesimplecloud.launcher.external.module.LoadedModule
 import eu.thesimplecloud.launcher.external.module.LoadedModuleFileContent
 import eu.thesimplecloud.launcher.external.module.ModuleClassLoader
 import eu.thesimplecloud.launcher.external.module.ModuleFileContent
 import eu.thesimplecloud.launcher.external.module.update.UpdaterFileContent
+import eu.thesimplecloud.launcher.external.module.updater.ModuleUpdater
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.launcher.updater.UpdateExecutor
 import java.io.File
