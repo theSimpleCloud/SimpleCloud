@@ -24,6 +24,7 @@ package eu.thesimplecloud.launcher.updater
 
 import eu.thesimplecloud.api.depedency.Dependency
 import eu.thesimplecloud.launcher.dependency.DependencyLoader
+import org.apache.commons.io.FileUtils
 import java.io.File
 import java.util.jar.JarFile
 
@@ -49,7 +50,7 @@ abstract class AbstractUpdater(
         val latestVersion = getVersionToInstall()
                 ?: throw RuntimeException("Cannot perform update. Is the server down? (repo: ${getRepositoryURL()})")
         val dependency = Dependency(groupId, artifactId, latestVersion)
-        updateFile.delete()
+        FileUtils.forceDelete(updateFile)
         dependency.download(getRepositoryURL(), updateFile)
     }
 
