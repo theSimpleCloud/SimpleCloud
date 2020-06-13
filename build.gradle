@@ -89,16 +89,6 @@ subprojects {
         from sourceSets.main.allSource
     }
 
-    task javadocJar(type: Jar, dependsOn: javadoc) {
-        archiveClassifier.set('javadoc')
-        from javadoc.destinationDir
-    }
-
-    artifacts {
-        archives sourcesJar
-        archives javadocJar
-    }
-
     dependencies {
         testCompile group: 'junit', name: 'junit', version: '4.13'
         implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
