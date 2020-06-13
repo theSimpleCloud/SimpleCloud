@@ -35,6 +35,9 @@ import eu.thesimplecloud.launcher.external.module.LoadedModule
 import eu.thesimplecloud.launcher.external.module.LoadedModuleFileContent
 import eu.thesimplecloud.launcher.external.module.ModuleClassLoader
 import eu.thesimplecloud.launcher.external.module.ModuleFileContent
+import eu.thesimplecloud.launcher.external.module.update.UpdaterFileContent
+import eu.thesimplecloud.launcher.startup.Launcher
+import eu.thesimplecloud.launcher.updater.UpdateExecutor
 import java.io.File
 import java.net.URL
 import java.net.URLClassLoader
@@ -44,6 +47,7 @@ import java.util.jar.JarFile
 
 open class ModuleHandler(
         private val parentClassLoader: ClassLoader = ClassLoader.getSystemClassLoader(),
+        private val modulesWithPermissionToUpdate: List<String> = emptyList(),
         private val handleException: (Throwable) -> Unit = { throw it }
 ) : IModuleHandler {
 
@@ -59,18 +63,7 @@ open class ModuleHandler(
     }
 
     override fun loadModuleFileContent(file: File, moduleFileName: String): ModuleFileContent {
-        require(file.exists()) { "Specified file to load module from does not exist: ${file.path}" }
-        try {
-            val jar = JarFile(file)
-            val entry: JarEntry = jar.getJarEntry(moduleFileName)
-                    ?: throw ModuleLoadException("${file.path}: No '$moduleFileName.json' found.")
-            val fileStream = jar.getInputStream(entry)
-            val jsonLib = JsonLib.fromInputStream(fileStream)
-            return jsonLib.getObjectOrNull(ModuleFileContent::class.java)
-                    ?: throw ModuleLoadException("${file.path}: Invalid '$moduleFileName.json'.")
-        } catch (ex: Exception) {
-            throw ModuleLoadException(file.path, ex)
-        }
+        return loadJsonFileInJar(file, moduleFileName)
     }
 
     @Synchronized
@@ -83,13 +76,20 @@ open class ModuleHandler(
         checkForSelfDepend(loadedModuleFileContent)
         checkForMissingDependencies(loadedModuleFileContent, getAllLoadedModuleNames())
         checkForRecursiveDependencies(loadedModuleFileContent)
-        val (file, content) = loadedModuleFileContent
+        val (file, content, updaterFileContent) = loadedModuleFileContent
+        if (updaterFileContent != null && !Launcher.instance.launcherStartArguments.disableAutoUpdater) {
+            val updater = ModuleUpdater(updaterFileContent, loadedModuleFileContent.file)
+            if (updater.isUpdateAvailable()) {
+                UpdateExecutor().executeUpdate(updater)
+                return loadModule(loadedModuleFileContent.file)
+            }
+        }
         try {
             installRequiredDependencies(content)
             val classLoader = this.createModuleClassLoader(arrayOf(file.toURI().toURL()), loadedModuleFileContent.content.name)
             val cloudModule = this.loadModuleClassInstance(classLoader, content.mainClass)
             cloudModule.onEnable()
-            val loadedModule = LoadedModule(cloudModule, file, content, classLoader)
+            val loadedModule = LoadedModule(cloudModule, file, content, updaterFileContent, classLoader)
             this.loadedModules.add(loadedModule)
             CloudAPI.instance.getEventManager().call(ModuleLoadedEvent(loadedModule))
 
@@ -103,7 +103,8 @@ open class ModuleHandler(
         if (getLoadedModuleByFile(file) != null)
             throw IllegalStateException("Module ${file.path} is already loaded.")
         val content = loadModuleFileContent(file, moduleFileName)
-        val loadedModuleFileContent = LoadedModuleFileContent(file, content)
+        val updaterFileContent = checkPermissionAndLoadUpdaterFile(file, content)
+        val loadedModuleFileContent = LoadedModuleFileContent(file, content, updaterFileContent)
         return loadModule(loadedModuleFileContent)
     }
 
@@ -233,7 +234,35 @@ open class ModuleHandler(
             getUnknownDependencies(fileContent, moduleNames).isNotEmpty()
 
     open fun getAllCloudModuleFileContents(): List<LoadedModuleFileContent> {
-        return getAllModuleJarFiles().map { LoadedModuleFileContent(it, this.loadModuleFileContent(it, "module.json")) }
+        return getAllModuleJarFiles().map {
+            val moduleFileContent = this.loadModuleFileContent(it, "module.json")
+            val updaterFileContent = this.checkPermissionAndLoadUpdaterFile(it, moduleFileContent)
+            LoadedModuleFileContent(
+                    it,
+                    moduleFileContent,
+                    updaterFileContent
+            )
+        }
+    }
+
+    private inline fun <reified T : Any> loadJsonFileInJar(file: File, moduleFileName: String): T {
+        require(file.exists()) { "Specified file to load $moduleFileName from does not exist: ${file.path}" }
+        try {
+            val jar = JarFile(file)
+            val entry: JarEntry = jar.getJarEntry(moduleFileName)
+                    ?: throw ModuleLoadException("${file.path}: No '$moduleFileName' found.")
+            val fileStream = jar.getInputStream(entry)
+            val jsonLib = JsonLib.fromInputStream(fileStream)
+            return jsonLib.getObjectOrNull(T::class.java)
+                    ?: throw ModuleLoadException("${file.path}: Invalid '$moduleFileName'.")
+        } catch (ex: Exception) {
+            throw ModuleLoadException(file.path, ex)
+        }
+    }
+
+    private fun checkPermissionAndLoadUpdaterFile(file: File, moduleFileContent: ModuleFileContent): UpdaterFileContent? {
+        if (!this.modulesWithPermissionToUpdate.contains(moduleFileContent.name)) return null
+        return runCatching { loadJsonFileInJar<UpdaterFileContent>(file, "updater.json") }.getOrNull()
     }
 
     private fun getAllModuleJarFiles(): List<File> {

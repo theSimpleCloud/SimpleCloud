@@ -20,14 +20,17 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.base.manager.config
+package eu.thesimplecloud.launcher.external.module.update
 
-import eu.thesimplecloud.api.config.AbstractJsonLibConfigLoader
-import eu.thesimplecloud.api.directorypaths.DirectoryPaths
-import java.io.File
-
-class TemplatesConfigLoader : AbstractJsonLibConfigLoader<TemplatesConfig>(
-        TemplatesConfig::class.java,
-        File(DirectoryPaths.paths.storagePath + "templates.json"),
-        { TemplatesConfig(HashSet()) }
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 12.06.2020
+ * Time: 18:10
+ * @author Frederick Baier
+ */
+class UpdaterFileContent(
+        val groupId: String,
+        val artifactId: String,
+        val repository: String,
+        val updateMethod: UpdateMethod
 )

@@ -20,34 +20,24 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.api.config
+package eu.thesimplecloud.launcher.external.module.update
 
-import eu.thesimplecloud.jsonlib.JsonLib
-import java.io.File
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 13.06.2020
+ * Time: 08:13
+ * @author Frederick Baier
+ */
+enum class UpdateMethod {
 
-abstract class AbstractJsonLibConfigLoader<T : Any>(
-        val configClass: Class<T>,
-        val configFie: File,
-        val lazyDefaultObject: () -> T,
-        val saveDefaultOnFistLoad: Boolean
-) : IConfigLoader<T> {
+    /**
+     * The current version of the cloud will be used to check for an updater
+     */
+    CLOUD,
 
-    override fun loadConfig(): T {
-        val objectFromFile = JsonLib.fromJsonFile(configFie)?.getObjectOrNull(configClass)
-        if (objectFromFile == null) {
-            val defaultObject = lazyDefaultObject()
-            if (saveDefaultOnFistLoad && !doesConfigFileExist())
-                saveConfig(defaultObject)
-            return defaultObject
-        }
-        return objectFromFile
-    }
-
-    override fun saveConfig(value: T) {
-        JsonLib.fromObject(value).saveAsFile(configFie)
-    }
-
-    override fun doesConfigFileExist(): Boolean = this.configFie.exists()
-
+    /**
+     * The newest version will be loaded from web every time the cloud starts.
+     */
+    WEB
 
 }

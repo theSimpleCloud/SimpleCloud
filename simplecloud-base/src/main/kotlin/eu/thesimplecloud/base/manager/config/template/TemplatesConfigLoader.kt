@@ -20,34 +20,15 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.api.config
+package eu.thesimplecloud.base.manager.config.template
 
-import eu.thesimplecloud.jsonlib.JsonLib
+import eu.thesimplecloud.api.config.AbstractJsonLibConfigLoader
+import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import java.io.File
 
-abstract class AbstractJsonLibConfigLoader<T : Any>(
-        val configClass: Class<T>,
-        val configFie: File,
-        val lazyDefaultObject: () -> T,
-        val saveDefaultOnFistLoad: Boolean
-) : IConfigLoader<T> {
-
-    override fun loadConfig(): T {
-        val objectFromFile = JsonLib.fromJsonFile(configFie)?.getObjectOrNull(configClass)
-        if (objectFromFile == null) {
-            val defaultObject = lazyDefaultObject()
-            if (saveDefaultOnFistLoad && !doesConfigFileExist())
-                saveConfig(defaultObject)
-            return defaultObject
-        }
-        return objectFromFile
-    }
-
-    override fun saveConfig(value: T) {
-        JsonLib.fromObject(value).saveAsFile(configFie)
-    }
-
-    override fun doesConfigFileExist(): Boolean = this.configFie.exists()
-
-
-}
+class TemplatesConfigLoader : AbstractJsonLibConfigLoader<TemplatesConfig>(
+        TemplatesConfig::class.java,
+        File(DirectoryPaths.paths.storagePath + "templates.json"),
+        { TemplatesConfig(HashSet()) },
+        false
+)

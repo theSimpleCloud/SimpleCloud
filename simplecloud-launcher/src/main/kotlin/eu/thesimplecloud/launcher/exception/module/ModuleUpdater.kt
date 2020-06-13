@@ -20,34 +20,41 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.api.config
+package eu.thesimplecloud.launcher.exception.module
 
-import eu.thesimplecloud.jsonlib.JsonLib
+import eu.thesimplecloud.launcher.external.module.update.UpdateMethod
+import eu.thesimplecloud.launcher.external.module.update.UpdaterFileContent
+import eu.thesimplecloud.launcher.updater.AbstractUpdater
 import java.io.File
+import java.util.jar.JarFile
 
-abstract class AbstractJsonLibConfigLoader<T : Any>(
-        val configClass: Class<T>,
-        val configFie: File,
-        val lazyDefaultObject: () -> T,
-        val saveDefaultOnFistLoad: Boolean
-) : IConfigLoader<T> {
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 12.06.2020
+ * Time: 21:03
+ * @author Frederick Baier
+ */
+class ModuleUpdater(
+        private val updaterFileContent: UpdaterFileContent,
+        moduleFile: File
+) : AbstractUpdater(updaterFileContent.groupId, updaterFileContent.artifactId, moduleFile) {
 
-    override fun loadConfig(): T {
-        val objectFromFile = JsonLib.fromJsonFile(configFie)?.getObjectOrNull(configClass)
-        if (objectFromFile == null) {
-            val defaultObject = lazyDefaultObject()
-            if (saveDefaultOnFistLoad && !doesConfigFileExist())
-                saveConfig(defaultObject)
-            return defaultObject
+    override fun getCurrentVersion(): String {
+        val jarFile = JarFile(updateFile)
+        return jarFile.manifest.mainAttributes.getValue("Implementation-Version")
+    }
+
+    override fun executeJar() {
+    }
+
+    override fun getVersionToInstall(): String? {
+        return when (updaterFileContent.updateMethod) {
+            UpdateMethod.CLOUD -> getCurrentLauncherVersion()
+            UpdateMethod.WEB -> super.getVersionToInstall()
         }
-        return objectFromFile
     }
 
-    override fun saveConfig(value: T) {
-        JsonLib.fromObject(value).saveAsFile(configFie)
+    override fun getRepositoryURL(): String {
+        return updaterFileContent.repository
     }
-
-    override fun doesConfigFileExist(): Boolean = this.configFie.exists()
-
-
 }

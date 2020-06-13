@@ -25,7 +25,7 @@ package eu.thesimplecloud.base.manager.impl
 import eu.thesimplecloud.api.template.ITemplate
 import eu.thesimplecloud.api.template.impl.DefaultTemplate
 import eu.thesimplecloud.api.template.impl.DefaultTemplateManager
-import eu.thesimplecloud.base.manager.config.TemplatesConfigLoader
+import eu.thesimplecloud.base.manager.config.template.TemplatesConfigLoader
 
 class TemplateManagerImpl : DefaultTemplateManager() {
 

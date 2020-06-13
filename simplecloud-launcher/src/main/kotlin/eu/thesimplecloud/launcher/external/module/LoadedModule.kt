@@ -23,17 +23,19 @@
 package eu.thesimplecloud.launcher.external.module
 
 import eu.thesimplecloud.api.external.ICloudModule
+import eu.thesimplecloud.launcher.external.module.update.UpdaterFileContent
 import java.io.File
 
 class LoadedModule(
         val cloudModule: ICloudModule,
         val file: File,
         val fileContent: ModuleFileContent,
+        val updaterFileContent: UpdaterFileContent?,
         val moduleClassLoader: ClassLoader
 ) {
 
     fun getLoadedModuleFileContent(): LoadedModuleFileContent {
-        return LoadedModuleFileContent(file, fileContent)
+        return LoadedModuleFileContent(file, fileContent, updaterFileContent)
     }
 
 }
