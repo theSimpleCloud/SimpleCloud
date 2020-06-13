@@ -80,7 +80,7 @@ open class ModuleHandler(
         val (file, content, updaterFileContent) = loadedModuleFileContent
         if (updaterFileContent != null && !Launcher.instance.launcherStartArguments.disableAutoUpdater) {
             val updater = ModuleUpdater(updaterFileContent, loadedModuleFileContent.file)
-            if (updater.isUpdateAvailable() && shallInstallUpdates) {
+            if (shallInstallUpdates && false && updater.isUpdateAvailable()) {
                 UpdateExecutor().executeUpdate(updater)
                 return loadModule(loadedModuleFileContent.file)
             }
