@@ -125,4 +125,27 @@ subprojects {
         }
     }
 
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+                artifact sourcesJar
+            }
+        }
+        repositories {
+            maven {
+                if (project.version.endsWith("SNAPSHOT")) {
+                    url 'https://repo.thesimplecloud.eu/artifactory/list/gradle-dev-local/'
+                } else {
+                    url 'https://repo.thesimplecloud.eu/artifactory/list/gradle-release-local//'
+                }
+
+                credentials {
+                    username = project.hasProperty("mavenUser") ? project.property("mavenUser") : ""
+                    password = project.hasProperty("mavenPassword") ? project.property("mavenPassword") : ""
+                }
+            }
+        }
+    }
+
 }

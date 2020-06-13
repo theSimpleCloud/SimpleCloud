@@ -38,7 +38,7 @@ pipeline {
         }
         stage('Publish') {
            steps {
-                sh './gradlew artifactoryPublish';
+                sh './gradlew publish';
            }
         }
     }
