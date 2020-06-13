@@ -50,7 +50,8 @@ abstract class AbstractUpdater(
         val latestVersion = getVersionToInstall()
                 ?: throw RuntimeException("Cannot perform update. Is the server down? (repo: ${getRepositoryURL()})")
         val dependency = Dependency(groupId, artifactId, latestVersion)
-        FileUtils.forceDelete(updateFile)
+        if (updateFile.exists())
+            FileUtils.forceDelete(updateFile)
         dependency.download(getRepositoryURL(), updateFile)
     }
 
