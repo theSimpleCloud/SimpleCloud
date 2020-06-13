@@ -23,8 +23,6 @@ pipeline {
         }
         stage('Create zip') {
             steps {
-                sh 'rm SimpleCloud-Latest.zip'
-                sh 'rm -r temp/';
                 sh 'mkdir -p temp'
                 sh 'mkdir temp/modules/'
                 sh 'cp simplecloud-modules/**/build/libs/*.jar temp/modules/';
