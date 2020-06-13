@@ -26,7 +26,6 @@ import eu.thesimplecloud.launcher.external.module.update.UpdateMethod
 import eu.thesimplecloud.launcher.external.module.update.UpdaterFileContent
 import eu.thesimplecloud.launcher.updater.AbstractUpdater
 import java.io.File
-import java.util.jar.JarFile
 
 /**
  * Created by IntelliJ IDEA.
@@ -40,8 +39,7 @@ class ModuleUpdater(
 ) : AbstractUpdater(updaterFileContent.groupId, updaterFileContent.artifactId, moduleFile) {
 
     override fun getCurrentVersion(): String {
-        val jarFile = JarFile(updateFile)
-        return jarFile.manifest.mainAttributes.getValue("Implementation-Version")
+       return getVersionFromManifestFile(this.updateFile)
     }
 
     override fun executeJar() {
