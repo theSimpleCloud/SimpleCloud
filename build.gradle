@@ -27,7 +27,7 @@ plugins {
 allprojects {
 
     group 'eu.thesimplecloud.simplecloud'
-    version '1.1.6-BETA'
+    version '1.1.7-SNAPSHOT'
 
     repositories {
         mavenCentral()
@@ -63,7 +63,7 @@ allprojects {
     }
 
     project.ext {
-        depedencyClientServerAPIVersion = '2.4.19-SNAPSHOT'
+        depedencyClientServerAPIVersion = '3.0.2-SNAPSHOT'
     }
 
     buildscript {
@@ -89,20 +89,13 @@ subprojects {
         from sourceSets.main.allSource
     }
 
-    task javadocJar(type: Jar, dependsOn: javadoc) {
-        archiveClassifier.set('javadoc')
-        from javadoc.destinationDir
-    }
-
-    artifacts {
-        archives sourcesJar
-        archives javadocJar
-    }
-
     dependencies {
         testCompile group: 'junit', name: 'junit', version: '4.13'
         implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
         compile(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion) {
+            transitive = false
+        }
+        compile(group: 'eu.thesimplecloud.jsonlib', name: 'json-lib', version: "1.0-SNAPSHOT") {
             transitive = false
         }
         compileOnly group: 'commons-io', name: 'commons-io', version: '2.6'
@@ -121,6 +114,37 @@ subprojects {
     compileTestKotlin {
         kotlinOptions {
             jvmTarget = "1.8"
+        }
+    }
+
+    jar {
+        manifest {
+            attributes(
+                    'Implementation-Version': project.version,
+            )
+        }
+    }
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+                artifact sourcesJar
+            }
+        }
+        repositories {
+            maven {
+                if (project.version.endsWith("SNAPSHOT")) {
+                    url 'https://repo.thesimplecloud.eu/artifactory/list/gradle-dev-local/'
+                } else {
+                    url 'https://repo.thesimplecloud.eu/artifactory/list/gradle-release-local//'
+                }
+
+                credentials {
+                    username = project.hasProperty("mavenUser") ? project.property("mavenUser") : ""
+                    password = project.hasProperty("mavenPassword") ? project.property("mavenPassword") : ""
+                }
+            }
         }
     }
 

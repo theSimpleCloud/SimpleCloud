@@ -25,10 +25,13 @@ package eu.thesimplecloud.base.wrapper.impl
 import eu.thesimplecloud.api.event.service.CloudServiceConnectedEvent
 import eu.thesimplecloud.api.event.service.CloudServiceUnregisteredEvent
 import eu.thesimplecloud.api.listenerextension.cloudListener
+import eu.thesimplecloud.api.network.packets.service.PacketIOCopyService
 import eu.thesimplecloud.api.network.packets.service.PacketIOStopCloudService
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.impl.AbstractCloudServiceManager
+import eu.thesimplecloud.base.wrapper.process.ProcessCopier
 import eu.thesimplecloud.base.wrapper.startup.Wrapper
+import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
 class CloudServiceManagerImpl : AbstractCloudServiceManager() {
@@ -43,6 +46,17 @@ class CloudServiceManagerImpl : AbstractCloudServiceManager() {
         return cloudListener<CloudServiceUnregisteredEvent>()
                 .addCondition { it.cloudService == cloudService }
                 .toUnitPromise()
+    }
+
+    override fun copyService(cloudService: ICloudService, path: String): ICommunicationPromise<Unit> {
+        val selfWrapper = Wrapper.instance.getThisWrapper()
+        if (selfWrapper != cloudService.getWrapper())
+            return Wrapper.instance.communicationClient.sendUnitQuery(PacketIOCopyService(cloudService, path), 20 * 1000)
+
+        val serviceProcess = Wrapper.instance.cloudServiceProcessManager
+                .getCloudServiceProcessByServiceName(cloudService.getName())
+        serviceProcess ?: return CommunicationPromise.failed(IllegalStateException("Cannot copy inactive service"))
+        return ProcessCopier(cloudService).copy(path)
     }
 
     override fun startService(cloudService: ICloudService): ICommunicationPromise<Unit> {

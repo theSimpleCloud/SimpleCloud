@@ -27,6 +27,7 @@ import eu.thesimplecloud.api.client.NetworkComponentType
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
+import eu.thesimplecloud.base.core.jvm.JvmArgumentsConfig
 import eu.thesimplecloud.base.wrapper.impl.CloudAPIImpl
 import eu.thesimplecloud.base.wrapper.logger.LoggerMessageListenerImpl
 import eu.thesimplecloud.base.wrapper.network.packets.template.PacketOutGetTemplates
@@ -57,6 +58,8 @@ class Wrapper : ICloudApplication {
         lateinit var instance: Wrapper
             private set
     }
+
+    lateinit var jvmArgumentsConfig: JvmArgumentsConfig
 
     @Volatile
     var thisWrapperName: String? = null

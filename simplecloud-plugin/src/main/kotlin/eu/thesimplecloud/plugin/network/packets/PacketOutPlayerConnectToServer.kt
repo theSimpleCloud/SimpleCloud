@@ -30,7 +30,7 @@ import java.util.*
 class PacketOutPlayerConnectToServer(playerUniqueId: UUID, serviceName: String) : JsonPacket() {
 
     init {
-        this.jsonData.append("playerUniqueId", playerUniqueId).append("serviceName", serviceName)
+        this.jsonLib.append("playerUniqueId", playerUniqueId).append("serviceName", serviceName)
     }
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> = unit()

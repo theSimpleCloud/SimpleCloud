@@ -22,7 +22,7 @@
 
 package eu.thesimplecloud.launcher.setups
 
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
+import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.launcher.config.LauncherConfigLoader
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
@@ -42,7 +42,7 @@ class AutoIpSetup : ISetup {
 
         val ip = try {
             val data = WebsiteContentLoader().loadContent("https://api.ipify.org?format=json")
-            JsonData.fromJsonString(data).getString("ip")
+            JsonLib.fromJsonString(data).getString("ip")
         } catch (e: Exception) {
             Launcher.instance.logger.warning("Unable to connect to \"ipify.org\".")
             return false

@@ -32,14 +32,14 @@ import java.util.*
 class PacketIOSetCloudPlayerUpdates() : JsonPacket() {
 
     constructor(cloudPlayer: ICloudPlayer, updates: Boolean, serviceName: String) : this() {
-        this.jsonData.append("playerUniqueId", cloudPlayer.getUniqueId())
+        this.jsonLib.append("playerUniqueId", cloudPlayer.getUniqueId())
                 .append("updates", updates).append("serviceName", serviceName)
     }
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Unit> {
-        val playerUniqueId = this.jsonData.getObject("playerUniqueId", UUID::class.java) ?: return contentException("playerUniqueId")
-        val updates = this.jsonData.getBoolean("updates") ?: return contentException("updates")
-        val serviceName = this.jsonData.getString("serviceName") ?: return contentException("serviceName")
+        val playerUniqueId = this.jsonLib.getObject("playerUniqueId", UUID::class.java) ?: return contentException("playerUniqueId")
+        val updates = this.jsonLib.getBoolean("updates") ?: return contentException("updates")
+        val serviceName = this.jsonLib.getString("serviceName") ?: return contentException("serviceName")
         val cachedCloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(playerUniqueId)
         cachedCloudPlayer?.let { CloudAPI.instance.getCloudPlayerManager().setUpdates(cachedCloudPlayer, updates, serviceName) }
         return unit()

@@ -20,22 +20,26 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.api.config
+package eu.thesimplecloud.mongoinstaller.installer;
 
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
-import java.io.File
 
-abstract class AbstractJsonDataConfigLoader<T : Any>(val configClass: Class<T>, val configFie: File, val lazyDefaultObject: () -> T) : IConfigLoader<T> {
+import eu.thesimplecloud.mongoinstaller.InstallerEnum;
 
-    override fun loadConfig(): T {
-        return JsonData.fromJsonFile(configFie)?.getObjectOrNull(configClass) ?: lazyDefaultObject()
+import java.io.IOException;
+
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 07.06.2020
+ * Time: 20:41
+ *
+ * @author Frederick Baier
+ */
+public interface IInstaller {
+
+    void install(InstallerEnum installerEnum) throws Exception;
+
+    default void executeCommand(String command) throws IOException, InterruptedException {
+        Runtime.getRuntime().exec(command).waitFor();
     }
-
-    override fun saveConfig(value: T) {
-        JsonData.fromObject(value).saveAsFile(configFie)
-    }
-
-    override fun doesConfigFileExist(): Boolean = this.configFie.exists()
-
 
 }

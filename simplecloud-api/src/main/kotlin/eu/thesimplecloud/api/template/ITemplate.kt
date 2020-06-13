@@ -71,4 +71,11 @@ interface ITemplate {
      * Returns a list of names of all modules, this template shall copy in the plugins directory of a service.
      */
     fun getModuleNamesToCopy(): Set<String>
+
+    /**
+     * Updates this template
+     */
+    fun update() {
+        CloudAPI.instance.getTemplateManager().update(this)
+    }
 }

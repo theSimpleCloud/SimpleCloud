@@ -24,6 +24,7 @@ package eu.thesimplecloud.base.manager.network.packets
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.client.NetworkComponentType
+import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
@@ -36,7 +37,7 @@ class PacketInCloudClientLogin() : JsonPacket() {
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Unit> {
         val host = connection.getHost()!!
-        val cloudClientType = this.jsonData.getObject("cloudClientType", NetworkComponentType::class.java)
+        val cloudClientType = this.jsonLib.getObject("cloudClientType", NetworkComponentType::class.java)
                 ?: return contentException("cloudClientType")
         connection as IConnectedClient<IConnectedClientValue>
         CloudAPI.instance.getWrapperManager().sendAllCachedObjectsToConnection(connection).awaitCoroutine()
@@ -45,7 +46,7 @@ class PacketInCloudClientLogin() : JsonPacket() {
         CloudAPI.instance.getCloudServiceGroupManager().sendAllCachedObjectsToConnection(connection).awaitCoroutine()
         when (cloudClientType) {
             NetworkComponentType.SERVICE -> {
-                val name = this.jsonData.getString("name") ?: return contentException("name")
+                val name = this.jsonLib.getString("name") ?: return contentException("name")
                 val cloudService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(name)
                         ?: return failure(NoSuchElementException("Service not found"))
                 connection.setClientValue(cloudService)
@@ -61,6 +62,7 @@ class PacketInCloudClientLogin() : JsonPacket() {
                 wrapperInfo.setAuthenticated(true)
                 CloudAPI.instance.getWrapperManager().update(wrapperInfo)
                 CloudAPI.instance.getWrapperManager().sendUpdateToConnection(wrapperInfo, connection).awaitCoroutine()
+                connection.sendUnitQuery(PacketOutJvmArguments(Manager.instance.jvmArgumentsConfig)).awaitCoroutine()
                 connection.sendUnitQuery(PacketOutSetWrapperName(wrapperInfo.getName())).awaitCoroutine()
                 Launcher.instance.consoleSender.sendMessage("manager.login.wrapper", "Wrapper %WRAPPER%", wrapperInfo.getName(), " logged in.")
             }

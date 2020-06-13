@@ -27,10 +27,10 @@ import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
 import eu.thesimplecloud.api.player.connection.IPlayerConnection
 import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.api.property.Property
-import eu.thesimplecloud.clientserverapi.lib.json.GsonExclude
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
 import eu.thesimplecloud.clientserverapi.lib.json.PacketExclude
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
+import eu.thesimplecloud.jsonlib.JsonLib
+import eu.thesimplecloud.jsonlib.JsonLibExclude
 import java.util.*
 
 class CloudPlayer(
@@ -66,7 +66,7 @@ class CloudPlayer(
 
     @JsonIgnore
     @PacketExclude
-    @GsonExclude
+    @JsonLibExclude
     private var playerMessageQueue: PlayerMessageQueue? = null
 
     override fun getPlayerConnection(): IPlayerConnection = this.playerConnection
@@ -128,6 +128,6 @@ class CloudPlayer(
     }
 
     override fun toString(): String {
-        return JsonData.fromObject(this).getAsJsonString()
+        return JsonLib.fromObject(this).getAsJsonString()
     }
 }

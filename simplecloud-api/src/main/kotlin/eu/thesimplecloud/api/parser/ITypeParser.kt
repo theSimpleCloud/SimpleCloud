@@ -29,6 +29,7 @@ interface ITypeParser<T : Any, R : Any> {
 
     /**
      * Parses the object [T] to [R]
+     * @return null if the parse failed
      */
     fun parse(value: T): R?
 

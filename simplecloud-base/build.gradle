@@ -37,7 +37,6 @@ repositories {
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    implementation(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion)
     implementation project(":simplecloud-api")
     implementation project(":simplecloud-launcher")
     compile(project(":simplecloud-client")) {

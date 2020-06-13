@@ -20,14 +20,34 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.base.manager.config
+package eu.thesimplecloud.mongoinstaller.installer;
 
-import eu.thesimplecloud.api.config.AbstractJsonDataConfigLoader
-import eu.thesimplecloud.api.directorypaths.DirectoryPaths
-import java.io.File
 
-class TemplatesConfigLoader : AbstractJsonDataConfigLoader<TemplatesConfig>(
-        TemplatesConfig::class.java,
-        File(DirectoryPaths.paths.storagePath + "templates.json"),
-        { TemplatesConfig(HashSet()) }
-)
+import eu.thesimplecloud.mongoinstaller.InstallerEnum;
+
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 07.06.2020
+ * Time: 21:05
+ *
+ * @author Frederick Baier
+ */
+public class UniversalInstaller implements IInstaller {
+    @Override
+    public void install(InstallerEnum installerEnum) throws Exception {
+        executeCommand("apt-get install sudo");
+        //executeCommand("wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | sudo apt-key add -");
+        executeCommand("sudo apt-get install gnupg");
+        executeCommand("wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | sudo apt-key add -");
+
+        executeCommand(installerEnum.getVersionSpecificCommand());
+
+        executeCommand("sudo apt-get update");
+        executeCommand("sudo apt-get install -y mongodb-org");
+        executeCommand("sudo systemctl daemon-reload");
+        executeCommand("sudo systemctl start mongod");
+        executeCommand("sudo systemctl enable mongod");
+    }
+
+
+}

@@ -41,7 +41,7 @@ class ShutdownGroupCommand : ICommandHandler {
             commandSender.sendMessage("manager.command.shutdowngroup.failure", "There are no running services of group %GROUP%", cloudServiceGroup.getName())
             return
         }
-        cloudServiceGroup.stopAllServices()
+        cloudServiceGroup.shutdownAllServices()
         commandSender.sendMessage("manager.command.shutdowngroup.success", "Stopping all services of group %GROUP%", cloudServiceGroup.getName())
     }
 

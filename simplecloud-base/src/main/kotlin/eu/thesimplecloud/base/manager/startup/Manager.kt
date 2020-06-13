@@ -27,8 +27,11 @@ import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.screen.ICommandExecutable
 import eu.thesimplecloud.base.MongoController
-import eu.thesimplecloud.base.manager.config.MongoConfigLoader
-import eu.thesimplecloud.base.manager.config.TemplatesConfigLoader
+import eu.thesimplecloud.base.core.jvm.JvmArgumentsConfig
+import eu.thesimplecloud.base.manager.config.JvmArgumentsConfigLoader
+import eu.thesimplecloud.base.manager.config.mongo.MongoConfigLoader
+import eu.thesimplecloud.base.manager.config.template.TemplatesConfigLoader
+import eu.thesimplecloud.base.manager.config.updater.ModuleUpdaterConfigLoader
 import eu.thesimplecloud.base.manager.filehandler.CloudServiceGroupFileHandler
 import eu.thesimplecloud.base.manager.filehandler.WrapperFileHandler
 import eu.thesimplecloud.base.manager.impl.CloudAPIImpl
@@ -84,6 +87,8 @@ class Manager : ICloudApplication {
     val cloudModuleHandler: IModuleHandler
     val appClassLoader: ApplicationClassLoader
 
+    lateinit var jvmArgumentsConfig: JvmArgumentsConfig
+
     companion object {
         @JvmStatic
         lateinit var instance: Manager
@@ -97,8 +102,14 @@ class Manager : ICloudApplication {
         CloudAPI.instance.getEventManager().registerListener(this, CloudListener())
         CloudAPI.instance.getEventManager().registerListener(this, ModuleEventListener())
         this.appClassLoader = this::class.java.classLoader as ApplicationClassLoader
-        this.cloudModuleHandler = ModuleHandler(appClassLoader)
+
+        this.cloudModuleHandler = ModuleHandler(
+                appClassLoader,
+                ModuleUpdaterConfigLoader().loadConfig().modules,
+                !Launcher.instance.isSnapshotBuild()
+        )
         this.appClassLoader.moduleHandler = this.cloudModuleHandler
+
         this.cloudModuleHandler.setCreateModuleClassLoader { urls, name -> ModuleClassLoader(urls, this.appClassLoader, name, this.cloudModuleHandler) }
         this.ingameCommandUpdater = IngameCommandUpdater()
         if (!MongoConfigLoader().doesConfigFileExist()) {
@@ -135,7 +146,7 @@ class Manager : ICloudApplication {
         this.templateServer.getDirectorySyncManager().createDirectorySync(File(DirectoryPaths.paths.modulesPath), DirectoryPaths.paths.modulesPath)
         this.serviceHandler.startThread()
         thread(start = true, isDaemon = false) { templateServer.start() }
-        this.playerUnregisterScheduler.startScheduler()
+        //this.playerUnregisterScheduler.startScheduler()
     }
 
     private fun moveToApplicationClassLoader(clazz: Class<out IPacket>): Class<out IPacket> {
@@ -151,6 +162,7 @@ class Manager : ICloudApplication {
         this.wrapperFileHandler.loadAll().forEach { CloudAPI.instance.getWrapperManager().update(it) }
         this.cloudServiceGroupFileHandler.loadAll().forEach { CloudAPI.instance.getCloudServiceGroupManager().update(it) }
         this.templatesConfigLoader.loadConfig().templates.forEach { CloudAPI.instance.getTemplateManager().update(it) }
+        this.jvmArgumentsConfig = JvmArgumentsConfigLoader().loadConfig()
 
         if (CloudAPI.instance.getWrapperManager().getAllCachedObjects().isNotEmpty()) {
             Launcher.instance.consoleSender.sendMessage("manager.startup.loaded.wrappers", "Loaded following wrappers:")

@@ -25,6 +25,7 @@ package eu.thesimplecloud.launcher.updater
 import eu.thesimplecloud.api.depedency.Dependency
 import eu.thesimplecloud.launcher.dependency.DependencyLoader
 import java.io.File
+import java.util.jar.JarFile
 
 abstract class AbstractUpdater(
         private val groupId: String,
@@ -49,6 +50,13 @@ abstract class AbstractUpdater(
                 ?: throw RuntimeException("Cannot perform update. Is the server down? (repo: ${getRepositoryURL()})")
         val dependency = Dependency(groupId, artifactId, latestVersion)
         dependency.download(getRepositoryURL(), updateFile)
+    }
+
+    fun getVersionFromManifestFile(file: File): String {
+        val jarFile = JarFile(file)
+        val version = jarFile.manifest.mainAttributes.getValue("Implementation-Version")
+        jarFile.close()
+        return version
     }
 
 

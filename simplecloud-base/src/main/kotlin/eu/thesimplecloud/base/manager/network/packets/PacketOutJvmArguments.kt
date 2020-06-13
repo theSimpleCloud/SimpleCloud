@@ -20,16 +20,26 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.base.manager.config
+package eu.thesimplecloud.base.manager.network.packets
 
-import eu.thesimplecloud.api.config.AbstractJsonDataConfigLoader
-import eu.thesimplecloud.api.directorypaths.DirectoryPaths
-import eu.thesimplecloud.base.manager.mongo.MongoConnectionInformation
-import java.io.File
+import eu.thesimplecloud.base.core.jvm.JvmArgumentsConfig
+import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
+import eu.thesimplecloud.clientserverapi.lib.packet.packettype.ObjectPacket
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
-class MongoConfigLoader : AbstractJsonDataConfigLoader<MongoConnectionInformation>(
-        MongoConnectionInformation::class.java,
-        File(DirectoryPaths.paths.storagePath + "mongo.json"),
-        { MongoConnectionInformation("127.0.0.1", 45678, "cloud", "simplecloud", "cloudpassword", "") }
-) {
+/**
+ * Created by IntelliJ IDEA.
+ * User: Philipp.Eistrach
+ * Date: 12.06.2020
+ * Time: 18:55
+ */
+class PacketOutJvmArguments() : ObjectPacket<JvmArgumentsConfig>() {
+
+    constructor(jvmArgumentsConfig: JvmArgumentsConfig): this() {
+        value = jvmArgumentsConfig
+    }
+
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
+        return unit()
+    }
 }

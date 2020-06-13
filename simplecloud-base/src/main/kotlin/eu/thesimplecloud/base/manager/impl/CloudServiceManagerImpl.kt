@@ -24,7 +24,9 @@ package eu.thesimplecloud.base.manager.impl
 
 import eu.thesimplecloud.api.event.service.CloudServiceConnectedEvent
 import eu.thesimplecloud.api.event.service.CloudServiceUnregisteredEvent
+import eu.thesimplecloud.api.exception.UnreachableComponentException
 import eu.thesimplecloud.api.listenerextension.cloudListener
+import eu.thesimplecloud.api.network.packets.service.PacketIOCopyService
 import eu.thesimplecloud.api.network.packets.service.PacketIOStopCloudService
 import eu.thesimplecloud.api.network.packets.service.PacketIOWrapperStartService
 import eu.thesimplecloud.api.service.ICloudService
@@ -60,5 +62,15 @@ class CloudServiceManagerImpl : AbstractCloudServiceManager() {
                 .addCondition { it.cloudService == cloudService }
                 .unregisterAfterCall()
                 .toUnitPromise()
+    }
+
+    override fun copyService(cloudService: ICloudService, path: String): ICommunicationPromise<Unit> {
+        if (!cloudService.isActive())
+            return CommunicationPromise.failed(IllegalStateException("Cannot copy inactive service"))
+        val wrapper = cloudService.getWrapper()
+        val wrapperClient = Manager.instance.communicationServer.getClientManager()
+                .getClientByClientValue(wrapper)
+        wrapperClient ?: return CommunicationPromise.failed(UnreachableComponentException("Wrapper is not reachable"))
+        return wrapperClient.sendUnitQuery(PacketIOCopyService(cloudService, path), 20 * 1000)
     }
 }

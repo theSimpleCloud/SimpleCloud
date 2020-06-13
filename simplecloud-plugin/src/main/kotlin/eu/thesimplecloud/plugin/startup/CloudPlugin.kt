@@ -30,7 +30,7 @@ import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.client.packets.PacketOutCloudClientLogin
 import eu.thesimplecloud.clientserverapi.client.INettyClient
 import eu.thesimplecloud.clientserverapi.client.NettyClient
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
+import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.plugin.ICloudServicePlugin
 import eu.thesimplecloud.plugin.impl.CloudAPIImpl
 import java.io.File
@@ -88,10 +88,10 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
      * Returns whether the config was loaded successful
      */
     private fun loadConfig(): Boolean {
-        val jsonData = JsonData.fromJsonFile(File("SIMPLE-CLOUD.json")) ?: return false
-        thisServiceName = jsonData.getString("serviceName") ?: return false
-        val host = jsonData.getString("managerHost") ?: return false
-        val port = jsonData.getInt("managerPort") ?: return false
+        val jsonLib = JsonLib.fromJsonFile(File("SIMPLE-CLOUD.json")) ?: return false
+        thisServiceName = jsonLib.getString("serviceName") ?: return false
+        val host = jsonLib.getString("managerHost") ?: return false
+        val port = jsonLib.getInt("managerPort") ?: return false
         this.communicationClient = NettyClient(host, port, ConnectionHandlerImpl())
         return true
     }

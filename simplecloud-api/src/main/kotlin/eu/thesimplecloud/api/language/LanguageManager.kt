@@ -23,7 +23,7 @@
 package eu.thesimplecloud.api.language
 
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
+import eu.thesimplecloud.jsonlib.JsonLib
 import java.io.File
 
 class LanguageManager(var language: String) {
@@ -38,9 +38,9 @@ class LanguageManager(var language: String) {
             languageFile = LanguageFile()
 
             file.parentFile.mkdirs()
-            JsonData.fromObject(languageFile).saveAsFile(file)
+            JsonLib.fromObject(languageFile).saveAsFile(file)
         } else {
-            val languageFile = JsonData.fromJsonFile(file)?.getObjectOrNull(LanguageFile::class.java)
+            val languageFile = JsonLib.fromJsonFile(file)?.getObjectOrNull(LanguageFile::class.java)
             if (languageFile != null) {
                 this.languageFile = languageFile
             }
@@ -61,7 +61,7 @@ class LanguageManager(var language: String) {
         val fileMessage = languageFile.messages[property]
         if (fileMessage == null) {
             languageFile.messages[property] = message
-            JsonData.fromObject(languageFile).saveAsFile(file)
+            JsonLib.fromObject(languageFile).saveAsFile(file)
         }
     }
 

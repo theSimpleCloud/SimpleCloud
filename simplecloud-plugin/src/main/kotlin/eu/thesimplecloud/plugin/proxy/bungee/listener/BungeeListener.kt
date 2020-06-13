@@ -36,8 +36,9 @@ import net.md_5.bungee.event.EventPriority
 
 class BungeeListener : Listener {
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.HIGHEST)
     fun on(event: LoginEvent) {
+        if (event.isCancelled) return
         val connection = event.connection
 
         val playerAddress = DefaultPlayerAddress(connection.address.hostString, connection.address.port)

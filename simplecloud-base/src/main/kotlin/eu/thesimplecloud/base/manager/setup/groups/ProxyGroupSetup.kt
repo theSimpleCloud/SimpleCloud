@@ -25,7 +25,7 @@ package eu.thesimplecloud.base.manager.setup.groups
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.service.ServiceVersion
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
+import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
@@ -69,7 +69,7 @@ class ProxyGroupSetup : DefaultGroupSetup(), ISetup {
 
     @SetupQuestion(2, "manager.setup.proxy-group.question.type", "Which proxy shall the group use? (Bungeecord, Travertine, Waterfall, Hexacord, Velocity)")
     fun typeQuestion(string: String): Boolean {
-        val serviceVersion = JsonData.fromObject(string.toUpperCase()).getObjectOrNull(ServiceVersion::class.java)
+        val serviceVersion = JsonLib.fromObject(string.toUpperCase()).getObjectOrNull(ServiceVersion::class.java)
         if (serviceVersion == null || (serviceVersion.serviceVersionType != ServiceVersion.ServiceVersionType.BUNGEE_DEFAULT && serviceVersion.serviceVersionType != ServiceVersion.ServiceVersionType.VELOCITY_DEFAULT)) {
             Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.version.unsupported", "The specified version is not supported.")
             return false

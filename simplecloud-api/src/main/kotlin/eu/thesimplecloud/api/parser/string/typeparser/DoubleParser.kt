@@ -20,10 +20,22 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.api.exception
+package eu.thesimplecloud.api.parser.string.typeparser
+
+import eu.thesimplecloud.api.parser.string.IStringTypeParser
 
 /**
- * This exception is thrown when a service is not available or not connected to the manager.
+ * Created by IntelliJ IDEA.
+ * Date: 07.06.2020
+ * Time: 14:45
+ * @author Frederick Baier
  */
-class UnreachableServiceException(reason: String) : Exception(reason) {
+class DoubleParser : IStringTypeParser<Double> {
+    override fun parse(value: String): Double? {
+        return runCatching { value.toDouble() }.getOrNull()
+    }
+
+    override fun allowedTypes(): List<Class<out Double>> {
+        return listOf(Double::class.java)
+    }
 }

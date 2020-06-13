@@ -29,7 +29,7 @@ import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.api.servicegroup.impl.DefaultLobbyGroup
 import eu.thesimplecloud.api.servicegroup.impl.DefaultProxyGroup
 import eu.thesimplecloud.api.servicegroup.impl.DefaultServerGroup
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
+import eu.thesimplecloud.jsonlib.JsonLib
 import java.io.File
 
 class CloudServiceGroupFileHandler : IFileHandler<ICloudServiceGroup> {
@@ -37,7 +37,7 @@ class CloudServiceGroupFileHandler : IFileHandler<ICloudServiceGroup> {
 
     override fun save(value: ICloudServiceGroup) {
         val file = getJsonFileForGroup(value)
-        JsonData.fromObject(value).saveAsFile(file)
+        JsonLib.fromObject(value).saveAsFile(file)
     }
 
     override fun delete(value: ICloudServiceGroup) {
@@ -52,7 +52,7 @@ class CloudServiceGroupFileHandler : IFileHandler<ICloudServiceGroup> {
     }
 
     private fun <T : Any> getAllFilesInDirectoryParsedAs(directory: File, clazz: Class<T>) : List<T> {
-        val list = directory.listFiles()?.map { JsonData.fromJsonFile(it)?.getObjectOrNull(clazz) } ?: emptyList<T>()
+        val list = directory.listFiles()?.map { JsonLib.fromJsonFile(it)?.getObjectOrNull(clazz) } ?: emptyList<T>()
         return list.filterNotNull()
     }
 

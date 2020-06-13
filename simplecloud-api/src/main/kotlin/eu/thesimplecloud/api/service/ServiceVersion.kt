@@ -47,9 +47,9 @@ enum class ServiceVersion(val serviceVersionType: ServiceVersionType, val downlo
     PAPER_1_8_8(ServiceVersionType.SERVER_DEFAULT, "https://yivesmirror.com/files/paper/PaperSpigot-1.8.8-R0.1-SNAPSHOT-latest.jar"),
     PAPER_1_11_2(ServiceVersionType.SERVER_DEFAULT, "https://yivesmirror.com/files/paper/PaperSpigot-1.11.2-b1104.jar"),
     PAPER_1_12_2(ServiceVersionType.SERVER_DEFAULT, "https://yivesmirror.com/files/paper/Paper-1.12.2-b1618.jar"),
-    PAPER_1_13_2(ServiceVersionType.SERVER_DEFAULT, "https://yivesmirror.com/files/paper/Paper-1.13.2-b624.jar"),
-    PAPER_1_14_4(ServiceVersionType.SERVER_DEFAULT, "https://yivesmirror.com/files/paper/Paper-1.14.4-b210.jar"),
-    PAPER_1_15_2(ServiceVersionType.SERVER_DEFAULT, "https://yivesmirror.com/files/paper/Paper-1.15.2-b143.jar");
+    PAPER_1_13_2(ServiceVersionType.SERVER_DEFAULT, "https://yivesmirror.com/files/paper/Paper-1.13.2-b655.jar"),
+    PAPER_1_14_4(ServiceVersionType.SERVER_DEFAULT, "https://yivesmirror.com/files/paper/Paper-1.14.4-b243.jar"),
+    PAPER_1_15_2(ServiceVersionType.SERVER_DEFAULT, "https://yivesmirror.com/files/paper/Paper-1.15.2-b350.jar");
 
     //NUKKIT(ServiceVersionType.SERVER_DEFAULT, "https://ci.nukkitx.com/job/NukkitX/job/Nukkit/job/master/lastSuccessfulBuild/artifact/target/nukkit-1.0-SNAPSHOT.jar");
 

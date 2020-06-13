@@ -245,6 +245,14 @@ interface ICloudService : INetworkComponent, IBootstrap, IPropertyMap {
      */
     fun update() = CloudAPI.instance.getCloudServiceManager().update(this)
 
+    /**
+     * Copies the service to the template directory.
+     * @return q promise that completes when the service was copied.
+     */
+    fun copy(path: String): ICommunicationPromise<Unit> {
+        return CloudAPI.instance.getCloudServiceManager().copyService(this, path)
+    }
+
     override fun isActive(): Boolean = getState() != ServiceState.PREPARED && getState() != ServiceState.CLOSED
 
     override fun start() = CloudAPI.instance.getCloudServiceManager().startService(this)

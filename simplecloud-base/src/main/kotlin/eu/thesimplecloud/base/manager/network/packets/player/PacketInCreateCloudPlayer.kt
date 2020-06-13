@@ -35,9 +35,9 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 class PacketInCreateCloudPlayer() : JsonPacket() {
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
-        val playerConnection = this.jsonData.getObject("playerConnection", DefaultPlayerConnection::class.java)
+        val playerConnection = this.jsonLib.getObject("playerConnection", DefaultPlayerConnection::class.java)
                 ?: return contentException("playerConnection")
-        val proxyName = this.jsonData.getString("proxyName") ?: return contentException("proxyName")
+        val proxyName = this.jsonLib.getString("proxyName") ?: return contentException("proxyName")
         val offlinePlayer = Manager.instance.offlineCloudPlayerHandler.getOfflinePlayer(playerConnection.getUniqueId())
         val cloudPlayer = if (offlinePlayer == null) {
             CloudPlayer(playerConnection.getName(), playerConnection.getUniqueId(), System.currentTimeMillis(), System.currentTimeMillis(), 0L, proxyName, null, playerConnection, HashMap())

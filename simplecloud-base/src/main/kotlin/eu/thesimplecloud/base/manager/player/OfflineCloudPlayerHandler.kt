@@ -31,7 +31,7 @@ import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.base.manager.mongo.MongoConnectionInformation
 import eu.thesimplecloud.base.manager.player.exception.OfflinePlayerLoadException
 import eu.thesimplecloud.base.manager.startup.Manager
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
+import eu.thesimplecloud.jsonlib.JsonLib
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -92,10 +92,10 @@ class OfflineCloudPlayerHandler(mongoConnectionInformation: MongoConnectionInfor
         try {
             val propertyMap = propertyMapAsDocument.toSortedMap().mapValues {
                 val valueString = it.value.toString()
-                val jsonData = JsonData.fromJsonString(valueString)
-                val className = jsonData.getString("className")!!
+                val jsonLib = JsonLib.fromJsonString(valueString)
+                val className = jsonLib.getString("className")!!
                 val clazz = this.findClass(className)
-                val value = jsonData.getObject("savedValue", clazz)!!
+                val value = jsonLib.getObject("savedValue", clazz)!!
                 Property(value)
             }
             return OfflineCloudPlayer(loadOfflineCloudPlayer.name, loadOfflineCloudPlayer.uniqueId, loadOfflineCloudPlayer.firstLogin, loadOfflineCloudPlayer.lastLogin, loadOfflineCloudPlayer.onlineTime, loadOfflineCloudPlayer.lastPlayerConnection, HashMap(propertyMap))

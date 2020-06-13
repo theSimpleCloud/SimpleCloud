@@ -29,6 +29,8 @@ import eu.thesimplecloud.launcher.LauncherMain
 import eu.thesimplecloud.launcher.startup.Launcher
 import java.io.File
 import java.net.URLClassLoader
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
 
 class LauncherUpdater : AbstractUpdater(
         "eu.thesimplecloud.simplecloud",
@@ -48,15 +50,28 @@ class LauncherUpdater : AbstractUpdater(
         val mainMethod = newClassLoader.loadClass(mainClass).getMethod("main", Array<String>::class.java)
         Thread.currentThread().contextClassLoader = newClassLoader
         Runtime.getRuntime().addShutdownHook(Thread {
-            val updaterFile = File("storage/updater.jar")
-            val dependency = Dependency("eu.thesimplecloud.simplecloud", "simplecloud-updater", getVersionToInstall()!!)
-            dependency.download(getRepositoryURL(), updaterFile)
-            val processBuilder = ProcessBuilder("java", "-jar", "storage/updater.jar", "300", runningJar.absolutePath, file.absolutePath)
-            processBuilder.directory(File("."))
-            processBuilder.start()
+            Thread.sleep(200)
+            if (!Launcher.instance.isWindows()) {
+                performLinuxUpdate(file, runningJar)
+            } else {
+                performWindowsUpdate(runningJar, file)
+            }
         })
         System.setProperty("simplecloud.launcher.update-mode", "true")
         System.setProperty("simplecloud.version", getVersionToInstall()!!)
         mainMethod.invoke(null, LauncherMain.specifiedArguments)
+    }
+
+    private fun performWindowsUpdate(runningJar: File, file: File) {
+        val updaterFile = File("storage/updater.jar")
+        val dependency = Dependency("eu.thesimplecloud.simplecloud", "simplecloud-updater", getVersionToInstall()!!)
+        dependency.download(getRepositoryURL(), updaterFile)
+        val processBuilder = ProcessBuilder("java", "-jar", "storage/updater.jar", "300", runningJar.absolutePath, file.absolutePath)
+        processBuilder.directory(File("."))
+        processBuilder.start()
+    }
+
+    private fun performLinuxUpdate(file: File, runningJar: File) {
+        Files.move(file.toPath(), runningJar.toPath(), StandardCopyOption.REPLACE_EXISTING)
     }
 }

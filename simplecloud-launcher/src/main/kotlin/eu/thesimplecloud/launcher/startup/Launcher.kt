@@ -70,6 +70,11 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
         override fun onDisable() {
         }
     }
+
+    @Volatile
+    var isBaseLoaded = false
+        private set
+
     var activeApplication: ICloudApplication? = null
     val screenManager: IScreenManager = ScreenManagerImpl()
     val logger = LoggerProvider(screenManager)
@@ -144,6 +149,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
     }
 
     fun startApplication(cloudApplicationType: CloudApplicationType) {
+        this.isBaseLoaded = true
         clearConsole()
         logger.info("Starting ${cloudApplicationType.getApplicationName()}...")
         ApplicationStarter().startApplication(cloudApplicationType)
@@ -188,7 +194,14 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
     }
 
     fun getNewClassLoaderWithLauncherAndBase(): URLClassLoader {
-        return ResourceFinder.createClassLoaderByFiles(this.getBaseFile(), this.getLauncherFile())
+        return if (isBaseLoaded)
+            ResourceFinder.createClassLoaderByFiles(this.getBaseFile(), this.getLauncherFile())
+        else
+            ResourceFinder.createClassLoaderByFiles(this.getLauncherFile())
+    }
+
+    fun isSnapshotBuild(): Boolean {
+        return System.getProperty("simplecloud.version").toLowerCase().contains("snapshot")
     }
 
 }

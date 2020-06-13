@@ -35,8 +35,8 @@ import java.util.*
 class PacketInPlayerConnectToServer() : JsonPacket() {
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Unit> {
-        val uniqueId = this.jsonData.getObject("playerUniqueId", UUID::class.java) ?: return contentException("playerUniqueId")
-        val serviceName = this.jsonData.getString("serviceName") ?: return contentException("serviceName")
+        val uniqueId = this.jsonLib.getObject("playerUniqueId", UUID::class.java) ?: return contentException("playerUniqueId")
+        val serviceName = this.jsonLib.getString("serviceName") ?: return contentException("serviceName")
         val cloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(uniqueId) ?: return failure(NoSuchPlayerException("Player cannot be found"))
         cloudPlayer as CloudPlayer
         /*

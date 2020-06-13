@@ -22,11 +22,11 @@
 
 package eu.thesimplecloud.module.sign.lib
 
-import eu.thesimplecloud.clientserverapi.lib.json.GsonExclude
+import eu.thesimplecloud.jsonlib.JsonLibExclude
 
 class SignLayout(val name: String, private val frames: List<SignFrame>) {
 
-    @GsonExclude
+    @JsonLibExclude
     private var currentFrameIndex = 0
 
     fun getCurrentFrame(): SignFrame {

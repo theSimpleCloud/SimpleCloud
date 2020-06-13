@@ -26,7 +26,7 @@ import com.google.common.collect.Maps
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.exception.NoSuchPlayerException
 import eu.thesimplecloud.api.exception.NoSuchServiceException
-import eu.thesimplecloud.api.exception.UnreachableServiceException
+import eu.thesimplecloud.api.exception.UnreachableComponentException
 import eu.thesimplecloud.api.location.ServiceLocation
 import eu.thesimplecloud.api.location.SimpleLocation
 import eu.thesimplecloud.api.network.packets.player.*
@@ -96,14 +96,14 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
     override fun sendMessageToPlayer(cloudPlayer: ICloudPlayer, cloudText: CloudText): ICommunicationPromise<Unit> {
         val proxyClient = getProxyClientOfCloudPlayer(cloudPlayer)
         return proxyClient?.sendUnitQuery(PacketIOSendMessageToCloudPlayer(cloudPlayer, cloudText))
-                ?: CommunicationPromise.failed(UnreachableServiceException("Proxy service is unreachable"))
+                ?: CommunicationPromise.failed(UnreachableComponentException("Proxy service is unreachable"))
     }
 
     override fun connectPlayer(cloudPlayer: ICloudPlayer, cloudService: ICloudService): ICommunicationPromise<ConnectionResponse> {
         if (cloudService.getServiceType() == ServiceType.PROXY) return CommunicationPromise.failed(IllegalArgumentException("Cannot send player to a proxy service"))
         if (cloudPlayer.getConnectedServerName() == cloudService.getName()) return CommunicationPromise.of(ConnectionResponse(cloudPlayer.getUniqueId(), true))
         val proxyClient = getProxyClientOfCloudPlayer(cloudPlayer)
-        proxyClient ?: return CommunicationPromise.failed(UnreachableServiceException("Proxy service is unreachable"))
+        proxyClient ?: return CommunicationPromise.failed(UnreachableComponentException("Proxy service is unreachable"))
         return proxyClient.sendQuery(PacketIOConnectCloudPlayer(cloudPlayer, cloudService), 500)
     }
 
@@ -137,7 +137,7 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
     override fun teleportPlayer(cloudPlayer: ICloudPlayer, location: SimpleLocation): ICommunicationPromise<Unit> {
         val serverClient = getServerClientOfPlayer(cloudPlayer)
         serverClient
-                ?: return CommunicationPromise.failed(UnreachableServiceException("The server the player is connected to is not reachable"))
+                ?: return CommunicationPromise.failed(UnreachableComponentException("The server the player is connected to is not reachable"))
         return serverClient.sendUnitQuery(PacketIOTeleportPlayer(cloudPlayer, location))
     }
 
@@ -158,21 +158,21 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
     override fun hasPermission(cloudPlayer: ICloudPlayer, permission: String): ICommunicationPromise<Boolean> {
         val proxyClient = getProxyClientOfCloudPlayer(cloudPlayer)
         proxyClient
-                ?: return CommunicationPromise.failed(UnreachableServiceException("The proxy the player is connected to is not reachable"))
+                ?: return CommunicationPromise.failed(UnreachableComponentException("The proxy the player is connected to is not reachable"))
         return proxyClient.sendQuery(PacketIOPlayerHasPermission(cloudPlayer.getUniqueId(), permission))
     }
 
     override fun getLocationOfPlayer(cloudPlayer: ICloudPlayer): ICommunicationPromise<ServiceLocation> {
         val serverClient = getServerClientOfPlayer(cloudPlayer)
         serverClient
-                ?: return CommunicationPromise.failed(UnreachableServiceException("The server the player is connected to is not reachable"))
+                ?: return CommunicationPromise.failed(UnreachableComponentException("The server the player is connected to is not reachable"))
         return serverClient.sendQuery<ServiceLocation>(PacketIOGetPlayerLocation(cloudPlayer))
     }
 
     override fun sendPlayerToLobby(cloudPlayer: ICloudPlayer): ICommunicationPromise<Unit> {
         val proxyClient = getProxyClientOfCloudPlayer(cloudPlayer)
         proxyClient
-                ?: return CommunicationPromise.failed(UnreachableServiceException("The proxy the player is connected to is not reachable"))
+                ?: return CommunicationPromise.failed(UnreachableComponentException("The proxy the player is connected to is not reachable"))
         return proxyClient.sendQuery(PacketIOSendPlayerToLobby(cloudPlayer.getUniqueId()))
     }
 

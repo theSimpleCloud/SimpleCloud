@@ -22,7 +22,7 @@
 
 package eu.thesimplecloud.module.cloudflare.config
 
-import eu.thesimplecloud.clientserverapi.lib.json.JsonData
+import eu.thesimplecloud.jsonlib.JsonLib
 import java.io.File
 
 /**
@@ -37,7 +37,7 @@ class ConfigManager() {
         val file = File("CloudFlare", "config.json")
         if (!file.exists()) {
             val config = Config(listOf(CloudFlareData("proxy", "user@thesimplecloud.eu", "", "thesimplecloud.eu", "", "@")))
-            JsonData().append("data", config).saveAsFile(file)
+            JsonLib.empty().append("data", config).saveAsFile(file)
             return config
         }
 
@@ -46,9 +46,9 @@ class ConfigManager() {
 
     fun getConfig(): Config {
         val file = File("CloudFlare", "config.json")
-        val jsonData = JsonData.fromJsonFile(file)
-        val config = if (jsonData == null) createDefaultConfig()
-                    else jsonData.getObject("data", Config::class.java)!!
+        val jsonLib = JsonLib.fromJsonFile(file)
+        val config = if (jsonLib == null) createDefaultConfig()
+                    else jsonLib.getObject("data", Config::class.java)!!
 
         return config
     }

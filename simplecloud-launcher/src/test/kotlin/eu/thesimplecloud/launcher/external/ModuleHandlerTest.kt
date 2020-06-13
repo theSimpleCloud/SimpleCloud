@@ -73,7 +73,7 @@ class ModuleHandlerTest {
     @Test
     fun module_duplicate_name_test() {
         val loadedModule1 = constructLoadedModuleAndPrepareForLoad()
-        val loadedModule2 = LoadedModuleFileContent(File(loadedModule1.file.path + "1"), loadedModule1.content)
+        val loadedModule2 = LoadedModuleFileContent(File(loadedModule1.file.path + "1"), loadedModule1.content, null)
         moduleHandler.loadModule(loadedModule1)
         assertThrows(IllegalStateException::class.java) { moduleHandler.loadModule(loadedModule2) }
     }
@@ -88,7 +88,7 @@ class ModuleHandlerTest {
     fun self_dependency_test() {
         val loadedModule1 = constructLoadedModuleAndPrepareForLoad()
         val moduleContent1 = loadedModule1.content
-        val testModule = LoadedModuleFileContent(loadedModule1.file, ModuleFileContent(moduleContent1.name, moduleContent1.author, moduleContent1.mainClass, moduleContent1.moduleCopyType, moduleContent1.repositories, moduleContent1.dependencies, listOf(moduleContent1.name)))
+        val testModule = LoadedModuleFileContent(loadedModule1.file, ModuleFileContent(moduleContent1.name, moduleContent1.author, moduleContent1.mainClass, moduleContent1.moduleCopyType, moduleContent1.repositories, moduleContent1.dependencies, listOf(moduleContent1.name)), null)
         assertThrows(ModuleLoadException::class.java) { moduleHandler.loadModule(testModule) }
     }
 
@@ -129,7 +129,7 @@ class ModuleHandlerTest {
         val moduleName = "test$currentModuleCount"
         val loadedModuleFileContent = LoadedModuleFileContent(
                 File("modules/${moduleName}.jar"),
-                ModuleFileContent(moduleName, "Wetterbericht", "eu.thesimplecloud.mockmodule.ModuleMain", ModuleCopyType.ALL, emptyList(), emptyList(), moduleDependencies))
+                ModuleFileContent(moduleName, "Wetterbericht", "eu.thesimplecloud.mockmodule.ModuleMain", ModuleCopyType.ALL, emptyList(), emptyList(), moduleDependencies), null)
 
         currentModuleCount++
         return loadedModuleFileContent

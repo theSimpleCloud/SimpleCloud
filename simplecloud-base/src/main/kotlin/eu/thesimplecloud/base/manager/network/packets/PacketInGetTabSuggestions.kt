@@ -40,8 +40,8 @@ import java.util.*
 class PacketInGetTabSuggestions(): JsonPacket() {
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
-        val command = this.jsonData.getString("command")?: return contentException("command")
-        val uuid = this.jsonData.getObject("uuid", UUID::class.java)?: return contentException("uuid")
+        val command = this.jsonLib.getString("command")?: return contentException("command")
+        val uuid = this.jsonLib.getObject("uuid", UUID::class.java)?: return contentException("uuid")
 
         val player = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(uuid)?: return CommunicationPromise.failed(NoSuchPlayerException(uuid.toString()))
 
