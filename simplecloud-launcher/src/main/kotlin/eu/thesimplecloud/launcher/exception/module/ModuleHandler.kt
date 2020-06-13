@@ -48,6 +48,7 @@ import java.util.jar.JarFile
 open class ModuleHandler(
         private val parentClassLoader: ClassLoader = ClassLoader.getSystemClassLoader(),
         private val modulesWithPermissionToUpdate: List<String> = emptyList(),
+        private val shallInstallUpdates: Boolean = false,
         private val handleException: (Throwable) -> Unit = { throw it }
 ) : IModuleHandler {
 
@@ -79,7 +80,7 @@ open class ModuleHandler(
         val (file, content, updaterFileContent) = loadedModuleFileContent
         if (updaterFileContent != null && !Launcher.instance.launcherStartArguments.disableAutoUpdater) {
             val updater = ModuleUpdater(updaterFileContent, loadedModuleFileContent.file)
-            if (updater.isUpdateAvailable()) {
+            if (updater.isUpdateAvailable() && shallInstallUpdates) {
                 UpdateExecutor().executeUpdate(updater)
                 return loadModule(loadedModuleFileContent.file)
             }
