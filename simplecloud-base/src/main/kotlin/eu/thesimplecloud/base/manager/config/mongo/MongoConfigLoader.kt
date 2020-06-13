@@ -20,10 +20,17 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.base.manager.config
+package eu.thesimplecloud.base.manager.config.mongo
 
-import eu.thesimplecloud.api.template.impl.DefaultTemplate
+import eu.thesimplecloud.api.config.AbstractJsonLibConfigLoader
+import eu.thesimplecloud.api.directorypaths.DirectoryPaths
+import eu.thesimplecloud.base.manager.mongo.MongoConnectionInformation
+import java.io.File
 
-
-class TemplatesConfig(val templates: HashSet<DefaultTemplate>) {
+class MongoConfigLoader : AbstractJsonLibConfigLoader<MongoConnectionInformation>(
+        MongoConnectionInformation::class.java,
+        File(DirectoryPaths.paths.storagePath + "mongo.json"),
+        { MongoConnectionInformation("127.0.0.1", 45678, "cloud", "simplecloud", "cloudpassword", "") },
+        false
+) {
 }

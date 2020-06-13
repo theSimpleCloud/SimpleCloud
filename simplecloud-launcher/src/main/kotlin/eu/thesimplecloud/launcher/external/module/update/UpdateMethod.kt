@@ -20,27 +20,24 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.base.wrapper.network.packets
-
-import eu.thesimplecloud.base.core.jvm.JvmArgumentsConfig
-import eu.thesimplecloud.base.wrapper.startup.Wrapper
-import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
-import eu.thesimplecloud.clientserverapi.lib.packet.packettype.ObjectPacket
-import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
+package eu.thesimplecloud.launcher.external.module.update
 
 /**
  * Created by IntelliJ IDEA.
- * User: Philipp.Eistrach
- * Date: 12.06.2020
- * Time: 18:57
+ * Date: 13.06.2020
+ * Time: 08:13
+ * @author Frederick Baier
  */
-class PacketInJvmArguments() : ObjectPacket<JvmArgumentsConfig>() {
+enum class UpdateMethod {
 
-    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
-        val value = this.value?: return contentException("value")
-        Wrapper.instance.jvmArgumentsConfig = value
+    /**
+     * The current version of the cloud will be used to check for an updater
+     */
+    CLOUD,
 
-        return unit()
-    }
+    /**
+     * The newest version will be loaded from web every time the cloud starts.
+     */
+    WEB
 
 }

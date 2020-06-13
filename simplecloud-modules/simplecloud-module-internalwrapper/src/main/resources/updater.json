@@ -1,0 +1,6 @@
+{
+  "groupId": "eu.thesimplecloud.simplecloud",
+  "artifactId": "simplecloud-module-internalwrapper",
+  "repository": "https://repo.thesimplecloud.eu/artifactory/list/gradle-release-local/",
+  "updateMethod": "CLOUD"
+}

@@ -20,14 +20,39 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.base.manager.config
+package eu.thesimplecloud.launcher.exception.module
 
-import eu.thesimplecloud.api.config.AbstractJsonLibConfigLoader
-import eu.thesimplecloud.api.directorypaths.DirectoryPaths
+import eu.thesimplecloud.launcher.external.module.update.UpdateMethod
+import eu.thesimplecloud.launcher.external.module.update.UpdaterFileContent
+import eu.thesimplecloud.launcher.updater.AbstractUpdater
 import java.io.File
 
-class TemplatesConfigLoader : AbstractJsonLibConfigLoader<TemplatesConfig>(
-        TemplatesConfig::class.java,
-        File(DirectoryPaths.paths.storagePath + "templates.json"),
-        { TemplatesConfig(HashSet()) }
-)
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 12.06.2020
+ * Time: 21:03
+ * @author Frederick Baier
+ */
+class ModuleUpdater(
+        private val updaterFileContent: UpdaterFileContent,
+        moduleFile: File
+) : AbstractUpdater(updaterFileContent.groupId, updaterFileContent.artifactId, moduleFile) {
+
+    override fun getCurrentVersion(): String {
+       return getVersionFromManifestFile(this.updateFile)
+    }
+
+    override fun executeJar() {
+    }
+
+    override fun getVersionToInstall(): String? {
+        return when (updaterFileContent.updateMethod) {
+            UpdateMethod.CLOUD -> getCurrentLauncherVersion()
+            UpdateMethod.WEB -> super.getVersionToInstall()
+        }
+    }
+
+    override fun getRepositoryURL(): String {
+        return updaterFileContent.repository
+    }
+}

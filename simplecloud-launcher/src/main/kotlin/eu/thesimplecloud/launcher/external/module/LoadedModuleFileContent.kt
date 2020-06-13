@@ -22,9 +22,11 @@
 
 package eu.thesimplecloud.launcher.external.module
 
+import eu.thesimplecloud.launcher.external.module.update.UpdaterFileContent
 import java.io.File
 
 data class LoadedModuleFileContent(
         val file: File,
-        val content: ModuleFileContent
+        val content: ModuleFileContent,
+        val updaterFileContent: UpdaterFileContent?
 )

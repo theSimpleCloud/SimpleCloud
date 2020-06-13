@@ -22,7 +22,7 @@
 
 package eu.thesimplecloud.base.manager.setup.mongo
 
-import eu.thesimplecloud.base.manager.config.MongoConfigLoader
+import eu.thesimplecloud.base.manager.config.mongo.MongoConfigLoader
 import eu.thesimplecloud.base.manager.mongo.MongoConnectionInformation
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished

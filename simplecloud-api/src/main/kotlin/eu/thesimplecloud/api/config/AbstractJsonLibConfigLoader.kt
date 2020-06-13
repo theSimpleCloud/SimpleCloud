@@ -25,10 +25,22 @@ package eu.thesimplecloud.api.config
 import eu.thesimplecloud.jsonlib.JsonLib
 import java.io.File
 
-abstract class AbstractJsonLibConfigLoader<T : Any>(val configClass: Class<T>, val configFie: File, val lazyDefaultObject: () -> T) : IConfigLoader<T> {
+abstract class AbstractJsonLibConfigLoader<T : Any>(
+        val configClass: Class<T>,
+        val configFie: File,
+        val lazyDefaultObject: () -> T,
+        val saveDefaultOnFistLoad: Boolean
+) : IConfigLoader<T> {
 
     override fun loadConfig(): T {
-        return JsonLib.fromJsonFile(configFie)?.getObjectOrNull(configClass) ?: lazyDefaultObject()
+        val objectFromFile = JsonLib.fromJsonFile(configFie)?.getObjectOrNull(configClass)
+        if (objectFromFile == null) {
+            val defaultObject = lazyDefaultObject()
+            if (saveDefaultOnFistLoad && !doesConfigFileExist())
+                saveConfig(defaultObject)
+            return defaultObject
+        }
+        return objectFromFile
     }
 
     override fun saveConfig(value: T) {

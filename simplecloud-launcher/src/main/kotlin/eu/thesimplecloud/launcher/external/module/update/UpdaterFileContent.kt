@@ -20,16 +20,17 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.base.manager.config
+package eu.thesimplecloud.launcher.external.module.update
 
-import eu.thesimplecloud.api.config.AbstractJsonLibConfigLoader
-import eu.thesimplecloud.api.directorypaths.DirectoryPaths
-import eu.thesimplecloud.base.manager.mongo.MongoConnectionInformation
-import java.io.File
-
-class MongoConfigLoader : AbstractJsonLibConfigLoader<MongoConnectionInformation>(
-        MongoConnectionInformation::class.java,
-        File(DirectoryPaths.paths.storagePath + "mongo.json"),
-        { MongoConnectionInformation("127.0.0.1", 45678, "cloud", "simplecloud", "cloudpassword", "") }
-) {
-}
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 12.06.2020
+ * Time: 18:10
+ * @author Frederick Baier
+ */
+class UpdaterFileContent(
+        val groupId: String,
+        val artifactId: String,
+        val repository: String,
+        val updateMethod: UpdateMethod
+)

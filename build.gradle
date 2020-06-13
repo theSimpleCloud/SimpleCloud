@@ -117,4 +117,12 @@ subprojects {
         }
     }
 
+    jar {
+        manifest {
+            attributes(
+                    'Implementation-Version': project.version,
+            )
+        }
+    }
+
 }

@@ -22,6 +22,8 @@
 
 package eu.thesimplecloud.launcher.updater
 
+import eu.thesimplecloud.launcher.startup.Launcher
+
 interface IUpdater {
 
     /**
@@ -60,7 +62,7 @@ interface IUpdater {
      * Returns the repository url to use
      */
     fun getRepositoryURL(): String {
-        return if (getCurrentLauncherVersion().contains("SNAPSHOT")) {
+        return if (Launcher.instance.isSnapshotBuild()) {
             "https://repo.thesimplecloud.eu/artifactory/list/gradle-dev-local/"
         } else {
             "https://repo.thesimplecloud.eu/artifactory/list/gradle-release-local/"

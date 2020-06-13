@@ -176,12 +176,6 @@ interface ICloudServiceGroup {
     /**
      * Stops all services of this group.
      */
-    @Deprecated(message = "Use shutdownAllServices instead", replaceWith = ReplaceWith("shutdownAllServices()"))
-    fun stopAllServices() = getAllServices().forEach { it.shutdown() }
-
-    /**
-     * Stops all services of this group.
-     */
     fun shutdownAllServices() = getAllServices().forEach { it.shutdown() }
 
     /**
