@@ -30,6 +30,10 @@ import eu.thesimplecloud.base.MongoController
 import eu.thesimplecloud.base.manager.config.mongo.MongoConfigLoader
 import eu.thesimplecloud.base.manager.config.template.TemplatesConfigLoader
 import eu.thesimplecloud.base.manager.config.updater.ModuleUpdaterConfigLoader
+import eu.thesimplecloud.base.core.jvm.JvmArgumentsConfig
+import eu.thesimplecloud.base.manager.config.JvmArgumentsConfigLoader
+import eu.thesimplecloud.base.manager.config.MongoConfigLoader
+import eu.thesimplecloud.base.manager.config.TemplatesConfigLoader
 import eu.thesimplecloud.base.manager.filehandler.CloudServiceGroupFileHandler
 import eu.thesimplecloud.base.manager.filehandler.WrapperFileHandler
 import eu.thesimplecloud.base.manager.impl.CloudAPIImpl
@@ -84,6 +88,8 @@ class Manager : ICloudApplication {
     val playerUnregisterScheduler = PlayerUnregisterScheduler()
     val cloudModuleHandler: IModuleHandler
     val appClassLoader: ApplicationClassLoader
+
+    lateinit var jvmArgumentsConfig: JvmArgumentsConfig
 
     companion object {
         @JvmStatic
@@ -154,6 +160,12 @@ class Manager : ICloudApplication {
         this.wrapperFileHandler.loadAll().forEach { CloudAPI.instance.getWrapperManager().update(it) }
         this.cloudServiceGroupFileHandler.loadAll().forEach { CloudAPI.instance.getCloudServiceGroupManager().update(it) }
         this.templatesConfigLoader.loadConfig().templates.forEach { CloudAPI.instance.getTemplateManager().update(it) }
+
+        val jvmArgumentsConfigLoader = JvmArgumentsConfigLoader()
+        this.jvmArgumentsConfig = jvmArgumentsConfigLoader.loadConfig()
+        if (!jvmArgumentsConfigLoader.doesConfigFileExist()) {
+            jvmArgumentsConfigLoader.saveConfig(this.jvmArgumentsConfig)
+        }
 
         if (CloudAPI.instance.getWrapperManager().getAllCachedObjects().isNotEmpty()) {
             Launcher.instance.consoleSender.sendMessage("manager.startup.loaded.wrappers", "Loaded following wrappers:")

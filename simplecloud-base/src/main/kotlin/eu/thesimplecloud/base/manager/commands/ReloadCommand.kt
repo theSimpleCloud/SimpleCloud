@@ -26,6 +26,7 @@ import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.command.ICommandSender
 import eu.thesimplecloud.api.extension.sendPacketToAllAuthenticatedWrapperClients
 import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
+import eu.thesimplecloud.base.manager.config.JvmArgumentsConfigLoader
 import eu.thesimplecloud.base.manager.network.packets.PacketOutReloadExistingModules
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.launcher.console.command.CommandType
@@ -60,6 +61,10 @@ class ReloadCommand : ICommandHandler {
             CloudAPI.instance.getWrapperManager().update(cachedWrapper)
         }
         loadedWrappers.forEach { commandSender.sendMessage("manager.command.reload.wrapper-success", "Reloaded wrapper %WRAPPER%", it.getName(), ".") }
+
+        //jvm-arguments
+        val jvmArgumentsConfigLoader = JvmArgumentsConfigLoader()
+        Manager.instance.jvmArgumentsConfig = jvmArgumentsConfigLoader.loadConfig()
 
         //groups
         val loadedGroups = Manager.instance.cloudServiceGroupFileHandler.loadAll().toMutableList()
