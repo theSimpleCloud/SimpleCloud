@@ -20,7 +20,7 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.launcher.exception.module
+package eu.thesimplecloud.launcher.external.module.handler
 
 import eu.thesimplecloud.api.external.ICloudModule
 import eu.thesimplecloud.launcher.external.module.LoadedModule

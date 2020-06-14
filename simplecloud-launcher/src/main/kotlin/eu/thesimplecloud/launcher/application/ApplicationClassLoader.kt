@@ -22,8 +22,8 @@
 
 package eu.thesimplecloud.launcher.application
 
-import eu.thesimplecloud.launcher.exception.module.IModuleHandler
 import eu.thesimplecloud.launcher.external.module.ModuleClassLoader
+import eu.thesimplecloud.launcher.external.module.handler.IModuleHandler
 import java.net.URL
 
 class ApplicationClassLoader(

@@ -20,7 +20,7 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.launcher.exception.module.exception
+package eu.thesimplecloud.launcher.exception.module
 
 class ModuleLoadException(moduleName: String, ex: Exception?) : Exception("An error occurred while loading module: $moduleName", ex) {
 
