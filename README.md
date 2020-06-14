@@ -59,7 +59,7 @@ The Proxy Module is used to manage your proxies. It controls the MOTD, Tablist, 
 
 ![ProxyModuleMotd](https://i.imgur.com/dkuxYM7.png "ProxyModuleMotd")
 
-![ProxyModuleMotdMaintenance](https://imgur.com/dkuxYM7.png "ProxyModuleMotdMaintenance")
+![ProxyModuleMotdMaintenance](https://i.imgur.com/eCSXSJo.png "ProxyModuleMotdMaintenance")
 
 Permissions:
 Maintenance join: cloud.maintenance.join
