@@ -24,11 +24,13 @@ package eu.thesimplecloud.launcher.console.setup
 
 import eu.thesimplecloud.api.parser.string.StringParser
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
+import eu.thesimplecloud.launcher.console.ConsoleSender
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupCancelled
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
 import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.startup.Launcher
+import java.lang.IllegalStateException
 import java.lang.reflect.Method
 import java.lang.reflect.Parameter
 
@@ -71,6 +73,10 @@ class SetupManager(val launcher: Launcher) {
             this.setupQueue.add(setupData)
     }
 
+    fun hasActiveSetup(): Boolean {
+        return this.currentSetup != null
+    }
+
     private fun startSetup(setupData: SetupData) {
         this.currentSetup = setupData
         this.currentQuestion = setupData.questions[currentQuestionIndex]
@@ -86,7 +92,7 @@ class SetupManager(val launcher: Launcher) {
 
     fun onResponse(response: String) {
         val currentQuestion = this.currentQuestion ?: return
-        val parsedValue = StringParser().parseToObject(response, currentQuestion.prameter.type)
+        val parsedValue = StringParser().parseToObject(response, currentQuestion.parameter.type)
         val invokeResponse = try {
             currentQuestion.method.invoke(this.currentSetup!!.source, parsedValue)
         } catch (e: Exception) {
@@ -151,6 +157,17 @@ class SetupManager(val launcher: Launcher) {
             this.setupsCompletedPromise.awaitUninterruptibly()
     }
 
+    fun getSetupSuggestions(userInput: String, consoleSender: ConsoleSender): List<String> {
+        if (!hasActiveSetup()) {
+            throw IllegalStateException("There is no active setup")
+        }
+
+        val suggestions = currentQuestion!!.setupQuestion.suggestionProvider.java.newInstance()
+                .getSuggestions(consoleSender, userInput)
+
+        return suggestions.filter { it.toLowerCase().startsWith(userInput.toLowerCase()) }
+    }
+
 
     class SetupData(val source: ISetup, val cancelledMethod: Method?, val finishedMethod: Method?, val questions: List<SetupQuestionData>) {
 
@@ -164,6 +181,6 @@ class SetupManager(val launcher: Launcher) {
 
     }
 
-    class SetupQuestionData(val setupQuestion: SetupQuestion, val method: Method, val prameter: Parameter)
+    class SetupQuestionData(val setupQuestion: SetupQuestion, val method: Method, val parameter: Parameter)
 
 }

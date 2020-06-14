@@ -30,6 +30,7 @@ class LauncherDependencyLoader {
         val dependencyLoader = DependencyLoader.INSTANCE
         dependencyLoader.addRepositories("https://repo.maven.apache.org/maven2/", "https://repo.thesimplecloud.eu/artifactory/gradle-dev-local/")
         dependencyLoader.addDependencies(
+                Dependency("org.fusesource.jansi", "jansi", "1.18"),
                 Dependency("org.jline", "jline", "3.14.0"),
                 Dependency("org.litote.kmongo", "kmongo", "3.11.2"),
                 Dependency("commons-io", "commons-io", "2.6"),

@@ -20,17 +20,20 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.launcher.console.setup.annotations
+package eu.thesimplecloud.launcher.console.command.provider
 
-import eu.thesimplecloud.launcher.console.setup.provider.EmptySetupSuggestionProvider
-import eu.thesimplecloud.launcher.console.setup.provider.ISetupSuggestionProvider
-import kotlin.reflect.KClass
+import eu.thesimplecloud.api.command.ICommandSender
 
-@Target(AnnotationTarget.FUNCTION)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class SetupQuestion(
-        val number: Int,
-        val property: String,
-        val question: String,
-        val suggestionProvider: KClass<out ISetupSuggestionProvider> = EmptySetupSuggestionProvider::class
-)
+/**
+ * Created by IntelliJ IDEA.
+ * User: Philipp.Eistrach
+ * Date: 14.04.2020
+ * Time: 18:39
+ */
+class EmptyCommandSuggestionProvider: ICommandSuggestionProvider {
+
+    override fun getSuggestions(sender: ICommandSender, fullCommand: String, lastArgument: String): List<String> {
+        return emptyList()
+    }
+
+}

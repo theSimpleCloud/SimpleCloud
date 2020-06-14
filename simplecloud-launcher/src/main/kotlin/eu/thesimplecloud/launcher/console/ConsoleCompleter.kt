@@ -40,9 +40,7 @@ class ConsoleCompleter(private val consoleManager: ConsoleManager) : Completer {
     override fun complete(reader: LineReader, line: ParsedLine, candidates: MutableList<Candidate>) {
         val commandString = line.line()
 
-        if (commandString.isEmpty()) return
-
-        val suggestions = consoleManager.commandManager.getAvailableTabCompleteArgs("cloud $commandString", consoleManager.consoleSender)
+        val suggestions = getConsoleSuggestions(commandString)
         if (suggestions.isEmpty()) {
             return
         }
@@ -54,6 +52,14 @@ class ConsoleCompleter(private val consoleManager: ConsoleManager) : Completer {
             responses.sort()
             candidates.addAll(responses.map { Candidate(it) })
         }
+    }
+
+    private fun getConsoleSuggestions(commandString: String): List<String> {
+        if (!Launcher.instance.setupManager.hasActiveSetup()) {
+            return consoleManager.commandManager.getAvailableTabCompleteArgs("cloud $commandString", consoleManager.consoleSender)
+        }
+
+        return Launcher.instance.setupManager.getSetupSuggestions(commandString, consoleManager.consoleSender)
     }
 
 }
