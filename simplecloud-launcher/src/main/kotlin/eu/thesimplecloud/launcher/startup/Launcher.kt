@@ -107,7 +107,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
         val launcherConfig = this.launcherConfigLoader.loadConfig()
         DirectoryPaths.paths = launcherConfig.directoryPaths
         this.commandManager = CommandManager()
-        this.consoleManager = ConsoleManager("Launcher", this.commandManager, this.consoleSender)
+        this.consoleManager = ConsoleManager(this.commandManager, this.consoleSender)
         this.languageManager = LanguageManager("en_EN")
     }
 

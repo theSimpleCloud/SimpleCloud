@@ -10,15 +10,15 @@ pipeline {
                 sh './gradlew clean';
             }
         }
+        stage('Build') {
+            steps {
+                sh './gradlew jar';
+            }
+        }
         stage('Test') {
             steps {
                 sh './gradlew test';
                 junit '**/build/test-results/test/*.xml';
-            }
-        }
-        stage('Build') {
-            steps {
-                sh './gradlew jar';
             }
         }
         stage('Create zip') {
