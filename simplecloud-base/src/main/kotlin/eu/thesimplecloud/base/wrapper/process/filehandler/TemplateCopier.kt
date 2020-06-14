@@ -42,6 +42,10 @@ class TemplateCopier : ITemplateCopier {
         val everyTypeDir = if (cloudService.getServiceType() == ServiceType.PROXY) File(DirectoryPaths.paths.templatesPath + "EVERY_PROXY") else File(DirectoryPaths.paths.templatesPath + "EVERY_SERVER")
         val templateDirectories = getDirectoriesOfTemplateAndSubTemplates(template)
         val serviceTmpDir = if (cloudService.isStatic()) File(DirectoryPaths.paths.staticPath + cloudService.getName()) else File(DirectoryPaths.paths.tempPath + cloudService.getName())
+
+        val serverIconFile = File(serviceTmpDir, "/server-icon.png")
+        FileCopier.copyFileOutOfJar(serverIconFile, "/files/server-icon.png")
+
         val dontCopyTemplates = cloudService.isStatic() && serviceTmpDir.exists()
         if (!dontCopyTemplates) {
             if (everyDir.exists())
@@ -52,6 +56,7 @@ class TemplateCopier : ITemplateCopier {
         }
         val cloudPluginFile = File(serviceTmpDir, "/plugins/SimpleCloud-Plugin.jar")
         FileCopier.copyFileOutOfJar(cloudPluginFile, "/SimpleCloud-Plugin.jar")
+
         generateServiceFile(cloudService, serviceTmpDir)
 
         val modulesByCopyType = Wrapper.instance.existingModules
