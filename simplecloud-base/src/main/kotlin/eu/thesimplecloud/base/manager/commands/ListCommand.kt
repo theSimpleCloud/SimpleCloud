@@ -55,7 +55,7 @@ class ListCommand : ICommandHandler {
             commandSender.sendMessage("&8>> &7" + groups.getName() + " &8(&f" + groups.getMaxMemory() + "MB &8/&f " + groups.getRegisteredServiceCount() + " " + serviceName + "&8)")
 
             groups.getAllServices().forEach {
-                val wrapperDesign = if (it.getWrapperName() != null) " &8|§3 " + it.getWrapperName() else ""
+                val wrapperDesign = if (it.getWrapperName() != null) " &8|&3 " + it.getWrapperName() else ""
                 commandSender.sendMessage(" &8- &b" + it.getName() + " &8(&f" + it.getOnlineCount() + "&8/&f" + it.getMaxPlayers() + " &8|&3 " + it.getState() + wrapperDesign + "&8)")
             }
 
