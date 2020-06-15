@@ -26,6 +26,7 @@ import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.launcher.config.LauncherConfigLoader
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
+import eu.thesimplecloud.launcher.console.setup.provider.BooleanSetupSuggestionProvider
 import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.launcher.utils.IpValidator
@@ -33,7 +34,10 @@ import eu.thesimplecloud.launcher.utils.WebsiteContentLoader
 
 class AutoIpSetup : ISetup {
 
-    @SetupQuestion(0, "manager.setup.auto-ip.question", "Do you want to automatically set up your ip via \"ipify.org\" (yes / no)")
+    @SetupQuestion(0,
+            "manager.setup.auto-ip.question",
+            "Do you want to automatically set up your ip via \"ipify.org\" (yes / no)",
+            BooleanSetupSuggestionProvider::class)
     fun setup(boolean: Boolean): Boolean {
         if (!boolean) {
             Launcher.instance.setupManager.queueSetup(IpSetup(), true)

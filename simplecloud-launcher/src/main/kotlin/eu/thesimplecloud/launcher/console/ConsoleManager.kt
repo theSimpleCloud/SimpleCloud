@@ -36,15 +36,12 @@ import org.jline.terminal.TerminalBuilder
  * Date: 06.09.2019
  * Time: 21:29
  */
-class ConsoleManager(var applicationName: String, val commandManager: CommandManager, val consoleSender: ConsoleSender) : IConsoleManager {
-
+class ConsoleManager(val commandManager: CommandManager, val consoleSender: ConsoleSender) : IConsoleManager {
 
     var thread: Thread? = null
 
     val lineReader = createLineReader()
-    var prompt = buildPrompt()
-
-    fun buildPrompt() = Launcher.instance.logger.getColoredString("§c${applicationName}§f@§eSimpleCloud§f> ", LogType.EMPTY)
+    private val prompt = Launcher.instance.logger.getColoredString("§bSimpleCloud §7>§f ", LogType.EMPTY)
 
     private fun createLineReader(): LineReader {
         val consoleCompleter = ConsoleCompleter(this)
@@ -61,15 +58,13 @@ class ConsoleManager(var applicationName: String, val commandManager: CommandMan
                 .terminal(terminal)
                 .option(LineReader.Option.DISABLE_EVENT_EXPANSION, true)
                 .option(LineReader.Option.AUTO_REMOVE_SLASH, false)
+                .option(LineReader.Option.INSERT_TAB, false)
                 .build()
     }
 
     override fun startThread() {
-
-        var prompt = buildPrompt()
-
         thread = Thread {
-            var readLine = ""
+            var readLine: String
             try {
                 while (!Thread.currentThread().isInterrupted) {
                     readLine = lineReader.readLine(prompt)
@@ -92,15 +87,13 @@ class ConsoleManager(var applicationName: String, val commandManager: CommandMan
             screenManager.getActiveScreen()?.executeCommand(readLine)
             return
         }
-
-        val setup = Launcher.instance.setupManager.currentSetup
-        if (setup != null) {
+        if (Launcher.instance.setupManager.hasActiveSetup()) {
             if (readLine.equals("exit", true)) {
                 Launcher.instance.setupManager.cancelCurrentSetup()
                 return
             }
 
-            Launcher.instance.setupManager.onResponse(readLine)
+            Launcher.instance.setupManager.onResponse(readLine.trim())
             return
         }
         if (readLine.isBlank()) return
