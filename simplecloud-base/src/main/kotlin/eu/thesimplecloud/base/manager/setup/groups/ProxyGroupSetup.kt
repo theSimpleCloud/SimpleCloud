@@ -24,11 +24,14 @@ package eu.thesimplecloud.base.manager.setup.groups
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.service.version.ServiceVersion
-import eu.thesimplecloud.api.service.version.type.ServiceVersionType
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
+import eu.thesimplecloud.base.manager.setup.groups.provider.GroupTemplateSetupAnswerProvider
+import eu.thesimplecloud.base.manager.setup.groups.provider.ProxyVersionTypeSetupAnswerProvider
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
+import eu.thesimplecloud.launcher.console.setup.provider.BooleanSetupAnswerProvider
+import eu.thesimplecloud.launcher.console.setup.provider.WrapperSetupAnswerProvider
 import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.startup.Launcher
 import kotlin.properties.Delegates
@@ -58,7 +61,7 @@ class ProxyGroupSetup : DefaultGroupSetup(), ISetup {
         return true
     }
 
-    @SetupQuestion(1, "manager.setup.service-group.question.template", "Which template shall the group use? (create = Creates a template with the group's name)")
+    @SetupQuestion(1, "manager.setup.service-group.question.template", "Which template shall the group use? (create = Creates a template with the group's name)", GroupTemplateSetupAnswerProvider::class)
     fun templateQuestion(templateName: String): Boolean {
         val template = createTemplate(templateName, this.name)
         if (template != null) {
@@ -67,21 +70,16 @@ class ProxyGroupSetup : DefaultGroupSetup(), ISetup {
         return template != null
     }
 
-    @SetupQuestion(2, "manager.setup.proxy-group.question.type", "Which proxy shall the group use? (Bungeecord, Travertine, Waterfall, Hexacord, Velocity)")
+    @SetupQuestion(2, "manager.setup.proxy-group.question.type", "Which proxy shall the group use?", ProxyVersionTypeSetupAnswerProvider::class)
     fun typeQuestion(answer: String): Boolean {
-        val version = answer.replace(".", "_")
         val serviceVersion = CloudAPI.instance.getServiceVersionHandler()
-                .getServiceVersionByName(answer)
-        if (serviceVersion == null || serviceVersion.serviceAPIType.serviceVersionType != ServiceVersionType.PROXY) {
-            Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.version.unsupported", "The specified version is not supported.")
-            return false
-        }
+                .getServiceVersionByName(answer)!!
         this.serviceVersion = serviceVersion
         Launcher.instance.consoleSender.sendMessage("manager.setup.proxy-group.question.type.success", "Proxy version set.")
         return true
     }
 
-    @SetupQuestion(4, "manager.setup.service-group.question.memory", "How much memory shall the server group have?")
+    @SetupQuestion(4, "manager.setup.service-group.question.memory", "How much memory shall the server group have? (MB)")
     fun memoryQuestion(memory: Int): Boolean {
         if (memory < 128) {
             Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.memory.too-low", "The specified amount of memory is too low.")
@@ -126,18 +124,14 @@ class ProxyGroupSetup : DefaultGroupSetup(), ISetup {
         return true
     }
 
-    @SetupQuestion(8, "manager.setup.service-group.question.static", "Shall this server group be static? (yes / no)")
+    @SetupQuestion(8, "manager.setup.service-group.question.static", "Shall this server group be static?", BooleanSetupAnswerProvider::class)
     fun staticQuestion(static: Boolean) {
         this.static = static
     }
 
-    @SetupQuestion(9, "manager.setup.proxy-group.question.wrapper", "On which wrapper shall services of this group run?")
+    @SetupQuestion(9, "manager.setup.proxy-group.question.wrapper", "On which wrapper shall services of this group run?", WrapperSetupAnswerProvider::class)
     fun wrapperQuestion(string: String): Boolean {
-        val wrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(string)
-        if (wrapper == null){
-            Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.wrapper.not-exist", "The specified wrapper does not exist.")
-            return false
-        }
+        val wrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(string)!!
         this.wrapper = wrapper
         return true
     }

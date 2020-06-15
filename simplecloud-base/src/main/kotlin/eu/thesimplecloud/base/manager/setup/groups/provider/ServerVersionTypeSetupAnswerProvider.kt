@@ -20,29 +20,24 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.base.manager.setup
+package eu.thesimplecloud.base.manager.setup.groups.provider
 
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.command.ICommandSender
 import eu.thesimplecloud.api.service.version.type.ServiceVersionType
-import eu.thesimplecloud.api.utils.Downloader
-import eu.thesimplecloud.launcher.console.setup.ISetup
-import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
-import eu.thesimplecloud.launcher.extension.sendMessage
-import eu.thesimplecloud.launcher.startup.Launcher
-import java.io.File
+import eu.thesimplecloud.launcher.console.setup.provider.ISetupAnswerProvider
 
-class ProxyJarSetup(private val proxyFile: File) : ISetup {
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 15.06.2020
+ * Time: 16:55
+ * @author Frederick Baier
+ */
+class ServerVersionTypeSetupAnswerProvider : ISetupAnswerProvider {
 
-    @SetupQuestion(0, "manager.setup.proxy-jar.question", "Which proxy version do you want to use? (Bungeecord, Waterfall, Travertine, Hexacord, Velocity)")
-    fun setup(answer: String): Boolean {
-        val serviceVersion = CloudAPI.instance.getServiceVersionHandler().getVersionsByPrefix(answer).firstOrNull()
-        if (serviceVersion == null || serviceVersion.serviceAPIType.serviceVersionType != ServiceVersionType.PROXY) {
-            Launcher.instance.consoleSender.sendMessage("manager.setup.proxy-jar.version-invalid", "The specified version is invalid.")
-            return false
-        }
-        Launcher.instance.consoleSender.sendMessage("manager.setup.proxy-jar.downloading", "Downloading proxy...")
-        Downloader().userAgentDownload(serviceVersion.downloadURL, proxyFile)
-        return true
+    override fun getSuggestions(sender: ICommandSender): List<String> {
+        return CloudAPI.instance.getServiceVersionHandler().getVersionsByServiceVersionType(ServiceVersionType.SERVER)
+                .map { it.name }
     }
 
 }

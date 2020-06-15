@@ -8,10 +8,10 @@ import eu.thesimplecloud.api.command.ICommandSender
  * Date: 14.06.2020
  * Time: 16:18
  */
-class EmptySetupSuggestionProvider : ISetupSuggestionProvider {
+class BooleanSetupAnswerProvider : ISetupAnswerProvider {
 
-    override fun getSuggestions(sender: ICommandSender, userInput: String): List<String> {
-        return emptyList()
+    override fun getSuggestions(sender: ICommandSender): List<String> {
+        return listOf("yes", "no")
     }
 
 }

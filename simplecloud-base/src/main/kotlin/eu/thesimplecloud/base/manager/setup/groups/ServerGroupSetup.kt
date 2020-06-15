@@ -24,11 +24,14 @@ package eu.thesimplecloud.base.manager.setup.groups
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.service.version.ServiceVersion
-import eu.thesimplecloud.api.service.version.type.ServiceVersionType
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
+import eu.thesimplecloud.base.manager.setup.groups.provider.GroupTemplateSetupAnswerProvider
+import eu.thesimplecloud.base.manager.setup.groups.provider.ServerVersionTypeSetupAnswerProvider
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
+import eu.thesimplecloud.launcher.console.setup.provider.BooleanSetupAnswerProvider
+import eu.thesimplecloud.launcher.console.setup.provider.WrapperSetupAnswerProvider
 import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.startup.Launcher
 import kotlin.properties.Delegates
@@ -45,10 +48,6 @@ class ServerGroupSetup : DefaultGroupSetup(), ISetup {
     private var memory by Delegates.notNull<Int>()
     private lateinit var name: String
     private lateinit var templateName: String
-    private lateinit var type: String
-
-
-    private val allowedTypes = CloudAPI.instance.getServiceVersionHandler().getPrefixesByServiceVersionType(ServiceVersionType.SERVER)
 
     @SetupQuestion(0, "manager.setup.service-group.question.name", "Which name shall the group have?")
     fun nameQuestion(name: String): Boolean {
@@ -61,7 +60,7 @@ class ServerGroupSetup : DefaultGroupSetup(), ISetup {
         return true
     }
 
-    @SetupQuestion(1, "manager.setup.service-group.question.template", "Which template shall the group use? (create = Creates a template with the group's name)")
+    @SetupQuestion(1, "manager.setup.service-group.question.template", "Which template shall the group use? (create = Creates a template with the group's name)", GroupTemplateSetupAnswerProvider::class)
     fun templateQuestion(templateName: String): Boolean {
         val template = createTemplate(templateName, this.name)
         if (template != null) {
@@ -70,32 +69,13 @@ class ServerGroupSetup : DefaultGroupSetup(), ISetup {
         return template != null
     }
 
-    @SetupQuestion(2, "manager.setup.service-group.question.type", "Which server version shall the group use? (Spigot, Paper)")
+    @SetupQuestion(2, "manager.setup.service-group.question.type", "Which server version shall the group use?", ServerVersionTypeSetupAnswerProvider::class)
     fun typeQuestion(string: String) {
-        val allowedTypes = CloudAPI.instance.getServiceVersionHandler().getPrefixesByServiceVersionType(ServiceVersionType.SERVER)
-        if (!allowedTypes.contains(string.toUpperCase())){
-            Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.type.invalid", "Invalid response.")
-            return
-        }
-        this.type = string
+        this.serviceVersion = CloudAPI.instance.getServiceVersionHandler().getServiceVersionByName(string)!!
         Launcher.instance.consoleSender.sendMessage("manager.setup.server-group.question.type.success", "Spigot set.")
     }
 
-    @SetupQuestion(3, "manager.setup.service-group.question.version", "Which version to you want to use? (1.7.10, 1.8.8, 1.9.4, 1.10.2, 1.11.2, 1.12.2, 1.13.2, 1.14.4, 1.15.2)")
-    fun versionQuestion(answer: String) : Boolean {
-        val version = answer.replace(".", "_")
-        val serviceVersion = CloudAPI.instance.getServiceVersionHandler()
-                .getServiceVersionByName(type.toUpperCase() + "_" + version)
-        if (serviceVersion == null || serviceVersion.serviceAPIType.serviceVersionType != ServiceVersionType.SERVER) {
-            Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.version.unsupported", "The specified version is not supported.")
-            return false
-        }
-        this.serviceVersion = serviceVersion
-        Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.version.success", "Version set.")
-        return true
-    }
-
-    @SetupQuestion(4, "manager.setup.service-group.question.memory", "How much memory shall the server group have?")
+    @SetupQuestion(4, "manager.setup.service-group.question.memory", "How much memory shall the server group have? (MB)")
     fun memoryQuestion(memory: Int): Boolean {
         if (memory < 128) {
             Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.memory.too-low", "The specified amount of memory is too low.")
@@ -140,20 +120,16 @@ class ServerGroupSetup : DefaultGroupSetup(), ISetup {
         return true
     }
 
-    @SetupQuestion(8, "manager.setup.service-group.question.static", "Shall this server group be static? (yes / no)")
+    @SetupQuestion(8, "manager.setup.service-group.question.static", "Shall this server group be static?", BooleanSetupAnswerProvider::class)
     fun staticQuestion(static: Boolean) {
         this.static = static
     }
 
-    @SetupQuestion(9, "manager.setup.server-group.question.wrapper", "On which wrapper shall services of this group run? (Needed when the group is static. Otherwise you can leave it empty for the wrapper with the lowest workload.)")
+    @SetupQuestion(9, "manager.setup.server-group.question.wrapper", "On which wrapper shall services of this group run? (Needed when the group is static. Otherwise you can leave it empty for the wrapper with the lowest workload.)", WrapperSetupAnswerProvider::class)
     fun wrapperQuestion(string: String): Boolean {
         if (string.isBlank() && !static)
             return true
-        val wrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(string)
-        if (wrapper == null){
-            Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.wrapper.not-exist", "The specified wrapper does not exist.")
-            return false
-        }
+        val wrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(string)!!
         this.wrapper = wrapper
         return true
     }

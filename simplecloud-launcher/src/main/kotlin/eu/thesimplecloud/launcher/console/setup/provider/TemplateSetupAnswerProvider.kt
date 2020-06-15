@@ -31,9 +31,9 @@ import eu.thesimplecloud.api.command.ICommandSender
  * Date: 14.04.2020
  * Time: 18:39
  */
-class TemplateSetupSuggestionProvider: ISetupSuggestionProvider {
+class TemplateSetupAnswerProvider: ISetupAnswerProvider {
 
-    override fun getSuggestions(sender: ICommandSender, userInput: String): List<String> {
+    override fun getSuggestions(sender: ICommandSender): List<String> {
         return CloudAPI.instance.getTemplateManager().getAllCachedObjects().map { it.getName() }
     }
 

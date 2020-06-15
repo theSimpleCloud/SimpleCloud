@@ -20,17 +20,24 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.launcher.console.setup.annotations
+package eu.thesimplecloud.base.manager.setup.groups.provider
 
-import eu.thesimplecloud.launcher.console.setup.provider.EmptySetupAnswerProvider
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.command.ICommandSender
+import eu.thesimplecloud.api.service.version.type.ServiceVersionType
 import eu.thesimplecloud.launcher.console.setup.provider.ISetupAnswerProvider
-import kotlin.reflect.KClass
 
-@Target(AnnotationTarget.FUNCTION)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class SetupQuestion(
-        val number: Int,
-        val property: String,
-        val question: String,
-        val answerProvider: KClass<out ISetupAnswerProvider> = EmptySetupAnswerProvider::class
-)
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 15.06.2020
+ * Time: 16:55
+ * @author Frederick Baier
+ */
+class ProxyVersionTypeSetupAnswerProvider : ISetupAnswerProvider {
+
+    override fun getSuggestions(sender: ICommandSender): List<String> {
+        return CloudAPI.instance.getServiceVersionHandler().getVersionsByServiceVersionType(ServiceVersionType.PROXY)
+                .map { it.name }
+    }
+
+}
