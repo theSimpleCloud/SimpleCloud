@@ -62,8 +62,7 @@ class ListCommand : ICommandHandler {
                     + groups.getRegisteredServiceCount() + " " + serviceName + darkChatColor + ")")
 
             groups.getAllServices().forEach {
-                val wrapperDesign = if (it.getWrapperName() != null) " " + darkChatColor  + "|&3 " + it.getWrapperName()
-                else ""
+                val wrapperDesign = if (it.getWrapperName() != null) " " + darkChatColor  + "|&3 " + it.getWrapperName() else ""
                 commandSender.sendMessage(darkChatColor + "- &b" + it.getName() + " " + darkChatColor + "(&f" + it.getOnlineCount()
                         + darkChatColor + "/&f"
                         + it.getMaxPlayers() + " " + darkChatColor + "|&3 " + it.getState() + wrapperDesign + darkChatColor + ")")
