@@ -20,24 +20,18 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.base.wrapper.process.serviceconfigurator
+package eu.thesimplecloud.api.service.version
 
 import eu.thesimplecloud.api.service.version.type.ServiceAPIType
-import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.configurators.DefaultBungeeConfigurator
-import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.configurators.DefaultServerConfigurator
-import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.configurators.DefaultVelocityConfigurator
 
-class ServiceConfiguratorManager {
-
-    private val configurationMap = mapOf(
-            ServiceAPIType.VELOCITY to DefaultVelocityConfigurator(),
-            ServiceAPIType.BUNGEECORD to DefaultBungeeConfigurator(),
-            ServiceAPIType.SPIGOT to DefaultServerConfigurator())
-
-    /**
-     * Returns the [IServiceConfigurator] found by the specified [ServiceAPIType]
-     */
-    fun getServiceConfigurator(serviceAPIType: ServiceAPIType): IServiceConfigurator? = configurationMap[serviceAPIType]
-
-
-}
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 14.06.2020
+ * Time: 10:57
+ * @author Frederick Baier
+ */
+data class ServiceVersion(
+        val name: String,
+        val serviceAPIType: ServiceAPIType,
+        val downloadURL: String
+)

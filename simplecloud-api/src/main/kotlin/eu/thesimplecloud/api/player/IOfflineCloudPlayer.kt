@@ -56,7 +56,7 @@ interface IOfflineCloudPlayer : Nameable, IPropertyMap {
     fun getLastPlayerConnection(): IPlayerConnection
 
     /**
-     * Returns whether this player is connected to the network..
+     * Returns whether this player is connected to the network.
      */
     @JsonIgnore
     fun isOnline(): Boolean = false

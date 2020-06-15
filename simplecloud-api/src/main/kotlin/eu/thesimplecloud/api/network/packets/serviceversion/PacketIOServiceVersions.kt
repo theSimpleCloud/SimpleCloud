@@ -20,24 +20,31 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.base.wrapper.process.serviceconfigurator
+package eu.thesimplecloud.api.network.packets.serviceversion
 
-import eu.thesimplecloud.api.service.version.type.ServiceAPIType
-import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.configurators.DefaultBungeeConfigurator
-import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.configurators.DefaultServerConfigurator
-import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.configurators.DefaultVelocityConfigurator
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.service.version.ServiceVersion
+import eu.thesimplecloud.api.service.version.ServiceVersionHandler
+import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
+import eu.thesimplecloud.clientserverapi.lib.packet.packettype.ObjectPacket
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
-class ServiceConfiguratorManager {
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 15.06.2020
+ * Time: 11:15
+ * @author Frederick Baier
+ */
+class PacketIOServiceVersions() : ObjectPacket<Array<ServiceVersion>>() {
 
-    private val configurationMap = mapOf(
-            ServiceAPIType.VELOCITY to DefaultVelocityConfigurator(),
-            ServiceAPIType.BUNGEECORD to DefaultBungeeConfigurator(),
-            ServiceAPIType.SPIGOT to DefaultServerConfigurator())
+    constructor(list: List<ServiceVersion>) : this() {
+        this.value = list.toTypedArray()
+    }
 
-    /**
-     * Returns the [IServiceConfigurator] found by the specified [ServiceAPIType]
-     */
-    fun getServiceConfigurator(serviceAPIType: ServiceAPIType): IServiceConfigurator? = configurationMap[serviceAPIType]
-
-
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
+        val value = this.value ?: return contentException("value")
+        val serviceVersionHandler = CloudAPI.instance.getServiceVersionHandler() as ServiceVersionHandler
+        serviceVersionHandler.versions = value.asList()
+        return unit()
+    }
 }

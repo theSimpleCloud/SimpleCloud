@@ -31,6 +31,7 @@ import eu.thesimplecloud.api.player.ICloudPlayerManager
 import eu.thesimplecloud.api.screen.ICommandExecutable
 import eu.thesimplecloud.api.screen.ICommandExecuteManager
 import eu.thesimplecloud.api.service.ICloudServiceManager
+import eu.thesimplecloud.api.service.version.IServiceVersionHandler
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroupManager
 import eu.thesimplecloud.api.sync.`object`.ISingleSynchronizedObjectManager
 import eu.thesimplecloud.api.sync.list.manager.ISynchronizedObjectListManager
@@ -107,6 +108,11 @@ interface ICloudAPI {
      * Returns the [ICacheListManager]
      */
     fun getCacheListManager(): ICacheListManager
+
+    /**
+     * Returns the [IServiceVersionHandler]
+     */
+    fun getServiceVersionHandler(): IServiceVersionHandler
 
     /**
      * Returns the name of this side

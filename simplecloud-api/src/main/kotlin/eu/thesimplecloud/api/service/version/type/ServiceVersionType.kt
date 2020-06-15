@@ -20,24 +20,24 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.base.wrapper.process.serviceconfigurator
+package eu.thesimplecloud.api.service.version.type
 
-import eu.thesimplecloud.api.service.version.type.ServiceAPIType
-import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.configurators.DefaultBungeeConfigurator
-import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.configurators.DefaultServerConfigurator
-import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.configurators.DefaultVelocityConfigurator
-
-class ServiceConfiguratorManager {
-
-    private val configurationMap = mapOf(
-            ServiceAPIType.VELOCITY to DefaultVelocityConfigurator(),
-            ServiceAPIType.BUNGEECORD to DefaultBungeeConfigurator(),
-            ServiceAPIType.SPIGOT to DefaultServerConfigurator())
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 15.06.2020
+ * Time: 11:27
+ * @author Frederick Baier
+ */
+enum class ServiceVersionType {
 
     /**
-     * Returns the [IServiceConfigurator] found by the specified [ServiceAPIType]
+     * Minecraft proxy like bungeecord, waterfall, waterdog
      */
-    fun getServiceConfigurator(serviceAPIType: ServiceAPIType): IServiceConfigurator? = configurationMap[serviceAPIType]
+    PROXY,
 
+    /**
+     * Minecraft server like spigot, paper, nukkit
+     */
+    SERVER
 
 }

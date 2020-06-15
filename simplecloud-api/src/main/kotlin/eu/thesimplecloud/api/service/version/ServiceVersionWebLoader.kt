@@ -20,24 +20,26 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.base.wrapper.process.serviceconfigurator
+package eu.thesimplecloud.api.service.version
 
-import eu.thesimplecloud.api.service.version.type.ServiceAPIType
-import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.configurators.DefaultBungeeConfigurator
-import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.configurators.DefaultServerConfigurator
-import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.configurators.DefaultVelocityConfigurator
+import eu.thesimplecloud.api.utils.WebContentLoader
+import eu.thesimplecloud.jsonlib.JsonLib
 
-class ServiceConfiguratorManager {
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 14.06.2020
+ * Time: 19:07
+ * @author Frederick Baier
+ */
+object ServiceVersionWebLoader {
 
-    private val configurationMap = mapOf(
-            ServiceAPIType.VELOCITY to DefaultVelocityConfigurator(),
-            ServiceAPIType.BUNGEECORD to DefaultBungeeConfigurator(),
-            ServiceAPIType.SPIGOT to DefaultServerConfigurator())
-
-    /**
-     * Returns the [IServiceConfigurator] found by the specified [ServiceAPIType]
-     */
-    fun getServiceConfigurator(serviceAPIType: ServiceAPIType): IServiceConfigurator? = configurationMap[serviceAPIType]
-
+    fun loadFromWeb(): List<ServiceVersion> {
+        val contentString = WebContentLoader().loadContent("https://thesimplecloud.eu/download/versions.json")
+        return if (contentString == null) {
+            emptyList()
+        } else {
+            JsonLib.fromJsonString(contentString).getObject(Array<ServiceVersion>::class.java).toList()
+        }
+    }
 
 }

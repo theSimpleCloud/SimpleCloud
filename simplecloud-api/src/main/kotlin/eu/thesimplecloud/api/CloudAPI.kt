@@ -51,7 +51,6 @@ abstract class CloudAPI : ICloudAPI {
     override fun getMessageChannelManager(): IMessageChannelManager = this.messageChannelManager
 
     override fun getCacheListManager(): ICacheListManager = this.cacheListManager
-
     companion object {
         @JvmStatic
         lateinit var instance: ICloudAPI

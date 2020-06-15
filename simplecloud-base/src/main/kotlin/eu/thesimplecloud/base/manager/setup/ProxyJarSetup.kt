@@ -22,9 +22,9 @@
 
 package eu.thesimplecloud.base.manager.setup
 
-import eu.thesimplecloud.api.service.ServiceVersion
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.service.version.type.ServiceVersionType
 import eu.thesimplecloud.api.utils.Downloader
-import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
 import eu.thesimplecloud.launcher.extension.sendMessage
@@ -35,13 +35,13 @@ class ProxyJarSetup(private val proxyFile: File) : ISetup {
 
     @SetupQuestion(0, "manager.setup.proxy-jar.question", "Which proxy version do you want to use? (Bungeecord, Waterfall, Travertine, Hexacord, Velocity)")
     fun setup(answer: String): Boolean {
-        val serviceVersion = JsonLib.fromObject(answer.toUpperCase()).getObjectOrNull(ServiceVersion::class.java)
-        if (serviceVersion == null) {
+        val serviceVersion = CloudAPI.instance.getServiceVersionHandler().getVersionsByPrefix(answer).firstOrNull()
+        if (serviceVersion == null || serviceVersion.serviceAPIType.serviceVersionType != ServiceVersionType.PROXY) {
             Launcher.instance.consoleSender.sendMessage("manager.setup.proxy-jar.version-invalid", "The specified version is invalid.")
             return false
         }
         Launcher.instance.consoleSender.sendMessage("manager.setup.proxy-jar.downloading", "Downloading proxy...")
-        Downloader().userAgentDownload(serviceVersion.downloadLink, proxyFile)
+        Downloader().userAgentDownload(serviceVersion.downloadURL, proxyFile)
         return true
     }
 

@@ -20,24 +20,32 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.base.wrapper.process.serviceconfigurator
+package eu.thesimplecloud.api.service.version.type
 
-import eu.thesimplecloud.api.service.version.type.ServiceAPIType
-import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.configurators.DefaultBungeeConfigurator
-import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.configurators.DefaultServerConfigurator
-import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.configurators.DefaultVelocityConfigurator
-
-class ServiceConfiguratorManager {
-
-    private val configurationMap = mapOf(
-            ServiceAPIType.VELOCITY to DefaultVelocityConfigurator(),
-            ServiceAPIType.BUNGEECORD to DefaultBungeeConfigurator(),
-            ServiceAPIType.SPIGOT to DefaultServerConfigurator())
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 14.06.2020
+ * Time: 10:58
+ * @author Frederick Baier
+ */
+enum class ServiceAPIType(
+        val minecraftEdition: MinecraftEdition,
+        val serviceVersionType: ServiceVersionType
+) {
 
     /**
-     * Returns the [IServiceConfigurator] found by the specified [ServiceAPIType]
+     * Represents a jar with the spigot api
      */
-    fun getServiceConfigurator(serviceAPIType: ServiceAPIType): IServiceConfigurator? = configurationMap[serviceAPIType]
+    SPIGOT(MinecraftEdition.JAVA, ServiceVersionType.SERVER),
 
+    /**
+     * Represents a jar with the bungeecord api
+     */
+    BUNGEECORD(MinecraftEdition.JAVA, ServiceVersionType.PROXY),
+
+    /**
+     * Represents a jar with the velocity api
+     */
+    VELOCITY(MinecraftEdition.JAVA, ServiceVersionType.PROXY);
 
 }
