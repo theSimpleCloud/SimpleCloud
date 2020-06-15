@@ -42,7 +42,8 @@ class ListCommand : ICommandHandler {
 
         CloudAPI.instance.getWrapperManager().getAllCachedObjects().forEach {
             val connectedMessage = if (it.isAuthenticated()) "&aConnected" else "§cNot Connected"
-            commandSender.sendMessage("&8>> &3" + it.getName() + " &8(&f" + it.getUsedMemory() + "&8/&f" + it.getMaxMemory()+ "MB&8 | " + connectedMessage + "&8)")
+            commandSender.sendMessage("&8>> &3" + it.getName() + " &8(&f" + it.getUsedMemory() + "&8/&f"
+                    + it.getMaxMemory()+ "MB&8 | " + connectedMessage + "&8)")
         }
 
         commandSender.sendMessage(" ")
@@ -52,11 +53,13 @@ class ListCommand : ICommandHandler {
         cloudServiceGroups.filter { it.getAllServices().isNotEmpty() }.forEach { groups ->
             val serviceName = if (groups.getRegisteredServiceCount() == 1) "Service" else "Services"
 
-            commandSender.sendMessage("&8>> &7" + groups.getName() + " &8(&f" + groups.getMaxMemory() + "MB &8/&f " + groups.getRegisteredServiceCount() + " " + serviceName + "&8)")
+            commandSender.sendMessage("&8>> &7" + groups.getName() + " &8(&f" + groups.getMaxMemory() + "MB &8/&f "
+                    + groups.getRegisteredServiceCount() + " " + serviceName + "&8)")
 
             groups.getAllServices().forEach {
-                val wrapperDesign = if (it.getWrapperName() != null) " &8|&3 " + it.getWrapperName() else ""
-                commandSender.sendMessage(" &8- &b" + it.getName() + " &8(&f" + it.getOnlineCount() + "&8/&f" + it.getMaxPlayers() + " &8|&3 " + it.getState() + wrapperDesign + "&8)")
+                val wrapperDesign = if (it.getWrapperName() != null) " &8|§3 " + it.getWrapperName() else ""
+                commandSender.sendMessage("&8- &b" + it.getName() + " &8(&f" + it.getOnlineCount() + "&8/&f"
+                        + it.getMaxPlayers() + " &8|&3 " + it.getState() + wrapperDesign + "&8)")
             }
 
             commandSender.sendMessage(" ")

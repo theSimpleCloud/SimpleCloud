@@ -39,7 +39,7 @@ class ApplicationStarter {
         moduleHandler.setCreateModuleClassLoader { urls, name -> ApplicationClassLoader(urls, Launcher.instance.currentClassLoader, name, moduleHandler) }
         val moduleFileName = applicationType.name.toLowerCase() + ".json"
         //Launcher.instance.consoleManager.stopThread()
-        Launcher.instance.consoleManager.applicationName = applicationType.getApplicationName()
+        //Launcher.instance.consoleManager.applicationName = applicationType.getApplicationName()
         //Launcher.instance.consoleManager.startThread()
         val file = File(DirectoryPaths.paths.storagePath + "base.jar")
         if (!Launcher.instance.launcherStartArguments.disableAutoUpdater || !file.exists()) {
