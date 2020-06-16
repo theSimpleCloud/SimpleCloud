@@ -35,7 +35,7 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
  */
 class PacketIOSaveOfflinePlayer() : ObjectPacket<OfflineCloudPlayer>() {
 
-    constructor(offlinePlayer: OfflineCloudPlayer) {
+    constructor(offlinePlayer: OfflineCloudPlayer) : this() {
         this.value = offlinePlayer
     }
 
