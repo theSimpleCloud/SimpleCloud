@@ -23,6 +23,7 @@
 package eu.thesimplecloud.base.manager.player
 
 import com.mongodb.client.model.Filters
+import com.mongodb.client.model.Indexes
 import eu.thesimplecloud.api.player.IOfflineCloudPlayer
 import eu.thesimplecloud.api.player.OfflineCloudPlayer
 import eu.thesimplecloud.api.player.connection.DefaultPlayerAddress
@@ -35,7 +36,6 @@ import eu.thesimplecloud.jsonlib.JsonLib
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.litote.kmongo.createIndex
 import org.litote.kmongo.findOne
 import org.litote.kmongo.getCollection
 import java.util.*
@@ -49,7 +49,8 @@ class OfflineCloudPlayerHandler(mongoConnectionInformation: MongoConnectionInfor
     init {
         //make a first request (the first request will take a very long time when using embed mongodb. Following requests will be way faster)
         GlobalScope.launch {
-            loadCollection.createIndex("{ name: \"text\" }")
+            loadCollection.createIndex(Indexes.text("name"))
+            loadCollection.createIndex(Indexes.text("uniqueId"))
 
             //dummy request
             val playerUniqueId = UUID.randomUUID()
