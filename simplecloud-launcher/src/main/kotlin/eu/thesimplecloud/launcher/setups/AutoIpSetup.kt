@@ -36,7 +36,7 @@ class AutoIpSetup : ISetup {
 
     @SetupQuestion(0,
             "manager.setup.auto-ip.question",
-            "Do you want to automatically set up your ip via \"ipify.org\"",
+            "Do you want to automatically set up your ip via \"ipify.org\" (This does not work on your local machine)",
             BooleanSetupAnswerProvider::class)
     fun setup(boolean: Boolean): Boolean {
         if (!boolean) {
