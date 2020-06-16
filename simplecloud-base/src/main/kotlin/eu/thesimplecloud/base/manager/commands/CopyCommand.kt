@@ -41,7 +41,7 @@ import eu.thesimplecloud.launcher.extension.sendMessage
 @Command("copy", CommandType.CONSOLE_AND_INGAME, "cloud.command.copy")
 class CopyCommand : ICommandHandler {
 
-    @CommandSubPath("<service> <path>", "Copies the specified directory to the template folder.")
+    @CommandSubPath("<service> <path>", "Copies the specified directory to the template folder")
     fun handle(
             commandSender: ICommandSender,
             @CommandArgument("service", ServiceCommandSuggestionProvider::class) service: ICloudService,
