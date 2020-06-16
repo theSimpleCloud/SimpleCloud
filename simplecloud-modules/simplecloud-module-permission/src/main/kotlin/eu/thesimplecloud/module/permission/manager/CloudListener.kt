@@ -36,7 +36,7 @@ class CloudListener : IListener {
             cloudPlayer.setProperty(PermissionPlayer.PROPERTY_NAME, PermissionPlayer(cloudPlayer.getName(), cloudPlayer.getUniqueId()))
         }
 
-        val permissionPlayer = cloudPlayer.getProperty<PermissionPlayer>(PermissionPlayer.PROPERTY_NAME)!!.getValue(this::class.java.classLoader)
+        val permissionPlayer = cloudPlayer.getProperty<PermissionPlayer>(PermissionPlayer.PROPERTY_NAME)!!.getValue()
 
         val expiredPermissions = permissionPlayer.getPermissions().filter { it.isExpired() }
         expiredPermissions.forEach { permissionPlayer.removePermission(it.permissionString) }

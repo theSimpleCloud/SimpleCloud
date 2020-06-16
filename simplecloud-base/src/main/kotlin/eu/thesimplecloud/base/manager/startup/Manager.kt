@@ -25,6 +25,7 @@ package eu.thesimplecloud.base.manager.startup
 import com.mongodb.MongoClient
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
+import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.api.screen.ICommandExecutable
 import eu.thesimplecloud.base.MongoController
 import eu.thesimplecloud.base.core.jvm.JvmArgumentsConfig
@@ -111,6 +112,7 @@ class Manager : ICloudApplication {
         this.appClassLoader.moduleHandler = this.cloudModuleHandler
 
         this.cloudModuleHandler.setCreateModuleClassLoader { urls, name -> ModuleClassLoader(urls, this.appClassLoader, name, this.cloudModuleHandler) }
+        Property.propertyClassFindFunction = { this.cloudModuleHandler.findModuleOrSystemClass(it) }
         this.ingameCommandUpdater = IngameCommandUpdater()
         if (!MongoConfigLoader().doesConfigFileExist()) {
             Launcher.instance.setupManager.queueSetup(MongoDBConnectionSetup())

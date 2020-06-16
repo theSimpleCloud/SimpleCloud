@@ -32,7 +32,7 @@ class PermissionCheckListener : IListener {
     @CloudEventHandler
     fun on (event: CloudPlayerPermissionCheckEvent) {
         val cloudPlayer = event.cloudPlayer
-        val permissionPlayer = cloudPlayer.getProperty<PermissionPlayer>(PermissionPlayer.PROPERTY_NAME)!!.getValue(this::class.java.classLoader)
+        val permissionPlayer = cloudPlayer.getProperty<PermissionPlayer>(PermissionPlayer.PROPERTY_NAME)!!.getValue()
         event.setHasPermission(permissionPlayer.hasPermission(event.permission))
     }
 

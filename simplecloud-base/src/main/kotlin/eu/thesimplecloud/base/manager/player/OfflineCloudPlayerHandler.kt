@@ -77,6 +77,8 @@ class OfflineCloudPlayerHandler(mongoConnectionInformation: MongoConnectionInfor
 
     @Synchronized
     override fun saveCloudPlayer(offlineCloudPlayer: OfflineCloudPlayer) {
+        //load all properties so that the values are all set
+        offlineCloudPlayer.getProperties().forEach { it.value.getValue() }
         if (offlineCloudPlayer::class.java != OfflineCloudPlayer::class.java) throw IllegalStateException("Cannot save player of type " + offlineCloudPlayer::class.java.simpleName)
         if (getOfflinePlayer(offlineCloudPlayer.getUniqueId()) != null) {
             this.saveCollection.replaceOne(Filters.eq("uniqueId", offlineCloudPlayer.getUniqueId()), offlineCloudPlayer)
@@ -105,14 +107,7 @@ class OfflineCloudPlayerHandler(mongoConnectionInformation: MongoConnectionInfor
     }
 
     private fun findClass(className: String): Class<*> {
-        val clazz = kotlin.runCatching {
-            Manager.instance.cloudModuleHandler.findModuleClass(className)
-        }.getOrNull()
-        if (clazz != null) return clazz
-
-        val classLoader = Manager.instance.appClassLoader
-        return Class.forName(className, true, classLoader)
-
+        return Manager.instance.cloudModuleHandler.findModuleOrSystemClass(className)
     }
 
 
