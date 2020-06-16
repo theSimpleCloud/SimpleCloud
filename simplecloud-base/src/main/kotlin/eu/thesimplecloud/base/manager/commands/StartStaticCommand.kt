@@ -37,7 +37,7 @@ import eu.thesimplecloud.launcher.extension.sendMessage
 @Command("startStatic", CommandType.CONSOLE_AND_INGAME, "cloud.command.startstatic")
 class StartStaticCommand : ICommandHandler {
 
-    @CommandSubPath("<service>")
+    @CommandSubPath("<service>", "Starts a static service")
     fun handleStartStatic(commandSender: ICommandSender, @CommandArgument("service", ServiceGroupCommandSuggestionProvider::class) serviceName: String) {
         val runningService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(serviceName)
         if (runningService != null) {
