@@ -62,7 +62,7 @@ class EditCommand : ICommandHandler {
         }
     }
 
-    @CommandSubPath("group <name> <parameter> <value>", "Edits a service group.")
+    @CommandSubPath("group <name> <parameter> <value>", "Edits a service group")
     fun editGroup(commandSender: ICommandSender, @CommandArgument("name", ServiceGroupCommandSuggestionProvider::class) name: String, @CommandArgument("parameter", EditGroupParameterCommandSuggestionProvider::class) parameter: String, @CommandArgument("value") value: String) {
         val fields = getFieldsOfGroup(name) ?: return
         val serviceGroup = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(name)!!
@@ -113,7 +113,7 @@ class EditCommand : ICommandHandler {
         }
     }
 
-    @CommandSubPath("wrapper <name> <parameter> <value>", "Edits a wrapper.")
+    @CommandSubPath("wrapper <name> <parameter> <value>", "Edits a wrapper")
     fun editWrapper(commandSender: ICommandSender, @CommandArgument("name", WrapperCommandSuggestionProvider::class) wrapper: IWrapperInfo, @CommandArgument("parameter", EditWrapperParameterCommandSuggestionProvider::class) parameter: String, @CommandArgument("value") value: String) {
         val fields = getFieldsOfWrapper(wrapper) ?: return
         val lowerCaseFieldNames = fields.map { it.name.toLowerCase() }

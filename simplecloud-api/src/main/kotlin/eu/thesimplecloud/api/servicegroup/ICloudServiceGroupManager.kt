@@ -25,9 +25,9 @@ package eu.thesimplecloud.api.servicegroup
 import eu.thesimplecloud.api.cachelist.ICacheList
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceType
-import eu.thesimplecloud.api.service.ServiceVersion
 import eu.thesimplecloud.api.service.startconfiguration.IServiceStartConfiguration
 import eu.thesimplecloud.api.service.startconfiguration.ServiceStartConfiguration
+import eu.thesimplecloud.api.service.version.ServiceVersion
 import eu.thesimplecloud.api.servicegroup.grouptype.ICloudLobbyGroup
 import eu.thesimplecloud.api.servicegroup.grouptype.ICloudProxyGroup
 import eu.thesimplecloud.api.servicegroup.grouptype.ICloudServerGroup

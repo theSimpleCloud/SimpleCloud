@@ -27,6 +27,7 @@ import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupCancelled
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
+import eu.thesimplecloud.launcher.setups.provider.ApplicationTypeSetupAnswerProvider
 import eu.thesimplecloud.launcher.startup.Launcher
 import kotlin.concurrent.thread
 
@@ -35,7 +36,7 @@ class StartSetup : ISetup {
     private var cloudApplicationType: CloudApplicationType? = null
 
 
-    @SetupQuestion(0, "launcher.setup.start.question", "Do you want do start the Manager or the Wrapper?")
+    @SetupQuestion(0, "launcher.setup.start.question", "Do you want do start the Manager or the Wrapper?", ApplicationTypeSetupAnswerProvider::class)
     fun setup(cloudApplicationType: CloudApplicationType) {
         this.cloudApplicationType = cloudApplicationType
     }

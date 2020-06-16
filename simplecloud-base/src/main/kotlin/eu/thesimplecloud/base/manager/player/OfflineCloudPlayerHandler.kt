@@ -23,6 +23,7 @@
 package eu.thesimplecloud.base.manager.player
 
 import com.mongodb.client.model.Filters
+import com.mongodb.client.model.Indexes
 import eu.thesimplecloud.api.player.IOfflineCloudPlayer
 import eu.thesimplecloud.api.player.OfflineCloudPlayer
 import eu.thesimplecloud.api.player.connection.DefaultPlayerAddress
@@ -35,7 +36,6 @@ import eu.thesimplecloud.jsonlib.JsonLib
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.litote.kmongo.createIndex
 import org.litote.kmongo.findOne
 import org.litote.kmongo.getCollection
 import java.util.*
@@ -49,7 +49,8 @@ class OfflineCloudPlayerHandler(mongoConnectionInformation: MongoConnectionInfor
     init {
         //make a first request (the first request will take a very long time when using embed mongodb. Following requests will be way faster)
         GlobalScope.launch {
-            loadCollection.createIndex("{ name: \"text\" }")
+            loadCollection.createIndex(Indexes.text("name"))
+            //loadCollection.createIndex(Indexes.text("uniqueId"))
 
             //dummy request
             val playerUniqueId = UUID.randomUUID()
@@ -77,6 +78,8 @@ class OfflineCloudPlayerHandler(mongoConnectionInformation: MongoConnectionInfor
 
     @Synchronized
     override fun saveCloudPlayer(offlineCloudPlayer: OfflineCloudPlayer) {
+        //load all properties so that the values are all set
+        offlineCloudPlayer.getProperties().forEach { it.value.getValue() }
         if (offlineCloudPlayer::class.java != OfflineCloudPlayer::class.java) throw IllegalStateException("Cannot save player of type " + offlineCloudPlayer::class.java.simpleName)
         if (getOfflinePlayer(offlineCloudPlayer.getUniqueId()) != null) {
             this.saveCollection.replaceOne(Filters.eq("uniqueId", offlineCloudPlayer.getUniqueId()), offlineCloudPlayer)
@@ -105,14 +108,7 @@ class OfflineCloudPlayerHandler(mongoConnectionInformation: MongoConnectionInfor
     }
 
     private fun findClass(className: String): Class<*> {
-        val clazz = kotlin.runCatching {
-            Manager.instance.cloudModuleHandler.findModuleClass(className)
-        }.getOrNull()
-        if (clazz != null) return clazz
-
-        val classLoader = Manager.instance.appClassLoader
-        return Class.forName(className, true, classLoader)
-
+        return Manager.instance.cloudModuleHandler.findModuleOrSystemClass(className)
     }
 
 

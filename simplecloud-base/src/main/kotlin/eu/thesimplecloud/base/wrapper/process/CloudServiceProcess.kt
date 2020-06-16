@@ -68,9 +68,10 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
 
         TemplateCopier().copyTemplate(cloudService, cloudService.getTemplate())
 
-        val serviceConfigurator = Wrapper.instance.serviceConfigurationManager.getServiceConfigurator(cloudService.getServiceVersion().serviceVersionType)
+        val serviceConfigurator = Wrapper.instance.serviceConfigurationManager
+                .getServiceConfigurator(cloudService.getServiceVersion().serviceAPIType)
         serviceConfigurator
-                ?: throw IllegalStateException("No ServiceConfiguration found by version type: ${cloudService.getServiceVersion().serviceVersionType}")
+                ?: throw IllegalStateException("No ServiceConfiguration found by api type: ${cloudService.getServiceVersion().serviceAPIType}")
 
         serviceConfigurator.configureService(cloudService, this.serviceTmpDir)
         val jarFile = Wrapper.instance.serviceVersionLoader.loadVersionFile(cloudService.getServiceVersion())

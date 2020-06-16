@@ -249,4 +249,9 @@ interface ICloudPlayerManager : ICacheList<ICloudPlayer> {
      */
     fun getNetworkOnlinePlayerCount(): ICommunicationPromise<Int> = CloudAPI.instance.executeOnManager { CloudAPI.instance.getCloudPlayerManager().getAllCachedObjects().size }
 
+    /**
+     * Saves the specified [offlinePlayer] to the database.
+     * @return a promise that completes when the player was saved.
+     */
+    fun savePlayerToDatabase(offlinePlayer: IOfflineCloudPlayer): ICommunicationPromise<Unit>
 }

@@ -20,21 +20,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.launcher.console.setup.provider
-
-import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.command.ICommandSender
+package eu.thesimplecloud.api.service.version.type
 
 /**
  * Created by IntelliJ IDEA.
- * User: Philipp.Eistrach
- * Date: 14.04.2020
- * Time: 18:39
+ * Date: 15.06.2020
+ * Time: 11:27
+ * @author Frederick Baier
  */
-class WrapperSetupSuggestionProvider: ISetupSuggestionProvider {
+enum class MinecraftEdition {
 
-    override fun getSuggestions(sender: ICommandSender, userInput: String): List<String> {
-        return CloudAPI.instance.getWrapperManager().getAllCachedObjects().map { it.getName() }
-    }
+    JAVA, PE
 
 }

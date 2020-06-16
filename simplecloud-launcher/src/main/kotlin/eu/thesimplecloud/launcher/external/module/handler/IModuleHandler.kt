@@ -91,6 +91,12 @@ interface IModuleHandler {
     fun findModuleClass(name: String): Class<*>
 
     /**
+     * Searches for the give class in modules and in the system.
+     */
+    @Throws(ClassNotFoundException::class)
+    fun findModuleOrSystemClass(name: String): Class<*>
+
+    /**
      * Sets the function to create module class loaders.
      */
     fun setCreateModuleClassLoader(function: (Array<URL>, String) -> URLClassLoader)

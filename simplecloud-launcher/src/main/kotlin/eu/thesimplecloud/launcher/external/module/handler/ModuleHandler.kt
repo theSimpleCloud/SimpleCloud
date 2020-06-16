@@ -331,4 +331,14 @@ open class ModuleHandler(
         return mapNotNull.firstOrNull() ?: throw ClassNotFoundException(name)
     }
 
+    override fun findModuleOrSystemClass(name: String): Class<*> {
+        val clazz = kotlin.runCatching {
+            this.findModuleClass(name)
+        }.getOrNull()
+        if (clazz != null) return clazz
+
+        val classLoader = Launcher.instance.currentClassLoader
+        return Class.forName(name, true, classLoader)
+    }
+
 }

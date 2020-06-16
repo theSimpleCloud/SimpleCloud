@@ -41,15 +41,10 @@ class Property<T : Any>(
     @JsonIgnore
     private val valueAsString: String = JsonLib.fromObject(value).getAsJsonString()
 
-    @JsonIgnore
     @Synchronized
-    override fun getValue(callerClassLoader: ClassLoader): T {
+    override fun getValue(): T {
         if (savedValue == null) {
-            val clazz = Class.forName(
-                    className,
-                    true,
-                    callerClassLoader
-            ) as Class<T>
+            val clazz = propertyClassFindFunction(className) as Class<T>
             savedValue = JsonLib.fromJsonString(valueAsString).getObject(clazz)
         }
         return savedValue!!
@@ -58,6 +53,13 @@ class Property<T : Any>(
     @JsonIgnore
     fun resetValue() {
         this.savedValue = null
+    }
+
+    companion object {
+        @Volatile
+        var propertyClassFindFunction: (String) -> Class<*> = {
+            Class.forName(it, true, Property::class.java.classLoader)
+        }
     }
 
 }

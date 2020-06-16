@@ -24,6 +24,7 @@ package eu.thesimplecloud.base.manager.network.packets
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.client.NetworkComponentType
+import eu.thesimplecloud.api.network.packets.serviceversion.PacketIOServiceVersions
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
@@ -50,6 +51,8 @@ class PacketInCloudClientLogin() : JsonPacket() {
                 val cloudService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(name)
                         ?: return failure(NoSuchElementException("Service not found"))
                 connection.setClientValue(cloudService)
+                connection.sendUnitQuery(PacketIOServiceVersions(CloudAPI.instance.getServiceVersionHandler().getAllVersions()))
+                        .awaitCoroutine()
                 cloudService.setAuthenticated(true)
                 CloudAPI.instance.getCloudServiceManager().update(cloudService)
                 CloudAPI.instance.getCloudServiceManager().sendUpdateToConnection(cloudService, connection).awaitCoroutine()

@@ -20,21 +20,15 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.launcher.console.setup.provider
-
-import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.command.ICommandSender
+package eu.thesimplecloud.api.utils
 
 /**
  * Created by IntelliJ IDEA.
- * User: Philipp.Eistrach
- * Date: 14.04.2020
- * Time: 18:39
+ * Date: 15.06.2020
+ * Time: 21:03
+ * @author Frederick Baier
  */
-class TemplateSetupSuggestionProvider: ISetupSuggestionProvider {
 
-    override fun getSuggestions(sender: ICommandSender, userInput: String): List<String> {
-        return CloudAPI.instance.getTemplateManager().getAllCachedObjects().map { it.getName() }
-    }
-
+fun Iterable<String>.containsIgnoreCase(element: String): Boolean {
+    return this.any { it.equals(element, true) }
 }

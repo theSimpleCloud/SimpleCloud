@@ -20,29 +20,26 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.base.manager.setup
+package eu.thesimplecloud.api.service.version
 
-import eu.thesimplecloud.api.service.ServiceVersion
-import eu.thesimplecloud.api.utils.Downloader
+import eu.thesimplecloud.api.utils.WebContentLoader
 import eu.thesimplecloud.jsonlib.JsonLib
-import eu.thesimplecloud.launcher.console.setup.ISetup
-import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
-import eu.thesimplecloud.launcher.extension.sendMessage
-import eu.thesimplecloud.launcher.startup.Launcher
-import java.io.File
 
-class ProxyJarSetup(private val proxyFile: File) : ISetup {
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 14.06.2020
+ * Time: 19:07
+ * @author Frederick Baier
+ */
+object ServiceVersionWebLoader {
 
-    @SetupQuestion(0, "manager.setup.proxy-jar.question", "Which proxy version do you want to use? (Bungeecord, Waterfall, Travertine, Hexacord, Velocity)")
-    fun setup(answer: String): Boolean {
-        val serviceVersion = JsonLib.fromObject(answer.toUpperCase()).getObjectOrNull(ServiceVersion::class.java)
-        if (serviceVersion == null) {
-            Launcher.instance.consoleSender.sendMessage("manager.setup.proxy-jar.version-invalid", "The specified version is invalid.")
-            return false
+    fun loadFromWeb(): List<ServiceVersion> {
+        val contentString = WebContentLoader().loadContent("https://thesimplecloud.eu/download/versions.json")
+        return if (contentString == null) {
+            emptyList()
+        } else {
+            JsonLib.fromJsonString(contentString).getObject(Array<ServiceVersion>::class.java).toList()
         }
-        Launcher.instance.consoleSender.sendMessage("manager.setup.proxy-jar.downloading", "Downloading proxy...")
-        Downloader().userAgentDownload(serviceVersion.downloadLink, proxyFile)
-        return true
     }
 
 }

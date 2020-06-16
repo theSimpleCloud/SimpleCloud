@@ -22,8 +22,8 @@
 
 package eu.thesimplecloud.launcher.console.setup.annotations
 
-import eu.thesimplecloud.launcher.console.setup.provider.EmptySetupSuggestionProvider
-import eu.thesimplecloud.launcher.console.setup.provider.ISetupSuggestionProvider
+import eu.thesimplecloud.launcher.console.setup.provider.EmptySetupAnswerProvider
+import eu.thesimplecloud.launcher.console.setup.provider.ISetupAnswerProvider
 import kotlin.reflect.KClass
 
 @Target(AnnotationTarget.FUNCTION)
@@ -32,5 +32,5 @@ annotation class SetupQuestion(
         val number: Int,
         val property: String,
         val question: String,
-        val suggestionProvider: KClass<out ISetupSuggestionProvider> = EmptySetupSuggestionProvider::class
+        val answerProvider: KClass<out ISetupAnswerProvider> = EmptySetupAnswerProvider::class
 )

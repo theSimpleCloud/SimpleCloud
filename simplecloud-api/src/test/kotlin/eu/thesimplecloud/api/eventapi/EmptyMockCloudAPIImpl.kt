@@ -28,6 +28,7 @@ import eu.thesimplecloud.api.message.IMessageChannelManager
 import eu.thesimplecloud.api.player.ICloudPlayerManager
 import eu.thesimplecloud.api.screen.ICommandExecuteManager
 import eu.thesimplecloud.api.service.ICloudServiceManager
+import eu.thesimplecloud.api.service.version.IServiceVersionHandler
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroupManager
 import eu.thesimplecloud.api.sync.`object`.ISingleSynchronizedObjectManager
 import eu.thesimplecloud.api.sync.list.manager.ISynchronizedObjectListManager
@@ -66,6 +67,10 @@ open class EmptyMockCloudAPIImpl : CloudAPI() {
 
     override fun getSynchronizedObjectListManager(): ISynchronizedObjectListManager {
         throw UnsupportedOperationException()
+    }
+
+    override fun getServiceVersionHandler(): IServiceVersionHandler {
+        return mock(IServiceVersionHandler::class.java)
     }
 
     override fun getMessageChannelManager(): IMessageChannelManager {

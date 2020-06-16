@@ -58,7 +58,6 @@ class ConsoleCompleter(private val consoleManager: ConsoleManager) : Completer {
         if (!Launcher.instance.setupManager.hasActiveSetup()) {
             return consoleManager.commandManager.getAvailableTabCompleteArgs("cloud $commandString", consoleManager.consoleSender)
         }
-
         return Launcher.instance.setupManager.getSetupSuggestions(commandString, consoleManager.consoleSender)
     }
 
