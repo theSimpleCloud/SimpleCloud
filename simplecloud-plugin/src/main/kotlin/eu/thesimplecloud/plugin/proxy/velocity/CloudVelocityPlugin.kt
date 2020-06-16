@@ -125,8 +125,10 @@ class CloudVelocityPlugin @Inject constructor(val proxyServer: ProxyServer) : IC
     private fun synchronizeOnlineCountTask() {
         proxyServer.scheduler.buildTask(this) {
             val service = CloudPlugin.instance.thisService()
-            service.setOnlineCount(proxyServer.playerCount)
-            service.update()
+            if (service.getOnlineCount() != proxyServer.playerCount) {
+                service.setOnlineCount(proxyServer.playerCount)
+                service.update()
+            }
         }.repeat(30L, TimeUnit.SECONDS).schedule()
     }
 

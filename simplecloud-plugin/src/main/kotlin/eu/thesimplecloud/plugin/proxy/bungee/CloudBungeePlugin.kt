@@ -127,8 +127,10 @@ class CloudBungeePlugin : Plugin(), ICloudProxyPlugin {
     private fun synchronizeOnlineCountTask() {
         proxy.scheduler.schedule(this, {
             val service = CloudPlugin.instance.thisService()
-            service.setOnlineCount(proxy.onlineCount)
-            service.update()
+            if (service.getOnlineCount() != proxy.onlineCount) {
+                service.setOnlineCount(proxy.onlineCount)
+                service.update()
+            }
         }, 30, 30, TimeUnit.SECONDS)
     }
 
