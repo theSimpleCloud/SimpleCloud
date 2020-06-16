@@ -76,9 +76,11 @@ class ListCommand : ICommandHandler {
         val maxMemory = CloudAPI.instance.getWrapperManager().getAllCachedObjects().sumBy { it.getMaxMemory() }
         val usedMemory = CloudAPI.instance.getWrapperManager().getAllCachedObjects().sumBy { it.getUsedMemory() }
 
-        if (unusedGroups.isNotEmpty()) commandSender.sendMessage(darkChatColor + ">>&7 Unused Groups" + darkChatColor + ":&f " + unusedGroups)
+        if (unusedGroups.isNotEmpty()) commandSender.sendMessage(darkChatColor + ">>&7 Unused Groups"
+                + darkChatColor + ":&f " + unusedGroups)
         commandSender.sendMessage(darkChatColor + ">>&7 Online Services" + darkChatColor + ":&f " + cloudServices.size)
-        commandSender.sendMessage(darkChatColor + ">>&7 Memory" + darkChatColor + ":&f " + usedMemory + darkChatColor + "/&f" + maxMemory + "MB")
+        commandSender.sendMessage(darkChatColor + ">>&7 Memory" + darkChatColor + ":&f " + usedMemory
+                + darkChatColor + "/&f" + maxMemory + "MB")
 
     }
 
