@@ -12,7 +12,7 @@ interface ISetupAnswerProvider {
 
     /**
      * Returns the suggestions for an argument
-     * @param sender the sender og the tab request
+     * @param sender the sender of the tab request
      * @return a list with arguments to suggest
      */
     fun getSuggestions(sender: ICommandSender): Collection<String>
