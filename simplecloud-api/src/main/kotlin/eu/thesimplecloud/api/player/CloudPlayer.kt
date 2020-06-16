@@ -89,8 +89,6 @@ class CloudPlayer(
 
     override fun getConnectedServerName(): String? = this.connectedServerName
 
-    override fun toOfflinePlayer(): IOfflineCloudPlayer = OfflineCloudPlayer(getName(), getUniqueId(), getFirstLogin(), getLastLogin(), getOnlineTime(), this.playerConnection, this.propertyMap)
-
     override fun isOnline(): Boolean = this.online
 
     override fun clone(): ICloudPlayer = CloudPlayer(getName(), getUniqueId(), getFirstLogin(), getLastLogin(), getOnlineTime(), connectedProxyName, connectedServerName, this.playerConnection, propertyMap)

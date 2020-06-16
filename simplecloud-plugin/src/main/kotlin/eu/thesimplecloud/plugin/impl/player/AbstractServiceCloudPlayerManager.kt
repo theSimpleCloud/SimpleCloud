@@ -22,15 +22,9 @@
 
 package eu.thesimplecloud.plugin.impl.player
 
-import eu.thesimplecloud.api.network.packets.player.PacketIOGetAllOnlinePlayers
-import eu.thesimplecloud.api.network.packets.player.PacketIOGetCloudPlayer
-import eu.thesimplecloud.api.network.packets.player.PacketIOGetOfflinePlayer
-import eu.thesimplecloud.api.network.packets.player.PacketIOSetCloudPlayerUpdates
+import eu.thesimplecloud.api.network.packets.player.*
 import eu.thesimplecloud.api.network.packets.sync.cachelist.PacketIOUpdateCacheObject
-import eu.thesimplecloud.api.player.AbstractCloudPlayerManager
-import eu.thesimplecloud.api.player.ICloudPlayer
-import eu.thesimplecloud.api.player.IOfflineCloudPlayer
-import eu.thesimplecloud.api.player.SimpleCloudPlayer
+import eu.thesimplecloud.api.player.*
 import eu.thesimplecloud.clientserverapi.lib.packet.packetsender.sendQuery
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
@@ -85,6 +79,13 @@ abstract class AbstractServiceCloudPlayerManager : AbstractCloudPlayerManager() 
     override fun getAllOnlinePlayers(): ICommunicationPromise<List<SimpleCloudPlayer>> {
         return CloudPlugin.instance.communicationClient.sendQuery<Array<SimpleCloudPlayer>>(PacketIOGetAllOnlinePlayers())
                 .then { it.toList() }
+    }
+
+    override fun savePlayerToDatabase(offlinePlayer: IOfflineCloudPlayer): ICommunicationPromise<Unit> {
+        return CloudPlugin.instance.communicationClient.sendUnitQuery(
+                PacketIOSaveOfflinePlayer(offlinePlayer as OfflineCloudPlayer),
+                1000
+        )
     }
 
 }

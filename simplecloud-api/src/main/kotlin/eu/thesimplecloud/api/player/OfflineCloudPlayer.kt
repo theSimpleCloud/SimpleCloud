@@ -53,6 +53,10 @@ open class OfflineCloudPlayer(
 
     override fun getLastPlayerConnection(): IPlayerConnection = this.playerConnection
 
+    override fun toOfflinePlayer(): IOfflineCloudPlayer {
+        return OfflineCloudPlayer(getName(), getUniqueId(), getFirstLogin(), getLastLogin(), getOnlineTime(), this.playerConnection, this.propertyMap)
+    }
+
     override fun <T : Any> setProperty(name: String, value: T): IProperty<T> {
         require(value !is Property<*>) { "Cannot set ${value::class.java.name} as property" }
         val property = Property(value)
