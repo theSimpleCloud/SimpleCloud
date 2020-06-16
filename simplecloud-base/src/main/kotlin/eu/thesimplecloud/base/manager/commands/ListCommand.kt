@@ -37,7 +37,7 @@ import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 @Command("list", CommandType.CONSOLE_AND_INGAME, "cloud.command.list")
 class ListCommand : ICommandHandler {
 
-    @CommandSubPath("", "List of all services")
+    @CommandSubPath("", "Lists some information about the cloud")
     fun handleList(commandSender: ICommandSender) {
 
         CloudAPI.instance.getWrapperManager().getAllCachedObjects().forEach {
