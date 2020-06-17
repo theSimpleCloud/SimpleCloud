@@ -20,27 +20,26 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.base.manager.player
+package eu.thesimplecloud.base.manager.config.mongo
 
-import eu.thesimplecloud.api.player.IOfflineCloudPlayer
-import eu.thesimplecloud.api.player.OfflineCloudPlayer
-import java.util.*
+import eu.thesimplecloud.api.config.AbstractJsonLibConfigLoader
+import eu.thesimplecloud.api.directorypaths.DirectoryPaths
+import eu.thesimplecloud.base.manager.database.DatabaseConnectionInformation
+import eu.thesimplecloud.base.manager.database.DatabaseType
+import java.io.File
 
-interface IOfflineCloudPlayerHandler {
-
-    /**
-     * Returns the [IOfflineCloudPlayer] found by the specified [playerUniqueId]
-     */
-    fun getOfflinePlayer(playerUniqueId: UUID): IOfflineCloudPlayer?
-
-    /**
-     * Returns the [IOfflineCloudPlayer] found by the specified [name]
-     */
-    fun getOfflinePlayer(name: String): IOfflineCloudPlayer?
-
-    /**
-     * Saves the specified [offlineCloudPlayer] to the database.
-     */
-    fun saveCloudPlayer(offlineCloudPlayer: OfflineCloudPlayer)
-
+class DatabaseConfigLoader : AbstractJsonLibConfigLoader<DatabaseConnectionInformation>(
+        DatabaseConnectionInformation::class.java,
+        File(DirectoryPaths.paths.storagePath + "database.json"),
+        { DatabaseConnectionInformation(
+                "127.0.0.1",
+                45678,
+                "cloud",
+                "simplecloud",
+                "cloudpassword",
+                "",
+                DatabaseType.MONGODB
+        ) },
+        false
+) {
 }

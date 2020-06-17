@@ -20,17 +20,17 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.base.manager.config.mongo
+package eu.thesimplecloud.api.utils
 
-import eu.thesimplecloud.api.config.AbstractJsonLibConfigLoader
-import eu.thesimplecloud.api.directorypaths.DirectoryPaths
-import eu.thesimplecloud.base.manager.mongo.MongoConnectionInformation
-import java.io.File
-
-class MongoConfigLoader : AbstractJsonLibConfigLoader<MongoConnectionInformation>(
-        MongoConnectionInformation::class.java,
-        File(DirectoryPaths.paths.storagePath + "mongo.json"),
-        { MongoConnectionInformation("127.0.0.1", 45678, "cloud", "simplecloud", "cloudpassword", "") },
-        false
-) {
-}
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 17.06.2020
+ * Time: 09:47
+ * @author Frederick Baier
+ */
+/**
+ * Fields annotated with this annotation will not be saved in the database
+ */
+@Retention(AnnotationRetention.RUNTIME)
+@Target(AnnotationTarget.FIELD)
+annotation class DatabaseExclude

@@ -20,46 +20,19 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.api.property
+package eu.thesimplecloud.base.manager.database
 
-import eu.thesimplecloud.api.utils.DatabaseExclude
-import eu.thesimplecloud.clientserverapi.lib.json.PacketExclude
-import eu.thesimplecloud.jsonlib.JsonLib
-import eu.thesimplecloud.jsonlib.JsonLibExclude
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 17.06.2020
+ * Time: 08:41
+ * @author Frederick Baier
+ */
+enum class DatabaseType {
 
+    MYSQL,
 
-class Property<T : Any>(
-        value: T
-) : IProperty<T> {
+    MONGODB
 
-    @JsonLibExclude
-    @PacketExclude
-    @Volatile
-    var savedValue: T? = value
-
-    val className = value::class.java.name
-
-    @DatabaseExclude
-    private val valueAsString: String = JsonLib.fromObject(value).getAsJsonString()
-
-    @Synchronized
-    override fun getValue(): T {
-        if (savedValue == null) {
-            val clazz = propertyClassFindFunction(className) as Class<T>
-            savedValue = JsonLib.fromJsonString(valueAsString).getObject(clazz)
-        }
-        return savedValue!!
-    }
-
-    fun resetValue() {
-        this.savedValue = null
-    }
-
-    companion object {
-        @Volatile
-        var propertyClassFindFunction: (String) -> Class<*> = {
-            Class.forName(it, true, Property::class.java.classLoader)
-        }
-    }
 
 }

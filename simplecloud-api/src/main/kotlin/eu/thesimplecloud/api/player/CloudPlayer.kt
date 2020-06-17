@@ -69,7 +69,7 @@ class CloudPlayer(
     @JsonLibExclude
     private var playerMessageQueue: PlayerMessageQueue? = null
 
-    override fun getPlayerConnection(): IPlayerConnection = this.playerConnection
+    override fun getPlayerConnection(): IPlayerConnection = this.lastPlayerConnection
 
     override fun getServerConnectState(): PlayerServerConnectState {
         return this.connectState
@@ -91,7 +91,17 @@ class CloudPlayer(
 
     override fun isOnline(): Boolean = this.online
 
-    override fun clone(): ICloudPlayer = CloudPlayer(getName(), getUniqueId(), getFirstLogin(), getLastLogin(), getOnlineTime(), connectedProxyName, connectedServerName, this.playerConnection, propertyMap)
+    override fun clone(): ICloudPlayer = CloudPlayer(
+            getName(),
+            getUniqueId(),
+            getFirstLogin(),
+            getLastLogin(),
+            getOnlineTime(),
+            connectedProxyName,
+            connectedServerName,
+            this.lastPlayerConnection,
+            propertyMap
+    )
 
     override fun enableUpdates() {
         super.enableUpdates()

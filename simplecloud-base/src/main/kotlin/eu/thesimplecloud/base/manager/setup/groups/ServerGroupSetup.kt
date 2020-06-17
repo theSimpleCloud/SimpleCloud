@@ -26,12 +26,12 @@ import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.service.version.ServiceVersion
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.base.manager.setup.groups.provider.GroupTemplateSetupAnswerProvider
+import eu.thesimplecloud.base.manager.setup.groups.provider.GroupWrapperSetupAnswerProvider
 import eu.thesimplecloud.base.manager.setup.groups.provider.ServerVersionTypeSetupAnswerProvider
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
 import eu.thesimplecloud.launcher.console.setup.provider.BooleanSetupAnswerProvider
-import eu.thesimplecloud.launcher.console.setup.provider.WrapperSetupAnswerProvider
 import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.startup.Launcher
 import kotlin.properties.Delegates
@@ -125,7 +125,7 @@ class ServerGroupSetup : DefaultGroupSetup(), ISetup {
         this.static = static
     }
 
-    @SetupQuestion(9, "manager.setup.server-group.question.wrapper", "On which wrapper shall services of this group run? (Needed when the group is static. Otherwise you can leave it empty for the wrapper with the lowest workload.)", WrapperSetupAnswerProvider::class)
+    @SetupQuestion(9, "manager.setup.server-group.question.wrapper", "On which wrapper shall services of this group run? (Needed when the group is static. Otherwise you can leave it empty for the wrapper with the lowest workload.)", GroupWrapperSetupAnswerProvider::class)
     fun wrapperQuestion(string: String): Boolean {
         if (string.isBlank() && !static)
             return true

@@ -22,17 +22,19 @@
 
 package eu.thesimplecloud.base.manager.startup
 
-import com.mongodb.MongoClient
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.api.screen.ICommandExecutable
-import eu.thesimplecloud.base.MongoController
 import eu.thesimplecloud.base.core.jvm.JvmArgumentsConfig
 import eu.thesimplecloud.base.manager.config.JvmArgumentsConfigLoader
-import eu.thesimplecloud.base.manager.config.mongo.MongoConfigLoader
+import eu.thesimplecloud.base.manager.config.mongo.DatabaseConfigLoader
 import eu.thesimplecloud.base.manager.config.template.TemplatesConfigLoader
 import eu.thesimplecloud.base.manager.config.updater.ModuleUpdaterConfigLoader
+import eu.thesimplecloud.base.manager.database.DatabaseType
+import eu.thesimplecloud.base.manager.database.IOfflineCloudPlayerHandler
+import eu.thesimplecloud.base.manager.database.MongoOfflineCloudPlayerHandler
+import eu.thesimplecloud.base.manager.database.SQLOfflineCloudPlayerHandler
 import eu.thesimplecloud.base.manager.filehandler.CloudServiceGroupFileHandler
 import eu.thesimplecloud.base.manager.filehandler.WrapperFileHandler
 import eu.thesimplecloud.base.manager.impl.CloudAPIImpl
@@ -41,11 +43,9 @@ import eu.thesimplecloud.base.manager.listener.CloudListener
 import eu.thesimplecloud.base.manager.listener.ModuleEventListener
 import eu.thesimplecloud.base.manager.packet.IPacketRegistry
 import eu.thesimplecloud.base.manager.packet.PacketRegistry
-import eu.thesimplecloud.base.manager.player.IOfflineCloudPlayerHandler
-import eu.thesimplecloud.base.manager.player.OfflineCloudPlayerHandler
 import eu.thesimplecloud.base.manager.player.PlayerUnregisterScheduler
 import eu.thesimplecloud.base.manager.service.ServiceHandler
-import eu.thesimplecloud.base.manager.setup.mongo.MongoDBConnectionSetup
+import eu.thesimplecloud.base.manager.setup.database.DatabaseConnectionSetup
 import eu.thesimplecloud.base.manager.startup.server.CommunicationConnectionHandlerImpl
 import eu.thesimplecloud.base.manager.startup.server.ServerHandlerImpl
 import eu.thesimplecloud.base.manager.startup.server.TemplateConnectionHandlerImpl
@@ -73,11 +73,6 @@ class Manager : ICloudApplication {
     val wrapperFileHandler = WrapperFileHandler()
     val templatesConfigLoader = TemplatesConfigLoader()
     val serviceHandler: ServiceHandler = ServiceHandler()
-
-    // only set when embed mongodb is used
-    var mongoController: MongoController? = null
-        private set
-    val mongoClient: MongoClient
 
     val offlineCloudPlayerHandler: IOfflineCloudPlayerHandler
 
@@ -114,11 +109,11 @@ class Manager : ICloudApplication {
         this.cloudModuleHandler.setCreateModuleClassLoader { urls, name -> ModuleClassLoader(urls, this.appClassLoader, name, this.cloudModuleHandler) }
         Property.propertyClassFindFunction = { this.cloudModuleHandler.findModuleOrSystemClass(it) }
         this.ingameCommandUpdater = IngameCommandUpdater()
-        if (!MongoConfigLoader().doesConfigFileExist()) {
-            Launcher.instance.setupManager.queueSetup(MongoDBConnectionSetup())
+        if (!DatabaseConfigLoader().doesConfigFileExist()) {
+            Launcher.instance.setupManager.queueSetup(DatabaseConnectionSetup())
             Launcher.instance.setupManager.waitFroAllSetups()
         }
-        val mongoConnectionInformation = MongoConfigLoader().loadConfig()
+        val mongoConnectionInformation = DatabaseConfigLoader().loadConfig()
 
         val launcherConfig = Launcher.instance.launcherConfigLoader.loadConfig()
         this.communicationServer = NettyServer<ICommandExecutable>(launcherConfig.host, launcherConfig.port, CommunicationConnectionHandlerImpl(), ServerHandlerImpl())
@@ -136,12 +131,13 @@ class Manager : ICloudApplication {
         thread(start = true, isDaemon = false) { communicationServer.start() }
         createDirectories()
         Logger.getLogger("org.mongodb.driver").level = Level.SEVERE
-        Launcher.instance.logger.console("Waiting for MongoDB...")
-        this.mongoController?.startedPromise?.awaitUninterruptibly()
-        mongoClient = mongoConnectionInformation.createMongoClient()
-        Launcher.instance.logger.console("Connected to MongoDB")
+        Launcher.instance.logger.console("Waiting for the database...")
 
-        this.offlineCloudPlayerHandler = OfflineCloudPlayerHandler(mongoConnectionInformation)
+        this.offlineCloudPlayerHandler = when(mongoConnectionInformation.databaseType) {
+            DatabaseType.MONGODB -> MongoOfflineCloudPlayerHandler(mongoConnectionInformation)
+            DatabaseType.MYSQL -> SQLOfflineCloudPlayerHandler(mongoConnectionInformation)
+        }
+        Launcher.instance.logger.console("Connected to the database")
 
         this.templateServer.getDirectorySyncManager().setTmpZipDirectory(File(DirectoryPaths.paths.zippedTemplatesPath))
         this.templateServer.getDirectorySyncManager().createDirectorySync(File(DirectoryPaths.paths.templatesPath), DirectoryPaths.paths.templatesPath)
@@ -207,8 +203,6 @@ class Manager : ICloudApplication {
 
     override fun onDisable() {
         this.cloudModuleHandler.unloadAllModules()
-        this.mongoClient.close()
-        this.mongoController?.stop()?.awaitUninterruptibly()
     }
 
 

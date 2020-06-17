@@ -20,46 +20,36 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.api.property
-
-import eu.thesimplecloud.api.utils.DatabaseExclude
-import eu.thesimplecloud.clientserverapi.lib.json.PacketExclude
-import eu.thesimplecloud.jsonlib.JsonLib
-import eu.thesimplecloud.jsonlib.JsonLibExclude
+package eu.thesimplecloud.base.manager.database
 
 
-class Property<T : Any>(
-        value: T
-) : IProperty<T> {
+import com.mongodb.ConnectionString
+import com.mongodb.MongoClient
+import org.litote.kmongo.KMongo
 
-    @JsonLibExclude
-    @PacketExclude
-    @Volatile
-    var savedValue: T? = value
+open class DatabaseConnectionInformation(
+        val host: String,
+        val port: Int,
+        val databaseName: String,
+        val userName: String,
+        val password: String,
+        val collectionPrefix: String,
+        val databaseType: DatabaseType
+) {
 
-    val className = value::class.java.name
-
-    @DatabaseExclude
-    private val valueAsString: String = JsonLib.fromObject(value).getAsJsonString()
-
-    @Synchronized
-    override fun getValue(): T {
-        if (savedValue == null) {
-            val clazz = propertyClassFindFunction(className) as Class<T>
-            savedValue = JsonLib.fromJsonString(valueAsString).getObject(clazz)
+    private fun getConnectionString(): ConnectionString {
+        if (password.isBlank() || userName.isBlank()) {
+            return ConnectionString("mongodb://$host:$port/$databaseName")
         }
-        return savedValue!!
+
+        return ConnectionString("mongodb://$userName:$password@$host:$port/$databaseName")
     }
 
-    fun resetValue() {
-        this.savedValue = null
+    fun createMongoClient(): MongoClient {
+        //return KMongo.createClient(MongoClientSettings.builder().applyConnectionString(getConnectionString())
+        //              .codecRegistry(CodecRegistries.fromRegistries(
+        //                CodecRegistries.fromCodecs(UuidCodec(UuidRepresentation.STANDARD))
+        //      )).build())
+        return KMongo.createClient(getConnectionString())
     }
-
-    companion object {
-        @Volatile
-        var propertyClassFindFunction: (String) -> Class<*> = {
-            Class.forName(it, true, Property::class.java.classLoader)
-        }
-    }
-
 }

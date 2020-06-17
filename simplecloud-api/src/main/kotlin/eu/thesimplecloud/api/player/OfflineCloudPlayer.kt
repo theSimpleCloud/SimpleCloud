@@ -36,7 +36,7 @@ open class OfflineCloudPlayer(
         private val firstLogin: Long,
         private val lastLogin: Long,
         private val onlineTime: Long,
-        protected val playerConnection: DefaultPlayerConnection,
+        protected val lastPlayerConnection: DefaultPlayerConnection,
         var propertyMap: MutableMap<String, Property<*>> = HashMap()
 ): SimpleCloudPlayer(name, uniqueId), IOfflineCloudPlayer {
 
@@ -51,10 +51,11 @@ open class OfflineCloudPlayer(
 
     override fun getOnlineTime(): Long = this.onlineTime
 
-    override fun getLastPlayerConnection(): IPlayerConnection = this.playerConnection
+    @JsonIgnore
+    override fun getLastPlayerConnection(): IPlayerConnection = this.lastPlayerConnection
 
     override fun toOfflinePlayer(): IOfflineCloudPlayer {
-        return OfflineCloudPlayer(getName(), getUniqueId(), getFirstLogin(), getLastLogin(), getOnlineTime(), this.playerConnection, this.propertyMap)
+        return OfflineCloudPlayer(getName(), getUniqueId(), getFirstLogin(), getLastLogin(), getOnlineTime(), this.lastPlayerConnection, this.propertyMap)
     }
 
     override fun <T : Any> setProperty(name: String, value: T): IProperty<T> {

@@ -20,36 +20,37 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.base.manager.player
+package eu.thesimplecloud.base.manager.database
 
+import com.mongodb.MongoClient
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Indexes
 import eu.thesimplecloud.api.player.IOfflineCloudPlayer
 import eu.thesimplecloud.api.player.OfflineCloudPlayer
 import eu.thesimplecloud.api.player.connection.DefaultPlayerAddress
 import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
-import eu.thesimplecloud.api.property.Property
-import eu.thesimplecloud.base.manager.mongo.MongoConnectionInformation
-import eu.thesimplecloud.base.manager.player.exception.OfflinePlayerLoadException
-import eu.thesimplecloud.base.manager.startup.Manager
+import eu.thesimplecloud.api.utils.DatabaseExclude
+import eu.thesimplecloud.base.manager.player.LoadOfflineCloudPlayer
+import eu.thesimplecloud.jsonlib.GsonCreator
 import eu.thesimplecloud.jsonlib.JsonLib
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.bson.Document
 import org.litote.kmongo.findOne
 import org.litote.kmongo.getCollection
 import java.util.*
-import kotlin.collections.HashMap
 
-class OfflineCloudPlayerHandler(mongoConnectionInformation: MongoConnectionInformation) : IOfflineCloudPlayerHandler {
+class MongoOfflineCloudPlayerHandler(databaseConnectionInformation: DatabaseConnectionInformation) : IOfflineCloudPlayerHandler {
 
-    private val loadCollection = Manager.instance.mongoClient.getDatabase(mongoConnectionInformation.databaseName).getCollection<LoadOfflineCloudPlayer>(mongoConnectionInformation.collectionPrefix + "players")
-    private val saveCollection = Manager.instance.mongoClient.getDatabase(mongoConnectionInformation.databaseName).getCollection<OfflineCloudPlayer>(mongoConnectionInformation.collectionPrefix + "players")
+    private val mongoClient: MongoClient = databaseConnectionInformation.createMongoClient()
+    private val collection = this.mongoClient.getDatabase(databaseConnectionInformation.databaseName).getCollection<Document>(databaseConnectionInformation.collectionPrefix + "players")
+    private val databseGson  = GsonCreator().excludeAnnotations(DatabaseExclude::class.java).create()
 
     init {
         //make a first request (the first request will take a very long time when using embed mongodb. Following requests will be way faster)
         GlobalScope.launch {
-            loadCollection.createIndex(Indexes.text("name"))
+            collection.createIndex(Indexes.text("name"))
             //loadCollection.createIndex(Indexes.text("uniqueId"))
 
             //dummy request
@@ -65,50 +66,37 @@ class OfflineCloudPlayerHandler(mongoConnectionInformation: MongoConnectionInfor
     }
 
     private fun deletePlayer(playerUniqueId: UUID) {
-        this.loadCollection.deleteOne(Filters.eq("uniqueId", playerUniqueId))
+        this.collection.deleteOne(Filters.eq("uniqueId", playerUniqueId.toString()))
     }
 
     override fun getOfflinePlayer(playerUniqueId: UUID): IOfflineCloudPlayer? {
-        return fromLoadOfflinePlayer(this.loadCollection.findOne(Filters.eq("uniqueId", playerUniqueId)))
+        val document = this.collection.findOne(Filters.eq("uniqueId", playerUniqueId.toString()))
+                ?: return null
+        return fromLoadOfflinePlayer(JsonLib.fromObject(document, databseGson).getObject(LoadOfflineCloudPlayer::class.java))
     }
 
     override fun getOfflinePlayer(name: String): IOfflineCloudPlayer? {
-        return fromLoadOfflinePlayer(this.loadCollection.findOne("{ \$text: { \$search: \"$name\",\$caseSensitive :false } }"))
+        val document = this.collection.findOne("{ \$text: { \$search: \"$name\",\$caseSensitive :false } }")
+                ?: return null
+        return fromLoadOfflinePlayer(JsonLib.fromObject(document, databseGson).getObject(LoadOfflineCloudPlayer::class.java))
     }
 
     @Synchronized
     override fun saveCloudPlayer(offlineCloudPlayer: OfflineCloudPlayer) {
         //load all properties so that the values are all set
+        val documentToSave = JsonLib.fromObject(offlineCloudPlayer, databseGson).getObject(Document::class.java)
         offlineCloudPlayer.getProperties().forEach { it.value.getValue() }
         if (offlineCloudPlayer::class.java != OfflineCloudPlayer::class.java) throw IllegalStateException("Cannot save player of type " + offlineCloudPlayer::class.java.simpleName)
         if (getOfflinePlayer(offlineCloudPlayer.getUniqueId()) != null) {
-            this.saveCollection.replaceOne(Filters.eq("uniqueId", offlineCloudPlayer.getUniqueId()), offlineCloudPlayer)
+            this.collection.replaceOne(Filters.eq("uniqueId", offlineCloudPlayer.getUniqueId().toString()), documentToSave)
         } else {
-            this.saveCollection.insertOne(offlineCloudPlayer)
+            this.collection.insertOne(documentToSave)
         }
 
     }
 
-    private fun fromLoadOfflinePlayer(loadOfflineCloudPlayer: LoadOfflineCloudPlayer?): OfflineCloudPlayer? {
-        loadOfflineCloudPlayer ?: return null
-        val propertyMapAsDocument = loadOfflineCloudPlayer.propertyMap
-        try {
-            val propertyMap = propertyMapAsDocument.toSortedMap().mapValues {
-                val valueString = it.value.toString()
-                val jsonLib = JsonLib.fromJsonString(valueString)
-                val className = jsonLib.getString("className")!!
-                val clazz = this.findClass(className)
-                val value = jsonLib.getObject("savedValue", clazz)!!
-                Property(value)
-            }
-            return OfflineCloudPlayer(loadOfflineCloudPlayer.name, loadOfflineCloudPlayer.uniqueId, loadOfflineCloudPlayer.firstLogin, loadOfflineCloudPlayer.lastLogin, loadOfflineCloudPlayer.onlineTime, loadOfflineCloudPlayer.lastPlayerConnection, HashMap(propertyMap))
-        } catch (ex: Exception) {
-            throw OfflinePlayerLoadException("Error while loading OfflinePlayer ${loadOfflineCloudPlayer.name}:", ex)
-        }
-    }
-
-    private fun findClass(className: String): Class<*> {
-        return Manager.instance.cloudModuleHandler.findModuleOrSystemClass(className)
+    override fun closeConnection() {
+        this.mongoClient.close()
     }
 
 

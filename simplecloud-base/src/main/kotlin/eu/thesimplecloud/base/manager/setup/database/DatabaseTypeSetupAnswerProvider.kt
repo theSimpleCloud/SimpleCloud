@@ -20,35 +20,21 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.base.manager.mongo
+package eu.thesimplecloud.base.manager.setup.database
 
+import eu.thesimplecloud.api.command.ICommandSender
+import eu.thesimplecloud.base.manager.database.DatabaseType
+import eu.thesimplecloud.launcher.console.setup.provider.ISetupAnswerProvider
 
-import com.mongodb.ConnectionString
-import com.mongodb.MongoClient
-import org.litote.kmongo.KMongo
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 17.06.2020
+ * Time: 08:48
+ * @author Frederick Baier
+ */
+class DatabaseTypeSetupAnswerProvider : ISetupAnswerProvider {
 
-open class MongoConnectionInformation(
-        val host: String,
-        val port: Int,
-        val databaseName: String,
-        val userName: String,
-        val password: String,
-        val collectionPrefix: String
-) {
-
-    private fun getConnectionString(): ConnectionString {
-        if (password.isBlank() || userName.isBlank()) {
-            return ConnectionString("mongodb://$host:$port/$databaseName")
-        }
-
-        return ConnectionString("mongodb://$userName:$password@$host:$port/$databaseName")
-    }
-
-    fun createMongoClient(): MongoClient {
-        //return KMongo.createClient(MongoClientSettings.builder().applyConnectionString(getConnectionString())
-        //              .codecRegistry(CodecRegistries.fromRegistries(
-        //                CodecRegistries.fromCodecs(UuidCodec(UuidRepresentation.STANDARD))
-        //      )).build())
-        return KMongo.createClient(getConnectionString())
+    override fun getSuggestions(sender: ICommandSender): Collection<String> {
+        return DatabaseType.values().map { it.name }
     }
 }

@@ -40,6 +40,7 @@ class LauncherDependencyLoader {
                 Dependency("com.google.code.gson", "gson", "2.8.6"),
                 Dependency("io.netty", "netty-all", "4.1.49.Final"),
                 Dependency("org.reflections", "reflections", "0.9.12"),
+                Dependency("org.mariadb.jdbc", "mariadb-java-client", "2.6.0"),
                 Dependency("com.github.ajalt", "clikt", "2.2.0"))
         dependencyLoader.installDependencies()
     }
