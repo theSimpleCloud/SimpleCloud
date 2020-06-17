@@ -113,7 +113,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
 
     fun start() {
         clearConsole()
-        currentClassLoader = Thread.currentThread().contextClassLoader
+        this.currentClassLoader = Thread.currentThread().contextClassLoader
         if (!launcherStartArguments.disableAutoUpdater) {
             if (executeUpdateIfAvailable()) {
                 return
@@ -122,7 +122,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
             this.logger.warning("Auto updater is disabled.")
         }
         this.languageManager.loadFile()
-        this.commandManager.registerAllCommands(launcherCloudModule, currentClassLoader, "eu.thesimplecloud.launcher.commands")
+        this.commandManager.registerAllCommands(launcherCloudModule, this.currentClassLoader, "eu.thesimplecloud.launcher.commands")
         this.consoleManager.startThread()
         if (!this.languageManager.fileExistBeforeLoad())
             this.setupManager.queueSetup(LanguageSetup())
