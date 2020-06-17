@@ -23,7 +23,7 @@
 package eu.thesimplecloud.api.eventapi
 
 /**
- * Represents a class that is can be cancelled.
+ * Represents a class that can be cancelled.
  */
 interface ICancellable {
 
