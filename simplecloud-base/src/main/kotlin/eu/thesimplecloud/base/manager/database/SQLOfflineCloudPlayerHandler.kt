@@ -42,7 +42,7 @@ import java.util.*
  */
 class SQLOfflineCloudPlayerHandler(databaseConnectionInformation: DatabaseConnectionInformation) : IOfflineCloudPlayerHandler {
 
-    val connection: Connection = DriverManager.getConnection("jdbc:mysql://${databaseConnectionInformation.host}:${databaseConnectionInformation.port}/${databaseConnectionInformation.databaseName}?user=${databaseConnectionInformation.userName}&password=${databaseConnectionInformation.password}&serverTimezone=UTC")
+    val connection: Connection = DriverManager.getConnection("jdbc:mysql://${databaseConnectionInformation.host}:${databaseConnectionInformation.port}/${databaseConnectionInformation.databaseName}?user=${databaseConnectionInformation.userName}&password=${databaseConnectionInformation.password}&serverTimezone=UTC&autoReconnect=true")
 
     private val playerCollectionName = databaseConnectionInformation.collectionPrefix + "players"
     private val databaseGson  = GsonCreator().excludeAnnotations(DatabaseExclude::class.java).create()
