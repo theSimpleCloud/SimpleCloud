@@ -22,14 +22,12 @@
 
 package eu.thesimplecloud.module.permission.entity
 
-import com.fasterxml.jackson.annotation.JsonInclude
 import eu.thesimplecloud.module.permission.permission.Permission
 
 open class PermissionEntity : IPermissionEntity {
 
     private val permissions = ArrayList<Permission>()
 
-    @JsonInclude
     override fun getPermissions(): Collection<Permission> = this.permissions
 
     override fun addPermission(permission: Permission) {

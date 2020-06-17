@@ -22,7 +22,6 @@
 
 package eu.thesimplecloud.api.player.connection
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import eu.thesimplecloud.api.CloudAPI
 import java.util.*
 
@@ -58,7 +57,6 @@ interface IPlayerConnection {
     /**
      * Returns the cloud player this player connection is linked to
      */
-    @JsonIgnore
     fun getCloudPlayer() = CloudAPI.instance.getCloudPlayerManager().getCloudPlayer(getUniqueId())
 
 }

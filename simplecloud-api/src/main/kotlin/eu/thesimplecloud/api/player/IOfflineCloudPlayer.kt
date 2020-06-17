@@ -22,7 +22,6 @@
 
 package eu.thesimplecloud.api.player
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.player.connection.IPlayerConnection
 import eu.thesimplecloud.api.property.IPropertyMap
@@ -60,7 +59,6 @@ interface IOfflineCloudPlayer : Nameable, IPropertyMap {
     /**
      * Returns whether this player is connected to the network.
      */
-    @JsonIgnore
     fun isOnline(): Boolean = false
 
 
@@ -73,7 +71,6 @@ interface IOfflineCloudPlayer : Nameable, IPropertyMap {
      * Saves this player to the database
      * @return a promise that completes when the player was saved.
      */
-    @JsonIgnore
     fun saveToDatabase(): ICommunicationPromise<Unit> = CloudAPI.instance.getCloudPlayerManager().savePlayerToDatabase(this)
 
 }

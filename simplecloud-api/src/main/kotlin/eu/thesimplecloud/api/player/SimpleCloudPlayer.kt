@@ -22,7 +22,6 @@
 
 package eu.thesimplecloud.api.player
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.utils.Nameable
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
@@ -47,7 +46,6 @@ open class SimpleCloudPlayer(
     /**
      * Returns a promise of the cloud player of this player.
      */
-    @JsonIgnore
     fun getCloudPlayer(): ICommunicationPromise<ICloudPlayer> {
         return CloudAPI.instance.getCloudPlayerManager().getCloudPlayer(uniqueId)
     }

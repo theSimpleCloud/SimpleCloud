@@ -22,7 +22,6 @@
 
 package eu.thesimplecloud.module.permission.player
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.player.ICloudPlayer
 import eu.thesimplecloud.api.utils.Nameable
@@ -47,32 +46,27 @@ interface IPermissionPlayer : IPermissionEntity, Nameable {
     /**
      * Returns the permission group info list
      */
-    @JsonIgnore
     fun getAllNotExpiredPermissionGroupInfoList(): Collection<PlayerPermissionGroupInfo> = getPermissionGroupInfoList().filter { !it.isExpired() }
 
     /**
      * Returns whether this player has the specified permission group.
      * (case insensitive)
      */
-    @JsonIgnore
     fun hasPermissionGroup(name: String): Boolean = getPermissionGroupInfoList().map { it.permissionGroupName.toLowerCase() }.contains(name)
 
     /**
      * Returns the [IPermissionGroup] of this player
      */
-    @JsonIgnore
     fun getAllNotExpiredPermissionGroups(): List<IPermissionGroup> = getAllNotExpiredPermissionGroupInfoList().mapNotNull { PermissionPool.instance.getPermissionGroupManager().getPermissionGroupByName(it.permissionGroupName) }
 
     /**
      * Returns the the [ICloudPlayer] of this permission player wrapped in a promise
      */
-    @JsonIgnore
     fun getCloudPlayer(): ICommunicationPromise<ICloudPlayer> = CloudAPI.instance.getCloudPlayerManager().getCloudPlayer(getUniqueId())
 
     /**
      * Returns a promise that is completed when the operation is done. [ICommunicationPromise.isSuccess] indicates success or failure.
      */
-    @JsonIgnore
     fun update(): ICommunicationPromise<Unit>
 
     /**

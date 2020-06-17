@@ -22,7 +22,6 @@
 
 package eu.thesimplecloud.api.property
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 
 interface IProperty<T : Any> {
 
@@ -30,6 +29,5 @@ interface IProperty<T : Any> {
      * Returns the value of this property
      * This is required when this function gets called from a module.
      */
-    @JsonIgnore
     fun getValue(): T
 }

@@ -22,7 +22,6 @@
 
 package eu.thesimplecloud.api.player
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
 import eu.thesimplecloud.api.player.connection.IPlayerConnection
 import eu.thesimplecloud.api.player.text.CloudText
@@ -59,12 +58,10 @@ class CloudPlayer(
     @Volatile
     private var online = true
 
-    @JsonIgnore
     @PacketExclude
     @Volatile
     private var updatesEnabled = false
 
-    @JsonIgnore
     @PacketExclude
     @JsonLibExclude
     private var playerMessageQueue: PlayerMessageQueue? = null
