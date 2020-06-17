@@ -55,7 +55,7 @@ class AutoIpSetup : ISetup {
             Launcher.instance.logger.warning("Received response can not be parsed to an ip.")
             return false
         }
-        Launcher.instance.consoleSender.sendMessage("launcher.setup.auto-ip.ip-fetched", "Ip fetched: %IP%", ip)
+        Launcher.instance.consoleSender.sendMessage(true, "launcher.setup.auto-ip.ip-fetched", "Ip fetched: %IP%", ip)
         val launcherConfig = LauncherConfigLoader().loadConfig()
         launcherConfig.host = ip
         LauncherConfigLoader().saveConfig(launcherConfig)

@@ -28,6 +28,7 @@ import eu.thesimplecloud.api.screen.ICommandExecutable
 import eu.thesimplecloud.api.wrapper.impl.DefaultWrapperInfo
 import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.startup.Launcher
+import eu.thesimplecloud.module.internalwrapper.setup.InternalWrapperMemorySetup
 import java.io.BufferedReader
 import java.io.File
 import java.io.IOException
@@ -46,9 +47,10 @@ class InternalWrapperModule : ICloudModule {
         val config = Launcher.instance.launcherConfigLoader.loadConfig()
 
         if (wrapperManager.getWrapperByHost(config.host) == null) {
-            val wrapperInfo = DefaultWrapperInfo("InternalWrapper", config.host, 2, 2048)
-            CloudAPI.instance.getWrapperManager().update(wrapperInfo)
+            Launcher.instance.setupManager.queueSetup(InternalWrapperMemorySetup(config))
+            Launcher.instance.setupManager.waitFroAllSetups()
         }
+
         thread(start = true, isDaemon = false) {
             Launcher.instance.consoleSender.sendMessage("module.internalwrapper.starting", "Starting internal wrapper...")
             val processBuilder = ProcessBuilder("java", "-jar", launcherJarFile.absolutePath, "--start-application=WRAPPER", "--disable-auto-updater")

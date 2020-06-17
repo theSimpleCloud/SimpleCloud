@@ -80,7 +80,9 @@ class SetupManager(val launcher: Launcher) {
     private fun startSetup(setupData: SetupData) {
         this.currentSetup = setupData
         this.currentQuestion = setupData.questions[currentQuestionIndex]
-        this.launcher.consoleSender.sendMessage("launcher.setup-started", "Setup started. To abort the setup write \"exit\".")
+
+        Launcher.instance.clearConsole()
+        this.launcher.consoleSender.sendMessage(true, "launcher.setup-started", "Setup started. To abort the setup write \"exit\".")
         printCurrentQuestion()
     }
 
@@ -94,9 +96,9 @@ class SetupManager(val launcher: Launcher) {
         val suggestions = suggestionProvider.getSuggestions(launcher.consoleSender)
         val suffix = if (suggestions.isNotEmpty()) "§ePossible answers: " + suggestions.joinToString() else ""
         if (suffix.isEmpty()) {
-            launcher.consoleSender.sendMessage(currentQuestion.setupQuestion.property, currentQuestion.setupQuestion.question)
+            launcher.consoleSender.sendMessage(true, currentQuestion.setupQuestion.property, currentQuestion.setupQuestion.question)
         } else {
-            launcher.consoleSender.sendMessage(currentQuestion.setupQuestion.property, currentQuestion.setupQuestion.question + " %SUFFIX%", suffix)
+            launcher.consoleSender.sendMessage(true, currentQuestion.setupQuestion.property, currentQuestion.setupQuestion.question + " %SUFFIX%", suffix)
         }
     }
 
@@ -106,13 +108,13 @@ class SetupManager(val launcher: Launcher) {
         val possibleAnswers = currentQuestion.setupQuestion.answerProvider.java.newInstance()
                 .getSuggestions(launcher.consoleSender)
         if (parsedValue is String && possibleAnswers.isNotEmpty() && !possibleAnswers.containsIgnoreCase(parsedValue)) {
-            this.launcher.consoleSender.sendMessage("launcher.setup.invalid-response", "Invalid response.")
+            this.launcher.consoleSender.sendMessage(true, "launcher.setup.invalid-response", "Invalid response.")
             return
         }
         val invokeResponse = try {
             currentQuestion.method.invoke(this.currentSetup!!.source, parsedValue)
         } catch (e: Exception) {
-            this.launcher.consoleSender.sendMessage("launcher.setup.invalid-response", "Invalid response.")
+            this.launcher.consoleSender.sendMessage(true, "launcher.setup.invalid-response", "Invalid response.")
             return
         }
         if (invokeResponse is Boolean && invokeResponse == false) {
@@ -135,16 +137,30 @@ class SetupManager(val launcher: Launcher) {
     }
 
     private fun finishCurrentSetup() {
+        Launcher.instance.clearConsole()
+
         val currentSetupReference = this.currentSetup
         resetSetup()
+
+        if (this.setupQueue.isEmpty()) {
+            Launcher.instance.logger.printCachedMessages()
+        }
+
         currentSetupReference?.callFinishedMethod()
         this.logger.success("Setup completed.")
         checkForNextSetup()
     }
 
     fun cancelCurrentSetup() {
+        Launcher.instance.clearConsole()
+
         val currentSetupReference = this.currentSetup
         resetSetup()
+
+        if (this.setupQueue.isEmpty()) {
+            Launcher.instance.logger.printCachedMessages()
+        }
+
         currentSetupReference?.callCancelledMethod()
         this.logger.warning("Setup cancelled.")
         checkForNextSetup()

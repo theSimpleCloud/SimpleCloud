@@ -51,7 +51,7 @@ class WrapperSetup : ISetup {
 
     @SetupQuestion(1, "manager.setup.wrapper.question.host", "On which host starts the wrapper? (this = ip of this server)")
     fun hostSetup(host: String): Boolean {
-        if (host.equals("this", true)){
+        if (host.equals("this", true)) {
             this.host = Launcher.instance.launcherConfigLoader.loadConfig().host
             Launcher.instance.consoleSender.sendMessage("manager.setup.wrapper.question.host.success", "Host set.")
             return true
@@ -88,12 +88,11 @@ class WrapperSetup : ISetup {
     }
 
     @SetupFinished
-    fun finished(){
+    fun finished() {
         val wrapperInfo = DefaultWrapperInfo(name, host, maxSimultaneouslyStartingServices, memory)
         CloudAPI.instance.getWrapperManager().update(wrapperInfo)
-        Launcher.instance.consoleSender.sendMessage("manager.setup.wrapper.finished", "Wrapper %NAME%", name, " created.")
+        Launcher.instance.consoleSender.sendMessage(true, "manager.setup.wrapper.finished", "Wrapper %NAME%", name, " created.")
     }
-
 
 
 }

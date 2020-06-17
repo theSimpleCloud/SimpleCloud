@@ -38,6 +38,7 @@ import java.util.logging.Level
 import java.util.logging.Logger
 import java.util.logging.SimpleFormatter
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 
 /**
@@ -54,6 +55,8 @@ class LoggerProvider(val screenManager: IScreenManager) : Logger("SimpleCloudLog
     private val loggerMessageListeners = ArrayList<ILoggerMessageListener>()
 
     private val logsDir = File("logs/")
+
+    private val cachedMessages = ArrayList<Pair<String, LogType>>()
 
     init {
         level = Level.ALL
@@ -93,7 +96,6 @@ class LoggerProvider(val screenManager: IScreenManager) : Logger("SimpleCloudLog
 
     @Synchronized
     fun success(msg: String) {
-        super.info(msg)
         printMessage(msg, LogType.SUCCESS)
     }
 
@@ -122,14 +124,36 @@ class LoggerProvider(val screenManager: IScreenManager) : Logger("SimpleCloudLog
     }
 
     @Synchronized
+    fun setup(msg: String) {
+        super.info(msg)
+        printMessage(msg, LogType.SETUP)
+    }
+
+    @Synchronized
     fun empty(msg: String) {
         super.info(msg)
         printMessage(msg, LogType.EMPTY)
     }
 
-    private fun printMessage(msg: String, logType: LogType) {
-        if (isMessageBlocked(logType))
+    @Synchronized
+    fun printCachedMessages() {
+        cachedMessages.forEach {
+            printMessage(it.first, it.second, false)
+        }
+    }
+
+    private fun printMessage(msg: String, logType: LogType, cache: Boolean = true) {
+        if (cache && Launcher.instance.isBaseLoaded
+                && (logType != LogType.SETUP && logType != LogType.EMPTY && logType != LogType.WARNING)) {
+            if (cachedMessages.size == 50) {
+                cachedMessages.removeAt(0)
+            }
+
+            cachedMessages.add(Pair(msg, logType))
+        }
+        if (isMessageBlocked(logType)) {
             return
+        }
         val coloredMessage = getColoredString(msg, logType)
         this.loggerMessageListeners.forEach { it.message(msg, logType) }
 
@@ -147,7 +171,16 @@ class LoggerProvider(val screenManager: IScreenManager) : Logger("SimpleCloudLog
     }
 
     private fun isMessageBlocked(logType: LogType): Boolean {
-        return screenManager.hasActiveScreen() && logType != LogType.EMPTY
+        if (logType == LogType.WARNING) {
+            return false
+        }
+
+        if ((screenManager.hasActiveScreen() && logType != LogType.EMPTY)
+                || (Launcher.instance.setupManager.hasActiveSetup() && logType != LogType.SETUP)) {
+            return true
+        }
+
+        return false
     }
 
     fun getColoredString(text: String, type: LogType): String {
@@ -171,6 +204,10 @@ class LoggerProvider(val screenManager: IScreenManager) : Logger("SimpleCloudLog
 
             LogType.CONSOLE -> {
                 logType = "§3CONSOLE§7"
+            }
+
+            LogType.SETUP -> {
+                logType = "§3SETUP§7"
             }
 
         }
