@@ -248,7 +248,7 @@ interface ICloudService : INetworkComponent, IBootstrap, IPropertyMap {
 
     /**
      * Copies the service to the template directory.
-     * @return q promise that completes when the service was copied.
+     * @return a promise that completes when the service was copied.
      */
     fun copy(path: String): ICommunicationPromise<Unit> {
         return CloudAPI.instance.getCloudServiceManager().copyService(this, path)

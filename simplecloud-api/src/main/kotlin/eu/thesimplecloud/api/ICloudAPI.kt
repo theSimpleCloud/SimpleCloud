@@ -44,8 +44,7 @@ import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
 /**
- * It represents the main part of a cloud part
- * The Wrapper, Manager and CloudPlugin should implement this interface.
+ * The global api for the cloud. It can be accessed from everywhere.
  */
 interface ICloudAPI {
 
