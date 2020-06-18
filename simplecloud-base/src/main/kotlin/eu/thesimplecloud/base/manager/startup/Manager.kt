@@ -49,6 +49,7 @@ import eu.thesimplecloud.base.manager.setup.database.DatabaseConnectionSetup
 import eu.thesimplecloud.base.manager.startup.server.CommunicationConnectionHandlerImpl
 import eu.thesimplecloud.base.manager.startup.server.ServerHandlerImpl
 import eu.thesimplecloud.base.manager.startup.server.TemplateConnectionHandlerImpl
+import eu.thesimplecloud.base.manager.update.converter.VersionConversionManager
 import eu.thesimplecloud.clientserverapi.lib.packet.IPacket
 import eu.thesimplecloud.clientserverapi.server.INettyServer
 import eu.thesimplecloud.clientserverapi.server.NettyServer
@@ -178,6 +179,7 @@ class Manager : ICloudApplication {
         }
         thread(start = true, isDaemon = false) {
             this.cloudModuleHandler.loadAllUnloadedModules()
+            VersionConversionManager().convertIfNecessary()
         }
     }
 

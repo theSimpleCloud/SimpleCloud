@@ -20,15 +20,28 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.base.manager.database
+package eu.thesimplecloud.base.manager.update.converter.converter_1_2_to_1_3
 
+import eu.thesimplecloud.base.manager.update.converter.IVersionConverter
 
-open class DatabaseConnectionInformation(
-        val host: String,
-        val port: Int,
-        val databaseName: String,
-        val userName: String,
-        val password: String,
-        val collectionPrefix: String,
-        val databaseType: DatabaseType
-)
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 18.06.2020
+ * Time: 12:46
+ * @author Frederick Baier
+ */
+class Converter_1_2_to_1_3 : IVersionConverter {
+
+    override fun getTargetMinorVersion(): Int {
+        return 3
+    }
+
+    override fun convert() {
+        convertMongoDBPlayers()
+    }
+
+    private fun convertMongoDBPlayers() {
+        MongoDBConverter().convert()
+    }
+
+}

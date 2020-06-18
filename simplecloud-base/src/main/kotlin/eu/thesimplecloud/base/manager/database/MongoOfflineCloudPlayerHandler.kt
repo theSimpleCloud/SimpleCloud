@@ -22,6 +22,7 @@
 
 package eu.thesimplecloud.base.manager.database
 
+import com.mongodb.ConnectionString
 import com.mongodb.MongoClient
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Indexes
@@ -37,13 +38,14 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.bson.Document
+import org.litote.kmongo.KMongo
 import org.litote.kmongo.findOne
 import org.litote.kmongo.getCollection
 import java.util.*
 
-class MongoOfflineCloudPlayerHandler(databaseConnectionInformation: DatabaseConnectionInformation) : IOfflineCloudPlayerHandler {
+class MongoOfflineCloudPlayerHandler(val databaseConnectionInformation: DatabaseConnectionInformation) : IOfflineCloudPlayerHandler {
 
-    private val mongoClient: MongoClient = databaseConnectionInformation.createMongoClient()
+    private val mongoClient: MongoClient = createMongoClient()
     private val collection = this.mongoClient.getDatabase(databaseConnectionInformation.databaseName).getCollection<Document>(databaseConnectionInformation.collectionPrefix + "players")
     private val databseGson  = GsonCreator().excludeAnnotations(DatabaseExclude::class.java).create()
 
@@ -63,6 +65,23 @@ class MongoOfflineCloudPlayerHandler(databaseConnectionInformation: DatabaseConn
                 deletePlayer(playerUniqueId)
             }
         }
+    }
+
+    private fun getConnectionString(): ConnectionString {
+        val host = databaseConnectionInformation.host
+        val port = databaseConnectionInformation.port
+        val databaseName = databaseConnectionInformation.databaseName
+        val userName = databaseConnectionInformation.userName
+        val password = databaseConnectionInformation.password
+        if (password.isBlank() || userName.isBlank()) {
+            return ConnectionString("mongodb://$host:$port/$databaseName")
+        }
+
+        return ConnectionString("mongodb://$userName:$password@$host:$port/$databaseName")
+    }
+
+    private fun createMongoClient(): MongoClient {
+        return KMongo.createClient(getConnectionString())
     }
 
     private fun deletePlayer(playerUniqueId: UUID) {
