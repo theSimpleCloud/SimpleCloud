@@ -39,12 +39,15 @@ class TemplateCopier : ITemplateCopier {
 
     override fun copyTemplate(cloudService: ICloudService, template: ITemplate) {
         val everyDir = File(DirectoryPaths.paths.templatesPath + "EVERY")
-        val everyTypeDir = if (cloudService.getServiceType() == ServiceType.PROXY) File(DirectoryPaths.paths.templatesPath + "EVERY_PROXY") else File(DirectoryPaths.paths.templatesPath + "EVERY_SERVER")
+        val everyTypeDir = if (cloudService.getServiceType() == ServiceType.PROXY)
+            File(DirectoryPaths.paths.templatesPath + "EVERY_PROXY")
+        else
+            File(DirectoryPaths.paths.templatesPath + "EVERY_SERVER")
         val templateDirectories = getDirectoriesOfTemplateAndSubTemplates(template)
-        val serviceTmpDir = if (cloudService.isStatic()) File(DirectoryPaths.paths.staticPath + cloudService.getName()) else File(DirectoryPaths.paths.tempPath + cloudService.getName())
-
-        val serverIconFile = File(serviceTmpDir, "/server-icon.png")
-        FileCopier.copyFileOutOfJar(serverIconFile, "/files/server-icon.png")
+        val serviceTmpDir = if (cloudService.isStatic())
+            File(DirectoryPaths.paths.staticPath + cloudService.getName())
+        else
+            File(DirectoryPaths.paths.tempPath + cloudService.getName())
 
         val dontCopyTemplates = cloudService.isStatic() && serviceTmpDir.exists()
         if (!dontCopyTemplates) {
@@ -54,6 +57,13 @@ class TemplateCopier : ITemplateCopier {
                 FileUtils.copyDirectory(everyTypeDir, serviceTmpDir)
             templateDirectories.filter { it.exists() }.forEach { FileUtils.copyDirectory(it, serviceTmpDir) }
         }
+
+        if (cloudService.getServiceType() == ServiceType.PROXY) {
+            val destServerIconFile = File(serviceTmpDir, "/server-icon.png")
+            if (!destServerIconFile.exists())
+                FileCopier.copyFileOutOfJar(destServerIconFile, "/files/server-icon.png")
+        }
+
         val cloudPluginFile = File(serviceTmpDir, "/plugins/SimpleCloud-Plugin.jar")
         FileCopier.copyFileOutOfJar(cloudPluginFile, "/SimpleCloud-Plugin.jar")
 
