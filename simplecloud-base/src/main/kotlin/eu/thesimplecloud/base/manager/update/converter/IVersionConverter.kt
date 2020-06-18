@@ -20,22 +20,18 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.launcher.updater
+package eu.thesimplecloud.base.manager.update.converter
 
 interface IVersionConverter {
 
     /**
-     * Returns the version this converter converts from
-     */
-    fun getFromVersion(): String
-
-    /**
      * Returns the version this converter converts to
+     *
      */
-    fun getToVersion(): String
+    fun getTargetMinorVersion(): Int
 
     /**
-     * Coverts from [getFromVersion] to [getToVersion]
+     * Coverts from the previous version to [getTargetMinorVersion]
      */
     fun convert()
 
