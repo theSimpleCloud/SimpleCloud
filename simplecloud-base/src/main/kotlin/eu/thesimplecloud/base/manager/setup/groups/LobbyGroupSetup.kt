@@ -129,8 +129,8 @@ class LobbyGroupSetup : DefaultGroupSetup(), ISetup {
 
     @SetupQuestion(9, "manager.setup.server-group.question.wrapper", "On which wrapper shall services of this group run? (Needed when the group is static. Otherwise you can leave it empty for the wrapper with the lowest workload.)", GroupWrapperSetupAnswerProvider::class)
     fun wrapperQuestion(string: String): Boolean {
-        if (string.isBlank() && !static)
-            return true
+        if (string.isBlank() && static)
+            return false
         val wrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(string)!!
         this.wrapper = wrapper
         return true
