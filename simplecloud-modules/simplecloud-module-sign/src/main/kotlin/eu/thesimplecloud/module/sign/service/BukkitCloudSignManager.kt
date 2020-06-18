@@ -39,6 +39,10 @@ class BukkitCloudSignManager {
     private val bukkitCloudSigns = ArrayList<BukkitCloudSign>()
 
     init {
+        instance = this
+    }
+
+    init {
 
         Bukkit.getScheduler().scheduleSyncRepeatingTask(SpigotPluginMain.INSTANCE, {
             val signModuleConfig = try {
@@ -108,5 +112,15 @@ class BukkitCloudSignManager {
         return this.bukkitCloudSigns.firstOrNull { it.currentServer == cloudService }
     }
 
+    fun getAllSigns(): List<BukkitCloudSign> {
+        return this.bukkitCloudSigns
+    }
+
+
+    companion object {
+        @JvmStatic
+        lateinit var instance: BukkitCloudSignManager
+            private set
+    }
 
 }
