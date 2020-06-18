@@ -204,4 +204,8 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
         return System.getProperty("simplecloud.version").toLowerCase().contains("snapshot")
     }
 
+    fun getCurrentVersion(): String {
+        return System.getProperty("simplecloud.version")
+    }
+
 }
