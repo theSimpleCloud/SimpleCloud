@@ -30,6 +30,7 @@ import eu.thesimplecloud.plugin.startup.CloudPlugin
 import net.md_5.bungee.api.ServerPing
 import net.md_5.bungee.api.event.ProxyPingEvent
 import net.md_5.bungee.api.event.ServerConnectEvent
+import net.md_5.bungee.api.event.ServerConnectedEvent
 import net.md_5.bungee.api.event.ServerSwitchEvent
 import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.event.EventHandler
@@ -75,8 +76,12 @@ class BungeeListener(val plugin: BungeePluginMain) : Listener {
             }
         }
 
-        val tablistConfiguration = plugin.proxyHandler.getTablistConfiguration()?: return
+    }
 
+    @EventHandler
+    fun on(event: ServerConnectedEvent) {
+        val player = event.player
+        val tablistConfiguration = plugin.proxyHandler.getTablistConfiguration()?: return
         val headerAndFooter = plugin.getCurrentHeaderAndFooter(tablistConfiguration)
         plugin.sendHeaderAndFooter(player, headerAndFooter.first, headerAndFooter.second)
     }
