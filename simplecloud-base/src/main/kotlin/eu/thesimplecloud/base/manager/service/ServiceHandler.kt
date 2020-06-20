@@ -45,7 +45,7 @@ class ServiceHandler : IServiceHandler {
     private var serviceQueue: MutableList<ICloudService> = ArrayList()
 
     override fun startServicesByGroup(cloudServiceGroup: ICloudServiceGroup, count: Int): List<ICloudService> {
-        require(count >= 1) { "Count must be positive." }
+        require(count >= 1) { "Count must be positive" }
         val list = ArrayList<ICloudService>()
         for (i in 0 until count) {
             list.add(startService(ServiceStartConfiguration(cloudServiceGroup)))
@@ -80,7 +80,7 @@ class ServiceHandler : IServiceHandler {
         if (serviceQueue.contains(service))
             return
         serviceQueue.add(service)
-        Launcher.instance.consoleSender.sendMessage("manager.service.queued", "Service %SERVICE%", service.getName(), " is now queued.")
+        Launcher.instance.consoleSender.sendMessage("manager.service.queued", "Service %SERVICE%", service.getName(), " is now queued")
     }
 
 

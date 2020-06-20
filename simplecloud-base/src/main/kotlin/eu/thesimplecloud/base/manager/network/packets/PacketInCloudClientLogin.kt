@@ -56,7 +56,7 @@ class PacketInCloudClientLogin() : JsonPacket() {
                 cloudService.setAuthenticated(true)
                 CloudAPI.instance.getCloudServiceManager().update(cloudService)
                 CloudAPI.instance.getCloudServiceManager().sendUpdateToConnection(cloudService, connection).awaitCoroutine()
-                Launcher.instance.consoleSender.sendMessage("manager.login.service", "Service %SERVICE%", cloudService.getName(), " logged in.")
+                Launcher.instance.consoleSender.sendMessage("manager.login.service", "Service %SERVICE%", cloudService.getName(), " logged in")
             }
             NetworkComponentType.WRAPPER -> {
                 val wrapperInfo = CloudAPI.instance.getWrapperManager().getWrapperByHost(host)
@@ -67,7 +67,7 @@ class PacketInCloudClientLogin() : JsonPacket() {
                 CloudAPI.instance.getWrapperManager().sendUpdateToConnection(wrapperInfo, connection).awaitCoroutine()
                 connection.sendUnitQuery(PacketOutJvmArguments(Manager.instance.jvmArgumentsConfig)).awaitCoroutine()
                 connection.sendUnitQuery(PacketOutSetWrapperName(wrapperInfo.getName())).awaitCoroutine()
-                Launcher.instance.consoleSender.sendMessage("manager.login.wrapper", "Wrapper %WRAPPER%", wrapperInfo.getName(), " logged in.")
+                Launcher.instance.consoleSender.sendMessage("manager.login.wrapper", "Wrapper %WRAPPER%", wrapperInfo.getName(), " logged in")
             }
         }
 
