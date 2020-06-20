@@ -30,4 +30,9 @@ interface IProperty<T : Any> {
      * This is required when this function gets called from a module.
      */
     fun getValue(): T
+
+    /**
+     * Returns the value of this property converted to a json string.
+     */
+    fun getValueAsString(): String
 }

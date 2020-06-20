@@ -36,11 +36,19 @@ class Property<T : Any>(
     @PacketExclude
     @DatabaseExclude
     @Volatile
-    var savedValue: T? = value
+    private var savedValue: T? = value
 
-    val className = value::class.java.name
+    private val className: String = value::class.java.name
 
     private val valueAsString: String = JsonLib.fromObject(value).getAsJsonString()
+
+    @DatabaseExclude
+    var lastUpdateTimeStamp = 0L
+        private set
+
+    init {
+        setLastUpdateToNow()
+    }
 
     @Synchronized
     override fun getValue(): T {
@@ -53,6 +61,14 @@ class Property<T : Any>(
 
     fun resetValue() {
         this.savedValue = null
+    }
+
+    fun setLastUpdateToNow() {
+        this.lastUpdateTimeStamp = System.currentTimeMillis()
+    }
+
+    override fun getValueAsString(): String {
+        return this.valueAsString
     }
 
     companion object {
