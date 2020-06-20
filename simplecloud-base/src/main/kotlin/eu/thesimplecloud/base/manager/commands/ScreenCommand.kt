@@ -41,6 +41,7 @@ class ScreenCommand : ICommandHandler {
             commandSender.sendMessage("manager.command.screen.not-exist", "The specified screen does not exist.")
             return
         }
+        Launcher.instance.clearConsole()
         screen.getAllSavedMessages().forEach { Launcher.instance.logger.empty(it) }
         Launcher.instance.logger.empty("You joined the screen ${screen.getName()}. To leave the screen write \"leave\"")
         Launcher.instance.logger.empty("All commands will be executed on the screen.")
