@@ -135,4 +135,9 @@ class CloudPlayer(
     override fun toString(): String {
         return JsonLib.fromObject(this).getAsJsonString()
     }
+
+    override fun saveToDatabase(): ICommunicationPromise<Unit> {
+        throw UnsupportedOperationException("Cannot save online player to database")
+    }
+
 }

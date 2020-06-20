@@ -24,11 +24,6 @@ package eu.thesimplecloud.base.manager.database
 
 import eu.thesimplecloud.api.player.IOfflineCloudPlayer
 import eu.thesimplecloud.api.player.OfflineCloudPlayer
-import eu.thesimplecloud.api.property.Property
-import eu.thesimplecloud.base.manager.player.LoadOfflineCloudPlayer
-import eu.thesimplecloud.base.manager.player.exception.OfflinePlayerLoadException
-import eu.thesimplecloud.base.manager.startup.Manager
-import eu.thesimplecloud.jsonlib.JsonLib
 import java.util.*
 
 interface IOfflineCloudPlayerHandler {
@@ -52,36 +47,5 @@ interface IOfflineCloudPlayerHandler {
      * Closes the connection to the database
      */
     fun closeConnection()
-
-
-    fun fromLoadOfflinePlayer(loadOfflineCloudPlayer: LoadOfflineCloudPlayer?): OfflineCloudPlayer? {
-        loadOfflineCloudPlayer ?: return null
-        val propertyMapAsDocument = loadOfflineCloudPlayer.propertyMap
-        try {
-            val propertyMap = propertyMapAsDocument.toSortedMap().mapValues {
-                val valueString = it.value.toString()
-                val jsonLib = JsonLib.fromJsonString(valueString)
-                val className = jsonLib.getString("className")!!
-                val clazz = this.findClass(className)
-                val value = jsonLib.getObject("savedValue", clazz)!!
-                Property(value)
-            }
-            return OfflineCloudPlayer(
-                    loadOfflineCloudPlayer.name,
-                    loadOfflineCloudPlayer.uniqueId,
-                    loadOfflineCloudPlayer.firstLogin,
-                    loadOfflineCloudPlayer.lastLogin,
-                    loadOfflineCloudPlayer.onlineTime,
-                    loadOfflineCloudPlayer.lastPlayerConnection,
-                    HashMap(propertyMap)
-            )
-        } catch (ex: Exception) {
-            throw OfflinePlayerLoadException("Error while loading OfflinePlayer ${loadOfflineCloudPlayer.name}:", ex)
-        }
-    }
-
-    fun findClass(className: String): Class<*> {
-        return Manager.instance.cloudModuleHandler.findModuleOrSystemClass(className)
-    }
 
 }

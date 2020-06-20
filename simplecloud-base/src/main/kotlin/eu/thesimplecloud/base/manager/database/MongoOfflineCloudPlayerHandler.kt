@@ -31,7 +31,6 @@ import eu.thesimplecloud.api.player.OfflineCloudPlayer
 import eu.thesimplecloud.api.player.connection.DefaultPlayerAddress
 import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
 import eu.thesimplecloud.api.utils.DatabaseExclude
-import eu.thesimplecloud.base.manager.player.LoadOfflineCloudPlayer
 import eu.thesimplecloud.jsonlib.GsonCreator
 import eu.thesimplecloud.jsonlib.JsonLib
 import kotlinx.coroutines.GlobalScope
@@ -91,20 +90,19 @@ class MongoOfflineCloudPlayerHandler(val databaseConnectionInformation: Database
     override fun getOfflinePlayer(playerUniqueId: UUID): IOfflineCloudPlayer? {
         val document = this.collection.findOne(Filters.eq("uniqueId", playerUniqueId.toString()))
                 ?: return null
-        return fromLoadOfflinePlayer(JsonLib.fromObject(document, databseGson).getObject(LoadOfflineCloudPlayer::class.java))
+        return JsonLib.fromObject(document, databseGson).getObject(OfflineCloudPlayer::class.java)
     }
 
     override fun getOfflinePlayer(name: String): IOfflineCloudPlayer? {
         val document = this.collection.findOne("{ \$text: { \$search: \"$name\",\$caseSensitive :false } }")
                 ?: return null
-        return fromLoadOfflinePlayer(JsonLib.fromObject(document, databseGson).getObject(LoadOfflineCloudPlayer::class.java))
+        return JsonLib.fromObject(document, databseGson).getObject(OfflineCloudPlayer::class.java)
     }
 
     @Synchronized
     override fun saveCloudPlayer(offlineCloudPlayer: OfflineCloudPlayer) {
         //load all properties so that the values are all set
         val documentToSave = JsonLib.fromObject(offlineCloudPlayer, databseGson).getObject(Document::class.java)
-        offlineCloudPlayer.getProperties().forEach { it.value.getValue() }
         if (offlineCloudPlayer::class.java != OfflineCloudPlayer::class.java) throw IllegalStateException("Cannot save player of type " + offlineCloudPlayer::class.java.simpleName)
         if (getOfflinePlayer(offlineCloudPlayer.getUniqueId()) != null) {
             this.collection.replaceOne(Filters.eq("uniqueId", offlineCloudPlayer.getUniqueId().toString()), documentToSave)

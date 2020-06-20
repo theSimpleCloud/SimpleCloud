@@ -34,12 +34,12 @@ class Property<T : Any>(
 
     @JsonLibExclude
     @PacketExclude
+    @DatabaseExclude
     @Volatile
     var savedValue: T? = value
 
     val className = value::class.java.name
 
-    @DatabaseExclude
     private val valueAsString: String = JsonLib.fromObject(value).getAsJsonString()
 
     @Synchronized

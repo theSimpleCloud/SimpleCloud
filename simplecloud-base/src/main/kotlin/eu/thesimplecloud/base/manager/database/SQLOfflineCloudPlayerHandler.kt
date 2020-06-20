@@ -25,7 +25,6 @@ package eu.thesimplecloud.base.manager.database
 import eu.thesimplecloud.api.player.IOfflineCloudPlayer
 import eu.thesimplecloud.api.player.OfflineCloudPlayer
 import eu.thesimplecloud.api.utils.DatabaseExclude
-import eu.thesimplecloud.base.manager.player.LoadOfflineCloudPlayer
 import eu.thesimplecloud.jsonlib.GsonCreator
 import eu.thesimplecloud.jsonlib.JsonLib
 import java.sql.Connection
@@ -85,8 +84,7 @@ class SQLOfflineCloudPlayerHandler(databaseConnectionInformation: DatabaseConnec
     }
 
     private fun loadPlayerFromJsonString(jsonString: String): OfflineCloudPlayer? {
-        val loadOfflineCloudPlayer = JsonLib.fromJsonString(jsonString, databaseGson).getObject(LoadOfflineCloudPlayer::class.java)
-        return this.fromLoadOfflinePlayer(loadOfflineCloudPlayer)
+        return JsonLib.fromJsonString(jsonString, databaseGson).getObject(OfflineCloudPlayer::class.java)
     }
 
     override fun saveCloudPlayer(offlineCloudPlayer: OfflineCloudPlayer) {
