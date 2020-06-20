@@ -103,7 +103,7 @@ class Manager : ICloudApplication {
         this.cloudModuleHandler = ModuleHandler(
                 appClassLoader,
                 ModuleUpdaterConfigLoader().loadConfig().modules,
-                !Launcher.instance.isSnapshotBuild()
+                shallInstallUpdates = true
         )
         this.appClassLoader.moduleHandler = this.cloudModuleHandler
 

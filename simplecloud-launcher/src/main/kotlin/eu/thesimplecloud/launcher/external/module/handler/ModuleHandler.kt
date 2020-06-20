@@ -81,7 +81,7 @@ open class ModuleHandler(
         val (file, content, updaterFileContent) = loadedModuleFileContent
         if (updaterFileContent != null && !Launcher.instance.launcherStartArguments.disableAutoUpdater) {
             val updater = ModuleUpdater(updaterFileContent, loadedModuleFileContent.file)
-            if (shallInstallUpdates && false && updater.isUpdateAvailable()) {
+            if (shallInstallUpdates && updater.isUpdateAvailable()) {
                 UpdateExecutor().executeUpdate(updater)
                 return loadModule(loadedModuleFileContent.file)
             }
@@ -255,6 +255,7 @@ open class ModuleHandler(
                     ?: throw ModuleLoadException("${file.path}: No '$moduleFileName' found.")
             val fileStream = jar.getInputStream(entry)
             val jsonLib = JsonLib.fromInputStream(fileStream)
+            jar.close()
             return jsonLib.getObjectOrNull(T::class.java)
                     ?: throw ModuleLoadException("${file.path}: Invalid '$moduleFileName'.")
         } catch (ex: Exception) {
