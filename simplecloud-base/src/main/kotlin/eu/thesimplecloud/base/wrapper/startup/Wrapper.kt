@@ -38,7 +38,6 @@ import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.ServiceConfigu
 import eu.thesimplecloud.client.packets.PacketOutCloudClientLogin
 import eu.thesimplecloud.clientserverapi.client.INettyClient
 import eu.thesimplecloud.clientserverapi.client.NettyClient
-import eu.thesimplecloud.clientserverapi.lib.debug.DebugMessage
 import eu.thesimplecloud.clientserverapi.lib.packet.IPacket
 import eu.thesimplecloud.launcher.application.ICloudApplication
 import eu.thesimplecloud.launcher.config.LauncherConfig
@@ -84,8 +83,6 @@ class Wrapper : ICloudApplication {
         this.communicationClient = NettyClient(launcherConfig.host, launcherConfig.port, ConnectionHandlerImpl())
         this.communicationClient.setPacketSearchClassLoader(Launcher.instance.getNewClassLoaderWithLauncherAndBase())
         this.communicationClient.setClassLoaderToSearchObjectPacketClasses(appClassLoader)
-        this.communicationClient.getDebugMessageManager().enable(DebugMessage.PACKET_SENT)
-        this.communicationClient.getDebugMessageManager().enable(DebugMessage.PACKET_RECEIVED)
         this.communicationClient.setPacketClassConverter {
             val packetClass = Class.forName(it.name, true, appClassLoader) as Class<out IPacket>
             packetClass
