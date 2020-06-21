@@ -20,6 +20,28 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.api.sync.`object`
+package eu.thesimplecloud.api.network.packets.sync.`object`
 
-interface ISynchronizedObject
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.property.IProperty
+import eu.thesimplecloud.api.property.Property
+import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
+import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
+
+class PacketIOUpdateGlobalProperty() : JsonPacket() {
+
+    constructor(name: String, property: IProperty<*>) : this() {
+        this.jsonLib.append("property", property)
+                .append("name", name)
+
+    }
+
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
+        val name = this.jsonLib.getString("name") ?: return contentException("name")
+        val property = this.jsonLib.getObject("property", Property::class.java)
+                ?: return contentException("property")
+        CloudAPI.instance.getGlobalPropertyHolder().updatePropertyFromPacket(name, property)
+        return unit()
+    }
+}

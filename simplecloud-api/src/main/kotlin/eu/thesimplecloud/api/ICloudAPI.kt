@@ -33,7 +33,7 @@ import eu.thesimplecloud.api.screen.ICommandExecuteManager
 import eu.thesimplecloud.api.service.ICloudServiceManager
 import eu.thesimplecloud.api.service.version.IServiceVersionHandler
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroupManager
-import eu.thesimplecloud.api.sync.`object`.ISingleSynchronizedObjectManager
+import eu.thesimplecloud.api.sync.`object`.IGlobalPropertyHolder
 import eu.thesimplecloud.api.sync.list.manager.ISynchronizedObjectListManager
 import eu.thesimplecloud.api.template.ITemplateManager
 import eu.thesimplecloud.api.utils.INetworkComponent
@@ -84,9 +84,9 @@ interface ICloudAPI {
     fun getTemplateManager(): ITemplateManager
 
     /**
-     * Returns the [ISingleSynchronizedObjectManager] used to manage the templates
+     * Returns the [IGlobalPropertyHolder] used to manage the templates
      */
-    fun getSingleSynchronizedObjectManager(): ISingleSynchronizedObjectManager
+    fun getGlobalPropertyHolder(): IGlobalPropertyHolder
 
     /**
      * Returns the [ICommunicationBootstrap] of this side.

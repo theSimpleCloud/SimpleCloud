@@ -68,17 +68,17 @@ class CloudVelocityPlugin @Inject constructor(val proxyServer: ProxyServer) : IC
         instance = this
 
         CloudPlugin(this)
-        val synchronizedObjectPromise = CloudAPI.instance.getSingleSynchronizedObjectManager().requestSingleSynchronizedObject("simplecloud-ingamecommands", SynchronizedIngameCommandNamesContainer::class.java)
+        val synchronizedObjectPromise = CloudAPI.instance.getGlobalPropertyHolder().requestProperty<SynchronizedIngameCommandNamesContainer>("simplecloud-ingamecommands")
         synchronizedObjectPromise.addResultListener { objectHolder ->
             this.synchronizedIngameCommandNamesContainer.names.forEach {
                 proxyServer.commandManager.unregister(it)
             }
-            this.synchronizedIngameCommandNamesContainer = objectHolder.obj
+            this.synchronizedIngameCommandNamesContainer = objectHolder.getValue()
 
             this.synchronizedIngameCommandNamesContainer.names.forEach {
                 proxyServer.commandManager.register(it, VelocityCommand(it))
             }
-        }
+        }.throwFailure()
     }
 
     @Subscribe

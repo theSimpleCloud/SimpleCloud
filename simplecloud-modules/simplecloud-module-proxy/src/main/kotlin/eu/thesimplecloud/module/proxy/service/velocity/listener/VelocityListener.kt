@@ -52,7 +52,7 @@ class VelocityListener(val plugin: VelocityPluginMain) {
             plugin.startTablist()
         }
 
-        val config = plugin.proxyHandler.configHolder.obj
+        val config = plugin.proxyHandler.configHolder.getValue()
         val proxyConfiguration = plugin.proxyHandler.getProxyConfiguration() ?: return
 
         if (CloudPlugin.instance.thisService().getServiceGroup().isInMaintenance()) {

@@ -22,9 +22,9 @@
 
 package eu.thesimplecloud.module.permission.group.manager
 
-import eu.thesimplecloud.api.sync.`object`.SynchronizedObjectHolder
+import eu.thesimplecloud.api.property.IProperty
+import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.api.sync.list.AbstractSynchronizedObjectList
-import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.module.permission.group.IPermissionGroup
 import eu.thesimplecloud.module.permission.group.PermissionGroup
 import eu.thesimplecloud.module.permission.manager.PermissionModule
@@ -35,20 +35,25 @@ class PermissionGroupManager() : AbstractSynchronizedObjectList<PermissionGroup>
 
     override fun getIdentificationName(): String = "simplecloud-module-permission"
 
-    override fun getCachedObjectByUpdateValue(value: PermissionGroup): SynchronizedObjectHolder<PermissionGroup>? {
-        return this.values.firstOrNull { it.obj.getName() == value.getName() }
+    override fun getCachedObjectByUpdateValue(value: PermissionGroup): IProperty<PermissionGroup>? {
+        return this.values.firstOrNull { it.getValue().getName() == value.getName() }
     }
 
-    override fun getAllPermissionGroups(): Collection<IPermissionGroup> = this.values.map { it.obj }
+    override fun getAllPermissionGroups(): Collection<IPermissionGroup> = this.values.map { it.getValue() }
 
-    override fun getPermissionGroupByName(name: String): IPermissionGroup? = this.values.firstOrNull { it.obj.getName() == name }?.obj
+    override fun getPermissionGroupByName(name: String): IPermissionGroup? = this.values.firstOrNull { it.getValue().getName() == name }?.getValue()
 
     override fun getDefaultPermissionGroupName(): String = this.defaultPermissionGroupName
 
     override fun update(permissionGroup: PermissionGroup) {
-        super.update(permissionGroup, false)
+        super.update(Property(permissionGroup), false)
+    }
 
-        JsonLib.fromObject(this).saveAsFile(PermissionModule.GROUPS_FILE)
+    override fun update(property: IProperty<PermissionGroup>, fromPacket: Boolean) {
+        super.update(property, fromPacket)
+        if (fromPacket) {
+            PermissionModule.instance.updateGroupsFile()
+        }
     }
 
     fun setDefaultPermissionGroup(groupName: String) {

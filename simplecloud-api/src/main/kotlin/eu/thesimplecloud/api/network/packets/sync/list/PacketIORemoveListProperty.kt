@@ -23,27 +23,27 @@
 package eu.thesimplecloud.api.network.packets.sync.list
 
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.sync.list.ISynchronizedListObject
+import eu.thesimplecloud.api.property.IProperty
+import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.api.sync.list.ISynchronizedObjectList
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
-class PacketIOUpdateSynchronizedListObject() : JsonPacket() {
+class PacketIORemoveListProperty() : JsonPacket() {
 
-    constructor(name: String, obj: ISynchronizedListObject) : this() {
-        this.jsonLib.append("name", name).append("obj", obj).append("className", obj::class.java.name)
+    constructor(listName: String, property: IProperty<*>) : this() {
+        this.jsonLib.append("listName", listName).append("property", property)
     }
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
-        val name = this.jsonLib.getString("name") ?: return contentException("name")
-        val className = this.jsonLib.getString("className") ?: return contentException("className")
+        val listName = this.jsonLib.getString("listName") ?: return contentException("listName")
+        val property = this.jsonLib.getObject("property", Property::class.java) ?: return contentException("property")
+        property as IProperty<Any>
         try {
-            val synchronizedObject = this.jsonLib.getObject("obj", Class.forName(className)) as ISynchronizedListObject?
-                    ?: return contentException("obj")
-            val synchronizedObjectList: ISynchronizedObjectList<ISynchronizedListObject>? = CloudAPI.instance.getSynchronizedObjectListManager().getSynchronizedObjectList(name)
+            val synchronizedObjectList: ISynchronizedObjectList<Any>? = CloudAPI.instance.getSynchronizedObjectListManager().getSynchronizedObjectList(listName)
             synchronizedObjectList ?: return failure(NoSuchElementException())
-            synchronizedObjectList.update(synchronizedObject, fromPacket = true)
+            synchronizedObjectList.remove(property, true)
 
         } catch (ex: Exception) {
             throw ex

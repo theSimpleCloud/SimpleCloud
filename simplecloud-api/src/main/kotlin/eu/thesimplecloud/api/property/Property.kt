@@ -40,9 +40,11 @@ class Property<T : Any>(
 
     private val className: String = value::class.java.name
 
-    private val valueAsString: String = JsonLib.fromObject(value).getAsJsonString()
+    @Volatile
+    private var valueAsString: String = JsonLib.fromObject(value).getAsJsonString()
 
     @DatabaseExclude
+    @JsonLibExclude
     var lastUpdateTimeStamp = 0L
         private set
 
@@ -69,6 +71,10 @@ class Property<T : Any>(
 
     override fun getValueAsString(): String {
         return this.valueAsString
+    }
+
+    fun setStringValue(string: String) {
+        this.valueAsString = string
     }
 
     companion object {

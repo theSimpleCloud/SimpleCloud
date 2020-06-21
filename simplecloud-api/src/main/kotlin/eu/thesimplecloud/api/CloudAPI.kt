@@ -26,6 +26,8 @@ import eu.thesimplecloud.api.cachelist.manager.CacheListManager
 import eu.thesimplecloud.api.cachelist.manager.ICacheListManager
 import eu.thesimplecloud.api.message.IMessageChannelManager
 import eu.thesimplecloud.api.message.MessageChannelManager
+import eu.thesimplecloud.api.sync.`object`.GlobalPropertyHolder
+import eu.thesimplecloud.api.sync.`object`.IGlobalPropertyHolder
 import eu.thesimplecloud.api.template.ITemplateManager
 import eu.thesimplecloud.api.template.impl.DefaultTemplateManager
 import eu.thesimplecloud.api.wrapper.IWrapperManager
@@ -37,6 +39,7 @@ abstract class CloudAPI : ICloudAPI {
     private val templateManager: ITemplateManager = DefaultTemplateManager()
     private val messageChannelManager: IMessageChannelManager = MessageChannelManager()
     private val cacheListManager: ICacheListManager = CacheListManager()
+    private val globalPropertyHolder: IGlobalPropertyHolder = GlobalPropertyHolder()
 
     init {
         instance = this
@@ -51,6 +54,9 @@ abstract class CloudAPI : ICloudAPI {
     override fun getMessageChannelManager(): IMessageChannelManager = this.messageChannelManager
 
     override fun getCacheListManager(): ICacheListManager = this.cacheListManager
+
+    override fun getGlobalPropertyHolder(): IGlobalPropertyHolder = this.globalPropertyHolder
+
     companion object {
         @JvmStatic
         lateinit var instance: ICloudAPI

@@ -81,7 +81,7 @@ class BukkitCloudSign(
         val currentServer = this.currentServer
         val sign = location.block.state as Sign
         clearSign(false)
-        val signConfig = SignModuleConfig.INSTANCE.obj
+        val signConfig = SignModuleConfig.INSTANCE.getValue()
         val signLayout = when {
             serviceGroup.isInMaintenance() -> signConfig.getMaintenanceLayout()
             currentServer == null -> signConfig.getSearchingLayout()

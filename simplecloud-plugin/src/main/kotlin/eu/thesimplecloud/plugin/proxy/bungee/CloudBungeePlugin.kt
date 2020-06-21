@@ -97,10 +97,10 @@ class CloudBungeePlugin : Plugin(), ICloudProxyPlugin {
     override fun onLoad() {
         ProxyServer.getInstance().reconnectHandler = ReconnectHandlerImpl()
         CloudPlugin(this)
-        val synchronizedObjectPromise = CloudAPI.instance.getSingleSynchronizedObjectManager().requestSingleSynchronizedObject("simplecloud-ingamecommands", SynchronizedIngameCommandNamesContainer::class.java)
+        val synchronizedObjectPromise = CloudAPI.instance.getGlobalPropertyHolder().requestProperty<SynchronizedIngameCommandNamesContainer>("simplecloud-ingamecommands")
         synchronizedObjectPromise.addResultListener {
-            this.synchronizedIngameCommandNamesContainer = it.obj
-        }
+            this.synchronizedIngameCommandNamesContainer = it.getValue()
+        }.throwFailure()
     }
 
     override fun onEnable() {

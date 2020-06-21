@@ -23,29 +23,32 @@
 package eu.thesimplecloud.api.network.packets.sync.`object`
 
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.sync.`object`.ISingleSynchronizedObject
+import eu.thesimplecloud.api.sync.`object`.GlobalPropertyHolder
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
-import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
+import eu.thesimplecloud.clientserverapi.lib.packet.packettype.ObjectPacket
+import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
-class PacketIOUpdateSingleSynchronizedObject() : JsonPacket() {
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 21.06.2020
+ * Time: 09:41
+ * @author Frederick Baier
+ */
+class PacketIOGetGlobalProperty() : ObjectPacket<String>() {
 
-    constructor(synchronizedObject: ISingleSynchronizedObject) : this() {
-        this.jsonLib.append("class", synchronizedObject::class.java.name).append("synchronizedObject", synchronizedObject)
+    constructor(name: String) : this() {
+        this.value = name
     }
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
-        val className = this.jsonLib.getString("class") ?: return contentException("class")
-        try {
-            val synchronizedObject = this.jsonLib.getObject("synchronizedObject", Class.forName(
-                    className,
-                    true,
-                    connection.getCommunicationBootstrap().getClassLoaderToSearchObjectPacketsClasses()
-            )) as ISingleSynchronizedObject
-            CloudAPI.instance.getSingleSynchronizedObjectManager().updateObject(synchronizedObject, true)
-        } catch (ex: ClassNotFoundException) {
-            throw ex
+        val value = this.value ?: return contentException("value")
+        val globalPropertyHolder = CloudAPI.instance.getGlobalPropertyHolder()
+                as GlobalPropertyHolder
+        val property = globalPropertyHolder.getProperty<Any>(value)
+        property?.let {
+            globalPropertyHolder.addConnectionToUpdates(value, connection)
         }
-        return unit()
+        return CommunicationPromise.ofNullable(property, NoSuchElementException())
     }
 }

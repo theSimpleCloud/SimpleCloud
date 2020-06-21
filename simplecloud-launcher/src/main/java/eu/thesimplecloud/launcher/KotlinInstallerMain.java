@@ -28,6 +28,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.net.URLStreamHandlerFactory;
 
 public class KotlinInstallerMain {
 
@@ -48,7 +49,7 @@ public class KotlinInstallerMain {
         installDependency("https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/" + kotlinVersion + "/kotlin-stdlib-" + kotlinVersion + ".jar", kotlinStandardLibrary);
         installDependency("https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk8/" + kotlinVersion + "/kotlin-stdlib-jdk8-" + kotlinVersion + ".jar", kotlinJdk8StandardLibrary);
         installDependency("https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk7/" + kotlinVersion + "/kotlin-stdlib-jdk7-" + kotlinVersion + ".jar", kotlinJdk7StandardLibrary);
-        return new URLClassLoader(new URL[]{
+        return new KotlinClassLoader(new URL[]{
                 kotlinJdk7StandardLibrary.toURI().toURL(),
                 kotlinJdk8StandardLibrary.toURI().toURL(),
                 kotlinStandardLibrary.toURI().toURL(),
@@ -64,6 +65,21 @@ public class KotlinInstallerMain {
 
     private static File getRunningJarFile() throws URISyntaxException {
         return new File(KotlinInstallerMain.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+    }
+
+    public static class KotlinClassLoader extends URLClassLoader {
+
+        public KotlinClassLoader(URL[] urls, ClassLoader parent) {
+            super(urls, parent);
+        }
+
+        public KotlinClassLoader(URL[] urls) {
+            super(urls);
+        }
+
+        public KotlinClassLoader(URL[] urls, ClassLoader parent, URLStreamHandlerFactory factory) {
+            super(urls, parent, factory);
+        }
     }
 
 }

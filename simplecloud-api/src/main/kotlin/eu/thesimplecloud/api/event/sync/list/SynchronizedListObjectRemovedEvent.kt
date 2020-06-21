@@ -23,7 +23,6 @@
 package eu.thesimplecloud.api.event.sync.list
 
 import eu.thesimplecloud.api.eventapi.IEvent
-import eu.thesimplecloud.api.sync.`object`.SynchronizedObjectHolder
-import eu.thesimplecloud.api.sync.list.ISynchronizedListObject
+import eu.thesimplecloud.api.property.IProperty
 
-class SynchronizedListObjectRemovedEvent(val obj: SynchronizedObjectHolder<ISynchronizedListObject>) : IEvent
+class SynchronizedListObjectRemovedEvent(val property: IProperty<out Any>) : IEvent

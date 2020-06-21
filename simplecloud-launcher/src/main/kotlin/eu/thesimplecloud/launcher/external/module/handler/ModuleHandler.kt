@@ -93,9 +93,9 @@ open class ModuleHandler(
             installRequiredDependencies(content)
             val classLoader = this.createModuleClassLoader(arrayOf(file.toURI().toURL()), loadedModuleFileContent.content.name)
             val cloudModule = this.loadModuleClassInstance(classLoader, content.mainClass)
-            cloudModule.onEnable()
             val loadedModule = LoadedModule(cloudModule, file, content, updaterFileContent, classLoader)
             this.loadedModules.add(loadedModule)
+            cloudModule.onEnable()
             CloudAPI.instance.getEventManager().call(ModuleLoadedEvent(loadedModule))
 
             return loadedModule

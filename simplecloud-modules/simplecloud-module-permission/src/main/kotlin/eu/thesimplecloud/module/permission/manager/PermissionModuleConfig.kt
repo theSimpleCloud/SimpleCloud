@@ -20,26 +20,18 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.api.sync.`object`
+package eu.thesimplecloud.module.permission.manager
 
-import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
+import eu.thesimplecloud.module.permission.group.PermissionGroup
 
-interface ISingleSynchronizedObjectManager {
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 21.06.2020
+ * Time: 16:18
+ * @author Frederick Baier
+ */
 
-    /**
-     * Updates a synchronized object.
-     * @return the [SynchronizedObjectHolder] of the specified [synchronizedObject]
-     */
-    fun <T : ISingleSynchronizedObject> updateObject(synchronizedObject: T, fromPacket: Boolean = false): SynchronizedObjectHolder<T>
-
-    /**
-     * Returns the [ISingleSynchronizedObject] found by the specified [name] or null if no object was found.
-     */
-    fun <T : ISingleSynchronizedObject> getObject(name: String): SynchronizedObjectHolder<T>?
-
-    /**
-     * Returns a [ICommunicationPromise] that completes once the requested [ISingleSynchronizedObject] is available.
-     */
-    fun <T : ISingleSynchronizedObject> requestSingleSynchronizedObject(name: String, clazz: Class<T>): ICommunicationPromise<SynchronizedObjectHolder<T>>
-
-}
+class PermissionModuleConfig(
+        val defaultPermissionGroupName: String,
+        val groups: Array<PermissionGroup>
+)

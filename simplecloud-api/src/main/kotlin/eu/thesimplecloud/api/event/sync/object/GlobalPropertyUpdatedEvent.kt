@@ -20,19 +20,9 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.client.packets
+package eu.thesimplecloud.api.event.sync.`object`
 
-import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
-import eu.thesimplecloud.clientserverapi.lib.packet.packettype.ObjectPacket
-import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
+import eu.thesimplecloud.api.eventapi.IEvent
+import eu.thesimplecloud.api.property.IProperty
 
-class PacketOutGetSynchronizedObject(name: String) : ObjectPacket<String>() {
-
-    init {
-        this.value = name
-    }
-
-    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
-        return unit()
-    }
-}
+class GlobalPropertyUpdatedEvent(val property: IProperty<out Any>) : IEvent
