@@ -22,6 +22,7 @@
 
 package eu.thesimplecloud.base.manager.update.converter.converter_1_2_to_1_3
 
+import com.mongodb.BasicDBObject
 import com.mongodb.ConnectionString
 import com.mongodb.MongoClient
 import eu.thesimplecloud.api.player.OfflineCloudPlayer
@@ -30,9 +31,13 @@ import eu.thesimplecloud.base.manager.player.LoadOfflineCloudPlayer
 import eu.thesimplecloud.base.manager.player.exception.OfflinePlayerLoadException
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.jsonlib.JsonLib
+import org.bson.conversions.Bson
 import org.litote.kmongo.KMongo
 import org.litote.kmongo.getCollection
 import java.io.File
+import java.util.*
+import kotlin.collections.HashMap
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -55,13 +60,11 @@ class MongoDBConverter {
         val collection = mongoClient.getDatabase(databaseName)
                 .getCollection<LoadOfflineCloudPlayer>(collectionPrefix + "players")
 
+        val ops: MutableList<Bson> = ArrayList<Bson>()
+        ops.add(BasicDBObject("\$out", "cloud_players_copy")) // writes to collection "target"
+        collection.aggregate(ops)
 
-        val cursor = collection.find().cursor()
-        val offlinePlayerList = cursor.iterator().asSequence().toList()
-                .map { fromLoadOfflinePlayer(it)!! }
         collection.drop()
-        //save as new way
-        offlinePlayerList.forEach { it.saveToDatabase() }
 
         File("storage/mongo.json").delete()
     }

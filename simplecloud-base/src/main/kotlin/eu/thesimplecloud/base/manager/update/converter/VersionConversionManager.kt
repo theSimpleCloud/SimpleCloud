@@ -62,7 +62,6 @@ class VersionConversionManager {
         val currentVersion = Launcher.instance.getCurrentVersion()
         val lastMinorVersion = getMinorVersionFromVersionString(lastStartedVersion)
         val currentMinorVersion = getMinorVersionFromVersionString(currentVersion)
-
         val list = ArrayList<IVersionConverter>()
         for (i in lastMinorVersion until currentMinorVersion) {
             val version = getConverterByToVersion(i + 1)
