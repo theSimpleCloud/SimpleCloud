@@ -40,21 +40,35 @@ class VersionConversionManager {
     private val converters = listOf(Converter_1_2_to_1_3())
     private val lastStartedVersionFile = File(DirectoryPaths.paths.storagePath + "versions/lastStartedVersion.json")
 
+    fun convertBeforeModuleLoad() {
+        getConvertersToExecute().forEach { version ->
+            version.convertBeforeModuleLoad()
+        }
+    }
+
     fun convertIfNecessary() {
+        val lastStartedVersion = getLastStartedVersion()
+        val currentVersion = Launcher.instance.getCurrentVersion()
+        getConvertersToExecute().forEach { version ->
+            Launcher.instance.consoleSender.sendMessage("manager.converting", "Converting from %PREVIOUS%", lastStartedVersion, " to %CURRENT%", currentVersion, "...")
+            version.convertAfterModuleLoad()
+            Launcher.instance.consoleSender.sendMessage("manager.converted", "Converted from %PREVIOUS%", lastStartedVersion, " to %CURRENT%", currentVersion)
+        }
+        writeLastStartedVersion()
+    }
+
+    private fun getConvertersToExecute(): ArrayList<IVersionConverter> {
         val lastStartedVersion = getLastStartedVersion()
         val currentVersion = Launcher.instance.getCurrentVersion()
         val lastMinorVersion = getMinorVersionFromVersionString(lastStartedVersion)
         val currentMinorVersion = getMinorVersionFromVersionString(currentVersion)
 
+        val list = ArrayList<IVersionConverter>()
         for (i in lastMinorVersion until currentMinorVersion) {
             val version = getConverterByToVersion(i + 1)
-            if (version != null) {
-                Launcher.instance.consoleSender.sendMessage("manager.converting", "Converting from %PREVIOUS%", lastStartedVersion, " to %CURRENT%", currentVersion, "...")
-                version.convert()
-                Launcher.instance.consoleSender.sendMessage("manager.converted", "Converted from %PREVIOUS%", lastStartedVersion, " to %CURRENT%", currentVersion)
-            }
+            version?.let { list.add(version) }
         }
-        writeLastStartedVersion()
+        return list
     }
 
     private fun getConverterByToVersion(version: Int): IVersionConverter? {

@@ -36,7 +36,11 @@ class Converter_1_2_to_1_3 : IVersionConverter {
         return 3
     }
 
-    override fun convert() {
+    override fun convertBeforeModuleLoad() {
+        PermissionFileConverter().convert()
+    }
+
+    override fun convertAfterModuleLoad() {
         convertMongoDBPlayers()
     }
 

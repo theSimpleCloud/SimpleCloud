@@ -20,24 +20,32 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.base.manager.update.converter
+package eu.thesimplecloud.base.manager.update.converter.converter_1_2_to_1_3
 
-interface IVersionConverter {
+import eu.thesimplecloud.jsonlib.JsonLib
+import java.io.File
 
-    /**
-     * Returns the version this converter converts to
-     *
-     */
-    fun getTargetMinorVersion(): Int
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 22.06.2020
+ * Time: 19:04
+ * @author Frederick Baier
+ */
+class PermissionFileConverter {
 
-    /**
-     * Coverts from the previous version to [getTargetMinorVersion]
-     */
-    fun convertBeforeModuleLoad()
-
-    /**
-     * Coverts from the previous version to [getTargetMinorVersion]
-     */
-    fun convertAfterModuleLoad()
+    fun convert() {
+        val file = File("modules/permissions/groups.json")
+        if (!file.exists()) return
+        val jsonLib = JsonLib.fromJsonFile(file)!!
+        val permissionGroupName = jsonLib.getString("defaultPermissionGroupName")!!
+        val groups = jsonLib.getAsJsonArray("values")!!
+        val allGroups = groups.map {
+            val oneGroupObjElement = JsonLib.fromJsonElement(it)
+            oneGroupObjElement.getProperty("obj")!!
+        }
+        JsonLib.empty().append("defaultPermissionGroupName", permissionGroupName)
+                .append("groups", allGroups)
+                .saveAsFile(file)
+    }
 
 }
