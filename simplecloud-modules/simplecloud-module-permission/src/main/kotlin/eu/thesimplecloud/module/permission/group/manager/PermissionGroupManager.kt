@@ -22,6 +22,7 @@
 
 package eu.thesimplecloud.module.permission.group.manager
 
+import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.property.IProperty
 import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.api.sync.list.AbstractSynchronizedObjectList
@@ -51,7 +52,7 @@ class PermissionGroupManager() : AbstractSynchronizedObjectList<PermissionGroup>
 
     override fun update(property: IProperty<PermissionGroup>, fromPacket: Boolean) {
         super.update(property, fromPacket)
-        if (fromPacket) {
+        if (fromPacket && CloudAPI.instance.isManager()) {
             PermissionModule.instance.updateGroupsFile()
         }
     }
