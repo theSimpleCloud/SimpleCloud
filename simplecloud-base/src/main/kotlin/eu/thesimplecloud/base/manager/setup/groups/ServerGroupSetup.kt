@@ -129,6 +129,8 @@ class ServerGroupSetup : DefaultGroupSetup(), ISetup {
     fun wrapperQuestion(string: String): Boolean {
         if (string.isBlank() && static)
             return false
+        if (string.isBlank() && !static)
+            return true
         val wrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(string)!!
         this.wrapper = wrapper
         return true
