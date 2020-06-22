@@ -39,11 +39,11 @@ import eu.thesimplecloud.client.packets.PacketOutCloudClientLogin
 import eu.thesimplecloud.clientserverapi.client.INettyClient
 import eu.thesimplecloud.clientserverapi.client.NettyClient
 import eu.thesimplecloud.clientserverapi.lib.packet.IPacket
+import eu.thesimplecloud.launcher.application.ApplicationClassLoader
 import eu.thesimplecloud.launcher.application.ICloudApplication
 import eu.thesimplecloud.launcher.config.LauncherConfig
 import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.external.module.LoadedModuleFileContent
-import eu.thesimplecloud.launcher.external.module.ModuleClassLoader
 import eu.thesimplecloud.launcher.external.module.handler.ModuleHandler
 import eu.thesimplecloud.launcher.startup.Launcher
 import org.apache.commons.io.FileUtils
@@ -73,20 +73,17 @@ class Wrapper : ICloudApplication {
     val serviceVersionLoader = ServiceVersionLoader()
     var existingModules: List<LoadedModuleFileContent> = ArrayList()
         private set
-    val appClassLoader: ModuleClassLoader
+    val appClassLoader: ApplicationClassLoader
 
     init {
         instance = this
-        this.appClassLoader = this::class.java.classLoader as ModuleClassLoader
+        this.appClassLoader = this::class.java.classLoader as ApplicationClassLoader
         Launcher.instance.logger.addLoggerMessageListener(LoggerMessageListenerImpl())
         val launcherConfig = Launcher.instance.launcherConfigLoader.loadConfig()
         this.communicationClient = NettyClient(launcherConfig.host, launcherConfig.port, ConnectionHandlerImpl())
         this.communicationClient.setPacketSearchClassLoader(Launcher.instance.getNewClassLoaderWithLauncherAndBase())
         this.communicationClient.setClassLoaderToSearchObjectPacketClasses(appClassLoader)
-        this.communicationClient.setPacketClassConverter {
-            val packetClass = Class.forName(it.name, true, appClassLoader) as Class<out IPacket>
-            packetClass
-        }
+        this.communicationClient.setPacketClassConverter { moveToApplicationClassLoader(it) }
         CloudAPIImpl()
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.client.packets")
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.base.wrapper.network.packets")
@@ -124,6 +121,13 @@ class Wrapper : ICloudApplication {
             this.communicationClient.shutdown()
             this.templateClient?.shutdown()
         })
+    }
+
+    private fun moveToApplicationClassLoader(clazz: Class<out IPacket>): Class<out IPacket> {
+        if (appClassLoader.isThisClassLoader(clazz)) return clazz
+        val loadedClass = appClassLoader.loadClass(clazz.name)
+        appClassLoader.setCachedClass(loadedClass)
+        return loadedClass as Class<out IPacket>
     }
 
     private fun stopAllRunningServicesAndWaitFor() {
@@ -173,15 +177,15 @@ class Wrapper : ICloudApplication {
                 Launcher.instance.consoleSender.sendMessage("wrapper.template.requesting", "Requesting templates...")
                 templateClient.sendUnitQuery(PacketOutGetTemplates(), TimeUnit.SECONDS.toMillis((60 * 2) + 30))
                         .thenDelayed(3, TimeUnit.SECONDS) {
-                    reloadExistingModules()
-                    val thisWrapper = getThisWrapper() as IWritableWrapperInfo
-                    thisWrapper.setTemplatesReceived(true)
-                    CloudAPI.instance.getWrapperManager().update(thisWrapper)
-                    Launcher.instance.consoleSender.sendMessage("wrapper.template.received", "Templates received.")
-                }.addFailureListener {
-                    Launcher.instance.logger.severe("An error occurred while requesting templates:")
-                    Launcher.instance.logger.exception(it)
-                }
+                            reloadExistingModules()
+                            val thisWrapper = getThisWrapper() as IWritableWrapperInfo
+                            thisWrapper.setTemplatesReceived(true)
+                            CloudAPI.instance.getWrapperManager().update(thisWrapper)
+                            Launcher.instance.consoleSender.sendMessage("wrapper.template.received", "Templates received.")
+                        }.addFailureListener {
+                            Launcher.instance.logger.severe("An error occurred while requesting templates:")
+                            Launcher.instance.logger.exception(it)
+                        }
             }
         }
     }

@@ -25,6 +25,7 @@ package eu.thesimplecloud.launcher;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -32,14 +33,29 @@ import java.net.URLStreamHandlerFactory;
 
 public class KotlinInstallerMain {
 
-    public static void main(String[] args) throws IOException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, URISyntaxException, ClassNotFoundException {
+    public static void main(String[] args) throws Exception {
         System.out.println("Installing kotlin...");
         URLClassLoader urlClassLoader = initClassLoader("1.3.72");
-        Thread.currentThread().setContextClassLoader(urlClassLoader);
+        copyURLsToSystemClassLoader(urlClassLoader);
+        Thread.currentThread().setContextClassLoader(ClassLoader.getSystemClassLoader());
+        //Thread.currentThread().setContextClassLoader(urlClassLoader);
 
-        String kotlinLauncherMainClassName = LauncherMainKt.class.getName();
-        Class<?> launcherMainClass = Class.forName(kotlinLauncherMainClassName, true,  urlClassLoader);
-        launcherMainClass.getDeclaredMethod("main", String[].class).invoke(null, (Object) args);
+        //String kotlinLauncherMainClassName = LauncherMainKt.class.getName();
+        //Class<?> launcherMainClass = Class.forName(kotlinLauncherMainClassName, true,  urlClassLoader);
+        //launcherMainClass.getDeclaredMethod("main", String[].class).invoke(null, (Object) args);
+        LauncherMainKt.main(args);
+    }
+
+    private static void copyURLsToSystemClassLoader(URLClassLoader urlClassLoader) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        for (URL url : urlClassLoader.getURLs()) {
+            addToClasspath(url);
+        }
+    }
+
+    public static void addToClasspath(URL url) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
+        method.setAccessible(true);
+        method.invoke((URLClassLoader)ClassLoader.getSystemClassLoader(), url);
     }
 
     private static URLClassLoader initClassLoader(String kotlinVersion) throws IOException, URISyntaxException {

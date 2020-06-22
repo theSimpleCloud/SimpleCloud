@@ -28,7 +28,7 @@ class LauncherDependencyLoader {
 
     fun loadLauncherDependencies() {
         val dependencyLoader = DependencyLoader.INSTANCE
-        dependencyLoader.addRepositories("https://repo.maven.apache.org/maven2/", "https://repo.thesimplecloud.eu/artifactory/gradle-dev-local/")
+        dependencyLoader.addRepositories("https://repo.maven.apache.org/maven2/", "https://repo.thesimplecloud.eu/artifactory/gradle-release-local/")
         dependencyLoader.addDependencies(
                 Dependency("org.fusesource.jansi", "jansi", "1.18"),
                 Dependency("org.jline", "jline", "3.14.0"),
