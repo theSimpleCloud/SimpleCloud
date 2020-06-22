@@ -56,7 +56,9 @@ class MongoDBConverter {
                 .getCollection<LoadOfflineCloudPlayer>(collectionPrefix + "players")
 
 
-        val offlinePlayerList = collection.find().toList().map { fromLoadOfflinePlayer(it)!! }
+        val cursor = collection.find().cursor()
+        val offlinePlayerList = cursor.iterator().asSequence().toList()
+                .map { fromLoadOfflinePlayer(it)!! }
         collection.drop()
         //save as new way
         offlinePlayerList.forEach { it.saveToDatabase() }
