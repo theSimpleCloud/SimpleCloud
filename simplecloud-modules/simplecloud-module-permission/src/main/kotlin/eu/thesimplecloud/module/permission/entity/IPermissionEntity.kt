@@ -22,7 +22,6 @@
 
 package eu.thesimplecloud.module.permission.entity
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import eu.thesimplecloud.module.permission.permission.Permission
 
 interface IPermissionEntity {
@@ -64,7 +63,6 @@ interface IPermissionEntity {
     /**
     * Returns all not expired permissions
     */
-    @JsonIgnore
     fun getAllNotExpiredPermissions(): Collection<Permission> = getPermissions().filter { !it.isExpired() }
 
     /**

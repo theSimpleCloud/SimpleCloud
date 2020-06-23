@@ -22,12 +22,12 @@
 
 package eu.thesimplecloud.api.sync.list
 
-import eu.thesimplecloud.api.network.packets.sync.list.PacketIOUpdateSynchronizedListObject
-import eu.thesimplecloud.api.sync.`object`.SynchronizedObjectHolder
+import eu.thesimplecloud.api.network.packets.sync.list.PacketIOUpdateListProperty
+import eu.thesimplecloud.api.property.IProperty
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
-interface ISynchronizedObjectList<T : ISynchronizedListObject> {
+interface ISynchronizedObjectList<T : Any> {
 
     /**
      * Returns the unique name to identify this [ISynchronizedObjectList]
@@ -37,29 +37,29 @@ interface ISynchronizedObjectList<T : ISynchronizedListObject> {
     /**
      * Returns all cached objects.
      */
-    fun getAllCachedObjects(): Collection<SynchronizedObjectHolder<T>>
+    fun getAllCachedObjects(): Collection<IProperty<T>>
 
     /**
      * Updates an object
      */
-    fun update(value: T, fromPacket: Boolean = false)
+    fun update(property: IProperty<T>, fromPacket: Boolean = false)
 
     /**
      * Returns the cashed value found by the [value] to update.
      */
-    fun getCachedObjectByUpdateValue(value: T): SynchronizedObjectHolder<T>?
+    fun getCachedObjectByUpdateValue(value: T): IProperty<T>?
 
     /**
-     * Removes the [value] object from the cache.
+     * Removes the [property] object from the cache.
      */
-    fun remove(value: T, fromPacket: Boolean = false)
+    fun remove(property: IProperty<T>, fromPacket: Boolean = false)
 
     /**
      * Sends an update to one connection
      * @return the a promise that completes when the packet was handled.
      */
-    fun updateToConnection(value: T, connection: IConnection): ICommunicationPromise<Unit> {
-        return connection.sendUnitQuery(PacketIOUpdateSynchronizedListObject(getIdentificationName(), value))
+    fun updateToConnection(property: IProperty<*>, connection: IConnection): ICommunicationPromise<Unit> {
+        return connection.sendUnitQuery(PacketIOUpdateListProperty(getIdentificationName(), property))
     }
 
 }

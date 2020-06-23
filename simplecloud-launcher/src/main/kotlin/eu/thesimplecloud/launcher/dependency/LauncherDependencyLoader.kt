@@ -28,8 +28,9 @@ class LauncherDependencyLoader {
 
     fun loadLauncherDependencies() {
         val dependencyLoader = DependencyLoader.INSTANCE
-        dependencyLoader.addRepositories("https://repo.maven.apache.org/maven2/", "https://repo.thesimplecloud.eu/artifactory/gradle-dev-local/")
+        dependencyLoader.addRepositories("https://repo.maven.apache.org/maven2/", "https://repo.thesimplecloud.eu/artifactory/gradle-release-local/")
         dependencyLoader.addDependencies(
+                Dependency("org.fusesource.jansi", "jansi", "1.18"),
                 Dependency("org.jline", "jline", "3.14.0"),
                 Dependency("org.litote.kmongo", "kmongo", "3.11.2"),
                 Dependency("commons-io", "commons-io", "2.6"),
@@ -39,6 +40,7 @@ class LauncherDependencyLoader {
                 Dependency("com.google.code.gson", "gson", "2.8.6"),
                 Dependency("io.netty", "netty-all", "4.1.49.Final"),
                 Dependency("org.reflections", "reflections", "0.9.12"),
+                Dependency("org.mariadb.jdbc", "mariadb-java-client", "2.6.0"),
                 Dependency("com.github.ajalt", "clikt", "2.2.0"))
         dependencyLoader.installDependencies()
     }

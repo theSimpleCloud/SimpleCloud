@@ -39,10 +39,14 @@ class BukkitCloudSignManager {
     private val bukkitCloudSigns = ArrayList<BukkitCloudSign>()
 
     init {
+        instance = this
+    }
+
+    init {
 
         Bukkit.getScheduler().scheduleSyncRepeatingTask(SpigotPluginMain.INSTANCE, {
             val signModuleConfig = try {
-                SignModuleConfig.INSTANCE.obj
+                SignModuleConfig.INSTANCE.getValue()
             } catch (e: Exception) {
                 println("[SimpleCloud-Signs] WARNING: Module config not instantiated.")
                 return@scheduleSyncRepeatingTask
@@ -108,5 +112,15 @@ class BukkitCloudSignManager {
         return this.bukkitCloudSigns.firstOrNull { it.currentServer == cloudService }
     }
 
+    fun getAllSigns(): List<BukkitCloudSign> {
+        return this.bukkitCloudSigns
+    }
+
+
+    companion object {
+        @JvmStatic
+        lateinit var instance: BukkitCloudSignManager
+            private set
+    }
 
 }

@@ -22,7 +22,7 @@
 
 package eu.thesimplecloud.module.proxy.config
 
-import eu.thesimplecloud.api.sync.`object`.ISingleSynchronizedObject
+import eu.thesimplecloud.api.CloudAPI
 
 /**
  * Created by IntelliJ IDEA.
@@ -35,9 +35,9 @@ data class Config(
         val tablistConfigurations: List<TablistConfiguration>,
         val maintenanceKickMessage: String,
         val fullProxyKickMessage: String
-) : ISingleSynchronizedObject {
+) {
 
-    override fun getName(): String {
-        return "simplecloud-module-proxy-config"
+    fun update() {
+        CloudAPI.instance.getGlobalPropertyHolder().setProperty("simplecloud-module-proxy-config", this)
     }
 }

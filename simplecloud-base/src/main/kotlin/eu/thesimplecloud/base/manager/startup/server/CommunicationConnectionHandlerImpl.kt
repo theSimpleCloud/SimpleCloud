@@ -26,10 +26,10 @@ import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.screen.ICommandExecutable
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
+import eu.thesimplecloud.api.sync.`object`.GlobalPropertyHolder
 import eu.thesimplecloud.api.utils.IAuthenticatable
 import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
 import eu.thesimplecloud.base.manager.impl.CloudPlayerManagerImpl
-import eu.thesimplecloud.base.manager.impl.SingleSynchronizedObjectManagerImpl
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.handler.IConnectionHandler
 import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnectedClient
@@ -70,8 +70,8 @@ class CommunicationConnectionHandlerImpl : IConnectionHandler {
             CloudAPI.instance.getCloudServiceManager().update(clientValue)
             Launcher.instance.consoleSender.sendMessage("manager.disconnect.service", "Service %SERVICE%", clientValue.getName(), " disconnected.")
         }
-        val synchronizedObjectManager = CloudAPI.instance.getSingleSynchronizedObjectManager() as SingleSynchronizedObjectManagerImpl
-        synchronizedObjectManager.unregisterClient(connection)
+        val synchronizedObjectManager = CloudAPI.instance.getGlobalPropertyHolder() as GlobalPropertyHolder
+        synchronizedObjectManager.removeConnectionFromUpdates(connection)
     }
 
     private fun unregisterServicesRunningOnWrapper(clientValue: IWritableWrapperInfo) {

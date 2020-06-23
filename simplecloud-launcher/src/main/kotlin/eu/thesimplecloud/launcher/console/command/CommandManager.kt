@@ -33,7 +33,7 @@ import eu.thesimplecloud.launcher.console.ConsoleSender
 import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
-import eu.thesimplecloud.launcher.console.command.provider.DefaultCommandSuggestionProvider
+import eu.thesimplecloud.launcher.console.command.provider.EmptyCommandSuggestionProvider
 import eu.thesimplecloud.launcher.event.command.CommandExecuteEvent
 import eu.thesimplecloud.launcher.event.command.CommandRegisteredEvent
 import eu.thesimplecloud.launcher.event.command.CommandUnregisteredEvent
@@ -255,7 +255,7 @@ class CommandManager() {
                             throw CommandRegistrationException("Forbidden parameter type without CommandArgument annotation: ${parameter.type.name}")
                         }
                     }
-                    commandData.parameterDataList.add(CommandParameterData(parameter.type, commandArgument?.suggestionProvider?.java?.getDeclaredConstructor()?.newInstance()?: DefaultCommandSuggestionProvider(), commandArgument?.name))
+                    commandData.parameterDataList.add(CommandParameterData(parameter.type, commandArgument?.suggestionProvider?.java?.getDeclaredConstructor()?.newInstance()?: EmptyCommandSuggestionProvider(), commandArgument?.name))
                 }
                 commands.add(commandData)
                 getCloudAPI()?.getEventManager()?.call(CommandRegisteredEvent(commandData))

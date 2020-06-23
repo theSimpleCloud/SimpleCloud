@@ -49,7 +49,7 @@ class StartCommand : ICommandHandler {
         for (i in 0 until count) {
             cloudServiceGroup.startNewService()
         }
-        commandSender.sendMessage("manager.command.start.success", "Trying to start %COUNT%", count.toString(), " a new service of group %GROUP%", cloudServiceGroup.getName())
+        commandSender.sendMessage("manager.command.start.success", "Trying to start %COUNT%", count.toString(), " new services of group %GROUP%", cloudServiceGroup.getName())
     }
 
 }

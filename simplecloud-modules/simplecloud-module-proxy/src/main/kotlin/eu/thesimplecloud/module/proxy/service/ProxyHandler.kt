@@ -23,7 +23,8 @@
 package eu.thesimplecloud.module.proxy.service
 
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.sync.`object`.SynchronizedObjectHolder
+import eu.thesimplecloud.api.property.IProperty
+import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.module.proxy.config.Config
 import eu.thesimplecloud.module.proxy.config.DefaultConfig
 import eu.thesimplecloud.module.proxy.config.ProxyGroupConfiguration
@@ -43,24 +44,24 @@ class ProxyHandler() {
     val JOIN_FULL_PERMISSION = "cloud.full.join"
 
 
-    var configHolder: SynchronizedObjectHolder<Config> = SynchronizedObjectHolder(DefaultConfig.get())
+    var configHolder: IProperty<Config> = Property(DefaultConfig.get())
 
     fun onEnable() {
-        CloudAPI.instance.getSingleSynchronizedObjectManager()
-                .requestSingleSynchronizedObject("simplecloud-module-proxy-config", Config::class.java)
+        CloudAPI.instance.getGlobalPropertyHolder()
+                .requestProperty<Config>("simplecloud-module-proxy-config")
                 .addResultListener {
                     configHolder = it
                 }
     }
 
     fun getTablistConfiguration(): TablistConfiguration? {
-        return configHolder.obj.tablistConfigurations.firstOrNull {
+        return configHolder.getValue().tablistConfigurations.firstOrNull {
             it.proxies.mapToLowerCase().contains(CloudPlugin.instance.thisService().getGroupName().toLowerCase())
         }
     }
 
     fun getProxyConfiguration(): ProxyGroupConfiguration? {
-        return configHolder.obj.proxyGroupConfigurations.firstOrNull { it.proxyGroup == CloudPlugin.instance.thisService().getGroupName() }
+        return configHolder.getValue().proxyGroupConfigurations.firstOrNull { it.proxyGroup == CloudPlugin.instance.thisService().getGroupName() }
     }
 
     fun getOnlinePlayers(): Int {

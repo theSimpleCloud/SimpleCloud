@@ -30,6 +30,7 @@ import eu.thesimplecloud.api.event.service.CloudServiceStartingEvent
 import eu.thesimplecloud.api.event.service.CloudServiceUnregisteredEvent
 import eu.thesimplecloud.api.listenerextension.cloudListener
 import eu.thesimplecloud.api.property.IPropertyMap
+import eu.thesimplecloud.api.service.version.ServiceVersion
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.api.template.ITemplate
 import eu.thesimplecloud.api.utils.INetworkComponent
@@ -247,7 +248,7 @@ interface ICloudService : INetworkComponent, IBootstrap, IPropertyMap {
 
     /**
      * Copies the service to the template directory.
-     * @return q promise that completes when the service was copied.
+     * @return a promise that completes when the service was copied.
      */
     fun copy(path: String): ICommunicationPromise<Unit> {
         return CloudAPI.instance.getCloudServiceManager().copyService(this, path)

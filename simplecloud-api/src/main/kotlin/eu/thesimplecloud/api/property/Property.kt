@@ -22,7 +22,7 @@
 
 package eu.thesimplecloud.api.property
 
-import com.fasterxml.jackson.annotation.JsonIgnore
+import eu.thesimplecloud.api.utils.DatabaseExclude
 import eu.thesimplecloud.clientserverapi.lib.json.PacketExclude
 import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.jsonlib.JsonLibExclude
@@ -31,33 +31,57 @@ import eu.thesimplecloud.jsonlib.JsonLibExclude
 class Property<T : Any>(
         value: T
 ) : IProperty<T> {
+
     @JsonLibExclude
     @PacketExclude
+    @DatabaseExclude
     @Volatile
-    var savedValue: T? = value
+    private var savedValue: T? = value
 
-    val className = value::class.java.name
+    private val className: String = value::class.java.name
 
-    @JsonIgnore
-    private val valueAsString: String = JsonLib.fromObject(value).getAsJsonString()
+    @Volatile
+    private var valueAsString: String = JsonLib.fromObject(value).getAsJsonString()
 
-    @JsonIgnore
+    @DatabaseExclude
+    @JsonLibExclude
+    var lastUpdateTimeStamp = 0L
+        private set
+
+    init {
+        setLastUpdateToNow()
+    }
+
     @Synchronized
-    override fun getValue(callerClassLoader: ClassLoader): T {
+    override fun getValue(): T {
         if (savedValue == null) {
-            val clazz = Class.forName(
-                    className,
-                    true,
-                    callerClassLoader
-            ) as Class<T>
+            val clazz = propertyClassFindFunction(className) as Class<T>
             savedValue = JsonLib.fromJsonString(valueAsString).getObject(clazz)
         }
         return savedValue!!
     }
 
-    @JsonIgnore
     fun resetValue() {
         this.savedValue = null
+    }
+
+    fun setLastUpdateToNow() {
+        this.lastUpdateTimeStamp = System.currentTimeMillis()
+    }
+
+    override fun getValueAsString(): String {
+        return this.valueAsString
+    }
+
+    fun setStringValue(string: String) {
+        this.valueAsString = string
+    }
+
+    companion object {
+        @Volatile
+        var propertyClassFindFunction: (String) -> Class<*> = {
+            Class.forName(it, true, Property::class.java.classLoader)
+        }
     }
 
 }

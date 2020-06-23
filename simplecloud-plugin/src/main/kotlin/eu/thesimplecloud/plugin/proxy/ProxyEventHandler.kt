@@ -41,6 +41,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by IntelliJ IDEA.
@@ -65,6 +66,7 @@ object ProxyEventHandler {
         val playerPromise = CloudAPI.instance.getCloudPlayerManager().getCloudPlayer(playerConnection.getUniqueId()).awaitUninterruptibly()
         if (playerPromise.isSuccess) {
             cancelEvent("§cYou are already registered on the network")
+            handleAlreadyRegistered(playerConnection)
             return
         }
 
@@ -85,6 +87,16 @@ object ProxyEventHandler {
 
         //update player to cache to avoid bugs
         CloudAPI.instance.getCloudPlayerManager().update(createPromise.getNow()!!, true)
+    }
+
+    private fun handleAlreadyRegistered(playerConnection: DefaultPlayerConnection) {
+        CloudAPI.instance.getCloudPlayerManager().getCloudPlayer(playerConnection.getUniqueId()).then {
+            it.kick()
+            it
+        }.thenDelayed(1, TimeUnit.SECONDS) {
+            CloudAPI.instance.getCloudPlayerManager().sendDeleteToConnection(it, CloudPlugin.instance.communicationClient)
+        }
+        blockPlayerForFiveSeconds(playerConnection.getUniqueId())
     }
 
     private fun blockPlayerForFiveSeconds(uniqueId: UUID) {
@@ -121,9 +133,7 @@ object ProxyEventHandler {
             cloudPlayer.let { CloudAPI.instance.getCloudPlayerManager().delete(it) }
             //send update that the player is now offline
             val client = CloudPlugin.instance.communicationClient
-            CloudAPI.instance.getCloudPlayerManager().sendUpdateToConnection(cloudPlayer, client).addCompleteListener {
-                CloudAPI.instance.getCloudPlayerManager().sendDeleteToConnection(cloudPlayer, client)
-            }
+            CloudAPI.instance.getCloudPlayerManager().sendDeleteToConnection(cloudPlayer, client)
         }
 
         subtractOneFromOnlineCount(CloudPlugin.instance.thisService())

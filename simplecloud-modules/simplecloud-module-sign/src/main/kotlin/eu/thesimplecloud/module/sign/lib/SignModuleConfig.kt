@@ -22,17 +22,15 @@
 
 package eu.thesimplecloud.module.sign.lib
 
+import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.location.TemplateLocation
-import eu.thesimplecloud.api.sync.`object`.ISingleSynchronizedObject
-import eu.thesimplecloud.api.sync.`object`.SynchronizedObjectHolder
+import eu.thesimplecloud.api.property.IProperty
 
 class SignModuleConfig(
         val cloudSigns: MutableList<CloudSign>,
         val groupToLayout: GroupToLayout,
         val signLayouts: MutableList<SignLayout>
-) : ISingleSynchronizedObject {
-
-    override fun getName(): String = "simplecloud-module-sign-config"
+) {
 
     fun getCloudSignByLocation(templateLocation: TemplateLocation): CloudSign? {
         return this.cloudSigns.firstOrNull { it.templateLocation == templateLocation }
@@ -58,7 +56,11 @@ class SignModuleConfig(
         return this.signLayouts.first { it.name == "MAINTENANCE" }
     }
 
+    fun update() {
+        CloudAPI.instance.getGlobalPropertyHolder().setProperty("simplecloud-sign-module-config", this)
+    }
+
     companion object {
-        lateinit var INSTANCE: SynchronizedObjectHolder<SignModuleConfig>
+        lateinit var INSTANCE: IProperty<SignModuleConfig>
     }
 }

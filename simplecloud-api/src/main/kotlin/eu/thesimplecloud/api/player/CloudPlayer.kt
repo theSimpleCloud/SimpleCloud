@@ -22,7 +22,6 @@
 
 package eu.thesimplecloud.api.player
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
 import eu.thesimplecloud.api.player.connection.IPlayerConnection
 import eu.thesimplecloud.api.player.text.CloudText
@@ -59,17 +58,15 @@ class CloudPlayer(
     @Volatile
     private var online = true
 
-    @JsonIgnore
     @PacketExclude
     @Volatile
     private var updatesEnabled = false
 
-    @JsonIgnore
     @PacketExclude
     @JsonLibExclude
     private var playerMessageQueue: PlayerMessageQueue? = null
 
-    override fun getPlayerConnection(): IPlayerConnection = this.playerConnection
+    override fun getPlayerConnection(): IPlayerConnection = this.lastPlayerConnection
 
     override fun getServerConnectState(): PlayerServerConnectState {
         return this.connectState
@@ -89,11 +86,19 @@ class CloudPlayer(
 
     override fun getConnectedServerName(): String? = this.connectedServerName
 
-    override fun toOfflinePlayer(): IOfflineCloudPlayer = OfflineCloudPlayer(getName(), getUniqueId(), getFirstLogin(), getLastLogin(), getOnlineTime(), this.playerConnection, this.propertyMap)
-
     override fun isOnline(): Boolean = this.online
 
-    override fun clone(): ICloudPlayer = CloudPlayer(getName(), getUniqueId(), getFirstLogin(), getLastLogin(), getOnlineTime(), connectedProxyName, connectedServerName, this.playerConnection, propertyMap)
+    override fun clone(): ICloudPlayer = CloudPlayer(
+            getName(),
+            getUniqueId(),
+            getFirstLogin(),
+            getLastLogin(),
+            getOnlineTime(),
+            connectedProxyName,
+            connectedServerName,
+            this.lastPlayerConnection,
+            propertyMap
+    )
 
     override fun enableUpdates() {
         super.enableUpdates()
@@ -130,4 +135,9 @@ class CloudPlayer(
     override fun toString(): String {
         return JsonLib.fromObject(this).getAsJsonString()
     }
+
+    override fun saveToDatabase(): ICommunicationPromise<Unit> {
+        throw UnsupportedOperationException("Cannot save online player to database")
+    }
+
 }

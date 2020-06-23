@@ -22,7 +22,7 @@
 
 package eu.thesimplecloud.launcher.console.command.annotations
 
-import eu.thesimplecloud.launcher.console.command.provider.DefaultCommandSuggestionProvider
+import eu.thesimplecloud.launcher.console.command.provider.EmptyCommandSuggestionProvider
 import eu.thesimplecloud.launcher.console.command.provider.ICommandSuggestionProvider
 import kotlin.reflect.KClass
 
@@ -34,5 +34,5 @@ import kotlin.reflect.KClass
  */
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class CommandArgument(val name: String, val suggestionProvider: KClass<out ICommandSuggestionProvider> = DefaultCommandSuggestionProvider::class) {
+annotation class CommandArgument(val name: String, val suggestionProvider: KClass<out ICommandSuggestionProvider> = EmptyCommandSuggestionProvider::class) {
 }

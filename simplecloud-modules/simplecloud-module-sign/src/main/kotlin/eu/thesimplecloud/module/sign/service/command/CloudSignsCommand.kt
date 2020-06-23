@@ -64,7 +64,7 @@ class CloudSignsCommand : CommandExecutor {
                     sender.sendMessage("§cCannot create a sign for proxy groups.")
                     return true
                 }
-                val signModuleConfig = SignModuleConfig.INSTANCE.obj
+                val signModuleConfig = SignModuleConfig.INSTANCE.getValue()
                 val templateLocation = block.location.toCloudLocation().toTemplateLocation()
                 val cloudSignByLocation = signModuleConfig.getCloudSignByLocation(templateLocation)
                 if (cloudSignByLocation != null) {
@@ -81,7 +81,7 @@ class CloudSignsCommand : CommandExecutor {
                 sender.sendMessage("§aSign added.")
             }
             "remove" -> {
-                val signModuleConfig = SignModuleConfig.INSTANCE.obj
+                val signModuleConfig = SignModuleConfig.INSTANCE.getValue()
                 val cloudSign = signModuleConfig.getCloudSignByLocation(block.location.toCloudLocation().toTemplateLocation())
                 if (cloudSign == null) {
                     sender.sendMessage("§cSign is not registered.")

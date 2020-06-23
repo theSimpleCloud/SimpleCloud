@@ -31,8 +31,9 @@ import eu.thesimplecloud.api.player.ICloudPlayerManager
 import eu.thesimplecloud.api.screen.ICommandExecutable
 import eu.thesimplecloud.api.screen.ICommandExecuteManager
 import eu.thesimplecloud.api.service.ICloudServiceManager
+import eu.thesimplecloud.api.service.version.IServiceVersionHandler
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroupManager
-import eu.thesimplecloud.api.sync.`object`.ISingleSynchronizedObjectManager
+import eu.thesimplecloud.api.sync.`object`.IGlobalPropertyHolder
 import eu.thesimplecloud.api.sync.list.manager.ISynchronizedObjectListManager
 import eu.thesimplecloud.api.template.ITemplateManager
 import eu.thesimplecloud.api.utils.INetworkComponent
@@ -43,8 +44,7 @@ import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
 /**
- * It represents the main part of a cloud part
- * The Wrapper, Manager and CloudPlugin should implement this interface.
+ * The global api for the cloud. It can be accessed from everywhere.
  */
 interface ICloudAPI {
 
@@ -84,9 +84,9 @@ interface ICloudAPI {
     fun getTemplateManager(): ITemplateManager
 
     /**
-     * Returns the [ISingleSynchronizedObjectManager] used to manage the templates
+     * Returns the [IGlobalPropertyHolder] used to manage the templates
      */
-    fun getSingleSynchronizedObjectManager(): ISingleSynchronizedObjectManager
+    fun getGlobalPropertyHolder(): IGlobalPropertyHolder
 
     /**
      * Returns the [ICommunicationBootstrap] of this side.
@@ -107,6 +107,11 @@ interface ICloudAPI {
      * Returns the [ICacheListManager]
      */
     fun getCacheListManager(): ICacheListManager
+
+    /**
+     * Returns the [IServiceVersionHandler]
+     */
+    fun getServiceVersionHandler(): IServiceVersionHandler
 
     /**
      * Returns the name of this side

@@ -50,4 +50,31 @@ interface IPropertyMap {
      */
     fun hasProperty(property: String) = getProperties().keys.contains(property)
 
+    /**
+     * Returns the newer property according to [Property.lastUpdateTimeStamp]
+     */
+    private fun getNewerProperty(propertyOne: IProperty<*>, propertyTwo: IProperty<*>): IProperty<*> {
+        propertyOne as Property<*>
+        propertyTwo as Property<*>
+        return if (propertyOne.lastUpdateTimeStamp > propertyTwo.lastUpdateTimeStamp) {
+            propertyOne
+        } else {
+            propertyTwo
+        }
+    }
+
+    fun getMapWithNewestProperties(compareMap: Map<String, IProperty<*>>): HashMap<String, IProperty<*>> {
+        val ownMap = getProperties()
+        val allKeys = ownMap.keys.union(ownMap.keys)
+        val map = HashMap<String, IProperty<*>>()
+        for (key in allKeys) {
+            val valueOne = ownMap[key] as Property<*>?
+            val valueTwo = compareMap[key] as Property<*>?
+            //choose 0 as default value because it will be older than the other value and one of these value must be non-null
+            val valueOneLastUpdate = valueOne?.lastUpdateTimeStamp ?: 0
+            val valueTwoLastUpdate = valueTwo?.lastUpdateTimeStamp ?: 0
+            map[key] = if (valueOneLastUpdate > valueTwoLastUpdate) valueOne!! else valueTwo!!
+        }
+        return map
+    }
 }

@@ -194,6 +194,12 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
         return CommunicationPromise.of(getAllCachedObjects().map { it.toSimplePlayer() })
     }
 
+    override fun savePlayerToDatabase(offlinePlayer: IOfflineCloudPlayer): ICommunicationPromise<Unit> {
+        return CommunicationPromise.runAsync {
+            Manager.instance.offlineCloudPlayerHandler.saveCloudPlayer(offlinePlayer.toOfflinePlayer() as OfflineCloudPlayer)
+        }
+    }
+
     private fun getProxyClientOfCloudPlayer(cloudPlayer: ICloudPlayer): IConnectedClient<*>? {
         return getCloudClientByServiceName(cloudPlayer.getConnectedProxyName())
     }

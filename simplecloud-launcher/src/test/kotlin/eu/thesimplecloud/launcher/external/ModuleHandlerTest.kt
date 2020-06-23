@@ -25,11 +25,11 @@ package eu.thesimplecloud.launcher.external
 import eu.thesimplecloud.EmptyMockCloudAPIImpl
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.eventapi.BasicEventManager
-import eu.thesimplecloud.launcher.exception.module.ModuleHandler
-import eu.thesimplecloud.launcher.exception.module.exception.ModuleLoadException
+import eu.thesimplecloud.launcher.exception.module.ModuleLoadException
 import eu.thesimplecloud.launcher.external.module.LoadedModuleFileContent
 import eu.thesimplecloud.launcher.external.module.ModuleCopyType
 import eu.thesimplecloud.launcher.external.module.ModuleFileContent
+import eu.thesimplecloud.launcher.external.module.handler.ModuleHandler
 import eu.thesimplecloud.mockmodule.ModuleMain
 import org.junit.Assert.*
 import org.junit.Before

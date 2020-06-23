@@ -186,11 +186,6 @@ interface ICloudPlayer : IOfflineCloudPlayer, ICommandSender {
     fun sendToLobby(): ICommunicationPromise<Unit> = CloudAPI.instance.getCloudPlayerManager().sendPlayerToLobby(this)
 
     /**
-     * Returns a new [IOfflineCloudPlayer] with the data of this player
-     */
-    fun toOfflinePlayer(): IOfflineCloudPlayer
-
-    /**
      * Clones this player.
      */
     fun clone(): ICloudPlayer

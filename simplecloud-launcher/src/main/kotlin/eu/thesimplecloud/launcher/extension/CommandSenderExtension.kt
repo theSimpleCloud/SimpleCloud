@@ -23,6 +23,7 @@
 package eu.thesimplecloud.launcher.extension
 
 import eu.thesimplecloud.api.command.ICommandSender
+import eu.thesimplecloud.launcher.console.ConsoleSender
 import eu.thesimplecloud.launcher.startup.Launcher
 
     /**
@@ -30,10 +31,18 @@ import eu.thesimplecloud.launcher.startup.Launcher
      * All '&' will be replaced to '§'
      */
     fun ICommandSender.sendMessage(property: String, vararg messages: String) {
+        sendMessageToSender(this, false, property, *messages)
+    }
+
+    fun ICommandSender.sendMessage(isSetup: Boolean, property: String, vararg messages: String) {
+        sendMessageToSender(this, isSetup, property, *messages)
+    }
+
+    fun sendMessageToSender(sender: ICommandSender, isSetup: Boolean, property: String, vararg messages: String) {
         val fullRawMessageStringBuilder = StringBuilder()
 
         if (messages.isEmpty()) {
-            sendMessage(property)
+            sender.sendMessage(property)
             return
         }
         val replacements = HashMap<String, String>()
@@ -41,7 +50,7 @@ import eu.thesimplecloud.launcher.startup.Launcher
             val rawMessage = messages[i]
             fullRawMessageStringBuilder.append(rawMessage)
             if (!rawMessage.contains("%")) continue
-            if (!(messages.size > i + 1)){
+            if (!(messages.size > i + 1)) {
                 throw IllegalArgumentException("Found % but there was no following string")
             }
             val nextString = messages[i + 1]
@@ -50,11 +59,16 @@ import eu.thesimplecloud.launcher.startup.Launcher
         }
         var builtString = Launcher.instance.languageManager.getMessage(property, fullRawMessageStringBuilder.toString())
 
-        replacements.forEach{
+        replacements.forEach {
             builtString = builtString.replace(it.key, it.value)
         }
-        sendMessage(builtString.replace("&", "§"))
+
+        val replacedMessage = builtString.replace("&", "§")
+        if (sender is ConsoleSender) {
+            sender.sendMessage(replacedMessage, isSetup)
+            return
+        }
+        sender.sendMessage(replacedMessage)
     }
 
     fun getPercentPart(rawMessage: String) = "%" + rawMessage.split("%")[1].split("%")[0] + "%"
-

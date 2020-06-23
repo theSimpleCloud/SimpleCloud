@@ -22,6 +22,7 @@
 
 package eu.thesimplecloud.launcher.console
 
+import eu.thesimplecloud.launcher.startup.Launcher
 import org.jline.reader.Candidate
 import org.jline.reader.Completer
 import org.jline.reader.LineReader
@@ -34,25 +35,30 @@ import java.util.*
  * Date: 17.04.2020
  * Time: 00:17
  */
-class ConsoleCompleter(val consoleManager: ConsoleManager) : Completer {
+class ConsoleCompleter(private val consoleManager: ConsoleManager) : Completer {
 
     override fun complete(reader: LineReader, line: ParsedLine, candidates: MutableList<Candidate>) {
         val commandString = line.line()
 
-        if (commandString.isEmpty()) return
-
-        val suggestions = consoleManager.commandManager.getAvailableTabCompleteArgs(commandString, consoleManager.consoleSender)
+        val suggestions = getConsoleSuggestions(commandString)
         if (suggestions.isEmpty()) {
             return
         }
 
-        var responses = ArrayList<String>()
+        val responses = ArrayList<String>()
         responses.addAll(suggestions)
 
         if (responses.isNotEmpty()) {
-            Collections.sort(responses)
+            responses.sort()
             candidates.addAll(responses.map { Candidate(it) })
         }
+    }
+
+    private fun getConsoleSuggestions(commandString: String): List<String> {
+        if (!Launcher.instance.setupManager.hasActiveSetup()) {
+            return consoleManager.commandManager.getAvailableTabCompleteArgs("cloud $commandString", consoleManager.consoleSender)
+        }
+        return Launcher.instance.setupManager.getSetupSuggestions(commandString, consoleManager.consoleSender)
     }
 
 }

@@ -24,6 +24,7 @@ package eu.thesimplecloud.module.proxy.service.velocity.listener
 
 import com.velocitypowered.api.event.PostOrder
 import com.velocitypowered.api.event.Subscribe
+import com.velocitypowered.api.event.player.ServerConnectedEvent
 import com.velocitypowered.api.event.player.ServerPreConnectEvent
 import com.velocitypowered.api.event.proxy.ProxyPingEvent
 import com.velocitypowered.api.proxy.server.ServerPing
@@ -32,6 +33,7 @@ import eu.thesimplecloud.module.proxy.extensions.mapToLowerCase
 import eu.thesimplecloud.module.proxy.service.velocity.VelocityPluginMain
 import eu.thesimplecloud.plugin.proxy.velocity.text.CloudTextBuilder
 import eu.thesimplecloud.plugin.startup.CloudPlugin
+import net.md_5.bungee.event.EventHandler
 import java.util.*
 
 /**
@@ -50,7 +52,7 @@ class VelocityListener(val plugin: VelocityPluginMain) {
             plugin.startTablist()
         }
 
-        val config = plugin.proxyHandler.configHolder.obj
+        val config = plugin.proxyHandler.configHolder.getValue()
         val proxyConfiguration = plugin.proxyHandler.getProxyConfiguration() ?: return
 
         if (CloudPlugin.instance.thisService().getServiceGroup().isInMaintenance()) {
@@ -73,9 +75,12 @@ class VelocityListener(val plugin: VelocityPluginMain) {
                 event.result = ServerPreConnectEvent.ServerResult.denied()
             }
         }
+    }
 
-        val tablistConfiguration = plugin.proxyHandler.getTablistConfiguration() ?: return
-
+    @EventHandler
+    fun on(event: ServerConnectedEvent) {
+        val player = event.player
+        val tablistConfiguration = plugin.proxyHandler.getTablistConfiguration()?: return
         val headerAndFooter = plugin.getCurrentHeaderAndFooter(tablistConfiguration)
         plugin.sendHeaderAndFooter(player, headerAndFooter.first, headerAndFooter.second)
     }

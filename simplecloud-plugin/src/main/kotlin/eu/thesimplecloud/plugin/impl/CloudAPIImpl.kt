@@ -28,12 +28,12 @@ import eu.thesimplecloud.api.external.ICloudModule
 import eu.thesimplecloud.api.player.ICloudPlayerManager
 import eu.thesimplecloud.api.screen.ICommandExecuteManager
 import eu.thesimplecloud.api.service.ICloudServiceManager
+import eu.thesimplecloud.api.service.version.IServiceVersionHandler
+import eu.thesimplecloud.api.service.version.ServiceVersionHandler
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroupManager
-import eu.thesimplecloud.api.sync.`object`.ISingleSynchronizedObjectManager
 import eu.thesimplecloud.api.sync.list.manager.ISynchronizedObjectListManager
 import eu.thesimplecloud.api.sync.list.manager.SynchronizedObjectListManager
 import eu.thesimplecloud.api.utils.INetworkComponent
-import eu.thesimplecloud.client.impl.SingleSynchronizedObjectManagerImpl
 import eu.thesimplecloud.clientserverapi.lib.bootstrap.ICommunicationBootstrap
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 
@@ -43,8 +43,8 @@ class CloudAPIImpl(private val cloudPlayerManager: ICloudPlayerManager) : CloudA
     private val cloudServiceGroupManager = CloudServiceGroupManagerImpl()
     private val commandExecuteManagerImpl = CommandExecuteManagerImpl()
     private val eventManager = EventManagerImpl()
-    private val synchronizedObjectManager = SingleSynchronizedObjectManagerImpl(CloudPlugin.instance.communicationClient)
     private val synchronizedObjectListManager = SynchronizedObjectListManager()
+    private val serviceVersionHandler = ServiceVersionHandler()
 
     init {
         getCacheListManager().registerCacheList(getWrapperManager())
@@ -64,11 +64,11 @@ class CloudAPIImpl(private val cloudPlayerManager: ICloudPlayerManager) : CloudA
 
     override fun getCommandExecuteManager(): ICommandExecuteManager = this.commandExecuteManagerImpl
 
-    override fun getSingleSynchronizedObjectManager(): ISingleSynchronizedObjectManager = this.synchronizedObjectManager
-
     override fun getThisSidesCommunicationBootstrap(): ICommunicationBootstrap = CloudPlugin.instance.communicationClient
 
     override fun getSynchronizedObjectListManager(): ISynchronizedObjectListManager = this.synchronizedObjectListManager
+
+    override fun getServiceVersionHandler(): IServiceVersionHandler = this.serviceVersionHandler
 
     override fun getThisSidesName(): String = CloudPlugin.instance.thisServiceName
 

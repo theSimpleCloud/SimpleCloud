@@ -22,7 +22,8 @@
 
 package eu.thesimplecloud.api.servicegroup.impl
 
-import eu.thesimplecloud.api.service.ServiceVersion
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.service.version.ServiceVersion
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 
 abstract class AbstractServiceGroup(
@@ -36,9 +37,11 @@ abstract class AbstractServiceGroup(
         private val static: Boolean,
         private var percentToStartNewService: Int,
         private val wrapperName: String?,
-        private val serviceVersion: ServiceVersion,
+        serviceVersion: ServiceVersion,
         private val startPriority: Int
 ) : ICloudServiceGroup {
+
+    private val serviceVersion = serviceVersion.name
 
     override fun getName(): String = this.name
 
@@ -88,7 +91,9 @@ abstract class AbstractServiceGroup(
 
     override fun getWrapperName(): String? = this.wrapperName
 
-    override fun getServiceVersion(): ServiceVersion = this.serviceVersion
+    override fun getServiceVersion(): ServiceVersion {
+        return CloudAPI.instance.getServiceVersionHandler().getServiceVersionByName(serviceVersion)!!
+    }
 
     override fun getStartPriority(): Int = this.startPriority
 

@@ -39,8 +39,8 @@ class SpigotPluginMain : JavaPlugin() {
 
     override fun onEnable() {
         getCommand("cloudsigns")?.setExecutor(CloudSignsCommand())
-        CloudAPI.instance.getSingleSynchronizedObjectManager()
-                .requestSingleSynchronizedObject("simplecloud-module-sign-config", SignModuleConfig::class.java)
+        CloudAPI.instance.getGlobalPropertyHolder()
+                .requestProperty<SignModuleConfig>("simplecloud-sign-module-config")
                 .then { SignModuleConfig.INSTANCE = it }
         this.bukkitCloudSignManager = BukkitCloudSignManager()
         server.pluginManager.registerEvents(InteractListener(), this)

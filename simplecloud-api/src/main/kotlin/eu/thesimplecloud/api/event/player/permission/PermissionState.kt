@@ -22,6 +22,9 @@
 
 package eu.thesimplecloud.api.event.player.permission
 
+/**
+ * Represents the result of the [CloudPlayerPermissionCheckEvent]
+ */
 enum class PermissionState {
 
     TRUE, FALSE, UNKNOWN

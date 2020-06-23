@@ -23,7 +23,7 @@
 package eu.thesimplecloud.base.manager.player
 
 import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
-import org.bson.Document
+import eu.thesimplecloud.api.property.Property
 import java.util.*
 
 open class LoadOfflineCloudPlayer(
@@ -33,5 +33,5 @@ open class LoadOfflineCloudPlayer(
         val lastLogin: Long,
         val onlineTime: Long,
         val lastPlayerConnection: DefaultPlayerConnection,
-        var propertyMap: Document
+        var propertyMap: Map<String, Property<*>>
 )

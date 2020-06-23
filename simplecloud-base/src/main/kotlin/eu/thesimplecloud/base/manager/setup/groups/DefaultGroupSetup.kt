@@ -39,14 +39,14 @@ open class DefaultGroupSetup {
                 CloudAPI.instance.getTemplateManager().update(template)
                 template.getDirectory().mkdirs()
             }
-            Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.template.created", "Template %TEMPLATE%", groupName, " created.")
+            Launcher.instance.consoleSender.sendMessage(true, "manager.setup.service-group.question.template.created", "Template %TEMPLATE%", groupName, " created.")
             return groupName
         }
         if (CloudAPI.instance.getTemplateManager().getTemplateByName(templateName) == null) {
-            Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.template.not-exist", "The specified template does not exist.")
+            Launcher.instance.consoleSender.sendMessage(true, "manager.setup.service-group.question.template.not-exist", "The specified template does not exist.")
             return null
         }
-        Launcher.instance.consoleSender.sendMessage("manager.setup.service-group.question.template.success", "Template set.")
+        Launcher.instance.consoleSender.sendMessage(true, "manager.setup.service-group.question.template.success", "Template set.")
         return templateName
     }
 

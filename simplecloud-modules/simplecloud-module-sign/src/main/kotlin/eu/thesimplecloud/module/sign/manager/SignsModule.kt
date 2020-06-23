@@ -23,11 +23,10 @@
 package eu.thesimplecloud.module.sign.manager
 
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.event.sync.`object`.SynchronizedObjectUpdatedEvent
+import eu.thesimplecloud.api.event.sync.`object`.GlobalPropertyUpdatedEvent
 import eu.thesimplecloud.api.eventapi.CloudEventHandler
 import eu.thesimplecloud.api.eventapi.IListener
 import eu.thesimplecloud.api.external.ICloudModule
-import eu.thesimplecloud.api.sync.`object`.SynchronizedObjectHolder
 import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.module.sign.lib.*
@@ -57,10 +56,10 @@ class SignsModule : ICloudModule {
         CloudAPI.instance.getEventManager().registerListener(this, object : IListener {
 
             @CloudEventHandler
-            fun on(event: SynchronizedObjectUpdatedEvent) {
-                val signModuleConfigHolder = event.synchronizedObject
-                if (signModuleConfigHolder.obj is SignModuleConfig) {
-                    saveConfigToFiles(signModuleConfigHolder.obj as SignModuleConfig)
+            fun on(event: GlobalPropertyUpdatedEvent) {
+                val value = event.property.getValue()
+                if (value is SignModuleConfig) {
+                    saveConfigToFiles(value)
                 }
             }
 
@@ -69,8 +68,7 @@ class SignsModule : ICloudModule {
 
     fun reloadConfig() {
         val signModuleConfig = loadConfigFromFiles()
-        SignModuleConfig.INSTANCE = SynchronizedObjectHolder(signModuleConfig)
-        signModuleConfig.update()
+        SignModuleConfig.INSTANCE = CloudAPI.instance.getGlobalPropertyHolder().setProperty("simplecloud-sign-module-config", signModuleConfig)
     }
 
     private fun loadConfigFromFiles(): SignModuleConfig {

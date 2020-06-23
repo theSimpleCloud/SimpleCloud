@@ -25,6 +25,12 @@ package eu.thesimplecloud.api.event.player.permission
 import eu.thesimplecloud.api.eventapi.IEvent
 import eu.thesimplecloud.api.player.ICloudPlayer
 
+/**
+ * This event is called when [ICloudPlayer.hasPermission] is called. If the result of this event is [PermissionState.UNKNOWN]
+ * a packet to check the permission will be sent to the player's proxy.
+ * Note, that the permission module of SimpleCloud uses this event and sets the [PermissionState] on every component
+ * in the network.
+ */
 class CloudPlayerPermissionCheckEvent(
         val cloudPlayer: ICloudPlayer,
         val permission: String,

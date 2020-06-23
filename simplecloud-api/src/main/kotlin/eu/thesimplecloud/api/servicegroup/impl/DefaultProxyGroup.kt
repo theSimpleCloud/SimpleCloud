@@ -22,7 +22,7 @@
 
 package eu.thesimplecloud.api.servicegroup.impl
 
-import eu.thesimplecloud.api.service.ServiceVersion
+import eu.thesimplecloud.api.service.version.ServiceVersion
 import eu.thesimplecloud.api.servicegroup.grouptype.ICloudProxyGroup
 import eu.thesimplecloud.jsonlib.JsonLib
 

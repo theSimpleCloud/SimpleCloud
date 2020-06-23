@@ -26,38 +26,76 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.net.URLStreamHandlerFactory;
 
 public class KotlinInstallerMain {
 
-    public static void main(String[] args) throws IOException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    public static void main(String[] args) throws Exception {
         System.out.println("Installing kotlin...");
-        installKotlin("1.3.72");
+        URLClassLoader urlClassLoader = initClassLoader("1.3.72");
+        copyURLsToSystemClassLoader(urlClassLoader);
+        Thread.currentThread().setContextClassLoader(ClassLoader.getSystemClassLoader());
+        //Thread.currentThread().setContextClassLoader(urlClassLoader);
+
+        //String kotlinLauncherMainClassName = LauncherMainKt.class.getName();
+        //Class<?> launcherMainClass = Class.forName(kotlinLauncherMainClassName, true,  urlClassLoader);
+        //launcherMainClass.getDeclaredMethod("main", String[].class).invoke(null, (Object) args);
         LauncherMainKt.main(args);
     }
 
-    private static void installKotlin(String kotlinVersion) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, IOException {
+    private static void copyURLsToSystemClassLoader(URLClassLoader urlClassLoader) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        for (URL url : urlClassLoader.getURLs()) {
+            addToClasspath(url);
+        }
+    }
+
+    public static void addToClasspath(URL url) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
+        method.setAccessible(true);
+        method.invoke((URLClassLoader)ClassLoader.getSystemClassLoader(), url);
+    }
+
+    private static URLClassLoader initClassLoader(String kotlinVersion) throws IOException, URISyntaxException {
         File kotlinStandardLibrary = new File("storage/kotlin/kotlin-stdlib-" + kotlinVersion + ".jar");
         File kotlinJdk8StandardLibrary = new File("storage/kotlin/kotlin-stdlib-jdk8-" + kotlinVersion + ".jar");
         File kotlinJdk7StandardLibrary = new File("storage/kotlin/kotlin-stdlib-jdk7-" + kotlinVersion + ".jar");
         installDependency("https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/" + kotlinVersion + "/kotlin-stdlib-" + kotlinVersion + ".jar", kotlinStandardLibrary);
         installDependency("https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk8/" + kotlinVersion + "/kotlin-stdlib-jdk8-" + kotlinVersion + ".jar", kotlinJdk8StandardLibrary);
         installDependency("https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk7/" + kotlinVersion + "/kotlin-stdlib-jdk7-" + kotlinVersion + ".jar", kotlinJdk7StandardLibrary);
+        return new KotlinClassLoader(new URL[]{
+                kotlinJdk7StandardLibrary.toURI().toURL(),
+                kotlinJdk8StandardLibrary.toURI().toURL(),
+                kotlinStandardLibrary.toURI().toURL(),
+                getRunningJarFile().toURI().toURL()
+        }, null);
     }
 
-    private static void installDependency(String downloadLink, File file) throws IOException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    private static void installDependency(String downloadLink, File file) throws IOException {
         if (!file.exists()) {
             new JavaDownloader().download(downloadLink, file);
         }
-        addToClasspath(file);
     }
 
-    public static void addToClasspath(File file) throws NoSuchMethodException, MalformedURLException, InvocationTargetException, IllegalAccessException {
-        Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
-        method.setAccessible(true);
-        method.invoke((URLClassLoader)ClassLoader.getSystemClassLoader(), file.toURI().toURL());
+    private static File getRunningJarFile() throws URISyntaxException {
+        return new File(KotlinInstallerMain.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+    }
+
+    public static class KotlinClassLoader extends URLClassLoader {
+
+        public KotlinClassLoader(URL[] urls, ClassLoader parent) {
+            super(urls, parent);
+        }
+
+        public KotlinClassLoader(URL[] urls) {
+            super(urls);
+        }
+
+        public KotlinClassLoader(URL[] urls, ClassLoader parent, URLStreamHandlerFactory factory) {
+            super(urls, parent, factory);
+        }
     }
 
 }

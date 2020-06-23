@@ -22,7 +22,7 @@
 
 package eu.thesimplecloud.plugin.network.packets
 
-import eu.thesimplecloud.api.service.ServiceVersion
+import eu.thesimplecloud.api.service.version.type.ServiceAPIType
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.ObjectPacket
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
@@ -42,10 +42,10 @@ class PacketInGetPlayerOnlineStatus : ObjectPacket<UUID>() {
     override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
         val uuid = this.value ?: return contentException("value")
 
-        if (CloudPlugin.instance.thisService().getServiceVersion() == ServiceVersion.VELOCITY) {
-            return success(CloudVelocityPlugin.instance.proxyServer.getPlayer(uuid) != null)
+        return if (CloudPlugin.instance.thisService().getServiceVersion().serviceAPIType == ServiceAPIType.VELOCITY) {
+            success(CloudVelocityPlugin.instance.proxyServer.getPlayer(uuid) != null)
         } else {
-            return success(ProxyServer.getInstance().getPlayer(uuid) != null)
+            success(ProxyServer.getInstance().getPlayer(uuid) != null)
         }
     }
 

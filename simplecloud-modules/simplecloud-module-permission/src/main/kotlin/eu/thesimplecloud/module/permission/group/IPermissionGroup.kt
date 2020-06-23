@@ -22,11 +22,10 @@
 
 package eu.thesimplecloud.module.permission.group
 
-import eu.thesimplecloud.api.sync.list.ISynchronizedListObject
 import eu.thesimplecloud.module.permission.PermissionPool
 import eu.thesimplecloud.module.permission.entity.IPermissionEntity
 
-interface IPermissionGroup : IPermissionEntity, ISynchronizedListObject {
+interface IPermissionGroup : IPermissionEntity {
 
     /**
      * Returns the name of this group.

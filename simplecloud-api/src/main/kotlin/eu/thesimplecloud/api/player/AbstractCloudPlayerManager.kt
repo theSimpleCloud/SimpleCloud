@@ -70,7 +70,7 @@ abstract class AbstractCloudPlayerManager : AbstractCacheList<ICloudPlayer>(spre
             cachedValue as CloudPlayer
             cachedValue.setConnectedProxyName(updateValue.getConnectedProxyName())
             cachedValue.setConnectedServerName(updateValue.getConnectedServerName())
-            cachedValue.propertyMap = HashMap(updateValue.getProperties() as Map<String, Property<*>>)
+            cachedValue.propertyMap = HashMap(updateValue.getMapWithNewestProperties(cachedValue.propertyMap) as MutableMap<String, Property<*>>)
             cachedValue.setServerConnectState(updateValue.getServerConnectState())
         }
 
@@ -97,6 +97,5 @@ abstract class AbstractCloudPlayerManager : AbstractCacheList<ICloudPlayer>(spre
     fun promiseOfNullablePlayer(cloudPlayer: ICloudPlayer?): ICommunicationPromise<ICloudPlayer> {
         return CommunicationPromise.ofNullable(cloudPlayer, NoSuchElementException("CloudPlayer not found."))
     }
-
 
 }

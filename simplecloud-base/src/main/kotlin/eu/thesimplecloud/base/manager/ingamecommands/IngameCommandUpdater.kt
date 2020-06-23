@@ -35,7 +35,7 @@ class IngameCommandUpdater : IListener {
     private val synchronizedIngameCommandNamesContainer = SynchronizedIngameCommandNamesContainer()
 
     init {
-        CloudAPI.instance.getSingleSynchronizedObjectManager().updateObject(this.synchronizedIngameCommandNamesContainer)
+        CloudAPI.instance.getGlobalPropertyHolder().setProperty("simplecloud-ingamecommands", this.synchronizedIngameCommandNamesContainer)
         CloudAPI.instance.getEventManager().registerListener(Manager.instance, this)
     }
 
@@ -45,7 +45,7 @@ class IngameCommandUpdater : IListener {
     @CloudEventHandler
     fun on(event: CommandRegisteredEvent) {
         synchronizedIngameCommandNamesContainer.names = Launcher.instance.commandManager.getAllIngameCommandPrefixes()
-        synchronizedIngameCommandNamesContainer.update()
+        CloudAPI.instance.getGlobalPropertyHolder().setProperty("simplecloud-ingamecommands", synchronizedIngameCommandNamesContainer)
     }
 
 

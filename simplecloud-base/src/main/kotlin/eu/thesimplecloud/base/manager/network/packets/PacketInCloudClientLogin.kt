@@ -24,6 +24,7 @@ package eu.thesimplecloud.base.manager.network.packets
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.client.NetworkComponentType
+import eu.thesimplecloud.api.network.packets.serviceversion.PacketIOServiceVersions
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
@@ -50,10 +51,12 @@ class PacketInCloudClientLogin() : JsonPacket() {
                 val cloudService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(name)
                         ?: return failure(NoSuchElementException("Service not found"))
                 connection.setClientValue(cloudService)
+                connection.sendUnitQuery(PacketIOServiceVersions(CloudAPI.instance.getServiceVersionHandler().getAllVersions()))
+                        .awaitCoroutine()
                 cloudService.setAuthenticated(true)
                 CloudAPI.instance.getCloudServiceManager().update(cloudService)
                 CloudAPI.instance.getCloudServiceManager().sendUpdateToConnection(cloudService, connection).awaitCoroutine()
-                Launcher.instance.consoleSender.sendMessage("manager.login.service", "Service %SERVICE%", cloudService.getName(), " logged in.")
+                Launcher.instance.consoleSender.sendMessage("manager.login.service", "Service %SERVICE%", cloudService.getName(), " logged in")
             }
             NetworkComponentType.WRAPPER -> {
                 val wrapperInfo = CloudAPI.instance.getWrapperManager().getWrapperByHost(host)
@@ -64,7 +67,7 @@ class PacketInCloudClientLogin() : JsonPacket() {
                 CloudAPI.instance.getWrapperManager().sendUpdateToConnection(wrapperInfo, connection).awaitCoroutine()
                 connection.sendUnitQuery(PacketOutJvmArguments(Manager.instance.jvmArgumentsConfig)).awaitCoroutine()
                 connection.sendUnitQuery(PacketOutSetWrapperName(wrapperInfo.getName())).awaitCoroutine()
-                Launcher.instance.consoleSender.sendMessage("manager.login.wrapper", "Wrapper %WRAPPER%", wrapperInfo.getName(), " logged in.")
+                Launcher.instance.consoleSender.sendMessage("manager.login.wrapper", "Wrapper %WRAPPER%", wrapperInfo.getName(), " logged in")
             }
         }
 

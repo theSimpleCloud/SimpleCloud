@@ -85,8 +85,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
     val languageManager: LanguageManager
     val launcherConfigLoader = LauncherConfigLoader()
     val scheduler = Executors.newScheduledThreadPool(1)
-    var currentClassLoader: ClassLoader = ClassLoader.getSystemClassLoader()
-        private set
+    val currentClassLoader: ClassLoader = Thread.currentThread().contextClassLoader
 
     init {
         instance = this
@@ -107,13 +106,12 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
         val launcherConfig = this.launcherConfigLoader.loadConfig()
         DirectoryPaths.paths = launcherConfig.directoryPaths
         this.commandManager = CommandManager()
-        this.consoleManager = ConsoleManager("Launcher", this.commandManager, this.consoleSender)
+        this.consoleManager = ConsoleManager(this.commandManager, this.consoleSender)
         this.languageManager = LanguageManager("en_EN")
     }
 
     fun start() {
         clearConsole()
-        currentClassLoader = Thread.currentThread().contextClassLoader
         if (!launcherStartArguments.disableAutoUpdater) {
             if (executeUpdateIfAvailable()) {
                 return
@@ -122,7 +120,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
             this.logger.warning("Auto updater is disabled.")
         }
         this.languageManager.loadFile()
-        this.commandManager.registerAllCommands(launcherCloudModule, currentClassLoader, "eu.thesimplecloud.launcher.commands")
+        this.commandManager.registerAllCommands(launcherCloudModule, this.currentClassLoader, "eu.thesimplecloud.launcher.commands")
         this.consoleManager.startThread()
         if (!this.languageManager.fileExistBeforeLoad())
             this.setupManager.queueSetup(LanguageSetup())
@@ -202,6 +200,10 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
 
     fun isSnapshotBuild(): Boolean {
         return System.getProperty("simplecloud.version").toLowerCase().contains("snapshot")
+    }
+
+    fun getCurrentVersion(): String {
+        return System.getProperty("simplecloud.version")
     }
 
 }

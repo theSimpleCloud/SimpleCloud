@@ -41,7 +41,7 @@ class BukkitCloudSign(
     val templateLocation = cloudSign.templateLocation
     var currentServer: ICloudService? = null
 
-    private var placeholders = listOf<Placeholder<ICloudService>>(
+    private val placeholders = listOf<Placeholder<ICloudService>>(
             Placeholder("SERVICE") { it.getName() },
             Placeholder("ONLINE_PLAYERS") { it.getOnlineCount().toString() },
             Placeholder("ONLINE_COUNT") { it.getOnlineCount().toString() },
@@ -52,7 +52,7 @@ class BukkitCloudSign(
             Placeholder("NUMBER") { it.getServiceNumber().toString() },
             Placeholder("WRAPPER") { it.getWrapperName()!! }
     )
-    private var groupPlaceholders = listOf<Placeholder<ICloudServiceGroup>>(
+    private val groupPlaceholders = listOf<Placeholder<ICloudServiceGroup>>(
             Placeholder("GROUP") { it.getName() },
             Placeholder("MAX_PLAYERS") { it.getMaxPlayers().toString() },
             Placeholder("TEMPLATE") { it.getTemplateName() }
@@ -81,7 +81,7 @@ class BukkitCloudSign(
         val currentServer = this.currentServer
         val sign = location.block.state as Sign
         clearSign(false)
-        val signConfig = SignModuleConfig.INSTANCE.obj
+        val signConfig = SignModuleConfig.INSTANCE.getValue()
         val signLayout = when {
             serviceGroup.isInMaintenance() -> signConfig.getMaintenanceLayout()
             currentServer == null -> signConfig.getSearchingLayout()
