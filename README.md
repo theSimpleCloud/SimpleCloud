@@ -10,12 +10,12 @@
 - Language-System
 - Powerful API
 - Support for Spigot, BungeeCord and Velocity
-- MongoDB support
+- MongoDB and SQL support
 
 **Requirements**
 
 - Java 8
-- A working MongoDB installation (support for SQL will be added soon)
+- A working MongoDB or SQL database installation
 - 2GB Memory
 - 2 virtual cores
 
