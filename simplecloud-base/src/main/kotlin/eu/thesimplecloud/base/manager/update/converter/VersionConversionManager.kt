@@ -88,4 +88,10 @@ class VersionConversionManager {
         JsonLib.fromObject(Launcher.instance.getCurrentVersion()).saveAsFile(lastStartedVersionFile)
     }
 
+    fun writeLastStartedVersionIfFileDoesNotExist() {
+        if (!this.lastStartedVersionFile.exists()) {
+            writeLastStartedVersion()
+        }
+    }
+
 }
