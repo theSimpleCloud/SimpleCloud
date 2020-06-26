@@ -166,6 +166,12 @@ interface ICloudService : INetworkComponent, IBootstrap, IPropertyMap {
     fun getMaxPlayers(): Int
 
     /**
+     * Sets the maximum amount of players for this service.
+     * The amount has no effect on players trying to join.
+     */
+    fun setMaxPlayers(amount: Int)
+
+    /**
      * Returns the MOTD of this service.
      */
     fun getMOTD(): String
