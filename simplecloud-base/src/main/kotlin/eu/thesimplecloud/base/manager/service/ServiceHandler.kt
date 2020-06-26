@@ -95,11 +95,11 @@ class ServiceHandler : IServiceHandler {
         for (serviceGroup in CloudAPI.instance.getCloudServiceGroupManager().getAllCachedObjects()) {
             val allServices = serviceGroup.getAllServices()
             //don't exclude closed services because they will be deleted in a moment.
-            val inLobbyServices = allServices.filter { it.getState() != ServiceState.INVISIBLE }
-            val services = inLobbyServices.filter { it.getOnlinePercentage() < serviceGroup.getPercentToStartNewService().toDouble() / 100 }
-            var newServicesAmount = serviceGroup.getMinimumOnlineServiceCount() - services.size
-            if (serviceGroup.getMaximumOnlineServiceCount() != -1 && newServicesAmount + services.size > serviceGroup.getMaximumOnlineServiceCount())
-                newServicesAmount = serviceGroup.getMaximumOnlineServiceCount() - services.size
+            val inLobbyServices = allServices.filter { it.getState() != ServiceState.INVISIBLE } //1
+            val inLobbyServicesWithFewPlayers = inLobbyServices.filter { it.getOnlinePercentage() < serviceGroup.getPercentToStartNewService().toDouble() / 100 }
+            var newServicesAmount = serviceGroup.getMinimumOnlineServiceCount() - inLobbyServicesWithFewPlayers.size
+            if (serviceGroup.getMaximumOnlineServiceCount() != -1 && newServicesAmount + inLobbyServices.size > serviceGroup.getMaximumOnlineServiceCount())
+                newServicesAmount = serviceGroup.getMaximumOnlineServiceCount() - inLobbyServices.size
             if (newServicesAmount > 0) {
                 startServicesByGroup(serviceGroup, newServicesAmount)
             }
