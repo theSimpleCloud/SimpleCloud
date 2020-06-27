@@ -52,7 +52,9 @@ interface IPermissionPlayer : IPermissionEntity, Nameable {
      * Returns whether this player has the specified permission group.
      * (case insensitive)
      */
-    fun hasPermissionGroup(name: String): Boolean = getPermissionGroupInfoList().map { it.permissionGroupName.toLowerCase() }.contains(name)
+    fun hasPermissionGroup(name: String): Boolean = getPermissionGroupInfoList()
+            .map { it.permissionGroupName.toLowerCase() }
+            .contains(name.toLowerCase())
 
     /**
      * Returns the [IPermissionGroup] of this player

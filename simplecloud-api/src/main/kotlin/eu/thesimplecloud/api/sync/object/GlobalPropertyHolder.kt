@@ -70,7 +70,8 @@ class GlobalPropertyHolder : IGlobalPropertyHolder {
     override fun <T : Any> requestProperty(name: String): ICommunicationPromise<IProperty<T>> {
         if (CloudAPI.instance.isManager()) throw UnsupportedOperationException("Cannot request properties from manager")
         val connection = CloudAPI.instance.getThisSidesCommunicationBootstrap() as IConnection
-        return connection.sendQuery(PacketIOGetGlobalProperty(name), 1500)
+        return connection.sendQuery<IProperty<T>>(PacketIOGetGlobalProperty(name), 1500)
+                .addResultListener { updatePropertyFromPacket(name, it) }
     }
 
     override fun updatePropertyFromPacket(name: String, property: IProperty<*>) {
@@ -85,8 +86,8 @@ class GlobalPropertyHolder : IGlobalPropertyHolder {
             return
         }
         cachedProperty as Property<*>
-        cachedProperty.resetValue()
         cachedProperty.setStringValue(property.getValueAsString())
+        cachedProperty.resetValue()
     }
 
     private fun updatePropertyToNetwork(name: String, property: IProperty<*>) {
@@ -101,7 +102,7 @@ class GlobalPropertyHolder : IGlobalPropertyHolder {
 
     private fun forwardPacket(name: String, packet: IPacket) {
         if (CloudAPI.instance.isManager()) {
-            propertyNameToUpdateClient[name]?.forEach {
+            this.propertyNameToUpdateClient[name]?.forEach {
                 it.sendUnitQuery(packet)
             }
         } else {

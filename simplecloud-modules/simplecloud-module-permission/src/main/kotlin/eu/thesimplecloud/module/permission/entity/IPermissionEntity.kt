@@ -31,8 +31,13 @@ interface IPermissionEntity {
      */
     fun hasPermission(permission: String): Boolean {
         if (permission.isBlank()) return true
-        val permissionObj = getAllNotExpiredPermissions().firstOrNull { it.permissionString == permission } ?: return hasAllRights()
+        val permissionObj = getFirstNotExpiredMatchingPermission(permission) ?: return hasAllRights()
         return permissionObj.active
+    }
+
+    private fun getFirstNotExpiredMatchingPermission(permission: String): Permission? {
+        val notExpiredPermissions = getAllNotExpiredPermissions()
+        return notExpiredPermissions.firstOrNull { it.matches(permission) }
     }
 
     /**

@@ -70,8 +70,8 @@ class CommunicationConnectionHandlerImpl : IConnectionHandler {
             CloudAPI.instance.getCloudServiceManager().update(clientValue)
             Launcher.instance.consoleSender.sendMessage("manager.disconnect.service", "Service %SERVICE%", clientValue.getName(), " disconnected.")
         }
-        val synchronizedObjectManager = CloudAPI.instance.getGlobalPropertyHolder() as GlobalPropertyHolder
-        synchronizedObjectManager.removeConnectionFromUpdates(connection)
+        val globalPropertyHolder = CloudAPI.instance.getGlobalPropertyHolder() as GlobalPropertyHolder
+        globalPropertyHolder.removeConnectionFromUpdates(connection)
     }
 
     private fun unregisterServicesRunningOnWrapper(clientValue: IWritableWrapperInfo) {

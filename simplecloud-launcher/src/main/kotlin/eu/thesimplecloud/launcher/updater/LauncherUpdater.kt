@@ -45,7 +45,7 @@ class LauncherUpdater : AbstractUpdater(
     override fun executeJar() {
         val file = File("launcher-update.jar")
         val runningJar = File(Launcher::class.java.protectionDomain.codeSource.location.toURI())
-        val mainClass = ManifestLoader.getMainClass(file.absolutePath)
+        val mainClass = ManifestLoader.getMainClassFromManifestFile(file)
         val newClassLoader = URLClassLoader(arrayOf(file.toURI().toURL()))
         val mainMethod = newClassLoader.loadClass(mainClass).getMethod("main", Array<String>::class.java)
         Thread.currentThread().contextClassLoader = newClassLoader

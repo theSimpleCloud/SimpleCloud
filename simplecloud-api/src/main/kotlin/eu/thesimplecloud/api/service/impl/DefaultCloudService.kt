@@ -39,7 +39,7 @@ data class DefaultCloudService(
         private var wrapperName: String?,
         private var port: Int,
         private val maxMemory: Int,
-        private val maxPlayers: Int,
+        private var maxPlayers: Int,
         private var motd: String
 ) : ICloudService {
 
@@ -87,6 +87,10 @@ data class DefaultCloudService(
 
     override fun getMaxPlayers(): Int {
         return this.maxPlayers
+    }
+
+    override fun setMaxPlayers(amount: Int) {
+        this.maxPlayers = amount
     }
 
     override fun getMOTD(): String = this.motd
