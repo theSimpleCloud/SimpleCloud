@@ -60,6 +60,10 @@ class PermissionPlayer(
         this.permissionGroupInfoList.removeIf { it.permissionGroupName == name }
     }
 
+    override fun clearGroups() {
+        this.permissionGroupInfoList.clear()
+    }
+
     companion object {
         const val PROPERTY_NAME = "simplecloud-module-permission-player"
     }
