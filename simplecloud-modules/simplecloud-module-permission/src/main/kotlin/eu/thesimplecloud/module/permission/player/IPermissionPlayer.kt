@@ -81,6 +81,11 @@ interface IPermissionPlayer : IPermissionEntity, Nameable {
      */
     fun removePermissionGroup(name: String)
 
+    /**
+     * Clears all groups
+     */
+    fun clearGroups()
+
     override fun hasPermission(permission: String): Boolean {
         return super.hasPermission(permission) || getAllNotExpiredPermissionGroups().any { it.hasPermission(permission) }
     }

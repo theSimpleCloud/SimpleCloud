@@ -49,7 +49,7 @@ class PermissionGroup(private val name: String) : PermissionEntity(), IPermissio
     /**
      * Updates this group
      */
-    fun update() {
+    override fun update() {
         PermissionPool.instance.getPermissionGroupManager().update(this)
     }
 }

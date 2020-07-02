@@ -122,6 +122,24 @@ class PermissionCommand : ICommandHandler {
         commandSender.sendMessage("manager.command.perms.user.group.removed", "&7Group &e%GROUP%", permissionGroup.getName(), " &7removed from %PLAYER%", permissionPlayer.getName(), ".")
     }
 
+    @CommandSubPath("user <user> group set <group>", "Adds a permission to a user")
+    fun handleGroupSet(commandSender: ICommandSender, @CommandArgument("user", CloudPlayerCommandSuggestionProvider::class) user: String, @CommandArgument("group", PermissionGroupCommandSuggestionProvider::class) group: String) {
+        val permissionPlayer = getPermissionPlayerByName(user)
+        if (permissionPlayer == null) {
+            commandSender.sendMessage("manager.command.perms.user-not-exist", "&cUser not found.")
+            return
+        }
+        val permissionGroup = PermissionPool.instance.getPermissionGroupManager().getPermissionGroupByName(group)
+        if (permissionGroup == null) {
+            commandSender.sendMessage("manager.command.perms.user.group-not-exist", "&cGroup not found.")
+            return
+        }
+        permissionPlayer.clearGroups()
+        permissionPlayer.addPermissionGroup(PlayerPermissionGroupInfo(permissionGroup.getName(), -1))
+        PermissionModule.instance.updatePermissionPlayer(permissionPlayer)
+        commandSender.sendMessage("manager.command.perms.user.group.set", "&7Set group &e%GROUP%", permissionGroup.getName(), " &7to %PLAYER%", permissionPlayer.getName(), ".")
+    }
+
     @CommandSubPath("user <user> permission add <permission> <days> <active>", "Adds a permission to a user")
     fun onPermission(commandSender: ICommandSender, @CommandArgument("user", CloudPlayerCommandSuggestionProvider::class) user: String, @CommandArgument("permission") permission: String, @CommandArgument("days") days: String, @CommandArgument("active") active: String) {
         val permissionPlayer = getPermissionPlayerByName(user)
