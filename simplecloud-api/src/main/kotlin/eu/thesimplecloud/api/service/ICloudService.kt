@@ -266,6 +266,11 @@ interface ICloudService : INetworkComponent, IBootstrap, IPropertyMap {
         return CloudAPI.instance.getCloudServiceManager().copyService(this, path)
     }
 
+    /**
+     * Returns true when this service is starting or visible
+     */
+    fun isStartingOrVisible() = getState() == ServiceState.STARTING || getState() == ServiceState.VISIBLE
+
     override fun isActive(): Boolean = getState() != ServiceState.PREPARED && getState() != ServiceState.CLOSED
 
     override fun start() = CloudAPI.instance.getCloudServiceManager().startService(this)
