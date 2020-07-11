@@ -8,3 +8,7 @@ dependencies {
     implementation(project(":simplecloud-launcher"))
 
 }
+
+configurations {
+    jar.archiveName = 'SimpleCloud-Statistics.jar'
+}

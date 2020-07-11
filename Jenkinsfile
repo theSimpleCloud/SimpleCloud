@@ -31,6 +31,7 @@ pipeline {
                 sh 'cp simplecloud-launcher/build/libs/launcher.jar temp/launcher.jar';
                 sh 'rm temp/modules/SimpleCloud-CloudFlare.jar';
                 sh 'rm temp/modules/SimpleCloud-ServiceSelection.jar';
+                sh 'rm temp/modules/SimpleCloud-Statistics.jar';
                 zip archive: true, dir: 'temp', glob: '', zipFile: 'SimpleCloud-Latest.zip';
                 sh 'rm -r temp/';
             }
