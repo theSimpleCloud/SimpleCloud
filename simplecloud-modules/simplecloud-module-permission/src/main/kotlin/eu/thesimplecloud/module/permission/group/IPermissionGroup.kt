@@ -59,4 +59,9 @@ interface IPermissionGroup : IPermissionEntity {
         return super.hasPermission(permission) || getAllInheritedPermissionGroups().any { it.hasPermission(permission) }
     }
 
+    /**
+     * Updates this group
+     */
+    fun update()
+
 }

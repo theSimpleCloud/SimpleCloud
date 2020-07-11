@@ -41,7 +41,8 @@ class LauncherDependencyLoader {
                 Dependency("io.netty", "netty-all", "4.1.49.Final"),
                 Dependency("org.reflections", "reflections", "0.9.12"),
                 Dependency("org.mariadb.jdbc", "mariadb-java-client", "2.6.0"),
-                Dependency("com.github.ajalt", "clikt", "2.2.0"))
+                Dependency("com.github.ajalt", "clikt", "2.2.0"),
+                Dependency("org.slf4j", "slf4j-nop", "1.7.10"))
         dependencyLoader.installDependencies()
     }
 

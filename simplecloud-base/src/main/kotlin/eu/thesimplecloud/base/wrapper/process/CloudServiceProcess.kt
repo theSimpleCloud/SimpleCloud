@@ -101,9 +101,8 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
 
     private fun processStopped(){
         Launcher.instance.consoleSender.sendMessage("wrapper.service.stopped", "Service %NAME%", cloudService.getName(), " was stopped.")
-        Wrapper.instance.cloudServiceProcessManager.unregisterServiceProcess(this)
+        deleteTmpFolder()
         if (Wrapper.instance.communicationClient.isOpen()) {
-            //CloudAPI.instance.getCloudServiceManager().sendUpdateToConnection(this.cloudService, Wrapper.instance.communicationClient).awaitUninterruptibly()
             var tries = 0
             while (this.cloudService.isAuthenticated()) {
                 Thread.sleep(100)
@@ -116,6 +115,11 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
             Wrapper.instance.updateWrapperData()
         }
 
+        Wrapper.instance.cloudServiceProcessManager.unregisterServiceProcess(this)
+        Wrapper.instance.portManager.setPortUnused(this.cloudService.getPort())
+    }
+
+    private fun deleteTmpFolder() {
         if (!cloudService.isStatic()) {
             while (true) {
                 try {
@@ -126,7 +130,6 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
                 }
             }
         }
-        Wrapper.instance.portManager.setPortUnused(this.cloudService.getPort())
     }
 
     private fun createProcessBuilder(jarFile: File): ProcessBuilder {

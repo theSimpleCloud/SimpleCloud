@@ -28,6 +28,7 @@ import eu.thesimplecloud.api.utils.DatabaseExclude
 import eu.thesimplecloud.jsonlib.GsonCreator
 import eu.thesimplecloud.jsonlib.JsonLib
 import java.sql.Connection
+import java.sql.DatabaseMetaData
 import java.sql.DriverManager
 import java.sql.SQLException
 import java.util.*
@@ -44,13 +45,15 @@ class SQLOfflineCloudPlayerHandler(databaseConnectionInformation: DatabaseConnec
     val connection: Connection = DriverManager.getConnection("jdbc:mysql://${databaseConnectionInformation.host}:${databaseConnectionInformation.port}/${databaseConnectionInformation.databaseName}?user=${databaseConnectionInformation.userName}&password=${databaseConnectionInformation.password}&serverTimezone=UTC&autoReconnect=true")
 
     private val playerCollectionName = databaseConnectionInformation.collectionPrefix + "players"
-    private val databaseGson  = GsonCreator().excludeAnnotations(DatabaseExclude::class.java).create()
+    private val databaseGson = GsonCreator().excludeAnnotations(DatabaseExclude::class.java).create()
 
     init {
-        val statement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `$playerCollectionName` (`uniqueId` varchar(36), `name` varchar(16), `data` LONGBLOB)")
-        statement.executeUpdate()
-        createIndex("uniqueId")
-        createIndex("name")
+        if (!doesTableExist()) {
+            val statement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `$playerCollectionName` (`uniqueId` varchar(36), `name` varchar(16), `data` LONGBLOB)")
+            statement.executeUpdate()
+            createIndex("uniqueId")
+            createIndex("name")
+        }
     }
 
     private fun createIndex(columnName: String) {
@@ -114,6 +117,12 @@ class SQLOfflineCloudPlayerHandler(databaseConnectionInformation: DatabaseConnec
         prepareStatement.setString(1, searchValue)
         val resultSet = prepareStatement.executeQuery()
         return resultSet.next()
+    }
+
+    private fun doesTableExist(): Boolean {
+        val meta: DatabaseMetaData = connection.metaData
+        val res = meta.getTables(null, null, playerCollectionName, arrayOf("TABLE"))
+        return res.next()
     }
 
 
