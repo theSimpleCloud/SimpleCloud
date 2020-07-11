@@ -14,3 +14,7 @@ dependencies {
     testCompile group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: '1.3.5'
     testImplementation "io.mockk:mockk:1.10.0"
 }
+
+configurations {
+    jar.archiveName = 'SimpleCloud-ServiceSelection.jar'
+}
