@@ -45,6 +45,6 @@ findProject(':simplecloud-modules:simplecloud-module-hubcommand')?.name = 'simpl
 include 'simplecloud-mongoinstaller'
 include 'simplecloud-modules:simplecloud-module-serviceselection'
 findProject(':simplecloud-modules:simplecloud-module-serviceselection')?.name = 'simplecloud-module-serviceselection'
-
-
+include 'simplecloud-modules:simplecloud-module-statistics'
+findProject(':simplecloud-modules:simplecloud-module-statistics')?.name = 'simplecloud-module-statistics'
 
