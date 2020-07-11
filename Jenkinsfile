@@ -30,6 +30,7 @@ pipeline {
                 sh 'cp simplecloud-modules/**/build/libs/*.jar temp/modules/';
                 sh 'cp simplecloud-runner/build/libs/runner.jar temp/runner.jar';
                 sh 'rm temp/modules/SimpleCloud-CloudFlare.jar';
+                sh 'rm temp/modules/SimpleCloud-ServiceSelection.jar';
                 zip archive: true, dir: 'temp', glob: '', zipFile: 'SimpleCloud-Latest.zip';
                 sh 'rm -r temp/';
             }
