@@ -25,6 +25,7 @@ package eu.thesimplecloud.api.servicegroup.impl
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.cachelist.AbstractCacheList
 import eu.thesimplecloud.api.cachelist.ICacheObjectUpdater
+import eu.thesimplecloud.api.event.group.CloudServiceGroupUpdatedEvent
 import eu.thesimplecloud.api.eventapi.IEvent
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroupManager
@@ -41,7 +42,8 @@ abstract class AbstractCloudServiceGroupManager : AbstractCacheList<ICloudServic
         }
 
         override fun determineEventsToCall(updateValue: ICloudServiceGroup, cachedValue: ICloudServiceGroup?): List<IEvent> {
-            return emptyList()
+            val serviceToUse = cachedValue ?: updateValue
+            return listOf(CloudServiceGroupUpdatedEvent(serviceToUse))
         }
 
         override fun mergeUpdateValue(updateValue: ICloudServiceGroup, cachedValue: ICloudServiceGroup) {
