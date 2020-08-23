@@ -36,7 +36,6 @@ public class UniversalInstaller implements IInstaller {
     @Override
     public void install(InstallerEnum installerEnum) throws Exception {
         executeCommand("apt-get install sudo");
-        //executeCommand("wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | sudo apt-key add -");
         executeCommand("sudo apt-get install gnupg");
         executeCommand("wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | sudo apt-key add -");
 
