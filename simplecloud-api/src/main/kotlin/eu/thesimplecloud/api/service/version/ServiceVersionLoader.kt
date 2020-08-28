@@ -22,8 +22,11 @@
 
 package eu.thesimplecloud.api.service.version
 
+import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.utils.WebContentLoader
 import eu.thesimplecloud.jsonlib.JsonLib
+import java.io.File
+import java.io.FileNotFoundException
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,15 +34,28 @@ import eu.thesimplecloud.jsonlib.JsonLib
  * Time: 19:07
  * @author Frederick Baier
  */
-object ServiceVersionWebLoader {
+object ServiceVersionLoader {
 
-    fun loadFromWeb(): List<ServiceVersion> {
+    private val file = File(DirectoryPaths.paths.storagePath + "mc-versions.json")
+
+    fun loadVersions(): List<ServiceVersion> {
         val contentString = WebContentLoader().loadContent("https://thesimplecloud.eu/download/versions.json")
         return if (contentString == null) {
-            emptyList()
+            loadFromFile()
         } else {
-            JsonLib.fromJsonString(contentString).getObject(Array<ServiceVersion>::class.java).toList()
+            processWebContent(contentString)
         }
+    }
+
+    private fun loadFromFile(): List<ServiceVersion> {
+        if (!file.exists()) throw FileNotFoundException("File ${file.absolutePath} does not exist and the web server to load the service versions from is not available")
+        return JsonLib.fromJsonFile(file)!!.getObject(Array<ServiceVersion>::class.java).toList()
+    }
+
+    private fun processWebContent(contentString: String): List<ServiceVersion> {
+        val jsonLib = JsonLib.fromJsonString(contentString)
+        jsonLib.saveAsFile(file)
+        return jsonLib.getObject(Array<ServiceVersion>::class.java).toList()
     }
 
 }
