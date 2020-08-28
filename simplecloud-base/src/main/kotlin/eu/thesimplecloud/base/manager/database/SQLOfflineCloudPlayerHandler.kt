@@ -49,11 +49,11 @@ class SQLOfflineCloudPlayerHandler(private val databaseConnectionInformation: Da
     private val databaseGson  = GsonCreator().excludeAnnotations(DatabaseExclude::class.java).create()
 
     init {
+        runReconnectLoop()
         val statement = connection!!.prepareStatement("CREATE TABLE IF NOT EXISTS `$playerCollectionName` (`uniqueId` varchar(36), `name` varchar(16), `data` LONGBLOB)")
         statement.executeUpdate()
         createIndex("uniqueId")
         createIndex("name")
-        runReconnectLoop()
     }
 
     private fun runReconnectLoop() {
