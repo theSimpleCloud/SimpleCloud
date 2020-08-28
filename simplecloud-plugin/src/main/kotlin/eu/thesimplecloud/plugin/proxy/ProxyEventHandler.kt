@@ -130,7 +130,7 @@ object ProxyEventHandler {
         cloudPlayer?.let {
             cloudPlayer as CloudPlayer
             cloudPlayer.setOffline()
-            cloudPlayer.let { CloudAPI.instance.getCloudPlayerManager().delete(it) }
+            CloudAPI.instance.getCloudPlayerManager().delete(cloudPlayer)
             //send update that the player is now offline
             val client = CloudPlugin.instance.communicationClient
             CloudAPI.instance.getCloudPlayerManager().sendDeleteToConnection(cloudPlayer, client)
