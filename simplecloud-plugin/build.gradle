@@ -26,6 +26,9 @@ dependencies {
     compile(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion) {
         transitive = false
     }
+    compile(group: 'eu.thesimplecloud.jsonlib', name: 'json-lib', version: "1.0-SNAPSHOT") {
+        transitive = false
+    }
     compile(project(":simplecloud-api")) {
         transitive = false
     }

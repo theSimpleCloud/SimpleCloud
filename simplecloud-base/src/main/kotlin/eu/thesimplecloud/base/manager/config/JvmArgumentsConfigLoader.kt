@@ -37,7 +37,6 @@ import java.io.File
 class JvmArgumentsConfigLoader : AbstractJsonLibConfigLoader<JvmArgumentsConfig>(
         JvmArgumentsConfig::class.java,
         File(DirectoryPaths.paths.storagePath + "jvm-arguments.json"),
-        { JvmArgumentsConfig(listOf(JvmArgument(listOf("all"), listOf("-XX:+UseConcMarkSweepGC", "-XX:+CMSIncrementalMode",
-                "-XX:-UseAdaptiveSizePolicy")))) },
+        { JvmArgumentsConfig(listOf(JvmArgument(listOf("all"), listOf("-XX:-UseAdaptiveSizePolicy")))) },
         true
 )

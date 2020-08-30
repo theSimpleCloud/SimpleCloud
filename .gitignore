@@ -75,3 +75,4 @@ nb-configuration.xml
 logs/
 launcher.json
 storage/
+local-repo/

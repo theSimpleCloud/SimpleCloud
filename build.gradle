@@ -95,12 +95,16 @@ subprojects {
     dependencies {
         testCompile group: 'junit', name: 'junit', version: '4.13'
         implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-        compile(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion) {
+        compileOnly(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion) {
             transitive = false
         }
-        compile(group: 'eu.thesimplecloud.jsonlib', name: 'json-lib', version: "1.0-SNAPSHOT") {
+        compileOnly(group: 'eu.thesimplecloud.jsonlib', name: 'json-lib', version: "1.0-SNAPSHOT") {
             transitive = false
         }
+
+        testCompile(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion)
+        testCompile(group: 'eu.thesimplecloud.jsonlib', name: 'json-lib', version: "1.0-SNAPSHOT")
+
         compileOnly group: 'commons-io', name: 'commons-io', version: '2.6'
         compileOnly group: 'com.google.guava', name: 'guava', version: '21.0'
         compileOnly group: 'io.netty', name: 'netty-all', version: '4.1.50.Final'

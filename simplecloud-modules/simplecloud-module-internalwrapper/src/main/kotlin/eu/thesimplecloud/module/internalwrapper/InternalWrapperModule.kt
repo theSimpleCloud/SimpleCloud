@@ -25,10 +25,10 @@ package eu.thesimplecloud.module.internalwrapper
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.external.ICloudModule
 import eu.thesimplecloud.api.screen.ICommandExecutable
-import eu.thesimplecloud.api.wrapper.impl.DefaultWrapperInfo
 import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.module.internalwrapper.setup.InternalWrapperMemorySetup
+import eu.thesimplecloud.runner.RunnerFileProvider
 import java.io.BufferedReader
 import java.io.File
 import java.io.IOException
@@ -42,7 +42,6 @@ class InternalWrapperModule : ICloudModule {
     private var commandExecutable: ICommandExecutable? = null
 
     override fun onEnable() {
-        val launcherJarFile = Launcher.instance.getLauncherFile()
         val wrapperManager = CloudAPI.instance.getWrapperManager()
         val config = Launcher.instance.launcherConfigLoader.loadConfig()
 
@@ -53,7 +52,7 @@ class InternalWrapperModule : ICloudModule {
 
         thread(start = true, isDaemon = false) {
             Launcher.instance.consoleSender.sendMessage("module.internalwrapper.starting", "Starting internal wrapper...")
-            val processBuilder = ProcessBuilder("java", "-jar", launcherJarFile.absolutePath, "--start-application=WRAPPER", "--disable-auto-updater")
+            val processBuilder = ProcessBuilder("java", "-jar", RunnerFileProvider.RUNNER_FILE.path, "--start-application=WRAPPER", "--disable-auto-updater")
             processBuilder.directory(File("."))
             val process = processBuilder.start()
             this.process = process

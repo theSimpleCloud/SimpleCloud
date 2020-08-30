@@ -76,7 +76,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
         serviceConfigurator.configureService(cloudService, this.serviceTmpDir)
         val jarFile = Wrapper.instance.serviceVersionLoader.loadVersionFile(cloudService.getServiceVersion())
         val processBuilder = createProcessBuilder(jarFile)
-        processBuilder.directory(this.serviceTmpDir)
+                .directory(this.serviceTmpDir)
         val process = processBuilder.start()
         this.process = process
 
@@ -94,9 +94,22 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
                 e.printStackTrace()
             }
         }
+
+        bufferedReader.close()
+        printErrorStream()
         processStopped()
         //this method will not return before the process stops
         return CommunicationPromise.of(Unit)
+    }
+
+    private fun printErrorStream() {
+        val errorStream = this.process!!.errorStream
+        val reader = BufferedReader(InputStreamReader(errorStream))
+        while (reader.ready()) {
+            val line = reader.readLine() ?: continue
+            Launcher.instance.logger.warning("[${cloudService.getName()}]$line")
+        }
+        reader.close()
     }
 
     private fun processStopped(){
