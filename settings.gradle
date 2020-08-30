@@ -43,4 +43,5 @@ findProject(':simplecloud-modules:simplecloud-module-notify')?.name = 'simpleclo
 include 'simplecloud-modules:simplecloud-module-hubcommand'
 findProject(':simplecloud-modules:simplecloud-module-hubcommand')?.name = 'simplecloud-module-hubcommand'
 include 'simplecloud-mongoinstaller'
+include 'simplecloud-runner'
 

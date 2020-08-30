@@ -1,4 +1,3 @@
-
 /*
  * MIT License
  *
@@ -21,13 +20,20 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-configurations {
-    jar.archiveName = 'SimpleCloud-InternalWrapper.jar'
+package eu.thesimplecloud.launcher.startup
+
+import eu.thesimplecloud.launcher.dependency.LauncherDependencyLoader
+
+class LauncherMain {
+    companion object {
+        var specifiedArguments: Array<String>? = null
+
+
+    }
 }
 
-dependencies {
-    implementation(project(":simplecloud-base"))
-    implementation(project(":simplecloud-api"))
-    implementation(project(":simplecloud-launcher"))
-    implementation(project(":simplecloud-runner"))
+fun main(args: Array<String>) {
+    LauncherMain.specifiedArguments = args
+    LauncherDependencyLoader().loadLauncherDependencies()
+    LauncherStartArguments().main(args)
 }

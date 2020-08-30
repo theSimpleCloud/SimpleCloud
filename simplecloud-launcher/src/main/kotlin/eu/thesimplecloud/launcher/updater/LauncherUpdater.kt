@@ -25,8 +25,8 @@ package eu.thesimplecloud.launcher.updater
 
 import eu.thesimplecloud.api.depedency.Dependency
 import eu.thesimplecloud.api.utils.ManifestLoader
-import eu.thesimplecloud.launcher.LauncherMain
 import eu.thesimplecloud.launcher.startup.Launcher
+import eu.thesimplecloud.launcher.startup.LauncherMain
 import java.io.File
 import java.net.URLClassLoader
 import java.nio.file.Files

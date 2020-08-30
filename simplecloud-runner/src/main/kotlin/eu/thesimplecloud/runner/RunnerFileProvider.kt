@@ -1,4 +1,3 @@
-
 /*
  * MIT License
  *
@@ -21,13 +20,18 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-configurations {
-    jar.archiveName = 'SimpleCloud-InternalWrapper.jar'
-}
+package eu.thesimplecloud.runner
 
-dependencies {
-    implementation(project(":simplecloud-base"))
-    implementation(project(":simplecloud-api"))
-    implementation(project(":simplecloud-launcher"))
-    implementation(project(":simplecloud-runner"))
+import java.io.File
+
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 29.08.2020
+ * Time: 13:28
+ * @author Frederick Baier
+ */
+object RunnerFileProvider {
+    
+    val RUNNER_FILE = File(this::class.java.protectionDomain.codeSource.location.toURI())
+
 }

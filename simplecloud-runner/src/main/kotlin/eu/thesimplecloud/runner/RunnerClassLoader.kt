@@ -20,20 +20,27 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.launcher
+package eu.thesimplecloud.runner
 
-import eu.thesimplecloud.launcher.dependency.LauncherDependencyLoader
-import eu.thesimplecloud.launcher.startup.LauncherStartArguments
+import java.net.URL
+import java.net.URLClassLoader
 
-class LauncherMain {
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 29.08.2020
+ * Time: 08:03
+ * @author Frederick Baier
+ */
+class RunnerClassLoader(urls: Array<URL>) : URLClassLoader(urls, getSystemClassLoader()) {
+
     companion object {
-        var specifiedArguments: Array<String>? = null
+        init {
+            ClassLoader.registerAsParallelCapable()
+        }
     }
-}
 
-fun main(args: Array<String>) {
-    LauncherMain.specifiedArguments = args
-    println("Starting launcher...")
-    LauncherDependencyLoader().loadLauncherDependencies()
-    LauncherStartArguments().main(args)
+    override fun addURL(url: URL?) {
+        super.addURL(url)
+    }
+
 }
