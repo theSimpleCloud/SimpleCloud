@@ -23,8 +23,8 @@
 package eu.thesimplecloud.launcher.updater
 
 
-import eu.thesimplecloud.api.depedency.Dependency
 import eu.thesimplecloud.api.utils.ManifestLoader
+import eu.thesimplecloud.launcher.dependency.LauncherCloudDependency
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.launcher.startup.LauncherMain
 import java.io.File
@@ -64,7 +64,7 @@ class LauncherUpdater : AbstractUpdater(
 
     private fun performWindowsUpdate(runningJar: File, file: File) {
         val updaterFile = File("storage/updater.jar")
-        val dependency = Dependency("eu.thesimplecloud.simplecloud", "simplecloud-updater", getVersionToInstall()!!)
+        val dependency = LauncherCloudDependency("eu.thesimplecloud.simplecloud", "simplecloud-updater", getVersionToInstall()!!)
         dependency.download(getRepositoryURL(), updaterFile)
         val processBuilder = ProcessBuilder("java", "-jar", "storage/updater.jar", "300", runningJar.absolutePath, file.absolutePath)
         processBuilder.directory(File("."))

@@ -20,26 +20,23 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.launcher.dependency
+package eu.thesimplecloud.api.depedency
 
-import eu.thesimplecloud.api.depedency.Dependency
+open class CloudDependency(val groupId: String, val artifactId: String, val version: String) {
 
-interface IDependencyLoader {
+    fun getName() = "$artifactId-$version"
 
+    override fun equals(other: Any?): Boolean {
+        if (other == null) return false
+        if (other !is CloudDependency) return false
+        return this.groupId == other.groupId && this.artifactId == other.artifactId && this.version == other.version
+    }
 
-    /**
-     * Adds all specified dependencies to the pool of repositories.
-     */
-    fun addRepositories(vararg repositories: String)
-
-    /**
-     * Downloads all specified dependencies.
-     */
-    fun downloadDependencies(dependencies: List<Dependency>)
-
-    /**
-     * Downloads the dependencies if necessary and adds all dependencies to the class loader.
-     */
-    fun installDependencies()
+    override fun hashCode(): Int {
+        var result = groupId.hashCode()
+        result = 31 * result + artifactId.hashCode()
+        result = 31 * result + version.hashCode()
+        return result
+    }
 
 }

@@ -86,7 +86,7 @@ class ResourceFinder {
         }
 
         fun createClassLoaderByFiles(vararg files: File): URLClassLoader {
-            return URLClassLoader(files.map { it.toURI().toURL() }.toTypedArray())
+            return URLClassLoader(files.map { it.toURI().toURL() }.toTypedArray(), Thread.currentThread().contextClassLoader)
         }
 
     }

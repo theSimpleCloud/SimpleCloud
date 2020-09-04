@@ -22,7 +22,7 @@
 
 package eu.thesimplecloud.launcher.external.module
 
-import eu.thesimplecloud.api.depedency.Dependency
+import eu.thesimplecloud.api.depedency.CloudDependency
 
 data class ModuleFileContent(
         val name: String,
@@ -30,7 +30,7 @@ data class ModuleFileContent(
         val mainClass: String,
         val moduleCopyType: ModuleCopyType,
         val repositories: List<String>,
-        val dependencies: List<Dependency>,
+        val dependencies: List<CloudDependency>,
         val depend: List<String>
 ) {
 

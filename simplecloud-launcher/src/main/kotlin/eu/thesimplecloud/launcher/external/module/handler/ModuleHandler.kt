@@ -28,6 +28,7 @@ import eu.thesimplecloud.api.external.ICloudModule
 import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.launcher.dependency.DependencyLoader
+import eu.thesimplecloud.launcher.dependency.LauncherCloudDependency
 import eu.thesimplecloud.launcher.event.module.ModuleLoadedEvent
 import eu.thesimplecloud.launcher.event.module.ModuleUnloadedEvent
 import eu.thesimplecloud.launcher.exception.module.ModuleLoadException
@@ -147,9 +148,12 @@ open class ModuleHandler(
 
     private fun installRequiredDependencies(cloudModuleFileContent: ModuleFileContent) {
         val dependencyLoader = DependencyLoader.INSTANCE
-        dependencyLoader.addRepositories(cloudModuleFileContent.repositories)
-        dependencyLoader.addDependencies(cloudModuleFileContent.dependencies)
-        dependencyLoader.installDependencies()
+        val launcherDependencies = cloudModuleFileContent.dependencies
+                .map { LauncherCloudDependency(it.groupId, it.artifactId, it.version) }
+        dependencyLoader.loadDependencies(
+                cloudModuleFileContent.repositories,
+                launcherDependencies
+        )
     }
 
     private fun loadModuleClassInstance(classLoader: ClassLoader, mainClassName: String): ICloudModule {
