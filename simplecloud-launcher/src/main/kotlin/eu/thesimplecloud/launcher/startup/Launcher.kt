@@ -137,7 +137,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
     private fun executeUpdateIfAvailable(): Boolean {
         val updater = RunnerUpdater()
         if (updater.isUpdateAvailable()) {
-            this.consoleSender.sendMessage("Found a new launcher version: " + updater.getVersionToInstall()!!)
+            this.consoleSender.sendMessage("Found a new runner version: " + updater.getVersionToInstall()!!)
             UpdateExecutor().executeUpdate(updater)
             return true
         } else {
