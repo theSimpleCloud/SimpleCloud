@@ -3,9 +3,6 @@ plugins {
     id 'org.jetbrains.kotlin.jvm'
 }
 
-group 'eu.thesimplecloud.simplecloud'
-version '1.3.3-SNAPSHOT'
-
 repositories {
     mavenCentral()
 }
