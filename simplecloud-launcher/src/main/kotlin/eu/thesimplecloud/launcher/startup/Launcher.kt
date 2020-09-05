@@ -40,7 +40,7 @@ import eu.thesimplecloud.launcher.screens.ScreenManagerImpl
 import eu.thesimplecloud.launcher.setups.AutoIpSetup
 import eu.thesimplecloud.launcher.setups.LanguageSetup
 import eu.thesimplecloud.launcher.setups.StartSetup
-import eu.thesimplecloud.launcher.updater.LauncherUpdater
+import eu.thesimplecloud.launcher.updater.RunnerUpdater
 import eu.thesimplecloud.launcher.updater.UpdateExecutor
 import java.io.File
 import java.io.IOException
@@ -135,7 +135,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
     }
 
     private fun executeUpdateIfAvailable(): Boolean {
-        val updater = LauncherUpdater()
+        val updater = RunnerUpdater()
         if (updater.isUpdateAvailable()) {
             this.consoleSender.sendMessage("Found a new launcher version: " + updater.getVersionToInstall()!!)
             UpdateExecutor().executeUpdate(updater)

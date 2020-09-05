@@ -23,19 +23,18 @@
 package eu.thesimplecloud.launcher.updater
 
 
-import eu.thesimplecloud.api.utils.ManifestLoader
 import eu.thesimplecloud.launcher.dependency.LauncherCloudDependency
 import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.launcher.startup.LauncherMain
+import eu.thesimplecloud.runner.RunnerFileProvider
 import java.io.File
 import java.net.URLClassLoader
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 
-class LauncherUpdater : AbstractUpdater(
+class RunnerUpdater : AbstractUpdater(
         "eu.thesimplecloud.simplecloud",
-        "simplecloud-launcher",
-        File("launcher-update.jar")
+        "simplecloud-runner",
+        File("runner-update.jar")
 ) {
 
     override fun getCurrentVersion(): String {
@@ -43,35 +42,32 @@ class LauncherUpdater : AbstractUpdater(
     }
 
     override fun executeJar() {
-        val file = File("launcher-update.jar")
-        val runningJar = File(Launcher::class.java.protectionDomain.codeSource.location.toURI())
-        val mainClass = ManifestLoader.getMainClassFromManifestFile(file)
+        val file = File("runner-update.jar")
+        val currentRunnerFile = RunnerFileProvider.RUNNER_FILE
         val newClassLoader = URLClassLoader(arrayOf(file.toURI().toURL()))
-        val mainMethod = newClassLoader.loadClass(mainClass).getMethod("main", Array<String>::class.java)
         Thread.currentThread().contextClassLoader = newClassLoader
         Runtime.getRuntime().addShutdownHook(Thread {
             Thread.sleep(200)
             if (!Launcher.instance.isWindows()) {
-                performLinuxUpdate(file, runningJar)
+                performLinuxUpdate(file, currentRunnerFile)
             } else {
-                performWindowsUpdate(runningJar, file)
+                performWindowsUpdate(currentRunnerFile, file)
             }
+            println("Update installed. Stopping in 5 seconds...")
+            Thread.sleep(5 * 1000)
         })
-        System.setProperty("simplecloud.launcher.update-mode", "true")
-        System.setProperty("simplecloud.version", getVersionToInstall()!!)
-        mainMethod.invoke(null, LauncherMain.specifiedArguments)
     }
 
-    private fun performWindowsUpdate(runningJar: File, file: File) {
+    private fun performWindowsUpdate(currentRunnerFile: File, file: File) {
         val updaterFile = File("storage/updater.jar")
         val dependency = LauncherCloudDependency("eu.thesimplecloud.simplecloud", "simplecloud-updater", getVersionToInstall()!!)
         dependency.download(getRepositoryURL(), updaterFile)
-        val processBuilder = ProcessBuilder("java", "-jar", "storage/updater.jar", "300", runningJar.absolutePath, file.absolutePath)
+        val processBuilder = ProcessBuilder("java", "-jar", "storage/updater.jar", "300", currentRunnerFile.absolutePath, file.absolutePath)
         processBuilder.directory(File("."))
         processBuilder.start()
     }
 
-    private fun performLinuxUpdate(file: File, runningJar: File) {
-        Files.move(file.toPath(), runningJar.toPath(), StandardCopyOption.REPLACE_EXISTING)
+    private fun performLinuxUpdate(currentRunnerFile: File, file: File) {
+        Files.move(file.toPath(), currentRunnerFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
     }
 }
