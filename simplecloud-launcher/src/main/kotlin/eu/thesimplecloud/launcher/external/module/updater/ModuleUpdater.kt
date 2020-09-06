@@ -53,6 +53,9 @@ class ModuleUpdater(
     }
 
     override fun getRepositoryURL(): String {
-        return updaterFileContent.repository
+        val repository = updaterFileContent.repository
+        if (repository.equals("CLOUD", true))
+            return super.getRepositoryURL()
+        return repository
     }
 }
