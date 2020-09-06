@@ -48,8 +48,15 @@ class SignsModule : ICloudModule {
     override fun onEnable() {
         registerListener()
         reloadConfig()
+        saveConfigIfNotExist()
 
         Launcher.instance.commandManager.registerCommand(this, SignsCommand())
+    }
+
+    private fun saveConfigIfNotExist() {
+        if (!layoutsDir.exists()) {
+            saveConfigToFiles(SignModuleConfig.INSTANCE.getValue())
+        }
     }
 
     private fun registerListener() {
