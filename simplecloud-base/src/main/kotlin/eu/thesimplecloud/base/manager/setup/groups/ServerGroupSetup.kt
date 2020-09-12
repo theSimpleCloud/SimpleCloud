@@ -147,9 +147,14 @@ class ServerGroupSetup : DefaultGroupSetup(), ISetup {
         return true
     }
 
+    @SetupQuestion(11, "manager.setup.service-group.question.permission", "Which permission shall a player need to join this group? (leave it empty for no permission)")
+    fun permissionQuestion(permission: String) {
+        handlePermission(permission)
+    }
+
     @SetupFinished
     fun finished() {
-        CloudAPI.instance.getCloudServiceGroupManager().createServerGroup(name, templateName, memory, maxPlayers, minimumOnlineServices, maximumOnlineServices, true, static, percent, wrapper?.getName(), serviceVersion, 0)
+        CloudAPI.instance.getCloudServiceGroupManager().createServerGroup(name, templateName, memory, maxPlayers, minimumOnlineServices, maximumOnlineServices, true, static, percent, wrapper?.getName(), serviceVersion, 0, permission)
         Launcher.instance.consoleSender.sendMessage(true, "manager.setup.service-group.finished", "Group %NAME%", name, " created.")
     }
 

@@ -40,7 +40,6 @@ class LobbyGroupSetup : DefaultGroupSetup(), ISetup {
 
     private lateinit var serviceVersion: ServiceVersion
     private var wrapper: IWrapperInfo? = null
-    private var permission: String? = null
     private var priority by Delegates.notNull<Int>()
     private var percent by Delegates.notNull<Int>()
     private var static by Delegates.notNull<Boolean>()
@@ -162,9 +161,7 @@ class LobbyGroupSetup : DefaultGroupSetup(), ISetup {
 
     @SetupQuestion(12, "manager.setup.service-group.question.permission", "Which permission shall a player need to join this group? (leave it empty for no permission)")
     fun permissionQuestion(permission: String) {
-        Launcher.instance.consoleSender.sendMessage(true, "manager.setup.service-group.permission.success", "Permission set.")
-        if (permission.isNotBlank())
-            this.permission = permission
+       handlePermission(permission)
     }
 
     @SetupFinished

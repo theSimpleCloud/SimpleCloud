@@ -39,6 +39,7 @@ open class DefaultServerGroup(
         wrapperName: String?,
         serviceVersion: ServiceVersion,
         startPriority: Int,
+        private var permission: String?,
         private val hiddenAtProxyGroups: List<String> = emptyList()
 ) : AbstractServiceGroup(
         name,
@@ -56,6 +57,14 @@ open class DefaultServerGroup(
 ), ICloudServerGroup {
 
     override fun getHiddenAtProxyGroups(): List<String> = this.hiddenAtProxyGroups
+
+    override fun getPermission(): String? {
+        return this.permission
+    }
+
+    override fun setPermission(permission: String) {
+        this.permission = permission
+    }
 
     override fun toString(): String {
         return JsonLib.fromObject(this).getAsJsonString()

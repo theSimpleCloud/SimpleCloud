@@ -25,12 +25,13 @@ package eu.thesimplecloud.plugin.proxy
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.event.player.CloudPlayerDisconnectEvent
 import eu.thesimplecloud.api.event.player.CloudPlayerLoginEvent
-import eu.thesimplecloud.api.exception.NoSuchPlayerException
 import eu.thesimplecloud.api.player.CloudPlayer
+import eu.thesimplecloud.api.player.ICloudPlayer
 import eu.thesimplecloud.api.player.PlayerServerConnectState
 import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
+import eu.thesimplecloud.api.servicegroup.grouptype.ICloudServerGroup
 import eu.thesimplecloud.clientserverapi.lib.packet.packetsender.sendQuery
 import eu.thesimplecloud.plugin.network.packets.PacketOutCreateCloudPlayer
 import eu.thesimplecloud.plugin.network.packets.PacketOutGetTabSuggestions
@@ -147,14 +148,25 @@ object ProxyEventHandler {
             cancelEvent("§cServer is not registered in the cloud.", CancelType.KICK)
             return
         }
-        if (cloudService.getServiceGroup().isInMaintenance()) {
-            val cloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(uniqueId)
-            if (cloudPlayer == null) {
-                cancelEvent("§cUnable to find cloud player.", CancelType.KICK)
-                return
-            }
+        val serviceGroup = cloudService.getServiceGroup()
+        val cloudPlayer: ICloudPlayer? = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(uniqueId)
+
+        if (cloudPlayer == null) {
+            cancelEvent("§cUnable to find cloud player.", CancelType.KICK)
+            return
+        }
+
+        if (serviceGroup.isInMaintenance()) {
             if (!cloudPlayer.hasPermissionSync("cloud.maintenance.join")) {
                 cancelEvent("§cThis service is in maintenance.", CancelType.MESSAGE)
+                return
+            }
+        }
+
+        if (serviceGroup is ICloudServerGroup) {
+            val permission = serviceGroup.getPermission()
+            if (permission != null && !cloudPlayer.hasPermissionSync(permission)) {
+                cancelEvent("§cYou don't have the permission to join this server.", CancelType.MESSAGE)
                 return
             }
         }
@@ -177,8 +189,6 @@ object ProxyEventHandler {
 
         //update player
         //use cloned player to compare connected server with old connected server.
-        val cloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(uniqueId)
-                ?: throw NoSuchPlayerException("Cannot find CloudPlayer by uuid: $uniqueId")
         val clonedPlayer = cloudPlayer.clone() as CloudPlayer
         clonedPlayer.setConnectedServerName(cloudService.getName())
         clonedPlayer.setServerConnectState(PlayerServerConnectState.CONNECTING)

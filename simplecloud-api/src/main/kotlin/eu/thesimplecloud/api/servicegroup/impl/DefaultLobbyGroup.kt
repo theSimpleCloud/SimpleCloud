@@ -38,7 +38,7 @@ class DefaultLobbyGroup(
         percentToStartNewService: Int,
         wrapperName: String?,
         private var priority: Int,
-        private var permission: String?,
+        permission: String?,
         serviceVersion: ServiceVersion,
         startPriority: Int,
         hiddenAtProxyGroups: List<String> = emptyList()
@@ -55,19 +55,14 @@ class DefaultLobbyGroup(
         wrapperName,
         serviceVersion,
         startPriority,
+        permission,
         hiddenAtProxyGroups
 ), ICloudLobbyGroup {
 
     override fun getPriority(): Int = this.priority
 
-    override fun getPermission(): String? = this.permission
-
     override fun setPriority(priority: Int) {
         this.priority = priority
-    }
-
-    override fun setPermission(permission: String) {
-        this.permission = permission
     }
 
     override fun toString(): String {

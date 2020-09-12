@@ -55,6 +55,7 @@ interface ICloudServiceGroupManager : ICacheList<ICloudServiceGroup> {
             wrapperName: String?,
             serviceVersion: ServiceVersion,
             startPriority: Int,
+            permission: String?,
             hiddenAtProxyGroups: List<String> = emptyList()
     ): ICommunicationPromise<ICloudServerGroup> =
             createServiceGroup(DefaultServerGroup(
@@ -70,6 +71,7 @@ interface ICloudServiceGroupManager : ICacheList<ICloudServiceGroup> {
                     wrapperName,
                     serviceVersion,
                     startPriority,
+                    permission,
                     hiddenAtProxyGroups
             )) as ICommunicationPromise<ICloudServerGroup>
 

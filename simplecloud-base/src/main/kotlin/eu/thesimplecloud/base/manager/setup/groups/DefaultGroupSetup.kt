@@ -29,6 +29,8 @@ import eu.thesimplecloud.launcher.startup.Launcher
 
 open class DefaultGroupSetup {
 
+    protected var permission: String? = null
+
     /**
      * Creates a template and returns its name
      */
@@ -48,6 +50,12 @@ open class DefaultGroupSetup {
         }
         Launcher.instance.consoleSender.sendMessage(true, "manager.setup.service-group.question.template.success", "Template set.")
         return templateName
+    }
+
+    protected fun handlePermission(permission: String) {
+        Launcher.instance.consoleSender.sendMessage(true, "manager.setup.service-group.permission.success", "Permission set.")
+        if (permission.isNotBlank())
+            this.permission = permission
     }
 
 }
