@@ -86,8 +86,9 @@ interface ICloudPlayerManager : ICacheList<ICloudPlayer> {
      * Kicks the specified player with the specified message from the network.
      * @param cloudPlayer the [ICloudPlayer] that shall be kicked.
      * @param message the message with the player shall be kicked.
+     * @return a promise that completes when the player was kicked
      */
-    fun kickPlayer(cloudPlayer: ICloudPlayer, message: String)
+    fun kickPlayer(cloudPlayer: ICloudPlayer, message: String): ICommunicationPromise<Unit>
 
     /**
      * Sends a tile to the specified player.

@@ -107,9 +107,10 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
         return proxyClient.sendQuery(PacketIOConnectCloudPlayer(cloudPlayer, cloudService), 500)
     }
 
-    override fun kickPlayer(cloudPlayer: ICloudPlayer, message: String) {
+    override fun kickPlayer(cloudPlayer: ICloudPlayer, message: String): ICommunicationPromise<Unit> {
         val proxyClient = getProxyClientOfCloudPlayer(cloudPlayer)
-        proxyClient?.sendUnitQuery(PacketIOKickCloudPlayer(cloudPlayer, message))
+        return proxyClient?.sendUnitQuery(PacketIOKickCloudPlayer(cloudPlayer, message))
+                ?: CommunicationPromise.of(Unit)
     }
 
     override fun sendTitle(cloudPlayer: ICloudPlayer, title: String, subTitle: String, fadeIn: Int, stay: Int, fadeOut: Int) {

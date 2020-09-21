@@ -88,13 +88,13 @@ class CloudPlayerManagerVelocity : AbstractServiceCloudPlayerManager() {
         return communicationPromise
     }
 
-    override fun kickPlayer(cloudPlayer: ICloudPlayer, message: String) {
+    override fun kickPlayer(cloudPlayer: ICloudPlayer, message: String): ICommunicationPromise<Unit> {
         if (cloudPlayer.getConnectedProxyName() != CloudPlugin.instance.thisServiceName) {
-            CloudPlugin.instance.communicationClient.sendUnitQuery(PacketIOKickCloudPlayer(cloudPlayer, message))
-            return
+            return CloudPlugin.instance.communicationClient.sendUnitQuery(PacketIOKickCloudPlayer(cloudPlayer, message))
         }
 
         getPlayerByCloudPlayer(cloudPlayer)?.disconnect(CloudTextBuilder().build(CloudText(message)))
+        return CommunicationPromise.of(Unit)
     }
 
     override fun sendTitle(cloudPlayer: ICloudPlayer, title: String, subTitle: String, fadeIn: Int, stay: Int, fadeOut: Int) {
