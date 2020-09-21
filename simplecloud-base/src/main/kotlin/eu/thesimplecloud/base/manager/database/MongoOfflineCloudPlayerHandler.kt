@@ -30,8 +30,6 @@ import eu.thesimplecloud.api.player.IOfflineCloudPlayer
 import eu.thesimplecloud.api.player.OfflineCloudPlayer
 import eu.thesimplecloud.api.player.connection.DefaultPlayerAddress
 import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
-import eu.thesimplecloud.api.utils.DatabaseExclude
-import eu.thesimplecloud.jsonlib.GsonCreator
 import eu.thesimplecloud.jsonlib.JsonLib
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -42,11 +40,10 @@ import org.litote.kmongo.findOne
 import org.litote.kmongo.getCollection
 import java.util.*
 
-class MongoOfflineCloudPlayerHandler(val databaseConnectionInformation: DatabaseConnectionInformation) : IOfflineCloudPlayerHandler {
+class MongoOfflineCloudPlayerHandler(val databaseConnectionInformation: DatabaseConnectionInformation) : AbstractOfflineCloudPlayerHandler() {
 
     private val mongoClient: MongoClient = createMongoClient()
     private val collection = this.mongoClient.getDatabase(databaseConnectionInformation.databaseName).getCollection<Document>(databaseConnectionInformation.collectionPrefix + "players")
-    private val databseGson  = GsonCreator().excludeAnnotations(DatabaseExclude::class.java).create()
 
     init {
         //make a first request (the first request will take a very long time when using embed mongodb. Following requests will be way faster)
@@ -90,19 +87,19 @@ class MongoOfflineCloudPlayerHandler(val databaseConnectionInformation: Database
     override fun getOfflinePlayer(playerUniqueId: UUID): IOfflineCloudPlayer? {
         val document = this.collection.findOne(Filters.eq("uniqueId", playerUniqueId.toString()))
                 ?: return null
-        return JsonLib.fromObject(document, databseGson).getObject(OfflineCloudPlayer::class.java)
+        return JsonLib.fromObject(document, databaseGson).getObject(OfflineCloudPlayer::class.java)
     }
 
     override fun getOfflinePlayer(name: String): IOfflineCloudPlayer? {
         val document = this.collection.findOne("{ \$text: { \$search: \"$name\",\$caseSensitive :false } }")
                 ?: return null
-        return JsonLib.fromObject(document, databseGson).getObject(OfflineCloudPlayer::class.java)
+        return JsonLib.fromObject(document, databaseGson).getObject(OfflineCloudPlayer::class.java)
     }
 
     @Synchronized
     override fun saveCloudPlayer(offlineCloudPlayer: OfflineCloudPlayer) {
         //load all properties so that the values are all set
-        val documentToSave = JsonLib.fromObject(offlineCloudPlayer, databseGson).getObject(Document::class.java)
+        val documentToSave = JsonLib.fromObject(offlineCloudPlayer, databaseGson).getObject(Document::class.java)
         if (offlineCloudPlayer::class.java != OfflineCloudPlayer::class.java) throw IllegalStateException("Cannot save player of type " + offlineCloudPlayer::class.java.simpleName)
         if (getOfflinePlayer(offlineCloudPlayer.getUniqueId()) != null) {
             this.collection.replaceOne(Filters.eq("uniqueId", offlineCloudPlayer.getUniqueId().toString()), documentToSave)

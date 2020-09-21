@@ -24,8 +24,6 @@ package eu.thesimplecloud.base.manager.database
 
 import eu.thesimplecloud.api.player.IOfflineCloudPlayer
 import eu.thesimplecloud.api.player.OfflineCloudPlayer
-import eu.thesimplecloud.api.utils.DatabaseExclude
-import eu.thesimplecloud.jsonlib.GsonCreator
 import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.launcher.startup.Launcher
 import java.sql.Connection
@@ -41,12 +39,11 @@ import java.util.concurrent.TimeUnit
  * Time: 14:18
  * @author Frederick Baier
  */
-class SQLOfflineCloudPlayerHandler(private val databaseConnectionInformation: DatabaseConnectionInformation) : IOfflineCloudPlayerHandler {
+class SQLOfflineCloudPlayerHandler(private val databaseConnectionInformation: DatabaseConnectionInformation) : AbstractOfflineCloudPlayerHandler() {
 
     private var connection: Connection? = null
 
     private val playerCollectionName = databaseConnectionInformation.collectionPrefix + "players"
-    private val databaseGson  = GsonCreator().excludeAnnotations(DatabaseExclude::class.java).create()
 
     init {
         runReconnectLoop()
