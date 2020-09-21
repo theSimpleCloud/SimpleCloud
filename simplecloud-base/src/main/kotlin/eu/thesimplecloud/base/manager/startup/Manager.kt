@@ -28,6 +28,7 @@ import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.api.screen.ICommandExecutable
 import eu.thesimplecloud.base.core.jvm.JvmArgumentsConfig
 import eu.thesimplecloud.base.manager.config.JvmArgumentsConfigLoader
+import eu.thesimplecloud.base.manager.config.encryption.KeyConfigLoader
 import eu.thesimplecloud.base.manager.config.mongo.DatabaseConfigLoader
 import eu.thesimplecloud.base.manager.config.template.TemplatesConfigLoader
 import eu.thesimplecloud.base.manager.config.updater.ModuleUpdaterConfigLoader
@@ -35,6 +36,7 @@ import eu.thesimplecloud.base.manager.database.DatabaseType
 import eu.thesimplecloud.base.manager.database.IOfflineCloudPlayerHandler
 import eu.thesimplecloud.base.manager.database.MongoOfflineCloudPlayerHandler
 import eu.thesimplecloud.base.manager.database.SQLOfflineCloudPlayerHandler
+import eu.thesimplecloud.base.manager.database.aes.AdvancedEncryption
 import eu.thesimplecloud.base.manager.filehandler.CloudServiceGroupFileHandler
 import eu.thesimplecloud.base.manager.filehandler.WrapperFileHandler
 import eu.thesimplecloud.base.manager.impl.CloudAPIImpl
@@ -83,6 +85,7 @@ class Manager : ICloudApplication {
     val playerUnregisterScheduler = PlayerUnregisterScheduler()
     val cloudModuleHandler: IModuleHandler
     val appClassLoader: ApplicationClassLoader
+    val encryption: AdvancedEncryption
 
     lateinit var jvmArgumentsConfig: JvmArgumentsConfig
 
@@ -115,6 +118,7 @@ class Manager : ICloudApplication {
             Launcher.instance.setupManager.waitFroAllSetups()
         }
         val mongoConnectionInformation = DatabaseConfigLoader().loadConfig()
+        this.encryption = AdvancedEncryption(KeyConfigLoader().loadConfig())
 
         val launcherConfig = Launcher.instance.launcherConfigLoader.loadConfig()
         this.communicationServer = NettyServer<ICommandExecutable>(launcherConfig.host, launcherConfig.port, CommunicationConnectionHandlerImpl(), ServerHandlerImpl())
