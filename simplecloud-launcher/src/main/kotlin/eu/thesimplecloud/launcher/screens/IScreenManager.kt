@@ -23,6 +23,7 @@
 package eu.thesimplecloud.launcher.screens
 
 import eu.thesimplecloud.api.screen.ICommandExecutable
+import eu.thesimplecloud.launcher.screens.session.ScreenSession
 
 interface IScreenManager {
 
@@ -55,17 +56,22 @@ interface IScreenManager {
     /**
      * Returns the active screen.
      */
-    fun getActiveScreen(): IScreen?
+    fun getActiveScreen(): IScreen? = getActiveScreenSession()?.screen
 
     /**
-     * Sets the active screen.
+     * Returns the active screen session
      */
-    fun setActiveScreen(screen: IScreen?)
+    fun getActiveScreenSession(): ScreenSession?
 
     /**
      * Returns whether a screen is active.
      */
     fun hasActiveScreen(): Boolean = getActiveScreen() != null
+
+    /**
+     * Join the specified [ScreenSession]
+     */
+    fun joinScreen(screenSession: ScreenSession)
 
     /**
      * Leaves the active screen.

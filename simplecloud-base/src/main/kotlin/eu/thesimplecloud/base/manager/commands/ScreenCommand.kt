@@ -29,6 +29,8 @@ import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 import eu.thesimplecloud.launcher.extension.sendMessage
+import eu.thesimplecloud.launcher.screens.IScreen
+import eu.thesimplecloud.launcher.screens.session.ScreenSession
 import eu.thesimplecloud.launcher.startup.Launcher
 
 @Command("screen", CommandType.CONSOLE, "cloud.command.screen")
@@ -36,16 +38,29 @@ class ScreenCommand : ICommandHandler {
 
     @CommandSubPath("join <name>", "Joins a screen")
     fun screenCommand(commandSender: ICommandSender, @CommandArgument("name") name: String) {
+        val screen = handleScreenNotExist(commandSender, name) ?: return
+        Launcher.instance.screenManager.joinScreen(ScreenSession(screen, ScreenSession.ScreenCloseBehaviour.CLOSE))
+    }
+
+    @CommandSubPath("join <name> -reopen", "Joins a screen and reopens the screen every time the service restarts")
+    fun screenCommandReopen(commandSender: ICommandSender, @CommandArgument("name") name: String) {
+        val screen = handleScreenNotExist(commandSender, name) ?: return
+        Launcher.instance.screenManager.joinScreen(ScreenSession(screen, ScreenSession.ScreenCloseBehaviour.REOPEN))
+    }
+
+    @CommandSubPath("join <name> -keep", "Joins a screen and keeps it open after it closes")
+    fun screenCommandKeep(commandSender: ICommandSender, @CommandArgument("name") name: String) {
+        val screen = handleScreenNotExist(commandSender, name) ?: return
+        Launcher.instance.screenManager.joinScreen(ScreenSession(screen, ScreenSession.ScreenCloseBehaviour.KEEP_OPEN))
+    }
+
+    private fun handleScreenNotExist(commandSender: ICommandSender, name: String): IScreen? {
         val screen = Launcher.instance.screenManager.getScreen(name)
         if (screen == null) {
             commandSender.sendMessage("manager.command.screen.not-exist", "The specified screen does not exist.")
-            return
+            return null
         }
-        Launcher.instance.clearConsole()
-        screen.getAllSavedMessages().forEach { Launcher.instance.logger.empty(it) }
-        Launcher.instance.logger.empty("You joined the screen ${screen.getName()}. To leave the screen write \"leave\"")
-        Launcher.instance.logger.empty("All commands will be executed on the screen.")
-        Launcher.instance.screenManager.setActiveScreen(screen)
+        return screen
     }
 
     @CommandSubPath("list", "Lists all screens")

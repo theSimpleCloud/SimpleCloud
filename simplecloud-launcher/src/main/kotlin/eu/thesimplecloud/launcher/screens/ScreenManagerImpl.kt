@@ -23,6 +23,7 @@
 package eu.thesimplecloud.launcher.screens
 
 import eu.thesimplecloud.api.screen.ICommandExecutable
+import eu.thesimplecloud.launcher.screens.session.ScreenSession
 import eu.thesimplecloud.launcher.startup.Launcher
 import java.util.concurrent.CopyOnWriteArraySet
 
@@ -30,11 +31,14 @@ class ScreenManagerImpl : IScreenManager {
 
     private val screens = CopyOnWriteArraySet<ScreenImpl>()
 
-    private var activeScreen: IScreen? = null
+    private var activeSession: ScreenSession? = null
 
     override fun registerScreen(commandExecutable: ICommandExecutable): IScreen {
         val screen = ScreenImpl(commandExecutable)
         this.screens.add(screen)
+
+        joinScreenIfActive(screen)
+
         return screen
     }
 
@@ -46,24 +50,40 @@ class ScreenManagerImpl : IScreenManager {
         val screen = getScreen(commandExecutable.getName()) ?: registerScreen(commandExecutable)
         screen as ScreenImpl
         screen.addMessage(message)
-        if (activeScreen == screen) {
+        if (activeSession?.screen == screen) {
             Launcher.instance.logger.empty(message)
         }
     }
 
     override fun getAllScreens(): Set<IScreen> = this.screens
 
-    override fun getActiveScreen(): IScreen? = this.activeScreen
+    override fun getActiveScreenSession(): ScreenSession? {
+        return this.activeSession
+    }
 
-    override fun setActiveScreen(screen: IScreen?) {
-        this.activeScreen = screen
+    override fun joinScreen(screenSession: ScreenSession) {
+        this.activeSession = screenSession
+
+        Launcher.instance.clearConsole()
+        val screen = screenSession.screen
+        screen.getAllSavedMessages().forEach { Launcher.instance.logger.empty(it) }
+        Launcher.instance.logger.empty("You joined the screen ${screen.getName()}. To leave the screen write \"leave\"")
+        Launcher.instance.logger.empty("All commands will be executed on the screen.")
     }
 
     override fun leaveActiveScreen() {
-        Launcher.instance.screenManager.setActiveScreen(null)
+        this.activeSession = null
         Launcher.instance.clearConsole()
 
         Launcher.instance.logger.printCachedMessages()
+    }
+
+    private fun joinScreenIfActive(screen: IScreen) {
+        val activeSession = this.activeSession ?: return
+        if (activeSession.screenCloseBehaviour != ScreenSession.ScreenCloseBehaviour.REOPEN) return
+        if (activeSession.screen.getName().equals(screen.getName(), true)) {
+            joinScreen(ScreenSession(screen, ScreenSession.ScreenCloseBehaviour.REOPEN))
+        }
     }
 
 }

@@ -30,6 +30,7 @@ import eu.thesimplecloud.api.eventapi.IListener
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.launcher.event.module.ModuleUnloadedEvent
 import eu.thesimplecloud.launcher.extension.sendMessage
+import eu.thesimplecloud.launcher.screens.session.ScreenSession
 import eu.thesimplecloud.launcher.startup.Launcher
 
 class CloudListener : IListener {
@@ -37,10 +38,12 @@ class CloudListener : IListener {
     @CloudEventHandler
     fun on(event: CloudServiceUnregisteredEvent) {
         Launcher.instance.consoleSender.sendMessage("manager.service.stopped", "Service %SERVICE%", event.cloudService.getName(), " was stopped.")
-        val activeScreen = Launcher.instance.screenManager.getActiveScreen()
-        activeScreen?.let {
-            if (activeScreen.getName().equals(event.cloudService.getName(), true)) {
-                Launcher.instance.screenManager.leaveActiveScreen()
+
+        val activeSession = Launcher.instance.screenManager.getActiveScreenSession()
+        activeSession?.let {
+            if (activeSession.screen.getName().equals(event.cloudService.getName(), true)) {
+                if (activeSession.screenCloseBehaviour == ScreenSession.ScreenCloseBehaviour.CLOSE)
+                    Launcher.instance.screenManager.leaveActiveScreen()
             }
         }
         Launcher.instance.screenManager.unregisterScreen(event.cloudService.getName())
