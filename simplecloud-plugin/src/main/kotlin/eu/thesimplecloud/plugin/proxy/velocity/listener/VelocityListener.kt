@@ -128,7 +128,7 @@ class VelocityListener(val plugin: CloudVelocityPlugin) {
             kickReasonString = ""
             kickReasonComponent = Optional.of(CloudTextBuilder().build(CloudText("")))
         } else {
-            kickReasonString = kickReasonComponent.get().insertion()!!
+            kickReasonString = kickReasonComponent.get().insertion()?: ""
         }
 
         val player = event.player

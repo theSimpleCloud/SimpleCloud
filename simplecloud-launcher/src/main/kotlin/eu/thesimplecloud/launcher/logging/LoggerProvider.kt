@@ -143,6 +143,10 @@ class LoggerProvider(val screenManager: IScreenManager) : Logger("SimpleCloudLog
     }
 
     private fun printMessage(msg: String, logType: LogType, cache: Boolean = true) {
+        if (msg.isEmpty()) {
+            return
+        }
+
         if (cache && Launcher.instance.isBaseLoaded
                 && (logType != LogType.SETUP && logType != LogType.EMPTY && logType != LogType.WARNING)) {
             if (cachedMessages.size == 50) {
