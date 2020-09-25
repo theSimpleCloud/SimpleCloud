@@ -27,6 +27,7 @@ import eu.thesimplecloud.api.player.OfflineCloudPlayer
 import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.launcher.startup.Launcher
 import java.sql.Connection
+import java.sql.DatabaseMetaData
 import java.sql.DriverManager
 import java.sql.SQLException
 import java.util.*
@@ -47,10 +48,18 @@ class SQLOfflineCloudPlayerHandler(private val databaseConnectionInformation: Da
 
     init {
         runReconnectLoop()
-        val statement = connection!!.prepareStatement("CREATE TABLE IF NOT EXISTS `$playerCollectionName` (`uniqueId` varchar(36), `name` varchar(16), `data` LONGBLOB)")
-        statement.executeUpdate()
-        createIndex("uniqueId")
-        createIndex("name")
+        createDatabaseAndIndicesIfNotExist()
+    }
+
+    private fun createDatabaseAndIndicesIfNotExist() {
+        val dbm: DatabaseMetaData = connection!!.metaData
+        val tables = dbm.getTables(null, null, this.playerCollectionName, null)
+        if (!tables.next()) {  // Table does not exist
+            val statement = connection!!.prepareStatement("CREATE TABLE IF NOT EXISTS `$playerCollectionName` (`uniqueId` varchar(36), `name` varchar(16), `data` LONGBLOB)")
+            statement.executeUpdate()
+            createIndex("uniqueId")
+            createIndex("name")
+        }
     }
 
     private fun runReconnectLoop() {
