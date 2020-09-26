@@ -31,6 +31,7 @@ public class UpdaterMain {
      * First argument: delay to wait before replacing
      * Second argument: File to be replaced
      * Third argument: File to replace with
+     * Fourth argument: Launcher file to delete
      */
     public static void main(String[] args) {
         try {
@@ -38,6 +39,7 @@ public class UpdaterMain {
             long timeToWait = Long.parseLong(args[0]);
             File fileToBeReplaced = new File(args[1]);
             File fileToReplaceWith = new File(args[2]);
+            File launcherFileToDelete = new File(args[3]);
             Thread.sleep(timeToWait);
             while (fileToBeReplaced.exists()) {
                 try {
@@ -48,6 +50,7 @@ public class UpdaterMain {
             }
             copyFileUsingStream(fileToReplaceWith, fileToBeReplaced);
             fileToReplaceWith.delete();
+            launcherFileToDelete.delete();
 
         } catch (Exception ex) {
             ex.printStackTrace();

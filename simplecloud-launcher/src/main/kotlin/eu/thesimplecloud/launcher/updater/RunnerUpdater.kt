@@ -49,7 +49,7 @@ class RunnerUpdater : AbstractUpdater(
         if (versionToInstall != null) return versionToInstall
         val content =  WebContentLoader().loadContent("https://update.thesimplecloud.eu/latestVersion/${getCurrentVersion()}")
                 ?: return null
-        this.versionToInstall = JsonLib.fromObject(content).getString("latestVersion")
+        this.versionToInstall = JsonLib.fromJsonString(content).getString("latestVersion")
         return this.versionToInstall
     }
 
@@ -75,12 +75,21 @@ class RunnerUpdater : AbstractUpdater(
         val updaterFile = File("storage/updater.jar")
         val dependency = LauncherCloudDependency("eu.thesimplecloud.simplecloud", "simplecloud-updater", getVersionToInstall()!!)
         dependency.download(getRepositoryURL(), updaterFile)
-        val processBuilder = ProcessBuilder("java", "-jar", "storage/updater.jar", "300", currentRunnerFile.absolutePath, file.absolutePath)
+        val processBuilder = ProcessBuilder(
+                "java",
+                "-jar",
+                "storage/updater.jar",
+                "300",
+                currentRunnerFile.absolutePath,
+                file.absolutePath,
+                Launcher.instance.getLauncherFile().absolutePath
+        )
         processBuilder.directory(File("."))
         processBuilder.start()
     }
 
     private fun performLinuxUpdate(currentRunnerFile: File, file: File) {
         Files.move(file.toPath(), currentRunnerFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
+        Launcher.instance.getLauncherFile().delete()
     }
 }
