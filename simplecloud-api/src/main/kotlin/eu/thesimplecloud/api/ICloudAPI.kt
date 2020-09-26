@@ -26,7 +26,6 @@ import eu.thesimplecloud.api.cachelist.manager.ICacheListManager
 import eu.thesimplecloud.api.eventapi.IEventManager
 import eu.thesimplecloud.api.external.ICloudModule
 import eu.thesimplecloud.api.message.IMessageChannelManager
-import eu.thesimplecloud.api.network.packets.PacketIOExecuteFunction
 import eu.thesimplecloud.api.player.ICloudPlayerManager
 import eu.thesimplecloud.api.screen.ICommandExecutable
 import eu.thesimplecloud.api.screen.ICommandExecuteManager
@@ -38,10 +37,7 @@ import eu.thesimplecloud.api.sync.list.manager.ISynchronizedObjectListManager
 import eu.thesimplecloud.api.template.ITemplateManager
 import eu.thesimplecloud.api.utils.INetworkComponent
 import eu.thesimplecloud.api.wrapper.IWrapperManager
-import eu.thesimplecloud.clientserverapi.client.INettyClient
 import eu.thesimplecloud.clientserverapi.lib.bootstrap.ICommunicationBootstrap
-import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
-import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
 /**
  * The global api for the cloud. It can be accessed from everywhere.
@@ -139,14 +135,4 @@ interface ICloudAPI {
      */
     fun getThisSidesCloudModule(): ICloudModule
 
-}
-
-/**
- * Executes the specified function on the manager and returns its result
- */
-inline fun <reified T : Any> ICloudAPI.executeOnManager(noinline function: () -> T): ICommunicationPromise<T> {
-    if (isManager())
-        return CommunicationPromise.of(function())
-    val client = getThisSidesCommunicationBootstrap() as INettyClient
-    return client.sendQuery(PacketIOExecuteFunction(function), T::class.java)
 }

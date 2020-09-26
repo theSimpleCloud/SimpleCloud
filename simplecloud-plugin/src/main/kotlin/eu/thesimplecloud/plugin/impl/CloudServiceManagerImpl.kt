@@ -34,7 +34,7 @@ import eu.thesimplecloud.plugin.startup.CloudPlugin
 class CloudServiceManagerImpl : AbstractCloudServiceManager() {
 
     override fun stopService(cloudService: ICloudService): ICommunicationPromise<Unit> {
-        CloudPlugin.instance.communicationClient.sendUnitQuery(PacketIOStopCloudService(cloudService.getName()))
+        CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketIOStopCloudService(cloudService.getName()))
         return cloudListener<CloudServiceUnregisteredEvent>()
                 .addCondition { it.cloudService == cloudService }
                 .unregisterAfterCall()
@@ -42,6 +42,6 @@ class CloudServiceManagerImpl : AbstractCloudServiceManager() {
     }
 
     override fun copyService(cloudService: ICloudService, path: String): ICommunicationPromise<Unit> {
-        return CloudPlugin.instance.communicationClient.sendUnitQuery(PacketIOCopyService(cloudService, path), 20 * 1000)
+        return CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketIOCopyService(cloudService, path), 20 * 1000)
     }
 }

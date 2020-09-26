@@ -57,7 +57,7 @@ class CloudPlayerManagerBungee : AbstractServiceCloudPlayerManager() {
 
     override fun sendMessageToPlayer(cloudPlayer: ICloudPlayer, cloudText: CloudText): ICommunicationPromise<Unit> {
         if (cloudPlayer.getConnectedProxyName() != CloudPlugin.instance.thisServiceName) {
-            return CloudPlugin.instance.communicationClient.sendUnitQuery(PacketIOSendMessageToCloudPlayer(cloudPlayer, cloudText))
+            return CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketIOSendMessageToCloudPlayer(cloudPlayer, cloudText))
         }
 
         getProxiedPlayerByCloudPlayer(cloudPlayer)?.sendMessage(CloudTextBuilder().build(cloudText))
@@ -69,7 +69,7 @@ class CloudPlayerManagerBungee : AbstractServiceCloudPlayerManager() {
         if (cloudService.getServiceType() == ServiceType.PROXY) return CommunicationPromise.failed(IllegalArgumentException("Cannot send a player to a proxy service"))
         if (cloudPlayer.getConnectedServerName() == cloudService.getName()) return CommunicationPromise.of(ConnectionResponse(cloudPlayer.getUniqueId(), true))
         if (cloudPlayer.getConnectedProxyName() != CloudPlugin.instance.thisServiceName) {
-            return CloudPlugin.instance.communicationClient.sendQuery(PacketIOConnectCloudPlayer(cloudPlayer, cloudService), 500)
+            return CloudPlugin.instance.connectionToManager.sendQuery(PacketIOConnectCloudPlayer(cloudPlayer, cloudService), 500)
         }
 
         val serverInfo = getServerInfoByCloudService(cloudService)
@@ -90,7 +90,7 @@ class CloudPlayerManagerBungee : AbstractServiceCloudPlayerManager() {
 
     override fun kickPlayer(cloudPlayer: ICloudPlayer, message: String): ICommunicationPromise<Unit> {
         if (cloudPlayer.getConnectedProxyName() != CloudPlugin.instance.thisServiceName) {
-            return CloudPlugin.instance.communicationClient.sendUnitQuery(PacketIOKickCloudPlayer(cloudPlayer, message))
+            return CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketIOKickCloudPlayer(cloudPlayer, message))
         }
 
         getProxiedPlayerByCloudPlayer(cloudPlayer)?.disconnect(CloudTextBuilder().build(CloudText(message)))
@@ -99,7 +99,7 @@ class CloudPlayerManagerBungee : AbstractServiceCloudPlayerManager() {
 
     override fun sendTitle(cloudPlayer: ICloudPlayer, title: String, subTitle: String, fadeIn: Int, stay: Int, fadeOut: Int) {
         if (cloudPlayer.getConnectedProxyName() != CloudPlugin.instance.thisServiceName) {
-            CloudPlugin.instance.communicationClient.sendUnitQuery(PacketIOSendTitleToCloudPlayer(cloudPlayer, title, subTitle, fadeIn, stay, fadeOut))
+            CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketIOSendTitleToCloudPlayer(cloudPlayer, title, subTitle, fadeIn, stay, fadeOut))
             return
         }
 
@@ -114,7 +114,7 @@ class CloudPlayerManagerBungee : AbstractServiceCloudPlayerManager() {
 
     override fun forcePlayerCommandExecution(cloudPlayer: ICloudPlayer, command: String) {
         if (cloudPlayer.getConnectedProxyName() != CloudPlugin.instance.thisServiceName) {
-            CloudPlugin.instance.communicationClient.sendUnitQuery(PacketIOCloudPlayerForceCommandExecution(cloudPlayer, command))
+            CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketIOCloudPlayerForceCommandExecution(cloudPlayer, command))
             return
         }
 
@@ -123,7 +123,7 @@ class CloudPlayerManagerBungee : AbstractServiceCloudPlayerManager() {
 
     override fun sendActionbar(cloudPlayer: ICloudPlayer, actionbar: String) {
         if (cloudPlayer.getConnectedProxyName() != CloudPlugin.instance.thisServiceName) {
-            CloudPlugin.instance.communicationClient.sendUnitQuery(PacketIOSendActionbarToCloudPlayer(cloudPlayer, actionbar))
+            CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketIOSendActionbarToCloudPlayer(cloudPlayer, actionbar))
             return
         }
 
@@ -131,12 +131,12 @@ class CloudPlayerManagerBungee : AbstractServiceCloudPlayerManager() {
     }
 
     override fun teleportPlayer(cloudPlayer: ICloudPlayer, location: SimpleLocation): ICommunicationPromise<Unit> {
-        return CloudPlugin.instance.communicationClient.sendUnitQuery(PacketIOTeleportPlayer(cloudPlayer, location))
+        return CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketIOTeleportPlayer(cloudPlayer, location))
     }
 
     override fun teleportPlayer(cloudPlayer: ICloudPlayer, location: ServiceLocation): ICommunicationPromise<Unit> {
         if (location.getService() == null) return CommunicationPromise.failed(NoSuchServiceException("Service to connect the player to cannot be found."))
-        return CloudPlugin.instance.communicationClient.sendUnitQuery(
+        return CloudPlugin.instance.connectionToManager.sendUnitQuery(
                 PacketOutTeleportOtherService(cloudPlayer.getUniqueId(), location.serviceName, location as SimpleLocation),
                 1000
         )
@@ -144,7 +144,7 @@ class CloudPlayerManagerBungee : AbstractServiceCloudPlayerManager() {
 
     override fun hasPermission(cloudPlayer: ICloudPlayer, permission: String): ICommunicationPromise<Boolean> {
         if (cloudPlayer.getConnectedProxyName() != CloudPlugin.instance.thisServiceName) {
-            return CloudPlugin.instance.communicationClient.sendQuery(PacketIOPlayerHasPermission(cloudPlayer.getUniqueId(), permission), 400)
+            return CloudPlugin.instance.connectionToManager.sendQuery(PacketIOPlayerHasPermission(cloudPlayer.getUniqueId(), permission), 400)
         }
 
         val proxiedPlayer = getProxiedPlayerByCloudPlayer(cloudPlayer)
@@ -153,12 +153,12 @@ class CloudPlayerManagerBungee : AbstractServiceCloudPlayerManager() {
     }
 
     override fun getLocationOfPlayer(cloudPlayer: ICloudPlayer): ICommunicationPromise<ServiceLocation> {
-        return CloudPlugin.instance.communicationClient.sendQuery(PacketIOGetPlayerLocation(cloudPlayer))
+        return CloudPlugin.instance.connectionToManager.sendQuery(PacketIOGetPlayerLocation(cloudPlayer))
     }
 
     override fun sendPlayerToLobby(cloudPlayer: ICloudPlayer): ICommunicationPromise<Unit> {
         if (CloudPlugin.instance.thisServiceName != cloudPlayer.getConnectedProxyName()) {
-            return CloudPlugin.instance.communicationClient.sendQuery(PacketIOSendPlayerToLobby(cloudPlayer.getUniqueId()))
+            return CloudPlugin.instance.connectionToManager.sendQuery(PacketIOSendPlayerToLobby(cloudPlayer.getUniqueId()))
         }
         val proxiedPlayer = getProxiedPlayerByCloudPlayer(cloudPlayer)
                 ?: return CommunicationPromise.failed(NoSuchPlayerException("Unable to find bungeecord player"))

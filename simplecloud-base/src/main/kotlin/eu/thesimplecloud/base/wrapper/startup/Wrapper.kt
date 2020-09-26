@@ -38,6 +38,7 @@ import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.ServiceConfigu
 import eu.thesimplecloud.client.packets.PacketOutCloudClientLogin
 import eu.thesimplecloud.clientserverapi.client.INettyClient
 import eu.thesimplecloud.clientserverapi.client.NettyClient
+import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.IPacket
 import eu.thesimplecloud.launcher.application.ApplicationClassLoader
 import eu.thesimplecloud.launcher.application.ICloudApplication
@@ -68,6 +69,7 @@ class Wrapper : ICloudApplication {
     val cloudServiceProcessManager = CloudServiceProcessManager()
     val portManager = PortManager()
     val communicationClient: INettyClient
+    val connectionToManager: IConnection
     var templateClient: INettyClient? = null
         private set
     val serviceVersionLoader = ServiceVersionLoader()
@@ -81,6 +83,7 @@ class Wrapper : ICloudApplication {
         Launcher.instance.logger.addLoggerMessageListener(LoggerMessageListenerImpl())
         val launcherConfig = Launcher.instance.launcherConfigLoader.loadConfig()
         this.communicationClient = NettyClient(launcherConfig.host, launcherConfig.port, ConnectionHandlerImpl())
+        this.connectionToManager = this.communicationClient.getConnection()
         this.communicationClient.setPacketSearchClassLoader(Launcher.instance.getNewClassLoaderWithLauncherAndBase())
         this.communicationClient.setClassLoaderToSearchObjectPacketClasses(appClassLoader)
         this.communicationClient.setPacketClassConverter { moveToApplicationClassLoader(it) }
@@ -101,7 +104,7 @@ class Wrapper : ICloudApplication {
 
         //shutdown hook
         Runtime.getRuntime().addShutdownHook(Thread {
-            if (this.communicationClient.isOpen()) {
+            if (this.connectionToManager.isOpen()) {
                 val wrapperInfo = getThisWrapper()
                 //set authenticated to false to prevent service starting
                 wrapperInfo.setAuthenticated(false)
@@ -156,7 +159,7 @@ class Wrapper : ICloudApplication {
             } catch (e: InterruptedException) {
             }
         }
-        this.communicationClient.sendUnitQuery(PacketOutCloudClientLogin(NetworkComponentType.WRAPPER), 4000).syncUninterruptibly()
+        this.connectionToManager.sendUnitQuery(PacketOutCloudClientLogin(NetworkComponentType.WRAPPER), 4000).syncUninterruptibly()
 
         if (!isStartedInManagerDirectory()) {
             val templateClient = NettyClient(launcherConfig.host, launcherConfig.port + 1, ConnectionHandlerImpl())
@@ -175,7 +178,7 @@ class Wrapper : ICloudApplication {
         thread(start = true, isDaemon = false) {
             templateClient.start().then {
                 Launcher.instance.consoleSender.sendMessage("wrapper.template.requesting", "Requesting templates...")
-                templateClient.sendUnitQuery(PacketOutGetTemplates(), TimeUnit.SECONDS.toMillis((60 * 2) + 30))
+                templateClient.getConnection().sendUnitQuery(PacketOutGetTemplates(), TimeUnit.SECONDS.toMillis((60 * 2) + 30))
                         .thenDelayed(3, TimeUnit.SECONDS) {
                             reloadExistingModules()
                             val thisWrapper = getThisWrapper() as IWritableWrapperInfo
@@ -209,7 +212,7 @@ class Wrapper : ICloudApplication {
         thisWrapper as IWritableWrapperInfo
         thisWrapper.setUsedMemory(usedMemory)
         thisWrapper.setCurrentlyStartingServices(this.processQueue?.getStartingOrQueuedServiceAmount() ?: 0)
-        if (this.communicationClient.isOpen())
+        if (this.connectionToManager.isOpen())
             CloudAPI.instance.getWrapperManager().update(thisWrapper)
     }
 

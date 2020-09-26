@@ -51,32 +51,32 @@ import org.bukkit.entity.Player
 class CloudPlayerManagerSpigot : AbstractServiceCloudPlayerManager() {
 
     override fun sendMessageToPlayer(cloudPlayer: ICloudPlayer, cloudText: CloudText): ICommunicationPromise<Unit> {
-        return CloudPlugin.instance.communicationClient.sendUnitQuery(PacketIOSendMessageToCloudPlayer(cloudPlayer, cloudText))
+        return CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketIOSendMessageToCloudPlayer(cloudPlayer, cloudText))
     }
 
     override fun connectPlayer(cloudPlayer: ICloudPlayer, cloudService: ICloudService): ICommunicationPromise<ConnectionResponse> {
-        return CloudPlugin.instance.communicationClient.sendQuery(PacketIOConnectCloudPlayer(cloudPlayer, cloudService), 500)
+        return CloudPlugin.instance.connectionToManager.sendQuery(PacketIOConnectCloudPlayer(cloudPlayer, cloudService), 500)
     }
 
     override fun kickPlayer(cloudPlayer: ICloudPlayer, message: String): ICommunicationPromise<Unit> {
-        return CloudPlugin.instance.communicationClient.sendUnitQuery(PacketIOKickCloudPlayer(cloudPlayer, message))
+        return CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketIOKickCloudPlayer(cloudPlayer, message))
     }
 
     override fun sendTitle(cloudPlayer: ICloudPlayer, title: String, subTitle: String, fadeIn: Int, stay: Int, fadeOut: Int) {
-        CloudPlugin.instance.communicationClient.sendUnitQuery(PacketIOSendTitleToCloudPlayer(cloudPlayer, title, subTitle, fadeIn, stay, fadeOut))
+        CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketIOSendTitleToCloudPlayer(cloudPlayer, title, subTitle, fadeIn, stay, fadeOut))
     }
 
     override fun forcePlayerCommandExecution(cloudPlayer: ICloudPlayer, command: String) {
-        CloudPlugin.instance.communicationClient.sendUnitQuery(PacketIOCloudPlayerForceCommandExecution(cloudPlayer, command))
+        CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketIOCloudPlayerForceCommandExecution(cloudPlayer, command))
     }
 
     override fun sendActionbar(cloudPlayer: ICloudPlayer, actionbar: String) {
-        CloudPlugin.instance.communicationClient.sendUnitQuery(PacketIOSendActionbarToCloudPlayer(cloudPlayer, actionbar))
+        CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketIOSendActionbarToCloudPlayer(cloudPlayer, actionbar))
     }
 
     override fun teleportPlayer(cloudPlayer: ICloudPlayer, location: SimpleLocation): ICommunicationPromise<Unit> {
         if (CloudPlugin.instance.thisServiceName != cloudPlayer.getConnectedServerName()) {
-            return CloudPlugin.instance.communicationClient.sendUnitQuery(PacketIOTeleportPlayer(cloudPlayer, location))
+            return CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketIOTeleportPlayer(cloudPlayer, location))
         }
 
         val bukkitPlayer = getPlayerByCloudPlayer(cloudPlayer)
@@ -91,19 +91,19 @@ class CloudPlayerManagerSpigot : AbstractServiceCloudPlayerManager() {
 
     override fun teleportPlayer(cloudPlayer: ICloudPlayer, location: ServiceLocation): ICommunicationPromise<Unit> {
         if (location.getService() == null) return CommunicationPromise.failed(NoSuchServiceException("Service to connect the player to cannot be found."))
-        return CloudPlugin.instance.communicationClient.sendUnitQuery(
+        return CloudPlugin.instance.connectionToManager.sendUnitQuery(
                 PacketOutTeleportOtherService(cloudPlayer.getUniqueId(), location.serviceName, location as SimpleLocation),
                 1000
         )
     }
 
     override fun hasPermission(cloudPlayer: ICloudPlayer, permission: String): ICommunicationPromise<Boolean> {
-        return CloudPlugin.instance.communicationClient.sendQuery(PacketIOPlayerHasPermission(cloudPlayer.getUniqueId(), permission), 400)
+        return CloudPlugin.instance.connectionToManager.sendQuery(PacketIOPlayerHasPermission(cloudPlayer.getUniqueId(), permission), 400)
     }
 
     override fun getLocationOfPlayer(cloudPlayer: ICloudPlayer): ICommunicationPromise<ServiceLocation> {
         if (CloudPlugin.instance.thisServiceName != cloudPlayer.getConnectedServerName()) {
-            return CloudPlugin.instance.communicationClient.sendQuery(PacketIOGetPlayerLocation(cloudPlayer))
+            return CloudPlugin.instance.connectionToManager.sendQuery(PacketIOGetPlayerLocation(cloudPlayer))
         }
 
         val bukkitPlayer = getPlayerByCloudPlayer(cloudPlayer)
@@ -115,7 +115,7 @@ class CloudPlayerManagerSpigot : AbstractServiceCloudPlayerManager() {
     }
 
     override fun sendPlayerToLobby(cloudPlayer: ICloudPlayer): ICommunicationPromise<Unit> {
-        return CloudPlugin.instance.communicationClient.sendQuery(PacketIOSendPlayerToLobby(cloudPlayer.getUniqueId()))
+        return CloudPlugin.instance.connectionToManager.sendQuery(PacketIOSendPlayerToLobby(cloudPlayer.getUniqueId()))
     }
 
     private fun getLocationBySimpleLocation(simpleLocation: SimpleLocation): Location? {

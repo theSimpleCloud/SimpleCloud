@@ -87,7 +87,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
                 val s = bufferedReader.readLine() ?: continue
                 if (!s.equals("", ignoreCase = true) && !s.equals(" ", ignoreCase = true) && !s.equals(">", ignoreCase = true)
                         && !s.equals(" >", ignoreCase = true) && !s.contains("InitialHandler has pinged")) {
-                    Wrapper.instance.communicationClient.sendUnitQuery(PacketOutScreenMessage(NetworkComponentType.SERVICE, getCloudService(), s))
+                    Wrapper.instance.connectionToManager.sendUnitQuery(PacketOutScreenMessage(NetworkComponentType.SERVICE, getCloudService(), s))
                     //Launcher.instance.logger.console("[${cloudService.getName()}]$s")
                 }
             } catch (e: IOException) {
@@ -115,7 +115,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
     private fun processStopped(){
         Launcher.instance.consoleSender.sendMessage("wrapper.service.stopped", "Service %NAME%", cloudService.getName(), " was stopped.")
         Wrapper.instance.cloudServiceProcessManager.unregisterServiceProcess(this)
-        if (Wrapper.instance.communicationClient.isOpen()) {
+        if (Wrapper.instance.connectionToManager.isOpen()) {
             //CloudAPI.instance.getCloudServiceManager().sendUpdateToConnection(this.cloudService, Wrapper.instance.communicationClient).awaitUninterruptibly()
             var tries = 0
             while (this.cloudService.isAuthenticated()) {

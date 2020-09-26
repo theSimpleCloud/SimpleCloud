@@ -33,7 +33,7 @@ class EventManagerImpl : BasicEventManager() {
     override fun call(event: IEvent, fromPacket: Boolean) {
         //don't call event if fromPacket is true because the event will be called via the received packet.
         if (!fromPacket && event is ISynchronizedEvent) {
-            Wrapper.instance.communicationClient.sendUnitQuery(PacketIOCallEvent(event))
+            Wrapper.instance.connectionToManager.sendUnitQuery(PacketIOCallEvent(event))
         } else {
             super.call(event, fromPacket)
         }

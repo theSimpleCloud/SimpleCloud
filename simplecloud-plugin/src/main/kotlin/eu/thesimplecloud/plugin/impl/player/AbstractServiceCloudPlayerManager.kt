@@ -42,7 +42,7 @@ abstract class AbstractServiceCloudPlayerManager : AbstractCloudPlayerManager() 
     override fun update(value: ICloudPlayer, fromPacket: Boolean, isCalledFromDelete: Boolean) {
         super.update(value, fromPacket, isCalledFromDelete)
         if (!fromPacket)
-            CloudPlugin.instance.communicationClient.sendUnitQuery(
+            CloudPlugin.instance.connectionToManager.sendUnitQuery(
                     PacketIOUpdateCacheObject(getUpdater().getIdentificationName(), value, PacketIOUpdateCacheObject.Action.UPDATE)
             )
     }
@@ -52,7 +52,7 @@ abstract class AbstractServiceCloudPlayerManager : AbstractCloudPlayerManager() 
         if (cachedCloudPlayer != null) {
             return CommunicationPromise.of(cachedCloudPlayer)
         }
-        return CloudPlugin.instance.communicationClient.sendQuery(PacketIOGetCloudPlayer(uniqueId))
+        return CloudPlugin.instance.connectionToManager.sendQuery(PacketIOGetCloudPlayer(uniqueId))
     }
 
     override fun getCloudPlayer(name: String): ICommunicationPromise<ICloudPlayer> {
@@ -60,31 +60,37 @@ abstract class AbstractServiceCloudPlayerManager : AbstractCloudPlayerManager() 
         if (cachedCloudPlayer != null) {
             return CommunicationPromise.of(cachedCloudPlayer)
         }
-        return CloudPlugin.instance.communicationClient.sendQuery(PacketIOGetCloudPlayer(name))
+        return CloudPlugin.instance.connectionToManager.sendQuery(PacketIOGetCloudPlayer(name))
     }
 
     override fun setUpdates(cloudPlayer: ICloudPlayer, update: Boolean, serviceName: String) {
         super.setUpdates(cloudPlayer, update, serviceName)
-        CloudPlugin.instance.communicationClient.sendUnitQuery(PacketIOSetCloudPlayerUpdates(cloudPlayer, update, serviceName))
+        CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketIOSetCloudPlayerUpdates(cloudPlayer, update, serviceName))
     }
 
     override fun getOfflineCloudPlayer(name: String): ICommunicationPromise<IOfflineCloudPlayer> {
-        return CloudPlugin.instance.communicationClient.sendQuery(PacketIOGetOfflinePlayer(name))
+        return CloudPlugin.instance.connectionToManager.sendQuery(PacketIOGetOfflinePlayer(name))
     }
 
     override fun getOfflineCloudPlayer(uniqueId: UUID): ICommunicationPromise<IOfflineCloudPlayer> {
-        return CloudPlugin.instance.communicationClient.sendQuery(PacketIOGetOfflinePlayer(uniqueId))
+        return CloudPlugin.instance.connectionToManager.sendQuery(PacketIOGetOfflinePlayer(uniqueId))
     }
 
     override fun getAllOnlinePlayers(): ICommunicationPromise<List<SimpleCloudPlayer>> {
-        return CloudPlugin.instance.communicationClient.sendQuery<Array<SimpleCloudPlayer>>(PacketIOGetAllOnlinePlayers())
+        return CloudPlugin.instance.connectionToManager.sendQuery<Array<SimpleCloudPlayer>>(PacketIOGetAllOnlinePlayers())
                 .then { it.toList() }
     }
 
     override fun savePlayerToDatabase(offlinePlayer: IOfflineCloudPlayer): ICommunicationPromise<Unit> {
-        return CloudPlugin.instance.communicationClient.sendUnitQuery(
+        return CloudPlugin.instance.connectionToManager.sendUnitQuery(
                 PacketIOSaveOfflinePlayer(offlinePlayer as OfflineCloudPlayer),
                 1000
+        )
+    }
+
+    override fun getNetworkOnlinePlayerCount(): ICommunicationPromise<Int> {
+        return CloudPlugin.instance.connectionToManager.sendQuery(
+                PacketIOGetNetworkOnlineCount()
         )
     }
 

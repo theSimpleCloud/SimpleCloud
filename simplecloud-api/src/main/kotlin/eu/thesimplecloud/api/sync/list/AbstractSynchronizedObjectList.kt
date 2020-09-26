@@ -77,7 +77,7 @@ abstract class AbstractSynchronizedObjectList<T : Any> : ISynchronizedObjectList
         } else if (!fromPacket) {
             //send update to the manager
             val client = CloudAPI.instance.getThisSidesCommunicationBootstrap() as INettyClient
-            client.sendUnitQuery(packet)
+            client.getConnection().sendUnitQuery(packet)
         }
     }
 

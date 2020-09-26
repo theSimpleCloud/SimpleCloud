@@ -30,6 +30,7 @@ import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.client.packets.PacketOutCloudClientLogin
 import eu.thesimplecloud.clientserverapi.client.INettyClient
 import eu.thesimplecloud.clientserverapi.client.NettyClient
+import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.plugin.ICloudServicePlugin
 import eu.thesimplecloud.plugin.impl.CloudAPIImpl
@@ -49,6 +50,8 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
     private var thisService: ICloudService? = null
     private var updateState = true
     lateinit var communicationClient: INettyClient
+        private set
+    lateinit var connectionToManager: IConnection
         private set
     lateinit var thisServiceName: String
         private set
@@ -71,7 +74,7 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
             println("<------Starting cloud client----------->")
             this.communicationClient.start().then {
                 println("<-------- Connection is now set up -------->")
-                this.communicationClient.sendUnitQuery(PacketOutCloudClientLogin(NetworkComponentType.SERVICE, thisServiceName))
+                this.connectionToManager.sendUnitQuery(PacketOutCloudClientLogin(NetworkComponentType.SERVICE, thisServiceName))
             }.addFailureListener { println("<-------- Failed to connect to server -------->") }.addFailureListener { throw it }
         }
 
@@ -93,6 +96,7 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
         val host = jsonLib.getString("managerHost") ?: return false
         val port = jsonLib.getInt("managerPort") ?: return false
         this.communicationClient = NettyClient(host, port, ConnectionHandlerImpl())
+        this.connectionToManager = this.communicationClient.getConnection()
         return true
     }
 

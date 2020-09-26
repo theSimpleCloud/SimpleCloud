@@ -20,23 +20,21 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.plugin.impl
+package eu.thesimplecloud.api.network.packets.player
 
-import eu.thesimplecloud.api.eventapi.BasicEventManager
-import eu.thesimplecloud.api.eventapi.IEvent
-import eu.thesimplecloud.api.eventapi.ISynchronizedEvent
-import eu.thesimplecloud.api.network.packets.event.PacketIOCallEvent
-import eu.thesimplecloud.plugin.startup.CloudPlugin
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
+import eu.thesimplecloud.clientserverapi.lib.packet.packettype.ObjectPacket
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
-class EventManagerImpl : BasicEventManager() {
-
-    override fun call(event: IEvent, fromPacket: Boolean) {
-        //don't call event if fromPacket is true because the event will be called via the received packet.
-        if (!fromPacket && event is ISynchronizedEvent) {
-            CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketIOCallEvent(event))
-        } else {
-            super.call(event, fromPacket)
-        }
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 25.09.2020
+ * Time: 20:11
+ * @author Frederick Baier
+ */
+class PacketIOGetNetworkOnlineCount : ObjectPacket<Unit>() {
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
+        return success(CloudAPI.instance.getCloudPlayerManager().getAllCachedObjects().size)
     }
-
 }

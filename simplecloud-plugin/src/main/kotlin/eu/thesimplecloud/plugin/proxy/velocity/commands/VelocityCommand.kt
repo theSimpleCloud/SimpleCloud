@@ -47,7 +47,7 @@ class VelocityCommand(private val commandStart: String) : Command {
         val command = "$commandStart " + args.joinToString(" ").trim()
 
         if (CloudVelocityPlugin.instance.synchronizedIngameCommandNamesContainer.names.contains(commandStart.toLowerCase())) {
-            CloudPlugin.instance.communicationClient.sendUnitQuery(PacketOutPlayerExecuteCommand(player.getCloudPlayer(), command))
+            CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketOutPlayerExecuteCommand(player.getCloudPlayer(), command))
         }
         CloudAPI.instance.getEventManager().call(CloudPlayerCommandExecuteEvent(player.uniqueId, player.username, command))
     }

@@ -22,10 +22,8 @@
 
 package eu.thesimplecloud.api.player
 
-import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.cachelist.ICacheList
 import eu.thesimplecloud.api.exception.*
-import eu.thesimplecloud.api.executeOnManager
 import eu.thesimplecloud.api.location.ServiceLocation
 import eu.thesimplecloud.api.location.SimpleLocation
 import eu.thesimplecloud.api.player.connection.ConnectionResponse
@@ -248,7 +246,7 @@ interface ICloudPlayerManager : ICacheList<ICloudPlayer> {
     /**
      * Returns the amount of players connected to the network
      */
-    fun getNetworkOnlinePlayerCount(): ICommunicationPromise<Int> = CloudAPI.instance.executeOnManager { CloudAPI.instance.getCloudPlayerManager().getAllCachedObjects().size }
+    fun getNetworkOnlinePlayerCount(): ICommunicationPromise<Int>
 
     /**
      * Saves the specified [offlinePlayer] to the database.

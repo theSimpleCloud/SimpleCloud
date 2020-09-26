@@ -73,14 +73,14 @@ class ProcessCopier(val cloudService: ICloudService) {
         //send file
         val savePath = DirectoryPaths.paths.zippedTemplatesPath + "T-" + cloudService.getName()
         val dirToUnzip = cloudService.getTemplate().getDirectory().path
-        return Wrapper.instance.communicationClient.sendFile(zipFile, savePath, 20 * 1000).thenDelayed(1200, TimeUnit.MILLISECONDS) {
+        return Wrapper.instance.connectionToManager.sendFile(zipFile, savePath, 20 * 1000).thenDelayed(1200, TimeUnit.MILLISECONDS) {
             val relativePathInTemplate = dirToCopy.path.replace(tempDirectory.path, "")
             val dirToReplace = dirToUnzip + relativePathInTemplate
             //delete folder to replace
-            Wrapper.instance.communicationClient.sendUnitQuery(PacketIODeleteFile(dirToReplace))
+            Wrapper.instance.connectionToManager.sendUnitQuery(PacketIODeleteFile(dirToReplace))
         }.flatten(10 * 1000).thenDelayed(1000, TimeUnit.MILLISECONDS) {
             //unzip file
-            Wrapper.instance.communicationClient.sendUnitQuery(PacketIOUnzipZipFile(savePath, dirToUnzip), 10 * 1000)
+            Wrapper.instance.connectionToManager.sendUnitQuery(PacketIOUnzipZipFile(savePath, dirToUnzip), 10 * 1000)
         }.flatten().throwFailure()
 
     }

@@ -36,11 +36,12 @@ import eu.thesimplecloud.plugin.startup.CloudPlugin
 class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
 
     override fun createServiceGroup(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<ICloudServiceGroup> {
-        return CloudPlugin.instance.communicationClient.sendQuery(PacketIOCreateServiceGroup(cloudServiceGroup))
+        return CloudPlugin.instance.connectionToManager.sendQuery(PacketIOCreateServiceGroup(cloudServiceGroup))
     }
 
     override fun startNewService(serviceStartConfiguration: IServiceStartConfiguration): ICommunicationPromise<ICloudService> {
-        val namePromise = CloudPlugin.instance.communicationClient.sendQuery<String>(PacketIOStartCloudService(serviceStartConfiguration))
+        val namePromise = CloudPlugin.instance.connectionToManager
+                .sendQuery<String>(PacketIOStartCloudService(serviceStartConfiguration))
         return namePromise.then { CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(it)!! }
     }
 

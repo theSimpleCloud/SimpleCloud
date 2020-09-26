@@ -67,7 +67,7 @@ interface ICacheObjectUpdater<T : Any> {
             server.getClientManager().sendPacketToAllAuthenticatedClients(packet)
         } else {
             val client = CloudAPI.instance.getThisSidesCommunicationBootstrap() as INettyClient
-            client.sendUnitQuery(packet)
+            client.getConnection().sendUnitQuery(packet)
         }
     }
 

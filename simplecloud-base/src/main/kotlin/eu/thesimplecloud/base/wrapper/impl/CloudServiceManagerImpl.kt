@@ -41,7 +41,7 @@ class CloudServiceManagerImpl : AbstractCloudServiceManager() {
             val cloudServiceProcess = Wrapper.instance.cloudServiceProcessManager.getCloudServiceProcessByServiceName(cloudService.getName())
             cloudServiceProcess?.shutdown()
         } else {
-            Wrapper.instance.communicationClient.sendUnitQuery(PacketIOStopCloudService(cloudService.getName()))
+            Wrapper.instance.connectionToManager.sendUnitQuery(PacketIOStopCloudService(cloudService.getName()))
         }
         return cloudListener<CloudServiceUnregisteredEvent>()
                 .addCondition { it.cloudService == cloudService }
@@ -51,7 +51,7 @@ class CloudServiceManagerImpl : AbstractCloudServiceManager() {
     override fun copyService(cloudService: ICloudService, path: String): ICommunicationPromise<Unit> {
         val selfWrapper = Wrapper.instance.getThisWrapper()
         if (selfWrapper != cloudService.getWrapper())
-            return Wrapper.instance.communicationClient.sendUnitQuery(PacketIOCopyService(cloudService, path), 20 * 1000)
+            return Wrapper.instance.connectionToManager.sendUnitQuery(PacketIOCopyService(cloudService, path), 20 * 1000)
 
         val serviceProcess = Wrapper.instance.cloudServiceProcessManager
                 .getCloudServiceProcessByServiceName(cloudService.getName())
