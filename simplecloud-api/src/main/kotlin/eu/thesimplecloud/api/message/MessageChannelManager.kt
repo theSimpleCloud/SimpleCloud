@@ -27,7 +27,7 @@ import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.client.NetworkComponentReference
 import eu.thesimplecloud.api.client.NetworkComponentType
 import eu.thesimplecloud.api.network.packets.message.PacketIOChannelMessage
-import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
+import eu.thesimplecloud.clientserverapi.client.INettyClient
 import eu.thesimplecloud.clientserverapi.server.INettyServer
 
 class MessageChannelManager : IMessageChannelManager {
@@ -57,8 +57,8 @@ class MessageChannelManager : IMessageChannelManager {
                 client?.sendUnitQuery(packetToSend)
             }
         } else {
-            val connection = CloudAPI.instance.getThisSidesCommunicationBootstrap() as IConnection
-            connection.sendUnitQuery(packetToSend)
+            val client = CloudAPI.instance.getThisSidesCommunicationBootstrap() as INettyClient
+            client.getConnection().sendUnitQuery(packetToSend)
         }
     }
 

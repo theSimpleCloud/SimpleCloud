@@ -133,7 +133,7 @@ class CloudVelocityPlugin @Inject constructor(val proxyServer: ProxyServer) : IC
     }
 
     override fun shutdown() {
-        proxyServer.commandManager.execute(proxyServer.consoleCommandSource, "shutdown")
+        proxyServer.commandManager.executeAsync(proxyServer.consoleCommandSource, "shutdown")
     }
 
     override fun getCloudPlayerManagerClass(): KClass<out ICloudPlayerManager> {

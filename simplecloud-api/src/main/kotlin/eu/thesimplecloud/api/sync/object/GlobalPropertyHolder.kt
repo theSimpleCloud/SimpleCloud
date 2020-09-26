@@ -29,6 +29,7 @@ import eu.thesimplecloud.api.network.packets.sync.`object`.PacketIOUpdateGlobalP
 import eu.thesimplecloud.api.network.packets.sync.list.PacketIORemoveListProperty
 import eu.thesimplecloud.api.property.IProperty
 import eu.thesimplecloud.api.property.Property
+import eu.thesimplecloud.clientserverapi.client.INettyClient
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.IPacket
 import eu.thesimplecloud.clientserverapi.lib.packet.packetsender.sendQuery
@@ -69,8 +70,8 @@ class GlobalPropertyHolder : IGlobalPropertyHolder {
 
     override fun <T : Any> requestProperty(name: String): ICommunicationPromise<IProperty<T>> {
         if (CloudAPI.instance.isManager()) throw UnsupportedOperationException("Cannot request properties from manager")
-        val connection = CloudAPI.instance.getThisSidesCommunicationBootstrap() as IConnection
-        return connection.sendQuery<IProperty<T>>(PacketIOGetGlobalProperty(name), 1500)
+        val client = CloudAPI.instance.getThisSidesCommunicationBootstrap() as INettyClient
+        return client.getConnection().sendQuery<IProperty<T>>(PacketIOGetGlobalProperty(name), 1500)
                 .addResultListener { updatePropertyFromPacket(name, it) }
     }
 
@@ -106,8 +107,8 @@ class GlobalPropertyHolder : IGlobalPropertyHolder {
                 it.sendUnitQuery(packet)
             }
         } else {
-            val connection = CloudAPI.instance.getThisSidesCommunicationBootstrap() as IConnection
-            connection.sendUnitQuery(packet)
+            val client = CloudAPI.instance.getThisSidesCommunicationBootstrap() as INettyClient
+            client.getConnection().sendUnitQuery(packet)
         }
     }
 
