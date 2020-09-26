@@ -23,6 +23,8 @@
 package eu.thesimplecloud.launcher.updater
 
 
+import eu.thesimplecloud.api.utils.WebContentLoader
+import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.launcher.dependency.LauncherCloudDependency
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.runner.RunnerFileProvider
@@ -37,8 +39,18 @@ class RunnerUpdater : AbstractUpdater(
         File("runner-update.jar")
 ) {
 
+    private var versionToInstall: String? = null
+
     override fun getCurrentVersion(): String {
         return getCurrentLauncherVersion()
+    }
+
+    override fun getVersionToInstall(): String? {
+        if (versionToInstall != null) return versionToInstall
+        val content =  WebContentLoader().loadContent("https://update.thesimplecloud.eu/latestVersion/${getCurrentVersion()}")
+                ?: return null
+        this.versionToInstall = JsonLib.fromObject(content).getString("latestVersion")
+        return this.versionToInstall
     }
 
     override fun executeJar() {
@@ -56,6 +68,7 @@ class RunnerUpdater : AbstractUpdater(
             println("Update installed. Stopping in 5 seconds...")
             Thread.sleep(5 * 1000)
         })
+        Launcher.instance.shutdown()
     }
 
     private fun performWindowsUpdate(currentRunnerFile: File, file: File) {
