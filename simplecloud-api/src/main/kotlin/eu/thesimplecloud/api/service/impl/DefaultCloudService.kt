@@ -45,6 +45,8 @@ data class DefaultCloudService(
 
     private var serviceState = ServiceState.PREPARED
     private var onlineCount = 0
+    @Volatile
+    private var usedMemory = 0
     private var authenticated = false
     @JsonLibExclude
     private var lastUpdate = System.currentTimeMillis()
@@ -107,6 +109,8 @@ data class DefaultCloudService(
 
     override fun getMaxMemory(): Int = this.maxMemory
 
+    override fun getUsedMemory(): Int = this.usedMemory
+
     override fun getLastUpdate(): Long = this.lastUpdate
 
     override fun setLastUpdate(timeStamp: Long) {
@@ -131,5 +135,8 @@ data class DefaultCloudService(
         this.propertyMap.remove(name)
     }
 
+    fun setUsedMemory(usedMemory: Int) {
+        this.usedMemory = usedMemory
+    }
 
 }

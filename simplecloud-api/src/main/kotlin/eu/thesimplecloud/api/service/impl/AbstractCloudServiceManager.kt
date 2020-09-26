@@ -73,6 +73,7 @@ abstract class AbstractCloudServiceManager : AbstractCacheList<ICloudService>(),
             cachedValue as DefaultCloudService
             cachedValue.setWrapperName(updateValue.getWrapperName())
             cachedValue.setPort(updateValue.getPort())
+            cachedValue.setUsedMemory(updateValue.getUsedMemory())
             cachedValue.propertyMap = HashMap(updateValue.getMapWithNewestProperties(cachedValue.propertyMap) as MutableMap<String, Property<*>>)
         }
 

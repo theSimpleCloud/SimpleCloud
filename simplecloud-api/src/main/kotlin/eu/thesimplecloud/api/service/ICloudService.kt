@@ -92,6 +92,11 @@ interface ICloudService : INetworkComponent, IBootstrap, IPropertyMap {
     fun getMaxMemory(): Int
 
     /**
+     * Returns the used amount of RAM for this service in MB
+     */
+    fun getUsedMemory(): Int
+
+    /**
      * Returns the name of the wrapper this service is running on
      */
     fun getWrapperName(): String?

@@ -78,6 +78,8 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
             }.addFailureListener { println("<-------- Failed to connect to server -------->") }.addFailureListener { throw it }
         }
 
+        UsedMemoryUpdater().startUpdater()
+
         Runtime.getRuntime().addShutdownHook(Thread {
             try {
                 this.communicationClient.shutdown()

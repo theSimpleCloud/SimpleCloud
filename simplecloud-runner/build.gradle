@@ -25,6 +25,7 @@ compileTestKotlin {
 }
 
 jar {
+    dependsOn ':simplecloud-launcher:jar'
     manifest {
         attributes(
                 'Main-Class': 'eu.thesimplecloud.runner.RunnerClassLoaderInitMainKt',
