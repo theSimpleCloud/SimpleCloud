@@ -24,7 +24,7 @@ package eu.thesimplecloud.api.wrapper
 
 
 import eu.thesimplecloud.api.client.NetworkComponentType
-import eu.thesimplecloud.api.utils.INetworkComponent
+import eu.thesimplecloud.api.network.component.INetworkComponent
 
 
 interface IWrapperInfo : INetworkComponent {

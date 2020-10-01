@@ -29,11 +29,12 @@ import eu.thesimplecloud.api.event.service.CloudServiceStartedEvent
 import eu.thesimplecloud.api.event.service.CloudServiceStartingEvent
 import eu.thesimplecloud.api.event.service.CloudServiceUnregisteredEvent
 import eu.thesimplecloud.api.listenerextension.cloudListener
+import eu.thesimplecloud.api.network.component.INetworkComponent
 import eu.thesimplecloud.api.property.IPropertyMap
 import eu.thesimplecloud.api.service.version.ServiceVersion
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.api.template.ITemplate
-import eu.thesimplecloud.api.utils.INetworkComponent
+import eu.thesimplecloud.api.utils.Timestamp
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.clientserverapi.lib.bootstrap.IBootstrap
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
@@ -136,14 +137,14 @@ interface ICloudService : INetworkComponent, IBootstrap, IPropertyMap {
     override fun getName(): String = getGroupName() + "-" + getServiceNumber()
 
     /**
-     * Returns the last time stamp the service was updated.
+     * Returns the last time stamp a player interacted with the server.
      */
-    fun getLastUpdate(): Long
+    fun getLastPlayerUpdate(): Timestamp
 
     /**
-     * Sets the last time stamp the service was updated.
+     * Sets the last time a player interacted with the server.
      */
-    fun setLastUpdate(timeStamp: Long)
+    fun setLastPlayerUpdate(timeStamp: Timestamp)
 
     /**
      * Returns the state of this service.

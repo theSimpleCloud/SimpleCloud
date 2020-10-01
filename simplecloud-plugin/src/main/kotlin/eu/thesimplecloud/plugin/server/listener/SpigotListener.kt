@@ -23,10 +23,13 @@
 package eu.thesimplecloud.plugin.server.listener
 
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.plugin.startup.CloudPlugin
+import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
+import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerKickEvent
 import org.bukkit.event.player.PlayerLoginEvent
 import org.bukkit.event.player.PlayerQuitEvent
@@ -49,7 +52,11 @@ class SpigotListener : Listener {
         if (CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(player.uniqueId) == null) {
             event.disallow(PlayerLoginEvent.Result.KICK_OTHER, NOT_REGISTERED)
         }
+    }
 
+    @EventHandler
+    fun onJoin(event: PlayerJoinEvent) {
+        updateCurrentOnlineCountTo(Bukkit.getOnlinePlayers().size)
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -69,6 +76,13 @@ class SpigotListener : Listener {
         if (cloudPlayer != null && !cloudPlayer.isUpdatesEnabled()) {
             playerManager.delete(cloudPlayer)
         }
+        updateCurrentOnlineCountTo(Bukkit.getOnlinePlayers().size - 1)
+    }
+
+    private fun updateCurrentOnlineCountTo(count: Int) {
+        val thisService = CloudPlugin.instance.thisService()
+        thisService.setOnlineCount(count)
+        thisService.update()
     }
     
 }

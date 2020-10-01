@@ -23,10 +23,9 @@
 package eu.thesimplecloud.plugin.proxy.velocity.text
 
 import eu.thesimplecloud.api.player.text.CloudText
-import net.kyori.text.Component
-import net.kyori.text.TextComponent
-import net.kyori.text.event.ClickEvent
-import net.kyori.text.event.HoverEvent
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.TextComponent
+import net.kyori.adventure.text.event.ClickEvent
 import java.util.*
 import java.util.function.Consumer
 
@@ -76,7 +75,7 @@ class CloudTextBuilder {
 
         val hover = cloudText.hover
         if (hover != null) {
-            component.hoverEvent(HoverEvent.showText(TextComponent.of(hover)))
+            component.hoverEvent(TextComponent.of(hover))
         }
         val click = cloudText.click
         if (click != null) {

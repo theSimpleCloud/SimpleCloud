@@ -82,6 +82,7 @@ class VelocityListener(val plugin: CloudVelocityPlugin) {
 
     @Subscribe
     fun handle(event: ServerPreConnectEvent) {
+        if (!event.result.isAllowed) return
         val player = event.player
 
         val target = if (event.originalServer.serverInfo.name == "fallback")
@@ -123,7 +124,7 @@ class VelocityListener(val plugin: CloudVelocityPlugin) {
     @Subscribe
     fun handle(event: KickedFromServerEvent) {
         val kickReasonString: String
-        var kickReasonComponent = event.originalReason
+        var kickReasonComponent = event.serverKickReason
         if (!kickReasonComponent.isPresent) {
             kickReasonString = ""
             kickReasonComponent = Optional.of(CloudTextBuilder().build(CloudText("")))

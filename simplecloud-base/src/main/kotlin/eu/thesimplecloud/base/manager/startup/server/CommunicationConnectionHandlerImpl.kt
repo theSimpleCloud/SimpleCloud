@@ -23,11 +23,11 @@
 package eu.thesimplecloud.base.manager.startup.server
 
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.network.component.IAuthenticatable
 import eu.thesimplecloud.api.screen.ICommandExecutable
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.sync.`object`.GlobalPropertyHolder
-import eu.thesimplecloud.api.utils.IAuthenticatable
 import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
 import eu.thesimplecloud.base.manager.impl.CloudPlayerManagerImpl
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection

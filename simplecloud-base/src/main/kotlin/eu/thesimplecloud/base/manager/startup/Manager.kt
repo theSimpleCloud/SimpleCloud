@@ -75,7 +75,7 @@ class Manager : ICloudApplication {
     val cloudServiceGroupFileHandler = CloudServiceGroupFileHandler()
     val wrapperFileHandler = WrapperFileHandler()
     val templatesConfigLoader = TemplatesConfigLoader()
-    val serviceHandler: ServiceHandler = ServiceHandler()
+    val serviceHandler: ServiceHandler
 
     val offlineCloudPlayerHandler: IOfflineCloudPlayerHandler
 
@@ -99,6 +99,7 @@ class Manager : ICloudApplication {
         Logger.getLogger("org.mongodb.driver").level = Level.SEVERE
         instance = this
         CloudAPIImpl()
+        this.serviceHandler = ServiceHandler()
         CloudAPI.instance.getEventManager().registerListener(this, CloudListener())
         CloudAPI.instance.getEventManager().registerListener(this, ModuleEventListener())
         this.appClassLoader = this::class.java.classLoader as ApplicationClassLoader

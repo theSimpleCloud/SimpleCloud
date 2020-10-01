@@ -30,6 +30,7 @@ import eu.thesimplecloud.api.service.impl.DefaultCloudService
 import eu.thesimplecloud.api.service.startconfiguration.IServiceStartConfiguration
 import eu.thesimplecloud.api.service.startconfiguration.ServiceStartConfiguration
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
+import eu.thesimplecloud.api.utils.Timestamp
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.launcher.extension.sendMessage
@@ -38,10 +39,12 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
+import kotlin.math.max
 import kotlin.math.min
 
 class ServiceHandler : IServiceHandler {
 
+    private val serviceMinimumCountCalculator = ServiceMinimumCountCalculator()
     private var serviceQueue: MutableList<ICloudService> = ArrayList()
 
     override fun startServicesByGroup(cloudServiceGroup: ICloudServiceGroup, count: Int): List<ICloudService> {
@@ -97,7 +100,8 @@ class ServiceHandler : IServiceHandler {
             //don't exclude closed services because they will be deleted in a moment.
             val inLobbyServices = allServices.filter { it.getState() != ServiceState.INVISIBLE } //1
             val inLobbyServicesWithFewPlayers = inLobbyServices.filter { it.getOnlinePercentage() < serviceGroup.getPercentToStartNewService().toDouble() / 100 }
-            var newServicesAmount = serviceGroup.getMinimumOnlineServiceCount() - inLobbyServicesWithFewPlayers.size
+            val minimumServiceCount = getMinimumServiceCount(serviceGroup)
+            var newServicesAmount = minimumServiceCount - inLobbyServicesWithFewPlayers.size
             if (serviceGroup.getMaximumOnlineServiceCount() != -1 && newServicesAmount + inLobbyServices.size > serviceGroup.getMaximumOnlineServiceCount())
                 newServicesAmount = serviceGroup.getMaximumOnlineServiceCount() - inLobbyServices.size
             if (newServicesAmount > 0) {
@@ -109,12 +113,14 @@ class ServiceHandler : IServiceHandler {
     private fun stopRedundantServices() {
         for (serviceGroup in CloudAPI.instance.getCloudServiceGroupManager().getAllCachedObjects()) {
             val allServices = serviceGroup.getAllServices()
-            val inLobbyServices = allServices.filter { it.getState() == ServiceState.VISIBLE }
-            val stoppableServices = inLobbyServices
-                    .filter { (it.getLastUpdate() + TimeUnit.MINUTES.toMillis(3)) < System.currentTimeMillis() }
-                    .filter { it.getOnlineCount() <= 0 }
-            if (inLobbyServices.size > serviceGroup.getMinimumOnlineServiceCount()) {
-                val amountToStop = inLobbyServices.size - serviceGroup.getMinimumOnlineServiceCount()
+            val redundantServices = allServices.filter { it.getState() == ServiceState.VISIBLE }
+                    .filter { (it.getOnlinePercentage() * 100) < serviceGroup.getPercentToStartNewService() }
+                    .filter { it.getLastPlayerUpdate().hasTimePassed(TimeUnit.MINUTES.toMillis(3)) }
+            //exclude services with percentage higher than percentage to start new service because they are not redundant
+            val stoppableServices = redundantServices.filter { it.getOnlineCount() <= 0 }
+            val minimumServiceCount = getMinimumServiceCount(serviceGroup)
+            if (redundantServices.size > minimumServiceCount) {
+                val amountToStop = redundantServices.size - minimumServiceCount
                 for (i in 0 until min(amountToStop, stoppableServices.size)) {
                     val service = stoppableServices[i]
                     //set to invisible, so that services are not shutdown again
@@ -135,28 +141,32 @@ class ServiceHandler : IServiceHandler {
 
                 val priorityToServices = this.serviceQueue.groupBy { it.getServiceGroup().getStartPriority() }
                 val maxPriority = priorityToServices.keys.max()
-                if (maxPriority != null) {
-                    for (priority in maxPriority downTo 0) {
-                        val services = priorityToServices[priority] ?: emptyList()
-                        //false will be listed first -> services with wrapper will be listed first
-                        val sortedServices = services.sortedBy { it.getWrapperName() == null }
-                        for (service in sortedServices) {
-                            val wrapper = getWrapperForService(service) ?: continue
-                            val wrapperClient = Manager.instance.communicationServer.getClientManager().getClientByClientValue(wrapper)
-                            wrapperClient ?: continue
-                            service as DefaultCloudService
-                            service.setWrapperName(wrapper.getName())
-                            service.update()
-                            CloudAPI.instance.getCloudServiceManager().sendUpdateToConnection(service, wrapperClient).awaitUninterruptibly()
-                            wrapperClient.sendUnitQuery(PacketIOWrapperStartService(service.getName())).awaitUninterruptibly()
-                            Launcher.instance.consoleSender.sendMessage("manager.service.start", "Told Wrapper %WRAPPER%", wrapper.getName(), " to start service %SERVICE%", service.getName())
-                            this.serviceQueue.remove(service)
-                        }
+                maxPriority ?: continue
+                for (priority in maxPriority downTo 0) {
+                    val services = priorityToServices[priority] ?: emptyList()
+                    //false will be listed first -> services with wrapper will be listed first
+                    val sortedServices = services.sortedBy { it.getWrapperName() == null }
+                    for (service in sortedServices) {
+                        executeStart(service)
                     }
                 }
                 Thread.sleep(300)
             }
         }
+    }
+
+    private fun executeStart(service: ICloudService) {
+        val wrapper = getWrapperForService(service) ?: return
+        val wrapperClient = Manager.instance.communicationServer.getClientManager().getClientByClientValue(wrapper)
+        wrapperClient ?: return
+        service as DefaultCloudService
+        service.setWrapperName(wrapper.getName())
+        service.setLastPlayerUpdate(Timestamp())
+        service.update()
+        CloudAPI.instance.getCloudServiceManager().sendUpdateToConnection(service, wrapperClient).awaitUninterruptibly()
+        wrapperClient.sendUnitQuery(PacketIOWrapperStartService(service.getName())).awaitUninterruptibly()
+        Launcher.instance.consoleSender.sendMessage("manager.service.start", "Told Wrapper %WRAPPER%", wrapper.getName(), " to start service %SERVICE%", service.getName())
+        this.serviceQueue.remove(service)
     }
 
     private fun getWrapperForService(service: ICloudService): IWrapperInfo? {
@@ -172,6 +182,10 @@ class ServiceHandler : IServiceHandler {
             }
             return null
         }
+    }
+
+    fun getMinimumServiceCount(group: ICloudServiceGroup): Int {
+        return max(group.getMinimumOnlineServiceCount(), this.serviceMinimumCountCalculator.getCalculatedMinimumServiceCount(group))
     }
 
 

@@ -74,6 +74,7 @@ class BungeeListener : Listener {
 
     @EventHandler
     fun on(event: ServerConnectEvent) {
+        if (event.isCancelled) return
         val proxiedPlayer = event.player
         val target = if (event.target.name == "fallback")
             CloudBungeePlugin.instance.lobbyConnector.getLobbyServer(proxiedPlayer)
@@ -108,11 +109,11 @@ class BungeeListener : Listener {
 
     @EventHandler
     fun on(event: ServerKickEvent) {
-        val kickReasonString: String
-        if (event.kickReasonComponent.isEmpty()) {
-            kickReasonString = ""
+        if (event.isCancelled) return
+        val kickReasonString: String = if (event.kickReasonComponent.isEmpty()) {
+            ""
         } else {
-            kickReasonString = event.kickReasonComponent[0].toLegacyText()
+            event.kickReasonComponent[0].toLegacyText()
         }
 
         val proxiedPlayer = event.player

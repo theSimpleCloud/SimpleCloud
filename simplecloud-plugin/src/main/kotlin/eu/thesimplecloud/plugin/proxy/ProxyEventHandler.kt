@@ -29,7 +29,6 @@ import eu.thesimplecloud.api.player.CloudPlayer
 import eu.thesimplecloud.api.player.ICloudPlayer
 import eu.thesimplecloud.api.player.PlayerServerConnectState
 import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
-import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.servicegroup.grouptype.ICloudServerGroup
 import eu.thesimplecloud.clientserverapi.lib.packet.packetsender.sendQuery
@@ -106,7 +105,7 @@ object ProxyEventHandler {
             CloudAPI.instance.getCloudPlayerManager().sendDeleteToConnection(cloudPlayer, connection)
         }
 
-        subtractOneFromOnlineCount(CloudPlugin.instance.thisService())
+        subtractOneFromThisServiceOnlineCount()
     }
 
 
@@ -145,10 +144,6 @@ object ProxyEventHandler {
             return
         }
 
-        if (serverNameFrom != null) {
-            subtractOneFromOnlineCount(serverNameFrom)
-        }
-
         CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketOutPlayerConnectToServer(uniqueId, serverNameTo))
                 .awaitUninterruptibly()
                 .addFailureListener {
@@ -171,8 +166,6 @@ object ProxyEventHandler {
             cancelEvent("§cService does not exist.")
             return
         }
-        service.setOnlineCount(service.getOnlineCount() + 1)
-        service.update()
 
         val cloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(uniqueId)
         cloudPlayer ?: return
@@ -199,12 +192,8 @@ object ProxyEventHandler {
         return suggestions
     }
 
-    private fun subtractOneFromOnlineCount(serverName: String) {
-        val service = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(serverName) ?: return
-        subtractOneFromOnlineCount(service)
-    }
-
-    private fun subtractOneFromOnlineCount(service: ICloudService) {
+    private fun subtractOneFromThisServiceOnlineCount() {
+        val service = CloudPlugin.instance.thisService()
         service.setOnlineCount(service.getOnlineCount() - 1)
         service.update()
     }

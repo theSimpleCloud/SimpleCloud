@@ -26,6 +26,7 @@ import eu.thesimplecloud.api.property.IProperty
 import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
+import eu.thesimplecloud.api.utils.Timestamp
 import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.jsonlib.JsonLibExclude
 import java.util.*
@@ -49,7 +50,7 @@ data class DefaultCloudService(
     private var usedMemory = 0
     private var authenticated = false
     @JsonLibExclude
-    private var lastUpdate = System.currentTimeMillis()
+    private var lastPlayerUpdate = Timestamp()
 
     var propertyMap = HashMap<String, Property<*>>()
 
@@ -111,10 +112,10 @@ data class DefaultCloudService(
 
     override fun getUsedMemory(): Int = this.usedMemory
 
-    override fun getLastUpdate(): Long = this.lastUpdate
+    override fun getLastPlayerUpdate(): Timestamp = this.lastPlayerUpdate
 
-    override fun setLastUpdate(timeStamp: Long) {
-        this.lastUpdate = timeStamp
+    override fun setLastPlayerUpdate(timeStamp: Timestamp) {
+        this.lastPlayerUpdate = timeStamp
     }
 
 

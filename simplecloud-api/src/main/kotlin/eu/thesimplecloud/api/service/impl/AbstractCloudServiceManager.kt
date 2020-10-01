@@ -31,6 +31,7 @@ import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ICloudServiceManager
 import eu.thesimplecloud.api.service.ServiceState
+import eu.thesimplecloud.api.utils.Timestamp
 
 abstract class AbstractCloudServiceManager : AbstractCacheList<ICloudService>(), ICloudServiceManager {
 
@@ -48,6 +49,7 @@ abstract class AbstractCloudServiceManager : AbstractCacheList<ICloudService>(),
             val nowStarting = cachedValue.getState() == ServiceState.PREPARED && updateValue.getState() == ServiceState.STARTING
             val nowOnline = !cachedValue.isOnline() && updateValue.isOnline()
             val nowConnected = !cachedValue.isAuthenticated() && updateValue.isAuthenticated()
+            val nowInvisible = cachedValue.getState() == ServiceState.VISIBLE && updateValue.getState() == ServiceState.INVISIBLE
 
             val events = ArrayList<IEvent>()
             events.add(CloudServiceUpdatedEvent(cachedValue))
@@ -61,6 +63,9 @@ abstract class AbstractCloudServiceManager : AbstractCacheList<ICloudService>(),
             if (nowOnline) {
                 events.add(CloudServiceStartedEvent(cachedValue))
             }
+            if (nowInvisible) {
+                events.add(CloudServiceInvisibleEvent(cachedValue))
+            }
             return events
         }
 
@@ -69,16 +74,18 @@ abstract class AbstractCloudServiceManager : AbstractCacheList<ICloudService>(),
             cachedValue.setOnlineCount(updateValue.getOnlineCount())
             cachedValue.setState(updateValue.getState())
             cachedValue.setAuthenticated(updateValue.isAuthenticated())
-            cachedValue.setLastUpdate(System.currentTimeMillis())
             cachedValue as DefaultCloudService
             cachedValue.setWrapperName(updateValue.getWrapperName())
             cachedValue.setPort(updateValue.getPort())
             cachedValue.setUsedMemory(updateValue.getUsedMemory())
             cachedValue.propertyMap = HashMap(updateValue.getMapWithNewestProperties(cachedValue.propertyMap) as MutableMap<String, Property<*>>)
+
+            if (updateValue.getOnlineCount() != cachedValue.getOnlineCount())
+                cachedValue.setLastPlayerUpdate(Timestamp())
         }
 
         override fun addNewValue(value: ICloudService) {
-            value.setLastUpdate(System.currentTimeMillis())
+            value.setLastPlayerUpdate(Timestamp())
             values.add(value)
         }
 
