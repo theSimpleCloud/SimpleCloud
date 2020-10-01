@@ -23,8 +23,8 @@
 package eu.thesimplecloud.plugin.proxy.bungee
 
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.ingamecommand.SynchronizedIngameCommandNamesContainer
 import eu.thesimplecloud.api.player.ICloudPlayerManager
+import eu.thesimplecloud.api.property.IProperty
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.servicegroup.grouptype.ICloudServerGroup
 import eu.thesimplecloud.plugin.impl.player.CloudPlayerManagerBungee
@@ -45,7 +45,7 @@ class CloudBungeePlugin : Plugin(), ICloudProxyPlugin {
     val lobbyConnector = LobbyConnector()
 
     @Volatile
-    var synchronizedIngameCommandNamesContainer = SynchronizedIngameCommandNamesContainer()
+    lateinit var synchronizedIngameCommandsProperty: IProperty<Array<String>>
         private set
 
     companion object {
@@ -97,9 +97,9 @@ class CloudBungeePlugin : Plugin(), ICloudProxyPlugin {
     override fun onLoad() {
         ProxyServer.getInstance().reconnectHandler = ReconnectHandlerImpl()
         CloudPlugin(this)
-        val synchronizedObjectPromise = CloudAPI.instance.getGlobalPropertyHolder().requestProperty<SynchronizedIngameCommandNamesContainer>("simplecloud-ingamecommands")
+        val synchronizedObjectPromise = CloudAPI.instance.getGlobalPropertyHolder().requestProperty<Array<String>>("simplecloud-ingamecommands")
         synchronizedObjectPromise.addResultListener {
-            this.synchronizedIngameCommandNamesContainer = it.getValue()
+            this.synchronizedIngameCommandsProperty = it
         }.throwFailure()
     }
 

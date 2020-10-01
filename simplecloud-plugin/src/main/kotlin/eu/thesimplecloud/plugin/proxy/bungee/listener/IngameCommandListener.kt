@@ -44,7 +44,7 @@ class IngameCommandListener : Listener {
         if (event.isCommand){
             val rawCommand = event.message.replaceFirst("/", "")
             val commandStart = rawCommand.split(" ")[0]
-            if (CloudBungeePlugin.instance.synchronizedIngameCommandNamesContainer.names.contains(commandStart.toLowerCase())) {
+            if (CloudBungeePlugin.instance.synchronizedIngameCommandsProperty.getValue().contains(commandStart.toLowerCase())) {
                 CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketOutPlayerExecuteCommand(player.getCloudPlayer(), rawCommand))
                 event.isCancelled = true
             }

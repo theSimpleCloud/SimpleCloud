@@ -42,6 +42,7 @@ import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.invoker.MethodInvokeHelper
 import eu.thesimplecloud.launcher.startup.Launcher
 import org.reflections.Reflections
+import java.util.concurrent.CopyOnWriteArrayList
 
 
 /**
@@ -53,7 +54,7 @@ import org.reflections.Reflections
 class CommandManager() {
 
 
-    val commands = ArrayList<CommandData>()
+    val commands = CopyOnWriteArrayList<CommandData>()
     private val allowedTypesWithoutCommandArgument = listOf(ICommandSender::class.java, Array<String>::class.java)
 
     fun handleCommand(readLine: String, commandSender: ICommandSender) {

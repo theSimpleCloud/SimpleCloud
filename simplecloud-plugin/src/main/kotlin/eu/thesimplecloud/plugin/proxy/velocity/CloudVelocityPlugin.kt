@@ -30,8 +30,8 @@ import com.velocitypowered.api.plugin.Plugin
 import com.velocitypowered.api.proxy.ProxyServer
 import com.velocitypowered.api.proxy.server.ServerInfo
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.ingamecommand.SynchronizedIngameCommandNamesContainer
 import eu.thesimplecloud.api.player.ICloudPlayerManager
+import eu.thesimplecloud.api.property.IProperty
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.servicegroup.grouptype.ICloudServerGroup
 import eu.thesimplecloud.plugin.impl.player.CloudPlayerManagerVelocity
@@ -60,7 +60,7 @@ class CloudVelocityPlugin @Inject constructor(val proxyServer: ProxyServer) : IC
     }
 
     @Volatile
-    var synchronizedIngameCommandNamesContainer = SynchronizedIngameCommandNamesContainer()
+    lateinit var synchronizedIngameCommandsProperty: IProperty<Array<String>>
         private set
     val lobbyConnector = LobbyConnector()
 
@@ -68,15 +68,17 @@ class CloudVelocityPlugin @Inject constructor(val proxyServer: ProxyServer) : IC
         instance = this
 
         CloudPlugin(this)
-        val synchronizedObjectPromise = CloudAPI.instance.getGlobalPropertyHolder().requestProperty<SynchronizedIngameCommandNamesContainer>("simplecloud-ingamecommands")
-        synchronizedObjectPromise.addResultListener { objectHolder ->
-            this.synchronizedIngameCommandNamesContainer.names.forEach {
+        val synchronizedObjectPromise = CloudAPI.instance.getGlobalPropertyHolder().requestProperty<Array<String>>("simplecloud-ingamecommands")
+        synchronizedObjectPromise.addResultListener { property ->
+            this.synchronizedIngameCommandsProperty = property
+
+            this.synchronizedIngameCommandsProperty.getValue().forEach {
                 proxyServer.commandManager.unregister(it)
             }
-            this.synchronizedIngameCommandNamesContainer = objectHolder.getValue()
 
-            this.synchronizedIngameCommandNamesContainer.names.forEach {
-                proxyServer.commandManager.register(it, VelocityCommand(it))
+            this.synchronizedIngameCommandsProperty.getValue().forEach {
+                val commandManager = proxyServer.commandManager
+                commandManager.register(commandManager.metaBuilder(it).build(), VelocityCommand(it))
             }
         }.throwFailure()
     }

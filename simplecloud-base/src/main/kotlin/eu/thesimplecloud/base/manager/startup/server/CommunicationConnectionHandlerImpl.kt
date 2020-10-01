@@ -31,12 +31,12 @@ import eu.thesimplecloud.api.sync.`object`.GlobalPropertyHolder
 import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
 import eu.thesimplecloud.base.manager.impl.CloudPlayerManagerImpl
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
-import eu.thesimplecloud.clientserverapi.lib.handler.IConnectionHandler
+import eu.thesimplecloud.clientserverapi.lib.handler.DefaultConnectionHandler
 import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnectedClient
 import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.startup.Launcher
 
-class CommunicationConnectionHandlerImpl : IConnectionHandler {
+class CommunicationConnectionHandlerImpl : DefaultConnectionHandler() {
 
     override fun onConnectionActive(connection: IConnection) {
         val host = connection.getHost()!!
@@ -49,6 +49,7 @@ class CommunicationConnectionHandlerImpl : IConnectionHandler {
     }
 
     override fun onConnectionInactive(connection: IConnection) {
+        super.onConnectionInactive(connection)
         connection as IConnectedClient<ICommandExecutable>
         val clientValue = connection.getClientValue()
         clientValue ?: return
