@@ -24,6 +24,7 @@ package eu.thesimplecloud.api.network.packets.screen
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.client.NetworkComponentType
+import eu.thesimplecloud.api.network.component.ManagerComponent
 import eu.thesimplecloud.api.screen.ICommandExecutable
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
@@ -46,8 +47,8 @@ class PacketIOExecuteCommand() : JsonPacket() {
             NetworkComponentType.SERVICE -> {
                 CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(serviceName)
             }
-            else -> {
-                throw UnsupportedOperationException()
+            NetworkComponentType.MANAGER -> {
+                ManagerComponent
             }
         }
         commandExecutable?.executeCommand(command)

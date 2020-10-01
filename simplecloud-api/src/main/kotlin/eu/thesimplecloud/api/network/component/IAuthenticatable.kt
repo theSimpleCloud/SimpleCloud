@@ -20,7 +20,7 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.api.utils
+package eu.thesimplecloud.api.network.component
 
 import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnectedClientValue
 

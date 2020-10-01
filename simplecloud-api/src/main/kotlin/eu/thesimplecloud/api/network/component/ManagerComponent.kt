@@ -20,15 +20,31 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.api.message
+package eu.thesimplecloud.api.network.component
 
-import eu.thesimplecloud.api.network.component.INetworkComponent
+import eu.thesimplecloud.api.client.NetworkComponentType
 
-interface IMessageListener<T> {
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 01.10.2020
+ * Time: 17:08
+ * @author Frederick Baier
+ */
+object ManagerComponent : INetworkComponent {
 
-    /**
-     * This method will be called when the listener receives a message,
-     */
-    fun messageReceived(msg: T, sender: INetworkComponent)
+    override fun getNetworkComponentType(): NetworkComponentType {
+        return NetworkComponentType.MANAGER
+    }
 
+    override fun isAuthenticated(): Boolean {
+        return true
+    }
+
+    override fun setAuthenticated(authenticated: Boolean) {
+        throw UnsupportedOperationException("Cannot set authenticated state of the manager")
+    }
+
+    override fun getName(): String {
+        return "Manager"
+    }
 }

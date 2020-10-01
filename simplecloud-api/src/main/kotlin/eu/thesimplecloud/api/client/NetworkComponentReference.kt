@@ -23,7 +23,7 @@
 package eu.thesimplecloud.api.client
 
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.utils.INetworkComponent
+import eu.thesimplecloud.api.network.component.INetworkComponent
 
 data class NetworkComponentReference(val componentType: NetworkComponentType, val name: String) {
 

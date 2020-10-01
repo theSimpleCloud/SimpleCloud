@@ -22,7 +22,7 @@
 
 package eu.thesimplecloud.api.extension
 
-import eu.thesimplecloud.api.utils.IAuthenticatable
+import eu.thesimplecloud.api.network.component.IAuthenticatable
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.clientserverapi.lib.packet.IPacket
 import eu.thesimplecloud.clientserverapi.server.client.clientmanager.IClientManager
