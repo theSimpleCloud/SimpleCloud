@@ -140,7 +140,7 @@ class EditCommand : ICommandHandler {
 
     private fun getFieldsOfWrapper(wrapper: IWrapperInfo): List<Field>? {
         val allFields = wrapper::class.java.getAllFieldsFromClassAndSubClasses().filter { !Collection::class.java.isAssignableFrom(it.type) }
-        return allFields.filterNot { it.name == "name" || it.name == "host" }
+        return allFields.filterNot { it.name == "name" || it.name == "host" || it.name == "wrapperName" }
     }
 
     private fun sendAllParameters(commandSender: ICommandSender, fields: List<Field>) {
