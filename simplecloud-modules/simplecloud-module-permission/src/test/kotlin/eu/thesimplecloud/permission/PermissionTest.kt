@@ -57,7 +57,7 @@ class PermissionTest {
     @Test
     fun testPermissionNotActive() {
         val permission = Permission("permission.test", Long.MAX_VALUE, false)
-        assertFalse(permission.matches("permission.test"))
+        assertTrue(permission.matches("permission.test"))
         assertFalse(permission.matches("permission.otherTest"))
     }
 

@@ -181,7 +181,7 @@ class PermissionCommand : ICommandHandler {
             commandSender.sendMessage("manager.command.perms.user-not-exist", "&cUser not found.")
             return
         }
-        if (!permissionPlayer.hasPermission(permission)) {
+        if (permissionPlayer.getPermissionByName(permission) == null) {
             commandSender.sendMessage("manager.command.perms.user.permission.already-removed", "&cThe user doesn't have the specified permission.")
             return
         }
