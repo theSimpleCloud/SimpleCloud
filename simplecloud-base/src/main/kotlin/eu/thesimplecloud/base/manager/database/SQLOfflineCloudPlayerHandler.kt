@@ -52,9 +52,7 @@ class SQLOfflineCloudPlayerHandler(private val databaseConnectionInformation: Da
     }
 
     private fun createDatabaseAndIndicesIfNotExist() {
-        val dbm: DatabaseMetaData = connection!!.metaData
-        val tables = dbm.getTables(null, null, this.playerCollectionName, null)
-        if (!tables.next()) {  // Table does not exist
+        if (!doesTableExist()) {
             val statement = connection!!.prepareStatement("CREATE TABLE IF NOT EXISTS `$playerCollectionName` (`uniqueId` varchar(36), `name` varchar(16), `data` LONGBLOB)")
             statement.executeUpdate()
             createIndex("uniqueId")
@@ -135,6 +133,12 @@ class SQLOfflineCloudPlayerHandler(private val databaseConnectionInformation: Da
         prepareStatement.setString(1, searchValue)
         val resultSet = prepareStatement.executeQuery()
         return resultSet.next()
+    }
+
+    private fun doesTableExist(): Boolean {
+        val meta: DatabaseMetaData = connection!!.metaData
+        val res = meta.getTables(null, null, this.playerCollectionName, arrayOf("TABLE"))
+        return res.next()
     }
 
 
