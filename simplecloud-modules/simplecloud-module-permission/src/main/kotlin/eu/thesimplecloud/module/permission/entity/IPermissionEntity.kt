@@ -31,11 +31,11 @@ interface IPermissionEntity {
      */
     fun hasPermission(permission: String): Boolean {
         if (permission.isBlank()) return true
-        val permissionObj = getFirstNotExpiredMatchingPermission(permission) ?: return hasAllRights()
+        val permissionObj = getNotExpiredPermissionByMatch(permission) ?: return hasAllRights()
         return permissionObj.active
     }
 
-    private fun getFirstNotExpiredMatchingPermission(permission: String): Permission? {
+    fun getNotExpiredPermissionByMatch(permission: String): Permission? {
         val notExpiredPermissions = getAllNotExpiredPermissions()
         return notExpiredPermissions.firstOrNull { it.matches(permission) }
     }

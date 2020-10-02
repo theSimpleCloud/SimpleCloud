@@ -29,7 +29,7 @@ data class Permission(val permissionString: String, val timeoutTimestamp: Long, 
 
 
     fun matches(permission: String): Boolean {
-        return if (isExpired() || !active) {
+        return if (isExpired()) {
             false
         } else {
             return matchesPermission(permission)
