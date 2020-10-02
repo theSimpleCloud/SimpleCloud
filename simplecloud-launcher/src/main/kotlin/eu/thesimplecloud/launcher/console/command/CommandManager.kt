@@ -51,7 +51,7 @@ import java.util.concurrent.CopyOnWriteArrayList
  * Date: 30.08.2019
  * Time: 17:41
  */
-class CommandManager() {
+class CommandManager {
 
 
     val commands = CopyOnWriteArrayList<CommandData>()
@@ -152,12 +152,12 @@ class CommandManager() {
                 val path = it.trim()
                 val pathArray = path.split(" ")
 
-                pathArray.withIndex().all { isParamater(it.value) || it.value.toLowerCase() == messageArray[it.index].toLowerCase() }
+                pathArray.withIndex().all { isParameter(it.value) || it.value.toLowerCase() == messageArray[it.index].toLowerCase() }
             }
         }
     }
 
-    fun getAvailableArgsMatchingCommandData(message: String): List<CommandData> {
+    private fun getAvailableArgsMatchingCommandData(message: String): List<CommandData> {
         val messageArray = message.split(" ")
         val dataList = getCommandDataByMinimumArgumentLength(messageArray.size)
         return dataList.filter { commandData ->
@@ -167,7 +167,7 @@ class CommandManager() {
 
                 messageArray.withIndex().all {
                     val pathValue = pathArray[it.index]
-                    isParamater(pathValue) || it.value.toLowerCase() == pathValue.toLowerCase()
+                    isParameter(pathValue) || it.value.toLowerCase() == pathValue.toLowerCase()
                 }
             }
         }
@@ -197,7 +197,7 @@ class CommandManager() {
 
             val permission = it.permission
             if (permission.isEmpty() || sender.hasPermission(permission).getBlocking()) {
-                if (isParamater(currentPathValue)) {
+                if (isParameter(currentPathValue)) {
                     val commandParameterData = it.getParameterDataByNameWithBraces(currentPathValue)?: return@forEach
                     suggestions.addAll(commandParameterData.provider.getSuggestions(sender, message, messageArray.last()))
                 } else {
@@ -209,12 +209,12 @@ class CommandManager() {
         return suggestions.filter { it.toLowerCase().startsWith(messageArray.last().toLowerCase()) }
     }
 
-    fun isParamater(s: String) = s.startsWith("<") && s.endsWith(">")
+    private fun isParameter(s: String) = s.startsWith("<") && s.endsWith(">")
 
-    fun getCommandDataByMinimumArgumentLength(length: Int) = this.commands.filter { it.getPathWithCloudPrefixIfRequired().split(" ").size >= length }
+    private fun getCommandDataByMinimumArgumentLength(length: Int) = this.commands.filter { it.getPathWithCloudPrefixIfRequired().split(" ").size >= length }
             .union(this.commands.filter { it.isLegacy })
 
-    fun getCommandDataByArgumentLength(length: Int) = this.commands.filter { it.getPathWithCloudPrefixIfRequired().trim().split(" ").size == length }
+    private fun getCommandDataByArgumentLength(length: Int) = this.commands.filter { it.getPathWithCloudPrefixIfRequired().trim().split(" ").size == length }
             .union(this.commands.filter { it.isLegacy })
 
     fun registerAllCommands(cloudModule: ICloudModule, classLoader: ClassLoader, vararg packages: String) {
