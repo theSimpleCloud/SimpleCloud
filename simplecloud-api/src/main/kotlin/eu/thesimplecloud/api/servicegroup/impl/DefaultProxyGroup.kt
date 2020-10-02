@@ -39,7 +39,8 @@ class DefaultProxyGroup(
         wrapperName: String,
         private var startPort: Int,
         serviceVersion: ServiceVersion,
-        startPriority: Int
+        startPriority: Int,
+        permission: String?
 ) : AbstractServiceGroup(
         name,
         templateName,
@@ -52,7 +53,8 @@ class DefaultProxyGroup(
         percentToStartNewService,
         wrapperName,
         serviceVersion,
-        startPriority
+        startPriority,
+        permission
 ), ICloudProxyGroup {
 
     override fun getStartPort(): Int = this.startPort

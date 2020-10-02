@@ -129,7 +129,8 @@ interface ICloudServiceGroupManager : ICacheList<ICloudServiceGroup> {
             wrapperName: String,
             startPort: Int,
             serviceVersion: ServiceVersion,
-            startPriority: Int
+            startPriority: Int,
+            permission: String?
     ): ICommunicationPromise<ICloudProxyGroup> =
             createServiceGroup(DefaultProxyGroup(
                     groupName,
@@ -144,7 +145,8 @@ interface ICloudServiceGroupManager : ICacheList<ICloudServiceGroup> {
                     wrapperName,
                     startPort,
                     serviceVersion,
-                    startPriority
+                    startPriority,
+                    permission
             )) as ICommunicationPromise<ICloudProxyGroup>
 
     /**

@@ -141,6 +141,16 @@ interface ICloudServiceGroup {
     fun getStartPriority(): Int
 
     /**
+     * Returns the permission a player needs to join a service of this group or null if there is no permission set.
+     */
+    fun getPermission(): String?
+
+    /**
+     * Sets the permission a player needs to join a service of this group
+     */
+    fun setPermission(permission: String?)
+
+    /**
      * Starts a new service by this group
      * @return a promise which is called when the new service was registered.
      * The promise will fail with:

@@ -158,9 +158,29 @@ class ProxyGroupSetup : DefaultGroupSetup(), ISetup {
         return true
     }
 
+    @SetupQuestion(12, "manager.setup.service-group.question.permission", "Which permission shall a player need to join this group? (leave it empty for no permission)")
+    fun permissionQuestion(permission: String) {
+        handlePermission(permission)
+    }
+
     @SetupFinished
     fun finished() {
-        CloudAPI.instance.getCloudServiceGroupManager().createProxyGroup(name, templateName, memory, maxPlayers, minimumOnlineServices, maximumOnlineServices, true, static, percent, wrapper.getName(), startPort, serviceVersion, 10)
+        CloudAPI.instance.getCloudServiceGroupManager().createProxyGroup(
+                name,
+                templateName,
+                memory,
+                maxPlayers,
+                minimumOnlineServices,
+                maximumOnlineServices,
+                true,
+                static,
+                percent,
+                wrapper.getName(),
+                startPort,
+                serviceVersion,
+                10,
+                this.permission
+        )
         Launcher.instance.consoleSender.sendMessage(true, "manager.setup.service-group.finished", "Group %NAME%", name, " created.")
     }
 

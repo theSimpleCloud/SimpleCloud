@@ -38,12 +38,21 @@ abstract class AbstractServiceGroup(
         private var percentToStartNewService: Int,
         private val wrapperName: String?,
         serviceVersion: ServiceVersion,
-        private val startPriority: Int
+        private val startPriority: Int,
+        private var permission: String?
 ) : ICloudServiceGroup {
 
     private val serviceVersion = serviceVersion.name
 
     override fun getName(): String = this.name
+
+    override fun getPermission(): String? {
+        return this.permission
+    }
+
+    override fun setPermission(permission: String?) {
+        this.permission = permission
+    }
 
     override fun getTemplateName(): String = this.templateName
 

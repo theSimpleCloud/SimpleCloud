@@ -47,6 +47,8 @@ import java.util.*
  */
 object ProxyEventHandler {
 
+    private val thisGroup = CloudPlugin.instance.thisService().getServiceGroup()
+
     fun handleLogin(playerConnection: DefaultPlayerConnection, cancelEvent: (String) -> Unit) {
         val thisService = CloudPlugin.instance.thisService()
         if (!thisService.isAuthenticated() || !thisService.isOnline()) {
@@ -71,10 +73,18 @@ object ProxyEventHandler {
         if (!loginRequestPromise.isSuccess) {
             loginRequestPromise.cause().printStackTrace()
             cancelEvent("§cLogin failed: " + loginRequestPromise.cause().message)
+            return
+        }
+
+        val cloudPlayer = createPromise.getNow()!!
+        val permission = thisGroup.getPermission()
+        if (permission != null && !cloudPlayer.hasPermissionSync(permission)) {
+            cancelEvent("§cYou don't have the permission to join this service.")
+            return
         }
 
         //update player to cache to avoid bugs
-        CloudAPI.instance.getCloudPlayerManager().update(createPromise.getNow()!!, true)
+        CloudAPI.instance.getCloudPlayerManager().update(cloudPlayer, true)
     }
 
     private fun handleAlreadyRegistered(player: ICloudPlayer) {
@@ -134,7 +144,7 @@ object ProxyEventHandler {
         if (serviceGroup is ICloudServerGroup) {
             val permission = serviceGroup.getPermission()
             if (permission != null && !cloudPlayer.hasPermissionSync(permission)) {
-                cancelEvent("§cYou don't have the permission to join this server.", CancelType.MESSAGE)
+                cancelEvent("§cYou don't have the permission to join this service.", CancelType.MESSAGE)
                 return
             }
         }
