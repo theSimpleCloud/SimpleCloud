@@ -35,9 +35,11 @@ import eu.thesimplecloud.clientserverapi.lib.packet.IPacket
 import eu.thesimplecloud.clientserverapi.server.INettyServer
 import java.util.concurrent.CopyOnWriteArrayList
 
-abstract class AbstractSynchronizedObjectList<T : Any> : ISynchronizedObjectList<T> {
+abstract class AbstractSynchronizedObjectList<T : Any>(
+        protected val values: CopyOnWriteArrayList<Property<T>> = CopyOnWriteArrayList()
+) : ISynchronizedObjectList<T> {
 
-    protected val values = CopyOnWriteArrayList<Property<T>>()
+
 
     override fun update(property: IProperty<T>, fromPacket: Boolean) {
         val cachedValue = getCachedObjectByUpdateValue(property.getValue())
