@@ -40,17 +40,21 @@ import java.io.File
 class PermissionModule : ICloudModule {
     companion object {
         val GROUPS_FILE = File("modules/permissions/groups.json")
+
         @JvmStatic
+        @Volatile
         lateinit var instance: PermissionModule
             private set
+
     }
+
+    private lateinit var permissionGroupManager: PermissionGroupManager
 
     init {
         instance = this
     }
 
     override fun onEnable() {
-        val permissionGroupManager = PermissionGroupManager()
         if (!GROUPS_FILE.exists()) {
             val adminGroup = PermissionGroup("Admin")
             adminGroup.addPermission(Permission("*", -1, true))
@@ -59,9 +63,9 @@ class PermissionModule : ICloudModule {
         }
         val permissionModuleConfig = JsonLib.fromJsonFile(GROUPS_FILE)?.getObject(PermissionModuleConfig::class.java)
                 ?: throw IllegalStateException("Cannot load config file")
-        permissionModuleConfig.groups.forEach { permissionGroupManager.update(it) }
-        permissionGroupManager.setDefaultPermissionGroup(permissionModuleConfig.defaultPermissionGroupName)
-        PermissionPool(permissionGroupManager)
+        this.permissionGroupManager = PermissionGroupManager(permissionModuleConfig.groups.toList())
+        this.permissionGroupManager.setDefaultPermissionGroup(permissionModuleConfig.defaultPermissionGroupName)
+        PermissionPool(this.permissionGroupManager)
         CloudAPI.instance.getEventManager().registerListener(this, CloudListener())
         Launcher.instance.commandManager.registerCommand(this, PermissionCommand())
     }
@@ -70,7 +74,12 @@ class PermissionModule : ICloudModule {
     }
 
     fun updateGroupsFile() {
-        JsonLib.fromObject(PermissionPool.instance.getPermissionGroupManager().getAllPermissionGroups())
+        JsonLib.fromObject(
+                PermissionModuleConfig(
+                        this.permissionGroupManager.getDefaultPermissionGroupName(),
+                        (this.permissionGroupManager.getAllPermissionGroups() as List<PermissionGroup>).toTypedArray()
+                )
+        ).saveAsFile(GROUPS_FILE)
     }
 
     fun updatePermissionPlayer(permissionPlayer: IPermissionPlayer) {
