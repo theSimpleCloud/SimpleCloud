@@ -76,3 +76,4 @@ logs/
 launcher.json
 storage/
 local-repo/
+modules/
