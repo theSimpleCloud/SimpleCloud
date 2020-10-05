@@ -1,0 +1,15 @@
+{
+  "name": "SimpleCloud-Rest",
+  "author": "Wetterbericht",
+  "mainClass": "eu.thesimplecloud.module.rest.RestModule",
+  "moduleCopyType": "NONE",
+  "repositories": ["https://repo.maven.apache.org/maven2/"],
+  "dependencies": [
+    {
+      "groupId": "io.javalin",
+      "artifactId": "javalin",
+      "version": "3.9.1"
+    }
+  ],
+  "depend": []
+}
