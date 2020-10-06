@@ -26,7 +26,7 @@ import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.template.ITemplate
 
 class TemplateLocation(
-        private val templateName: String,
+        val templateName: String,
         worldName: String,
         x: Double,
         y: Double,

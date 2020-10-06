@@ -28,8 +28,10 @@ import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.service.ServiceType
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
+import eu.thesimplecloud.module.sign.lib.CloudSign
 import eu.thesimplecloud.module.sign.lib.SignModuleConfig
 import eu.thesimplecloud.plugin.extension.toCloudLocation
+import eu.thesimplecloud.plugin.startup.CloudPlugin
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import kotlin.math.min
@@ -94,10 +96,16 @@ class BukkitCloudSignManager {
     }
 
     private fun registerNewSigns(signModuleConfig: SignModuleConfig) {
-        val signsToRegister = signModuleConfig.cloudSigns.filter { getBukkitCloudSignByTemplateLocation(it.templateLocation) == null }
+        val signsToRegister = getSignsForTemplateOfThiService(signModuleConfig)
+                .filter { getBukkitCloudSignByTemplateLocation(it.templateLocation) == null }
         for (cloudSign in signsToRegister) {
             this.bukkitCloudSigns.add(BukkitCloudSign(cloudSign))
         }
+    }
+
+    private fun getSignsForTemplateOfThiService(signModuleConfig: SignModuleConfig): List<CloudSign> {
+        val templateName = CloudPlugin.instance.thisService().getTemplateName()
+        return signModuleConfig.cloudSigns.filter { it.templateLocation.templateName == templateName }
     }
 
     private fun getBukkitCloudSignByTemplateLocation(templateLocation: TemplateLocation): BukkitCloudSign? {
