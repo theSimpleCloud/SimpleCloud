@@ -30,6 +30,7 @@ import eu.thesimplecloud.module.rest.controller.RequestMethodData
 import io.javalin.http.Context
 import io.javalin.http.Handler
 import javalinjwt.JavalinJWT
+import java.lang.reflect.InvocationTargetException
 import java.util.*
 
 /**
@@ -51,10 +52,12 @@ class JavalinRequestHandler(val requestMethodData: RequestMethodData, private va
 
         try {
             SingleRequestProcessor(ctx, requestMethodData, user).processRequest()
-        } catch (e: Exception) {
+        } catch (ex: Exception) {
+            val exception = if (ex is InvocationTargetException) ex.cause else ex
             ctx.status(400)
-            ctx.result(e.localizedMessage)
-            e.printStackTrace()
+            if (exception != null)
+                ctx.result(exception::class.java.name + ": " + exception.message)
+            ex.printStackTrace()
         }
     }
 

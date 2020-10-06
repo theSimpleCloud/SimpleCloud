@@ -75,12 +75,18 @@ class ControllerHandler(private val restServer: RestServer) {
         }
 
         val requestParam = parameter.getAnnotation(RequestParam::class.java)
-        val requestBody = parameter.getAnnotation(RequestBody::class.java)
-        if (requestBody == null && requestParam == null) {
-            throw IllegalArgumentException("Parameter with type ${parameter.type.name} in not annotated with RequestBody or RequestParam")
+        if (requestParam != null) {
+            return RequestMethodData.RequestParameterData(parameter.type, requestParam)
         }
-        val annotation = requestParam ?: requestBody
-        return RequestMethodData.RequestParameterData(parameter.type, annotation)
+        val requestBody = parameter.getAnnotation(RequestBody::class.java)
+        if (requestBody != null) {
+            return RequestMethodData.RequestParameterData(parameter.type, requestBody)
+        }
+        val requestPathParam = parameter.getAnnotation(RequestPathParam::class.java)
+        if (requestPathParam != null) {
+            return RequestMethodData.RequestParameterData(parameter.type, requestPathParam)
+        }
+        throw IllegalArgumentException("Parameter with type ${parameter.type.name} in not annotated with RequestBody, RequestParam or RequestPathParam")
     }
 
     private fun createRequestingUserParameterData(requestingUser: RequestingUser): RequestMethodData.RequestParameterData {

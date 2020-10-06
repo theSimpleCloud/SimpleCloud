@@ -25,6 +25,7 @@ package eu.thesimplecloud.module.rest.javalin
 import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.module.rest.annotation.RequestBody
 import eu.thesimplecloud.module.rest.annotation.RequestParam
+import eu.thesimplecloud.module.rest.annotation.RequestPathParam
 import eu.thesimplecloud.module.rest.auth.user.User
 import eu.thesimplecloud.module.rest.controller.RequestMethodData
 import io.javalin.http.Context
@@ -72,6 +73,9 @@ class SingleRequestProcessor(
         if (annotation is RequestParam) {
             return annotation.required && value == null
         }
+        if (annotation is RequestPathParam) {
+            return value == null
+        }
         return false
     }
 
@@ -91,6 +95,9 @@ class SingleRequestProcessor(
             }
             is RequestParam -> {
                 return this.ctx.req.getParameter(annotation.parameterName)
+            }
+            is RequestPathParam -> {
+                return this.ctx.pathParam(annotation.parameterName)
             }
         }
         throw IllegalStateException()

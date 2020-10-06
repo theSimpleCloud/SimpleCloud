@@ -20,28 +20,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.rest
-
-import eu.thesimplecloud.module.rest.annotation.*
-import eu.thesimplecloud.module.rest.controller.IController
+package eu.thesimplecloud.module.rest.annotation
 
 /**
  * Created by IntelliJ IDEA.
  * Date: 04.10.2020
- * Time: 15:43
+ * Time: 15:38
  * @author Frederick Baier
  */
-@RestController("test")
-class TestController : IController {
-
-    @RequestMapping(RequestType.GET, "", "test.de")
-    fun get(@RequestParam("name") name: String): String {
-        return name
-    }
-
-    @RequestMapping(RequestType.POST, "", "test.de")
-    fun post(@RequestBody int: Int): Int {
-        return 2
-    }
-
-}
+@Retention(AnnotationRetention.RUNTIME)
+@Target(AnnotationTarget.VALUE_PARAMETER)
+annotation class RequestPathParam(
+        val parameterName: String
+)
