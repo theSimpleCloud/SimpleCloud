@@ -22,11 +22,90 @@
 
 package eu.thesimplecloud.module.rest.defaultcontroller
 
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
+import eu.thesimplecloud.api.servicegroup.impl.DefaultLobbyGroup
+import eu.thesimplecloud.api.servicegroup.impl.DefaultProxyGroup
+import eu.thesimplecloud.api.servicegroup.impl.DefaultServerGroup
+import eu.thesimplecloud.module.rest.annotation.*
+import eu.thesimplecloud.module.rest.controller.IController
+
 /**
  * Created by IntelliJ IDEA.
  * Date: 05.10.2020
  * Time: 17:13
  * @author Frederick Baier
  */
-class ServiceGroupController {
+@RestController("cloud/groups/")
+class ServiceGroupController : IController {
+
+    //Get groups
+
+    @RequestMapping(RequestType.GET, "", "web.cloud.group.get.all")
+    fun handleGetAllGroups(): List<ICloudServiceGroup> {
+        return CloudAPI.instance.getCloudServiceGroupManager().getAllCachedObjects()
+    }
+
+    @RequestMapping(RequestType.GET, ":name", "web.cloud.group.get.one")
+    fun handleGetOneGroup(@RequestPathParam("name") name: String): ICloudServiceGroup? {
+        return CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(name)
+    }
+
+    //Create groups
+
+    @RequestMapping(RequestType.POST, "lobby/", "web.cloud.group.create")
+    fun handleCreateLobbyGroup(@RequestBody group: DefaultLobbyGroup): Boolean {
+        return CloudAPI.instance.getCloudServiceGroupManager().createServiceGroup(group).awaitUninterruptibly().isSuccess
+    }
+
+    @RequestMapping(RequestType.POST, "server/", "web.cloud.group.create")
+    fun handleCreateServerGroup(@RequestBody group: DefaultServerGroup): Boolean {
+        return CloudAPI.instance.getCloudServiceGroupManager().createServiceGroup(group).awaitUninterruptibly().isSuccess
+    }
+
+    @RequestMapping(RequestType.POST, "proxy/", "web.cloud.group.create")
+    fun handleCreateProxyGroup(@RequestBody group: DefaultProxyGroup): Boolean {
+        return CloudAPI.instance.getCloudServiceGroupManager().createServiceGroup(group).awaitUninterruptibly().isSuccess
+    }
+
+    //Update groups
+
+    @RequestMapping(RequestType.PUT, "lobby/", "web.cloud.group.update")
+    fun handleUpdateLobbyGroup(@RequestBody group: DefaultLobbyGroup): Boolean {
+        if (!doesGroupExist(group)) return false
+        CloudAPI.instance.getCloudServiceGroupManager().update(group)
+        return true
+    }
+
+    @RequestMapping(RequestType.PUT, "server/", "web.cloud.group.update")
+    fun handleUpdateServerGroup(@RequestBody group: DefaultServerGroup): Boolean {
+        if (!doesGroupExist(group)) return false
+        CloudAPI.instance.getCloudServiceGroupManager().update(group)
+        return true
+    }
+
+    @RequestMapping(RequestType.PUT, "proxy/", "web.cloud.group.update")
+    fun handleUpdateProxyGroup(@RequestBody group: DefaultProxyGroup): Boolean {
+        if (!doesGroupExist(group)) return false
+        CloudAPI.instance.getCloudServiceGroupManager().update(group)
+        return true
+    }
+
+    //delete groups
+    @RequestMapping(RequestType.DELETE, "", "web.cloud.group.delete")
+    fun handleDeleteServiceGroup(@RequestParam("name") name: String): Boolean {
+        if (!doesGroupExist(name)) return false
+        val group = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(name)!!
+        CloudAPI.instance.getCloudServiceGroupManager().delete(group)
+        return true
+    }
+
+    private fun doesGroupExist(group: ICloudServiceGroup): Boolean {
+        return doesGroupExist(group.getName())
+    }
+
+    private fun doesGroupExist(name: String): Boolean {
+        return CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(name) != null
+    }
+
 }

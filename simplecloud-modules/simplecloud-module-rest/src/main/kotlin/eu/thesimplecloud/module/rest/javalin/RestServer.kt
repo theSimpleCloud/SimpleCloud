@@ -31,6 +31,7 @@ import eu.thesimplecloud.module.rest.auth.controller.AuthController
 import eu.thesimplecloud.module.rest.auth.createRolesMapping
 import eu.thesimplecloud.module.rest.controller.ControllerHandler
 import eu.thesimplecloud.module.rest.controller.RequestMethodData
+import eu.thesimplecloud.module.rest.defaultcontroller.ServiceGroupController
 import eu.thesimplecloud.module.rest.defaultcontroller.UserController
 import io.javalin.Javalin
 import io.javalin.core.security.SecurityUtil
@@ -58,6 +59,7 @@ class RestServer {
         instance = this
         controllerHandler.registerController(AuthController(this.authService))
         controllerHandler.registerController(UserController(this.authService))
+        controllerHandler.registerController(ServiceGroupController())
 
     }
 
