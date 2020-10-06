@@ -28,5 +28,4 @@ package eu.thesimplecloud.module.rest.controller
  * Time: 17:57
  * @author Frederick Baier
  */
-interface IController {
-}
+interface IController

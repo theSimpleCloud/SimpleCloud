@@ -59,14 +59,6 @@ class AuthService {
         return JwtProvider.provider.generateToken(user)
     }
 
-    fun getUserByName(userName: String): User? {
-        return this.users.firstOrNull { it.username == userName }
-    }
-
-    fun doesUserExist(userName: String): Boolean {
-        return getUserByName(userName) != null
-    }
-
     fun handleAddUser(user: User): Boolean {
         if (doesUserExist(user.username))
             return false
@@ -74,11 +66,6 @@ class AuthService {
         this.users.add(user)
         saveUpdateToFile()
         return true
-    }
-
-
-    fun getUsers(): List<User> {
-        return this.users
     }
 
     fun handleUserUpdate(user: User): Boolean {
@@ -96,6 +83,18 @@ class AuthService {
         this.users.removeIf { it.username == user.username }
         saveUpdateToFile()
         return true
+    }
+
+    fun getUserByName(userName: String): User? {
+        return this.users.firstOrNull { it.username == userName }
+    }
+
+    fun doesUserExist(userName: String): Boolean {
+        return getUserByName(userName) != null
+    }
+
+    fun getUsers(): List<User> {
+        return this.users
     }
 
     private fun saveUpdateToFile() {
