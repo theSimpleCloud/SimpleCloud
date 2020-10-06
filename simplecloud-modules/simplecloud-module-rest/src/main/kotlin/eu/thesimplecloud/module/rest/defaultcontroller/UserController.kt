@@ -34,39 +34,39 @@ import eu.thesimplecloud.module.rest.controller.IController
  * Time: 17:14
  * @author Frederick Baier
  */
-@RestController("user/")
+@RestController("")
 class UserController(
         private val authService: AuthService
 ) : IController {
 
-    @RequestMapping(RequestType.GET, "all/", "web.user.get.all")
+    @RequestMapping(RequestType.GET, "user/", "web.user.get.all")
     fun handleGetAllUsers(): List<User> {
         return authService.getUsers()
     }
 
-    @RequestMapping(RequestType.GET, "self/", "web.user.get.self")
+    @RequestMapping(RequestType.GET, "selfuser/", "web.user.get.self")
     fun handleGetSelfUser(@RequestingUser user: User): User {
         return user
     }
 
-    @RequestMapping(RequestType.GET, "", "web.user.get.one")
-    fun handleGetOneUsers(@RequestParam("username") username: String): User? {
+    @RequestMapping(RequestType.GET, "user/:username", "web.user.get.one")
+    fun handleGetOneUsers(@RequestPathParam("username") username: String): User? {
         return authService.getUserByName(username)
     }
 
-    @RequestMapping(RequestType.POST, "", "web.user.create")
+    @RequestMapping(RequestType.POST, "user/", "web.user.create")
     fun handleCreateUser(@RequestBody user: User): JsonLib {
         val success = authService.handleAddUser(user)
         return JsonLib.empty().append("success", success)
     }
 
-    @RequestMapping(RequestType.PUT, "", "web.user.update")
+    @RequestMapping(RequestType.PUT, "user/", "web.user.update")
     fun handleUpdateUser(@RequestBody user: User): JsonLib {
         val success = authService.handleUserUpdate(user)
         return JsonLib.empty().append("success", success)
     }
 
-    @RequestMapping(RequestType.DELETE, "", "web.user.delete")
+    @RequestMapping(RequestType.DELETE, "user/", "web.user.delete")
     fun handleDeleteUser(@RequestBody user: User): JsonLib {
         val success = authService.handleUserDelete(user)
         return JsonLib.empty().append("success", success)

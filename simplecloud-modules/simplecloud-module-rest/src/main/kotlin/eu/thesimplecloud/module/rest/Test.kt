@@ -33,5 +33,4 @@ import eu.thesimplecloud.module.rest.javalin.RestServer
 fun main() {
     val server = RestServer()
     val controllerHandler = server.controllerHandler
-    controllerHandler.registerController(TestController())
 }
