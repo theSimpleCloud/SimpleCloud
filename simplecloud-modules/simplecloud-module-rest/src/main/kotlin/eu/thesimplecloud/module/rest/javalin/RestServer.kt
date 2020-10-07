@@ -31,8 +31,14 @@ import eu.thesimplecloud.module.rest.auth.controller.AuthController
 import eu.thesimplecloud.module.rest.auth.createRolesMapping
 import eu.thesimplecloud.module.rest.controller.ControllerHandler
 import eu.thesimplecloud.module.rest.controller.RequestMethodData
-import eu.thesimplecloud.module.rest.defaultcontroller.ServiceGroupController
 import eu.thesimplecloud.module.rest.defaultcontroller.UserController
+import eu.thesimplecloud.module.rest.defaultcontroller.group.ServiceGroupActionController
+import eu.thesimplecloud.module.rest.defaultcontroller.group.ServiceGroupController
+import eu.thesimplecloud.module.rest.defaultcontroller.player.PlayerController
+import eu.thesimplecloud.module.rest.defaultcontroller.service.ServiceActionController
+import eu.thesimplecloud.module.rest.defaultcontroller.service.ServiceController
+import eu.thesimplecloud.module.rest.defaultcontroller.template.TemplateController
+import eu.thesimplecloud.module.rest.defaultcontroller.wrapper.WrapperController
 import io.javalin.Javalin
 import io.javalin.core.security.SecurityUtil
 import io.javalin.http.HandlerType
@@ -57,13 +63,7 @@ class RestServer {
 
     init {
         instance = this
-        controllerHandler.registerController(AuthController(this.authService))
-        controllerHandler.registerController(UserController(this.authService))
-        controllerHandler.registerController(ServiceGroupController())
 
-    }
-
-    init {
         app.config.accessManager(JWTAccessManager("role", createRolesMapping(), Roles.ANYONE))
         app.before(JavalinJWT.createHeaderDecodeHandler(JwtProvider.provider))
         app.before { ctx ->
@@ -76,6 +76,16 @@ class RestServer {
         app.options("/*", {
             it.status(200)
         }, SecurityUtil.roles(Roles.ANYONE))
+
+        controllerHandler.registerController(AuthController(this.authService))
+        controllerHandler.registerController(UserController(this.authService))
+        controllerHandler.registerController(ServiceGroupController())
+        controllerHandler.registerController(ServiceGroupActionController())
+        controllerHandler.registerController(ServiceController())
+        controllerHandler.registerController(ServiceActionController())
+        controllerHandler.registerController(TemplateController())
+        controllerHandler.registerController(WrapperController())
+        controllerHandler.registerController(PlayerController())
     }
 
     fun registerRequestMethod(requestMethodData: RequestMethodData) {
@@ -91,7 +101,10 @@ class RestServer {
                 requestHandler,
                 setOf(Roles.ANYONE)
         )
-        println("Added ${requestMethodData.path} ${requestMethodData.permission}")
+    }
+
+    fun shutdown() {
+        app.stop()
     }
 
 

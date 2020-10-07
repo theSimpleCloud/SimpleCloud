@@ -20,25 +20,30 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.rest
+package eu.thesimplecloud.module.rest.defaultcontroller.group
 
-import eu.thesimplecloud.api.external.ICloudModule
-import eu.thesimplecloud.module.rest.javalin.RestServer
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.service.ICloudService
+import eu.thesimplecloud.module.rest.annotation.RequestMapping
+import eu.thesimplecloud.module.rest.annotation.RequestPathParam
+import eu.thesimplecloud.module.rest.annotation.RequestType
+import eu.thesimplecloud.module.rest.annotation.RestController
+import eu.thesimplecloud.module.rest.controller.IController
 
 /**
  * Created by IntelliJ IDEA.
- * Date: 04.10.2020
- * Time: 14:57
+ * Date: 06.10.2020
+ * Time: 17:56
  * @author Frederick Baier
  */
-class RestModule : ICloudModule {
+@RestController("cloud/action/group/")
+class ServiceGroupActionController : IController {
 
-    val server = RestServer()
-
-    override fun onEnable() {
+    @RequestMapping(RequestType.POST, "name/:name/startService", "web.cloud.action.group.startservice")
+    fun handleStartNewService(@RequestPathParam("name") name: String): ICloudService? {
+        val serviceGroup = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(name)
+                ?: return null
+        return serviceGroup.startNewService().getBlocking()
     }
 
-    override fun onDisable() {
-        server.shutdown()
-    }
 }

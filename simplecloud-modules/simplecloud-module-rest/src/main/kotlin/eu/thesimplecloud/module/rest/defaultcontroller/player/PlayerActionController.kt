@@ -20,25 +20,20 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.rest
+package eu.thesimplecloud.module.rest.defaultcontroller.player
 
-import eu.thesimplecloud.api.external.ICloudModule
-import eu.thesimplecloud.module.rest.javalin.RestServer
+import eu.thesimplecloud.module.rest.annotation.RestController
+import eu.thesimplecloud.module.rest.controller.IController
 
 /**
  * Created by IntelliJ IDEA.
- * Date: 04.10.2020
- * Time: 14:57
+ * Date: 07.10.2020
+ * Time: 19:46
  * @author Frederick Baier
  */
-class RestModule : ICloudModule {
+@RestController("cloud/action/player/")
+class PlayerActionController : IController {
 
-    val server = RestServer()
 
-    override fun onEnable() {
-    }
 
-    override fun onDisable() {
-        server.shutdown()
-    }
 }

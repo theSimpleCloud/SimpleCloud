@@ -20,25 +20,34 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.rest
+package eu.thesimplecloud.module.rest.defaultcontroller.player
 
-import eu.thesimplecloud.api.external.ICloudModule
-import eu.thesimplecloud.module.rest.javalin.RestServer
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.player.IOfflineCloudPlayer
+import eu.thesimplecloud.api.player.SimpleCloudPlayer
+import eu.thesimplecloud.module.rest.annotation.RequestMapping
+import eu.thesimplecloud.module.rest.annotation.RequestPathParam
+import eu.thesimplecloud.module.rest.annotation.RequestType
+import eu.thesimplecloud.module.rest.annotation.RestController
+import eu.thesimplecloud.module.rest.controller.IController
 
 /**
  * Created by IntelliJ IDEA.
- * Date: 04.10.2020
- * Time: 14:57
+ * Date: 07.10.2020
+ * Time: 19:38
  * @author Frederick Baier
  */
-class RestModule : ICloudModule {
+@RestController("cloud/player/")
+class PlayerController : IController {
 
-    val server = RestServer()
-
-    override fun onEnable() {
+    @RequestMapping(RequestType.GET, "name/:name", "web.cloud.player.get.one")
+    fun handleGetOnePlayer(@RequestPathParam("name") name: String): IOfflineCloudPlayer? {
+        return CloudAPI.instance.getCloudPlayerManager().getOfflineCloudPlayer(name).getBlockingOrNull()
     }
 
-    override fun onDisable() {
-        server.shutdown()
+    @RequestMapping(RequestType.GET, "", "web.cloud.player.get.all")
+    fun handleGetAllPlayer(): List<SimpleCloudPlayer> {
+        return CloudAPI.instance.getCloudPlayerManager().getAllOnlinePlayers().getBlockingOrNull() ?: emptyList()
     }
+
 }

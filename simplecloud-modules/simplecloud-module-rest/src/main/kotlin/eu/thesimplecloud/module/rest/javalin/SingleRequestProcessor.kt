@@ -28,6 +28,7 @@ import eu.thesimplecloud.module.rest.annotation.RequestParam
 import eu.thesimplecloud.module.rest.annotation.RequestPathParam
 import eu.thesimplecloud.module.rest.auth.user.User
 import eu.thesimplecloud.module.rest.controller.RequestMethodData
+import eu.thesimplecloud.module.rest.defaultcontroller.dto.ResultDto
 import io.javalin.http.Context
 
 /**
@@ -59,13 +60,11 @@ class SingleRequestProcessor(
         if (this.ctx.resultString() != null)
             return
 
-        if (result == null) {
-            ctx.result(JsonLib.empty().append("result", "null").getAsJsonString())
+        if (result == Unit)
             return
-        }
-        if (result != Unit) {
-            ctx.result(JsonLib.fromObject(result, RestServer.instance.webGson).getAsJsonString())
-        }
+
+        val resultDto = ResultDto(result)
+        ctx.result(JsonLib.fromObject(resultDto, RestServer.instance.webGson).getAsJsonString())
     }
 
     private fun isValueIncorrect(parameterData: RequestMethodData.RequestParameterData, value: Any?): Boolean {

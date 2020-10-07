@@ -20,17 +20,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.rest
-
-import eu.thesimplecloud.module.rest.javalin.RestServer
+package eu.thesimplecloud.module.rest.defaultcontroller.dto
 
 /**
  * Created by IntelliJ IDEA.
- * Date: 04.10.2020
- * Time: 21:42
+ * Date: 06.10.2020
+ * Time: 18:05
  * @author Frederick Baier
  */
-fun main() {
-    val server = RestServer()
-    val controllerHandler = server.controllerHandler
-}
+class ResultDto(
+        val result: Any?
+)

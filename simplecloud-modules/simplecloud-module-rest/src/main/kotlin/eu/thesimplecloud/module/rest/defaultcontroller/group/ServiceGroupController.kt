@@ -20,9 +20,10 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.rest.defaultcontroller
+package eu.thesimplecloud.module.rest.defaultcontroller.group
 
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.api.servicegroup.impl.DefaultLobbyGroup
 import eu.thesimplecloud.api.servicegroup.impl.DefaultProxyGroup
@@ -36,7 +37,7 @@ import eu.thesimplecloud.module.rest.controller.IController
  * Time: 17:13
  * @author Frederick Baier
  */
-@RestController("cloud/groups/")
+@RestController("cloud/group/")
 class ServiceGroupController : IController {
 
     //Get groups
@@ -46,9 +47,14 @@ class ServiceGroupController : IController {
         return CloudAPI.instance.getCloudServiceGroupManager().getAllCachedObjects()
     }
 
-    @RequestMapping(RequestType.GET, ":name", "web.cloud.group.get.one")
+    @RequestMapping(RequestType.GET, "name/:name", "web.cloud.group.get.one")
     fun handleGetOneGroup(@RequestPathParam("name") name: String): ICloudServiceGroup? {
         return CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(name)
+    }
+
+    @RequestMapping(RequestType.GET, "name/:name/services", "web.cloud.group.get.services")
+    fun handleGetServicesOfGroup(@RequestPathParam("name") name: String): List<ICloudService> {
+        return CloudAPI.instance.getCloudServiceManager().getCloudServicesByGroupName(name)
     }
 
     //Create groups
@@ -92,8 +98,8 @@ class ServiceGroupController : IController {
     }
 
     //delete groups
-    @RequestMapping(RequestType.DELETE, "", "web.cloud.group.delete")
-    fun handleDeleteServiceGroup(@RequestParam("name") name: String): Boolean {
+    @RequestMapping(RequestType.DELETE, "name/:name", "web.cloud.group.delete")
+    fun handleDeleteServiceGroup(@RequestPathParam("name") name: String): Boolean {
         if (!doesGroupExist(name)) return false
         val group = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(name)!!
         CloudAPI.instance.getCloudServiceGroupManager().delete(group)

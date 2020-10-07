@@ -20,52 +20,43 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.rest.defaultcontroller
+package eu.thesimplecloud.module.rest.defaultcontroller.service
 
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.service.ICloudService
+import eu.thesimplecloud.api.service.impl.DefaultCloudService
 import eu.thesimplecloud.module.rest.annotation.*
-import eu.thesimplecloud.module.rest.auth.AuthService
-import eu.thesimplecloud.module.rest.auth.user.User
 import eu.thesimplecloud.module.rest.controller.IController
 
 /**
  * Created by IntelliJ IDEA.
- * Date: 05.10.2020
- * Time: 17:14
+ * Date: 06.10.2020
+ * Time: 16:26
  * @author Frederick Baier
  */
-@RestController("user/")
-class UserController(
-        private val authService: AuthService
-) : IController {
+@RestController("cloud/service/")
+class ServiceController : IController {
 
-    @RequestMapping(RequestType.GET, "", "web.user.get.all")
-    fun handleGetAllUsers(): List<User> {
-        return authService.getUsers()
+    @RequestMapping(RequestType.GET, "", "web.cloud.service.get.all")
+    fun handleGetAllServices(): List<ICloudService> {
+        return CloudAPI.instance.getCloudServiceManager().getAllCachedObjects()
     }
 
-    @RequestMapping(RequestType.GET, "self/", "web.user.get.self")
-    fun handleGetSelfUser(@RequestingUser user: User): User {
-        return user
+    @RequestMapping(RequestType.GET, "name/:name", "web.cloud.service.get.one")
+    fun handleGetOneService(@RequestPathParam("name") name: String): ICloudService? {
+        return CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(name)
     }
 
-    @RequestMapping(RequestType.GET, "name/:name", "web.user.get.one")
-    fun handleGetOneUsers(@RequestPathParam("name") username: String): User? {
-        return authService.getUserByName(username)
+    @RequestMapping(RequestType.PUT, "", "web.cloud.service.update")
+    fun handleUpdateService(@RequestBody service: DefaultCloudService): Boolean {
+        if (!doesServiceExist(service.getName())) return false
+        CloudAPI.instance.getCloudServiceManager().update(service)
+        return true
     }
 
-    @RequestMapping(RequestType.POST, "", "web.user.create")
-    fun handleCreateUser(@RequestBody user: User): Boolean {
-        return authService.handleAddUser(user)
+    private fun doesServiceExist(name: String): Boolean {
+        return CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(name) != null
     }
 
-    @RequestMapping(RequestType.PUT, "", "web.user.update")
-    fun handleUpdateUser(@RequestBody user: User): Boolean {
-        return authService.handleUserUpdate(user)
-    }
-
-    @RequestMapping(RequestType.DELETE, "", "web.user.delete")
-    fun handleDeleteUser(@RequestBody user: User): Boolean {
-        return authService.handleUserDelete(user)
-    }
 
 }

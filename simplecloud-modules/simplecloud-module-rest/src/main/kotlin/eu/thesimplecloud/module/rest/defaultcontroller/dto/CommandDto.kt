@@ -20,25 +20,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.rest
-
-import eu.thesimplecloud.api.external.ICloudModule
-import eu.thesimplecloud.module.rest.javalin.RestServer
+package eu.thesimplecloud.module.rest.defaultcontroller.dto
 
 /**
  * Created by IntelliJ IDEA.
- * Date: 04.10.2020
- * Time: 14:57
+ * Date: 06.10.2020
+ * Time: 17:53
  * @author Frederick Baier
  */
-class RestModule : ICloudModule {
-
-    val server = RestServer()
-
-    override fun onEnable() {
-    }
-
-    override fun onDisable() {
-        server.shutdown()
-    }
-}
+class CommandDto(
+        val command: String
+)
