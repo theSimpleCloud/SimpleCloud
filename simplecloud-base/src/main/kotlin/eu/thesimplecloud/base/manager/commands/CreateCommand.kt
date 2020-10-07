@@ -75,8 +75,6 @@ class CreateCommand : ICommandHandler {
         templateManager.update(template)
         Launcher.instance.consoleSender.sendMessage("manager.command.create.template.success", "Template %NAME%", name, " created")
 
-        //---create directories
-        template.getDirectory().mkdirs()
     }
 
 

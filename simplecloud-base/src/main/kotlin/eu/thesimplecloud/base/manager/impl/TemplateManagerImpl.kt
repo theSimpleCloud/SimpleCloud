@@ -37,6 +37,10 @@ class TemplateManagerImpl : DefaultTemplateManager() {
         templateConfig.templates.removeIf { it.getName().equals(value.getName(), true) }
         templateConfig.templates.add(value as DefaultTemplate)
         templatesConfigLoader.saveConfig(templateConfig)
+
+        if (!value.getDirectory().exists()){
+            value.getDirectory().mkdirs()
+        }
     }
 
     override fun delete(value: ITemplate, fromPacket: Boolean) {
