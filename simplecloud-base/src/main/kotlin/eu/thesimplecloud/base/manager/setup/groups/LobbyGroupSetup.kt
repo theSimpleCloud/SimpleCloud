@@ -166,7 +166,7 @@ class LobbyGroupSetup : DefaultGroupSetup(), ISetup {
 
     @SetupFinished
     fun finished() {
-        CloudAPI.instance.getCloudServiceGroupManager().createLobbyGroup(name, templateName, memory, maxPlayers, minimumOnlineServices, maximumOnlineServices, true, static, percent, wrapper?.getName(), priority, permission, serviceVersion, 9)
+        CloudAPI.instance.getCloudServiceGroupManager().createLobbyGroup(name, templateName, memory, maxPlayers, minimumOnlineServices, maximumOnlineServices, false, static, percent, wrapper?.getName(), priority, permission, serviceVersion, 9)
         Launcher.instance.consoleSender.sendMessage(true, "manager.setup.service-group.finished", "Group %NAME%", name, " created.")
     }
 

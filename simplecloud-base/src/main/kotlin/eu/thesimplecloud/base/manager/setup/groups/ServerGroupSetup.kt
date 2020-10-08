@@ -154,7 +154,7 @@ class ServerGroupSetup : DefaultGroupSetup(), ISetup {
 
     @SetupFinished
     fun finished() {
-        CloudAPI.instance.getCloudServiceGroupManager().createServerGroup(name, templateName, memory, maxPlayers, minimumOnlineServices, maximumOnlineServices, true, static, percent, wrapper?.getName(), serviceVersion, 0, permission)
+        CloudAPI.instance.getCloudServiceGroupManager().createServerGroup(name, templateName, memory, maxPlayers, minimumOnlineServices, maximumOnlineServices, false, static, percent, wrapper?.getName(), serviceVersion, 0, permission)
         Launcher.instance.consoleSender.sendMessage(true, "manager.setup.service-group.finished", "Group %NAME%", name, " created.")
     }
 
