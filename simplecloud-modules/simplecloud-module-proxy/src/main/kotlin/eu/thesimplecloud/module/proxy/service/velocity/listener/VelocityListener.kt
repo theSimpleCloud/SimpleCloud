@@ -60,9 +60,8 @@ class VelocityListener(val plugin: VelocityPluginMain) {
                     !proxyConfiguration.whitelist.mapToLowerCase().contains(player.username.toLowerCase())) {
                 player.disconnect(CloudTextBuilder().build(CloudText(config.maintenanceKickMessage)))
                 event.result = ServerPreConnectEvent.ServerResult.denied()
+                return
             }
-
-            return
         }
 
 

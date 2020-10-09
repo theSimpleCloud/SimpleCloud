@@ -60,9 +60,8 @@ class BungeeListener(val plugin: BungeePluginMain) : Listener {
                     !proxyConfiguration.whitelist.mapToLowerCase().contains(player.name.toLowerCase())) {
                 player.disconnect(CloudTextBuilder().build(CloudText(config.maintenanceKickMessage)))
                 event.isCancelled = true
+                return
             }
-
-            return
         }
 
 
