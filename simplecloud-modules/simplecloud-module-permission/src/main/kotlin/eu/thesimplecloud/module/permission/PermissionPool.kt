@@ -42,6 +42,7 @@ class PermissionPool(private val permissionGroupManager: PermissionGroupManager)
             CloudPlugin.instance
         }
         CloudAPI.instance.getEventManager().registerListener(cloudModule, PermissionCheckListener())
+        CloudAPI.instance.getEventManager().registerListener(cloudModule, PermissionPlayerUpdatedEventCaller())
     }
 
 

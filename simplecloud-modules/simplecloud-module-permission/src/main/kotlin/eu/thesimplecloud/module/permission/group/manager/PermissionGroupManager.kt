@@ -26,6 +26,7 @@ import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.property.IProperty
 import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.api.sync.list.AbstractSynchronizedObjectList
+import eu.thesimplecloud.module.permission.event.group.PermissionGroupUpdatedEvent
 import eu.thesimplecloud.module.permission.group.IPermissionGroup
 import eu.thesimplecloud.module.permission.group.PermissionGroup
 import eu.thesimplecloud.module.permission.manager.PermissionModule
@@ -57,6 +58,7 @@ class PermissionGroupManager(
 
     override fun update(property: IProperty<PermissionGroup>, fromPacket: Boolean) {
         super.update(property, fromPacket)
+        CloudAPI.instance.getEventManager().call(PermissionGroupUpdatedEvent(property.getValue()))
         if (CloudAPI.instance.isManager()) {
             PermissionModule.instance.updateGroupsFile()
         }
