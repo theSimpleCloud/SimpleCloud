@@ -31,22 +31,11 @@ import eu.thesimplecloud.api.sync.`object`.GlobalPropertyHolder
 import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
 import eu.thesimplecloud.base.manager.impl.CloudPlayerManagerImpl
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
-import eu.thesimplecloud.clientserverapi.lib.handler.DefaultConnectionHandler
 import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnectedClient
 import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.startup.Launcher
 
-class CommunicationConnectionHandlerImpl : DefaultConnectionHandler() {
-
-    override fun onConnectionActive(connection: IConnection) {
-        val host = connection.getHost()!!
-        val wrapperByHost = CloudAPI.instance.getWrapperManager().getWrapperByHost(host)
-        if (wrapperByHost == null) {
-            Launcher.instance.consoleSender.sendMessage("manager.connection.unknown-host", "A client connected from an unknown host: %HOST%", host)
-            connection.closeConnection()
-            return
-        }
-    }
+class CommunicationConnectionHandlerImpl : AbstractCloudConnectionHandler() {
 
     override fun onConnectionInactive(connection: IConnection) {
         super.onConnectionInactive(connection)

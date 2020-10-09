@@ -28,8 +28,7 @@ import eu.thesimplecloud.api.event.service.CloudServiceInvisibleEvent
 import eu.thesimplecloud.api.eventapi.CloudEventHandler
 import eu.thesimplecloud.api.eventapi.IListener
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
-import eu.thesimplecloud.api.utils.Timestamp
-import java.util.concurrent.CopyOnWriteArrayList
+import eu.thesimplecloud.api.utils.time.TimeAmountMeasurer
 import java.util.concurrent.TimeUnit
 
 /**
@@ -40,7 +39,7 @@ import java.util.concurrent.TimeUnit
  */
 class ServiceMinimumCountCalculator : IListener {
 
-    private val groupToTimeStamps = Maps.newConcurrentMap<ICloudServiceGroup, MutableList<Timestamp>>()
+    private val groupToTimeAmountMeasurer = Maps.newConcurrentMap<ICloudServiceGroup, TimeAmountMeasurer>()
 
 
     init {
@@ -50,15 +49,15 @@ class ServiceMinimumCountCalculator : IListener {
     @CloudEventHandler
     fun onServiceUpdate(event: CloudServiceInvisibleEvent) {
         val cloudService = event.cloudService
-        val timestamps = groupToTimeStamps.getOrPut(cloudService.getServiceGroup()) { CopyOnWriteArrayList() }
-        timestamps.add(Timestamp())
-
-        timestamps.removeIf { it.hasTimePassed(TimeUnit.MINUTES.toMillis(1)) }
+        val timeAmountMeasurer = groupToTimeAmountMeasurer.getOrPut(cloudService.getServiceGroup()) {
+            TimeAmountMeasurer(TimeUnit.MINUTES.toMillis(1))
+        }
+        timeAmountMeasurer.addEntry()
     }
 
     fun getCalculatedMinimumServiceCount(group: ICloudServiceGroup): Int {
-        val timestamps = this.groupToTimeStamps[group] ?: return 0
-        return timestamps.filter { !it.hasTimePassed(TimeUnit.MINUTES.toMillis(1)) }.size + 1
+        val measuredAmount = this.groupToTimeAmountMeasurer[group]?.getMeasuredAmount() ?: 0
+        return measuredAmount + 1
     }
 
 

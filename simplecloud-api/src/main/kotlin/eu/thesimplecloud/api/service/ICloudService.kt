@@ -34,7 +34,7 @@ import eu.thesimplecloud.api.property.IPropertyMap
 import eu.thesimplecloud.api.service.version.ServiceVersion
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.api.template.ITemplate
-import eu.thesimplecloud.api.utils.Timestamp
+import eu.thesimplecloud.api.utils.time.Timestamp
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.clientserverapi.lib.bootstrap.IBootstrap
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise

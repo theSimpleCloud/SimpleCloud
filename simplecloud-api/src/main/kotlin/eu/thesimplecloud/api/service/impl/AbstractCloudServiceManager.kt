@@ -31,7 +31,7 @@ import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ICloudServiceManager
 import eu.thesimplecloud.api.service.ServiceState
-import eu.thesimplecloud.api.utils.Timestamp
+import eu.thesimplecloud.api.utils.time.Timestamp
 
 abstract class AbstractCloudServiceManager : AbstractCacheList<ICloudService>(), ICloudServiceManager {
 

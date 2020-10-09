@@ -20,17 +20,29 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.base.manager.startup.server
+package eu.thesimplecloud.api.utils.time
 
-import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
-import eu.thesimplecloud.launcher.startup.Launcher
+import java.util.concurrent.CopyOnWriteArrayList
 
-class TemplateConnectionHandlerImpl : AbstractCloudConnectionHandler() {
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 09.10.2020
+ * Time: 19:02
+ * @author Frederick Baier
+ */
+class TimeAmountMeasurer(
+        private val expireTimeInMs: Long
+) {
 
-    override fun onConnectionInactive(connection: IConnection) {
+    private val timeStamps = CopyOnWriteArrayList<Timestamp>()
+
+    fun addEntry() {
+        this.timeStamps.removeIf { it.hasTimePassed(expireTimeInMs) }
+        this.timeStamps.add(Timestamp())
     }
 
-    override fun onFailure(connection: IConnection, ex: Throwable) {
-        Launcher.instance.logger.exception(ex)
+    fun getMeasuredAmount(): Int {
+        return this.timeStamps.count { !it.hasTimePassed(expireTimeInMs) }
     }
+
 }

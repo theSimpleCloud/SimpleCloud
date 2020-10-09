@@ -26,7 +26,7 @@ import eu.thesimplecloud.api.property.IProperty
 import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
-import eu.thesimplecloud.api.utils.Timestamp
+import eu.thesimplecloud.api.utils.time.Timestamp
 import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.jsonlib.JsonLibExclude
 import java.util.*
