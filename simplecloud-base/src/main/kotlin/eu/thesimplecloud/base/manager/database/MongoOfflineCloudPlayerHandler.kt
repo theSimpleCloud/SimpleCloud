@@ -36,6 +36,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.bson.Document
 import org.litote.kmongo.KMongo
+import org.litote.kmongo.find
 import org.litote.kmongo.findOne
 import org.litote.kmongo.getCollection
 import java.util.*
@@ -91,9 +92,11 @@ class MongoOfflineCloudPlayerHandler(val databaseConnectionInformation: Database
     }
 
     override fun getOfflinePlayer(name: String): IOfflineCloudPlayer? {
-        val document = this.collection.findOne("{ \$text: { \$search: \"$name\",\$caseSensitive :false } }")
-                ?: return null
-        return JsonLib.fromObject(document, databaseGson).getObject(OfflineCloudPlayer::class.java)
+        val documents = this.collection.find("{ \$text: { \$search: \"$name\",\$caseSensitive :false } }")
+        val players = documents.map {
+            JsonLib.fromObject(it, databaseGson).getObject(OfflineCloudPlayer::class.java)
+        }
+        return getPlayerWithLatestLogin(players.toList())
     }
 
     @Synchronized

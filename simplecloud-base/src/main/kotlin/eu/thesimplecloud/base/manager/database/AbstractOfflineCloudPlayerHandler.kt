@@ -22,6 +22,7 @@
 
 package eu.thesimplecloud.base.manager.database
 
+import eu.thesimplecloud.api.player.IOfflineCloudPlayer
 import eu.thesimplecloud.api.utils.DatabaseExclude
 import eu.thesimplecloud.jsonlib.GsonCreator
 
@@ -34,5 +35,9 @@ import eu.thesimplecloud.jsonlib.GsonCreator
 abstract class AbstractOfflineCloudPlayerHandler : IOfflineCloudPlayerHandler {
 
     protected val databaseGson  = GsonCreator().excludeAnnotations(DatabaseExclude::class.java).create()
+
+    protected fun getPlayerWithLatestLogin(players: List<IOfflineCloudPlayer>): IOfflineCloudPlayer? {
+        return players.maxBy { it.getLastLogin() }
+    }
 
 }

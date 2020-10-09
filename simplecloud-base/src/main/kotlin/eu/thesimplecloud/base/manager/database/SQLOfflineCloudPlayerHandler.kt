@@ -26,10 +26,7 @@ import eu.thesimplecloud.api.player.IOfflineCloudPlayer
 import eu.thesimplecloud.api.player.OfflineCloudPlayer
 import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.launcher.startup.Launcher
-import java.sql.Connection
-import java.sql.DatabaseMetaData
-import java.sql.DriverManager
-import java.sql.SQLException
+import java.sql.*
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -85,21 +82,28 @@ class SQLOfflineCloudPlayerHandler(private val databaseConnectionInformation: Da
         return loadPlayer(name, "name")
     }
 
-    private fun loadPlayer(value: String, fieldName: String): OfflineCloudPlayer? {
+    private fun loadPlayer(value: String, fieldName: String): IOfflineCloudPlayer? {
         if (!exist(value, fieldName)) return null
         val statement = connection!!.prepareStatement("SELECT `data` FROM `$playerCollectionName` WHERE `$fieldName` = ?")
         statement.setString(1, value)
         val resultSet = statement.executeQuery()
+        val allDataStrings = getAllDataStringsFromResultSet(resultSet)
+        val players = allDataStrings.mapNotNull { loadPlayerFromJsonString(it) }
+        return getPlayerWithLatestLogin(players)
+    }
+
+    private fun getAllDataStringsFromResultSet(resultSet: ResultSet) : List<String> {
+        val returnList = mutableListOf<String>()
         while (resultSet.next()) {
             try {
                 val dataString = resultSet.getString("data")
-                return loadPlayerFromJsonString(dataString)
+                returnList.add(dataString)
             } catch (e: SQLException) {
                 //ignore exception
                 //it will be thrown 2 times before reaching "data"
             }
         }
-        throw SQLException()
+        return returnList
     }
 
     private fun loadPlayerFromJsonString(jsonString: String): OfflineCloudPlayer? {
