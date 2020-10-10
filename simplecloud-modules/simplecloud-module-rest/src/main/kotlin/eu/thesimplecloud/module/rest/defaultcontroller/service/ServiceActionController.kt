@@ -39,24 +39,24 @@ import eu.thesimplecloud.module.rest.defaultcontroller.dto.PathDto
 class ServiceActionController : IController {
 
     @RequestMapping(RequestType.POST, "name/:name/stop", "web.cloud.action.service.stop")
-    fun handleServiceStop(@RequestPathParam("name") name: String): Boolean {
-        val service = getServiceByName(name)
-        service?.shutdown()
-        return service != null
+    fun handleServiceStop(@RequestPathParam("name") name: String): ICloudService {
+        val service = getServiceByName(name) ?: throwNoSuchElement()
+        service.shutdown()
+        return service
     }
 
     @RequestMapping(RequestType.POST, "name/:name/copy", "web.cloud.action.service.copy")
-    fun handleCopyService(@RequestPathParam("name") name: String, @RequestBody path: PathDto): Boolean {
-        val service = getServiceByName(name)
-        service?.copy(path.path)
-        return service != null
+    fun handleCopyService(@RequestPathParam("name") name: String, @RequestBody path: PathDto): ICloudService {
+        val service = getServiceByName(name) ?: throwNoSuchElement()
+        service.copy(path.path)
+        return service
     }
 
     @RequestMapping(RequestType.POST, "name/:name/execute", "web.cloud.action.service.execute")
-    fun handleCommandExecute(@RequestPathParam("name") name: String, @RequestBody command: CommandDto): Boolean {
-        val service = getServiceByName(name)
-        service?.executeCommand(command.command)
-        return service != null
+    fun handleCommandExecute(@RequestPathParam("name") name: String, @RequestBody command: CommandDto): ICloudService {
+        val service = getServiceByName(name) ?: throwNoSuchElement()
+        service.executeCommand(command.command)
+        return service
     }
 
     private fun getServiceByName(name: String): ICloudService? {

@@ -23,8 +23,10 @@
 package eu.thesimplecloud.api.wrapper
 
 
+import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.client.NetworkComponentType
 import eu.thesimplecloud.api.network.component.INetworkComponent
+import eu.thesimplecloud.api.service.ICloudService
 
 
 interface IWrapperInfo : INetworkComponent {
@@ -72,6 +74,13 @@ interface IWrapperInfo : INetworkComponent {
      * Returns the amount of services this wrapper is currently starting
      */
     fun getCurrentlyStartingServices(): Int
+
+    /**
+     *  Returns a list of services running on this wrapper
+     */
+    fun getServicesRunningOnThisWrapper(): List<ICloudService> {
+        return CloudAPI.instance.getCloudServiceManager().getServicesRunningOnWrapper(getName())
+    }
 
     override fun getNetworkComponentType(): NetworkComponentType = NetworkComponentType.WRAPPER
 

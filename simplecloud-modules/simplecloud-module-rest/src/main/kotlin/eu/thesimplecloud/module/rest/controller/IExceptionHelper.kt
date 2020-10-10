@@ -20,35 +20,20 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.rest.defaultcontroller.player
+package eu.thesimplecloud.module.rest.controller
 
-import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.player.IOfflineCloudPlayer
-import eu.thesimplecloud.api.player.SimpleCloudPlayer
-import eu.thesimplecloud.module.rest.annotation.RequestMapping
-import eu.thesimplecloud.module.rest.annotation.RequestPathParam
-import eu.thesimplecloud.module.rest.annotation.RequestType
-import eu.thesimplecloud.module.rest.annotation.RestController
-import eu.thesimplecloud.module.rest.controller.IController
+import eu.thesimplecloud.module.rest.exception.ElementAlreadyExistException
 
 /**
  * Created by IntelliJ IDEA.
- * Date: 07.10.2020
- * Time: 19:38
+ * Date: 10.10.2020
+ * Time: 11:01
  * @author Frederick Baier
  */
-@RestController("cloud/player/")
-class PlayerController : IController {
+interface IExceptionHelper {
 
-    @RequestMapping(RequestType.GET, "name/:name", "web.cloud.player.get.one")
-    fun handleGetOnePlayer(@RequestPathParam("name") name: String): IOfflineCloudPlayer {
-        return CloudAPI.instance.getCloudPlayerManager().getOfflineCloudPlayer(name).getBlockingOrNull()
-                ?: throwNoSuchElement()
-    }
+    fun throwElementAlreadyExist(): Nothing = throw ElementAlreadyExistException()
 
-    @RequestMapping(RequestType.GET, "", "web.cloud.player.get.all")
-    fun handleGetAllPlayer(): List<SimpleCloudPlayer> {
-        return CloudAPI.instance.getCloudPlayerManager().getAllOnlinePlayers().getBlockingOrNull() ?: emptyList()
-    }
+    fun throwNoSuchElement(): Nothing = throw NoSuchElementException("Element not found")
 
 }

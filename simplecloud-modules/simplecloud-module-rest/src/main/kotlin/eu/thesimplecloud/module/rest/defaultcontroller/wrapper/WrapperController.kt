@@ -48,24 +48,25 @@ class WrapperController : IController {
     }
 
     @RequestMapping(RequestType.POST, "", "web.cloud.wrapper.create")
-    fun handleCreateWrapper(@RequestBody wrapper: DefaultWrapperInfo): Boolean {
-        if (doesWrapperExist(wrapper.getName())) return false
+    fun handleCreateWrapper(@RequestBody wrapper: DefaultWrapperInfo): IWrapperInfo {
+        if (doesWrapperExist(wrapper.getName())) throwElementAlreadyExist()
         CloudAPI.instance.getWrapperManager().update(wrapper)
-        return true
+        return wrapper
     }
 
     @RequestMapping(RequestType.PUT, "", "web.cloud.wrapper.update")
-    fun handleUpdateWrapper(@RequestBody wrapper: DefaultWrapperInfo): Boolean {
-        if (!doesWrapperExist(wrapper.getName())) return false
+    fun handleUpdateWrapper(@RequestBody wrapper: DefaultWrapperInfo): IWrapperInfo? {
+        if (!doesWrapperExist(wrapper.getName())) throwNoSuchElement()
         CloudAPI.instance.getWrapperManager().update(wrapper)
-        return true
+        return wrapper
     }
 
     @RequestMapping(RequestType.DELETE, "name/:name", "web.cloud.wrapper.delete")
-    fun handleDeleteWrapper(@RequestPathParam("name") name: String): Boolean {
-        if (!doesWrapperExist(name)) return false
-        CloudAPI.instance.getWrapperManager().delete(getWrapperByName(name)!!)
-        return true
+    fun handleDeleteWrapper(@RequestPathParam("name") name: String): IWrapperInfo? {
+        if (!doesWrapperExist(name)) throwNoSuchElement()
+        val wrapper = getWrapperByName(name)!!
+        CloudAPI.instance.getWrapperManager().delete(wrapper)
+        return wrapper
     }
 
 

@@ -43,15 +43,15 @@ class ServiceController : IController {
     }
 
     @RequestMapping(RequestType.GET, "name/:name", "web.cloud.service.get.one")
-    fun handleGetOneService(@RequestPathParam("name") name: String): ICloudService? {
-        return CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(name)
+    fun handleGetOneService(@RequestPathParam("name") name: String): ICloudService {
+        return CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(name) ?: throwNoSuchElement()
     }
 
     @RequestMapping(RequestType.PUT, "", "web.cloud.service.update")
-    fun handleUpdateService(@RequestBody service: DefaultCloudService): Boolean {
-        if (!doesServiceExist(service.getName())) return false
+    fun handleUpdateService(@RequestBody service: DefaultCloudService): ICloudService {
+        if (!doesServiceExist(service.getName())) throwNoSuchElement()
         CloudAPI.instance.getCloudServiceManager().update(service)
-        return true
+        return service
     }
 
     private fun doesServiceExist(name: String): Boolean {

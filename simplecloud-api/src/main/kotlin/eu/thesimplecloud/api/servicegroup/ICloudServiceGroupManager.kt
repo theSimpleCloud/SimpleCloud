@@ -193,6 +193,13 @@ interface ICloudServiceGroupManager : ICacheList<ICloudServiceGroup> {
     fun getServerGroups(): List<ICloudServerGroup> = getAllCachedObjects().filter { it.getServiceType() == ServiceType.SERVER }.map { it as ICloudServerGroup }
 
     /**
+     * Returns all groups that only start on the specified [wrapperName]
+     */
+    fun getServiceGroupsByWrapperName(wrapperName: String): List<ICloudServiceGroup> {
+        return getAllCachedObjects().filter { it.getWrapperName() == wrapperName }
+    }
+
+    /**
      * Starts a new service by the specified group
      * @return a promise that is completed when the service was registered with its name, or
      * when an exception is encountered. [ICommunicationPromise.isSuccess] indicates success

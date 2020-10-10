@@ -20,35 +20,26 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.rest.defaultcontroller.player
-
-import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.player.IOfflineCloudPlayer
-import eu.thesimplecloud.api.player.SimpleCloudPlayer
-import eu.thesimplecloud.module.rest.annotation.RequestMapping
-import eu.thesimplecloud.module.rest.annotation.RequestPathParam
-import eu.thesimplecloud.module.rest.annotation.RequestType
-import eu.thesimplecloud.module.rest.annotation.RestController
-import eu.thesimplecloud.module.rest.controller.IController
+package eu.thesimplecloud.module.rest.defaultcontroller.dto
 
 /**
  * Created by IntelliJ IDEA.
- * Date: 07.10.2020
- * Time: 19:38
+ * Date: 09.10.2020
+ * Time: 22:23
  * @author Frederick Baier
  */
-@RestController("cloud/player/")
-class PlayerController : IController {
+class ErrorDto(
+        val errorClass: String,
+        error: String?
+) {
 
-    @RequestMapping(RequestType.GET, "name/:name", "web.cloud.player.get.one")
-    fun handleGetOnePlayer(@RequestPathParam("name") name: String): IOfflineCloudPlayer {
-        return CloudAPI.instance.getCloudPlayerManager().getOfflineCloudPlayer(name).getBlockingOrNull()
-                ?: throwNoSuchElement()
-    }
+    val error = error ?: ""
 
-    @RequestMapping(RequestType.GET, "", "web.cloud.player.get.all")
-    fun handleGetAllPlayer(): List<SimpleCloudPlayer> {
-        return CloudAPI.instance.getCloudPlayerManager().getAllOnlinePlayers().getBlockingOrNull() ?: emptyList()
+
+    companion object {
+        fun fromException(ex: Throwable): ErrorDto {
+            return ErrorDto(ex::class.java.name, ex.message)
+        }
     }
 
 }

@@ -26,6 +26,7 @@ import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.module.rest.auth.controller.LoginDto
 import eu.thesimplecloud.module.rest.auth.user.User
 import eu.thesimplecloud.module.rest.auth.user.permission.Permission
+import eu.thesimplecloud.module.rest.controller.IExceptionHelper
 import org.apache.commons.lang3.RandomStringUtils
 import java.io.File
 
@@ -35,7 +36,7 @@ import java.io.File
  * Time: 13:05
  * @author Frederick Baier
  */
-class AuthService {
+class AuthService : IExceptionHelper {
 
     private val usersFile = File("modules/rest/users.json")
     private val users: MutableList<User>
@@ -59,30 +60,37 @@ class AuthService {
         return JwtProvider.provider.generateToken(user)
     }
 
-    fun handleAddUser(user: User): Boolean {
+    fun handleAddUser(user: User): User {
         if (doesUserExist(user.username))
-            return false
+            throwElementAlreadyExist()
 
+        val user = cloneUser(user)
         this.users.add(user)
         saveUpdateToFile()
-        return true
+        return user
     }
 
-    fun handleUserUpdate(user: User): Boolean {
+    fun handleUserUpdate(user: User): User {
         if (!doesUserExist(user.username))
-            return false
+            throwNoSuchElement()
+
+        val user = cloneUser(user)
         this.users.removeIf { it.username == user.username }
         this.users.add(user)
         saveUpdateToFile()
-        return true
+        return user
     }
 
-    fun handleUserDelete(user: User): Boolean {
+    fun handleUserDelete(user: User) {
         if (!doesUserExist(user.username))
-            return false
+            throwNoSuchElement()
+
         this.users.removeIf { it.username == user.username }
         saveUpdateToFile()
-        return true
+    }
+
+    fun handleUserGet(username: String): User? {
+        return getUserByName(username)
     }
 
     fun getUserByName(userName: String): User? {
@@ -97,8 +105,16 @@ class AuthService {
         return this.users
     }
 
+    private fun cloneUser(user: User): User {
+        return User(user.username, user.password)
+    }
+
     private fun saveUpdateToFile() {
         JsonLib.fromObject(users).saveAsFile(usersFile)
     }
+
+    class UserAlreadyExistException() : Exception("The user does already exist")
+
+    class UserNotExistException() : Exception("The user does not exist")
 
 }

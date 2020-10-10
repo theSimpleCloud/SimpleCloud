@@ -22,6 +22,7 @@
 
 package eu.thesimplecloud.api.wrapper.impl
 
+import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.cachelist.AbstractCacheList
 import eu.thesimplecloud.api.cachelist.ICacheObjectUpdater
 import eu.thesimplecloud.api.event.wrapper.WrapperUpdatedEvent
@@ -68,6 +69,14 @@ open class DefaultWrapperManager : AbstractCacheList<IWrapperInfo>(), IWrapperMa
 
     override fun getUpdater(): ICacheObjectUpdater<IWrapperInfo> {
         return this.updateLifecycle
+    }
+
+    override fun delete(value: IWrapperInfo, fromPacket: Boolean) {
+        if (value.getServicesRunningOnThisWrapper().isNotEmpty())
+            throw IllegalStateException("Cannot delete wrapper while services are still running on this wrapper")
+        if (CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupsByWrapperName(value.getName()).isNotEmpty())
+            throw IllegalStateException("Cannot delete wrapper while groups are only able to start on this wrapper")
+        super<AbstractCacheList>.delete(value, fromPacket)
     }
 
 

@@ -49,23 +49,24 @@ class UserController(
     }
 
     @RequestMapping(RequestType.GET, "name/:name", "web.user.get.one")
-    fun handleGetOneUsers(@RequestPathParam("name") username: String): User? {
-        return authService.getUserByName(username)
+    fun handleGetOneUsers(@RequestPathParam("name") username: String): User {
+        return authService.handleUserGet(username) ?: throwNoSuchElement()
     }
 
     @RequestMapping(RequestType.POST, "", "web.user.create")
-    fun handleCreateUser(@RequestBody user: User): Boolean {
+    fun handleCreateUser(@RequestBody user: User): User {
         return authService.handleAddUser(user)
     }
 
     @RequestMapping(RequestType.PUT, "", "web.user.update")
-    fun handleUpdateUser(@RequestBody user: User): Boolean {
+    fun handleUpdateUser(@RequestBody user: User): User {
         return authService.handleUserUpdate(user)
     }
 
     @RequestMapping(RequestType.DELETE, "", "web.user.delete")
-    fun handleDeleteUser(@RequestBody user: User): Boolean {
-        return authService.handleUserDelete(user)
+    fun handleDeleteUser(@RequestBody user: User): User {
+        authService.handleUserDelete(user)
+        return user
     }
 
 }

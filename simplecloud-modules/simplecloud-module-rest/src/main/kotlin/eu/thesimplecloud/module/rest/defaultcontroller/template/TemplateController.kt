@@ -43,29 +43,30 @@ class TemplateController : IController {
     }
 
     @RequestMapping(RequestType.GET, "name/:name/", "web.cloud.template.get.one")
-    fun handleGetOneTemplates(@RequestPathParam("name") name: String): ITemplate? {
-        return CloudAPI.instance.getTemplateManager().getTemplateByName(name)
+    fun handleGetOneTemplates(@RequestPathParam("name") name: String): ITemplate {
+        return CloudAPI.instance.getTemplateManager().getTemplateByName(name) ?: throwNoSuchElement()
     }
 
     @RequestMapping(RequestType.POST, "", "web.cloud.template.create")
-    fun handleCreateTemplate(@RequestBody template: DefaultTemplate): Boolean {
-        if (doesTemplateExist(template.getName())) return false
+    fun handleCreateTemplate(@RequestBody template: DefaultTemplate): ITemplate {
+        if (doesTemplateExist(template.getName())) throwElementAlreadyExist()
         CloudAPI.instance.getTemplateManager().update(template)
-        return true
+        return template
     }
 
     @RequestMapping(RequestType.PUT, "", "web.cloud.template.update")
-    fun handleUpdateTemplate(@RequestBody template: DefaultTemplate): Boolean {
-        if (!doesTemplateExist(template.getName())) return false
+    fun handleUpdateTemplate(@RequestBody template: DefaultTemplate): ITemplate {
+        if (!doesTemplateExist(template.getName())) throwNoSuchElement()
         CloudAPI.instance.getTemplateManager().update(template)
-        return true
+        return template
     }
 
     @RequestMapping(RequestType.DELETE, "name/:name", "web.cloud.template.delete")
-    fun handleDeleteTemplate(@RequestPathParam("name") name: String): Boolean {
-        if (!doesTemplateExist(name)) return false
+    fun handleDeleteTemplate(@RequestPathParam("name") name: String): ITemplate {
+        if (!doesTemplateExist(name)) throwNoSuchElement()
+        val template = CloudAPI.instance.getTemplateManager().getTemplateByName(name)!!
         CloudAPI.instance.getTemplateManager().deleteTemplate(name)
-        return true
+        return template
     }
 
     private fun doesTemplateExist(name: String): Boolean {

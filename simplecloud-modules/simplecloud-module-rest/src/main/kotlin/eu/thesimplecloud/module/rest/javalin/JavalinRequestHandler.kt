@@ -23,10 +23,12 @@
 package eu.thesimplecloud.module.rest.javalin
 
 import com.auth0.jwt.interfaces.DecodedJWT
+import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.module.rest.auth.AuthService
 import eu.thesimplecloud.module.rest.auth.JwtProvider
 import eu.thesimplecloud.module.rest.auth.user.User
 import eu.thesimplecloud.module.rest.controller.RequestMethodData
+import eu.thesimplecloud.module.rest.defaultcontroller.dto.ErrorDto
 import io.javalin.http.Context
 import io.javalin.http.Handler
 import javalinjwt.JavalinJWT
@@ -54,10 +56,13 @@ class JavalinRequestHandler(val requestMethodData: RequestMethodData, private va
             SingleRequestProcessor(ctx, requestMethodData, user).processRequest()
         } catch (ex: Exception) {
             val exception = if (ex is InvocationTargetException) ex.cause else ex
-            ctx.status(400)
-            if (exception != null)
-                ctx.result(exception::class.java.name + ": " + exception.message)
-            ex.printStackTrace()
+            ctx.status(500)
+            if (exception != null) {
+                val json = JsonLib.fromObject(ErrorDto.fromException(exception))
+                ctx.result(json.getAsJsonString())
+            }
+
+            //ex.printStackTrace()
         }
     }
 
