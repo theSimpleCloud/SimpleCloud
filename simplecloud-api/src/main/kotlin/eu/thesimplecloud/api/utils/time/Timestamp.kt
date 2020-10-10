@@ -37,7 +37,7 @@ data class Timestamp(
     }
 
     fun isBefore(timestamp: Timestamp): Boolean {
-        return time < timestamp.time
+        return this.time < timestamp.time
     }
 
     fun hasTimePassed(timeInMillis: Long): Boolean {
@@ -50,6 +50,12 @@ data class Timestamp(
 
     fun getTimePassed(): Long {
         return System.currentTimeMillis() - this.time
+    }
+
+    companion object {
+        fun createTimeStampFromNow(additionalTime: Long): Timestamp {
+            return Timestamp(System.currentTimeMillis() + additionalTime)
+        }
     }
 
 }
