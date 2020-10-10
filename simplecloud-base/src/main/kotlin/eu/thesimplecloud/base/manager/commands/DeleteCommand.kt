@@ -79,9 +79,11 @@ class DeleteCommand : ICommandHandler {
         }
         if (wrapper.getServicesRunningOnThisWrapper().isNotEmpty()) {
             Launcher.instance.consoleSender.sendMessage("manager.command.delete.wrapper.services-running", "Cannot delete wrapper %NAME%", name, " while services are still running on it.")
+            return
         }
         if (CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupsByWrapperName(wrapper.getName()).isNotEmpty()) {
             Launcher.instance.consoleSender.sendMessage("manager.command.delete.wrapper.group-must-start", "Cannot delete wrapper %NAME%", name, " while groups are only able to start on it.")
+            return
         }
 
         CloudAPI.instance.getWrapperManager().delete(wrapper)
