@@ -63,29 +63,31 @@ class DeleteCommand : ICommandHandler {
         }
         val result = runCatching { CloudAPI.instance.getCloudServiceGroupManager().delete(serviceGroup) }
         if (result.isFailure) {
-            Launcher.instance.consoleSender.sendMessage("manager.command.delete.group.services-running", "Can not delete group %NAME%", name, " while services of this group are running.")
+            Launcher.instance.consoleSender.sendMessage("manager.command.delete.group.services-running", "Cannot delete group %NAME%", name, " while services of this group are running.")
             return
         }
         Launcher.instance.consoleSender.sendMessage("manager.command.delete.group.success", "Group %NAME%", name, " was deleted.")
     }
 
-    /*
-    @CommandSubPath("group <wrapper>", "Deletes a wrapper")
+
+    @CommandSubPath("wrapper <wrapper>", "Deletes a wrapper")
     fun deleteWrapper(@CommandArgument("wrapper") name: String) {
         val wrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(name)
         if (wrapper == null) {
             Launcher.instance.consoleSender.sendMessage("manager.command.delete.wrapper.not-exist", "Wrapper %NAME%", name, " does not exist.")
             return
         }
-        try {
-            CloudAPI.instance.getWrapperManager().remove()
-        } catch (e: IllegalStateException) {
-            Launcher.instance.consoleSender.sendMessage("manager.command.delete.group.services-running", "Can not delete group %NAME%", name, " while services of this group are running.")
-            return
+        if (wrapper.getServicesRunningOnThisWrapper().isNotEmpty()) {
+            Launcher.instance.consoleSender.sendMessage("manager.command.delete.wrapper.services-running", "Cannot delete wrapper %NAME%", name, " while services are still running on it.")
         }
+        if (CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupsByWrapperName(wrapper.getName()).isNotEmpty()) {
+            Launcher.instance.consoleSender.sendMessage("manager.command.delete.wrapper.group-must-start", "Cannot delete wrapper %NAME%", name, " while groups are only able to start on it.")
+        }
+
+        CloudAPI.instance.getWrapperManager().delete(wrapper)
         Launcher.instance.consoleSender.sendMessage("manager.command.delete.group.success", "Group %NAME%", name, " was deleted.")
     }
-    */
+
 
 
 }
