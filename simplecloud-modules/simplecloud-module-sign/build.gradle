@@ -8,13 +8,31 @@ configurations {
 }
 
 dependencies {
-    implementation(project(":simplecloud-base"))
-    implementation(project(":simplecloud-api"))
-    implementation(project(":simplecloud-plugin"))
-    implementation(project(":simplecloud-launcher"))
-    implementation(project(":simplecloud-modules:simplecloud-module-serviceselection"))
+    implementation(project(":simplecloud-base")) {
+        transitive = false
+    }
+    implementation(project(":simplecloud-api")) {
+        transitive = false
+    }
+    implementation(project(":simplecloud-plugin")) {
+        transitive = false
+    }
+    implementation(project(":simplecloud-launcher")) {
+        transitive = false
+    }
+    compile(project(":simplecloud-modules:simplecloud-module-serviceselection")) {
+        transitive = false
+    }
 
     compileOnly 'org.spigotmc:spigot-api:1.16.3-R0.1-SNAPSHOT'
     implementation group: 'commons-io', name: 'commons-io', version: '2.6'
 
+}
+
+jar {
+    dependsOn ':simplecloud-modules:simplecloud-module-serviceselection:jar'
+    // This line of code recursively collects and copies all of a project's files
+    // and adds them to the JAR itself. One can extend this task, to skip certain
+    // files or particular types at will
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }

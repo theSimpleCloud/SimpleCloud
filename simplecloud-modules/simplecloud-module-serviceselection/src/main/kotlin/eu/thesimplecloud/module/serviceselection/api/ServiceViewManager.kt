@@ -24,26 +24,42 @@ package eu.thesimplecloud.module.serviceselection.api
 
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 import org.bukkit.Bukkit
+import org.bukkit.plugin.java.JavaPlugin
 
-class ServiceViewManager {
+open class ServiceViewManager<T : AbstractServiceViewer>(
+        private val plugin: JavaPlugin,
+        private val updateDelay: Long = 20
+) {
 
-    private val groupNameToGroupView = HashMap<String, ServiceViewGroupManager>()
+    private val groupNameToGroupView = HashMap<String, ServiceViewGroupManager<T>>()
 
     init {
         startUpdateScheduler()
     }
 
     private fun startUpdateScheduler() {
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(ServiceViewerBukkitPlugin.INSTANCE, Runnable {
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, {
             performUpdate()
-        }, 20, 20)
+        }, 20, this.updateDelay)
     }
 
-    fun getGroupView(group: ICloudServiceGroup): ServiceViewGroupManager {
+    fun addServiceViewGroupManager(serviceViewGroupManager: ServiceViewGroupManager<T>) {
+        this.groupNameToGroupView[serviceViewGroupManager.group.getName()] = serviceViewGroupManager
+    }
+
+    fun getGroupView(group: ICloudServiceGroup): ServiceViewGroupManager<T> {
         return this.groupNameToGroupView.getOrPut(group.getName()) { ServiceViewGroupManager(group) }
     }
 
-    fun performUpdate() {
+    fun isGroupViewRegistered(group: ICloudServiceGroup): Boolean {
+        return this.groupNameToGroupView.containsKey(group.getName())
+    }
+
+    fun getAllGroupViewManagers(): Collection<ServiceViewGroupManager<T>> {
+        return this.groupNameToGroupView.values
+    }
+
+    open fun performUpdate() {
         val groups = this.groupNameToGroupView.values
         groups.forEach { it.sortWaitingServicesToViewers() }
         groups.forEach { it.updateAllViewers() }

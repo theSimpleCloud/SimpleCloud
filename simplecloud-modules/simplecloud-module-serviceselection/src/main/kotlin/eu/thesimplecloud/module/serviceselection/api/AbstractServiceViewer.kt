@@ -34,6 +34,11 @@ abstract class AbstractServiceViewer {
      */
     abstract fun updateView()
 
+    /**
+     * Will be called when this viewer shall be removed
+     */
+    abstract fun removeView()
+
     fun isVacant() = service == null || !service!!.isStartingOrVisible()
 
     fun isCurrentServiceStarting() = this.service?.getState() == ServiceState.STARTING

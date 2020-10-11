@@ -31,4 +31,7 @@ package eu.thesimplecloud.module.serviceselection.api
 open class TestServiceViewer : AbstractServiceViewer() {
     override fun updateView() {
     }
+
+    override fun removeView() {
+    }
 }

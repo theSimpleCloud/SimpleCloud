@@ -32,18 +32,19 @@ import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
  * Time: 11:47
  * @author Frederick Baier
  */
-class ServiceViewGroupManager(
+class ServiceViewGroupManager<T : AbstractServiceViewer>(
         val group: ICloudServiceGroup
 ) {
 
-    private val serviceViewers: MutableList<AbstractServiceViewer> = ArrayList()
+    private val serviceViewers: MutableList<T> = ArrayList()
 
-    fun addServiceViewers(vararg serviceViewer: AbstractServiceViewer) {
+    fun addServiceViewers(vararg serviceViewer: T) {
         this.serviceViewers.addAll(serviceViewer)
     }
 
-    fun removeServiceViewer(serviceViewer: AbstractServiceViewer) {
+    fun removeServiceViewer(serviceViewer: T) {
         this.serviceViewers.remove(serviceViewer)
+        serviceViewer.removeView()
     }
 
     fun sortWaitingServicesToViewers() {
@@ -58,6 +59,10 @@ class ServiceViewGroupManager(
         this.serviceViewers.forEach { it.updateView() }
     }
 
+    fun getServiceViewers(): List<T> {
+        return this.serviceViewers
+    }
+
     private fun searchViewerForService(service: ICloudService) {
         require(!hasViewer(service)) { "Service does already has a viewer" }
         val newViewer = getNewViewerForService(service)
@@ -65,7 +70,7 @@ class ServiceViewGroupManager(
         //don't update here. The update method will be called for all viewers after sorting the services to the viewers.
     }
 
-    private fun getNewViewerForService(service: ICloudService): AbstractServiceViewer? {
+    private fun getNewViewerForService(service: ICloudService): T? {
         require(!hasViewer(service)) { "Service does already has a viewer" }
         return if (service.getState() == ServiceState.VISIBLE) {
             getVacantOrStartingViewer()
@@ -75,11 +80,11 @@ class ServiceViewGroupManager(
         }
     }
 
-    private fun getVacantOrStartingViewer(): AbstractServiceViewer? {
+    private fun getVacantOrStartingViewer(): T? {
         return this.serviceViewers.firstOrNull { it.isVacant() || it.isCurrentServiceStarting() }
     }
 
-    private fun getVacantViewer(): AbstractServiceViewer? {
+    private fun getVacantViewer(): T? {
         return this.serviceViewers.firstOrNull { it.isVacant() }
     }
 
