@@ -20,25 +20,13 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.serviceselection.api
+package eu.thesimplecloud.module.sign.lib.layout
 
-import org.bukkit.plugin.java.JavaPlugin
+class SignFrame(
+       val lines: Array<String>
+) {
 
-/**
- * Created by IntelliJ IDEA.
- * Date: 01.07.2020
- * Time: 12:40
- * @author Frederick Baier
- */
-class ServiceViewerBukkitPlugin : JavaPlugin() {
-
-    override fun onEnable() {
-        INSTANCE = this
+    init {
+        if (lines.size != 4) throw IllegalStateException("Frame must have 4 lines")
     }
-
-    companion object {
-        lateinit var INSTANCE: ServiceViewerBukkitPlugin
-            private set
-    }
-
 }
