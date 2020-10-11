@@ -77,7 +77,10 @@ class GlobalPropertyHolder : IGlobalPropertyHolder {
 
     override fun updatePropertyFromPacket(name: String, property: IProperty<*>) {
         writeUpdateToMap(name, property)
-        CloudAPI.instance.getEventManager().call(GlobalPropertyUpdatedEvent(property))
+        CloudAPI.instance.getEventManager().call(GlobalPropertyUpdatedEvent(name, property))
+
+        if (CloudAPI.instance.isManager())
+            updatePropertyToNetwork(name, property)
     }
 
     private fun writeUpdateToMap(name: String, property: IProperty<*>) {

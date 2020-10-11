@@ -25,4 +25,4 @@ package eu.thesimplecloud.api.event.sync.`object`
 import eu.thesimplecloud.api.eventapi.IEvent
 import eu.thesimplecloud.api.property.IProperty
 
-class GlobalPropertyUpdatedEvent(val property: IProperty<out Any>) : IEvent
+class GlobalPropertyUpdatedEvent(val propertyName: String, val property: IProperty<out Any>) : IEvent

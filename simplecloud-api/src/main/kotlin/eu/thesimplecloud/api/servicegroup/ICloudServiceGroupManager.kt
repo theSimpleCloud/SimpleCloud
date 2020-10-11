@@ -192,6 +192,11 @@ interface ICloudServiceGroupManager : ICacheList<ICloudServiceGroup> {
      */
     fun getServerGroups(): List<ICloudServerGroup> = getAllCachedObjects().filter { it.getServiceType() == ServiceType.SERVER }.map { it as ICloudServerGroup }
 
+    /*
+    * Returns all registered server or lobby groups
+    */
+    fun getServerOrLobbyGroups(): List<ICloudServerGroup> = getAllCachedObjects().filterIsInstance<ICloudServerGroup>()
+
     /**
      * Returns all groups that only start on the specified [wrapperName]
      */
