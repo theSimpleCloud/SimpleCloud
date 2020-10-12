@@ -23,26 +23,21 @@
 package eu.thesimplecloud.api.network.packets.sync.`object`
 
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.property.IProperty
-import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.api.sync.`object`.GlobalPropertyHolder
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
-class PacketIOUpdateGlobalProperty() : JsonPacket() {
+class PacketIORemoveGlobalProperty() : JsonPacket() {
 
-    constructor(name: String, property: IProperty<*>) : this() {
-        this.jsonLib.append("property", property)
-                .append("name", name)
+    constructor(name: String) : this() {
+        this.jsonLib.append("name", name)
 
     }
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
         val name = this.jsonLib.getString("name") ?: return contentException("name")
-        val property = this.jsonLib.getObject("property", Property::class.java)
-                ?: return contentException("property")
-        (CloudAPI.instance.getGlobalPropertyHolder() as GlobalPropertyHolder).updatePropertyFromPacket(name, property)
+        (CloudAPI.instance.getGlobalPropertyHolder() as GlobalPropertyHolder).removePropertyFromPacket(name)
         return unit()
     }
 }

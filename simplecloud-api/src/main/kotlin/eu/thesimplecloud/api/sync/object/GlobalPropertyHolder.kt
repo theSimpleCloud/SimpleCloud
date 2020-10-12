@@ -25,8 +25,8 @@ package eu.thesimplecloud.api.sync.`object`
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.event.sync.`object`.GlobalPropertyUpdatedEvent
 import eu.thesimplecloud.api.network.packets.sync.`object`.PacketIOGetGlobalProperty
+import eu.thesimplecloud.api.network.packets.sync.`object`.PacketIORemoveGlobalProperty
 import eu.thesimplecloud.api.network.packets.sync.`object`.PacketIOUpdateGlobalProperty
-import eu.thesimplecloud.api.network.packets.sync.list.PacketIORemoveListProperty
 import eu.thesimplecloud.api.property.IProperty
 import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.clientserverapi.client.INettyClient
@@ -64,8 +64,8 @@ class GlobalPropertyHolder : IGlobalPropertyHolder {
     }
 
     override fun removeProperty(name: String) {
-        val lastValue = this.nameToValue.remove(name)
-        lastValue?.let { deletePropertyFromNetwork(name, lastValue) }
+        this.nameToValue.remove(name)
+        removePropertyFromNetwork(name)
     }
 
     override fun <T : Any> requestProperty(name: String): ICommunicationPromise<IProperty<T>> {
@@ -75,12 +75,19 @@ class GlobalPropertyHolder : IGlobalPropertyHolder {
                 .addResultListener { updatePropertyFromPacket(name, it) }
     }
 
-    override fun updatePropertyFromPacket(name: String, property: IProperty<*>) {
+    fun updatePropertyFromPacket(name: String, property: IProperty<*>) {
         writeUpdateToMap(name, property)
         CloudAPI.instance.getEventManager().call(GlobalPropertyUpdatedEvent(name, property))
 
         if (CloudAPI.instance.isManager())
             updatePropertyToNetwork(name, property)
+    }
+
+    fun removePropertyFromPacket(name: String) {
+        this.nameToValue.remove(name)
+
+        if (CloudAPI.instance.isManager())
+            removePropertyFromNetwork(name)
     }
 
     private fun writeUpdateToMap(name: String, property: IProperty<*>) {
@@ -99,8 +106,8 @@ class GlobalPropertyHolder : IGlobalPropertyHolder {
         forwardPacket(name, updatePacket)
     }
 
-    private fun deletePropertyFromNetwork(name: String, property: IProperty<*>) {
-        val updatePacket = PacketIORemoveListProperty(name, property)
+    private fun removePropertyFromNetwork(name: String) {
+        val updatePacket = PacketIORemoveGlobalProperty(name)
         forwardPacket(name, updatePacket)
     }
 

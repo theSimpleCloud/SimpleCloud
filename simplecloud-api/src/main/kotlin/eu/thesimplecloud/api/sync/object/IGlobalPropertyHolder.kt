@@ -32,9 +32,4 @@ interface IGlobalPropertyHolder : IPropertyMap {
      * Returns a [ICommunicationPromise] that completes once the requested [IProperty] is available.
      */
     fun <T : Any> requestProperty(name: String): ICommunicationPromise<IProperty<T>>
-
-    /**
-     * Updates the specified [property] without sending the update to the network.
-     */
-    fun updatePropertyFromPacket(name: String, property: IProperty<*>)
 }
