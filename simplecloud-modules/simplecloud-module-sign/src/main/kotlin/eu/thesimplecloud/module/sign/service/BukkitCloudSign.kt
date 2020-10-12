@@ -30,6 +30,7 @@ import eu.thesimplecloud.module.serviceselection.api.AbstractServiceViewer
 import eu.thesimplecloud.module.sign.lib.SignModuleConfig
 import eu.thesimplecloud.module.sign.lib.layout.LayoutType
 import eu.thesimplecloud.module.sign.lib.sign.CloudSign
+import eu.thesimplecloud.module.sign.service.event.BukkitCloudSignUpdatedEvent
 import eu.thesimplecloud.plugin.extension.toBukkitLocation
 import org.bukkit.block.Sign
 
@@ -73,6 +74,8 @@ class BukkitCloudSign(
             sign.setLine(i, replacePlaceholders(currentFrame.lines[i], currentServer))
         }
         sign.update()
+
+        CloudAPI.instance.getEventManager().call(BukkitCloudSignUpdatedEvent(this))
     }
 
     private fun replacePlaceholders(lineToReplace: String, currentServer: ICloudService?): String {

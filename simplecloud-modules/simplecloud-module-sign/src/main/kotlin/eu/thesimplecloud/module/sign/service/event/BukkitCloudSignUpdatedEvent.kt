@@ -30,4 +30,4 @@ import eu.thesimplecloud.module.sign.service.BukkitCloudSign
  * Time: 11:27
  * @author Frederick Baier
  */
-class ServiceCloudSignRemovedEvent(bukkitCloudSign: BukkitCloudSign) : CloudSignEvent(bukkitCloudSign)
+class BukkitCloudSignUpdatedEvent(bukkitCloudSign: BukkitCloudSign) : BukkitCloudSignEvent(bukkitCloudSign)

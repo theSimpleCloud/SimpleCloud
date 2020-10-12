@@ -35,8 +35,8 @@ import eu.thesimplecloud.module.sign.lib.SignModuleConfig
 import eu.thesimplecloud.module.sign.lib.sign.CloudSign
 import eu.thesimplecloud.module.sign.lib.sign.CloudSignContainer
 import eu.thesimplecloud.module.sign.service.command.CloudSignsCommand
-import eu.thesimplecloud.module.sign.service.event.ServiceCloudSignAddedEvent
-import eu.thesimplecloud.module.sign.service.event.ServiceCloudSignRemovedEvent
+import eu.thesimplecloud.module.sign.service.event.BukkitCloudSignAddedEvent
+import eu.thesimplecloud.module.sign.service.event.BukkitCloudSignRemovedEvent
 import eu.thesimplecloud.module.sign.service.listener.InteractListener
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import org.bukkit.event.EventHandler
@@ -110,14 +110,14 @@ class BukkitPluginMain : JavaPlugin() {
 
     private fun unregisterSign(bukkitCloudSign: BukkitCloudSign, groupView: ServiceViewGroupManager<BukkitCloudSign>) {
         groupView.removeServiceViewer(bukkitCloudSign)
-        CloudAPI.instance.getEventManager().call(ServiceCloudSignRemovedEvent(bukkitCloudSign))
+        CloudAPI.instance.getEventManager().call(BukkitCloudSignRemovedEvent(bukkitCloudSign))
     }
 
     private fun registerCloudSign(cloudSign: CloudSign) {
         val groupView = this.serviceViewManager.getGroupView(cloudSign.getGroup())
         val bukkitCloudSign = BukkitCloudSign(cloudSign)
         groupView.addServiceViewers(bukkitCloudSign)
-        CloudAPI.instance.getEventManager().call(ServiceCloudSignAddedEvent(bukkitCloudSign))
+        CloudAPI.instance.getEventManager().call(BukkitCloudSignAddedEvent(bukkitCloudSign))
     }
 
     private fun isSignRegistered(cloudSign: CloudSign, allRegisteredSigns: List<BukkitCloudSign>): Boolean {

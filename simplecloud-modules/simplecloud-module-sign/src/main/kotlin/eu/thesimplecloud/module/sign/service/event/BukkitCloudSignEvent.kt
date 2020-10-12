@@ -31,6 +31,6 @@ import eu.thesimplecloud.module.sign.service.BukkitCloudSign
  * Time: 11:27
  * @author Frederick Baier
  */
-open class CloudSignEvent(
+open class BukkitCloudSignEvent(
         val bukkitCloudSign: BukkitCloudSign
 ) : IEvent
