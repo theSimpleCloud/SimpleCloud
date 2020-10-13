@@ -28,7 +28,7 @@ import eu.thesimplecloud.api.screen.ICommandExecutable
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.sync.`object`.GlobalPropertyHolder
-import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
+import eu.thesimplecloud.api.wrapper.IMutableWrapperInfo
 import eu.thesimplecloud.base.manager.impl.CloudPlayerManagerImpl
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnectedClient
@@ -45,7 +45,7 @@ class CommunicationConnectionHandlerImpl : AbstractCloudConnectionHandler() {
         clientValue as IAuthenticatable
         clientValue.setAuthenticated(false)
 
-        if (clientValue is IWritableWrapperInfo) {
+        if (clientValue is IMutableWrapperInfo) {
             unregisterServicesRunningOnWrapper(clientValue)
             clientValue.setTemplatesReceived(false)
             clientValue.setCurrentlyStartingServices(0)
@@ -64,7 +64,7 @@ class CommunicationConnectionHandlerImpl : AbstractCloudConnectionHandler() {
         globalPropertyHolder.removeConnectionFromUpdates(connection)
     }
 
-    private fun unregisterServicesRunningOnWrapper(clientValue: IWritableWrapperInfo) {
+    private fun unregisterServicesRunningOnWrapper(clientValue: IMutableWrapperInfo) {
         val services = CloudAPI.instance.getCloudServiceManager().getServicesRunningOnWrapper(clientValue.getName())
         services.forEach {
             it.setState(ServiceState.CLOSED)

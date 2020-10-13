@@ -27,9 +27,9 @@ import eu.thesimplecloud.api.cachelist.AbstractCacheList
 import eu.thesimplecloud.api.cachelist.ICacheObjectUpdater
 import eu.thesimplecloud.api.event.wrapper.WrapperUpdatedEvent
 import eu.thesimplecloud.api.eventapi.IEvent
+import eu.thesimplecloud.api.wrapper.IMutableWrapperInfo
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.api.wrapper.IWrapperManager
-import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
 
 open class DefaultWrapperManager : AbstractCacheList<IWrapperInfo>(), IWrapperManager {
 
@@ -45,7 +45,7 @@ open class DefaultWrapperManager : AbstractCacheList<IWrapperInfo>(), IWrapperMa
         }
 
         override fun mergeUpdateValue(updateValue: IWrapperInfo, cachedValue: IWrapperInfo) {
-            cachedValue as IWritableWrapperInfo
+            cachedValue as IMutableWrapperInfo
 
             cachedValue.setMaxMemory(updateValue.getMaxMemory())
             cachedValue.setUsedMemory(updateValue.getUsedMemory())

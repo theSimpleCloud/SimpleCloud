@@ -22,7 +22,7 @@
 
 package eu.thesimplecloud.api.wrapper
 
-interface IWritableWrapperInfo : IWrapperInfo {
+interface IMutableWrapperInfo : IWrapperInfo {
 
     /**
      * Sets the amount of services this wrapper can start simultaneously

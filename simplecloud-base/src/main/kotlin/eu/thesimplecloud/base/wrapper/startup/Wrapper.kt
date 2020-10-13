@@ -25,8 +25,8 @@ package eu.thesimplecloud.base.wrapper.startup
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.client.NetworkComponentType
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
+import eu.thesimplecloud.api.wrapper.IMutableWrapperInfo
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
-import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
 import eu.thesimplecloud.base.core.jvm.JvmArgumentsConfig
 import eu.thesimplecloud.base.wrapper.impl.CloudAPIImpl
 import eu.thesimplecloud.base.wrapper.logger.LoggerMessageListenerImpl
@@ -181,7 +181,7 @@ class Wrapper : ICloudApplication {
                 templateClient.getConnection().sendUnitQuery(PacketOutGetTemplates(), TimeUnit.SECONDS.toMillis((60 * 2) + 30))
                         .thenDelayed(3, TimeUnit.SECONDS) {
                             reloadExistingModules()
-                            val thisWrapper = getThisWrapper() as IWritableWrapperInfo
+                            val thisWrapper = getThisWrapper() as IMutableWrapperInfo
                             thisWrapper.setTemplatesReceived(true)
                             CloudAPI.instance.getWrapperManager().update(thisWrapper)
                             Launcher.instance.consoleSender.sendMessage("wrapper.template.received", "Templates received.")
@@ -209,7 +209,7 @@ class Wrapper : ICloudApplication {
     fun updateWrapperData() {
         val usedMemory = this.cloudServiceProcessManager.getAllProcesses().sumBy { it.getCloudService().getMaxMemory() }
         val thisWrapper = this.getThisWrapper()
-        thisWrapper as IWritableWrapperInfo
+        thisWrapper as IMutableWrapperInfo
         thisWrapper.setUsedMemory(usedMemory)
         thisWrapper.setCurrentlyStartingServices(this.processQueue?.getStartingOrQueuedServiceAmount() ?: 0)
         if (this.connectionToManager.isOpen())

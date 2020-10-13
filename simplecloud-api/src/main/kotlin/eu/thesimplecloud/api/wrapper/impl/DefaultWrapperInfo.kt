@@ -22,7 +22,7 @@
 
 package eu.thesimplecloud.api.wrapper.impl
 
-import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
+import eu.thesimplecloud.api.wrapper.IMutableWrapperInfo
 import eu.thesimplecloud.jsonlib.GsonCreator
 import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.jsonlib.JsonLibExclude
@@ -32,7 +32,7 @@ data class DefaultWrapperInfo(
         private val host: String,
         private var maxSimultaneouslyStartingServices: Int,
         private var maxMemory: Int
-) : IWritableWrapperInfo {
+) : IMutableWrapperInfo {
 
     @JsonLibExclude
     private var authenticated = false

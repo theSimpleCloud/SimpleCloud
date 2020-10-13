@@ -25,7 +25,7 @@ package eu.thesimplecloud.base.manager.commands
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.command.ICommandSender
 import eu.thesimplecloud.api.extension.sendPacketToAllAuthenticatedWrapperClients
-import eu.thesimplecloud.api.wrapper.IWritableWrapperInfo
+import eu.thesimplecloud.api.wrapper.IMutableWrapperInfo
 import eu.thesimplecloud.base.manager.config.JvmArgumentsConfigLoader
 import eu.thesimplecloud.base.manager.network.packets.PacketOutReloadExistingModules
 import eu.thesimplecloud.base.manager.startup.Manager
@@ -55,7 +55,7 @@ class ReloadCommand : ICommandHandler {
         }
         loadedWrappers.toMutableList().removeAll(unknownWrappers)
         loadedWrappers.forEach {
-            val cachedWrapper = CloudAPI.instance.getWrapperManager().getWrapperByHost(it.getHost()) as IWritableWrapperInfo
+            val cachedWrapper = CloudAPI.instance.getWrapperManager().getWrapperByHost(it.getHost()) as IMutableWrapperInfo
             cachedWrapper.setMaxSimultaneouslyStartingServices(it.getMaxSimultaneouslyStartingServices())
             cachedWrapper.setMaxMemory(it.getMaxMemory())
             CloudAPI.instance.getWrapperManager().update(cachedWrapper)
