@@ -92,7 +92,7 @@ class SetupManager(val launcher: Launcher) {
         val suggestionProvider = currentQuestion.setupQuestion.answerProvider.java.newInstance()
         //search suggestions for an empty input
         val suggestions = suggestionProvider.getSuggestions(launcher.consoleSender)
-        suggestions.replace("", "<empty>")
+                .replace("", "<empty>")
         val suffix = if (suggestions.isNotEmpty()) "§ePossible answers: " + suggestions.joinToString() else ""
         if (suffix.isEmpty()) {
             launcher.consoleSender.sendPropertyInSetup(currentQuestion.setupQuestion.property)
