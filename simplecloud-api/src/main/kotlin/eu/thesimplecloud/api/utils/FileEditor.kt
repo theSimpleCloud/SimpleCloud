@@ -46,7 +46,6 @@ class FileEditor() {
     constructor(file: File) : this() {
         if (!file.exists()) {
             val dir = File(file, "..")
-            println()
             dir.mkdirs()
             try {
                 file.createNewFile()
