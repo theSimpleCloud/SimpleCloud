@@ -30,8 +30,6 @@ import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 import eu.thesimplecloud.launcher.console.command.provider.ServiceCommandSuggestionProvider
-import eu.thesimplecloud.launcher.extension.sendMessage
-
 /**
  * Created by IntelliJ IDEA.
  * Date: 09.06.2020
@@ -48,16 +46,16 @@ class CopyCommand : ICommandHandler {
             @CommandArgument("path") path: String
     ) {
         if (!service.isActive()) {
-            commandSender.sendMessage("manager.command.copy.service-inactive", "The specified service is inactive.")
+            commandSender.sendProperty("manager.command.copy.service-inactive")
             return
         }
-        commandSender.sendMessage("manager.command.copy.start", "Copying service %SERVICE%", service.getName(), "...")
+        commandSender.sendProperty("manager.command.copy.start", service.getName())
         service.copy(path)
                 .addResultListener {
-                    commandSender.sendMessage("manager.command.copy.success", "Service copied.")
+                    commandSender.sendProperty("manager.command.copy.success")
                 }.addFailureListener {
                     val messageCause = it.message ?: it::class.java.simpleName
-                    commandSender.sendMessage("manager.command.copy.failed", "Copying failed: %CAUSE%", messageCause, ".")
+                    commandSender.sendProperty("manager.command.copy.failed", messageCause)
                 }
     }
 

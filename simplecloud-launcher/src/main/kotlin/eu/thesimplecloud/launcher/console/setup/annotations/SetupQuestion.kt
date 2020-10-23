@@ -31,6 +31,5 @@ import kotlin.reflect.KClass
 annotation class SetupQuestion(
         val number: Int,
         val property: String,
-        val question: String,
         val answerProvider: KClass<out ISetupAnswerProvider> = EmptySetupAnswerProvider::class
 )

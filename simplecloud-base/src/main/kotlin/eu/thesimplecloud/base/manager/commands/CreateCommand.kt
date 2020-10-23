@@ -33,7 +33,6 @@ import eu.thesimplecloud.launcher.console.command.ICommandHandler
 import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
-import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.startup.Launcher
 
 @Command("create", CommandType.CONSOLE, "cloud.command.create")
@@ -65,15 +64,15 @@ class CreateCommand : ICommandHandler {
     @CommandSubPath("template <name>", "Creates a template")
     fun createTemplate(@CommandArgument("name") name: String) {
         if (name.length > 16) {
-            Launcher.instance.consoleSender.sendMessage("manager.command.create.template.name-too-long", "The specified name must be shorter than 17 characters.")
+            Launcher.instance.consoleSender.sendProperty("manager.command.create.template.name-too-long")
         }
         if (templateManager.getTemplateByName(name) != null) {
-            Launcher.instance.consoleSender.sendMessage("manager.command.create.template.already-exist", "Template %NAME%", name, " does already exist.")
+            Launcher.instance.consoleSender.sendProperty("manager.command.create.template.already-exist", name)
             return
         }
         val template = DefaultTemplate(name)
         templateManager.update(template)
-        Launcher.instance.consoleSender.sendMessage("manager.command.create.template.success", "Template %NAME%", name, " created")
+        Launcher.instance.consoleSender.sendProperty("manager.command.create.template.success", name)
 
     }
 

@@ -27,7 +27,6 @@ import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.base.wrapper.process.CloudServiceProcess
 import eu.thesimplecloud.base.wrapper.process.ICloudServiceProcess
 import eu.thesimplecloud.base.wrapper.startup.Wrapper
-import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.startup.Launcher
 import java.util.*
 import java.util.concurrent.LinkedBlockingQueue
@@ -41,7 +40,7 @@ class CloudServiceProcessQueue {
     private fun getMaxSimultaneouslyStartingServices() = Wrapper.instance.getThisWrapper().getMaxSimultaneouslyStartingServices()
 
     fun addToQueue(cloudService: ICloudService) {
-        Launcher.instance.consoleSender.sendMessage("wrapper.service.queued", "Service %NAME%", cloudService.getName(), " is now queued.")
+        Launcher.instance.consoleSender.sendProperty("wrapper.service.queued", cloudService.getName())
         val cloudServiceProcess = CloudServiceProcess(cloudService)
         this.queue.add(cloudServiceProcess)
         Wrapper.instance.cloudServiceProcessManager.registerServiceProcess(cloudServiceProcess)

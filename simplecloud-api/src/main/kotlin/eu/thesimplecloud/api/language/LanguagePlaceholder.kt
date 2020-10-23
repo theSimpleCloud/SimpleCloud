@@ -20,21 +20,18 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.launcher.console.setup
+package eu.thesimplecloud.api.language
 
-class TestSetup {
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 15.10.2020
+ * Time: 18:36
+ * @author Frederick Baier
+ */
+class LanguagePlaceholder(val placeholderName: String) {
 
-    /*
-    @SetupQuestion("property", "Question")
-    fun setup(answer: String){
-
+    fun getStringToReplace(): String {
+        return "%${placeholderName}%"
     }
-
-    @SetupQuestion("property", "Question")
-    fun setup(template: Template){
-
-    }
-    */
-
 
 }

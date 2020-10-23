@@ -28,7 +28,6 @@ import eu.thesimplecloud.launcher.console.command.ICommandHandler
 import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
-import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.screens.IScreen
 import eu.thesimplecloud.launcher.screens.session.ScreenSession
 import eu.thesimplecloud.launcher.startup.Launcher
@@ -57,7 +56,7 @@ class ScreenCommand : ICommandHandler {
     private fun handleScreenNotExist(commandSender: ICommandSender, name: String): IScreen? {
         val screen = Launcher.instance.screenManager.getScreen(name)
         if (screen == null) {
-            commandSender.sendMessage("manager.command.screen.not-exist", "The specified screen does not exist.")
+            commandSender.sendProperty("manager.command.screen.not-exist")
             return null
         }
         return screen
@@ -65,7 +64,7 @@ class ScreenCommand : ICommandHandler {
 
     @CommandSubPath("list", "Lists all screens")
     fun listScreens(commandSender: ICommandSender) {
-        commandSender.sendMessage("manager.command.screen.list", "There are following screens available:")
+        commandSender.sendProperty("manager.command.screen.list")
         val screensString = Launcher.instance.screenManager.getAllScreens().joinToString { it.getName() }
         commandSender.sendMessage(screensString)
     }

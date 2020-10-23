@@ -29,7 +29,6 @@ import eu.thesimplecloud.launcher.console.command.ICommandHandler
 import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
-import eu.thesimplecloud.launcher.extension.sendMessage
 
 @Command("info", CommandType.CONSOLE, "cloud.command.info")
 class InfoCommand : ICommandHandler {
@@ -38,7 +37,7 @@ class InfoCommand : ICommandHandler {
     fun wrapper(commandSender: ICommandSender, @CommandArgument("name") name: String) {
         val wrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(name)
         if (wrapper == null) {
-            commandSender.sendMessage("manager.command.info.wrapper.not-exist", "The specified wrapper does not exist.")
+            commandSender.sendProperty("manager.command.info.wrapper.not-exist")
             return
         }
         commandSender.sendMessage(wrapper.toString())
@@ -49,7 +48,7 @@ class InfoCommand : ICommandHandler {
     fun service(commandSender: ICommandSender, @CommandArgument("name") name: String) {
         val service = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(name)
         if (service == null) {
-            commandSender.sendMessage("manager.command.info.service.not-exist", "The specified service does not exist.")
+            commandSender.sendProperty("manager.command.info.service.not-exist")
             return
         }
         commandSender.sendMessage(service.toString())
@@ -59,7 +58,7 @@ class InfoCommand : ICommandHandler {
     fun group(commandSender: ICommandSender, @CommandArgument("name") name: String) {
         val group = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(name)
         if (group == null) {
-            commandSender.sendMessage("manager.command.info.group.not-exist", "The specified group does not exist.")
+            commandSender.sendProperty("manager.command.info.group.not-exist")
             return
         }
         commandSender.sendMessage(group.toString())
@@ -69,7 +68,7 @@ class InfoCommand : ICommandHandler {
     fun player(commandSender: ICommandSender, @CommandArgument("name") name: String) {
         val player = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(name)
         if (player == null) {
-            commandSender.sendMessage("manager.command.info.player.not-exist", "The specified player does not exist.")
+            commandSender.sendProperty("manager.command.info.player.not-exist")
             return
         }
         commandSender.sendMessage(player.toString())
@@ -78,7 +77,7 @@ class InfoCommand : ICommandHandler {
     @CommandSubPath("onlinecount", "Prints the number of online players")
     fun handlePlayers(commandSender: ICommandSender) {
         val onlineCount = CloudAPI.instance.getCloudPlayerManager().getAllCachedObjects().size
-        commandSender.sendMessage("manager.command.info.onlinecount", "Online count: %COUNT%", onlineCount.toString())
+        commandSender.sendProperty("manager.command.info.onlinecount", onlineCount.toString())
     }
 
 

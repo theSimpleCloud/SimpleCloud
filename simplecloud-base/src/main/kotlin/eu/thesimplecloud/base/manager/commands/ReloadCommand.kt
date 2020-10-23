@@ -34,7 +34,6 @@ import eu.thesimplecloud.launcher.console.command.ICommandHandler
 import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
-import eu.thesimplecloud.launcher.extension.sendMessage
 import kotlin.concurrent.thread
 
 @Command("reload", CommandType.CONSOLE, "cloud.command.reload", ["rl"])
@@ -50,7 +49,7 @@ class ReloadCommand : ICommandHandler {
         val unknownWrappers = loadedWrappers.filter { CloudAPI.instance.getWrapperManager().getWrapperByHost(it.getHost()) == null }
         if (unknownWrappers.isNotEmpty()) {
             unknownWrappers.forEach {
-                commandSender.sendMessage("manager.command.reload.wrapper-changed", "Failed to reload wrapper %WRAPPER%", it.getName(), " because the host has changed.")
+                commandSender.sendProperty("manager.command.reload.wrapper-changed", it.getName())
             }
         }
         loadedWrappers.toMutableList().removeAll(unknownWrappers)
@@ -60,7 +59,7 @@ class ReloadCommand : ICommandHandler {
             cachedWrapper.setMaxMemory(it.getMaxMemory())
             CloudAPI.instance.getWrapperManager().update(cachedWrapper)
         }
-        loadedWrappers.forEach { commandSender.sendMessage("manager.command.reload.wrapper-success", "Reloaded wrapper %WRAPPER%", it.getName(), ".") }
+        loadedWrappers.forEach { commandSender.sendProperty("manager.command.reload.wrapper-success", it.getName()) }
 
         //jvm-arguments
         val jvmArgumentsConfigLoader = JvmArgumentsConfigLoader()
@@ -71,12 +70,12 @@ class ReloadCommand : ICommandHandler {
         val unknownGroups = loadedGroups.filter { CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(it.getName()) == null }
         if (unknownGroups.isNotEmpty()) {
             unknownGroups.forEach {
-                commandSender.sendMessage("manager.command.reload.group-changed", "Failed to reload group %GROUP%", it.getName(), " because the name has changed.")
+                commandSender.sendProperty("manager.command.reload.group-changed", it.getName())
             }
         }
         loadedGroups.toMutableList().removeAll(unknownGroups)
         loadedGroups.forEach { CloudAPI.instance.getCloudServiceGroupManager().update(it) }
-        loadedGroups.forEach { commandSender.sendMessage("manager.command.reload.group-success", "Reloaded group %GROUP%", it.getName(), ".") }
+        loadedGroups.forEach { commandSender.sendProperty("manager.command.reload.group-success", it.getName()) }
 
         //send all wrappers a packet to reload the modules list
         Manager.instance.communicationServer.getClientManager().sendPacketToAllAuthenticatedWrapperClients(PacketOutReloadExistingModules())
@@ -91,7 +90,7 @@ class ReloadCommand : ICommandHandler {
         val module = Manager.instance.cloudModuleHandler.getLoadedModuleByName(moduleName)
 
         if (module == null) {
-            commandSender.sendMessage("manager.command.reload.module.not-exists", "Module to reload doesn't exists.")
+            commandSender.sendProperty("manager.command.reload.module.not-exists")
             return
         }
 

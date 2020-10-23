@@ -38,7 +38,6 @@ import eu.thesimplecloud.client.packets.PacketOutScreenMessage
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.launcher.dependency.DependencyLoader
-import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.startup.Launcher
 import org.apache.commons.io.FileUtils
 import java.io.BufferedReader
@@ -54,7 +53,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
     private val serviceTmpDir = if (cloudService.isStatic()) File(DirectoryPaths.paths.staticPath + cloudService.getName()) else File(DirectoryPaths.paths.tempPath + cloudService.getName())
 
     override fun start(): ICommunicationPromise<Unit> {
-        Launcher.instance.consoleSender.sendMessage("wrapper.service.starting", "Starting service %NAME%", cloudService.getName(), ".")
+        Launcher.instance.consoleSender.sendProperty("wrapper.service.starting", cloudService.getName())
         this.cloudService as DefaultCloudService
         if (cloudService.getServiceType().isProxy()) {
             val proxyGroup = cloudService.getServiceGroup()
@@ -113,7 +112,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
     }
 
     private fun processStopped(){
-        Launcher.instance.consoleSender.sendMessage("wrapper.service.stopped", "Service %NAME%", cloudService.getName(), " was stopped.")
+        Launcher.instance.consoleSender.sendProperty("wrapper.service.stopped", cloudService.getName())
         Wrapper.instance.cloudServiceProcessManager.unregisterServiceProcess(this)
         deleteTmpFolder()
         if (Wrapper.instance.connectionToManager.isOpen()) {

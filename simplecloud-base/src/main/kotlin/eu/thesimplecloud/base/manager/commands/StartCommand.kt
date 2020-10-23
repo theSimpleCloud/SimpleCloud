@@ -30,7 +30,6 @@ import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 import eu.thesimplecloud.launcher.console.command.provider.ServiceGroupCommandSuggestionProvider
-import eu.thesimplecloud.launcher.extension.sendMessage
 
 @Command("start", CommandType.CONSOLE_AND_INGAME, "cloud.command.start")
 class StartCommand : ICommandHandler {
@@ -49,7 +48,7 @@ class StartCommand : ICommandHandler {
         for (i in 0 until count) {
             cloudServiceGroup.startNewService()
         }
-        commandSender.sendMessage("manager.command.start.success", "Trying to start %COUNT%", count.toString(), " new services of group %GROUP%", cloudServiceGroup.getName())
+        commandSender.sendProperty("manager.command.start.success", count.toString(), cloudServiceGroup.getName())
     }
 
 }

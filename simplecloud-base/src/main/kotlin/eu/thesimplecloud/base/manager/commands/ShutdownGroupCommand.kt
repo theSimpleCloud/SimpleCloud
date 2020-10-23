@@ -30,7 +30,6 @@ import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 import eu.thesimplecloud.launcher.console.command.provider.ServiceGroupCommandSuggestionProvider
-import eu.thesimplecloud.launcher.extension.sendMessage
 
 @Command("shutdowngroup", CommandType.CONSOLE_AND_INGAME, "cloud.command.shutdowngroup")
 class ShutdownGroupCommand : ICommandHandler {
@@ -38,11 +37,11 @@ class ShutdownGroupCommand : ICommandHandler {
     @CommandSubPath("<group>", "Stops all services of a group")
     fun startService(commandSender: ICommandSender, @CommandArgument("group", ServiceGroupCommandSuggestionProvider::class) cloudServiceGroup: ICloudServiceGroup) {
         if (cloudServiceGroup.getAllServices().isEmpty()){
-            commandSender.sendMessage("manager.command.shutdowngroup.failure", "There are no running services of group %GROUP%", cloudServiceGroup.getName())
+            commandSender.sendProperty("manager.command.shutdowngroup.failure", cloudServiceGroup.getName())
             return
         }
         cloudServiceGroup.shutdownAllServices()
-        commandSender.sendMessage("manager.command.shutdowngroup.success", "Stopping all services of group %GROUP%", cloudServiceGroup.getName())
+        commandSender.sendProperty("manager.command.shutdowngroup.success", cloudServiceGroup.getName())
     }
 
 }

@@ -38,7 +38,6 @@ import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 import eu.thesimplecloud.launcher.console.command.provider.ServiceGroupCommandSuggestionProvider
 import eu.thesimplecloud.launcher.console.command.provider.TemplateCommandSuggestionProvider
 import eu.thesimplecloud.launcher.console.command.provider.WrapperCommandSuggestionProvider
-import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.startup.Launcher
 import java.lang.reflect.Field
 
@@ -72,15 +71,15 @@ class EditCommand : ICommandHandler {
             field.isAccessible = true
             val type = StringParser().parseToObject(value, field.type)
             if (type == null) {
-                commandSender.sendMessage("manager.command.edit.group.invalid-value", "Invalid value. Expected type: %TYPE%", field.type.simpleName)
+                commandSender.sendProperty("manager.command.edit.group.invalid-value", field.type.simpleName)
                 return
             }
             try {
                 field.set(serviceGroup, type)
-                commandSender.sendMessage("manager.command.edit.group.success", "Group edited.")
+                commandSender.sendProperty("manager.command.edit.group.success")
                 CloudAPI.instance.getCloudServiceGroupManager().update(serviceGroup)
             } catch (e: Exception) {
-                commandSender.sendMessage("manager.command.edit.group.invalid-value", "Invalid value. Expected type: %TYPE%", field.type.simpleName)
+                commandSender.sendProperty("manager.command.edit.group.invalid-value", field.type.simpleName)
                 return
             }
         } else {
@@ -91,7 +90,7 @@ class EditCommand : ICommandHandler {
     fun getFieldsOfGroup(groupName: String): List<Field>? {
         val serviceGroup = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(groupName)
         if (serviceGroup == null) {
-            Launcher.instance.consoleSender.sendMessage("manager.command.edit.group.not-exist", "The specified group does not exist.")
+            Launcher.instance.consoleSender.sendProperty("manager.command.edit.group.not-exist")
             return null
         }
         val allFields = serviceGroup::class.java.getAllFieldsFromClassAndSubClasses().filter { !Collection::class.java.isAssignableFrom(it.type) }
@@ -122,15 +121,15 @@ class EditCommand : ICommandHandler {
             field.isAccessible = true
             val type = StringParser().parseToObject(value, field.type)
             if (type == null) {
-                commandSender.sendMessage("manager.command.edit.wrapper.invalid-value", "Invalid value. Expected type: %TYPE%", field.type.simpleName)
+                commandSender.sendProperty("manager.command.edit.wrapper.invalid-value", field.type.simpleName)
                 return
             }
             try {
                 field.set(wrapper, type)
-                commandSender.sendMessage("manager.command.edit.wrapper.success", "Wrapper edited.")
+                commandSender.sendProperty("manager.command.edit.wrapper.success")
                 CloudAPI.instance.getWrapperManager().update(wrapper)
             } catch (e: Exception) {
-                commandSender.sendMessage("manager.command.edit.wrapper.invalid-value", "Invalid value. Expected type: %TYPE%", field.type.simpleName)
+                commandSender.sendProperty("manager.command.edit.wrapper.invalid-value", field.type.simpleName)
                 return
             }
         } else {
@@ -144,57 +143,57 @@ class EditCommand : ICommandHandler {
     }
 
     private fun sendAllParameters(commandSender: ICommandSender, fields: List<Field>) {
-        commandSender.sendMessage("manager.command.edit.allowed-parameters", "Allowed parameters are:")
+        commandSender.sendProperty("manager.command.edit.allowed-parameters")
         commandSender.sendMessage(fields.joinToString { it.name })
     }
 
     @CommandSubPath("template <name> inheritance add <otherTemplate>", "Adds a inheritance to a template")
     fun addInheritTemplate(commandSender: ICommandSender, @CommandArgument("name", TemplateCommandSuggestionProvider::class) template: ITemplate, @CommandArgument("otherTemplate", TemplateCommandSuggestionProvider::class) otherTemplate: ITemplate) {
         if (template == otherTemplate) {
-            commandSender.sendMessage("manager.command.edit.template.inheritance.add.both-equal", "Cannot add a template as inheritance to itself.")
+            commandSender.sendProperty("manager.command.edit.template.inheritance.add.both-equal")
             return
         }
         if (template.getInheritedTemplateNames().contains(otherTemplate.getName())) {
-            commandSender.sendMessage("manager.command.edit.template.inheritance.add.already-added", "Template %NAME%", template.getName(), " is already inheriting from %OTHER_NAME%", otherTemplate.getName())
+            commandSender.sendProperty("manager.command.edit.template.inheritance.add.already-added", template.getName(), otherTemplate.getName())
             return
         }
         template.addInheritanceTemplate(otherTemplate)
         CloudAPI.instance.getTemplateManager().update(template)
-        commandSender.sendMessage("manager.command.edit.template.inheritance.add.success", "Template %NAME%", template.getName(), " is now inheriting from %OTHER_NAME%", otherTemplate.getName())
+        commandSender.sendProperty("manager.command.edit.template.inheritance.add.success", template.getName(), otherTemplate.getName())
     }
 
     @CommandSubPath("template <name> inheritance remove <otherTemplate>", "Removes a inheritance from a template")
     fun removeInheritTemplate(commandSender: ICommandSender, @CommandArgument("name", TemplateCommandSuggestionProvider::class) template: ITemplate, @CommandArgument("otherTemplate", TemplateCommandSuggestionProvider::class) otherTemplate: ITemplate) {
         if (!template.getInheritedTemplateNames().contains(otherTemplate.getName())) {
-            commandSender.sendMessage("manager.command.edit.template.inheritance.remove.not-added", "Template %NAME%", template.getName(), " is not inheriting from %OTHER_NAME%", otherTemplate.getName())
+            commandSender.sendProperty("manager.command.edit.template.inheritance.remove.not-added", template.getName(), otherTemplate.getName())
             return
         }
         template.removeInheritanceTemplate(otherTemplate)
         CloudAPI.instance.getTemplateManager().update(template)
-        commandSender.sendMessage("manager.command.edit.template.inheritance.remove.success", "Template %NAME%", template.getName(), " is no longer inheriting from %OTHER_NAME%", otherTemplate.getName())
+        commandSender.sendProperty("manager.command.edit.template.inheritance.remove.success", template.getName(), otherTemplate.getName())
     }
 
 
     @CommandSubPath("template <name> module add <module>", "Adds a module to a template")
     fun addModuleNameToCopy(commandSender: ICommandSender, @CommandArgument("name", TemplateCommandSuggestionProvider::class) template: ITemplate, @CommandArgument("module") module: String) {
         if (template.getModuleNamesToCopy().map { it.toLowerCase() }.contains(module)) {
-            commandSender.sendMessage("manager.command.edit.template.modules.add.already-added", "Module %MODULE%", module, " is already added to template %TEMPLATE%", template.getName())
+            commandSender.sendProperty("manager.command.edit.template.modules.add.already-added", module, template.getName())
             return
         }
         template.addModuleNameToCopy(module)
         CloudAPI.instance.getTemplateManager().update(template)
-        commandSender.sendMessage("manager.command.edit.template.modules.add.success", "Added module %MODULE%", module, " to template %TEMPLATE%", template.getName())
+        commandSender.sendProperty("manager.command.edit.template.modules.add.success", module, template.getName())
     }
 
     @CommandSubPath("template <name> module remove <module>", "Removes a module from a template")
     fun removeModuleNameToCopy(commandSender: ICommandSender, @CommandArgument("name", TemplateCommandSuggestionProvider::class) template: ITemplate, @CommandArgument("module") module: String) {
         if (!template.getModuleNamesToCopy().map { it.toLowerCase() }.contains(module)) {
-            commandSender.sendMessage("manager.command.edit.template.modules.add.not-added", "Module %MODULE%", module, " was not added to template %TEMPLATE%", template.getName())
+            commandSender.sendProperty("manager.command.edit.template.modules.remove.not-added", module,  template.getName())
             return
         }
         template.removeModuleNameToCopy(module)
         CloudAPI.instance.getTemplateManager().update(template)
-        commandSender.sendMessage("manager.command.edit.template.inheritance.remove.success", "Module %MODULE%", module, " was removed from template %TEMPLATE%", template.getName())
+        commandSender.sendProperty("manager.command.edit.template.modules.remove.success",  module, template.getName())
     }
 
 }

@@ -22,6 +22,7 @@
 
 package eu.thesimplecloud.api.command
 
+import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.exception.NoSuchPlayerException
 import eu.thesimplecloud.api.exception.UnreachableComponentException
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
@@ -33,6 +34,14 @@ interface ICommandSender {
      * @return a promise that completes when the message was sent.
      */
     fun sendMessage(message: String): ICommunicationPromise<Unit>
+
+    /**
+     * Sends message got by the [property] with the replaced values
+     */
+    fun sendProperty(property: String, vararg placeholderValues: String): ICommunicationPromise<Unit> {
+        val replacedMessage = CloudAPI.instance.getLanguageManager().getMessage(property, *placeholderValues)
+        return sendMessage(replacedMessage)
+    }
 
     /**
      * Checks whether this sender has the specified [permission]

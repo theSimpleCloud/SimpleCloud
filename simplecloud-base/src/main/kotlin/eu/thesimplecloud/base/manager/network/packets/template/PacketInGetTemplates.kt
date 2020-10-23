@@ -28,7 +28,6 @@ import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.filetransfer.directory.IDirectorySync
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
-import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.startup.Launcher
 import java.io.File
 
@@ -37,12 +36,12 @@ class PacketInGetTemplates() : JsonPacket() {
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Unit> {
         val wrapperByHost = CloudAPI.instance.getWrapperManager().getWrapperByHost(connection.getHost()!!)
                 ?: throw IllegalStateException("No Wrapper object found for Wrapper by host " + connection.getHost())
-        Launcher.instance.consoleSender.sendMessage("manager.templates.synchronization", "Synchronizing templates with Wrapper %WRAPPER%", wrapperByHost.getName(), "...")
+        Launcher.instance.consoleSender.sendProperty("manager.templates.synchronization", wrapperByHost.getName())
         val templatesDirectorySync = connection.getCommunicationBootstrap().getDirectorySyncManager().getDirectorySync(File(DirectoryPaths.paths.templatesPath))
         val modulesDirectorySync = connection.getCommunicationBootstrap().getDirectorySyncManager().getDirectorySync(File(DirectoryPaths.paths.modulesPath))
         syncDirectory(templatesDirectorySync, connection)
         syncDirectory(modulesDirectorySync, connection)
-        Launcher.instance.consoleSender.sendMessage("manager.templates.synchronization.complete", "Synchronized templates with Wrapper %WRAPPER%", wrapperByHost.getName(), ".")
+        Launcher.instance.consoleSender.sendProperty("manager.templates.synchronization.complete", wrapperByHost.getName())
         return unit()
     }
 

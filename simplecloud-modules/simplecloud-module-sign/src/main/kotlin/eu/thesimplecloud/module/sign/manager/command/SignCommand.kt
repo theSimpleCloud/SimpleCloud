@@ -29,7 +29,6 @@ import eu.thesimplecloud.launcher.console.command.ICommandHandler
 import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
-import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.module.sign.lib.group.GroupLayouts
 import eu.thesimplecloud.module.sign.lib.layout.LayoutType
 import eu.thesimplecloud.module.sign.manager.SignModuleConfigPersistence
@@ -47,7 +46,7 @@ class SignCommand : ICommandHandler {
     fun handleReload(sender: ICommandSender) {
         val config = SignModuleConfigPersistence.load()
         config.update()
-        sender.sendMessage("manager.command.sign.reload", "Signs reloaded")
+        sender.sendProperty("manager.command.sign.reload")
     }
 
     @CommandSubPath("layout <group> <layoutType> <layout>", "Sets the layout for a group")
@@ -59,13 +58,13 @@ class SignCommand : ICommandHandler {
     ) {
         val group = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(groupName)
         if (group == null) {
-            sender.sendMessage("manager.command.sign.layout.group-not-found", "Group not found")
+            sender.sendProperty("manager.command.sign.layout.group-not-found")
             return
         }
         val config = SignModuleConfigPersistence.load()
         val signLayout = config.signLayoutContainer.getLayoutByName(layoutType, layoutName)
         if (signLayout == null) {
-            sender.sendMessage("manager.command.sign.layout.layout-not-found", "Layout not found")
+            sender.sendProperty("manager.command.sign.layout.layout-not-found")
             return
         }
         val groupsLayoutContainer = config.groupsLayoutContainer
@@ -78,7 +77,7 @@ class SignCommand : ICommandHandler {
         }
         config.update()
         SignModuleConfigPersistence.save(config)
-        sender.sendMessage("manager.command.sign.layout.success", "Group %GROUP%", group.getName(), " is now using layout %LAYOUT%", layoutName, " for %TYPE%", layoutType.toString())
+        sender.sendProperty("manager.command.sign.layout.success", group.getName(), layoutName, layoutType.toString())
     }
 
 }

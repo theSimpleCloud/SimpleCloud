@@ -22,6 +22,7 @@
 
 package eu.thesimplecloud.launcher.console
 
+import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.command.ICommandSender
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
@@ -36,21 +37,21 @@ import eu.thesimplecloud.launcher.startup.Launcher
 class ConsoleSender : ICommandSender {
 
     override fun sendMessage(message: String): ICommunicationPromise<Unit> {
-        return sendMessage(message, false)
-    }
-
-    fun sendMessage(message: String, isSetup: Boolean): ICommunicationPromise<Unit> {
-        if (isSetup) {
-            Launcher.instance.logger.setup(filerColorCodes(message))
-            return CommunicationPromise.of(Unit)
-        }
-
         if (message.startsWith("§c") || message.startsWith("&c")) {
             Launcher.instance.logger.warning(filerColorCodes(message))
         } else {
             Launcher.instance.logger.console(filerColorCodes(message))
         }
         return CommunicationPromise.of(Unit)
+    }
+
+    fun sendPropertyInSetup(property: String, vararg placeholderValues: String) {
+        if (CloudAPI.isAvailable()) {
+            val replacedMessage = CloudAPI.instance.getLanguageManager().getMessage(property, *placeholderValues)
+            Launcher.instance.logger.setup(replacedMessage)
+            return
+        }
+        Launcher.instance.logger.setup(property)
     }
 
     override fun hasPermission(permission: String): ICommunicationPromise<Boolean> {

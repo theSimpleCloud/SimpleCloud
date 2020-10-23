@@ -24,6 +24,8 @@ package eu.thesimplecloud.api
 
 import eu.thesimplecloud.api.cachelist.manager.CacheListManager
 import eu.thesimplecloud.api.cachelist.manager.ICacheListManager
+import eu.thesimplecloud.api.language.ILanguageManager
+import eu.thesimplecloud.api.language.LanguageManager
 import eu.thesimplecloud.api.message.IMessageChannelManager
 import eu.thesimplecloud.api.message.MessageChannelManager
 import eu.thesimplecloud.api.sync.`object`.GlobalPropertyHolder
@@ -40,11 +42,11 @@ abstract class CloudAPI : ICloudAPI {
     private val messageChannelManager: IMessageChannelManager = MessageChannelManager()
     private val cacheListManager: ICacheListManager = CacheListManager()
     private val globalPropertyHolder: IGlobalPropertyHolder = GlobalPropertyHolder()
+    private val languageManager = LanguageManager()
 
     init {
         instance = this
     }
-
 
 
     override fun getWrapperManager(): IWrapperManager = this.wrapperManager
@@ -57,9 +59,15 @@ abstract class CloudAPI : ICloudAPI {
 
     override fun getGlobalPropertyHolder(): IGlobalPropertyHolder = this.globalPropertyHolder
 
+    override fun getLanguageManager(): ILanguageManager = this.languageManager
+
     companion object {
         @JvmStatic
         lateinit var instance: ICloudAPI
             private set
+
+        fun isAvailable(): Boolean {
+            return runCatching { CloudAPI.instance.getEventManager() }.isSuccess
+        }
     }
 }

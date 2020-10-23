@@ -43,9 +43,9 @@ import eu.thesimplecloud.clientserverapi.lib.packet.IPacket
 import eu.thesimplecloud.launcher.application.ApplicationClassLoader
 import eu.thesimplecloud.launcher.application.ICloudApplication
 import eu.thesimplecloud.launcher.config.LauncherConfig
-import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.external.module.LoadedModuleFileContent
 import eu.thesimplecloud.launcher.external.module.handler.ModuleHandler
+import eu.thesimplecloud.launcher.language.LanguageFileLoader
 import eu.thesimplecloud.launcher.startup.Launcher
 import org.apache.commons.io.FileUtils
 import java.io.File
@@ -81,13 +81,14 @@ class Wrapper : ICloudApplication {
         instance = this
         this.appClassLoader = this::class.java.classLoader as ApplicationClassLoader
         Launcher.instance.logger.addLoggerMessageListener(LoggerMessageListenerImpl())
-        val launcherConfig = Launcher.instance.launcherConfigLoader.loadConfig()
+        val launcherConfig = Launcher.instance.launcherConfig
         this.communicationClient = NettyClient(launcherConfig.host, launcherConfig.port, ConnectionHandlerImpl())
         this.connectionToManager = this.communicationClient.getConnection()
         this.communicationClient.setPacketSearchClassLoader(Launcher.instance.getNewClassLoaderWithLauncherAndBase())
         this.communicationClient.setClassLoaderToSearchObjectPacketClasses(appClassLoader)
         this.communicationClient.setPacketClassConverter { moveToApplicationClassLoader(it) }
         CloudAPIImpl()
+        LanguageFileLoader().loadFile(Launcher.instance.launcherConfig)
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.client.packets")
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.base.wrapper.network.packets")
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.api.network.packets")
@@ -95,11 +96,11 @@ class Wrapper : ICloudApplication {
             resetWrapperAndStartReconnectLoop(launcherConfig)
         }
         if (isStartedInManagerDirectory()) {
-            Launcher.instance.consoleSender.sendMessage("wrapper.startup.template-client.not-activated", "Detected that a manager is running in this directory. Using templates in this folder.")
-            Launcher.instance.consoleSender.sendMessage("wrapper.startup.template-client.help-message", "If your manager is not running in this directory delete the folder \"storage/wrappers\" and restart the wrapper.")
+            Launcher.instance.consoleSender.sendProperty("wrapper.startup.template-client.not-activated")
+            Launcher.instance.consoleSender.sendProperty("wrapper.startup.template-client.help-message")
             this.templateClient = null
         } else {
-            Launcher.instance.consoleSender.sendMessage("wrapper.startup.template-client.using", "Using an extra client to receive / send templates.")
+            Launcher.instance.consoleSender.sendProperty("wrapper.startup.template-client.using")
         }
 
         //shutdown hook
@@ -153,7 +154,7 @@ class Wrapper : ICloudApplication {
         this.processQueue = null
 
         while (!this.communicationClient.start().awaitUninterruptibly().isSuccess) {
-            Launcher.instance.consoleSender.sendMessage("wrapper.connection-failed", "Failed to connect to manager. Retrying in 5 seconds.")
+            Launcher.instance.consoleSender.sendProperty("wrapper.connection-failed")
             try {
                 Thread.sleep(5000)
             } catch (e: InterruptedException) {
@@ -177,14 +178,14 @@ class Wrapper : ICloudApplication {
         templateClient.addPacketsByPackage("eu.thesimplecloud.base.wrapper.network.packets.template")
         thread(start = true, isDaemon = false) {
             templateClient.start().then {
-                Launcher.instance.consoleSender.sendMessage("wrapper.template.requesting", "Requesting templates...")
+                Launcher.instance.consoleSender.sendProperty("wrapper.template.requesting")
                 templateClient.getConnection().sendUnitQuery(PacketOutGetTemplates(), TimeUnit.SECONDS.toMillis((60 * 2) + 30))
                         .thenDelayed(3, TimeUnit.SECONDS) {
                             reloadExistingModules()
                             val thisWrapper = getThisWrapper() as IMutableWrapperInfo
                             thisWrapper.setTemplatesReceived(true)
                             CloudAPI.instance.getWrapperManager().update(thisWrapper)
-                            Launcher.instance.consoleSender.sendMessage("wrapper.template.received", "Templates received.")
+                            Launcher.instance.consoleSender.sendProperty("wrapper.template.received")
                         }.addFailureListener {
                             Launcher.instance.logger.severe("An error occurred while requesting templates:")
                             Launcher.instance.logger.exception(it)

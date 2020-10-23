@@ -26,7 +26,6 @@ import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.utils.time.TimeAmountMeasurer
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.handler.DefaultConnectionHandler
-import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.startup.Launcher
 import java.util.concurrent.TimeUnit
 
@@ -45,7 +44,7 @@ abstract class AbstractCloudConnectionHandler : DefaultConnectionHandler() {
         val wrapperByHost = CloudAPI.instance.getWrapperManager().getWrapperByHost(host)
         if (wrapperByHost == null) {
             if (this.unknownHostMessageShownTimeStamps.getMeasuredAmount() < 3) {
-                Launcher.instance.consoleSender.sendMessage("manager.connection.unknown-host", "A client connected from an unknown host: %HOST%", host)
+                Launcher.instance.consoleSender.sendProperty("manager.connection.unknown-host", host)
             }
             connection.closeConnection()
             this.unknownHostMessageShownTimeStamps.addEntry()

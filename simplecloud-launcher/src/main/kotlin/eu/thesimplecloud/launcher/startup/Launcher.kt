@@ -25,15 +25,16 @@ package eu.thesimplecloud.launcher.startup
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.external.ICloudModule
 import eu.thesimplecloud.api.external.ResourceFinder
-import eu.thesimplecloud.api.language.LanguageManager
 import eu.thesimplecloud.launcher.application.ApplicationStarter
 import eu.thesimplecloud.launcher.application.CloudApplicationType
 import eu.thesimplecloud.launcher.application.ICloudApplication
+import eu.thesimplecloud.launcher.config.LauncherConfig
 import eu.thesimplecloud.launcher.config.LauncherConfigLoader
 import eu.thesimplecloud.launcher.console.ConsoleManager
 import eu.thesimplecloud.launcher.console.ConsoleSender
 import eu.thesimplecloud.launcher.console.command.CommandManager
 import eu.thesimplecloud.launcher.console.setup.SetupManager
+import eu.thesimplecloud.launcher.language.LanguageFileLoader
 import eu.thesimplecloud.launcher.logging.LoggerProvider
 import eu.thesimplecloud.launcher.screens.IScreenManager
 import eu.thesimplecloud.launcher.screens.ScreenManagerImpl
@@ -43,7 +44,6 @@ import eu.thesimplecloud.launcher.setups.StartSetup
 import eu.thesimplecloud.launcher.updater.RunnerUpdater
 import eu.thesimplecloud.launcher.updater.UpdateExecutor
 import java.io.File
-import java.io.IOException
 import java.net.URLClassLoader
 import java.util.concurrent.Executors
 import kotlin.system.exitProcess
@@ -82,10 +82,11 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
     val consoleSender = ConsoleSender()
     val consoleManager: ConsoleManager
     val setupManager = SetupManager(this)
-    val languageManager: LanguageManager
-    val launcherConfigLoader = LauncherConfigLoader()
+    private val launcherConfigLoader = LauncherConfigLoader()
     val scheduler = Executors.newScheduledThreadPool(1)
     val currentClassLoader: ClassLoader = Thread.currentThread().contextClassLoader
+    var launcherConfig: LauncherConfig
+        private set
 
     init {
         instance = this
@@ -103,11 +104,10 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
             }
         }
         System.setProperty("user.language", "en")
-        val launcherConfig = this.launcherConfigLoader.loadConfig()
+        this.launcherConfig = this.launcherConfigLoader.loadConfig()
         DirectoryPaths.paths = launcherConfig.directoryPaths
         this.commandManager = CommandManager()
         this.consoleManager = ConsoleManager(this.commandManager, this.consoleSender)
-        this.languageManager = LanguageManager("en_EN")
     }
 
     fun start() {
@@ -119,16 +119,15 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
         } else {
             this.logger.warning("Auto updater is disabled.")
         }
-        this.languageManager.loadFile()
         this.commandManager.registerAllCommands(launcherCloudModule, this.currentClassLoader, "eu.thesimplecloud.launcher.commands")
         this.consoleManager.startThread()
-        if (!this.languageManager.fileExistBeforeLoad())
+
+        if (LanguageFileLoader.isFirstStart)
             this.setupManager.queueSetup(LanguageSetup())
         if (!this.launcherConfigLoader.doesConfigFileExist())
             this.setupManager.queueSetup(AutoIpSetup())
         if (this.launcherStartArguments.startApplication == null)
             this.setupManager.queueSetup(StartSetup())
-
 
         this.setupManager.waitFroAllSetups()
         this.launcherStartArguments.startApplication?.let { startApplication(it) }
@@ -154,6 +153,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
     }
 
     fun clearConsole() {
+        /*
         if (isWindows()) {
             try {
                 ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor()
@@ -166,6 +166,8 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
             print("\u001b[H\u001b[2J")
             System.out.flush()
         }
+
+         */
     }
 
     fun executeCommand(command: String) {
@@ -204,6 +206,11 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
 
     fun getCurrentVersion(): String {
         return System.getProperty("simplecloud.version")
+    }
+
+    fun replaceLauncherConfig(config: LauncherConfig) {
+        this.launcherConfig = config
+        this.launcherConfigLoader.saveConfig(config)
     }
 
 }

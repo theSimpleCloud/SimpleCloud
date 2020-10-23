@@ -23,4 +23,37 @@
 package eu.thesimplecloud.api.language
 
 class LanguageProperty(val property: String, val message: String) {
+
+
+    /**
+     * Returns all placeholders in this message.
+     *
+     * Messages look like this
+     * Service %SERVICE% was stopped.
+     */
+    fun getAllPlaceHolders(): List<LanguagePlaceholder> {
+        val percentParts = this.message.split("%")
+        //is number not divisible by 2
+        if (percentParts.lastIndex % 2 != 0) {
+            throw IllegalArgumentException("Invalid message format for property $property")
+        }
+
+        val returnList = mutableListOf<LanguagePlaceholder>()
+        //all indices of placeholders
+        for (i in 1..percentParts.lastIndex step 2) {
+            returnList.add(LanguagePlaceholder(percentParts[i]))
+        }
+        return returnList
+    }
+
+    fun getReplacedMessage(vararg replacements: String): String {
+        val allPlaceHolders = getAllPlaceHolders()
+        var message = this.message
+        val replacementsIterator = replacements.iterator()
+        for (placeHolder in allPlaceHolders) {
+            message = message.replace(placeHolder.getStringToReplace(), replacementsIterator.next())
+        }
+        return message
+    }
+
 }

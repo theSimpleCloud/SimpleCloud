@@ -25,12 +25,11 @@ package eu.thesimplecloud.base.manager.startup.server
 import eu.thesimplecloud.api.screen.ICommandExecutable
 import eu.thesimplecloud.clientserverapi.lib.handler.IServerHandler
 import eu.thesimplecloud.clientserverapi.server.INettyServer
-import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.startup.Launcher
 
 class ServerHandlerImpl : IServerHandler<ICommandExecutable> {
     override fun onServerShutdown(nettyServer: INettyServer<ICommandExecutable>) {
-        Launcher.instance.consoleSender.sendMessage("manager.server.stopped", "A server is now stopped.")
+        Launcher.instance.consoleSender.sendProperty("manager.server.stopped")
     }
 
     override fun onServerStartException(nettyServer: INettyServer<ICommandExecutable>, ex: Throwable) {
@@ -39,6 +38,6 @@ class ServerHandlerImpl : IServerHandler<ICommandExecutable> {
     }
 
     override fun onServerStarted(nettyServer: INettyServer<ICommandExecutable>) {
-        Launcher.instance.consoleSender.sendMessage("manager.server.listening", "The cloud is now listening on port %PORT%", nettyServer.getPort().toString(), "...")
+        Launcher.instance.consoleSender.sendProperty("manager.server.listening", nettyServer.getPort().toString())
     }
 }

@@ -33,7 +33,6 @@ import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.api.utils.time.Timestamp
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.base.manager.startup.Manager
-import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.startup.Launcher
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -83,7 +82,7 @@ class ServiceHandler : IServiceHandler {
         if (serviceQueue.contains(service))
             return
         serviceQueue.add(service)
-        Launcher.instance.consoleSender.sendMessage("manager.service.queued", "Service %SERVICE%", service.getName(), " is now queued")
+        Launcher.instance.consoleSender.sendProperty("manager.service.queued", service.getName())
     }
 
 
@@ -165,7 +164,7 @@ class ServiceHandler : IServiceHandler {
         service.update()
         CloudAPI.instance.getCloudServiceManager().sendUpdateToConnection(service, wrapperClient).awaitUninterruptibly()
         wrapperClient.sendUnitQuery(PacketIOWrapperStartService(service.getName())).awaitUninterruptibly()
-        Launcher.instance.consoleSender.sendMessage("manager.service.start", "Told Wrapper %WRAPPER%", wrapper.getName(), " to start service %SERVICE%", service.getName())
+        Launcher.instance.consoleSender.sendProperty("manager.service.start", wrapper.getName(), service.getName())
         this.serviceQueue.remove(service)
     }
 

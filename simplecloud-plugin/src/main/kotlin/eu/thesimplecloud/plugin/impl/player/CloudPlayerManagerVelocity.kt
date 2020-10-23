@@ -60,7 +60,10 @@ class CloudPlayerManagerVelocity : AbstractServiceCloudPlayerManager() {
             return CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketIOSendMessageToCloudPlayer(cloudPlayer, cloudText))
         }
 
-        getPlayerByCloudPlayer(cloudPlayer)?.sendMessage(CloudTextBuilder().build(cloudText))
+        val player = getPlayerByCloudPlayer(cloudPlayer)
+        player?.let {
+            player.sendMessage(player, CloudTextBuilder().build(cloudText))
+        }
         return CommunicationPromise.of(Unit)
     }
 
@@ -104,7 +107,7 @@ class CloudPlayerManagerVelocity : AbstractServiceCloudPlayerManager() {
         }
 
 
-        val titleObj = Title.of(
+        val titleObj = Title.title(
                 CloudTextBuilder().build(CloudText(title)),
                 CloudTextBuilder().build(CloudText(subTitle)),
                 Title.Times.of(

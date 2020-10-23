@@ -28,7 +28,6 @@ import eu.thesimplecloud.base.manager.database.DatabaseType
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
-import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.startup.Launcher
 
 class DatabaseConnectionSetup : ISetup {
@@ -40,53 +39,53 @@ class DatabaseConnectionSetup : ISetup {
     var password: String? = null
     var databaseType: DatabaseType? = null
 
-    @SetupQuestion(0, "manager.setup.database-connection.question.type", "Please provide the type of your database.", DatabaseTypeSetupAnswerProvider::class)
+    @SetupQuestion(0, "manager.setup.database-connection.question.type", DatabaseTypeSetupAnswerProvider::class)
     fun type(type: DatabaseType): Boolean {
         this.databaseType = type
-        Launcher.instance.consoleSender.sendMessage(true, "manager.setup.database-connection.question.type.success", "Type set.")
+        Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.database-connection.question.type.success")
         return true
     }
 
-    @SetupQuestion(0, "manager.setup.database-connection.question.host", "Please provide the host of your database.")
+    @SetupQuestion(0, "manager.setup.database-connection.question.host")
     fun host(host: String): Boolean {
         if (host.isEmpty()) {
-            Launcher.instance.consoleSender.sendMessage(true, "manager.setup.database-connection.host-invalid", "The entered host is invalid.")
+            Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.database-connection.host-invalid")
             return false
         }
         this.host = host
-        Launcher.instance.consoleSender.sendMessage(true, "manager.setup.database-connection.question.host.success", "Host set.")
+        Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.database-connection.question.host.success")
         return true
     }
 
-    @SetupQuestion(1, "manager.setup.database-connection.question.port", "Please provide the port of the database.")
+    @SetupQuestion(1, "manager.setup.database-connection.question.port")
     fun port(port: Int): Boolean {
         if (port <= 0) {
-            Launcher.instance.consoleSender.sendMessage(true, "manager.setup.database-connection.port-invalid", "The entered port is invalid.")
+            Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.database-connection.port-invalid")
             return false
         }
         this.port = port
-        Launcher.instance.consoleSender.sendMessage(true, "manager.setup.database-connection.question.port.success", "Port set.")
+        Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.database-connection.question.port.success")
         return true
     }
 
-    @SetupQuestion(2, "manager.setup.database-connection.question.database", "Please provide the database name of the database.")
+    @SetupQuestion(2, "manager.setup.database-connection.question.database")
     fun database(database: String): Boolean {
         this.databaseName = database
-        Launcher.instance.consoleSender.sendMessage(true, "manager.setup.database-connection.question.database.success", "Database set.")
+        Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.database-connection.question.database.success")
         return true
     }
 
-    @SetupQuestion(3, "manager.setup.database-connection.question.username", "Please provide the username of the database.")
+    @SetupQuestion(3, "manager.setup.database-connection.question.username")
     fun username(username: String): Boolean {
         this.username = username
-        Launcher.instance.consoleSender.sendMessage(true, "manager.setup.database-connection.question.username.success", "Username set.")
+        Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.database-connection.question.username.success")
         return true
     }
 
-    @SetupQuestion(4, "manager.setup.database-connection.question.password", "Please provide the password of the database.")
+    @SetupQuestion(4, "manager.setup.database-connection.question.password")
     fun password(password: String): Boolean {
         this.password = password
-        Launcher.instance.consoleSender.sendMessage(true, "manager.setup.database-connection.question.password.success", "Password set.")
+        Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.database-connection.question.password.success")
         return true
     }
 

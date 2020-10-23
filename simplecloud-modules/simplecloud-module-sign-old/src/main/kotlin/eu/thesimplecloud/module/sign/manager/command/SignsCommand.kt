@@ -30,7 +30,6 @@ import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 import eu.thesimplecloud.launcher.console.command.provider.ServiceGroupCommandSuggestionProvider
-import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.module.sign.lib.SignModuleConfig
 import eu.thesimplecloud.module.sign.manager.SignsModule
 
@@ -40,7 +39,7 @@ class SignsCommand : ICommandHandler {
     @CommandSubPath("reload", "Reloads the config")
     fun handleReload(commandSender: ICommandSender) {
         SignsModule.INSTANCE.reloadConfig()
-        commandSender.sendMessage("manager.command.signs.reload", "&aConfig reloaded.")
+        commandSender.sendProperty("manager.command.signs.reload")
     }
 
     @CommandSubPath("layouts", "Lists all layouts")
@@ -57,18 +56,18 @@ class SignsCommand : ICommandHandler {
     fun handleLayout(commandSender: ICommandSender, @CommandArgument("group", ServiceGroupCommandSuggestionProvider::class) groupName: String, @CommandArgument("layout") layoutName: String) {
         val serviceGroup = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(groupName)
         if (serviceGroup == null) {
-            commandSender.sendMessage("manager.command.signs.group-not-found", "§cGroup not found.")
+            commandSender.sendProperty("manager.command.signs.group-not-found")
             return
         }
         val signModuleConfig = SignModuleConfig.INSTANCE.getValue()
         val signLayout = signModuleConfig.getSignLayoutByName(layoutName)
         if (signLayout == null) {
-            commandSender.sendMessage("manager.command.signs.layout-not-found", "§cLayout not found.")
+            commandSender.sendProperty("manager.command.signs.layout-not-found")
             return
         }
         signModuleConfig.groupToLayout.putGroupToLayout(serviceGroup.getName(), signLayout.name)
         signModuleConfig.update()
-        commandSender.sendMessage("manager.command.signs.layout-set", "§7Group &e%GROUP%", serviceGroup.getName(), " &7is now using the layout &e%LAYOUT%", signLayout.name, "&7.")
+        commandSender.sendProperty("manager.command.signs.layout-set", serviceGroup.getName(), signLayout.name)
     }
 
 }

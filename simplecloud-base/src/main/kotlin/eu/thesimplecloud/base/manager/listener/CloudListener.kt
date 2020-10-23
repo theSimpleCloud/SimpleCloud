@@ -29,7 +29,6 @@ import eu.thesimplecloud.api.eventapi.CloudEventHandler
 import eu.thesimplecloud.api.eventapi.IListener
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.launcher.event.module.ModuleUnloadedEvent
-import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.screens.session.ScreenSession
 import eu.thesimplecloud.launcher.startup.Launcher
 
@@ -37,7 +36,7 @@ class CloudListener : IListener {
 
     @CloudEventHandler
     fun on(event: CloudServiceUnregisteredEvent) {
-        Launcher.instance.consoleSender.sendMessage("manager.service.stopped", "Service %SERVICE%", event.cloudService.getName(), " was stopped.")
+        Launcher.instance.consoleSender.sendProperty("manager.service.stopped", event.cloudService.getName())
 
         val activeSession = Launcher.instance.screenManager.getActiveScreenSession()
         activeSession?.let {
@@ -58,8 +57,8 @@ class CloudListener : IListener {
     fun on(event: CloudPlayerLoginEvent) {
         event.getCloudPlayer().then {
             Launcher.instance.consoleSender
-                    .sendMessage("manager.player.connected", "Player %NAME%", it.getName(), "(%UUID% ", it.getUniqueId().toString(),
-                            "/ %IP%", it.getPlayerConnection().getAddress().getHostname(), ") connected.")
+                    .sendProperty("manager.player.connected", it.getName(), it.getUniqueId().toString(),
+                            it.getPlayerConnection().getAddress().getHostname())
         }
 
     }
@@ -69,8 +68,8 @@ class CloudListener : IListener {
         val player = event.cloudPlayer
 
         Launcher.instance.consoleSender
-                .sendMessage("manager.player.disconnected", "Player %NAME%", player.getName(), "(%UUID% ", player.getUniqueId().toString(),
-                        "/ %IP%", player.getPlayerConnection().getAddress().getHostname(), ") disconnected.")
+                .sendProperty("manager.player.disconnected", player.getName(), player.getUniqueId().toString(),
+                        player.getPlayerConnection().getAddress().getHostname())
 
     }
 

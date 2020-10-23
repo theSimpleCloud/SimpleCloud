@@ -20,33 +20,20 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.base.core.utils
+package eu.thesimplecloud.launcher.setups.provider
 
-import org.apache.commons.io.FileUtils
-import java.io.File
-import java.io.IOException
+import eu.thesimplecloud.api.command.ICommandSender
+import eu.thesimplecloud.launcher.console.setup.provider.ISetupAnswerProvider
 
-class FileCopier {
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 15.06.2020
+ * Time: 21:19
+ * @author Frederick Baier
+ */
+class LanguageSetupAnswerProvider : ISetupAnswerProvider {
 
-    companion object {
-        /**
-         * Copies a file outside this jar
-         */
-        fun copyFileOutOfJar(fileDestination: File, filePathToCopy: String) {
-            val stream = this.javaClass.getResourceAsStream(filePathToCopy)
-            val parent = fileDestination.parentFile
-            parent?.mkdirs()
-            if (File(filePathToCopy).exists()) {
-                return
-            }
-            try {
-                fileDestination.createNewFile()
-                FileUtils.copyInputStreamToFile(stream, fileDestination)
-            } catch (e1: IOException) {
-                e1.printStackTrace()
-            }
-
-        }
+    override fun getSuggestions(sender: ICommandSender): Collection<String> {
+        return listOf("en")
     }
-
 }

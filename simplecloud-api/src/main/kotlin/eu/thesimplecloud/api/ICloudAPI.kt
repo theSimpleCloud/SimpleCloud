@@ -25,6 +25,7 @@ package eu.thesimplecloud.api
 import eu.thesimplecloud.api.cachelist.manager.ICacheListManager
 import eu.thesimplecloud.api.eventapi.IEventManager
 import eu.thesimplecloud.api.external.ICloudModule
+import eu.thesimplecloud.api.language.ILanguageManager
 import eu.thesimplecloud.api.message.IMessageChannelManager
 import eu.thesimplecloud.api.network.component.INetworkComponent
 import eu.thesimplecloud.api.player.ICloudPlayerManager
@@ -108,6 +109,11 @@ interface ICloudAPI {
      * Returns the [IServiceVersionHandler]
      */
     fun getServiceVersionHandler(): IServiceVersionHandler
+
+    /**
+     * Returns the [ILanguageManager]
+     */
+    fun getLanguageManager(): ILanguageManager
 
     /**
      * Returns the name of this side

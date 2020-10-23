@@ -27,11 +27,11 @@ import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceType
 import eu.thesimplecloud.api.template.ITemplate
-import eu.thesimplecloud.base.core.utils.FileCopier
 import eu.thesimplecloud.base.wrapper.startup.Wrapper
 import eu.thesimplecloud.clientserverapi.client.NettyClient
 import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.launcher.external.module.ModuleCopyType
+import eu.thesimplecloud.launcher.utils.FileCopier
 import org.apache.commons.io.FileUtils
 import java.io.File
 

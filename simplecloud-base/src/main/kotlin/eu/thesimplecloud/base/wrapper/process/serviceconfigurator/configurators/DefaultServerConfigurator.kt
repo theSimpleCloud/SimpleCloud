@@ -24,8 +24,8 @@ package eu.thesimplecloud.base.wrapper.process.serviceconfigurator.configurators
 
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.utils.FileEditor
-import eu.thesimplecloud.base.core.utils.FileCopier
 import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.IServiceConfigurator
+import eu.thesimplecloud.launcher.utils.FileCopier
 import java.io.File
 
 class DefaultServerConfigurator : IServiceConfigurator {

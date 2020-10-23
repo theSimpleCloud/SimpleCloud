@@ -29,7 +29,6 @@ import eu.thesimplecloud.launcher.console.command.CommandType
 import eu.thesimplecloud.launcher.console.command.ICommandHandler
 import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
-import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.startup.Launcher
 
 /**
@@ -50,15 +49,15 @@ class HelpCommand() : ICommandHandler {
         if (sender is ConsoleSender) {
             val commandAmount = Launcher.instance.commandManager.commands
                     .map { it.path.split(" ")[0] }.toSet().size - 1
-            sender.sendMessage("commands.help.header", "Help | See all commands (%COMMAND_SIZE%", commandAmount.toString(), ")")
+            sender.sendProperty("commands.help.header", commandAmount.toString())
 
             allCommands.forEach {
-                sender.sendMessage("commands.help.command", ">> %COMMAND_NAME%", it.path.trim(), " (%COMMAND_DESCRIPTION%", it.commandDescription, ")")
+                sender.sendProperty("commands.help.command", it.path.trim(), it.commandDescription)
             }
         } else {
             sender as ICloudPlayer
             allCommands.filter { it.commandType != CommandType.CONSOLE }.forEach {
-                sender.sendMessage("commands.help.command.ingame", "&8>> &7%COMMAND_NAME%", it.getPathWithCloudPrefixIfRequired().trim())
+                sender.sendProperty("commands.help.command.ingame", it.getPathWithCloudPrefixIfRequired().trim())
             }
         }
 

@@ -28,7 +28,6 @@ import eu.thesimplecloud.launcher.console.command.ICommandHandler
 import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
-import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.startup.Launcher
 
 @Command("delete", CommandType.CONSOLE, "cloud.command.delete")
@@ -39,34 +38,34 @@ class DeleteCommand : ICommandHandler {
     @CommandSubPath("template <name>", "Deletes a template")
     fun deleteTemplate(@CommandArgument("name") name: String) {
         if (templateManager.getTemplateByName(name) == null) {
-            Launcher.instance.consoleSender.sendMessage("manager.command.delete.template.not-exist", "Template %NAME%", name, " does not exist.")
+            Launcher.instance.consoleSender.sendProperty("manager.command.delete.template.not-exist", name)
             return
         }
         if (CloudAPI.instance.getCloudServiceGroupManager().getAllCachedObjects().any { it.getTemplateName().equals(name, true) }) {
-            Launcher.instance.consoleSender.sendMessage("manager.command.delete.template.in-use.group", "Template %NAME%", name, " is in use by registered service groups. Delete them first.")
+            Launcher.instance.consoleSender.sendProperty("manager.command.delete.template.in-use.group", name)
             return
         }
         if (CloudAPI.instance.getCloudServiceManager().getAllCachedObjects().any { it.getTemplateName().equals(name, true) }) {
-            Launcher.instance.consoleSender.sendMessage("manager.command.delete.template.in-use.service", "Template %NAME%", name, " is in use by registered services. Stop them first.")
+            Launcher.instance.consoleSender.sendProperty("manager.command.delete.template.in-use.service",name)
             return
         }
         templateManager.deleteTemplate(name)
-        Launcher.instance.consoleSender.sendMessage("manager.command.delete.template.success", "Template %NAME%", name, " was deleted.")
+        Launcher.instance.consoleSender.sendProperty("manager.command.delete.template.success",name)
     }
 
     @CommandSubPath("group <name>", "Deletes a group")
     fun deleteGroup(@CommandArgument("name") name: String) {
         val serviceGroup = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(name)
         if (serviceGroup == null) {
-            Launcher.instance.consoleSender.sendMessage("manager.command.delete.group.not-exist", "Group %NAME%", name, " does not exist.")
+            Launcher.instance.consoleSender.sendProperty("manager.command.delete.group.not-exist", name)
             return
         }
         val result = runCatching { CloudAPI.instance.getCloudServiceGroupManager().delete(serviceGroup) }
         if (result.isFailure) {
-            Launcher.instance.consoleSender.sendMessage("manager.command.delete.group.services-running", "Cannot delete group %NAME%", name, " while services of this group are running.")
+            Launcher.instance.consoleSender.sendProperty("manager.command.delete.group.services-running", name)
             return
         }
-        Launcher.instance.consoleSender.sendMessage("manager.command.delete.group.success", "Group %NAME%", name, " was deleted.")
+        Launcher.instance.consoleSender.sendProperty("manager.command.delete.group.success",name)
     }
 
 
@@ -74,20 +73,20 @@ class DeleteCommand : ICommandHandler {
     fun deleteWrapper(@CommandArgument("wrapper") name: String) {
         val wrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(name)
         if (wrapper == null) {
-            Launcher.instance.consoleSender.sendMessage("manager.command.delete.wrapper.not-exist", "Wrapper %NAME%", name, " does not exist.")
+            Launcher.instance.consoleSender.sendProperty("manager.command.delete.wrapper.not-exist",name)
             return
         }
         if (wrapper.getServicesRunningOnThisWrapper().isNotEmpty()) {
-            Launcher.instance.consoleSender.sendMessage("manager.command.delete.wrapper.services-running", "Cannot delete wrapper %NAME%", name, " while services are still running on it.")
+            Launcher.instance.consoleSender.sendProperty("manager.command.delete.wrapper.services-running", name)
             return
         }
         if (CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupsByWrapperName(wrapper.getName()).isNotEmpty()) {
-            Launcher.instance.consoleSender.sendMessage("manager.command.delete.wrapper.group-must-start", "Cannot delete wrapper %NAME%", name, " while groups are only able to start on it.")
+            Launcher.instance.consoleSender.sendProperty("manager.command.delete.wrapper.group-must-start", name)
             return
         }
 
         CloudAPI.instance.getWrapperManager().delete(wrapper)
-        Launcher.instance.consoleSender.sendMessage("manager.command.delete.group.success", "Group %NAME%", name, " was deleted.")
+        Launcher.instance.consoleSender.sendProperty("manager.command.delete.group.success", name)
     }
 
 

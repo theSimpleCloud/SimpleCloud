@@ -38,7 +38,6 @@ import eu.thesimplecloud.launcher.event.command.CommandExecuteEvent
 import eu.thesimplecloud.launcher.event.command.CommandRegisteredEvent
 import eu.thesimplecloud.launcher.event.command.CommandUnregisteredEvent
 import eu.thesimplecloud.launcher.exception.CommandRegistrationException
-import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.invoker.MethodInvokeHelper
 import eu.thesimplecloud.launcher.startup.Launcher
 import org.reflections.Reflections
@@ -62,7 +61,7 @@ class CommandManager {
 
         if (readLine.toLowerCase().startsWith("cloud") && commandSender is ICloudPlayer) {
             if (!commandSender.hasPermission("cloud.command.use").getBlocking()) {
-                commandSender.sendMessage("command.cloud.no-permission", "&cYou don't have the permission to execute this command.")
+                commandSender.sendProperty("command.cloud.no-permission")
                 return
             }
         }
@@ -88,12 +87,12 @@ class CommandManager {
             return
         }
         if (matchingCommandData.commandType == CommandType.CONSOLE && commandSender !is ConsoleSender) {
-            commandSender.sendMessage("commandmanager.onlyconsole", "This command can only be executed via the console.")
+            commandSender.sendProperty("commandmanager.onlyconsole")
             return
         }
         if (commandSender is ICloudPlayer) {
             if (matchingCommandData.permission.trim().isNotEmpty() && !commandSender.hasPermission(matchingCommandData.permission).awaitUninterruptibly().get()) {
-                commandSender.sendMessage("command.player.no-permission", "§cYou don't have the permission to execute this command.")
+                commandSender.sendProperty("command.player.no-permission")
                 return
             }
         }

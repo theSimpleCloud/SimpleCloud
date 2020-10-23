@@ -20,26 +20,23 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.base.wrapper.process.serviceconfigurator.configurators
+package eu.thesimplecloud.launcher.extension
 
-import eu.thesimplecloud.api.service.ICloudService
-import eu.thesimplecloud.api.utils.FileEditor
-import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.IServiceConfigurator
-import eu.thesimplecloud.launcher.utils.FileCopier
-import java.io.File
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 23.10.2020
+ * Time: 15:33
+ * @author Frederick Baier
+ */
 
-class DefaultVelocityConfigurator : IServiceConfigurator {
+fun <T> Iterable<T>.replace(oldValue: T, newValue: T): List<T> {
+    val returnList = ArrayList<T>()
 
-    override fun configureService(cloudService: ICloudService, serviceTmpDirectory: File) {
-        val configFile = File(serviceTmpDirectory, "velocity.toml")
-        if (!configFile.exists()) {
-            FileCopier.copyFileOutOfJar(configFile, "/files/velocity.toml")
-        }
-        val fileEditor = FileEditor(configFile)
-        fileEditor.replaceLine("bind = \"0.0.0.0:25577\"", "bind = \"0.0.0.0:${cloudService.getPort()}\"")
-        fileEditor.replaceLine("show-max-players = 500", "show-max-players = ${cloudService.getMaxPlayers()}")
-        fileEditor.save(configFile)
+    for (item in this) {
+        if (item == oldValue)
+            returnList.add(newValue)
+        else
+            returnList.add(item)
     }
-
-
+    return returnList
 }

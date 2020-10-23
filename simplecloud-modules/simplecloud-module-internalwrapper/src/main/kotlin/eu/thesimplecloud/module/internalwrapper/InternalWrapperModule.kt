@@ -25,7 +25,6 @@ package eu.thesimplecloud.module.internalwrapper
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.external.ICloudModule
 import eu.thesimplecloud.api.screen.ICommandExecutable
-import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.module.internalwrapper.setup.InternalWrapperMemorySetup
 import eu.thesimplecloud.runner.RunnerFileProvider
@@ -43,7 +42,7 @@ class InternalWrapperModule : ICloudModule {
 
     override fun onEnable() {
         val wrapperManager = CloudAPI.instance.getWrapperManager()
-        val config = Launcher.instance.launcherConfigLoader.loadConfig()
+        val config = Launcher.instance.launcherConfig
 
         if (wrapperManager.getWrapperByHost(config.host) == null) {
             Launcher.instance.setupManager.queueSetup(InternalWrapperMemorySetup(config))
@@ -51,7 +50,7 @@ class InternalWrapperModule : ICloudModule {
         }
 
         thread(start = true, isDaemon = false) {
-            Launcher.instance.consoleSender.sendMessage("module.internalwrapper.starting", "Starting internal wrapper...")
+            Launcher.instance.consoleSender.sendProperty("module.internalwrapper.starting")
             val processBuilder = ProcessBuilder("java", "-jar", RunnerFileProvider.RUNNER_FILE.path, "--start-application=WRAPPER", "--disable-auto-updater")
             processBuilder.directory(File("."))
             val process = processBuilder.start()

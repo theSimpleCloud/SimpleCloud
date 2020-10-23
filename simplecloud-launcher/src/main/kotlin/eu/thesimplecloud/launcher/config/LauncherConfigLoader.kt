@@ -29,6 +29,6 @@ import java.io.File
 class LauncherConfigLoader : AbstractJsonLibConfigLoader<LauncherConfig>(
         LauncherConfig::class.java,
         File("launcher.json"),
-        { LauncherConfig("127.0.0.1", 1900, DirectoryPaths()) },
+        { LauncherConfig("127.0.0.1", 1900, "en", DirectoryPaths()) },
         false
 )

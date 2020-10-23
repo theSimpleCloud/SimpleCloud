@@ -20,26 +20,27 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.base.wrapper.process.serviceconfigurator.configurators
+package eu.thesimplecloud.api.language
 
-import eu.thesimplecloud.api.service.ICloudService
-import eu.thesimplecloud.api.utils.FileEditor
-import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.IServiceConfigurator
-import eu.thesimplecloud.launcher.utils.FileCopier
-import java.io.File
+import eu.thesimplecloud.api.external.ICloudModule
 
-class DefaultVelocityConfigurator : IServiceConfigurator {
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 14.10.2020
+ * Time: 22:24
+ * @author Frederick Baier
+ */
+interface ILanguageManager {
 
-    override fun configureService(cloudService: ICloudService, serviceTmpDirectory: File) {
-        val configFile = File(serviceTmpDirectory, "velocity.toml")
-        if (!configFile.exists()) {
-            FileCopier.copyFileOutOfJar(configFile, "/files/velocity.toml")
-        }
-        val fileEditor = FileEditor(configFile)
-        fileEditor.replaceLine("bind = \"0.0.0.0:25577\"", "bind = \"0.0.0.0:${cloudService.getPort()}\"")
-        fileEditor.replaceLine("show-max-players = 500", "show-max-players = ${cloudService.getMaxPlayers()}")
-        fileEditor.save(configFile)
-    }
+    /**
+     * Registers a language file for the specified [cloudModule]
+     */
+    fun registerLanguageFile(cloudModule: ICloudModule, languageFile: LoadedLanguageFile)
 
+    /**
+     * Returns the replaced message found by the property with the [placeholderValues]
+     * If the [property] cannot be found it will return the [property]
+     */
+    fun getMessage(property: String, vararg placeholderValues: String): String
 
 }

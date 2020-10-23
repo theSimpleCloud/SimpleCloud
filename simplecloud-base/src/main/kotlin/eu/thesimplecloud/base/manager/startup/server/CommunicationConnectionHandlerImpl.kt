@@ -32,7 +32,6 @@ import eu.thesimplecloud.api.wrapper.IMutableWrapperInfo
 import eu.thesimplecloud.base.manager.impl.CloudPlayerManagerImpl
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnectedClient
-import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.startup.Launcher
 
 class CommunicationConnectionHandlerImpl : AbstractCloudConnectionHandler() {
@@ -51,14 +50,14 @@ class CommunicationConnectionHandlerImpl : AbstractCloudConnectionHandler() {
             clientValue.setCurrentlyStartingServices(0)
             clientValue.setUsedMemory(0)
             CloudAPI.instance.getWrapperManager().update(clientValue)
-            Launcher.instance.consoleSender.sendMessage("manager.disconnect.wrapper", "Wrapper %WRAPPER%", clientValue.getName(), " disconnected.")
+            Launcher.instance.consoleSender.sendProperty("manager.disconnect.wrapper", clientValue.getName())
         }
 
         if (clientValue is ICloudService) {
             val playerManager = CloudAPI.instance.getCloudPlayerManager() as CloudPlayerManagerImpl
             playerManager.resetPlayerUpdates(clientValue.getName())
             CloudAPI.instance.getCloudServiceManager().update(clientValue)
-            Launcher.instance.consoleSender.sendMessage("manager.disconnect.service", "Service %SERVICE%", clientValue.getName(), " disconnected.")
+            Launcher.instance.consoleSender.sendProperty("manager.disconnect.service", clientValue.getName())
         }
         val globalPropertyHolder = CloudAPI.instance.getGlobalPropertyHolder() as GlobalPropertyHolder
         globalPropertyHolder.removeConnectionFromUpdates(connection)

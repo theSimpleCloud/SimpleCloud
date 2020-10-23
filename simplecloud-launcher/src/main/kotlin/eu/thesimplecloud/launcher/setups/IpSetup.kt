@@ -22,25 +22,25 @@
 
 package eu.thesimplecloud.launcher.setups
 
-import eu.thesimplecloud.launcher.config.LauncherConfigLoader
+import eu.thesimplecloud.launcher.config.LauncherConfig
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
-import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.launcher.utils.IpValidator
 
 class IpSetup : ISetup {
 
 
-    @SetupQuestion(0, "manager.setup.ip.question", "Please enter the ip of the manager")
+    @SetupQuestion(0, "manager.setup.ip.question")
     fun setup(string: String): Boolean {
         if (!IpValidator().validate(string)) {
-            Launcher.instance.consoleSender.sendMessage(true, "launcher.setup.ip.ip-invalid", "The entered ip is invalid.")
+            Launcher.instance.consoleSender.sendPropertyInSetup("launcher.setup.ip.ip-invalid")
             return false
         }
-        val launcherConfig = LauncherConfigLoader().loadConfig()
-        launcherConfig.host = string
-        LauncherConfigLoader().saveConfig(launcherConfig)
+
+        val launcherConfig = Launcher.instance.launcherConfig
+        val config = LauncherConfig(string, launcherConfig.port, launcherConfig.language, launcherConfig.directoryPaths)
+        Launcher.instance.replaceLauncherConfig(config)
         return true
     }
 

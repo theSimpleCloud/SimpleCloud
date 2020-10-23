@@ -23,21 +23,17 @@
 package eu.thesimplecloud.launcher.setups
 
 import eu.thesimplecloud.jsonlib.JsonLib
-import eu.thesimplecloud.launcher.config.LauncherConfigLoader
+import eu.thesimplecloud.launcher.config.LauncherConfig
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
 import eu.thesimplecloud.launcher.console.setup.provider.BooleanSetupAnswerProvider
-import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.launcher.utils.IpValidator
 import eu.thesimplecloud.launcher.utils.WebsiteContentLoader
 
 class AutoIpSetup : ISetup {
 
-    @SetupQuestion(0,
-            "manager.setup.auto-ip.question",
-            "Do you want to automatically set up your ip via \"ipify.org\" (This does not work on your local machine)",
-            BooleanSetupAnswerProvider::class)
+    @SetupQuestion(0, "Do you want to retrieve your ip automatically via `ipify.org`?", BooleanSetupAnswerProvider::class)
     fun setup(boolean: Boolean): Boolean {
         if (!boolean) {
             Launcher.instance.setupManager.queueSetup(IpSetup(), true)
@@ -55,10 +51,10 @@ class AutoIpSetup : ISetup {
             Launcher.instance.logger.warning("Received response can not be parsed to an ip.")
             return false
         }
-        Launcher.instance.consoleSender.sendMessage(true, "launcher.setup.auto-ip.ip-fetched", "Ip fetched: %IP%", ip)
-        val launcherConfig = LauncherConfigLoader().loadConfig()
-        launcherConfig.host = ip
-        LauncherConfigLoader().saveConfig(launcherConfig)
+
+        val launcherConfig = Launcher.instance.launcherConfig
+        val config = LauncherConfig(ip, launcherConfig.port, launcherConfig.language, launcherConfig.directoryPaths)
+        Launcher.instance.replaceLauncherConfig(config)
         return true
     }
 

@@ -27,7 +27,6 @@ import eu.thesimplecloud.api.wrapper.impl.DefaultWrapperInfo
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
-import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.launcher.utils.IpValidator
 
@@ -38,52 +37,52 @@ class WrapperSetup : ISetup {
     private lateinit var host: String
     private lateinit var name: String
 
-    @SetupQuestion(0, "manager.setup.wrapper.question.name", "Which name should the wrapper have?")
+    @SetupQuestion(0, "manager.setup.wrapper.question.name")
     fun nameSetup(name: String): Boolean {
         if (name.length > 16) {
-            Launcher.instance.consoleSender.sendMessage("manager.setup.wrapper.question.name.too-long", "The specified name ist ioo long.")
+            Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.wrapper.question.name.too-long")
             return false
         }
         this.name = name
-        Launcher.instance.consoleSender.sendMessage("manager.setup.wrapper.question.name.success", "Name set.")
+        Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.wrapper.question.name.success")
         return true
     }
 
-    @SetupQuestion(1, "manager.setup.wrapper.question.host", "On which host starts the wrapper? (this = ip of this server)")
+    @SetupQuestion(1, "manager.setup.wrapper.question.host")
     fun hostSetup(host: String): Boolean {
         if (host.equals("this", true)) {
-            this.host = Launcher.instance.launcherConfigLoader.loadConfig().host
-            Launcher.instance.consoleSender.sendMessage("manager.setup.wrapper.question.host.success", "Host set.")
+            this.host = Launcher.instance.launcherConfig.host
+            Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.wrapper.question.host.success")
             return true
         }
         if (!IpValidator().validate(host)) {
-            Launcher.instance.consoleSender.sendMessage("manager.setup.wrapper.question.host.invalid", "The specified host is invalid.")
+            Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.wrapper.question.host.invalid")
             return false
         }
         this.host = host
-        Launcher.instance.consoleSender.sendMessage("manager.setup.wrapper.question.host.success", "Host set.")
+        Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.wrapper.question.host.success")
         return true
     }
 
-    @SetupQuestion(2, "manager.setup.wrapper.question.memory", "How much memory does the wrapper have?")
+    @SetupQuestion(2, "manager.setup.wrapper.question.memory")
     fun memorySetup(memory: Int): Boolean {
         if (memory < 1024) {
-            Launcher.instance.consoleSender.sendMessage("manager.setup.wrapper.question.memory.too-low", "The specified amount of memory is too low.")
+            Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.wrapper.question.memory.too-low")
             return false
         }
         this.memory = memory
-        Launcher.instance.consoleSender.sendMessage("manager.setup.wrapper.question.memory.success", "Memory set.")
+        Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.wrapper.question.memory.success")
         return true
     }
 
-    @SetupQuestion(3, "manager.setup.wrapper.question.start-services", "How much services should the wrapper can start simultaneously?")
+    @SetupQuestion(3, "manager.setup.wrapper.question.start-services")
     fun simultaneouslySetup(maxSimultaneouslyStartingServices: Int): Boolean {
         if (maxSimultaneouslyStartingServices < 1) {
-            Launcher.instance.consoleSender.sendMessage("manager.setup.wrapper.question.start-services.too-low", "The specified amount is too low.")
+            Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.wrapper.question.start-services.too-low")
             return false
         }
         this.maxSimultaneouslyStartingServices = maxSimultaneouslyStartingServices
-        Launcher.instance.consoleSender.sendMessage("manager.setup.wrapper.question.start-services.success", "Max simultaneously starting services set.")
+        Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.wrapper.question.start-services.success")
         return true
     }
 
@@ -91,7 +90,7 @@ class WrapperSetup : ISetup {
     fun finished() {
         val wrapperInfo = DefaultWrapperInfo(name, host, maxSimultaneouslyStartingServices, memory)
         CloudAPI.instance.getWrapperManager().update(wrapperInfo)
-        Launcher.instance.consoleSender.sendMessage(true, "manager.setup.wrapper.finished", "Wrapper %NAME%", name, " created.")
+        Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.wrapper.finished",  name)
     }
 
 

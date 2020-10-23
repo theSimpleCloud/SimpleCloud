@@ -22,20 +22,20 @@
 
 package eu.thesimplecloud.launcher.setups
 
+import eu.thesimplecloud.launcher.config.LauncherConfig
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
+import eu.thesimplecloud.launcher.setups.provider.LanguageSetupAnswerProvider
 import eu.thesimplecloud.launcher.startup.Launcher
 
 class LanguageSetup : ISetup {
 
-    private val allowedLanguages = listOf("en")
 
-    @SetupQuestion(0, "launcher.setup.language.question", "Which language do you want to use? (en)")
+    @SetupQuestion(0, "Which language do you want to use?", LanguageSetupAnswerProvider::class)
     fun setup(answer: String): Boolean {
-        if (allowedLanguages.contains(answer)) {
-            Launcher.instance.languageManager.language = "${answer.toLowerCase()}_${answer.toUpperCase()}"
-            Launcher.instance.languageManager.loadFile()
-        }
-        return allowedLanguages.contains(answer)
+        val launcherConfig = Launcher.instance.launcherConfig
+        val config = LauncherConfig(launcherConfig.host, launcherConfig.port, answer.toLowerCase(), launcherConfig.directoryPaths)
+        Launcher.instance.replaceLauncherConfig(config)
+        return true
     }
 }

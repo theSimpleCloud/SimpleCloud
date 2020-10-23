@@ -57,10 +57,10 @@ import eu.thesimplecloud.clientserverapi.server.INettyServer
 import eu.thesimplecloud.clientserverapi.server.NettyServer
 import eu.thesimplecloud.launcher.application.ApplicationClassLoader
 import eu.thesimplecloud.launcher.application.ICloudApplication
-import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.external.module.ModuleClassLoader
 import eu.thesimplecloud.launcher.external.module.handler.IModuleHandler
 import eu.thesimplecloud.launcher.external.module.handler.ModuleHandler
+import eu.thesimplecloud.launcher.language.LanguageFileLoader
 import eu.thesimplecloud.launcher.startup.Launcher
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -99,6 +99,7 @@ class Manager : ICloudApplication {
         Logger.getLogger("org.mongodb.driver").level = Level.SEVERE
         instance = this
         CloudAPIImpl()
+        LanguageFileLoader().loadFile(Launcher.instance.launcherConfig)
         this.serviceHandler = ServiceHandler()
         CloudAPI.instance.getEventManager().registerListener(this, CloudListener())
         CloudAPI.instance.getEventManager().registerListener(this, ModuleEventListener())
@@ -121,7 +122,7 @@ class Manager : ICloudApplication {
         val mongoConnectionInformation = DatabaseConfigLoader().loadConfig()
         this.encryption = AdvancedEncryption(KeyConfigLoader().loadConfig())
 
-        val launcherConfig = Launcher.instance.launcherConfigLoader.loadConfig()
+        val launcherConfig = Launcher.instance.launcherConfig
         this.communicationServer = NettyServer<ICommandExecutable>(launcherConfig.host, launcherConfig.port, CommunicationConnectionHandlerImpl(), ServerHandlerImpl())
         val baseAndLauncherLoader = Launcher.instance.getNewClassLoaderWithLauncherAndBase()
         this.communicationServer.setPacketSearchClassLoader(baseAndLauncherLoader)
@@ -170,17 +171,17 @@ class Manager : ICloudApplication {
         this.jvmArgumentsConfig = JvmArgumentsConfigLoader().loadConfig()
 
         if (CloudAPI.instance.getWrapperManager().getAllCachedObjects().isNotEmpty()) {
-            Launcher.instance.consoleSender.sendMessage("manager.startup.loaded.wrappers", "Loaded following wrappers:")
+            Launcher.instance.consoleSender.sendProperty("manager.startup.loaded.wrappers")
             CloudAPI.instance.getWrapperManager().getAllCachedObjects().forEach { Launcher.instance.consoleSender.sendMessage("- ${it.getName()}") }
         }
 
         if (CloudAPI.instance.getTemplateManager().getAllCachedObjects().isNotEmpty()) {
-            Launcher.instance.consoleSender.sendMessage("manager.startup.loaded.templates", "Loaded following templates:")
+            Launcher.instance.consoleSender.sendProperty("manager.startup.loaded.templates")
             CloudAPI.instance.getTemplateManager().getAllCachedObjects().forEach { Launcher.instance.consoleSender.sendMessage("- ${it.getName()}") }
         }
 
         if (CloudAPI.instance.getCloudServiceGroupManager().getAllCachedObjects().isNotEmpty()) {
-            Launcher.instance.consoleSender.sendMessage("manager.startup.loaded.groups", "Loaded following groups:")
+            Launcher.instance.consoleSender.sendProperty("manager.startup.loaded.groups")
             CloudAPI.instance.getCloudServiceGroupManager().getAllCachedObjects().forEach { Launcher.instance.consoleSender.sendMessage("- ${it.getName()}") }
         }
         thread(start = true, isDaemon = false) {

@@ -32,7 +32,6 @@ import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 import eu.thesimplecloud.launcher.console.command.provider.ServiceGroupCommandSuggestionProvider
-import eu.thesimplecloud.launcher.extension.sendMessage
 
 @Command("startStatic", CommandType.CONSOLE_AND_INGAME, "cloud.command.startstatic")
 class StartStaticCommand : ICommandHandler {
@@ -41,8 +40,7 @@ class StartStaticCommand : ICommandHandler {
     fun handleStartStatic(commandSender: ICommandSender, @CommandArgument("service", ServiceGroupCommandSuggestionProvider::class) serviceName: String) {
         val runningService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(serviceName)
         if (runningService != null) {
-            commandSender.sendMessage("manager.command.startstatic.service-already-online",
-                    "&cThe specified service is already running")
+            commandSender.sendProperty("manager.command.startstatic.service-already-online")
             return
         }
         val groupName = serviceName.split("-").dropLast(1).joinToString("-")
@@ -50,20 +48,17 @@ class StartStaticCommand : ICommandHandler {
         val number  = kotlin.runCatching { numberString.toInt() }.getOrNull()
         val serviceGroup = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(groupName)
         if (number == null || serviceGroup == null) {
-            commandSender.sendMessage("manager.command.startstatic.service-invalid",
-                    "&cThe specified service is invalid")
+            commandSender.sendProperty("manager.command.startstatic.service-invalid")
             return
         }
 
         if (!serviceGroup.isStatic()) {
-            commandSender.sendMessage("manager.command.startstatic.group-not-static",
-                    "&cThe specified service group must be static")
+            commandSender.sendProperty("manager.command.startstatic.group-not-static")
             return
         }
 
         Manager.instance.serviceHandler.startService(ServiceStartConfiguration(serviceGroup).setServiceNumber(number))
-        commandSender.sendMessage("manager.command.startstatic.success",
-                "Starting service...")
+        commandSender.sendProperty("manager.command.startstatic.success")
     }
 
 }

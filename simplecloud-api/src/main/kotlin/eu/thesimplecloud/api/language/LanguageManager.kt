@@ -22,49 +22,22 @@
 
 package eu.thesimplecloud.api.language
 
-import eu.thesimplecloud.api.directorypaths.DirectoryPaths
-import eu.thesimplecloud.jsonlib.JsonLib
-import java.io.File
+import com.google.common.collect.Maps
+import eu.thesimplecloud.api.external.ICloudModule
 
-class LanguageManager(var language: String) {
 
-    private lateinit var languageFile: LanguageFile
-    private val file = File(DirectoryPaths.paths.languagesPath, "$language.json")
-    private var fileExistBeforeLoad = false
+class LanguageManager : ILanguageManager {
 
-    fun loadFile() {
-        fileExistBeforeLoad = file.exists()
-        if (!file.exists()) {
-            languageFile = LanguageFile()
+    private val languageFiles = Maps.newConcurrentMap<ICloudModule, LoadedLanguageFile>()
 
-            file.parentFile.mkdirs()
-            JsonLib.fromObject(languageFile).saveAsFile(file)
-        } else {
-            val languageFile = JsonLib.fromJsonFile(file)?.getObjectOrNull(LanguageFile::class.java)
-            if (languageFile != null) {
-                this.languageFile = languageFile
-            }
-        }
+    override fun registerLanguageFile(cloudModule: ICloudModule, languageFile: LoadedLanguageFile) {
+        this.languageFiles[cloudModule] = languageFile
     }
 
-    fun getMessage(property: String, fallbackMessage: String): String {
-        val fileMessage = languageFile.messages[property]
-        if (fileMessage == null) {
-            addNewProperty(property, fallbackMessage)
-            return fallbackMessage
-        }
-
-        return fileMessage
+    override fun getMessage(property: String, vararg placeholderValues: String): String {
+        val allProperties = this.languageFiles.values.map { it.getProperties() }.flatten()
+        val languageProperty = allProperties.firstOrNull { it.property == property } ?: return property
+        return languageProperty.getReplacedMessage(*placeholderValues)
     }
-
-    private fun addNewProperty(property: String, message: String) {
-        val fileMessage = languageFile.messages[property]
-        if (fileMessage == null) {
-            languageFile.messages[property] = message
-            JsonLib.fromObject(languageFile).saveAsFile(file)
-        }
-    }
-
-    fun fileExistBeforeLoad() = this.fileExistBeforeLoad
 
 }

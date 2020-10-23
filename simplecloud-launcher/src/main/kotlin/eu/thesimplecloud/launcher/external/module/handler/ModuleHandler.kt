@@ -32,7 +32,6 @@ import eu.thesimplecloud.launcher.dependency.LauncherCloudDependency
 import eu.thesimplecloud.launcher.event.module.ModuleLoadedEvent
 import eu.thesimplecloud.launcher.event.module.ModuleUnloadedEvent
 import eu.thesimplecloud.launcher.exception.module.ModuleLoadException
-import eu.thesimplecloud.launcher.extension.sendMessage
 import eu.thesimplecloud.launcher.external.module.LoadedModule
 import eu.thesimplecloud.launcher.external.module.LoadedModuleFileContent
 import eu.thesimplecloud.launcher.external.module.ModuleClassLoader
@@ -84,9 +83,9 @@ open class ModuleHandler(
         if (updaterFileContent != null && !Launcher.instance.launcherStartArguments.disableAutoUpdater) {
             val updater = ModuleUpdater(updaterFileContent, loadedModuleFileContent.file)
             if (shallInstallUpdates && updater.isUpdateAvailable()) {
-                Launcher.instance.consoleSender.sendMessage("manager.module.updating", "Updating module %MODULE%", content.name, "...")
+                Launcher.instance.consoleSender.sendProperty("manager.module.updating",  content.name)
                 UpdateExecutor().executeUpdate(updater)
-                Launcher.instance.consoleSender.sendMessage("manager.module.updated", "Updated module %MODULE%", content.name)
+                Launcher.instance.consoleSender.sendProperty("manager.module.updated", content.name)
                 return loadModule(loadedModuleFileContent.file)
             }
         }

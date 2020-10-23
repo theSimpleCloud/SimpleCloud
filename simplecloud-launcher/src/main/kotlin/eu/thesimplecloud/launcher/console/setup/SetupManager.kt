@@ -29,7 +29,7 @@ import eu.thesimplecloud.launcher.console.ConsoleSender
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupCancelled
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
-import eu.thesimplecloud.launcher.extension.sendMessage
+import eu.thesimplecloud.launcher.extension.replace
 import eu.thesimplecloud.launcher.startup.Launcher
 import java.lang.reflect.Method
 import java.lang.reflect.Parameter
@@ -82,23 +82,23 @@ class SetupManager(val launcher: Launcher) {
         this.currentQuestion = setupData.questions[currentQuestionIndex]
 
         Launcher.instance.clearConsole()
-        this.launcher.consoleSender.sendMessage(true, "launcher.setup-started", "Setup started. To abort the setup write \"exit\".")
+        Launcher.instance.logger.setup("Setup started. Type `exit` to leave the setup.")
         printCurrentQuestion()
     }
 
     private fun printCurrentQuestion() {
         val currentQuestion = this.currentQuestion
                 ?: throw IllegalStateException("There is no setup at the moment")
-        /*this.currentQuestion?.let { launcher.consoleManager.prompt = it.setupQuestion.question }
-        launcher.logger.updatePrompt()*/
         val suggestionProvider = currentQuestion.setupQuestion.answerProvider.java.newInstance()
         //search suggestions for an empty input
         val suggestions = suggestionProvider.getSuggestions(launcher.consoleSender)
+        suggestions.replace("", "<empty>")
         val suffix = if (suggestions.isNotEmpty()) "§ePossible answers: " + suggestions.joinToString() else ""
         if (suffix.isEmpty()) {
-            launcher.consoleSender.sendMessage(true, currentQuestion.setupQuestion.property, currentQuestion.setupQuestion.question)
+            launcher.consoleSender.sendPropertyInSetup(currentQuestion.setupQuestion.property)
         } else {
-            launcher.consoleSender.sendMessage(true, currentQuestion.setupQuestion.property, currentQuestion.setupQuestion.question + " %SUFFIX%", suffix)
+            launcher.consoleSender.sendPropertyInSetup(currentQuestion.setupQuestion.property)
+            Launcher.instance.logger.setup(suffix)
         }
     }
 
@@ -108,13 +108,13 @@ class SetupManager(val launcher: Launcher) {
         val possibleAnswers = currentQuestion.setupQuestion.answerProvider.java.newInstance()
                 .getSuggestions(launcher.consoleSender)
         if (parsedValue is String && possibleAnswers.isNotEmpty() && !possibleAnswers.containsIgnoreCase(parsedValue)) {
-            this.launcher.consoleSender.sendMessage(true, "launcher.setup.invalid-response", "Invalid response.")
+            this.launcher.consoleSender.sendPropertyInSetup("")
             return
         }
         val invokeResponse = try {
             currentQuestion.method.invoke(this.currentSetup!!.source, parsedValue)
         } catch (e: Exception) {
-            this.launcher.consoleSender.sendMessage(true, "launcher.setup.invalid-response", "Invalid response.")
+            Launcher.instance.logger.setup("Invalid response")
             return
         }
         if (invokeResponse is Boolean && invokeResponse == false) {
