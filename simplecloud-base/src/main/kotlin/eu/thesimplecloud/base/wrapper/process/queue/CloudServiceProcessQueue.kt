@@ -35,6 +35,8 @@ import kotlin.concurrent.thread
 
 class CloudServiceProcessQueue {
 
+    private val cloudServiceProcessManager = Wrapper.instance.cloudServiceProcessManager
+
     private val queue = LinkedBlockingQueue<ICloudServiceProcess>()
     private val startingServices = ArrayList<ICloudServiceProcess>()
 
@@ -69,6 +71,15 @@ class CloudServiceProcessQueue {
                 Thread.sleep(200)
             }
         }
+    }
+
+    fun removeFromQueue(cloudService: ICloudService) {
+        val cloudServiceProcess = this.cloudServiceProcessManager.getCloudServiceProcessByService(cloudService)
+        cloudServiceProcess?.let {
+            this.queue.remove(cloudServiceProcess)
+            this.cloudServiceProcessManager.unregisterServiceProcess(cloudServiceProcess)
+        }
+        Wrapper.instance.updateWrapperData()
     }
 
     fun clearQueue() {

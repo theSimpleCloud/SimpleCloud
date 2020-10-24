@@ -22,6 +22,8 @@
 
 package eu.thesimplecloud.base.wrapper.process
 
+import eu.thesimplecloud.api.service.ICloudService
+
 interface ICloudServiceProcessManager {
 
     /**
@@ -45,6 +47,11 @@ interface ICloudServiceProcessManager {
     fun getCloudServiceProcessByServiceName(name: String): ICloudServiceProcess? = getAllProcesses().firstOrNull { it.getCloudService().getName().equals(name, true) }
 
     /**
+     * Returns the [ICloudServiceProcess] found by the specified service [service]
+     */
+    fun getCloudServiceProcessByService(service: ICloudService): ICloudServiceProcess? = getCloudServiceProcessByServiceName(service.getName())
+
+        /**
      * Stops all registered services.
      */
     fun stopAllServices() = getAllProcesses().forEach { it.shutdown() }
