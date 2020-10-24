@@ -45,6 +45,7 @@ class CloudServiceManagerImpl : AbstractCloudServiceManager() {
                 return CommunicationPromise.failed(IllegalStateException("Service is already closed"))
             }
             ServiceState.PREPARED -> {
+                Manager.instance.serviceHandler.removeServiceFromQueue(cloudService)
                 cloudService.setState(ServiceState.CLOSED)
                 CloudAPI.instance.getCloudServiceManager().delete(cloudService)
                 return CommunicationPromise.UNIT_PROMISE

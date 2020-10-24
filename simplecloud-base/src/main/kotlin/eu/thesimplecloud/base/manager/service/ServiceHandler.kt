@@ -78,6 +78,10 @@ class ServiceHandler : IServiceHandler {
         return service
     }
 
+    override fun removeServiceFromQueue(cloudService: ICloudService) {
+        this.serviceQueue.remove(cloudService)
+    }
+
     private fun addServiceToQueue(service: ICloudService) {
         if (serviceQueue.contains(service))
             return

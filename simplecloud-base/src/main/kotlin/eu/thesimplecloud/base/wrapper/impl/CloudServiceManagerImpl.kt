@@ -28,6 +28,7 @@ import eu.thesimplecloud.api.listenerextension.cloudListener
 import eu.thesimplecloud.api.network.packets.service.PacketIOCopyService
 import eu.thesimplecloud.api.network.packets.service.PacketIOStopCloudService
 import eu.thesimplecloud.api.service.ICloudService
+import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.service.impl.AbstractCloudServiceManager
 import eu.thesimplecloud.base.wrapper.process.ProcessCopier
 import eu.thesimplecloud.base.wrapper.startup.Wrapper
@@ -38,8 +39,12 @@ class CloudServiceManagerImpl : AbstractCloudServiceManager() {
 
     override fun stopService(cloudService: ICloudService): ICommunicationPromise<Unit> {
         if (cloudService.getWrapperName() == Wrapper.instance.thisWrapperName) {
-            val cloudServiceProcess = Wrapper.instance.cloudServiceProcessManager.getCloudServiceProcessByServiceName(cloudService.getName())
-            cloudServiceProcess?.shutdown()
+            if (cloudService.getState() == ServiceState.PREPARED) {
+                Wrapper.instance.processQueue?.removeFromQueue(cloudService)
+            } else {
+                val cloudServiceProcess = Wrapper.instance.cloudServiceProcessManager.getCloudServiceProcessByServiceName(cloudService.getName())
+                cloudServiceProcess?.shutdown()
+            }
         } else {
             Wrapper.instance.connectionToManager.sendUnitQuery(PacketIOStopCloudService(cloudService.getName()))
         }
