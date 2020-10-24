@@ -44,6 +44,7 @@ import eu.thesimplecloud.launcher.setups.StartSetup
 import eu.thesimplecloud.launcher.updater.RunnerUpdater
 import eu.thesimplecloud.launcher.updater.UpdateExecutor
 import java.io.File
+import java.io.IOException
 import java.net.URLClassLoader
 import java.util.concurrent.Executors
 import kotlin.system.exitProcess
@@ -153,7 +154,6 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
     }
 
     fun clearConsole() {
-        /*
         if (isWindows()) {
             try {
                 ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor()
@@ -166,8 +166,6 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
             print("\u001b[H\u001b[2J")
             System.out.flush()
         }
-
-         */
     }
 
     fun executeCommand(command: String) {
