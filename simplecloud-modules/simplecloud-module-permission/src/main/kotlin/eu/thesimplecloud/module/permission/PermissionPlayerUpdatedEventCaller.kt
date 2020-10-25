@@ -27,7 +27,7 @@ import eu.thesimplecloud.api.event.player.CloudPlayerUpdatedEvent
 import eu.thesimplecloud.api.eventapi.CloudEventHandler
 import eu.thesimplecloud.api.eventapi.IListener
 import eu.thesimplecloud.module.permission.event.player.PermissionPlayerUpdatedEvent
-import eu.thesimplecloud.module.permission.player.getPermissionPlayer
+import eu.thesimplecloud.module.permission.player.getPermissionPlayerSafe
 
 /**
  * Created by IntelliJ IDEA.
@@ -39,7 +39,7 @@ class PermissionPlayerUpdatedEventCaller : IListener {
 
     @CloudEventHandler
     fun handlePlayerUpdated(event: CloudPlayerUpdatedEvent) {
-        val permissionPlayer = event.cloudPlayer.getPermissionPlayer()
+        val permissionPlayer = event.cloudPlayer.getPermissionPlayerSafe() ?: return
         CloudAPI.instance.getEventManager().call(PermissionPlayerUpdatedEvent(permissionPlayer))
     }
 
