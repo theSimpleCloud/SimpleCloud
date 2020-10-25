@@ -22,7 +22,7 @@
  */
 
 configurations {
-    jar.archiveName = 'SimpleCloud-Sign.jar'
+    jar.archiveName = 'SimpleCloud-Sign-Old.jar'
 }
 
 dependencies {
