@@ -36,7 +36,7 @@ import net.md_5.bungee.event.EventPriority
 
 class BungeeListener : Listener {
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.LOW)
     fun on(event: LoginEvent) {
         if (event.isCancelled) return
         val connection = event.connection
