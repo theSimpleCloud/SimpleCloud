@@ -173,7 +173,7 @@ class CommandManager {
     }
 
     fun getAvailableTabCompleteArgs(message: String, sender: ICommandSender): List<String> {
-        val messageArray = message.split(" ")
+        val messageArray = message.split(" ").filter { it.isNotEmpty() }
         val suggestions = HashSet<String>()
         val dataList = getAvailableArgsMatchingCommandData(messageArray.dropLast(1).joinToString(" "))
 
