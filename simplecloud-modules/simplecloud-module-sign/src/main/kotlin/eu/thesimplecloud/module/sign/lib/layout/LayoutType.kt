@@ -36,6 +36,8 @@ enum class LayoutType {
 
     ONLINE,
 
+    FULL,
+
     MAINTENANCE
 
 }

@@ -41,10 +41,6 @@ import java.io.File
 object SignModuleConfigPersistence {
 
     private val layoutsDir = File("modules/sign/layouts/")
-    private val searchingLayoutsDir = File(layoutsDir, "searching/")
-    private val startingLayoutsDir = File(layoutsDir, "starting/")
-    private val onlineLayoutsDir = File(layoutsDir, "online/")
-    private val maintenanceLayoutsDir = File(layoutsDir, "maintenance/")
 
     private val signsFile = File("modules/sign/signs.json")
     private val groupLayoutsFile = File("modules/sign/groupLayouts.json")
@@ -55,18 +51,13 @@ object SignModuleConfigPersistence {
 
         val allLayouts = signModuleConfig.signLayoutContainer.getAllLayouts()
         allLayouts.forEach {
-            val dir = getDirToSaveSignLayout(it)
+            val dir = getLayoutsDirectoryByLayoutType(it.layoutType)
             JsonLib.fromObject(it).saveAsFile(File(dir, it.getName() + ".json"))
         }
     }
 
-    private fun getDirToSaveSignLayout(signLayout: SignLayout): File {
-        return when (signLayout.layoutType) {
-            LayoutType.ONLINE -> this.onlineLayoutsDir
-            LayoutType.SEARCHING -> this.searchingLayoutsDir
-            LayoutType.STARTING -> this.startingLayoutsDir
-            LayoutType.MAINTENANCE -> this.maintenanceLayoutsDir
-        }
+    private fun getLayoutsDirectoryByLayoutType(layoutType: LayoutType): File {
+        return File(layoutsDir, layoutType.name.toLowerCase() + "/")
     }
 
     fun load(): SignModuleConfig {
@@ -76,11 +67,9 @@ object SignModuleConfigPersistence {
         val groupsLayoutContainer = JsonLib.fromJsonFile(groupLayoutsFile)!!.getObject(GroupLayoutsContainer::class.java)
         val cloudSignContainer = JsonLib.fromJsonFile(signsFile)!!.getObject(CloudSignContainer::class.java)
 
-        val signLayoutFiles1 = this.searchingLayoutsDir.listFiles()!!.toList()
-        val signLayoutFiles2 = this.startingLayoutsDir.listFiles()!!.toList()
-        val signLayoutFiles3 = this.onlineLayoutsDir.listFiles()!!.toList()
-        val signLayoutFiles4 = this.maintenanceLayoutsDir.listFiles()!!.toList()
-        val allFiles = signLayoutFiles1.union(signLayoutFiles2).union(signLayoutFiles3).union(signLayoutFiles4)
+        val allLayoutDirectories = LayoutType.values().map { getLayoutsDirectoryByLayoutType(it) }
+        val allFiles = allLayoutDirectories.map { it.listFiles().toList() }.flatten()
+
         val layouts = allFiles.map { JsonLib.fromJsonFile(it)!!.getObject(SignLayout::class.java) }
         return SignModuleConfig(SignLayoutContainer(layouts.toMutableList()), cloudSignContainer, groupsLayoutContainer)
     }
@@ -109,6 +98,9 @@ object SignModuleConfigPersistence {
                 )),
                 SignLayout("default", LayoutType.ONLINE, listOf(
                         SignFrame(arrayOf("%SERVICE%", "§a%STATE%", "%MOTD%", "%ONLINE_PLAYERS%/%MAX_PLAYERS%"))
+                )),
+                SignLayout("default", LayoutType.FULL, listOf(
+                        SignFrame(arrayOf("%SERVICE%", "§6%STATE%", "%MOTD%", "%ONLINE_PLAYERS%/%MAX_PLAYERS%"))
                 ))
         )
     }

@@ -90,6 +90,7 @@ class BukkitCloudSign(
         if (this.serviceGroup!!.isInMaintenance()) return LayoutType.MAINTENANCE
         if (this.service == null || service!!.getState() == ServiceState.CLOSED) return LayoutType.SEARCHING
         if (this.service!!.getState() == ServiceState.STARTING) return LayoutType.STARTING
+        if (this.service!!.isFull()) return LayoutType.FULL
         return LayoutType.ONLINE
     }
 
@@ -119,12 +120,12 @@ class BukkitCloudSign(
                 Placeholder("PORT") { it.getPort().toString() },
                 Placeholder("STATE") { it.getState().name },
                 Placeholder("NUMBER") { it.getServiceNumber().toString() },
-                Placeholder("WRAPPER") { it.getWrapperName()!! }
+                Placeholder("WRAPPER") { it.getWrapperName()!! },
+                Placeholder("MAX_PLAYERS") { it.getMaxPlayers().toString() }
         )
 
         private val GROUP_PLACEHOLDERS = listOf<Placeholder<ICloudServiceGroup>>(
                 Placeholder("GROUP") { it.getName() },
-                Placeholder("MAX_PLAYERS") { it.getMaxPlayers().toString() },
                 Placeholder("TEMPLATE") { it.getTemplateName() }
         )
     }
