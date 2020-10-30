@@ -30,7 +30,7 @@ import eu.thesimplecloud.launcher.updater.UpdateExecutor
 import java.io.File
 
 class ApplicationStarter {
-
+    //TODO replace properties
     fun startApplication(applicationType: CloudApplicationType) {
         //set thread class loader to load the base with the same class loader
         Thread.currentThread().contextClassLoader = Launcher.instance.currentClassLoader
@@ -42,15 +42,15 @@ class ApplicationStarter {
         //Launcher.instance.consoleManager.startThread()
         val file = File(DirectoryPaths.paths.storagePath + "base.jar")
         if (!Launcher.instance.launcherStartArguments.disableAutoUpdater || !file.exists()) {
-            Launcher.instance.consoleSender.sendProperty("launcher.base.checking-for-updates")
+            Launcher.instance.consoleSender.sendMessage("Checking for base updates...")
 
             val updater = BaseUpdater()
             if (updater.isUpdateAvailable()) {
-                Launcher.instance.consoleSender.sendProperty("launcher.base.update-found", updater.getVersionToInstall()!!, updater.getCurrentVersion())
-                Launcher.instance.consoleSender.sendProperty("launcher.base.downloading-update")
+                Launcher.instance.consoleSender.sendMessage("Base update found: ${updater.getVersionToInstall()!!} (current: ${updater.getCurrentVersion()})")
+                Launcher.instance.consoleSender.sendMessage("Downloading base update...")
                 UpdateExecutor().executeUpdate(updater)
             } else {
-                Launcher.instance.consoleSender.sendProperty("launcher.base.newest-version")
+                Launcher.instance.consoleSender.sendMessage("You are running the latest version of SimpleCloud.")
             }
         }
         val cloudModule = moduleHandler.loadModule(file, moduleFileName).cloudModule as ICloudApplication

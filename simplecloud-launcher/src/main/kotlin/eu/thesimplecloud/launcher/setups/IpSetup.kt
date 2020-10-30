@@ -31,10 +31,10 @@ import eu.thesimplecloud.launcher.utils.IpValidator
 class IpSetup : ISetup {
 
 
-    @SetupQuestion(0, "manager.setup.ip.question")
+    @SetupQuestion(0, "Please provide the ip of the manager")
     fun setup(string: String): Boolean {
         if (!IpValidator().validate(string)) {
-            Launcher.instance.consoleSender.sendPropertyInSetup("launcher.setup.ip.ip-invalid")
+            Launcher.instance.consoleSender.sendPropertyInSetup("The specified ip is invalid.")
             return false
         }
 
