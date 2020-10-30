@@ -61,7 +61,6 @@ interface IOfflineCloudPlayer : Nameable, IPropertyMap {
      */
     fun isOnline(): Boolean = false
 
-
     /**
      * Returns a new [IOfflineCloudPlayer] with the data of this player
      */
