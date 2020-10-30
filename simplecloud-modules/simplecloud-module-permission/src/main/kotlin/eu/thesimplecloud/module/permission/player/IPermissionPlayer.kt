@@ -90,7 +90,12 @@ interface IPermissionPlayer : IPermissionEntity, Nameable {
         val permissionByName = super.getNotExpiredPermissionByMatch(permission)
         if (permissionByName != null) return permissionByName.active
 
-        return getAllNotExpiredPermissionGroups().any { it.hasPermission(permission) }
+        val anyGroupPermission = getAllNotExpiredPermissionGroups().any { it.hasPermission(permission) }
+        return if (anyGroupPermission) {
+            true
+        } else {
+            hasAllRights()
+        }
     }
 
 }
