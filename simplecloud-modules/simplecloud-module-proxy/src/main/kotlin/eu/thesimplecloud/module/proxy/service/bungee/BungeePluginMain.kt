@@ -27,6 +27,7 @@ import eu.thesimplecloud.module.proxy.config.TablistConfiguration
 import eu.thesimplecloud.module.proxy.service.ProxyHandler
 import eu.thesimplecloud.module.proxy.service.bungee.listener.BungeeListener
 import eu.thesimplecloud.plugin.proxy.bungee.text.CloudTextBuilder
+import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import net.md_5.bungee.api.plugin.Plugin
 import java.util.concurrent.TimeUnit
@@ -49,61 +50,22 @@ class BungeePluginMain : Plugin() {
 
         proxyHandler.onEnable()
         proxy.pluginManager.registerListener(this, BungeeListener(this))
+        startScheduler()
     }
 
-    private var headerCounter = 0
-    private var footerCounter = 0
-
-    fun startTablist() {
-
-        tablistStarted = true
-        proxyHandler.getTablistConfiguration()?.animationDelayInSeconds?.let {
-            proxy.scheduler.schedule(this, Runnable {
-                val tablistConfiguration = proxyHandler.getTablistConfiguration() ?: return@Runnable
-
-                if (proxy.players.isEmpty()) {
-                    return@Runnable
-                }
-
-                headerCounter++
-                footerCounter++
-
-                if (headerCounter >= tablistConfiguration.headers.size) {
-                    headerCounter = 0
-                }
-
-                if (footerCounter >= tablistConfiguration.footers.size) {
-                    footerCounter = 0
-                }
-                val headerAndFooter = getCurrentHeaderAndFooter(tablistConfiguration)
-
-                sendHeaderAndFooter(headerAndFooter.first, headerAndFooter.second)
-
-            }, it, it, TimeUnit.SECONDS)
-        }
-    }
-
-    fun getCurrentHeaderAndFooter(tablistConfiguration: TablistConfiguration): Pair<String, String> {
-        var header: String = ""
-        var footer: String = ""
-
-        if (tablistConfiguration.footers.isNotEmpty()) {
-            footer = tablistConfiguration.footers.get(footerCounter)
-            if (tablistConfiguration.headers.size > headerCounter) {
-                header = tablistConfiguration.headers.get(headerCounter)
-            } else if (tablistConfiguration.headers.isNotEmpty()) {
-                header = tablistConfiguration.headers.get(0)
+    private fun startScheduler() {
+        ProxyServer.getInstance().scheduler.schedule(this, {
+            val tablistConfiguration = proxyHandler.getTablistConfiguration() ?: return@schedule
+            ProxyServer.getInstance().players.forEach {
+                sendHeaderAndFooter(it, tablistConfiguration)
             }
-        }
-
-        return Pair(header, footer)
+        }, 1, 1, TimeUnit.SECONDS)
     }
 
-    private fun sendHeaderAndFooter(header: String, footer: String) {
-        proxy.players.forEach {
-            if (it.server != null)
-                sendHeaderAndFooter(it, header, footer)
-        }
+    fun sendHeaderAndFooter(proxiedPlayer: ProxiedPlayer, tablistConfiguration: TablistConfiguration) {
+        val footerString = tablistConfiguration.footers.joinToString("\n")
+        val headerString = tablistConfiguration.headers.joinToString("\n")
+        sendHeaderAndFooter(proxiedPlayer, headerString, footerString)
     }
 
     fun sendHeaderAndFooter(player: ProxiedPlayer, header: String, footer: String) {

@@ -32,15 +32,15 @@ class DefaultConfig {
     companion object {
         fun get(): Config {
             val motdConfiguration = MotdConfiguration(
-                    listOf("§bSimpleCloud §8» §7Simplify §f§oyour §7network §8[§f1.8-1.15§8]"),
-                    listOf("§3Status §8» §aOnline"),
+                    listOf("§b§lSimpleCloud §r§8-§7 Simplyify your Network§8│§f 1.8.x §8- §f1.16.x"),
+                    listOf("§3§lStatus§r§8│ §aOnline"),
                     emptyList(),
                     null)
             val maintenanceMotdConfiguration = MotdConfiguration(
-                    listOf("§bSimpleCloud §8» §7Simplify §f§oyour §7network §8[§f1.8-1.15§8]"),
-                    listOf("§3Status §8» §cMaintenance"),
+                    listOf("§b§lSimpleCloud §r§8-§7 Simplyify your Network§8│§f 1.8.x §8- §f1.16.x"),
+                    listOf("§3§lStatus§r§8│ §cMaintenance"),
                     emptyList(),
-                    "§8» §c§oMaintenance")
+                    "§8│ §c§oMaintenance")
             val proxyGroupConfiguration = ProxyGroupConfiguration(
                     "Proxy",
                     mutableListOf("Fllip", "Wetterbericht"),
@@ -50,17 +50,17 @@ class DefaultConfig {
             val tablistConfiguration = TablistConfiguration(
                     listOf("Proxy"),
                     listOf(
-
-                            "§8                                                                        §8\n" +
-                                    "§bSimpleCloud §8» §7Simplify §f§oyour §7network\n" +
-                                    "§3Online §8» §7%ONLINE_PLAYERS%§8/§7%MAX_PLAYERS% §8┃ §3Server §8» §7%SERVER%\n"
+                            "§8                                                                        §8",
+                            "§bSimpleCloud §8» §7Simplify §f§oyour §7network",
+                            "§3Online §8» §7%ONLINE_PLAYERS%§8/§7%MAX_PLAYERS% §8┃ §3Server §8» §7%SERVER%",
+                            "§8",
                     ),
                     listOf(
-                            "§8\n" +
-                                    "§3Twitter §8» §7@theSimpleCloud\n" +
-                                    "§3Discord §8» §7discord.gg/MPZs4h8\n"
-                    ),
-                    1)
+                            "§8",
+                            "§3Twitter §8» §7@theSimpleCloud",
+                            "§3Discord §8» §7discord.gg/MPZs4h8",
+                            "§8",
+                    ))
 
             val config = Config(
                     listOf(proxyGroupConfiguration),

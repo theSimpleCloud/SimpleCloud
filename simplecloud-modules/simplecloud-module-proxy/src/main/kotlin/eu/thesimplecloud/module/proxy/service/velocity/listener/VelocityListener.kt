@@ -48,10 +48,6 @@ class VelocityListener(val plugin: VelocityPluginMain) {
     fun handle(event: ServerPreConnectEvent) {
         val player = event.player
 
-        if (!plugin.tablistStarted) {
-            plugin.startTablist()
-        }
-
         val config = plugin.proxyHandler.configHolder.getValue()
         val proxyConfiguration = plugin.proxyHandler.getProxyConfiguration() ?: return
 
@@ -80,8 +76,7 @@ class VelocityListener(val plugin: VelocityPluginMain) {
     fun on(event: ServerConnectedEvent) {
         val player = event.player
         val tablistConfiguration = plugin.proxyHandler.getTablistConfiguration()?: return
-        val headerAndFooter = plugin.getCurrentHeaderAndFooter(tablistConfiguration)
-        plugin.sendHeaderAndFooter(player, headerAndFooter.first, headerAndFooter.second)
+        plugin.sendHeaderAndFooter(player, tablistConfiguration)
     }
 
     @Subscribe
