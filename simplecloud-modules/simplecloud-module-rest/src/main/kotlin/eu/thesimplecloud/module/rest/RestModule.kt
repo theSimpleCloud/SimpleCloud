@@ -23,6 +23,7 @@
 package eu.thesimplecloud.module.rest
 
 import eu.thesimplecloud.api.external.ICloudModule
+import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.module.rest.javalin.RestServer
 
 /**
@@ -36,6 +37,7 @@ class RestModule : ICloudModule {
     val server = RestServer()
 
     override fun onEnable() {
+        Launcher.instance.consoleSender.sendProperty("module.rest.loaded", "8585")
     }
 
     override fun onDisable() {
