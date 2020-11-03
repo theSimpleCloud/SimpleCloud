@@ -7,11 +7,14 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
     testCompile group: 'junit', name: 'junit', version: '4.12'
     implementation 'io.javalin:javalin:3.9.1'
-    compile 'com.auth0:java-jwt:3.8.3'
-    compile 'com.github.kmehrunes:javalin-jwt:v0.2'
+    implementation 'com.auth0:java-jwt:3.8.3'
+    implementation 'com.github.kmehrunes:javalin-jwt:v0.2'
     implementation "org.slf4j:slf4j-simple:1.7.30"
     implementation "org.slf4j:slf4j-api:1.8.0-beta4"
     implementation(project(":simplecloud-api"))
+    implementation(project(":simplecloud-launcher")) {
+        transitive = false
+    }
     // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
     implementation(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion)
