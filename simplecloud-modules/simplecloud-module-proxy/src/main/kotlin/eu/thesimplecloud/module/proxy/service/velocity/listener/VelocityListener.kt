@@ -44,7 +44,7 @@ import java.util.*
  */
 class VelocityListener(val plugin: VelocityPluginMain) {
 
-    @Subscribe(order = PostOrder.LAST)
+    @Subscribe(order = PostOrder.LATE)
     fun handle(event: ServerPreConnectEvent) {
         val player = event.player
 

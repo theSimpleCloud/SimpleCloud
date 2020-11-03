@@ -44,7 +44,7 @@ import net.md_5.bungee.event.EventPriority
  */
 class BungeeListener(val plugin: BungeePluginMain) : Listener {
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGH)
     fun on(event: ServerConnectEvent) {
         val player = event.player
 
