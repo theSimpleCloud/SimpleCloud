@@ -3,12 +3,22 @@
   "author": "Wetterbericht",
   "mainClass": "eu.thesimplecloud.module.rest.RestModule",
   "moduleCopyType": "NONE",
-  "repositories": ["https://repo.maven.apache.org/maven2/"],
+  "repositories": ["https://repo.maven.apache.org/maven2/", "https://jitpack.io/"],
   "dependencies": [
     {
       "groupId": "io.javalin",
       "artifactId": "javalin",
       "version": "3.9.1"
+    },
+    {
+      "groupId": "com.auth0",
+      "artifactId": "java-jwt",
+      "version": "3.8.3"
+    },
+    {
+      "groupId": "com.github.kmehrunes",
+      "artifactId": "javalin-jwt",
+      "version": "v0.2"
     }
   ],
   "depend": []
