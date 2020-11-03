@@ -24,6 +24,7 @@ package eu.thesimplecloud.plugin.impl.player
 
 import com.velocitypowered.api.proxy.Player
 import com.velocitypowered.api.proxy.server.RegisteredServer
+import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.exception.NoSuchPlayerException
 import eu.thesimplecloud.api.exception.NoSuchServiceException
 import eu.thesimplecloud.api.exception.PlayerConnectException
@@ -172,7 +173,8 @@ class CloudPlayerManagerVelocity : AbstractServiceCloudPlayerManager() {
                 ?: return CommunicationPromise.failed(NoSuchPlayerException("Unable to find bungeecord player"))
         val server = CloudVelocityPlugin.instance.lobbyConnector.getLobbyServer(player)
         if (server == null) {
-            player.disconnect(CloudTextBuilder().build(CloudText("§cNo fallback server found")))
+            val message = CloudAPI.instance.getLanguageManager().getMessage("ingame.no-fallback-server-found")
+            player.disconnect(CloudTextBuilder().build(CloudText(message)))
             return CommunicationPromise.failed(NoSuchServiceException("No fallback server found"))
         }
         player.createConnectionRequest(server).fireAndForget()

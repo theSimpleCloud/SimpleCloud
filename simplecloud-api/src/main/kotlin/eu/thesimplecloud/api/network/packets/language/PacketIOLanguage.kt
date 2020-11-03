@@ -20,42 +20,34 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.api.language
+package eu.thesimplecloud.api.network.packets.language
 
-import eu.thesimplecloud.api.external.ICloudModule
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.language.LanguageProperty
+import eu.thesimplecloud.api.language.LoadedLanguageFile
+import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
+import eu.thesimplecloud.clientserverapi.lib.packet.packettype.ObjectPacket
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
 /**
  * Created by IntelliJ IDEA.
- * Date: 14.10.2020
- * Time: 22:24
+ * Date: 31.10.2020
+ * Time: 22:50
  * @author Frederick Baier
  */
-interface ILanguageManager {
+class PacketIOLanguage() : ObjectPacket<Array<LanguageProperty>>() {
 
-    /**
-     * Registers a language file for the specified [cloudModule]
-     */
-    fun registerLanguageFile(cloudModule: ICloudModule, languageFile: LoadedLanguageFile)
 
-    /**
-     * Returns the replaced message found by the property with the [placeholderValues]
-     * If the [property] cannot be found it will return the [property]
-     */
-    fun getMessage(property: String, vararg placeholderValues: String): String
+    constructor(languageProperties: List<LanguageProperty>) : this() {
+        this.value = languageProperties.toTypedArray()
+    }
 
-    /**
-     * Unregisters the [LoadedLanguageFile] by the specified [cloudModule]
-     */
-    fun unregisterLanguageFileByCloudModule(cloudModule: ICloudModule)
 
-    /**
-     * Clears all language properties
-     */
-    fun clearAll()
-
-    /**
-     * Returns a list of all registered [LanguageProperty]s
-     */
-    fun getAllProperties(): List<LanguageProperty>
-
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
+        val value = this.value ?: return contentException("value")
+        val languageManager = CloudAPI.instance.getLanguageManager()
+        languageManager.clearAll()
+        languageManager.registerLanguageFile(CloudAPI.instance.getThisSidesCloudModule(), LoadedLanguageFile(value.toList()))
+        return unit()
+    }
 }

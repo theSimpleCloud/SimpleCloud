@@ -60,8 +60,12 @@ class LanguageFileLoader {
         CloudAPI.instance.getLanguageManager().registerLanguageFile(CloudAPI.instance.getThisSidesCloudModule(), loadLanguageFile(languageFile))
     }
 
-    private fun loadLanguageFile(file: File): LoadedLanguageFile {
+    fun loadLanguageFile(file: File): LoadedLanguageFile {
         val map = JsonLib.fromJsonFile(file)!!.getObject(HashMap::class.java) as Map<String, String>
+        return buildFileFromMap(map)
+    }
+
+    fun buildFileFromMap(map: Map<String, String>): LoadedLanguageFile {
         val properties = map.entries.map { LanguageProperty(it.key, it.value) }
         return LoadedLanguageFile(properties)
     }

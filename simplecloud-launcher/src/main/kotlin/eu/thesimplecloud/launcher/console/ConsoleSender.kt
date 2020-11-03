@@ -38,9 +38,9 @@ class ConsoleSender : ICommandSender {
 
     override fun sendMessage(message: String): ICommunicationPromise<Unit> {
         if (message.startsWith("§c") || message.startsWith("&c")) {
-            Launcher.instance.logger.warning(filerColorCodes(message))
+            Launcher.instance.logger.warning(filterColorCodes(message))
         } else {
-            Launcher.instance.logger.console(filerColorCodes(message))
+            Launcher.instance.logger.console(filterColorCodes(message))
         }
         return CommunicationPromise.of(Unit)
     }
@@ -58,13 +58,14 @@ class ConsoleSender : ICommandSender {
         return CommunicationPromise.of(true)
     }
 
-    private fun filerColorCodes(message: String): String {
+    private fun filterColorCodes(message: String): String {
+        val message = message.replace("$", "&")
         val builder = StringBuilder()
         val charArray = message.toCharArray()
         var lastChar = '0'
         for (i in charArray.indices) {
             val char = charArray[i]
-            val isCharToRemove = char == '§' || lastChar == '§'
+            val isCharToRemove = char == '&' || lastChar == '&'
             lastChar = char
             if (isCharToRemove) {
                 continue

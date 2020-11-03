@@ -25,6 +25,7 @@ package eu.thesimplecloud
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.eventapi.IEventManager
 import eu.thesimplecloud.api.external.ICloudModule
+import eu.thesimplecloud.api.language.ILanguageManager
 import eu.thesimplecloud.api.message.IMessageChannelManager
 import eu.thesimplecloud.api.network.component.INetworkComponent
 import eu.thesimplecloud.api.player.ICloudPlayerManager
@@ -72,6 +73,10 @@ open class EmptyMockCloudAPIImpl : CloudAPI() {
 
     override fun getServiceVersionHandler(): IServiceVersionHandler {
         return mock(IServiceVersionHandler::class.java)
+    }
+
+    override fun getLanguageManager(): ILanguageManager {
+        return mock(ILanguageManager::class.java)
     }
 
     override fun getMessageChannelManager(): IMessageChannelManager {

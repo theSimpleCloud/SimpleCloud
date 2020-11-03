@@ -31,6 +31,7 @@ import com.velocitypowered.api.event.connection.PostLoginEvent
 import com.velocitypowered.api.event.player.KickedFromServerEvent
 import com.velocitypowered.api.event.player.ServerConnectedEvent
 import com.velocitypowered.api.event.player.ServerPreConnectEvent
+import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.player.connection.DefaultPlayerAddress
 import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
 import eu.thesimplecloud.api.player.text.CloudText
@@ -38,6 +39,7 @@ import eu.thesimplecloud.plugin.proxy.CancelType
 import eu.thesimplecloud.plugin.proxy.ProxyEventHandler
 import eu.thesimplecloud.plugin.proxy.velocity.CloudVelocityPlugin
 import eu.thesimplecloud.plugin.proxy.velocity.text.CloudTextBuilder
+import net.kyori.adventure.text.TextComponent
 import java.util.*
 
 /**
@@ -68,7 +70,7 @@ class VelocityListener(val plugin: CloudVelocityPlugin) {
         ProxyEventHandler.handlePostLogin(player.uniqueId, player.username)
 
         if (plugin.lobbyConnector.getLobbyServer(player) == null) {
-            event.player.disconnect(CloudTextBuilder().build(CloudText("§cNo fallback server found")))
+            event.player.disconnect(CloudTextBuilder().build(CloudText(getNoFallbackServerFoundMessage())))
         }
     }
 
@@ -90,7 +92,7 @@ class VelocityListener(val plugin: CloudVelocityPlugin) {
         else
             event.originalServer
         if (target == null) {
-            event.player.disconnect(CloudTextBuilder().build(CloudText("§cNo fallback server found")))
+            event.player.disconnect(CloudTextBuilder().build(CloudText(getNoFallbackServerFoundMessage())))
             return
         }
         val serverNameTo = target.serverInfo.name
@@ -129,7 +131,7 @@ class VelocityListener(val plugin: CloudVelocityPlugin) {
             kickReasonString = ""
             kickReasonComponent = Optional.of(CloudTextBuilder().build(CloudText("")))
         } else {
-            kickReasonString = kickReasonComponent.get().insertion()!!
+            kickReasonString = (kickReasonComponent.get() as TextComponent).content()
         }
 
         val player = event.player
@@ -138,20 +140,21 @@ class VelocityListener(val plugin: CloudVelocityPlugin) {
             if (cancelMessageType == CancelType.MESSAGE) {
                 player.sendMessage(CloudTextBuilder().build(CloudText(message)))
             } else {
-                player.disconnect(CloudTextBuilder().build(CloudText(message)))
+                event.result = KickedFromServerEvent.DisconnectPlayer.create(kickReasonComponent.get())
             }
         }
 
         val fallback = plugin.lobbyConnector.getLobbyServer(player, listOf(kickedServerName))
         if (fallback == null) {
-            player.disconnect(CloudTextBuilder().build(CloudText("§cNo fallback server found")))
+            event.result = KickedFromServerEvent.DisconnectPlayer.create(CloudTextBuilder().build(CloudText(getNoFallbackServerFoundMessage())))
             return
         }
 
-        player.sendMessage(kickReasonComponent.get())
-        event.result = KickedFromServerEvent.ServerKickResult {
-            player.createConnectionRequest(fallback).connectWithIndication().getNow(false)
-        }
+        event.result = KickedFromServerEvent.RedirectPlayer.create(fallback)
+    }
+
+    private fun getNoFallbackServerFoundMessage(): String {
+        return CloudAPI.instance.getLanguageManager().getMessage("ingame.no-fallback-server-found")
     }
 
 }

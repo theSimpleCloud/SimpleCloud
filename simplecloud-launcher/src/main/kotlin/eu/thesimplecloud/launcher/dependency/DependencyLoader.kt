@@ -37,6 +37,8 @@ class DependencyLoader {
 
     companion object {
         val INSTANCE = DependencyLoader()
+
+        //val FORBIDDEN_DEPENDENCY_ARTIFACT_IDS = listOf("kotlin-stdlib")
     }
 
     private val installedDependencies = CopyOnWriteArraySet<LauncherCloudDependency>()
@@ -44,6 +46,10 @@ class DependencyLoader {
     private val resolvedDependencies = CopyOnWriteArraySet<LauncherCloudDependency>()
 
     fun loadDependencies(repositories: List<String>, dependencies: List<LauncherCloudDependency>) {
+        if (dependencies.isEmpty()) return
+        val dependenciesString = dependencies.joinToString { it.getName() }
+        loggerMessage("Loading dependencies: $dependenciesString", false)
+
         val allDependencies = dependencies.map { collectSubDependencies(it, repositories) }.flatten()
         val dependenciesByArtifactId = allDependencies.groupBy { it.artifactId }.values
         val newestVersions = dependenciesByArtifactId.map {
@@ -52,6 +58,9 @@ class DependencyLoader {
         newestVersions.forEach {
             installDependency(it)
         }
+
+        val installedDependenciesString = newestVersions.joinToString { it.getName() }
+        loggerMessage("Installed dependencies: $installedDependenciesString", true)
     }
 
     private fun collectSubDependencies(dependency: LauncherCloudDependency, repositories: List<String>, list: MutableList<LauncherCloudDependency> = ArrayList()): List<LauncherCloudDependency> {
@@ -85,9 +94,10 @@ class DependencyLoader {
         return subDependencies.asList()
     }
 
-    private fun loggerMessage(message: String) {
+    private fun loggerMessage(message: String, canBeHidden: Boolean = true) {
         if (isLoggerAvailable()) {
-            Launcher.instance.logger.console(message)
+            if (!canBeHidden)
+                Launcher.instance.logger.console(message)
         } else {
             println(message)
         }

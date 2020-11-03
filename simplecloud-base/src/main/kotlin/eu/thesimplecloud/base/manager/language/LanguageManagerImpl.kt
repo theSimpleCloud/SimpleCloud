@@ -20,7 +20,33 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.api.language
+package eu.thesimplecloud.base.manager.language
 
-class LanguageFile(val messages: MutableMap<String, String> = HashMap()) {
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.external.ICloudModule
+import eu.thesimplecloud.api.language.LanguageManager
+import eu.thesimplecloud.api.language.LoadedLanguageFile
+import eu.thesimplecloud.api.network.packets.language.PacketIOLanguage
+import eu.thesimplecloud.base.manager.startup.Manager
+
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 31.10.2020
+ * Time: 23:06
+ * @author Frederick Baier
+ */
+class LanguageManagerImpl : LanguageManager() {
+
+    override fun registerLanguageFile(cloudModule: ICloudModule, languageFile: LoadedLanguageFile) {
+        super.registerLanguageFile(cloudModule, languageFile)
+
+        val allServices = CloudAPI.instance.getCloudServiceManager().getAllCachedObjects()
+        val allServiceClients = allServices.map {
+            Manager.instance.communicationServer.getClientManager().getClientByClientValue(it)
+        }
+        val packet = PacketIOLanguage(this.getAllProperties())
+        allServiceClients.filterNotNull().forEach { it.sendUnitQuery(packet) }
+    }
+
+
 }

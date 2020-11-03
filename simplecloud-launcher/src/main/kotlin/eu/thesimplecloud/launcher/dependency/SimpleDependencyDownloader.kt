@@ -54,7 +54,7 @@ class SimpleDependencyDownloader(private val repositories: List<String>) {
             }
         }
 
-        throw IllegalArgumentException("No valid repository was found for ${dependency.getName()}")
+        throw IllegalArgumentException("No valid repository was found for ${dependency.getName()} repos: $repositories")
     }
 
     @Throws(IOException::class)

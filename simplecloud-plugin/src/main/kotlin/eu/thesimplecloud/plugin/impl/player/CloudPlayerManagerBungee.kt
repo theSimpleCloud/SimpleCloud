@@ -22,6 +22,7 @@
 
 package eu.thesimplecloud.plugin.impl.player
 
+import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.exception.NoSuchPlayerException
 import eu.thesimplecloud.api.exception.NoSuchServiceException
 import eu.thesimplecloud.api.exception.PlayerConnectException
@@ -164,7 +165,8 @@ class CloudPlayerManagerBungee : AbstractServiceCloudPlayerManager() {
                 ?: return CommunicationPromise.failed(NoSuchPlayerException("Unable to find bungeecord player"))
         val serverInfo = CloudBungeePlugin.instance.lobbyConnector.getLobbyServer(proxiedPlayer)
         if (serverInfo == null) {
-            proxiedPlayer.disconnect(CloudTextBuilder().build(CloudText("§cNo fallback server found")))
+            val message = CloudAPI.instance.getLanguageManager().getMessage("ingame.no-fallback-server-found")
+            proxiedPlayer.disconnect(CloudTextBuilder().build(CloudText(message)))
             return CommunicationPromise.failed(NoSuchServiceException("No fallback server found"))
         }
         proxiedPlayer.connect(serverInfo)

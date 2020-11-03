@@ -25,6 +25,8 @@ package eu.thesimplecloud.plugin.impl
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.eventapi.IEventManager
 import eu.thesimplecloud.api.external.ICloudModule
+import eu.thesimplecloud.api.language.ILanguageManager
+import eu.thesimplecloud.api.language.LanguageManager
 import eu.thesimplecloud.api.network.component.INetworkComponent
 import eu.thesimplecloud.api.player.ICloudPlayerManager
 import eu.thesimplecloud.api.screen.ICommandExecuteManager
@@ -45,6 +47,7 @@ class CloudAPIImpl(private val cloudPlayerManager: ICloudPlayerManager) : CloudA
     private val eventManager = EventManagerImpl()
     private val synchronizedObjectListManager = SynchronizedObjectListManager()
     private val serviceVersionHandler = ServiceVersionHandler()
+    private val languageManager = LanguageManager()
 
     init {
         getCacheListManager().registerCacheList(getWrapperManager())
@@ -69,6 +72,8 @@ class CloudAPIImpl(private val cloudPlayerManager: ICloudPlayerManager) : CloudA
     override fun getSynchronizedObjectListManager(): ISynchronizedObjectListManager = this.synchronizedObjectListManager
 
     override fun getServiceVersionHandler(): IServiceVersionHandler = this.serviceVersionHandler
+
+    override fun getLanguageManager(): ILanguageManager = this.languageManager
 
     override fun getThisSidesName(): String = CloudPlugin.instance.thisServiceName
 

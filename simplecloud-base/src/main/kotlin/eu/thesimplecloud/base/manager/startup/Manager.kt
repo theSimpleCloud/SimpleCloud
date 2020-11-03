@@ -107,6 +107,7 @@ class Manager : ICloudApplication {
 
         this.cloudModuleHandler = ModuleHandler(
                 appClassLoader,
+                Launcher.instance.launcherConfig.language,
                 ModuleUpdaterConfigLoader().loadConfig().modules,
                 shallInstallUpdates = true
         )

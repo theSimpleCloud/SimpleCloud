@@ -22,6 +22,7 @@
 
 package eu.thesimplecloud.plugin.proxy.bungee.listener
 
+import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.player.connection.DefaultPlayerAddress
 import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
 import eu.thesimplecloud.api.player.text.CloudText
@@ -60,7 +61,7 @@ class BungeeListener : Listener {
         ProxyEventHandler.handlePostLogin(proxiedPlayer.uniqueId, proxiedPlayer.name)
 
         if (CloudBungeePlugin.instance.lobbyConnector.getLobbyServer(proxiedPlayer) == null) {
-            event.player.disconnect(CloudTextBuilder().build(CloudText("§cNo fallback server found")))
+            event.player.disconnect(CloudTextBuilder().build(CloudText(getNoFallbackServerFoundMessage())))
             return
         }
     }
@@ -81,7 +82,7 @@ class BungeeListener : Listener {
         else
             event.target
         if (target == null) {
-            event.player.disconnect(CloudTextBuilder().build(CloudText("§cNo fallback server found")))
+            event.player.disconnect(CloudTextBuilder().build(CloudText(getNoFallbackServerFoundMessage())))
             return
         }
         event.target = target
@@ -128,7 +129,7 @@ class BungeeListener : Listener {
 
         val fallback = CloudBungeePlugin.instance.lobbyConnector.getLobbyServer(proxiedPlayer, listOf(kickedServerName))
         if (fallback == null) {
-            proxiedPlayer.disconnect(CloudTextBuilder().build(CloudText("§cNo fallback server found")))
+            proxiedPlayer.disconnect(CloudTextBuilder().build(CloudText(getNoFallbackServerFoundMessage())))
             return
         }
 
@@ -137,4 +138,7 @@ class BungeeListener : Listener {
         event.isCancelled = true
     }
 
+    private fun getNoFallbackServerFoundMessage(): String {
+        return CloudAPI.instance.getLanguageManager().getMessage("ingame.no-fallback-server-found")
+    }
 }

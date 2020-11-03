@@ -25,6 +25,7 @@ package eu.thesimplecloud.launcher.external.module.handler
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.external.ICloudModule
+import eu.thesimplecloud.api.language.LoadedLanguageFile
 import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.launcher.dependency.DependencyLoader
@@ -38,6 +39,7 @@ import eu.thesimplecloud.launcher.external.module.ModuleClassLoader
 import eu.thesimplecloud.launcher.external.module.ModuleFileContent
 import eu.thesimplecloud.launcher.external.module.update.UpdaterFileContent
 import eu.thesimplecloud.launcher.external.module.updater.ModuleUpdater
+import eu.thesimplecloud.launcher.language.LanguageFileLoader
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.launcher.updater.UpdateExecutor
 import java.io.File
@@ -49,6 +51,7 @@ import java.util.jar.JarFile
 
 open class ModuleHandler(
         private val parentClassLoader: ClassLoader = ClassLoader.getSystemClassLoader(),
+        private val currentLanguage: String = "en",
         private val modulesWithPermissionToUpdate: List<String> = emptyList(),
         private val shallInstallUpdates: Boolean = false,
         private val handleException: (Throwable) -> Unit = { throw it }
@@ -80,6 +83,7 @@ open class ModuleHandler(
         checkForMissingDependencies(loadedModuleFileContent, getAllLoadedModuleNames())
         checkForRecursiveDependencies(loadedModuleFileContent)
         val (file, content, updaterFileContent) = loadedModuleFileContent
+        //check for update and execute
         if (updaterFileContent != null && !Launcher.instance.launcherStartArguments.disableAutoUpdater) {
             val updater = ModuleUpdater(updaterFileContent, loadedModuleFileContent.file)
             if (shallInstallUpdates && updater.isUpdateAvailable()) {
@@ -89,10 +93,12 @@ open class ModuleHandler(
                 return loadModule(loadedModuleFileContent.file)
             }
         }
+        //no update found
         try {
             installRequiredDependencies(content)
             val classLoader = this.createModuleClassLoader(arrayOf(file.toURI().toURL()), loadedModuleFileContent.content.name)
             val cloudModule = this.loadModuleClassInstance(classLoader, content.mainClass)
+            registerLanguageFileIfExist(cloudModule, file)
             val loadedModule = LoadedModule(cloudModule, file, content, updaterFileContent, classLoader)
             this.loadedModules.add(loadedModule)
             cloudModule.onEnable()
@@ -102,6 +108,27 @@ open class ModuleHandler(
         } catch (ex: Exception) {
             throw ModuleLoadException(file.path, ex)
         }
+    }
+
+    private fun registerLanguageFileIfExist(cloudModule: ICloudModule, moduleFile: File) {
+        val languageFile = loadLanguageFile(moduleFile)
+        languageFile?.let {
+            CloudAPI.instance.getLanguageManager().registerLanguageFile(cloudModule, languageFile)
+        }
+    }
+
+    private fun loadLanguageFile(file: File): LoadedLanguageFile? {
+        val loadedLanguageFile = loadLanguageFile(file, this.currentLanguage)
+        return loadedLanguageFile ?: loadFallbackLanguageFile(file)
+    }
+
+    private fun loadFallbackLanguageFile(file: File): LoadedLanguageFile? {
+        return loadLanguageFile(file, LanguageFileLoader.FALLBACK_LANGUAGE)
+    }
+
+    private fun loadLanguageFile(file: File, language: String): LoadedLanguageFile? {
+        val map: Map<String, String>? = runCatching { loadJsonFileInJar<HashMap<String, String>>(file, "languages/${language}.json") }.getOrNull()
+        return map?.let { LanguageFileLoader().buildFileFromMap(it) }
     }
 
     override fun loadModule(file: File, moduleFileName: String): LoadedModule {
@@ -253,17 +280,17 @@ open class ModuleHandler(
         }
     }
 
-    private inline fun <reified T : Any> loadJsonFileInJar(file: File, moduleFileName: String): T {
-        require(file.exists()) { "Specified file to load $moduleFileName from does not exist: ${file.path}" }
+    private inline fun <reified T : Any> loadJsonFileInJar(file: File, path: String): T {
+        require(file.exists()) { "Specified file to load $path from does not exist: ${file.path}" }
         try {
             val jar = JarFile(file)
-            val entry: JarEntry = jar.getJarEntry(moduleFileName)
-                    ?: throw ModuleLoadException("${file.path}: No '$moduleFileName' found.")
+            val entry: JarEntry = jar.getJarEntry(path)
+                    ?: throw ModuleLoadException("${file.path}: No '$path' found.")
             val fileStream = jar.getInputStream(entry)
             val jsonLib = JsonLib.fromInputStream(fileStream)
             jar.close()
             return jsonLib.getObjectOrNull(T::class.java)
-                    ?: throw ModuleLoadException("${file.path}: Invalid '$moduleFileName'.")
+                    ?: throw ModuleLoadException("${file.path}: Invalid '$path'.")
         } catch (ex: Exception) {
             throw ModuleLoadException(file.path, ex)
         }
@@ -324,6 +351,8 @@ open class ModuleHandler(
         CloudAPI.instance.getCloudServiceManager().getAllCachedObjects().forEach { group ->
             group.getProperties().forEach { (it.value as Property).resetValue() }
         }
+
+        CloudAPI.instance.getLanguageManager().unregisterLanguageFileByCloudModule(cloudModule)
     }
 
     override fun getLoadedModules(): List<LoadedModule> = this.loadedModules

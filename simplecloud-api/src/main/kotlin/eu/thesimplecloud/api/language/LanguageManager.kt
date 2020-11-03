@@ -26,7 +26,7 @@ import com.google.common.collect.Maps
 import eu.thesimplecloud.api.external.ICloudModule
 
 
-class LanguageManager : ILanguageManager {
+open class LanguageManager : ILanguageManager {
 
     private val languageFiles = Maps.newConcurrentMap<ICloudModule, LoadedLanguageFile>()
 
@@ -38,6 +38,18 @@ class LanguageManager : ILanguageManager {
         val allProperties = this.languageFiles.values.map { it.getProperties() }.flatten()
         val languageProperty = allProperties.firstOrNull { it.property == property } ?: return property
         return languageProperty.getReplacedMessage(*placeholderValues)
+    }
+
+    override fun unregisterLanguageFileByCloudModule(cloudModule: ICloudModule) {
+        this.languageFiles.remove(cloudModule)
+    }
+
+    override fun clearAll() {
+        this.languageFiles.clear()
+    }
+
+    override fun getAllProperties(): List<LanguageProperty> {
+        return this.languageFiles.values.map { it.getProperties() }.flatten()
     }
 
 }

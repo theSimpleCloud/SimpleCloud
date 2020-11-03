@@ -25,6 +25,7 @@ package eu.thesimplecloud.base.manager.impl
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.eventapi.IEventManager
 import eu.thesimplecloud.api.external.ICloudModule
+import eu.thesimplecloud.api.language.ILanguageManager
 import eu.thesimplecloud.api.network.component.INetworkComponent
 import eu.thesimplecloud.api.player.ICloudPlayerManager
 import eu.thesimplecloud.api.screen.ICommandExecuteManager
@@ -37,6 +38,7 @@ import eu.thesimplecloud.api.sync.list.manager.ISynchronizedObjectListManager
 import eu.thesimplecloud.api.sync.list.manager.SynchronizedObjectListManager
 import eu.thesimplecloud.api.template.ITemplateManager
 import eu.thesimplecloud.api.wrapper.IWrapperManager
+import eu.thesimplecloud.base.manager.language.LanguageManagerImpl
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.clientserverapi.lib.bootstrap.ICommunicationBootstrap
 
@@ -51,6 +53,7 @@ class CloudAPIImpl : CloudAPI() {
     private val eventManager = EventManagerImpl()
     private val synchronizedObjectListManager = SynchronizedObjectListManager()
     private val serviceVersionHandler = ServiceVersionHandler(ServiceVersionLoader.loadVersions())
+    private val languageManager = LanguageManagerImpl()
 
     init {
         getCacheListManager().registerCacheList(getWrapperManager())
@@ -76,6 +79,8 @@ class CloudAPIImpl : CloudAPI() {
     override fun getSynchronizedObjectListManager(): ISynchronizedObjectListManager = this.synchronizedObjectListManager
 
     override fun getServiceVersionHandler(): IServiceVersionHandler = this.serviceVersionHandler
+
+    override fun getLanguageManager(): ILanguageManager = this.languageManager
 
     override fun getTemplateManager(): ITemplateManager = this.templateManager
 
