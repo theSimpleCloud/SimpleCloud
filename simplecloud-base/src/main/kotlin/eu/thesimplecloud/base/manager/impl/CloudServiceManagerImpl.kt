@@ -47,7 +47,7 @@ class CloudServiceManagerImpl : AbstractCloudServiceManager() {
             ServiceState.PREPARED -> {
                 cloudService.setState(ServiceState.CLOSED)
                 CloudAPI.instance.getCloudServiceManager().delete(cloudService)
-                return CommunicationPromise.UNIT_PROMISE
+                return CommunicationPromise.of(Unit)
             }
             ServiceState.STARTING, ServiceState.VISIBLE, ServiceState.INVISIBLE -> {
                 val wrapper = cloudService.getWrapper()
