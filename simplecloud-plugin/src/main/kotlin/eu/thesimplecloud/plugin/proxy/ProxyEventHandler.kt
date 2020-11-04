@@ -27,6 +27,7 @@ import eu.thesimplecloud.api.event.player.CloudPlayerDisconnectEvent
 import eu.thesimplecloud.api.event.player.CloudPlayerLoginEvent
 import eu.thesimplecloud.api.exception.NoSuchPlayerException
 import eu.thesimplecloud.api.player.CloudPlayer
+import eu.thesimplecloud.api.player.ICloudPlayer
 import eu.thesimplecloud.api.player.PlayerServerConnectState
 import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
 import eu.thesimplecloud.api.service.ICloudService
@@ -37,11 +38,7 @@ import eu.thesimplecloud.plugin.network.packets.PacketOutGetTabSuggestions
 import eu.thesimplecloud.plugin.network.packets.PacketOutPlayerConnectToServer
 import eu.thesimplecloud.plugin.network.packets.PacketOutPlayerLoginRequest
 import eu.thesimplecloud.plugin.startup.CloudPlugin
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 /**
  * Created by IntelliJ IDEA.
@@ -51,23 +48,17 @@ import java.util.concurrent.TimeUnit
  */
 object ProxyEventHandler {
 
-    private val blockedPlayers = ArrayList<UUID>()
 
     fun handleLogin(playerConnection: DefaultPlayerConnection, cancelEvent: (String) -> Unit) {
-        if (blockedPlayers.contains(playerConnection.getUniqueId())) {
-            cancelEvent("§cLogin failed. Try again later.")
-            return
-        }
         val thisService = CloudPlugin.instance.thisService()
         if (!thisService.isAuthenticated() || !thisService.isOnline()) {
             cancelEvent("§cProxy is still starting.")
             return
         }
-        val playerPromise = CloudAPI.instance.getCloudPlayerManager().getCloudPlayer(playerConnection.getUniqueId()).awaitUninterruptibly()
+        val playerPromise = CloudAPI.instance.getCloudPlayerManager()
+                .getCloudPlayer(playerConnection.getUniqueId()).awaitUninterruptibly()
         if (playerPromise.isSuccess) {
-            cancelEvent("§cYou are already registered on the network")
-            handleAlreadyRegistered(playerConnection)
-            return
+            handleAlreadyRegistered(playerPromise.getNow()!!)
         }
 
         //send login request
@@ -75,7 +66,6 @@ object ProxyEventHandler {
                 .sendQuery<CloudPlayer>(PacketOutCreateCloudPlayer(playerConnection, CloudPlugin.instance.thisServiceName), 1000).awaitUninterruptibly()
         if (!createPromise.isSuccess) {
             cancelEvent("§cFailed to create player: ${createPromise.cause().message}")
-            blockPlayerForFiveSeconds(playerConnection.getUniqueId())
             println("Failed to create CloudPlayer:")
             throw createPromise.cause()
         }
@@ -83,35 +73,19 @@ object ProxyEventHandler {
         if (!loginRequestPromise.isSuccess) {
             loginRequestPromise.cause().printStackTrace()
             cancelEvent("§cLogin failed: " + loginRequestPromise.cause().message)
+            return
         }
 
+        val cloudPlayer = createPromise.getNow()!!
         //update player to cache to avoid bugs
-        CloudAPI.instance.getCloudPlayerManager().update(createPromise.getNow()!!, true)
+        CloudAPI.instance.getCloudPlayerManager().update(cloudPlayer, true)
     }
 
-    private fun handleAlreadyRegistered(playerConnection: DefaultPlayerConnection) {
-        CloudAPI.instance.getCloudPlayerManager().getCloudPlayer(playerConnection.getUniqueId()).then {
-            it.kick()
-            it
-        }.thenDelayed(1, TimeUnit.SECONDS) {
-            CloudAPI.instance.getCloudPlayerManager().sendDeleteToConnection(it, CloudPlugin.instance.communicationClient)
-        }
-        blockPlayerForFiveSeconds(playerConnection.getUniqueId())
-    }
-
-    private fun blockPlayerForFiveSeconds(uniqueId: UUID) {
-        blockedPlayers.add(uniqueId)
-        GlobalScope.launch {
-            delay(4000)
-            val onlinePlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(uniqueId)
-            onlinePlayer?.let {
-                CloudAPI.instance.getCloudPlayerManager().delete(it)
-                CloudAPI.instance.getCloudPlayerManager()
-                        .sendDeleteToConnection(it, CloudPlugin.instance.communicationClient)
-            }
-            delay(1000)
-            blockedPlayers.remove(uniqueId)
-        }
+    private fun handleAlreadyRegistered(player: ICloudPlayer) {
+        player.kick()
+        Thread.sleep(200)
+        CloudAPI.instance.getCloudPlayerManager().sendDeleteToConnection(player, CloudPlugin.instance.communicationClient)
+                .awaitUninterruptibly()
     }
 
     fun handlePostLogin(uniqueId: UUID, name: String) {
