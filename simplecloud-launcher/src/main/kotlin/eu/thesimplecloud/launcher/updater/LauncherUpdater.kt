@@ -25,6 +25,8 @@ package eu.thesimplecloud.launcher.updater
 
 import eu.thesimplecloud.api.depedency.Dependency
 import eu.thesimplecloud.api.utils.ManifestLoader
+import eu.thesimplecloud.api.utils.WebContentLoader
+import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.launcher.LauncherMain
 import eu.thesimplecloud.launcher.startup.Launcher
 import java.io.File
@@ -38,8 +40,18 @@ class LauncherUpdater : AbstractUpdater(
         File("launcher-update.jar")
 ) {
 
+    private var versionToInstall: String? = null
+
     override fun getCurrentVersion(): String {
         return getCurrentLauncherVersion()
+    }
+
+    override fun getVersionToInstall(): String? {
+        if (versionToInstall != null) return versionToInstall
+        val content =  WebContentLoader().loadContent("https://update.thesimplecloud.eu/latestVersion/${getCurrentVersion()}")
+                ?: return null
+        this.versionToInstall = JsonLib.fromJsonString(content).getString("latestVersion")
+        return this.versionToInstall
     }
 
     override fun executeJar() {
