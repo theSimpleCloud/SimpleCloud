@@ -38,6 +38,7 @@ import eu.thesimplecloud.plugin.proxy.CancelType
 import eu.thesimplecloud.plugin.proxy.ProxyEventHandler
 import eu.thesimplecloud.plugin.proxy.velocity.CloudVelocityPlugin
 import eu.thesimplecloud.plugin.proxy.velocity.text.CloudTextBuilder
+import net.kyori.adventure.text.TextComponent
 import java.util.*
 
 /**
@@ -123,12 +124,12 @@ class VelocityListener(val plugin: CloudVelocityPlugin) {
     @Subscribe
     fun handle(event: KickedFromServerEvent) {
         val kickReasonString: String
-        var kickReasonComponent = event.originalReason
+        var kickReasonComponent = event.serverKickReason
         if (!kickReasonComponent.isPresent) {
             kickReasonString = ""
             kickReasonComponent = Optional.of(CloudTextBuilder().build(CloudText("")))
         } else {
-            kickReasonString = kickReasonComponent.get().insertion()?: ""
+            kickReasonString = (kickReasonComponent.get() as TextComponent).content()
         }
 
         val player = event.player
@@ -137,20 +138,17 @@ class VelocityListener(val plugin: CloudVelocityPlugin) {
             if (cancelMessageType == CancelType.MESSAGE) {
                 player.sendMessage(CloudTextBuilder().build(CloudText(message)))
             } else {
-                player.disconnect(CloudTextBuilder().build(CloudText(message)))
+                event.result = KickedFromServerEvent.DisconnectPlayer.create(kickReasonComponent.get())
             }
         }
 
         val fallback = plugin.lobbyConnector.getLobbyServer(player, listOf(kickedServerName))
         if (fallback == null) {
-            player.disconnect(CloudTextBuilder().build(CloudText("§cNo fallback server found")))
+            event.result = KickedFromServerEvent.DisconnectPlayer.create(CloudTextBuilder().build(CloudText("§cNo fallback server found")))
             return
         }
 
-        player.sendMessage(kickReasonComponent.get())
-        event.result = KickedFromServerEvent.ServerKickResult {
-            player.createConnectionRequest(fallback).connectWithIndication().getNow(false)
-        }
+        event.result = KickedFromServerEvent.RedirectPlayer.create(fallback)
     }
 
 }
