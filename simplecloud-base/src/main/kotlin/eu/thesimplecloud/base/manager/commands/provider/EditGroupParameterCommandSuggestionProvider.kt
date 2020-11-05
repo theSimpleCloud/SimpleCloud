@@ -33,7 +33,7 @@ import eu.thesimplecloud.launcher.console.command.provider.ICommandSuggestionPro
  * Date: 14.04.2020
  * Time: 18:39
  */
-class EditGroupParameterCommandSuggestionProvider: ICommandSuggestionProvider {
+class EditGroupParameterCommandSuggestionProvider : ICommandSuggestionProvider {
 
     override fun getSuggestions(sender: ICommandSender, fullCommand: String, lastArgument: String): List<String> {
         val fullCommandArray = fullCommand.split(" ")
@@ -41,12 +41,11 @@ class EditGroupParameterCommandSuggestionProvider: ICommandSuggestionProvider {
         val group = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(groupName)
         group ?: return emptyList()
         val allFields = group::class.java.getAllFieldsFromClassAndSubClasses().filter { !Collection::class.java.isAssignableFrom(it.type) }
-        return allFields.filterNot { it.name == "name" ||
-                it.name == "host" ||
-                it.name == "authenticated" ||
-                it.name == "usedMemory" ||
-                it.name == "templatesReceived" ||
-                it.name == "currentlyStartingServices" }.map { it.name }
+        return allFields.filterNot {
+            it.name == "name" ||
+                    it.name == "serviceVersion" ||
+                    it.name == "wrapperName"
+        }.map { it.name }
     }
 
 }
