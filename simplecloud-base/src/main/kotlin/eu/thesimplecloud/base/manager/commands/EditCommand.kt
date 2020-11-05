@@ -95,7 +95,7 @@ class EditCommand : ICommandHandler {
             return null
         }
         val allFields = serviceGroup::class.java.getAllFieldsFromClassAndSubClasses().filter { !Collection::class.java.isAssignableFrom(it.type) }
-        return allFields.filterNot { it.name == "name" || it.name == "serviceVersion" }
+        return allFields.filterNot { it.name == "name" || it.name == "serviceVersion" || it.name == "wrapperName" }
     }
     //wrapper
 
