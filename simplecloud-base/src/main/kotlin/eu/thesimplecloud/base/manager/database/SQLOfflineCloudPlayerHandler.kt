@@ -29,6 +29,7 @@ import eu.thesimplecloud.jsonlib.GsonCreator
 import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.launcher.startup.Launcher
 import java.sql.Connection
+import java.sql.DatabaseMetaData
 import java.sql.DriverManager
 import java.sql.SQLException
 import java.util.*
@@ -50,10 +51,12 @@ class SQLOfflineCloudPlayerHandler(private val databaseConnectionInformation: Da
 
     init {
         runReconnectLoop()
-        val statement = connection!!.prepareStatement("CREATE TABLE IF NOT EXISTS `$playerCollectionName` (`uniqueId` varchar(36), `name` varchar(16), `data` LONGBLOB)")
-        statement.executeUpdate()
-        createIndex("uniqueId")
-        createIndex("name")
+        if (!doesTableExist()) {
+            val statement = connection!!.prepareStatement("CREATE TABLE IF NOT EXISTS `$playerCollectionName` (`uniqueId` varchar(36), `name` varchar(16), `data` LONGBLOB)")
+            statement.executeUpdate()
+            createIndex("uniqueId")
+            createIndex("name")
+        }
     }
 
     private fun runReconnectLoop() {
@@ -131,5 +134,10 @@ class SQLOfflineCloudPlayerHandler(private val databaseConnectionInformation: Da
         return resultSet.next()
     }
 
+    private fun doesTableExist(): Boolean {
+        val meta: DatabaseMetaData = connection!!.metaData
+        val res = meta.getTables(null, null, playerCollectionName, arrayOf("TABLE"))
+        return res.next()
+    }
 
 }
