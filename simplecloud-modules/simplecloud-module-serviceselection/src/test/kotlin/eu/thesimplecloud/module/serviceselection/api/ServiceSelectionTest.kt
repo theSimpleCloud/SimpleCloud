@@ -20,33 +20,49 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.mongoinstaller.installer;
+package eu.thesimplecloud.module.serviceselection.api
 
-
-import eu.thesimplecloud.mongoinstaller.InstallerEnum;
+import eu.thesimplecloud.api.service.ICloudService
+import io.mockk.mockk
+import io.mockk.spyk
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
+import org.junit.Before
+import org.junit.Test
 
 /**
  * Created by IntelliJ IDEA.
- * Date: 07.06.2020
- * Time: 21:05
- *
+ * Date: 29.06.2020
+ * Time: 13:38
  * @author Frederick Baier
  */
-public class UniversalInstaller implements IInstaller {
-    @Override
-    public void install(InstallerEnum installerEnum) throws Exception {
-        executeCommand("apt-get install sudo");
-        executeCommand("sudo apt-get install gnupg");
-        executeCommand("wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | sudo apt-key add -");
+class ServiceSelectionTest {
 
-        executeCommand(installerEnum.getVersionSpecificCommand());
+    private lateinit var serviceViewer: AbstractServiceViewer
 
-        executeCommand("sudo apt-get update");
-        executeCommand("sudo apt-get install -y mongodb-org");
-        executeCommand("sudo systemctl daemon-reload");
-        executeCommand("sudo systemctl start mongod");
-        executeCommand("sudo systemctl enable mongod");
+    @Before
+    fun setUp() {
+        this.serviceViewer = createServiceDisplayer()
     }
 
+    @Test
+    fun newServiceDisplayer_ServiceNull() {
+        assertNull(this.serviceViewer.service)
+    }
+
+    @Test
+    fun setService_ServiceEqualsSetService() {
+        val service = createDummyService()
+        this.serviceViewer.service = service
+        assertEquals(service, this.serviceViewer.service)
+    }
+
+    private fun createServiceDisplayer(): AbstractServiceViewer {
+        return spyk<AbstractServiceViewer>()
+    }
+
+    private fun createDummyService(): ICloudService {
+        return mockk<ICloudService>()
+    }
 
 }

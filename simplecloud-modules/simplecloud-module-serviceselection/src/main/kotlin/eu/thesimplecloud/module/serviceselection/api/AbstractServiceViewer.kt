@@ -20,33 +20,22 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.mongoinstaller.installer;
+package eu.thesimplecloud.module.serviceselection.api
 
+import eu.thesimplecloud.api.service.ICloudService
+import eu.thesimplecloud.api.service.ServiceState
 
-import eu.thesimplecloud.mongoinstaller.InstallerEnum;
+abstract class AbstractServiceViewer {
 
-/**
- * Created by IntelliJ IDEA.
- * Date: 07.06.2020
- * Time: 21:05
- *
- * @author Frederick Baier
- */
-public class UniversalInstaller implements IInstaller {
-    @Override
-    public void install(InstallerEnum installerEnum) throws Exception {
-        executeCommand("apt-get install sudo");
-        executeCommand("sudo apt-get install gnupg");
-        executeCommand("wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | sudo apt-key add -");
+    var service: ICloudService? = null
 
-        executeCommand(installerEnum.getVersionSpecificCommand());
+    /**
+     * Update will be called when the service was changed
+     */
+    abstract fun updateView()
 
-        executeCommand("sudo apt-get update");
-        executeCommand("sudo apt-get install -y mongodb-org");
-        executeCommand("sudo systemctl daemon-reload");
-        executeCommand("sudo systemctl start mongod");
-        executeCommand("sudo systemctl enable mongod");
-    }
+    fun isVacant() = service == null || !service!!.isStartingOrVisible()
 
+    fun isCurrentServiceStarting() = this.service?.getState() == ServiceState.STARTING
 
 }

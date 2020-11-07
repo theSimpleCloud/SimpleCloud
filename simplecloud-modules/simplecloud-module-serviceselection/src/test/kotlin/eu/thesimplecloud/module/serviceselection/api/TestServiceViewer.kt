@@ -20,33 +20,15 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.mongoinstaller.installer;
-
-
-import eu.thesimplecloud.mongoinstaller.InstallerEnum;
+package eu.thesimplecloud.module.serviceselection.api
 
 /**
  * Created by IntelliJ IDEA.
- * Date: 07.06.2020
- * Time: 21:05
- *
+ * Date: 29.06.2020
+ * Time: 14:02
  * @author Frederick Baier
  */
-public class UniversalInstaller implements IInstaller {
-    @Override
-    public void install(InstallerEnum installerEnum) throws Exception {
-        executeCommand("apt-get install sudo");
-        executeCommand("sudo apt-get install gnupg");
-        executeCommand("wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | sudo apt-key add -");
-
-        executeCommand(installerEnum.getVersionSpecificCommand());
-
-        executeCommand("sudo apt-get update");
-        executeCommand("sudo apt-get install -y mongodb-org");
-        executeCommand("sudo systemctl daemon-reload");
-        executeCommand("sudo systemctl start mongod");
-        executeCommand("sudo systemctl enable mongod");
+open class TestServiceViewer : AbstractServiceViewer() {
+    override fun updateView() {
     }
-
-
 }
