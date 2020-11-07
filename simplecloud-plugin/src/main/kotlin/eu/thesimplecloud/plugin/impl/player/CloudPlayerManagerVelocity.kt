@@ -24,8 +24,6 @@ package eu.thesimplecloud.plugin.impl.player
 
 import com.velocitypowered.api.proxy.Player
 import com.velocitypowered.api.proxy.server.RegisteredServer
-import com.velocitypowered.api.util.MessagePosition
-import com.velocitypowered.api.util.title.TextTitle
 import eu.thesimplecloud.api.exception.NoSuchPlayerException
 import eu.thesimplecloud.api.exception.NoSuchServiceException
 import eu.thesimplecloud.api.exception.PlayerConnectException
@@ -45,6 +43,8 @@ import eu.thesimplecloud.plugin.network.packets.PacketOutTeleportOtherService
 import eu.thesimplecloud.plugin.proxy.velocity.CloudVelocityPlugin
 import eu.thesimplecloud.plugin.proxy.velocity.text.CloudTextBuilder
 import eu.thesimplecloud.plugin.startup.CloudPlugin
+import net.kyori.adventure.title.Title
+import net.kyori.adventure.util.Ticks
 import java.util.*
 
 /**
@@ -104,15 +104,17 @@ class CloudPlayerManagerVelocity : AbstractServiceCloudPlayerManager() {
         }
 
 
-        val titleObj = TextTitle.builder()
-                .title(CloudTextBuilder().build(CloudText(title)))
-                .subtitle(CloudTextBuilder().build(CloudText(subTitle)))
-                .fadeIn(fadeIn)
-                .stay(stay)
-                .fadeOut(fadeOut)
-                .build()
+        val titleObj = Title.title(
+                CloudTextBuilder().build(CloudText(title)),
+                CloudTextBuilder().build(CloudText(subTitle)),
+                Title.Times.of(
+                        Ticks.duration(fadeIn.toLong()),
+                        Ticks.duration(stay.toLong()),
+                        Ticks.duration(fadeOut.toLong())
+                )
+        )
 
-        getPlayerByCloudPlayer(cloudPlayer)?.sendTitle(titleObj)
+        getPlayerByCloudPlayer(cloudPlayer)?.showTitle(titleObj)
     }
 
     override fun forcePlayerCommandExecution(cloudPlayer: ICloudPlayer, command: String) {
@@ -131,7 +133,7 @@ class CloudPlayerManagerVelocity : AbstractServiceCloudPlayerManager() {
             return
         }
 
-        getPlayerByCloudPlayer(cloudPlayer)?.sendMessage(CloudTextBuilder().build(CloudText(actionbar)), MessagePosition.ACTION_BAR)
+        getPlayerByCloudPlayer(cloudPlayer)?.sendActionBar(CloudTextBuilder().build(CloudText(actionbar)))
     }
 
     override fun teleportPlayer(cloudPlayer: ICloudPlayer, location: SimpleLocation): ICommunicationPromise<Unit> {

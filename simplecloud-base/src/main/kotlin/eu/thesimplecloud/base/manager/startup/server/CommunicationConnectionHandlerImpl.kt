@@ -39,7 +39,7 @@ import eu.thesimplecloud.launcher.startup.Launcher
 class CommunicationConnectionHandlerImpl : IConnectionHandler {
 
     override fun onConnectionActive(connection: IConnection) {
-        val host = connection.getHost()!!
+        val host = connection.getHost()?: return
         val wrapperByHost = CloudAPI.instance.getWrapperManager().getWrapperByHost(host)
         if (wrapperByHost == null) {
             Launcher.instance.consoleSender.sendMessage("manager.connection.unknown-host", "A client connected from an unknown host: %HOST%", host)

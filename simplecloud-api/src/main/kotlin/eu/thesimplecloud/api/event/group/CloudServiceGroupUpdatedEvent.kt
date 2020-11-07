@@ -20,26 +20,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.api.service.version
+package eu.thesimplecloud.api.event.group
 
-import eu.thesimplecloud.api.utils.WebContentLoader
-import eu.thesimplecloud.jsonlib.JsonLib
+import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 
 /**
  * Created by IntelliJ IDEA.
- * Date: 14.06.2020
- * Time: 19:07
+ * Date: 15.07.2020
+ * Time: 23:17
  * @author Frederick Baier
+ *
+ * Called when a service was updated
  */
-object ServiceVersionWebLoader {
-
-    fun loadFromWeb(): List<ServiceVersion> {
-        val contentString = WebContentLoader().loadContent("https://thesimplecloud.eu/download/versions.json")
-        return if (contentString == null) {
-            emptyList()
-        } else {
-            JsonLib.fromJsonString(contentString).getObject(Array<ServiceVersion>::class.java).toList()
-        }
-    }
-
-}
+class CloudServiceGroupUpdatedEvent(serviceGroup: ICloudServiceGroup) : CloudServiceGroupEvent(serviceGroup)

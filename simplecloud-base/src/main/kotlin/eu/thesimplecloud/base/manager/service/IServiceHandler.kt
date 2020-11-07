@@ -40,4 +40,10 @@ interface IServiceHandler {
      * @return the new service
      */
     fun startService(startConfiguration: IServiceStartConfiguration): ICloudService
+
+    /**
+     * Removes the specified service from the queue
+     * @param cloudService the service to be removed
+     */
+    fun removeServiceFromQueue(cloudService: ICloudService)
 }

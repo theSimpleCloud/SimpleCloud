@@ -20,25 +20,15 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.launcher;
+package eu.thesimplecloud.api.event.group
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import eu.thesimplecloud.api.eventapi.IEvent
+import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 
-public class JavaDownloader {
-
-    public void download(String url, File file) throws IOException {
-        File parentFile = file.getParentFile();
-        if (parentFile != null) parentFile.mkdirs();
-        URLConnection urlConnection = new URL(url).openConnection();
-        urlConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:58.0) Gecko/20100101 Firefox/58.0");
-        urlConnection.connect();
-        Files.copy(urlConnection.getInputStream(), Paths.get(file.getAbsolutePath()), StandardCopyOption.REPLACE_EXISTING);
-    }
-
-}
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 15.07.2020
+ * Time: 23:16
+ * @author Frederick Baier
+ */
+open class CloudServiceGroupEvent(val serviceGroup: ICloudServiceGroup) : IEvent

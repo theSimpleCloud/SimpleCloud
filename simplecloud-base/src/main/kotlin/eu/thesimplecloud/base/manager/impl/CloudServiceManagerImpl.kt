@@ -22,6 +22,7 @@
 
 package eu.thesimplecloud.base.manager.impl
 
+import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.event.service.CloudServiceConnectedEvent
 import eu.thesimplecloud.api.event.service.CloudServiceUnregisteredEvent
 import eu.thesimplecloud.api.exception.UnreachableComponentException
@@ -39,13 +40,24 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 class CloudServiceManagerImpl : AbstractCloudServiceManager() {
 
     override fun stopService(cloudService: ICloudService): ICommunicationPromise<Unit> {
-        if (cloudService.getState() == ServiceState.PREPARED) {
-            return CommunicationPromise.failed(IllegalStateException("Service is not running"))
+        when (cloudService.getState()) {
+            ServiceState.CLOSED -> {
+                return CommunicationPromise.failed(IllegalStateException("Service is already closed"))
+            }
+            ServiceState.PREPARED -> {
+                Manager.instance.serviceHandler.removeServiceFromQueue(cloudService)
+                cloudService.setState(ServiceState.CLOSED)
+                CloudAPI.instance.getCloudServiceManager().delete(cloudService)
+                return CommunicationPromise.of(Unit)
+            }
+            ServiceState.STARTING, ServiceState.VISIBLE, ServiceState.INVISIBLE -> {
+                val wrapper = cloudService.getWrapper()
+                val wrapperClient = Manager.instance.communicationServer.getClientManager()
+                        .getClientByClientValue(wrapper)
+                wrapperClient?.sendUnitQuery(PacketIOStopCloudService(cloudService.getName()))
+            }
         }
-        val wrapper = cloudService.getWrapper()
-        val wrapperClient = Manager.instance.communicationServer.getClientManager()
-                .getClientByClientValue(wrapper)
-        wrapperClient?.sendUnitQuery(PacketIOStopCloudService(cloudService.getName()))
+
         return cloudListener<CloudServiceUnregisteredEvent>()
                 .addCondition { it.cloudService == cloudService }
                 .unregisterAfterCall()
