@@ -29,8 +29,13 @@ import eu.thesimplecloud.api.sync.list.AbstractSynchronizedObjectList
 import eu.thesimplecloud.module.permission.group.IPermissionGroup
 import eu.thesimplecloud.module.permission.group.PermissionGroup
 import eu.thesimplecloud.module.permission.manager.PermissionModule
+import java.util.concurrent.CopyOnWriteArrayList
 
-class PermissionGroupManager() : AbstractSynchronizedObjectList<PermissionGroup>(), IPermissionGroupManager {
+class PermissionGroupManager(
+        list: List<PermissionGroup> = emptyList()
+) : AbstractSynchronizedObjectList<PermissionGroup>(
+        CopyOnWriteArrayList(list.map { Property(it) })
+), IPermissionGroupManager {
 
     private var defaultPermissionGroupName = "default"
 
@@ -47,12 +52,12 @@ class PermissionGroupManager() : AbstractSynchronizedObjectList<PermissionGroup>
     override fun getDefaultPermissionGroupName(): String = this.defaultPermissionGroupName
 
     override fun update(permissionGroup: PermissionGroup) {
-        super.update(Property(permissionGroup), false)
+        update(Property(permissionGroup), false)
     }
 
     override fun update(property: IProperty<PermissionGroup>, fromPacket: Boolean) {
         super.update(property, fromPacket)
-        if (fromPacket && CloudAPI.instance.isManager()) {
+        if (CloudAPI.instance.isManager()) {
             PermissionModule.instance.updateGroupsFile()
         }
     }

@@ -87,7 +87,15 @@ interface IPermissionPlayer : IPermissionEntity, Nameable {
     fun clearGroups()
 
     override fun hasPermission(permission: String): Boolean {
-        return super.hasPermission(permission) || getAllNotExpiredPermissionGroups().any { it.hasPermission(permission) }
+        val permissionByName = super.getNotExpiredPermissionByMatch(permission)
+        if (permissionByName != null) return permissionByName.active
+
+        val anyGroupPermission = getAllNotExpiredPermissionGroups().any { it.hasPermission(permission) }
+        return if (anyGroupPermission) {
+            true
+        } else {
+            hasAllRights()
+        }
     }
 
 }
