@@ -1,5 +1,5 @@
 {
-  "command.cloud.no-permission": "%cYou don't have the permission to execute this command.",
+  "command.cloud.no-permission": "§cYou don't have the permission to execute this command.",
   "command.player.no-permission": "§cYou don't have the permission to execute this command.",
   "commandmanager.onlyconsole": "This command can only be executed via the console.",
   "commands.help.header": "Help | All commands (%SIZE%)",
