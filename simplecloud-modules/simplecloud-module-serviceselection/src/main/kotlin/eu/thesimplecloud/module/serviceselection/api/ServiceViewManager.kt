@@ -20,32 +20,33 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.mongoinstaller.installer;
+package eu.thesimplecloud.module.serviceselection.api
 
+import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
+import org.bukkit.Bukkit
 
-import eu.thesimplecloud.mongoinstaller.InstallerEnum;
+class ServiceViewManager {
 
-/**
- * Created by IntelliJ IDEA.
- * Date: 07.06.2020
- * Time: 21:05
- *
- * @author Frederick Baier
- */
-public class UniversalInstaller implements IInstaller {
-    @Override
-    public void install(InstallerEnum installerEnum) throws Exception {
-        executeCommand("apt-get install sudo");
-        executeCommand("sudo apt-get install gnupg");
-        executeCommand("wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | sudo apt-key add -");
+    private val groupNameToGroupView = HashMap<String, ServiceViewGroupManager>()
 
-        executeCommand(installerEnum.getVersionSpecificCommand());
+    init {
+        startUpdateScheduler()
+    }
 
-        executeCommand("sudo apt-get update");
-        executeCommand("sudo apt-get install -y mongodb-org");
-        executeCommand("sudo systemctl daemon-reload");
-        executeCommand("sudo systemctl start mongod");
-        executeCommand("sudo systemctl enable mongod");
+    private fun startUpdateScheduler() {
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(ServiceViewerBukkitPlugin.INSTANCE, Runnable {
+            performUpdate()
+        }, 20, 20)
+    }
+
+    fun getGroupView(group: ICloudServiceGroup): ServiceViewGroupManager {
+        return this.groupNameToGroupView.getOrPut(group.getName()) { ServiceViewGroupManager(group) }
+    }
+
+    fun performUpdate() {
+        val groups = this.groupNameToGroupView.values
+        groups.forEach { it.sortWaitingServicesToViewers() }
+        groups.forEach { it.updateAllViewers() }
     }
 
 

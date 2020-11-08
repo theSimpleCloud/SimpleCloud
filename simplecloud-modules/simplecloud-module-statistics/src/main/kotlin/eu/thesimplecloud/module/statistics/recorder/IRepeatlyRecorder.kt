@@ -20,33 +20,31 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.mongoinstaller.installer;
-
-
-import eu.thesimplecloud.mongoinstaller.InstallerEnum;
+package eu.thesimplecloud.module.statistics.recorder
 
 /**
  * Created by IntelliJ IDEA.
- * Date: 07.06.2020
- * Time: 21:05
- *
+ * Date: 02.07.2020
+ * Time: 19:58
  * @author Frederick Baier
  */
-public class UniversalInstaller implements IInstaller {
-    @Override
-    public void install(InstallerEnum installerEnum) throws Exception {
-        executeCommand("apt-get install sudo");
-        executeCommand("sudo apt-get install gnupg");
-        executeCommand("wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | sudo apt-key add -");
+interface IRepeatlyRecorder<T : Any> {
 
-        executeCommand(installerEnum.getVersionSpecificCommand());
+    /**
+     * Returns the current value to save
+     */
+    fun getCurrentValue(): T
 
-        executeCommand("sudo apt-get update");
-        executeCommand("sudo apt-get install -y mongodb-org");
-        executeCommand("sudo systemctl daemon-reload");
-        executeCommand("sudo systemctl start mongod");
-        executeCommand("sudo systemctl enable mongod");
-    }
+    /**
+     * Saves the value from [getCurrentValue]
+     */
+    fun saveNextValue()
+
+    /**
+     * Returns the delay between to record in ms
+     */
+    fun getRecordIntervalInMilliseconds(): Long
+
 
 
 }

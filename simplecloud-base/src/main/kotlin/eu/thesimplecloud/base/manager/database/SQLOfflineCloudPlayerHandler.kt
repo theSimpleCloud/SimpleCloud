@@ -47,7 +47,7 @@ class SQLOfflineCloudPlayerHandler(private val databaseConnectionInformation: Da
     private var connection: Connection? = null
 
     private val playerCollectionName = databaseConnectionInformation.collectionPrefix + "players"
-    private val databaseGson  = GsonCreator().excludeAnnotations(DatabaseExclude::class.java).create()
+    private val databaseGson = GsonCreator().excludeAnnotations(DatabaseExclude::class.java).create()
 
     init {
         runReconnectLoop()

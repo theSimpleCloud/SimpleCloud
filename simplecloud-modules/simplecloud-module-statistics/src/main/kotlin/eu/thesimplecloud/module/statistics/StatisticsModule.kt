@@ -20,33 +20,20 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.mongoinstaller.installer;
+package eu.thesimplecloud.module.statistics
 
-
-import eu.thesimplecloud.mongoinstaller.InstallerEnum;
+import eu.thesimplecloud.api.external.ICloudModule
 
 /**
  * Created by IntelliJ IDEA.
- * Date: 07.06.2020
- * Time: 21:05
- *
+ * Date: 02.07.2020
+ * Time: 19:47
  * @author Frederick Baier
  */
-public class UniversalInstaller implements IInstaller {
-    @Override
-    public void install(InstallerEnum installerEnum) throws Exception {
-        executeCommand("apt-get install sudo");
-        executeCommand("sudo apt-get install gnupg");
-        executeCommand("wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | sudo apt-key add -");
-
-        executeCommand(installerEnum.getVersionSpecificCommand());
-
-        executeCommand("sudo apt-get update");
-        executeCommand("sudo apt-get install -y mongodb-org");
-        executeCommand("sudo systemctl daemon-reload");
-        executeCommand("sudo systemctl start mongod");
-        executeCommand("sudo systemctl enable mongod");
+class StatisticsModule : ICloudModule {
+    override fun onEnable() {
     }
 
-
+    override fun onDisable() {
+    }
 }
