@@ -70,7 +70,8 @@ class CloudTextBuilder {
             i++
         }
         text = stringBuilder.toString()
-        val component = Component.text(text)
+        val component = Component.text()
+        component.content(text)
 
         val hover = cloudText.hover
         if (hover != null) {
@@ -87,7 +88,6 @@ class CloudTextBuilder {
             component.append(componentToAppend)
         }
 
-        return component
+        return component.build()
     }
-
 }
