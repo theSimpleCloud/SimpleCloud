@@ -33,11 +33,12 @@ import java.io.File
  */
 class ConfigManager() {
 
+    val file = File("modules/cloudflare", "config.json")
+
     private fun createDefaultConfig(): Config {
-        val file = File("CloudFlare", "config.json")
         if (!file.exists()) {
             val config = Config(listOf(CloudFlareData("proxy", "user@thesimplecloud.eu", "", "thesimplecloud.eu", "", "@")))
-            JsonLib.empty().append("data", config).saveAsFile(file)
+            JsonLib.fromObject(config).saveAsFile(file)
             return config
         }
 
@@ -45,12 +46,8 @@ class ConfigManager() {
     }
 
     fun getConfig(): Config {
-        val file = File("CloudFlare", "config.json")
         val jsonLib = JsonLib.fromJsonFile(file)
-        val config = if (jsonLib == null) createDefaultConfig()
-                    else jsonLib.getObject("data", Config::class.java)!!
-
-        return config
+        return jsonLib?.getObject(Config::class.java) ?: createDefaultConfig()
     }
 
 }

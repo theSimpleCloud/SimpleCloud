@@ -64,7 +64,7 @@ class SQLOfflineCloudPlayerHandler(private val databaseConnectionInformation: Da
         }, 1, 1, TimeUnit.HOURS)
     }
 
-    private fun reconnect() {
+    private fun reconnect() = synchronized(this) {
         closeConnection()
         this.connection = DriverManager.getConnection("jdbc:mysql://${databaseConnectionInformation.host}:${databaseConnectionInformation.port}/${databaseConnectionInformation.databaseName}?user=${databaseConnectionInformation.userName}&password=${databaseConnectionInformation.password}&serverTimezone=UTC&autoReconnect=true")
     }
@@ -74,7 +74,7 @@ class SQLOfflineCloudPlayerHandler(private val databaseConnectionInformation: Da
         statement.executeUpdate()
     }
 
-    override fun getOfflinePlayer(playerUniqueId: UUID): IOfflineCloudPlayer? {
+    override fun getOfflinePlayer(playerUniqueId: UUID): IOfflineCloudPlayer?{
         return loadPlayer(playerUniqueId.toString(), "uniqueId")
     }
 
@@ -82,7 +82,7 @@ class SQLOfflineCloudPlayerHandler(private val databaseConnectionInformation: Da
         return loadPlayer(name, "name")
     }
 
-    private fun loadPlayer(value: String, fieldName: String): IOfflineCloudPlayer? {
+    private fun loadPlayer(value: String, fieldName: String): IOfflineCloudPlayer? = synchronized(this) {
         if (!exist(value, fieldName)) return null
         val statement = connection!!.prepareStatement("SELECT `data` FROM `$playerCollectionName` WHERE `$fieldName` = ?")
         statement.setString(1, value)
@@ -110,7 +110,7 @@ class SQLOfflineCloudPlayerHandler(private val databaseConnectionInformation: Da
         return JsonLib.fromJsonString(jsonString, databaseGson).getObject(OfflineCloudPlayer::class.java)
     }
 
-    override fun saveCloudPlayer(offlineCloudPlayer: OfflineCloudPlayer) {
+    override fun saveCloudPlayer(offlineCloudPlayer: OfflineCloudPlayer): Unit = synchronized(this) {
         val newData = JsonLib.fromObject(offlineCloudPlayer, databaseGson).getAsJsonString()
         if (!exist(offlineCloudPlayer.getUniqueId().toString(), "uniqueId")) {
             val statement = connection!!.prepareStatement("INSERT INTO `$playerCollectionName` (`uniqueId`, `name`, `data`) VALUES (?, ?, ?)")
