@@ -44,9 +44,9 @@ class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
         return promise
     }
 
-    override fun update(value: ICloudServiceGroup, fromPacket: Boolean, isCalledFromDelete: Boolean) {
-        super.update(value, fromPacket, isCalledFromDelete)
+    override fun update(value: ICloudServiceGroup, fromPacket: Boolean, isCalledFromDelete: Boolean): ICommunicationPromise<Unit> {
         Manager.instance.cloudServiceGroupFileHandler.save(value)
+        return super.update(value, fromPacket, isCalledFromDelete)
     }
 
     override fun startNewService(serviceStartConfiguration: IServiceStartConfiguration): ICommunicationPromise<ICloudService> {
@@ -59,9 +59,9 @@ class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
         return CommunicationPromise.of(service)
     }
 
-    override fun delete(value: ICloudServiceGroup, fromPacket: Boolean) {
-        super.delete(value, fromPacket)
+    override fun delete(value: ICloudServiceGroup, fromPacket: Boolean): ICommunicationPromise<Unit> {
         Manager.instance.cloudServiceGroupFileHandler.delete(value)
+        return super.delete(value, fromPacket)
     }
 
 }

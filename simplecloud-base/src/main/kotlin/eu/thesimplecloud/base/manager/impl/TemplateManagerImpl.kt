@@ -26,13 +26,14 @@ import eu.thesimplecloud.api.template.ITemplate
 import eu.thesimplecloud.api.template.impl.DefaultTemplate
 import eu.thesimplecloud.api.template.impl.DefaultTemplateManager
 import eu.thesimplecloud.base.manager.config.template.TemplatesConfigLoader
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
 class TemplateManagerImpl : DefaultTemplateManager() {
 
     private val templatesConfigLoader = TemplatesConfigLoader()
 
-    override fun update(value: ITemplate, fromPacket: Boolean, isCalledFromDelete: Boolean) {
-        super.update(value, fromPacket, isCalledFromDelete)
+    override fun update(value: ITemplate, fromPacket: Boolean, isCalledFromDelete: Boolean): ICommunicationPromise<Unit> {
+        val result = super.update(value, fromPacket, isCalledFromDelete)
         val templateConfig = this.templatesConfigLoader.loadConfig()
         templateConfig.templates.removeIf { it.getName().equals(value.getName(), true) }
         templateConfig.templates.add(value as DefaultTemplate)
@@ -41,14 +42,16 @@ class TemplateManagerImpl : DefaultTemplateManager() {
         if (!value.getDirectory().exists()){
             value.getDirectory().mkdirs()
         }
+        return result
     }
 
-    override fun delete(value: ITemplate, fromPacket: Boolean) {
-        super.delete(value, fromPacket)
+    override fun delete(value: ITemplate, fromPacket: Boolean): ICommunicationPromise<Unit> {
+        val result = super.delete(value, fromPacket)
 
         val templateConfig = this.templatesConfigLoader.loadConfig()
         templateConfig.templates.removeIf { it.getName().equals(value.getName(), true)}
         templatesConfigLoader.saveConfig(templateConfig)
+        return result
     }
 
 }

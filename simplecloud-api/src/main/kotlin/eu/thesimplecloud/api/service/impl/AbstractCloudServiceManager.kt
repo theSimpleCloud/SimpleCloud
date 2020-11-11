@@ -32,6 +32,7 @@ import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ICloudServiceManager
 import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.utils.time.Timestamp
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
 abstract class AbstractCloudServiceManager : AbstractCacheList<ICloudService>(), ICloudServiceManager {
 
@@ -105,8 +106,8 @@ abstract class AbstractCloudServiceManager : AbstractCacheList<ICloudService>(),
         }
     }
 
-    override fun delete(value: ICloudService, fromPacket: Boolean) {
-        super<AbstractCacheList>.delete(value, fromPacket)
+    override fun delete(value: ICloudService, fromPacket: Boolean): ICommunicationPromise<Unit> {
         CloudAPI.instance.getEventManager().call(CloudServiceUnregisteredEvent(value))
+        return super<AbstractCacheList>.delete(value, fromPacket)
     }
 }

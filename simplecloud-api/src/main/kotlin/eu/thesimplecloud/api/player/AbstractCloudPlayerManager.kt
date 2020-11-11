@@ -84,9 +84,9 @@ abstract class AbstractCloudPlayerManager : AbstractCacheList<ICloudPlayer>(spre
         return this.updater
     }
 
-    override fun delete(value: ICloudPlayer, fromPacket: Boolean) {
-        super<AbstractCacheList>.delete(value, fromPacket)
+    override fun delete(value: ICloudPlayer, fromPacket: Boolean): ICommunicationPromise<Unit> {
         CloudAPI.instance.getEventManager().call(CloudPlayerUnregisteredEvent(value))
+        return super<AbstractCacheList>.delete(value, fromPacket)
     }
 
     /**

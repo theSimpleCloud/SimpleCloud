@@ -22,6 +22,9 @@
 
 package eu.thesimplecloud.api.cachelist
 
+import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
+import eu.thesimplecloud.clientserverapi.lib.promise.flatten
 import java.util.concurrent.CopyOnWriteArrayList
 
 abstract class AbstractCacheList<T : Any>(private val spreadUpdates: Boolean = true) : ICacheList<T> {
@@ -32,10 +35,14 @@ abstract class AbstractCacheList<T : Any>(private val spreadUpdates: Boolean = t
         return this.spreadUpdates
     }
 
-    override fun delete(value: T, fromPacket: Boolean) {
-        super.update(value, fromPacket = true, isCalledFromDelete = true)
-        super.delete(value, fromPacket)
-        this.values.remove(getUpdater().getCachedObjectByUpdateValue(value))
+    override fun delete(value: T, fromPacket: Boolean): ICommunicationPromise<Unit> {
+        return CommunicationPromise.runAsync {
+            super.update(value, fromPacket = true, isCalledFromDelete = true)
+            val result = super.delete(value, fromPacket).awaitCoroutine()
+            values.remove(getUpdater().getCachedObjectByUpdateValue(value))
+            return@runAsync result
+        }.flatten()
+
     }
 
     override fun getAllCachedObjects(): List<T> {

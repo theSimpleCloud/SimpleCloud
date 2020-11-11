@@ -125,7 +125,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
             }
             this.cloudService.setOnlineCount(0)
             this.cloudService.setState(ServiceState.CLOSED)
-            CloudAPI.instance.getCloudServiceManager().delete(this.cloudService)
+            CloudAPI.instance.getCloudServiceManager().delete(this.cloudService).awaitUninterruptibly()
             Wrapper.instance.updateWrapperData()
         }
 

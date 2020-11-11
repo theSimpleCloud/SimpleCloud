@@ -23,7 +23,6 @@
 package eu.thesimplecloud.plugin.impl.player
 
 import eu.thesimplecloud.api.network.packets.player.*
-import eu.thesimplecloud.api.network.packets.sync.cachelist.PacketIOUpdateCacheObject
 import eu.thesimplecloud.api.player.*
 import eu.thesimplecloud.clientserverapi.lib.packet.packetsender.sendQuery
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
@@ -39,12 +38,11 @@ import java.util.*
  */
 abstract class AbstractServiceCloudPlayerManager : AbstractCloudPlayerManager() {
 
-    override fun update(value: ICloudPlayer, fromPacket: Boolean, isCalledFromDelete: Boolean) {
+    override fun update(value: ICloudPlayer, fromPacket: Boolean, isCalledFromDelete: Boolean): ICommunicationPromise<Unit> {
         super.update(value, fromPacket, isCalledFromDelete)
         if (!fromPacket)
-            CloudPlugin.instance.connectionToManager.sendUnitQuery(
-                    PacketIOUpdateCacheObject(getUpdater().getIdentificationName(), value, PacketIOUpdateCacheObject.Action.UPDATE)
-            )
+            return sendUpdateToConnection(value, CloudPlugin.instance.connectionToManager)
+        return CommunicationPromise.UNIT_PROMISE
     }
 
     override fun getCloudPlayer(uniqueId: UUID): ICommunicationPromise<ICloudPlayer> {
