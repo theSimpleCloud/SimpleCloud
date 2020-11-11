@@ -59,6 +59,7 @@ class DefaultConfig {
                             "§8",
                             "§3Twitter §8» §7@theSimpleCloud",
                             "§3Discord §8» §7discord.gg/MPZs4h8",
+                            "§3Powered by §8» §7Venocix.de",
                             "§8",
                     ))
 
