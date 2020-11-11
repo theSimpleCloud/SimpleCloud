@@ -29,6 +29,7 @@ import eu.thesimplecloud.api.event.group.CloudServiceGroupUpdatedEvent
 import eu.thesimplecloud.api.eventapi.IEvent
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroupManager
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
 abstract class AbstractCloudServiceGroupManager : AbstractCacheList<ICloudServiceGroup>(), ICloudServiceGroupManager {
 
@@ -62,10 +63,10 @@ abstract class AbstractCloudServiceGroupManager : AbstractCacheList<ICloudServic
 
     }
 
-    override fun delete(value: ICloudServiceGroup, fromPacket: Boolean) {
+    override fun delete(value: ICloudServiceGroup, fromPacket: Boolean): ICommunicationPromise<Unit> {
         if (CloudAPI.instance.getCloudServiceManager().getCloudServicesByGroupName(value.getName()).isNotEmpty())
             throw IllegalStateException("Cannot delete service group while services of this group are registered.")
-        super<AbstractCacheList>.delete(value, fromPacket)
+        return super<AbstractCacheList>.delete(value, fromPacket)
     }
 
     override fun getUpdater(): ICacheObjectUpdater<ICloudServiceGroup> {

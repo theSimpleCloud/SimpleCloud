@@ -39,12 +39,13 @@ import java.util.*
  */
 abstract class AbstractServiceCloudPlayerManager : AbstractCloudPlayerManager() {
 
-    override fun update(value: ICloudPlayer, fromPacket: Boolean, isCalledFromDelete: Boolean) {
+    override fun update(value: ICloudPlayer, fromPacket: Boolean, isCalledFromDelete: Boolean): ICommunicationPromise<Unit> {
         super.update(value, fromPacket, isCalledFromDelete)
         if (!fromPacket)
-            CloudPlugin.instance.communicationClient.sendUnitQuery(
+            return CloudPlugin.instance.communicationClient.sendUnitQuery(
                     PacketIOUpdateCacheObject(getUpdater().getIdentificationName(), value, PacketIOUpdateCacheObject.Action.UPDATE)
             )
+        return CommunicationPromise.of(Unit)
     }
 
     override fun getCloudPlayer(uniqueId: UUID): ICommunicationPromise<ICloudPlayer> {

@@ -27,6 +27,7 @@ import eu.thesimplecloud.api.eventapi.IEvent
 import eu.thesimplecloud.api.extension.sendPacketToAllAuthenticatedClients
 import eu.thesimplecloud.api.network.packets.sync.cachelist.PacketIOUpdateCacheObject
 import eu.thesimplecloud.clientserverapi.client.INettyClient
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.clientserverapi.server.INettyServer
 
 interface ICacheObjectUpdater<T : Any> {
@@ -60,9 +61,9 @@ interface ICacheObjectUpdater<T : Any> {
      * This method is only called if [ICacheList.update] was invoked with fromPacket = false or
      * this side is the Manager
      */
-    fun sendUpdatesToOtherComponents(value: T, action: PacketIOUpdateCacheObject.Action) {
+    fun sendUpdatesToOtherComponents(value: T, action: PacketIOUpdateCacheObject.Action): ICommunicationPromise<Unit> {
         val packet = PacketIOUpdateCacheObject(getIdentificationName(), value, action)
-        if (CloudAPI.instance.isManager()) {
+        return if (CloudAPI.instance.isManager()) {
             val server = CloudAPI.instance.getThisSidesCommunicationBootstrap() as INettyServer<*>
             server.getClientManager().sendPacketToAllAuthenticatedClients(packet)
         } else {

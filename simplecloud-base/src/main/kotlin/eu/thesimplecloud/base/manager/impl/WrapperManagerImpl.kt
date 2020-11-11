@@ -25,12 +25,13 @@ package eu.thesimplecloud.base.manager.impl
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.api.wrapper.impl.DefaultWrapperManager
 import eu.thesimplecloud.base.manager.startup.Manager
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
 class WrapperManagerImpl : DefaultWrapperManager() {
 
-    override fun update(value: IWrapperInfo, fromPacket: Boolean, isCalledFromDelete: Boolean) {
-        super.update(value, fromPacket, isCalledFromDelete)
+    override fun update(value: IWrapperInfo, fromPacket: Boolean, isCalledFromDelete: Boolean): ICommunicationPromise<Unit> {
         Manager.instance.wrapperFileHandler.save(value)
+        return super.update(value, fromPacket, isCalledFromDelete)
     }
 
 }

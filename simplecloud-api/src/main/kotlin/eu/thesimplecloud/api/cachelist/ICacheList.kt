@@ -25,6 +25,7 @@ package eu.thesimplecloud.api.cachelist
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.network.packets.sync.cachelist.PacketIOUpdateCacheObject
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
+import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.combineAllPromises
 
@@ -34,8 +35,9 @@ interface ICacheList<T : Any> {
      * Updates the cashed value with the content of the specified one.
      * @param value the value to update
      * @param fromPacket whether this method was called by a packet
+     * @return a promise that completes when the update was sent
      */
-    fun update(value: T, fromPacket: Boolean = false, isCalledFromDelete: Boolean = false) {
+    fun update(value: T, fromPacket: Boolean = false, isCalledFromDelete: Boolean = false): ICommunicationPromise<Unit> {
         val updater = getUpdater()
         val cachedValue = updater.getCachedObjectByUpdateValue(value)
         val eventsToCall = updater.determineEventsToCall(value, cachedValue)
@@ -48,7 +50,9 @@ interface ICacheList<T : Any> {
         if (shallSpreadUpdates())
             if (!isCalledFromDelete)
                 if (CloudAPI.instance.isManager() || !fromPacket)
-                    updater.sendUpdatesToOtherComponents(value, PacketIOUpdateCacheObject.Action.UPDATE)
+                    return updater.sendUpdatesToOtherComponents(value, PacketIOUpdateCacheObject.Action.UPDATE)
+
+        return CommunicationPromise.UNIT_PROMISE
     }
 
     /**
@@ -65,12 +69,15 @@ interface ICacheList<T : Any> {
      * Deletes the specified value.
      * @param value the object to delete
      * @param fromPacket whether this method was called by a packet
+     * @return a promise that completes when the delete was sent
      */
-    fun delete(value: T, fromPacket: Boolean = false) {
+    fun delete(value: T, fromPacket: Boolean = false): ICommunicationPromise<Unit> {
         val updater = getUpdater()
         if (shallSpreadUpdates())
             if (CloudAPI.instance.isManager() || !fromPacket)
-                updater.sendUpdatesToOtherComponents(value, PacketIOUpdateCacheObject.Action.DELETE)
+                return updater.sendUpdatesToOtherComponents(value, PacketIOUpdateCacheObject.Action.DELETE)
+
+        return CommunicationPromise.UNIT_PROMISE
     }
 
     /**
