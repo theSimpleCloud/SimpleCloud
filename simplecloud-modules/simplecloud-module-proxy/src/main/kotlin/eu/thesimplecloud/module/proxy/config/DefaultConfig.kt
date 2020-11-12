@@ -58,7 +58,8 @@ class DefaultConfig {
                     listOf(
                             "§8\n" +
                                     "§3Twitter §8» §7@theSimpleCloud\n" +
-                                    "§3Discord §8» §7discord.gg/MPZs4h8\n"
+                                    "§3Discord §8» §7discord.gg/MPZs4h8\n" +
+                                    "§3Powered by §8» §7Venocix.de\n"
                     ),
                     1)
 
