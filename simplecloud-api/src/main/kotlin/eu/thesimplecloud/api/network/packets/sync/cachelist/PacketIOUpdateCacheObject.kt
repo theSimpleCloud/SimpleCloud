@@ -54,11 +54,11 @@ class PacketIOUpdateCacheObject() : JsonPacket() {
         return when (action) {
             Action.UPDATE -> {
                 CloudAPI.instance.getCacheListManager().getCacheListenerByName(cacheListName)
-                        ?.update(value, true) ?: CommunicationPromise.UNIT_PROMISE
+                        ?.update(value, true) ?: CommunicationPromise.of(Unit)
             }
             Action.DELETE -> {
                 CloudAPI.instance.getCacheListManager().getCacheListenerByName(cacheListName)
-                        ?.delete(value, true) ?: CommunicationPromise.UNIT_PROMISE
+                        ?.delete(value, true) ?: CommunicationPromise.of(Unit)
             }
         }
     }

@@ -52,7 +52,7 @@ interface ICacheList<T : Any> {
                 if (CloudAPI.instance.isManager() || !fromPacket)
                     return updater.sendUpdatesToOtherComponents(value, PacketIOUpdateCacheObject.Action.UPDATE)
 
-        return CommunicationPromise.UNIT_PROMISE
+        return CommunicationPromise.of(Unit)
     }
 
     /**
@@ -77,7 +77,7 @@ interface ICacheList<T : Any> {
             if (CloudAPI.instance.isManager() || !fromPacket)
                 return updater.sendUpdatesToOtherComponents(value, PacketIOUpdateCacheObject.Action.DELETE)
 
-        return CommunicationPromise.UNIT_PROMISE
+        return CommunicationPromise.of(Unit)
     }
 
     /**

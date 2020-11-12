@@ -67,7 +67,7 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
 
         val requestedPlayerUpdatesServices = playerUpdates[value.getUniqueId()]
         requestedPlayerUpdatesServices?.mapNotNull { getCloudClientByServiceName(it) }?.forEach { it.sendUnitQuery(playerUpdatePacket) }
-        return CommunicationPromise.UNIT_PROMISE
+        return CommunicationPromise.of(Unit)
     }
 
     override fun delete(value: ICloudPlayer, fromPacket: Boolean): ICommunicationPromise<Unit> {
@@ -84,7 +84,7 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
 
         playerUpdates.remove(value.getUniqueId())
         Manager.instance.offlineCloudPlayerHandler.saveCloudPlayer(value.toOfflinePlayer() as OfflineCloudPlayer)
-        return CommunicationPromise.UNIT_PROMISE
+        return CommunicationPromise.of(Unit)
     }
 
     override fun getCloudPlayer(uniqueId: UUID): ICommunicationPromise<ICloudPlayer> {
