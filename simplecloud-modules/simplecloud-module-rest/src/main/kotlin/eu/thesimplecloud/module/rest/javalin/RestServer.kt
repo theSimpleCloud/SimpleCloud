@@ -38,6 +38,7 @@ import eu.thesimplecloud.module.rest.defaultcontroller.player.PlayerController
 import eu.thesimplecloud.module.rest.defaultcontroller.service.ServiceActionController
 import eu.thesimplecloud.module.rest.defaultcontroller.service.ServiceController
 import eu.thesimplecloud.module.rest.defaultcontroller.template.TemplateController
+import eu.thesimplecloud.module.rest.defaultcontroller.version.VersionController
 import eu.thesimplecloud.module.rest.defaultcontroller.wrapper.WrapperController
 import io.javalin.Javalin
 import io.javalin.core.security.SecurityUtil
@@ -86,6 +87,7 @@ class RestServer {
         controllerHandler.registerController(TemplateController())
         controllerHandler.registerController(WrapperController())
         controllerHandler.registerController(PlayerController())
+        controllerHandler.registerController(VersionController())
     }
 
     fun registerRequestMethod(requestMethodData: RequestMethodData) {
