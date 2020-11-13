@@ -143,14 +143,16 @@ class ServiceHandler : IServiceHandler {
                 stopRedundantServices()
 
                 val priorityToServices = this.serviceQueue.groupBy { it.getServiceGroup().getStartPriority() }
-                val maxPriority = priorityToServices.keys.max()
-                maxPriority ?: continue
-                for (priority in maxPriority downTo 0) {
-                    val services = priorityToServices[priority] ?: emptyList()
-                    //false will be listed first -> services with wrapper will be listed first
-                    val sortedServices = services.sortedBy { it.getWrapperName() == null }
-                    for (service in sortedServices) {
-                        executeStart(service)
+                val maxPriority = priorityToServices.keys.maxOrNull()
+
+                if (maxPriority != null) {
+                    for (priority in maxPriority downTo 0) {
+                        val services = priorityToServices[priority] ?: emptyList()
+                        //false will be listed first -> services with wrapper will be listed first
+                        val sortedServices = services.sortedBy { it.getWrapperName() == null }
+                        for (service in sortedServices) {
+                            executeStart(service)
+                        }
                     }
                 }
                 Thread.sleep(300)

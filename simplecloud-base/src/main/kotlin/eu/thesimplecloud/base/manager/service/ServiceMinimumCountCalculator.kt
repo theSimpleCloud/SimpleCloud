@@ -57,7 +57,7 @@ class ServiceMinimumCountCalculator : IListener {
 
     fun getCalculatedMinimumServiceCount(group: ICloudServiceGroup): Int {
         val measuredAmount = this.groupToTimeAmountMeasurer[group]?.getMeasuredAmount() ?: 0
-        return measuredAmount + 1
+        return if (measuredAmount == 0) 0 else measuredAmount + 1
     }
 
 
