@@ -250,7 +250,9 @@ interface ICloudService : INetworkComponent, IBootstrap, IPropertyMap {
     /**
      * Updates this service to the network
      */
-    fun update() = CloudAPI.instance.getCloudServiceManager().update(this)
+    fun update() {
+        CloudAPI.instance.getCloudServiceManager().update(this)
+    }
 
     /**
      * Copies the service to the template directory.

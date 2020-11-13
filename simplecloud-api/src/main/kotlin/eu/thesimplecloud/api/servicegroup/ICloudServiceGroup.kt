@@ -183,11 +183,15 @@ interface ICloudServiceGroup {
      * @throws IllegalStateException if services of this group are registered
      */
     @Throws(IllegalStateException::class)
-    fun delete() = CloudAPI.instance.getCloudServiceGroupManager().delete(this)
+    fun delete() {
+        CloudAPI.instance.getCloudServiceGroupManager().delete(this)
+    }
 
     /**
      * Updates the group to the network
      */
-    fun update() = CloudAPI.instance.getCloudServiceGroupManager().update(this)
+    fun update() {
+        CloudAPI.instance.getCloudServiceGroupManager().update(this)
+    }
 
 }

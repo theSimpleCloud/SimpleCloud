@@ -23,7 +23,6 @@
 package eu.thesimplecloud.module.permission.player
 
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
-import eu.thesimplecloud.clientserverapi.lib.promise.flatten
 import eu.thesimplecloud.module.permission.PermissionPool
 import eu.thesimplecloud.module.permission.entity.PermissionEntity
 import java.util.*
@@ -49,7 +48,7 @@ class PermissionPlayer(
         return getCloudPlayer().then {
             it.setProperty(PROPERTY_NAME, this)
             it.update()
-        }.flatten()
+        }
     }
 
     override fun addPermissionGroup(group: PlayerPermissionGroupInfo) {
