@@ -63,7 +63,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
             this.cloudService.setPort(Wrapper.instance.portManager.getUnusedPort())
         }
         this.cloudService.setState(ServiceState.STARTING)
-        CloudAPI.instance.getCloudServiceManager().update(this.cloudService)
+        this.cloudService.update().awaitUninterruptibly()
 
         TemplateCopier().copyTemplate(cloudService, cloudService.getTemplate())
 

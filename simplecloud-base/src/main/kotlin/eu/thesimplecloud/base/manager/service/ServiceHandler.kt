@@ -73,7 +73,7 @@ class ServiceHandler : IServiceHandler {
                 startConfiguration.maxPlayers,
                 "Cloud service"
         )
-        CloudAPI.instance.getCloudServiceManager().update(service)
+        CloudAPI.instance.getCloudServiceManager().update(service).awaitUninterruptibly()
         addServiceToQueue(service)
         return service
     }
@@ -128,7 +128,7 @@ class ServiceHandler : IServiceHandler {
                     val service = stoppableServices[i]
                     //set to invisible, so that services are not shutdown again
                     service.setState(ServiceState.INVISIBLE)
-                    service.update()
+                    service.update().awaitUninterruptibly()
                     service.shutdown()
                 }
             }
@@ -167,8 +167,7 @@ class ServiceHandler : IServiceHandler {
         service as DefaultCloudService
         service.setWrapperName(wrapper.getName())
         service.setLastPlayerUpdate(Timestamp())
-        service.update()
-        CloudAPI.instance.getCloudServiceManager().sendUpdateToConnection(service, wrapperClient).awaitUninterruptibly()
+        service.update().awaitUninterruptibly()
         wrapperClient.sendUnitQuery(PacketIOWrapperStartService(service.getName())).awaitUninterruptibly()
         Launcher.instance.consoleSender.sendProperty("manager.service.start", wrapper.getName(), service.getName())
         this.serviceQueue.remove(service)
