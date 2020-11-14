@@ -75,7 +75,5 @@ interface ITemplate {
     /**
      * Updates this template
      */
-    fun update() {
-        CloudAPI.instance.getTemplateManager().update(this)
-    }
+    fun update() = CloudAPI.instance.getTemplateManager().update(this)
 }
