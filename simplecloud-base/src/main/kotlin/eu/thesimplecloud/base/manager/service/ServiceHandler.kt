@@ -71,7 +71,7 @@ class ServiceHandler : IServiceHandler {
                 startConfiguration.maxPlayers,
                 "Cloud service"
         )
-        CloudAPI.instance.getCloudServiceManager().update(service)
+        CloudAPI.instance.getCloudServiceManager().update(service).awaitUninterruptibly()
         addServiceToQueue(service)
         return service
     }
@@ -123,7 +123,7 @@ class ServiceHandler : IServiceHandler {
                     val service = stoppableServices[i]
                     //set to invisible, so that services are not shutdown again
                     service.setState(ServiceState.INVISIBLE)
-                    service.update()
+                    CloudAPI.instance.getCloudServiceManager().update(service).awaitUninterruptibly()
                     service.shutdown()
                 }
             }
@@ -145,22 +145,26 @@ class ServiceHandler : IServiceHandler {
                         //false will be listed first -> services with wrapper will be listed first
                         val sortedServices = services.sortedBy { it.getWrapperName() == null }
                         for (service in sortedServices) {
-                            val wrapper = getWrapperForService(service) ?: continue
-                            val wrapperClient = Manager.instance.communicationServer.getClientManager().getClientByClientValue(wrapper)
-                            wrapperClient ?: continue
-                            service as DefaultCloudService
-                            service.setWrapperName(wrapper.getName())
-                            service.update()
-                            CloudAPI.instance.getCloudServiceManager().sendUpdateToConnection(service, wrapperClient).awaitUninterruptibly()
-                            wrapperClient.sendUnitQuery(PacketIOWrapperStartService(service.getName())).awaitUninterruptibly()
-                            Launcher.instance.consoleSender.sendMessage("manager.service.start", "Told Wrapper %WRAPPER%", wrapper.getName(), " to start service %SERVICE%", service.getName())
-                            this.serviceQueue.remove(service)
+                            executeStart(service)
                         }
                     }
                 }
                 Thread.sleep(300)
             }
         }
+    }
+
+    private fun executeStart(service: ICloudService) {
+        val wrapper = getWrapperForService(service) ?: return
+        val wrapperClient = Manager.instance.communicationServer.getClientManager().getClientByClientValue(wrapper)
+        wrapperClient ?: return
+        service as DefaultCloudService
+        service.setWrapperName(wrapper.getName())
+        service.setLastUpdate(System.currentTimeMillis())
+        CloudAPI.instance.getCloudServiceManager().update(service).awaitUninterruptibly()
+        wrapperClient.sendUnitQuery(PacketIOWrapperStartService(service.getName())).awaitUninterruptibly()
+        Launcher.instance.consoleSender.sendMessage("manager.service.start", "Told Wrapper %WRAPPER%", wrapper.getName(), " to start service %SERVICE%", service.getName())
+        this.serviceQueue.remove(service)
     }
 
     private fun getWrapperForService(service: ICloudService): IWrapperInfo? {
