@@ -1,5 +1,4 @@
-
-![Banner](https://i.imgur.com/eTQJ1IX.png "Banner")
+[![Banner](https://i.imgur.com/eTQJ1IX.png)](https://www.spigotmc.org/resources/simplecloud-simplify-your-network.79466/)
 
 **Features**
 
@@ -78,3 +77,8 @@ The notify module sends notifications to players that have the required permissi
 Permission: cloud.module.notify.messages
 
 If you have any question you can contact us via [discord](https://discord.gg/MPZs4h8 "discord").
+
+
+Check out our **hosting partner** for **cheap** and **highly performant** servers.
+
+[![Venocix](https://venocix.de/templates/venocix/assets/img/logo/logo_big.png)](https://venocix.de/aff.php?aff=252)
