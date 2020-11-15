@@ -38,7 +38,7 @@ import eu.thesimplecloud.module.rest.defaultcontroller.dto.PathDto
 @RestController("cloud/action/service/")
 class ServiceActionController : IController {
 
-    @RequestMapping(RequestType.POST, "name/:name/stop", "web.cloud.action.service.stop")
+    @RequestMapping(RequestType.POST, "name/:name/shutdown", "web.cloud.action.service.shutdown")
     fun handleServiceStop(@RequestPathParam("name") name: String): ICloudService {
         val service = getServiceByName(name) ?: throwNoSuchElement()
         service.shutdown()
