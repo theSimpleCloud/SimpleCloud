@@ -37,15 +37,9 @@ import eu.thesimplecloud.module.rest.controller.IController
 @RestController("version/")
 class VersionController : IController {
 
-    @RequestMapping(RequestType.GET, "cloud/", "web.version.cloud")
+    @RequestMapping(RequestType.GET, "cloud/")
     fun handleGetCloudVersion(): String {
         return Launcher.instance.getCurrentVersion()
     }
-
-    @RequestMapping(RequestType.GET, "api/")
-    fun handleGetApiVersion(): String {
-        return "1"
-    }
-
 
 }
