@@ -46,4 +46,11 @@ class ServiceGroupActionController : IController {
         return serviceGroup.startNewService().getBlocking()
     }
 
+    @RequestMapping(RequestType.POST, "name/:name/shutdownAll", "web.cloud.action.group.shutdownall")
+    fun handleStopAllServices(@RequestPathParam("name") name: String) {
+        val serviceGroup = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(name)
+                ?: return
+        return serviceGroup.shutdownAllServices()
+    }
+
 }
