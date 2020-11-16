@@ -32,7 +32,9 @@ import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnecte
 import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnectedClientValue
 
 fun IClientManager<*>.getAllAuthenticatedClients(): List<IConnectedClient<out IConnectedClientValue>> {
-    return this.getClients().filter { it.getClientValue() != null && (it.getClientValue() as IAuthenticatable).isAuthenticated() }
+    return this.getClients()
+            .filter { it.isOpen() }
+            .filter { it.getClientValue() != null && (it.getClientValue() as IAuthenticatable).isAuthenticated() }
 }
 
 fun IClientManager<*>.sendPacketToAllAuthenticatedClients(packet: IPacket): ICommunicationPromise<Unit> {
