@@ -80,7 +80,7 @@ class DependencyResolver(repositoryURL: String, private val dependency: DefaultA
 
     private fun newSession(system: RepositorySystem): RepositorySystemSession {
         val session: DefaultRepositorySystemSession = MavenRepositorySystemUtils.newSession()
-        val localRepo = LocalRepository(File("repo/"))
+        val localRepo = LocalRepository(File("dependencies/repo/"))
         session.localRepositoryManager = system.newLocalRepositoryManager(session, localRepo)
         return session
     }
