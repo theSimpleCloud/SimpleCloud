@@ -111,7 +111,7 @@ class SingleRequestProcessor(
         if (parameterData.parameterType == Context::class.java) {
             return this.ctx
         }
-        if (parameterData.parameterType == User::class.java && parameterData.annotation!!::class == RequestingUser::class) {
+        if (parameterData.parameterType == User::class.java && parameterData.annotation is RequestingUser) {
             return this.requestingUser
         }
 
