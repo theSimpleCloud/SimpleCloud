@@ -32,6 +32,7 @@ import eu.thesimplecloud.module.rest.auth.createRolesMapping
 import eu.thesimplecloud.module.rest.controller.ControllerHandler
 import eu.thesimplecloud.module.rest.controller.RequestMethodData
 import eu.thesimplecloud.module.rest.defaultcontroller.UserController
+import eu.thesimplecloud.module.rest.defaultcontroller.filemanager.FileManagerController
 import eu.thesimplecloud.module.rest.defaultcontroller.group.ServiceGroupActionController
 import eu.thesimplecloud.module.rest.defaultcontroller.group.ServiceGroupController
 import eu.thesimplecloud.module.rest.defaultcontroller.player.PlayerController
@@ -88,6 +89,7 @@ class RestServer {
         controllerHandler.registerController(WrapperController())
         controllerHandler.registerController(PlayerController())
         controllerHandler.registerController(VersionController())
+        controllerHandler.registerController(FileManagerController())
     }
 
     fun registerRequestMethod(requestMethodData: RequestMethodData) {
