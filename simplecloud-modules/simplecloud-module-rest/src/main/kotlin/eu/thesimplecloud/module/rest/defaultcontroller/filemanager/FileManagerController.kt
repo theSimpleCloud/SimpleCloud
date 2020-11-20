@@ -46,8 +46,8 @@ class FileManagerController : IController {
         if (!file.exists()) throwNoSuchElement()
         if (file.isDirectory) {
             val listFiles = file.listFiles().toList()
-            val directories = listFiles.filter { it.isDirectory }
-            val files = listFiles.filter { !it.isDirectory }
+            val directories = listFiles.filter { it.isDirectory }.sortedBy { it.name }
+            val files = listFiles.filter { !it.isDirectory }.sortedBy { it.name }
             return directories.union(files).map { FileInfo(it.name, it.isDirectory, it.length()) }
         }
         if (ctx.queryParam("view") == null)
@@ -64,8 +64,7 @@ class FileManagerController : IController {
         if (file.isDirectory) {
             //FileUtils.deleteDirectory(file)
         } else {
-            //file.delete()
-            println("would delete ${file.absolutePath}")
+            file.delete()
         }
         return true
     }
