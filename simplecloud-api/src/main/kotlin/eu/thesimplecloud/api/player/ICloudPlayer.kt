@@ -91,6 +91,15 @@ interface ICloudPlayer : IOfflineCloudPlayer, ICommandSender {
     fun sendActionBar(actionbar: String) = CloudAPI.instance.getCloudPlayerManager().sendActionbar(this, actionbar)
 
     /**
+     * Sends a tablist to this player
+     * @param headers the headers for the tablist
+     * @param footers the footers for the tablist
+     */
+    fun sendTablist(headers: Array<String>, footers: Array<String>) {
+        CloudAPI.instance.getCloudPlayerManager().sendTablist(this, headers, footers)
+    }
+
+    /**
      * Returns the name of the proxy the player is connected to.
      */
     fun getConnectedProxyName(): String

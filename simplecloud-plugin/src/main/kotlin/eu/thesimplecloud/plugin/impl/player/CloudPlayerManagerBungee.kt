@@ -131,6 +131,21 @@ class CloudPlayerManagerBungee : AbstractServiceCloudPlayerManager() {
         getProxiedPlayerByCloudPlayer(cloudPlayer)?.sendMessage(ChatMessageType.ACTION_BAR, CloudTextBuilder().build(CloudText(actionbar)))
     }
 
+    override fun sendTablist(cloudPlayer: ICloudPlayer, headers: Array<String>, footers: Array<String>) {
+        if (cloudPlayer.getConnectedProxyName() != CloudPlugin.instance.thisServiceName) {
+            CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketIOSendTablistToPlayer(cloudPlayer.getUniqueId(), headers, footers))
+            return
+        }
+
+        val headerString = headers.joinToString("\n")
+        val footerString = footers.joinToString("\n")
+
+        getProxiedPlayerByCloudPlayer(cloudPlayer)?.setTabHeader(
+                CloudTextBuilder().build(CloudText(headerString)),
+                CloudTextBuilder().build(CloudText(footerString))
+        )
+    }
+
     override fun teleportPlayer(cloudPlayer: ICloudPlayer, location: SimpleLocation): ICommunicationPromise<Unit> {
         return CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketIOTeleportPlayer(cloudPlayer, location))
     }

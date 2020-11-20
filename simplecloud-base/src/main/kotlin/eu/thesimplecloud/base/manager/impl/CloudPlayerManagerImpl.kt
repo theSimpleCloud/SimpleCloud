@@ -130,6 +130,11 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
         proxyClient?.sendUnitQuery(PacketIOSendActionbarToCloudPlayer(cloudPlayer, actionbar))
     }
 
+    override fun sendTablist(cloudPlayer: ICloudPlayer, headers: Array<String>, footers: Array<String>) {
+        val proxyClient = getProxyClientOfCloudPlayer(cloudPlayer)
+        proxyClient?.sendUnitQuery(PacketIOSendTablistToPlayer(cloudPlayer.getUniqueId(), headers, footers))
+    }
+
     override fun setUpdates(cloudPlayer: ICloudPlayer, update: Boolean, serviceName: String) {
         super.setUpdates(cloudPlayer, update, serviceName)
         if (!update && !this.playerUpdates.containsKey(cloudPlayer.getUniqueId())) return

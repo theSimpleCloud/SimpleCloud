@@ -68,6 +68,10 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
         throw UnsupportedOperationException("Players are not supported in the wrapper")
     }
 
+    override fun sendTablist(cloudPlayer: ICloudPlayer, headers: Array<String>, footers: Array<String>) {
+        throw UnsupportedOperationException("Players are not supported in the wrapper")
+    }
+
     override fun setUpdates(cloudPlayer: ICloudPlayer, update: Boolean, serviceName: String) {
         throw UnsupportedOperationException("Players are not supported in the wrapper")
     }

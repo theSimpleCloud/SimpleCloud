@@ -112,6 +112,14 @@ interface ICloudPlayerManager : ICacheList<ICloudPlayer> {
     fun sendActionbar(cloudPlayer: ICloudPlayer, actionbar: String)
 
     /**
+     * Sends a tablist to the specified player
+     * @param cloudPlayer the receiving player
+     * @param headers the headers for the tablist
+     * @param footers the footers for the tablist
+     */
+    fun sendTablist(cloudPlayer: ICloudPlayer, headers: Array<String>, footers: Array<String>)
+
+    /**
      * Tells the manager that this instance wants to receive updates of the specified [cloudPlayer]
      * @param cloudPlayer the player
      * @param update whether updates shall be sent.

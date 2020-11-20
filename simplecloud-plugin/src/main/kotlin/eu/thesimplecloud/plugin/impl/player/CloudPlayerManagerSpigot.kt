@@ -74,6 +74,10 @@ class CloudPlayerManagerSpigot : AbstractServiceCloudPlayerManager() {
         CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketIOSendActionbarToCloudPlayer(cloudPlayer, actionbar))
     }
 
+    override fun sendTablist(cloudPlayer: ICloudPlayer, headers: Array<String>, footers: Array<String>) {
+        CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketIOSendTablistToPlayer(cloudPlayer.getUniqueId(), headers, footers))
+    }
+
     override fun teleportPlayer(cloudPlayer: ICloudPlayer, location: SimpleLocation): ICommunicationPromise<Unit> {
         if (CloudPlugin.instance.thisServiceName != cloudPlayer.getConnectedServerName()) {
             return CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketIOTeleportPlayer(cloudPlayer, location))
