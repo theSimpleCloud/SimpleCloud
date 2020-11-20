@@ -159,7 +159,8 @@ class CommandManager {
     private fun getAvailableArgsMatchingCommandData(message: String): List<CommandData> {
         val messageArray = message.split(" ")
         val dataList = getCommandDataByMinimumArgumentLength(messageArray.size)
-        return dataList.filter { commandData ->
+        val dataListWithoutLegacies = dataList.filter { !it.isLegacy }
+        return dataListWithoutLegacies.filter { commandData ->
             commandData.getAllPathsWithAliases().any {
                 val path = it.trim()
                 val pathArray = path.split(" ")
