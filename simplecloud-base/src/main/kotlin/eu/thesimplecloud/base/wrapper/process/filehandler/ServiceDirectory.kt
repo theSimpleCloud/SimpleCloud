@@ -48,7 +48,6 @@ class ServiceDirectory(private val cloudService: ICloudService) {
     }
 
     fun deleteTemporaryModuleFiles() {
-
         this.copiedModulesAsPlugins.forEach { it.delete() }
     }
 
