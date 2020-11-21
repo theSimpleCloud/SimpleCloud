@@ -30,45 +30,77 @@ import eu.thesimplecloud.api.template.ITemplate
 import eu.thesimplecloud.base.wrapper.startup.Wrapper
 import eu.thesimplecloud.clientserverapi.client.NettyClient
 import eu.thesimplecloud.jsonlib.JsonLib
+import eu.thesimplecloud.launcher.external.module.LoadedModuleFileContent
 import eu.thesimplecloud.launcher.external.module.ModuleCopyType
 import eu.thesimplecloud.launcher.utils.FileCopier
 import org.apache.commons.io.FileUtils
 import java.io.File
+import java.io.IOException
 
-class TemplateCopier : ITemplateCopier {
+class ServiceDirectory(private val cloudService: ICloudService) {
 
-    override fun copyTemplate(cloudService: ICloudService, template: ITemplate) {
+    private var copiedModulesAsPlugins: List<File> = emptyList()
+    val serviceTmpDirectory = getServiceTmpDirectory(cloudService)
+
+    fun copyTemplateFilesAndModules() {
+        copyTemplateFiles()
+        copyModules()
+    }
+
+    fun deleteTemporaryModuleFiles() {
+
+        this.copiedModulesAsPlugins.forEach { it.delete() }
+    }
+
+    @Throws(IOException::class)
+    fun deleteServiceDirectoryUnsafe() {
+        FileUtils.deleteDirectory(this.serviceTmpDirectory)
+    }
+
+    private fun copyTemplateFiles() {
+        val template = cloudService.getTemplate()
         val everyDir = File(DirectoryPaths.paths.templatesPath + "EVERY")
         val everyTypeDir = if (cloudService.getServiceType() == ServiceType.PROXY)
             File(DirectoryPaths.paths.templatesPath + "EVERY_PROXY")
         else
             File(DirectoryPaths.paths.templatesPath + "EVERY_SERVER")
         val templateDirectories = getDirectoriesOfTemplateAndSubTemplates(template)
-        val serviceTmpDir = if (cloudService.isStatic())
-            File(DirectoryPaths.paths.staticPath + cloudService.getName())
-        else
-            File(DirectoryPaths.paths.tempPath + cloudService.getName())
 
-        val dontCopyTemplates = cloudService.isStatic() && serviceTmpDir.exists()
+        val dontCopyTemplates = cloudService.isStatic() && this.serviceTmpDirectory.exists()
         if (!dontCopyTemplates) {
             if (everyDir.exists())
-                FileUtils.copyDirectory(everyDir, serviceTmpDir)
+                FileUtils.copyDirectory(everyDir, this.serviceTmpDirectory)
             if (everyTypeDir.exists())
-                FileUtils.copyDirectory(everyTypeDir, serviceTmpDir)
-            templateDirectories.filter { it.exists() }.forEach { FileUtils.copyDirectory(it, serviceTmpDir) }
+                FileUtils.copyDirectory(everyTypeDir, this.serviceTmpDirectory)
+            templateDirectories.filter { it.exists() }.forEach { FileUtils.copyDirectory(it, this.serviceTmpDirectory) }
         }
 
         if (cloudService.getServiceType() == ServiceType.PROXY) {
-            val destServerIconFile = File(serviceTmpDir, "/server-icon.png")
+            val destServerIconFile = File(this.serviceTmpDirectory, "/server-icon.png")
             if (!destServerIconFile.exists())
                 FileCopier.copyFileOutOfJar(destServerIconFile, "/files/server-icon.png")
         }
 
-        val cloudPluginFile = File(serviceTmpDir, "/plugins/SimpleCloud-Plugin.jar")
+        val cloudPluginFile = File(this.serviceTmpDirectory, "/plugins/SimpleCloud-Plugin.jar")
         FileCopier.copyFileOutOfJar(cloudPluginFile, "/SimpleCloud-Plugin.jar")
 
-        generateServiceFile(cloudService, serviceTmpDir)
+        generateServiceFile()
+    }
 
+    private fun copyModules() {
+        val modulesForService = getModulesForService()
+        modulesForService.forEach { FileUtils.copyFile(it.file, File(this.serviceTmpDirectory, "/plugins/" + it.file.name)) }
+        this.copiedModulesAsPlugins = getModuleFilesInService()
+    }
+
+    private fun getServiceTmpDirectory(cloudService: ICloudService): File {
+        return if (cloudService.isStatic())
+            File(DirectoryPaths.paths.staticPath + cloudService.getName())
+        else
+            File(DirectoryPaths.paths.tempPath + cloudService.getName())
+    }
+
+    private fun getModulesForService(): List<LoadedModuleFileContent> {
         val modulesByCopyType = Wrapper.instance.existingModules
                 .filter { it.content.moduleCopyType != ModuleCopyType.NONE }.toMutableList()
         if (!cloudService.isLobby())
@@ -78,43 +110,23 @@ class TemplateCopier : ITemplateCopier {
         if (cloudService.isProxy())
             modulesByCopyType.removeIf { it.content.moduleCopyType == ModuleCopyType.SERVER }
 
-        val moduleNamesToCopy = getModulesToCopyOfTemplateAndSubTemplates(template)
+        val moduleNamesToCopy = getModulesToCopyOfTemplateAndSubTemplates(this.cloudService.getTemplate())
         val modulesByName = Wrapper.instance.existingModules.filter { moduleNamesToCopy.contains(it.content.name) }
-
-        modulesByCopyType.union(modulesByName).distinctBy { it.content.name }.forEach { FileUtils.copyFile(it.file, File(serviceTmpDir, "/plugins/" + it.file.name)) }
-
+        return modulesByCopyType.union(modulesByName).distinctBy { it.content.name }
     }
 
-    /*
-    override fun loadDependenciesAndInstall(serviceTmpDir: File): DependenciesInformation {
-        val pluginsDir = File(serviceTmpDir, "plugins")
-        if (!pluginsDir.exists())
-            return DependenciesInformation(emptyList(), emptyList())
-        val dependenciesInformationList = pluginsDir.listFiles()?.mapNotNull { file -> ResourceFinder.findResource(file, "dependencies.json")?.let { JsonData.fromInputStream(it) } }
-                ?.mapNotNull { it.getObjectOrNull(DependenciesInformation::class.java) }
-                ?: return DependenciesInformation(emptyList(), emptyList())
-        val allRepos = dependenciesInformationList.map { it.repositories }.flatten()
-        val allDependencies = dependenciesInformationList.map { it.dependencies }.flatten()
-        val dependenciesInformation = DependenciesInformation(allRepos, allDependencies)
-        return dependenciesInformation
+    fun getModuleFilesInService(): List<File> {
+        val modulesForService = getModulesForService()
+        return modulesForService.map { File(this.serviceTmpDirectory, "/plugins/" + it.file.name) }
     }
 
-
-    private fun installDependencies(dependenciesInformation: DependenciesInformation) {
-        Launcher.instance.dependencyLoader.addRepositories(allRepos)
-        Launcher.instance.dependencyLoader.addDependencies(allDependencies)
-        Launcher.instance.dependencyLoader.installDependencies()
-    }
-
-     */
-
-    private fun generateServiceFile(cloudService: ICloudService, serviceTmpDir: File) {
+    private fun generateServiceFile() {
         val communicationClient = Wrapper.instance.communicationClient
         communicationClient as NettyClient
         JsonLib.empty().append("managerHost", communicationClient.getHost())
                 .append("managerPort", communicationClient.getPort())
                 .append("serviceName", cloudService.getName())
-                .saveAsFile(File(serviceTmpDir, "SIMPLE-CLOUD.json"))
+                .saveAsFile(File(this.serviceTmpDirectory, "SIMPLE-CLOUD.json"))
     }
 
     private fun getDirectoriesOfTemplateAndSubTemplates(template: ITemplate): Set<File> {

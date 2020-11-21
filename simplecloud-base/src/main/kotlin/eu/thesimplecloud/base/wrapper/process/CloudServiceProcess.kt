@@ -24,7 +24,6 @@ package eu.thesimplecloud.base.wrapper.process
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.client.NetworkComponentType
-import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.event.service.CloudServiceUnregisteredEvent
 import eu.thesimplecloud.api.listenerextension.cloudListener
 import eu.thesimplecloud.api.service.ICloudService
@@ -32,14 +31,13 @@ import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.service.impl.DefaultCloudService
 import eu.thesimplecloud.api.servicegroup.grouptype.ICloudProxyGroup
 import eu.thesimplecloud.api.utils.ManifestLoader
-import eu.thesimplecloud.base.wrapper.process.filehandler.TemplateCopier
+import eu.thesimplecloud.base.wrapper.process.filehandler.ServiceDirectory
 import eu.thesimplecloud.base.wrapper.startup.Wrapper
 import eu.thesimplecloud.client.packets.PacketOutScreenMessage
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.launcher.dependency.DependencyLoader
 import eu.thesimplecloud.launcher.startup.Launcher
-import org.apache.commons.io.FileUtils
 import java.io.BufferedReader
 import java.io.File
 import java.io.IOException
@@ -50,7 +48,7 @@ import java.util.concurrent.TimeUnit
 class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServiceProcess {
 
     private var process: Process? = null
-    private val serviceTmpDir = if (cloudService.isStatic()) File(DirectoryPaths.paths.staticPath + cloudService.getName()) else File(DirectoryPaths.paths.tempPath + cloudService.getName())
+    private val serviceDirectory = ServiceDirectory(cloudService)
 
     override fun start(): ICommunicationPromise<Unit> {
         Launcher.instance.consoleSender.sendProperty("wrapper.service.starting", cloudService.getName())
@@ -65,17 +63,17 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
         this.cloudService.setState(ServiceState.STARTING)
         this.cloudService.update().awaitUninterruptibly()
 
-        TemplateCopier().copyTemplate(cloudService, cloudService.getTemplate())
+        serviceDirectory.copyTemplateFilesAndModules()
 
         val serviceConfigurator = Wrapper.instance.serviceConfigurationManager
                 .getServiceConfigurator(cloudService.getServiceVersion().serviceAPIType)
         serviceConfigurator
                 ?: throw IllegalStateException("No ServiceConfiguration found by api type: ${cloudService.getServiceVersion().serviceAPIType}")
 
-        serviceConfigurator.configureService(cloudService, this.serviceTmpDir)
+        serviceConfigurator.configureService(cloudService, this.serviceDirectory.serviceTmpDirectory)
         val jarFile = Wrapper.instance.serviceVersionLoader.loadVersionFile(cloudService.getServiceVersion())
         val processBuilder = createProcessBuilder(jarFile)
-                .directory(this.serviceTmpDir)
+                .directory(this.serviceDirectory.serviceTmpDirectory)
         val process = processBuilder.start()
         this.process = process
 
@@ -111,10 +109,10 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
         reader.close()
     }
 
-    private fun processStopped(){
+    private fun processStopped() {
         Launcher.instance.consoleSender.sendProperty("wrapper.service.stopped", cloudService.getName())
         Wrapper.instance.cloudServiceProcessManager.unregisterServiceProcess(this)
-        deleteTmpFolder()
+        deleteTemporaryFiles()
         if (Wrapper.instance.connectionToManager.isOpen()) {
             //CloudAPI.instance.getCloudServiceManager().sendUpdateToConnection(this.cloudService, Wrapper.instance.communicationClient).awaitUninterruptibly()
             var tries = 0
@@ -132,15 +130,17 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
         Wrapper.instance.portManager.setPortUnused(this.cloudService.getPort())
     }
 
-    private fun deleteTmpFolder() {
-        if (!cloudService.isStatic()) {
-            while (true) {
-                try {
-                    FileUtils.deleteDirectory(this.serviceTmpDir)
-                    break
-                } catch (e: Exception) {
-
+    private fun deleteTemporaryFiles() {
+        while (true) {
+            try {
+                if (this.cloudService.isStatic()) {
+                    this.serviceDirectory.deleteTemporaryModuleFiles()
+                } else {
+                    this.serviceDirectory.deleteServiceDirectoryUnsafe()
                 }
+                break
+            } catch (e: Exception) {
+
             }
         }
     }
@@ -181,7 +181,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
     }
 
     override fun getTempDirectory(): File {
-        return serviceTmpDir
+        return this.serviceDirectory.serviceTmpDirectory
     }
 
     override fun isActive(): Boolean = this.process?.isAlive ?: false
