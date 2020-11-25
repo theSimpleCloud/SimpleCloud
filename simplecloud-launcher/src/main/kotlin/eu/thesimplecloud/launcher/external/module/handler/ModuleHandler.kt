@@ -219,7 +219,7 @@ open class ModuleHandler(
     }
 
     private fun checkForSelfDepend(loadedModuleFileContent: LoadedModuleFileContent) {
-        if (loadedModuleFileContent.content.dependsFrom(loadedModuleFileContent.content))
+        if (loadedModuleFileContent.content.dependsOn(loadedModuleFileContent.content))
             throw ModuleLoadException("${loadedModuleFileContent.content.name} self depend")
     }
 
@@ -256,7 +256,7 @@ open class ModuleHandler(
 
     private fun getRecursiveDependencies(moduleFileContent: LoadedModuleFileContent): List<LoadedModuleFileContent> {
         val fileContentsOfDependencies = addModuleFileContentsOfDependenciesAndSubDependencies(moduleFileContent)
-        return fileContentsOfDependencies.filter { it.content.dependsFrom(moduleFileContent.content) }
+        return fileContentsOfDependencies.filter { it.content.dependsOn(moduleFileContent.content) }
     }
 
     private fun hasRecursiveDependencies(moduleFileContent: LoadedModuleFileContent) =

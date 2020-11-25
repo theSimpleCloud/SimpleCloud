@@ -38,7 +38,7 @@ data class ModuleFileContent(
         return moduleFileContent.depend.contains(name)
     }
 
-    fun dependsFrom(dependencyFileContent: ModuleFileContent): Boolean {
+    fun dependsOn(dependencyFileContent: ModuleFileContent): Boolean {
         return this.depend.contains(dependencyFileContent.name)
     }
 
