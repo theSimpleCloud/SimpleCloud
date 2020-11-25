@@ -51,4 +51,9 @@ class PlayerController : IController {
         return CloudAPI.instance.getCloudPlayerManager().getAllOnlinePlayers().getBlockingOrNull() ?: emptyList()
     }
 
+    @RequestMapping(RequestType.GET, "count", "web.cloud.player.get.all")
+    fun handleGetOnlinePlayerCount(): Int {
+        return CloudAPI.instance.getCloudPlayerManager().getAllCachedObjects().size
+    }
+
 }

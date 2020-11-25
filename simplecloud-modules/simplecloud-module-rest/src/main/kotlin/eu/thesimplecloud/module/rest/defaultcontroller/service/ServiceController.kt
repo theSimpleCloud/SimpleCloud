@@ -25,6 +25,7 @@ package eu.thesimplecloud.module.rest.defaultcontroller.service
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.impl.DefaultCloudService
+import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.module.rest.annotation.*
 import eu.thesimplecloud.module.rest.controller.IController
 
@@ -52,6 +53,13 @@ class ServiceController : IController {
         if (!doesServiceExist(service.getName())) throwNoSuchElement()
         CloudAPI.instance.getCloudServiceManager().update(service)
         return service
+    }
+
+    @RequestMapping(RequestType.GET, "logs/:name", "web.cloud.service.logs")
+    fun handleGetServiceLogs(@RequestPathParam("name") name: String): List<String> {
+        if (!doesServiceExist(name)) throwNoSuchElement()
+        val screen = Launcher.instance.screenManager.getScreen(name)
+        return screen?.getAllSavedMessages() ?: emptyList()
     }
 
     private fun doesServiceExist(name: String): Boolean {

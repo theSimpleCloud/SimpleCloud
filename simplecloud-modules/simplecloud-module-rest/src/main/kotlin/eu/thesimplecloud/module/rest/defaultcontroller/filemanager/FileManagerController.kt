@@ -22,6 +22,7 @@
 
 package eu.thesimplecloud.module.rest.defaultcontroller.filemanager
 
+import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.module.rest.annotation.RequestMapping
 import eu.thesimplecloud.module.rest.annotation.RequestType
 import eu.thesimplecloud.module.rest.annotation.RestController
@@ -78,9 +79,14 @@ class FileManagerController : IController {
         if (file.exists()) file.delete()
         file.parentFile?.mkdirs()
         val uploadedFile = ctx.uploadedFile("file")
-        uploadedFile?.let {
-            println(it.filename)
-            FileUtil.streamToFile(it.content, file.absolutePath)
+
+        if (uploadedFile != null) {
+            FileUtil.streamToFile(uploadedFile.content, file.absolutePath)
+        } else {
+            Launcher.instance.logger.info(ctx.body())
+            if (ctx.body().isNotEmpty()) {
+                file.writeText(ctx.body())
+            }
         }
         return true
     }
