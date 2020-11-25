@@ -66,7 +66,7 @@ abstract class AbstractCloudServiceGroupManager : AbstractCacheList<ICloudServic
 
     override fun delete(value: ICloudServiceGroup, fromPacket: Boolean): ICommunicationPromise<Unit> {
         if (CloudAPI.instance.getCloudServiceManager().getCloudServicesByGroupName(value.getName()).isNotEmpty())
-            throw IllegalStateException("Cannot delete service group while services of this group are registered.")
+            throw IllegalStateException("Cannot delete service group while services of this group are registered")
         return super<AbstractCacheList>.delete(value, fromPacket)
     }
 

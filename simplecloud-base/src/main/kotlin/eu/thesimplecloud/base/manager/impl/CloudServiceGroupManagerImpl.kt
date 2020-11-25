@@ -39,7 +39,7 @@ class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
             update(cloudServiceGroup)
             promise.trySuccess(cloudServiceGroup)
         } else {
-            promise.setFailure(IllegalArgumentException("Name of the specified group is already registered."))
+            promise.setFailure(IllegalArgumentException("The name of the specified group is already in use"))
         }
         return promise
     }
