@@ -88,6 +88,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
     val currentClassLoader: ClassLoader = Thread.currentThread().contextClassLoader
     var launcherConfig: LauncherConfig
         private set
+    private val startedTime = System.currentTimeMillis()
 
     init {
         instance = this
@@ -209,6 +210,10 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
     fun replaceLauncherConfig(config: LauncherConfig) {
         this.launcherConfig = config
         this.launcherConfigLoader.saveConfig(config)
+    }
+
+    fun getUpTime(): Long {
+        return System.currentTimeMillis() - startedTime
     }
 
 }
