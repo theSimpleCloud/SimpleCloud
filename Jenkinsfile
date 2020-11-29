@@ -26,9 +26,11 @@ pipeline {
                 sh 'rm -f SimpleCloud-Latest.zip';
                 sh 'mkdir -p temp'
                 sh 'mkdir temp/modules/'
+                sh 'mkdir temp/storage/'
                 sh 'cp start-files/*.* temp/';
                 sh 'cp simplecloud-modules/**/build/libs/*.jar temp/modules/';
                 sh 'cp simplecloud-runner/build/libs/runner.jar temp/runner.jar';
+                sh 'cp simplecloud-base/build/libs/base.jar temp/storage/base.jar';
                 sh 'rm temp/modules/SimpleCloud-CloudFlare.jar';
                 sh 'rm temp/modules/SimpleCloud-ServiceSelection.jar';
                 sh 'rm temp/modules/SimpleCloud-Sign-Old.jar';
