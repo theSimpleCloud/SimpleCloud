@@ -58,6 +58,9 @@ class BukkitCloudSign(
             println("[SimpleCloud-Sign] WARNING: Cannot find world by name: ${cloudSign.templateLocation.worldName}")
             return
         }
+        if (!location.chunk.isLoaded) {
+            return
+        }
         if (location.block.state !is Sign) {
             return
         }
