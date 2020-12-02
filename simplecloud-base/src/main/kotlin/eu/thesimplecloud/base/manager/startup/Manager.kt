@@ -59,7 +59,7 @@ import eu.thesimplecloud.launcher.application.ApplicationClassLoader
 import eu.thesimplecloud.launcher.application.ICloudApplication
 import eu.thesimplecloud.launcher.external.module.ModuleClassLoader
 import eu.thesimplecloud.launcher.external.module.handler.IModuleHandler
-import eu.thesimplecloud.launcher.external.module.handler.NewModuleHandler
+import eu.thesimplecloud.launcher.external.module.handler.ModuleHandler
 import eu.thesimplecloud.launcher.language.LanguageFileLoader
 import eu.thesimplecloud.launcher.startup.Launcher
 import kotlinx.coroutines.GlobalScope
@@ -105,7 +105,7 @@ class Manager : ICloudApplication {
         CloudAPI.instance.getEventManager().registerListener(this, ModuleEventListener())
         this.appClassLoader = this::class.java.classLoader as ApplicationClassLoader
 
-        this.cloudModuleHandler = NewModuleHandler(
+        this.cloudModuleHandler = ModuleHandler(
                 appClassLoader,
                 Launcher.instance.launcherConfig.language,
                 ModuleUpdaterConfigLoader().loadConfig().modules,

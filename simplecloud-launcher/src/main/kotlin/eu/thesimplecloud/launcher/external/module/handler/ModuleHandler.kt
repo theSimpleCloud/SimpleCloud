@@ -22,241 +22,144 @@
 
 package eu.thesimplecloud.launcher.external.module.handler
 
-/*
-open class ModuleHandler(
+import eu.thesimplecloud.api.directorypaths.DirectoryPaths
+import eu.thesimplecloud.api.external.ICloudModule
+import eu.thesimplecloud.jsonlib.JsonLib
+import eu.thesimplecloud.launcher.exception.module.ModuleLoadException
+import eu.thesimplecloud.launcher.external.module.LoadedModule
+import eu.thesimplecloud.launcher.external.module.LoadedModuleFileContent
+import eu.thesimplecloud.launcher.external.module.ModuleClassLoader
+import eu.thesimplecloud.launcher.external.module.ModuleFileContent
+import eu.thesimplecloud.launcher.external.module.update.UpdaterFileContent
+import eu.thesimplecloud.launcher.startup.Launcher
+import java.io.File
+import java.net.URL
+import java.net.URLClassLoader
+import java.util.concurrent.CopyOnWriteArrayList
+import java.util.jar.JarEntry
+import java.util.jar.JarFile
+
+class ModuleHandler(
         private val parentClassLoader: ClassLoader = ClassLoader.getSystemClassLoader(),
         private val currentLanguage: String = "en",
         private val modulesWithPermissionToUpdate: List<String> = emptyList(),
-        private val shallInstallUpdates: Boolean = false,
-        private val handleException: (Throwable) -> Unit = { throw it }
-) : IModuleHandler {
+        private val checkForUpdates: Boolean = false
+): IModuleHandler {
 
-    private val loadedModuleFileContents: MutableSet<LoadedModuleFileContent> = mutableSetOf()
+    private val loadedModules: MutableList<LoadedModule> = CopyOnWriteArrayList()
 
-    private val loadedModules = CopyOnWriteArrayList<LoadedModule>()
+    private var createModuleClassLoaderFunction: (Array<URL>, String) -> URLClassLoader = { args, name ->
+        ModuleClassLoader(args, parentClassLoader, name, this)
+    }
 
 
-    private var createModuleClassLoader: (Array<URL>, String) -> URLClassLoader = { urls, name -> ModuleClassLoader(urls, parentClassLoader, name, this) }
+    override fun loadAllUnloadedModules() {
+        loadModuleListFromFiles(getAllModuleJarFiles())
+    }
+
+    override fun getLoadedModuleByName(name: String): LoadedModule? {
+        return this.loadedModules.firstOrNull { it.getName() == name }
+    }
+
+    override fun getLoadedModuleByCloudModule(cloudModule: ICloudModule): LoadedModule? {
+        return this.loadedModules.firstOrNull { it.cloudModule == cloudModule }
+    }
+
+    override fun unloadModule(cloudModule: ICloudModule) {
+        val loadedModule = getLoadedModuleByCloudModule(cloudModule)
+                ?: throw IllegalArgumentException("Specified cloud module is not registered")
+        unloadModule(loadedModule)
+    }
+
+    override fun unloadAllModules() {
+        this.loadedModules.forEach { unloadModule(it) }
+    }
+
+    override fun unloadAllReloadableModules() {
+        this.loadedModules.filter { it.cloudModule.isReloadable() }.forEach { unloadModule(it) }
+    }
+
+    override fun getLoadedModules(): List<LoadedModule> {
+        return this.loadedModules
+    }
+
+    private fun unloadModule(loadedModule: LoadedModule) {
+        UnsafeModuleUnloader(loadedModule).unload()
+        this.loadedModules.remove(loadedModule)
+    }
+
+    override fun findModuleClass(name: String): Class<*> {
+        val mapNotNull = this.loadedModules.mapNotNull {
+            //Launcher.instance.logger.info("searching class $name in ${it.getName()}")
+            runCatching {
+                (it.moduleClassLoader as ModuleClassLoader).findClass0(name, false)
+            }.getOrNull()
+        }
+        return mapNotNull.firstOrNull() ?: throw ClassNotFoundException(name)
+    }
+
+    override fun findModuleOrSystemClass(name: String): Class<*> {
+        val clazz = kotlin.runCatching {
+            this.findModuleClass(name)
+        }.getOrNull()
+        if (clazz != null) return clazz
+
+        val classLoader = Launcher.instance.currentClassLoader
+        return Class.forName(name, true, classLoader)
+    }
 
     override fun setCreateModuleClassLoader(function: (Array<URL>, String) -> URLClassLoader) {
-        this.createModuleClassLoader = function
+        this.createModuleClassLoaderFunction = function
     }
 
     override fun loadModuleFileContent(file: File, moduleFileName: String): ModuleFileContent {
-        return loadJsonFileInJar(file, moduleFileName)
+        return this.loadJsonFileInJar(file, moduleFileName)
     }
 
-    @Synchronized
-    override fun loadModule(loadedModuleFileContent: LoadedModuleFileContent): LoadedModule {
-        if (this.loadedModules.any { it.file.path == loadedModuleFileContent.file.path })
-            throw IllegalStateException("Module ${loadedModuleFileContent.content.name} is already loaded")
-        if (this.loadedModules.any { it.fileContent.name == loadedModuleFileContent.content.name })
-            throw IllegalStateException("Duplicate module name ${loadedModuleFileContent.content.name}")
-        this.loadedModuleFileContents.add(loadedModuleFileContent)
-        checkForSelfDepend(loadedModuleFileContent)
-        checkForMissingDependencies(loadedModuleFileContent, getAllLoadedModuleNames())
-        checkForRecursiveDependencies(loadedModuleFileContent)
-        val (file, content, updaterFileContent) = loadedModuleFileContent
-        //check for update and execute
-        if (updaterFileContent != null && !Launcher.instance.launcherStartArguments.disableAutoUpdater) {
-            val updater = ModuleUpdater(updaterFileContent, loadedModuleFileContent.file)
-            if (shallInstallUpdates && updater.isUpdateAvailable()) {
-                Launcher.instance.consoleSender.sendProperty("manager.module.updating",  content.name)
-                UpdateExecutor().executeUpdate(updater)
-                Launcher.instance.consoleSender.sendProperty("manager.module.updated", content.name)
-                return loadModule(loadedModuleFileContent.file)
+    override fun loadModuleListFromFiles(files: List<File>): List<LoadedModule> {
+        val modules = files.map { loadModuleFileContent(it) }
+        val updatedModuleList = modules.map {
+            if (this.checkForUpdates) {
+                if (checkForUpdate(it)) {
+                    return@map loadModuleFileContent(it.file)
+                }
             }
+            return@map it
         }
-        //no update found
-        try {
-            installRequiredDependencies(content)
-            val classLoader = this.createModuleClassLoader(arrayOf(file.toURI().toURL()), loadedModuleFileContent.content.name)
-            val cloudModule = this.loadModuleClassInstance(classLoader, content.mainClass)
-            registerLanguageFileIfExist(cloudModule, file)
-            val loadedModule = LoadedModule(cloudModule, file, content, updaterFileContent, classLoader)
-            this.loadedModules.add(loadedModule)
-            cloudModule.onEnable()
-            CloudAPI.instance.getEventManager().call(ModuleLoadedEvent(loadedModule))
-
-            return loadedModule
-        } catch (ex: Exception) {
-            throw ModuleLoadException(file.path, ex)
-        }
+        return loadModuleList(updatedModuleList)
     }
 
-    private fun registerLanguageFileIfExist(cloudModule: ICloudModule, moduleFile: File) {
-        val languageFile = loadLanguageFile(moduleFile)
-        languageFile?.let {
-            CloudAPI.instance.getLanguageManager().registerLanguageFile(cloudModule, languageFile)
-        }
+    private fun checkForUpdate(loadedModuleFileContent: LoadedModuleFileContent): Boolean {
+        return ModuleUpdateInstaller(loadedModuleFileContent).updateIfAvailable()
     }
 
-    private fun loadLanguageFile(file: File): LoadedLanguageFile? {
-        val loadedLanguageFile = loadLanguageFile(file, this.currentLanguage)
-        return loadedLanguageFile ?: loadFallbackLanguageFile(file)
+    override fun loadModuleList(modulesToLoad: List<LoadedModuleFileContent>): List<LoadedModule> {
+        val moduleListLoader = ModuleListLoader(modulesToLoad, this.loadedModules, this.createModuleClassLoaderFunction)
+        val newModules =  moduleListLoader.loadModules()
+        this.loadedModules.addAll(newModules)
+        newModules.forEach { registerLanguageFile(it) }
+        newModules.forEach { enableModule(it) }
+        return newModules
     }
 
-    private fun loadFallbackLanguageFile(file: File): LoadedLanguageFile? {
-        return loadLanguageFile(file, LanguageFileLoader.FALLBACK_LANGUAGE)
+    private fun registerLanguageFile(loadedModule: LoadedModule) {
+        ModuleLanguageFileLoader(this.currentLanguage, loadedModule.file, loadedModule.cloudModule)
+                .registerLanguageFileIfExist()
     }
 
-    private fun loadLanguageFile(file: File, language: String): LoadedLanguageFile? {
-        val map: Map<String, String>? = runCatching { loadJsonFileInJar<HashMap<String, String>>(file, "languages/${language}.json") }.getOrNull()
-        return map?.let { LanguageFileLoader().buildFileFromMap(it) }
+    private fun enableModule(module: LoadedModule) {
+        module.cloudModule.onEnable()
     }
 
-    override fun loadModule(file: File, moduleFileName: String): LoadedModule {
-        if (getLoadedModuleByFile(file) != null)
-            throw IllegalStateException("Module ${file.path} is already loaded.")
-        val content = loadModuleFileContent(file, moduleFileName)
-        val updaterFileContent = checkPermissionAndLoadUpdaterFile(file, content)
-        val loadedModuleFileContent = LoadedModuleFileContent(file, content, updaterFileContent)
-        return loadModule(loadedModuleFileContent)
-    }
 
-    private fun getLoadedModuleByFile(file: File): LoadedModule? {
-        return this.loadedModules.firstOrNull { it.file.path == file.path }
-    }
-
-    override fun loadAllUnloadedModules() {
-        this.loadedModuleFileContents.addAll(getAllCloudModuleFileContents().toMutableSet())
-        val allModuleNames: List<String> = getAllLoadedModuleNames()
-        checkForMissingDependencies(allModuleNames)
-        checkForRecursiveDependencies()
-        val modulesWithUnknownDependencies = this.loadedModuleFileContents
-                .filter { hasUnknownDependencies(it, allModuleNames) }
-        this.loadedModuleFileContents.removeAll(modulesWithUnknownDependencies)
-        val validModuleFileContents = this.loadedModuleFileContents
-                .filter { !hasRecursiveDependencies(it) }
-        val loadedModuleContentsInOrder = getModuleLoadOrder(validModuleFileContents)
-        loadedModuleContentsInOrder.forEach { loadModuleSafe(it) }
-    }
-
-    private fun getAllLoadedModuleNames() = this.loadedModuleFileContents.map { it.content.name }
-
-    private fun loadModuleSafe(loadedModuleFileContent: LoadedModuleFileContent) {
-        try {
-            loadModule(loadedModuleFileContent)
-        } catch (ex: IllegalStateException) {
-            if (ex.message?.contains("already loaded") == true) {
-                //ignore
-                return
-            }
-            throw ex
-        }
-    }
-
-    private fun installRequiredDependencies(cloudModuleFileContent: ModuleFileContent) {
-        val dependencyLoader = DependencyLoader.INSTANCE
-        val launcherDependencies = cloudModuleFileContent.dependencies
-                .map { LauncherCloudDependency(it.groupId, it.artifactId, it.version) }
-        dependencyLoader.loadDependencies(
-                cloudModuleFileContent.repositories,
-                launcherDependencies
+    private fun loadModuleFileContent(file: File): LoadedModuleFileContent {
+        val moduleFileContent = loadModuleFileContent(file, "module.json")
+        val updaterFileContent = this.checkPermissionAndLoadUpdaterFile(file, moduleFileContent)
+        return LoadedModuleFileContent(
+                file,
+                moduleFileContent,
+                updaterFileContent
         )
-    }
-
-    private fun loadModuleClassInstance(classLoader: ClassLoader, mainClassName: String): ICloudModule {
-        val mainClass = loadModuleClass(classLoader, mainClassName)
-        val constructor = mainClass.getConstructor()
-        return constructor.newInstance()
-    }
-
-    private fun loadModuleClass(classLoader: ClassLoader, mainClassName: String): Class<out ICloudModule> {
-        val mainClass = classLoader.loadClass(mainClassName)
-        return mainClass.asSubclass(ICloudModule::class.java)
-    }
-
-    fun loadModuleClassFromFile(mainClassName: String, file: File): Class<out ICloudModule> {
-        val urlClassLoader = URLClassLoader(arrayOf(file.toURI().toURL()))
-        return loadModuleClass(urlClassLoader, mainClassName)
-    }
-
-    private fun getModuleLoadOrder(fileContents: List<LoadedModuleFileContent>): List<LoadedModuleFileContent> {
-        fileContents.map {
-            val loadOrder = addModuleFileContentsOfDependenciesAndSubDependencies(it)
-            val depend = it.content.depend
-            val softDepend = it.content.softDepend
-        }
-        return fileContents.map { addModuleFileContentsOfDependenciesAndSubDependencies(it) }.flatten()
-    }
-
-    private fun addModuleFileContentsOfDependenciesAndSubDependencies(moduleFileContent: LoadedModuleFileContent, list: MutableList<LoadedModuleFileContent> = ArrayList()): MutableList<LoadedModuleFileContent> {
-        list.add(moduleFileContent)
-        val dependenciesFileContents = moduleFileContent.content.depend.map { getLoadedModuleFileContentByName(it) }
-        if (dependenciesFileContents.any { it == null }) {
-            val nullDependencies = moduleFileContent.content.depend.filter { getLoadedModuleFileContentByName(it) == null }
-            throw IllegalStateException("Failed to load module ${moduleFileContent.content.name}: Unable to find dependencies $nullDependencies")
-        }
-        val noNullList = dependenciesFileContents.requireNoNulls()
-        noNullList.forEach {
-            if (!list.contains(it)) {
-                addModuleFileContentsOfDependenciesAndSubDependencies(it, list)
-            }
-        }
-        return list
-    }
-
-    private fun checkForSelfDepend(loadedModuleFileContent: LoadedModuleFileContent) {
-        if (loadedModuleFileContent.content.dependsOn(loadedModuleFileContent.content))
-            throw ModuleLoadException("${loadedModuleFileContent.content.name} self depend")
-    }
-
-    private fun checkForRecursiveDependencies() {
-        for (moduleFileContent in this.loadedModuleFileContents) {
-            try {
-                checkForRecursiveDependencies(moduleFileContent)
-            } catch (ex: Exception) {
-                handleException(ex)
-            }
-        }
-    }
-
-    private fun checkForRecursiveDependencies(moduleFileContent: LoadedModuleFileContent) {
-        if (hasRecursiveDependencies(moduleFileContent))
-            throw ModuleLoadException("${moduleFileContent.content.name} recursive dependency detected: ${getRecursiveDependencies(moduleFileContent).joinToString { it.content.name }}")
-    }
-
-    private fun checkForMissingDependencies(allModuleNames: List<String>) {
-        for (moduleFileContent in this.loadedModuleFileContents) {
-            try {
-                checkForMissingDependencies(moduleFileContent, allModuleNames)
-            } catch (ex: ModuleLoadException) {
-                handleException(ex)
-            }
-        }
-    }
-
-    private fun checkForMissingDependencies(moduleFileContent: LoadedModuleFileContent, allModuleNames: List<String>) {
-        val unknownDependencies = getUnknownDependencies(moduleFileContent, allModuleNames)
-        if (unknownDependencies.isNotEmpty())
-            throw ModuleLoadException("Failed to load module ${moduleFileContent.content.name}: Module dependencies are missing: ${unknownDependencies.joinToString()}")
-    }
-
-    private fun getRecursiveDependencies(moduleFileContent: LoadedModuleFileContent): List<LoadedModuleFileContent> {
-        val fileContentsOfDependencies = addModuleFileContentsOfDependenciesAndSubDependencies(moduleFileContent)
-        return fileContentsOfDependencies.filter { it.content.dependsOrSoftDependsOn(moduleFileContent.content) }
-    }
-
-    private fun hasRecursiveDependencies(moduleFileContent: LoadedModuleFileContent) =
-            getRecursiveDependencies(moduleFileContent).isNotEmpty()
-
-    private fun getUnknownDependencies(fileContent: LoadedModuleFileContent, moduleNames: List<String>) =
-            fileContent.content.depend.filter { !moduleNames.contains(it) }
-
-    private fun hasUnknownDependencies(fileContent: LoadedModuleFileContent, moduleNames: List<String>) =
-            getUnknownDependencies(fileContent, moduleNames).isNotEmpty()
-
-    open fun getAllCloudModuleFileContents(): List<LoadedModuleFileContent> {
-        return getAllModuleJarFiles().map {
-            val moduleFileContent = this.loadModuleFileContent(it, "module.json")
-            val updaterFileContent = this.checkPermissionAndLoadUpdaterFile(it, moduleFileContent)
-            LoadedModuleFileContent(
-                    it,
-                    moduleFileContent,
-                    updaterFileContent
-            )
-        }
     }
 
     private inline fun <reified T : Any> loadJsonFileInJar(file: File, path: String): T {
@@ -284,78 +187,8 @@ open class ModuleHandler(
         return File(DirectoryPaths.paths.modulesPath).listFiles()?.filter { it.name.endsWith(".jar") } ?: emptyList()
     }
 
-    private fun getLoadedModuleFileContentByName(name: String) =
-            this.loadedModuleFileContents.firstOrNull { it.content.name == name }
-
-
-    override fun getLoadedModuleByName(name: String): LoadedModule? {
-        return this.loadedModules.firstOrNull { it.fileContent.name == name }
-    }
-
-    override fun getLoadedModuleByCloudModule(cloudModule: ICloudModule): LoadedModule? {
-        return this.loadedModules.firstOrNull { it.cloudModule == cloudModule }
-    }
-
-    override fun unloadAllModules() {
-        this.loadedModules.forEach {
-            unloadModule(it.cloudModule)
-        }
-    }
-
-    override fun unloadAllReloadableModules() {
-        this.loadedModules.filter { it.cloudModule.isReloadable() }.forEach {
-            unloadModule(it.cloudModule)
-        }
-    }
-
-    override fun unloadModule(cloudModule: ICloudModule) {
-        val loadedModule = getLoadedModuleByCloudModule(cloudModule)
-                ?: throw IllegalStateException("Cannot unload unloaded module")
-        try {
-            cloudModule.onDisable()
-        } catch (ex: Exception) {
-            handleException(ex)
-        }
-        //unregister all listeners etc.
-        CloudAPI.instance.getEventManager().unregisterAllListenersByCloudModule(cloudModule)
-        (loadedModule.moduleClassLoader as ModuleClassLoader).close()
-
-        this.loadedModules.remove(loadedModule)
-        CloudAPI.instance.getEventManager().call(ModuleUnloadedEvent(loadedModule))
-
-        //reset all property values
-        CloudAPI.instance.getCloudPlayerManager().getAllCachedObjects().forEach { player ->
-            player.getProperties().forEach { (it.value as Property).resetValue() }
-        }
-        CloudAPI.instance.getCloudServiceManager().getAllCachedObjects().forEach { group ->
-            group.getProperties().forEach { (it.value as Property).resetValue() }
-        }
-
-        CloudAPI.instance.getLanguageManager().unregisterLanguageFileByCloudModule(cloudModule)
-    }
-
-    override fun getLoadedModules(): List<LoadedModule> = this.loadedModules
-
-
-    override fun findModuleClass(name: String): Class<*> {
-        val mapNotNull = this.loadedModules.mapNotNull {
-            runCatching {
-                (it.moduleClassLoader as ModuleClassLoader).findClass0(name, false)
-            }.getOrNull()
-        }
-        return mapNotNull.firstOrNull() ?: throw ClassNotFoundException(name)
-    }
-
-    override fun findModuleOrSystemClass(name: String): Class<*> {
-        val clazz = kotlin.runCatching {
-            this.findModuleClass(name)
-        }.getOrNull()
-        if (clazz != null) return clazz
-
-        val classLoader = Launcher.instance.currentClassLoader
-        return Class.forName(name, true, classLoader)
+    fun getAllCloudModuleFileContents(): List<LoadedModuleFileContent> {
+        return getAllModuleJarFiles().map { loadModuleFileContent(it) }
     }
 
 }
-
- */

@@ -24,7 +24,7 @@ package eu.thesimplecloud.launcher.application
 
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.launcher.external.module.LoadedModuleFileContent
-import eu.thesimplecloud.launcher.external.module.handler.NewModuleHandler
+import eu.thesimplecloud.launcher.external.module.handler.ModuleHandler
 import eu.thesimplecloud.launcher.external.module.handler.UnsafeModuleLoader
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.launcher.updater.BaseUpdater
@@ -38,7 +38,7 @@ class ApplicationStarter {
         //set thread class loader to load the base with the same class loader
         val launcherClassLoader = Launcher.instance.currentClassLoader
         Thread.currentThread().contextClassLoader = launcherClassLoader
-        val moduleHandler = NewModuleHandler()
+        val moduleHandler = ModuleHandler()
         val createClassLoaderFunction: (Array<URL>, String) -> ClassLoader = { urls, name -> ApplicationClassLoader(urls, launcherClassLoader, name, moduleHandler) }
         val moduleFileName = applicationType.name.toLowerCase() + ".json"
         //Launcher.instance.consoleManager.stopThread()

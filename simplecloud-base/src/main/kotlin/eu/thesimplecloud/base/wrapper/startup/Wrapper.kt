@@ -44,7 +44,7 @@ import eu.thesimplecloud.launcher.application.ApplicationClassLoader
 import eu.thesimplecloud.launcher.application.ICloudApplication
 import eu.thesimplecloud.launcher.config.LauncherConfig
 import eu.thesimplecloud.launcher.external.module.LoadedModuleFileContent
-import eu.thesimplecloud.launcher.external.module.handler.NewModuleHandler
+import eu.thesimplecloud.launcher.external.module.handler.ModuleHandler
 import eu.thesimplecloud.launcher.language.LanguageFileLoader
 import eu.thesimplecloud.launcher.startup.Launcher
 import org.apache.commons.io.FileUtils
@@ -196,7 +196,7 @@ class Wrapper : ICloudApplication {
 
     @Synchronized
     fun reloadExistingModules() {
-        this.existingModules = NewModuleHandler().getAllCloudModuleFileContents()
+        this.existingModules = ModuleHandler().getAllCloudModuleFileContents()
     }
 
     fun isWrapperNameSet(): Boolean = thisWrapperName != null
