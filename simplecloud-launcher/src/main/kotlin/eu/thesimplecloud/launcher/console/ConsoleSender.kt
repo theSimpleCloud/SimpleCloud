@@ -37,12 +37,13 @@ import eu.thesimplecloud.launcher.startup.Launcher
 class ConsoleSender : ICommandSender {
 
     override fun sendMessage(message: String): ICommunicationPromise<Unit> {
+        if (message.isBlank()) return CommunicationPromise.UNIT_PROMISE
         if (message.startsWith("§c") || message.startsWith("&c")) {
             Launcher.instance.logger.warning(filterColorCodes(message))
         } else {
             Launcher.instance.logger.console(filterColorCodes(message))
         }
-        return CommunicationPromise.of(Unit)
+        return CommunicationPromise.UNIT_PROMISE
     }
 
     fun sendPropertyInSetup(property: String, vararg placeholderValues: String) {
