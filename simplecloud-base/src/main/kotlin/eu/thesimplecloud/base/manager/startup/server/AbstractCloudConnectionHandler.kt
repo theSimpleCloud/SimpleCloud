@@ -46,7 +46,11 @@ abstract class AbstractCloudConnectionHandler : DefaultConnectionHandler() {
             if (this.unknownHostMessageShownTimeStamps.getMeasuredAmount() < 3) {
                 Launcher.instance.consoleSender.sendProperty("manager.connection.unknown-host", host)
             }
-            connection.closeConnection()
+            try {
+                connection.closeConnection()
+            } catch (e: Exception) {
+                //ignore all exception because the connection might be harmful
+            }
             this.unknownHostMessageShownTimeStamps.addEntry()
             return
         }

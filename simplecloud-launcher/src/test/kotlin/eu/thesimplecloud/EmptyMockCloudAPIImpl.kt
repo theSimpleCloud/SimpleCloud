@@ -23,6 +23,7 @@
 package eu.thesimplecloud
 
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.eventapi.BasicEventManager
 import eu.thesimplecloud.api.eventapi.IEventManager
 import eu.thesimplecloud.api.external.ICloudModule
 import eu.thesimplecloud.api.language.ILanguageManager
@@ -36,35 +37,35 @@ import eu.thesimplecloud.api.servicegroup.ICloudServiceGroupManager
 import eu.thesimplecloud.api.sync.`object`.IGlobalPropertyHolder
 import eu.thesimplecloud.api.sync.list.manager.ISynchronizedObjectListManager
 import eu.thesimplecloud.clientserverapi.lib.bootstrap.ICommunicationBootstrap
-import org.mockito.Mockito.mock
+import io.mockk.mockk
 
-open class EmptyMockCloudAPIImpl : CloudAPI() {
+open class EmptyMockCloudAPIImpl(val eventManager: BasicEventManager) : CloudAPI() {
     override fun getCloudServiceGroupManager(): ICloudServiceGroupManager {
-        return mock(ICloudServiceGroupManager::class.java)
+        return mockk()
     }
 
     override fun getCloudServiceManager(): ICloudServiceManager {
-        return mock(ICloudServiceManager::class.java)
+        return mockk()
     }
 
     override fun getCloudPlayerManager(): ICloudPlayerManager {
-        return mock(ICloudPlayerManager::class.java)
+        return mockk()
     }
 
     override fun getEventManager(): IEventManager {
-        return mock(IEventManager::class.java)
+        return eventManager
     }
 
     override fun getCommandExecuteManager(): ICommandExecuteManager {
-        return mock(ICommandExecuteManager::class.java)
+        return mockk()
     }
 
     override fun getGlobalPropertyHolder(): IGlobalPropertyHolder {
-        return mock(IGlobalPropertyHolder::class.java)
+        return mockk()
     }
 
     override fun getThisSidesCommunicationBootstrap(): ICommunicationBootstrap {
-        return mock(ICommunicationBootstrap::class.java)
+        return mockk()
     }
 
     override fun getSynchronizedObjectListManager(): ISynchronizedObjectListManager {
@@ -72,15 +73,15 @@ open class EmptyMockCloudAPIImpl : CloudAPI() {
     }
 
     override fun getServiceVersionHandler(): IServiceVersionHandler {
-        return mock(IServiceVersionHandler::class.java)
+        return mockk()
     }
 
     override fun getLanguageManager(): ILanguageManager {
-        return mock(ILanguageManager::class.java)
+        return mockk()
     }
 
     override fun getMessageChannelManager(): IMessageChannelManager {
-        return mock(IMessageChannelManager::class.java)
+        return mockk()
     }
 
     override fun getThisSidesName(): String {
@@ -88,7 +89,7 @@ open class EmptyMockCloudAPIImpl : CloudAPI() {
     }
 
     override fun getThisSidesNetworkComponent(): INetworkComponent {
-        return mock(INetworkComponent::class.java)
+        return mockk()
     }
 
     override fun getThisSidesCloudModule(): ICloudModule {
