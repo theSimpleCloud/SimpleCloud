@@ -38,4 +38,8 @@ class LoadedModule(
         return LoadedModuleFileContent(file, fileContent, updaterFileContent)
     }
 
+    fun getName(): String {
+        return this.fileContent.name
+    }
+
 }

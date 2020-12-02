@@ -95,7 +95,7 @@ class ReloadCommand : ICommandHandler {
         }
 
         Manager.instance.cloudModuleHandler.unloadModule(module.cloudModule)
-        Manager.instance.cloudModuleHandler.loadModule(module.file)
+        Manager.instance.cloudModuleHandler.loadSingleModuleFromFile(module.file)
     }
 
 }

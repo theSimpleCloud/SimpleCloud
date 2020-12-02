@@ -22,33 +22,7 @@
 
 package eu.thesimplecloud.launcher.external.module.handler
 
-import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.directorypaths.DirectoryPaths
-import eu.thesimplecloud.api.external.ICloudModule
-import eu.thesimplecloud.api.language.LoadedLanguageFile
-import eu.thesimplecloud.api.property.Property
-import eu.thesimplecloud.jsonlib.JsonLib
-import eu.thesimplecloud.launcher.dependency.DependencyLoader
-import eu.thesimplecloud.launcher.dependency.LauncherCloudDependency
-import eu.thesimplecloud.launcher.event.module.ModuleLoadedEvent
-import eu.thesimplecloud.launcher.event.module.ModuleUnloadedEvent
-import eu.thesimplecloud.launcher.exception.module.ModuleLoadException
-import eu.thesimplecloud.launcher.external.module.LoadedModule
-import eu.thesimplecloud.launcher.external.module.LoadedModuleFileContent
-import eu.thesimplecloud.launcher.external.module.ModuleClassLoader
-import eu.thesimplecloud.launcher.external.module.ModuleFileContent
-import eu.thesimplecloud.launcher.external.module.update.UpdaterFileContent
-import eu.thesimplecloud.launcher.external.module.updater.ModuleUpdater
-import eu.thesimplecloud.launcher.language.LanguageFileLoader
-import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.launcher.updater.UpdateExecutor
-import java.io.File
-import java.net.URL
-import java.net.URLClassLoader
-import java.util.concurrent.CopyOnWriteArrayList
-import java.util.jar.JarEntry
-import java.util.jar.JarFile
-
+/*
 open class ModuleHandler(
         private val parentClassLoader: ClassLoader = ClassLoader.getSystemClassLoader(),
         private val currentLanguage: String = "en",
@@ -199,6 +173,11 @@ open class ModuleHandler(
     }
 
     private fun getModuleLoadOrder(fileContents: List<LoadedModuleFileContent>): List<LoadedModuleFileContent> {
+        fileContents.map {
+            val loadOrder = addModuleFileContentsOfDependenciesAndSubDependencies(it)
+            val depend = it.content.depend
+            val softDepend = it.content.softDepend
+        }
         return fileContents.map { addModuleFileContentsOfDependenciesAndSubDependencies(it) }.flatten()
     }
 
@@ -256,7 +235,7 @@ open class ModuleHandler(
 
     private fun getRecursiveDependencies(moduleFileContent: LoadedModuleFileContent): List<LoadedModuleFileContent> {
         val fileContentsOfDependencies = addModuleFileContentsOfDependenciesAndSubDependencies(moduleFileContent)
-        return fileContentsOfDependencies.filter { it.content.dependsOn(moduleFileContent.content) }
+        return fileContentsOfDependencies.filter { it.content.dependsOrSoftDependsOn(moduleFileContent.content) }
     }
 
     private fun hasRecursiveDependencies(moduleFileContent: LoadedModuleFileContent) =
@@ -378,3 +357,5 @@ open class ModuleHandler(
     }
 
 }
+
+ */

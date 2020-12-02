@@ -21,5 +21,6 @@
       "version": "v0.2"
     }
   ],
-  "depend": []
+  "depend": [],
+  "softDepend": []
 }

@@ -22,8 +22,9 @@
  */
 
 dependencies {
+    testImplementation "io.mockk:mockk:1.10.2"
     // https://mvnrepository.com/artifact/org.mockito/mockito-core
-    testCompile group: 'org.mockito', name: 'mockito-core', version: '3.3.3'
+    //testCompile group: 'org.mockito', name: 'mockito-core', version: '3.3.3'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation group: 'org.jline', name: 'jline', version: '3.14.0'
     implementation group: 'org.reflections', name: 'reflections', version: '0.9.12'

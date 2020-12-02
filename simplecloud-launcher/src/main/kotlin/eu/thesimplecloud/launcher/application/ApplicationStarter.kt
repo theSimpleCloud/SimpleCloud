@@ -23,19 +23,23 @@
 package eu.thesimplecloud.launcher.application
 
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
-import eu.thesimplecloud.launcher.external.module.handler.ModuleHandler
+import eu.thesimplecloud.launcher.external.module.LoadedModuleFileContent
+import eu.thesimplecloud.launcher.external.module.handler.NewModuleHandler
+import eu.thesimplecloud.launcher.external.module.handler.UnsafeModuleLoader
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.launcher.updater.BaseUpdater
 import eu.thesimplecloud.launcher.updater.UpdateExecutor
 import java.io.File
+import java.net.URL
 
 class ApplicationStarter {
     //TODO replace properties
     fun startApplication(applicationType: CloudApplicationType) {
         //set thread class loader to load the base with the same class loader
-        Thread.currentThread().contextClassLoader = Launcher.instance.currentClassLoader
-        val moduleHandler = ModuleHandler()
-        moduleHandler.setCreateModuleClassLoader { urls, name -> ApplicationClassLoader(urls, Launcher.instance.currentClassLoader, name, moduleHandler) }
+        val launcherClassLoader = Launcher.instance.currentClassLoader
+        Thread.currentThread().contextClassLoader = launcherClassLoader
+        val moduleHandler = NewModuleHandler()
+        val createClassLoaderFunction: (Array<URL>, String) -> ClassLoader = { urls, name -> ApplicationClassLoader(urls, launcherClassLoader, name, moduleHandler) }
         val moduleFileName = applicationType.name.toLowerCase() + ".json"
         //Launcher.instance.consoleManager.stopThread()
         //Launcher.instance.consoleManager.applicationName = applicationType.getApplicationName()
@@ -53,7 +57,11 @@ class ApplicationStarter {
                 Launcher.instance.consoleSender.sendMessage("You are running the latest version of SimpleCloud.")
             }
         }
-        val cloudModule = moduleHandler.loadModule(file, moduleFileName).cloudModule as ICloudApplication
+        val moduleFileContent = moduleHandler.loadModuleFileContent(file, moduleFileName)
+        val loadedModuleFileContent = LoadedModuleFileContent(file, moduleFileContent, null)
+        val loadedModule = UnsafeModuleLoader(createClassLoaderFunction).loadModule(loadedModuleFileContent)
+        val cloudModule = loadedModule.cloudModule as ICloudApplication
+        cloudModule.onEnable()
         Launcher.instance.activeApplication = cloudModule
     }
 

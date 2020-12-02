@@ -20,27 +20,38 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.launcher.extension
+package eu.thesimplecloud.launcher.external.module.handler
+
+import eu.thesimplecloud.launcher.external.module.LoadedModuleFileContent
 
 /**
  * Created by IntelliJ IDEA.
- * Date: 23.10.2020
- * Time: 15:33
+ * Date: 26.11.2020
+ * Time: 17:33
  * @author Frederick Baier
  */
+class RecursiveDependencyChecker(
+        private val moduleToCheck: LoadedModuleFileContent,
+        private val dependencyGetFunction: (LoadedModuleFileContent) -> Collection<LoadedModuleFileContent>
+) {
 
-fun <T> Iterable<T>.replace(oldValue: T, newValue: T): List<T> {
-    val returnList = ArrayList<T>()
-
-    for (item in this) {
-        if (item == oldValue)
-            returnList.add(newValue)
-        else
-            returnList.add(item)
+    fun hasRecursiveDependencies(): Boolean {
+        val allDependencies = collectAllDependencies(moduleToCheck)
+        return allDependencies.any { doesDependencyDependOnModuleToCheck(it) }
     }
-    return returnList
-}
 
-fun <T> Iterable<T>.hasNulls(): Boolean {
-    return this.any { it == null }
+    private fun doesDependencyDependOnModuleToCheck(dependency: LoadedModuleFileContent): Boolean {
+        return dependency.content.dependsOrSoftDependsOn(moduleToCheck.content)
+    }
+
+    fun collectAllDependencies(module: LoadedModuleFileContent, list: MutableList<LoadedModuleFileContent> = ArrayList()): MutableList<LoadedModuleFileContent> {
+        if (list.contains(module))
+            return list
+        list.add(module)
+
+        val dependencies = dependencyGetFunction(module)
+        dependencies.forEach { collectAllDependencies(it, list) }
+        return list
+    }
+
 }

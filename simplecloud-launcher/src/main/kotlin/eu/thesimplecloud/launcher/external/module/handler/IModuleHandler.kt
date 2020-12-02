@@ -38,14 +38,25 @@ interface IModuleHandler {
     fun loadModuleFileContent(file: File, moduleFileName: String = "module.json"): ModuleFileContent
 
     /**
-     * Loads a module
+     * Loads a single module
      */
-    fun loadModule(loadedModuleFileContent: LoadedModuleFileContent): LoadedModule
+    fun loadSingleModule(module: LoadedModuleFileContent): LoadedModule {
+        return loadModuleList(listOf(module)).first()
+    }
 
     /**
-     * Loads the module from the specified [file]
+     * Loads a single module from a file
      */
-    fun loadModule(file: File, moduleFileName: String = "module.json"): LoadedModule
+    fun loadSingleModuleFromFile(file: File): LoadedModule {
+        return loadModuleListFromFiles(listOf(file)).first()
+    }
+
+    fun loadModuleListFromFiles(files: List<File>): List<LoadedModule>
+
+    /**
+     * Loads modules
+     */
+    fun loadModuleList(modulesToLoad: List<LoadedModuleFileContent>): List<LoadedModule>
 
     /**
      * Loads all unloaded modules form the modules directory.

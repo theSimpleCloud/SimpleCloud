@@ -31,7 +31,8 @@ data class ModuleFileContent(
         val moduleCopyType: ModuleCopyType,
         val repositories: List<String>,
         val dependencies: List<CloudDependency>,
-        val depend: List<String>
+        val depend: List<String>,
+        val softDepend: List<String>
 ) {
 
     fun isDependencyOf(moduleFileContent: ModuleFileContent): Boolean {
@@ -40,6 +41,10 @@ data class ModuleFileContent(
 
     fun dependsOn(dependencyFileContent: ModuleFileContent): Boolean {
         return this.depend.contains(dependencyFileContent.name)
+    }
+
+    fun dependsOrSoftDependsOn(dependencyFileContent: ModuleFileContent): Boolean {
+        return dependsOn(dependencyFileContent) || this.softDepend.contains(dependencyFileContent.name)
     }
 
 }
