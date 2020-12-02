@@ -33,6 +33,6 @@ class LoggerMessageListenerImpl : ILoggerMessageListener {
     override fun message(msg: String, logType: LogType) {
         if (Wrapper.instance.connectionToManager.isOpen() && Wrapper.instance.isWrapperNameSet())
             Wrapper.instance.connectionToManager
-                    .sendUnitQueryAsync(PacketOutScreenMessage(NetworkComponentType.WRAPPER, Wrapper.instance.getThisWrapper(), msg))
+                    .sendUnitQuery(PacketOutScreenMessage(NetworkComponentType.WRAPPER, Wrapper.instance.getThisWrapper(), msg))
     }
 }
