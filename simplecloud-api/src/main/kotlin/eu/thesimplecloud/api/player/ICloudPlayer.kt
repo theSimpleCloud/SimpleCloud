@@ -100,6 +100,17 @@ interface ICloudPlayer : IOfflineCloudPlayer, ICommandSender {
     }
 
     /**
+     * Sets the displayname of this player
+     * @param displayName the displayname of this player
+     */
+    fun setDisplayName(displayName: String)
+
+    /**
+     * Returns the displayname of this player
+     */
+    fun getDisplayName(): String
+
+    /**
      * Returns the name of the proxy the player is connected to.
      */
     fun getConnectedProxyName(): String
