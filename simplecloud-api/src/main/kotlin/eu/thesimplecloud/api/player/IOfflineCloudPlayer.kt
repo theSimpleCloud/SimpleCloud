@@ -67,9 +67,9 @@ interface IOfflineCloudPlayer : Nameable, IPropertyMap {
     fun toOfflinePlayer(): IOfflineCloudPlayer
 
     /**
-     * Saves this player to the database
-     * @return a promise that completes when the player was saved.
+     * Updates this player to the network
+     * @return a promise that completes when the player was updated
      */
-    fun saveToDatabase(): ICommunicationPromise<Unit> = CloudAPI.instance.getCloudPlayerManager().savePlayerToDatabase(this)
+    fun update(): ICommunicationPromise<Unit> = CloudAPI.instance.getCloudPlayerManager().savePlayerToDatabase(this)
 
 }

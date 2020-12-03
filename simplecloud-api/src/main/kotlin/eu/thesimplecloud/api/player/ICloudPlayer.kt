@@ -217,10 +217,7 @@ interface ICloudPlayer : IOfflineCloudPlayer, ICommandSender {
         return SimpleCloudPlayer(getName(), getUniqueId())
     }
 
-    /**
-     * Updates this player to the network
-     */
-    fun update() = CloudAPI.instance.getCloudPlayerManager().update(this)
+    override fun update() = CloudAPI.instance.getCloudPlayerManager().update(this)
 
     /**
      * Returns whether updates for this player are enables on this network component
