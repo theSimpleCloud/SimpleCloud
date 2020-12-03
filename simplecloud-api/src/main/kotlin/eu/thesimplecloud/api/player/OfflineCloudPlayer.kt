@@ -55,7 +55,7 @@ open class OfflineCloudPlayer(
     override fun getLastPlayerConnection(): IPlayerConnection = this.lastPlayerConnection
 
     override fun setDisplayName(displayName: String) {
-        this.displayName = displayName;
+        this.displayName = displayName
     }
 
     override fun getDisplayName(): String {
