@@ -74,7 +74,7 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
             println("<------Starting cloud client----------->")
             this.communicationClient.start().then {
                 println("<-------- Connection is now set up -------->")
-                this.connectionToManager.sendUnitQuery(PacketOutCloudClientLogin(NetworkComponentType.SERVICE, thisServiceName))
+                this.connectionToManager.sendUnitQuery(PacketOutCloudClientLogin(NetworkComponentType.SERVICE, thisServiceName), 1000)
                         .addFailureListener { throw it }
             }.addFailureListener { println("<-------- Failed to connect to server -------->") }.addFailureListener { throw it }
         }
