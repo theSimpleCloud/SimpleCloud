@@ -41,6 +41,6 @@ class PacketIOSaveOfflinePlayer() : ObjectPacket<OfflineCloudPlayer>() {
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
         val value = this.value ?: return contentException("value")
-        return value.saveToDatabase()
+        return value.update()
     }
 }

@@ -62,6 +62,17 @@ interface IOfflineCloudPlayer : Nameable, IPropertyMap {
     fun isOnline(): Boolean = false
 
     /**
+     * Sets the displayname of this player
+     * @param displayName the displayname of this player
+     */
+    fun setDisplayName(displayName: String)
+
+    /**
+     * Returns the displayname of this player
+     */
+    fun getDisplayName(): String
+
+    /**
      * Returns a new [IOfflineCloudPlayer] with the data of this player
      */
     fun toOfflinePlayer(): IOfflineCloudPlayer

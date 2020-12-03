@@ -39,6 +39,9 @@ open class OfflineCloudPlayer(
         var propertyMap: MutableMap<String, Property<*>> = HashMap()
 ): SimpleCloudPlayer(name, uniqueId), IOfflineCloudPlayer {
 
+    @Volatile
+    private var displayName = name
+
     override fun getProperties(): Map<String, IProperty<*>> {
         return this.propertyMap
     }
@@ -50,6 +53,14 @@ open class OfflineCloudPlayer(
     override fun getOnlineTime(): Long = this.onlineTime
 
     override fun getLastPlayerConnection(): IPlayerConnection = this.lastPlayerConnection
+
+    override fun setDisplayName(displayName: String) {
+        this.displayName = displayName;
+    }
+
+    override fun getDisplayName(): String {
+        return this.displayName
+    }
 
     override fun toOfflinePlayer(): IOfflineCloudPlayer {
         return OfflineCloudPlayer(getName(), getUniqueId(), getFirstLogin(), getLastLogin(), getOnlineTime(), this.lastPlayerConnection, this.propertyMap)

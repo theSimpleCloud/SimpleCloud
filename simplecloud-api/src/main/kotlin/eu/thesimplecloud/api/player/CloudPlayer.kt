@@ -58,9 +58,6 @@ class CloudPlayer(
     @Volatile
     private var online = true
 
-    @Volatile
-    private var displayName = name;
-
     @PacketExclude
     @Volatile
     private var updatesEnabled = false
@@ -83,14 +80,6 @@ class CloudPlayer(
     override fun sendMessage(cloudText: CloudText): ICommunicationPromise<Unit> {
         if (playerMessageQueue == null) playerMessageQueue = PlayerMessageQueue(this)
         return this.playerMessageQueue!!.queueMessage(cloudText)
-    }
-
-    override fun setDisplayName(displayName: String) {
-        this.displayName = displayName;
-    }
-
-    override fun getDisplayName(): String {
-        return this.displayName
     }
 
     override fun getConnectedProxyName(): String = this.connectedProxyName
@@ -145,10 +134,6 @@ class CloudPlayer(
 
     override fun toString(): String {
         return JsonLib.fromObject(this).getAsJsonString()
-    }
-
-    override fun saveToDatabase(): ICommunicationPromise<Unit> {
-        throw UnsupportedOperationException("Cannot save online player to database")
     }
 
 }
