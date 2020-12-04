@@ -42,7 +42,8 @@ abstract class AbstractServiceGroup(
         private var permission: String?
 ) : ICloudServiceGroup {
 
-    private val serviceVersion = serviceVersion.name
+    @Volatile
+    private var serviceVersion = serviceVersion.name
 
     override fun getName(): String = this.name
 
@@ -99,6 +100,10 @@ abstract class AbstractServiceGroup(
     }
 
     override fun getWrapperName(): String? = this.wrapperName
+
+    override fun setServiceVersion(serviceVersion: ServiceVersion) {
+        this.serviceVersion = serviceVersion.name
+    }
 
     override fun getServiceVersion(): ServiceVersion {
         return CloudAPI.instance.getServiceVersionHandler().getServiceVersionByName(serviceVersion)!!

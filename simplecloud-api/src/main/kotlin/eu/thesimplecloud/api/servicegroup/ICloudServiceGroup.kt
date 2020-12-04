@@ -66,6 +66,11 @@ interface ICloudServiceGroup {
     fun getServiceVersion(): ServiceVersion
 
     /**
+     * Sets the [ServiceVersion] of this group
+     */
+    fun setServiceVersion(serviceVersion: ServiceVersion)
+
+    /**
      * Returns the maximum amount of RAM for the services of this service group in MB
      */
     fun getMaxMemory(): Int

@@ -26,6 +26,7 @@ import eu.thesimplecloud.api.property.IProperty
 import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
+import eu.thesimplecloud.api.service.version.ServiceVersion
 import eu.thesimplecloud.api.utils.time.Timestamp
 import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.jsonlib.JsonLibExclude
@@ -41,7 +42,8 @@ data class DefaultCloudService(
         private var port: Int,
         private val maxMemory: Int,
         private var maxPlayers: Int,
-        private var motd: String
+        private var motd: String,
+        private val serviceVersion: ServiceVersion
 ) : ICloudService {
 
     private var serviceState = ServiceState.PREPARED
@@ -59,6 +61,8 @@ data class DefaultCloudService(
     override fun getServiceNumber(): Int = this.serviceNumber
 
     override fun getUniqueId(): UUID = this.uniqueId
+
+    override fun getServiceVersion(): ServiceVersion = this.serviceVersion
 
     override fun getTemplateName(): String = this.templateName
 

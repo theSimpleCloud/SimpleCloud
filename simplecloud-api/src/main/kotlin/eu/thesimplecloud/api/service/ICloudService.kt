@@ -68,7 +68,7 @@ interface ICloudService : INetworkComponent, IBootstrap, IPropertyMap {
     /**
      * Returns the version, this service is running on
      */
-    fun getServiceVersion(): ServiceVersion = getServiceGroup().getServiceVersion()
+    fun getServiceVersion(): ServiceVersion
 
     /**
      * Returns the name of the template that this service uses
