@@ -23,33 +23,22 @@
 package eu.thesimplecloud.base.manager.startup.server
 
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.utils.time.TimeAmountMeasurer
+import eu.thesimplecloud.clientserverapi.lib.access.IAccessHandler
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
-import eu.thesimplecloud.clientserverapi.lib.handler.DefaultConnectionHandler
-import eu.thesimplecloud.launcher.startup.Launcher
-import java.util.concurrent.TimeUnit
 
 /**
  * Created by IntelliJ IDEA.
- * Date: 09.10.2020
- * Time: 18:56
+ * Date: 04.12.2020
+ * Time: 17:56
  * @author Frederick Baier
  */
-abstract class AbstractCloudConnectionHandler : DefaultConnectionHandler() {
+class ManagerAccessHandler : IAccessHandler {
 
-    private val unknownHostMessageShownTimeStamps = TimeAmountMeasurer(TimeUnit.SECONDS.toMillis(10))
-
-    override fun onConnectionActive(connection: IConnection) {
-        super.onConnectionActive(connection)
+    override fun isAccessAllowed(connection: IConnection): Boolean {
         val host = connection.getHost()!!
         val wrapperByHost = CloudAPI.instance.getWrapperManager().getWrapperByHost(host)
-        if (wrapperByHost == null) {
-            if (this.unknownHostMessageShownTimeStamps.getMeasuredAmount() < 3) {
-                Launcher.instance.consoleSender.sendProperty("manager.connection.unknown-host", host)
-            }
-            this.unknownHostMessageShownTimeStamps.addEntry()
-            return
-        }
+        return wrapperByHost != null
     }
+
 
 }

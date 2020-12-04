@@ -49,6 +49,7 @@ import eu.thesimplecloud.base.manager.player.PlayerUnregisterScheduler
 import eu.thesimplecloud.base.manager.service.ServiceHandler
 import eu.thesimplecloud.base.manager.setup.database.DatabaseConnectionSetup
 import eu.thesimplecloud.base.manager.startup.server.CommunicationConnectionHandlerImpl
+import eu.thesimplecloud.base.manager.startup.server.ManagerAccessHandler
 import eu.thesimplecloud.base.manager.startup.server.ServerHandlerImpl
 import eu.thesimplecloud.base.manager.startup.server.TemplateConnectionHandlerImpl
 import eu.thesimplecloud.base.manager.update.converter.VersionConversionManager
@@ -124,12 +125,14 @@ class Manager : ICloudApplication {
         this.encryption = AdvancedEncryption(KeyConfigLoader().loadConfig())
 
         val launcherConfig = Launcher.instance.launcherConfig
-        this.communicationServer = NettyServer<ICommandExecutable>(launcherConfig.host, launcherConfig.port, CommunicationConnectionHandlerImpl(), ServerHandlerImpl())
         val baseAndLauncherLoader = Launcher.instance.getNewClassLoaderWithLauncherAndBase()
+        this.communicationServer = NettyServer<ICommandExecutable>(launcherConfig.host, launcherConfig.port, CommunicationConnectionHandlerImpl(), ServerHandlerImpl())
+        this.communicationServer.setAccessHandler(ManagerAccessHandler())
         this.communicationServer.setPacketSearchClassLoader(baseAndLauncherLoader)
         this.communicationServer.setClassLoaderToSearchObjectPacketClasses(appClassLoader)
         this.communicationServer.setPacketClassConverter { moveToApplicationClassLoader(it) }
         this.templateServer = NettyServer<ICommandExecutable>(launcherConfig.host, launcherConfig.port + 1, TemplateConnectionHandlerImpl(), ServerHandlerImpl())
+        this.templateServer.setAccessHandler(ManagerAccessHandler())
         this.templateServer.setPacketSearchClassLoader(baseAndLauncherLoader)
         this.templateServer.setClassLoaderToSearchObjectPacketClasses(appClassLoader)
         this.templateServer.setPacketClassConverter { moveToApplicationClassLoader(it) }
