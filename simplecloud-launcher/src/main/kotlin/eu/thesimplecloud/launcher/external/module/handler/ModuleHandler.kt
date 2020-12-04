@@ -40,11 +40,12 @@ import java.util.jar.JarEntry
 import java.util.jar.JarFile
 
 class ModuleHandler(
-        private val parentClassLoader: ClassLoader = ClassLoader.getSystemClassLoader(),
-        private val currentLanguage: String = "en",
-        private val modulesWithPermissionToUpdate: List<String> = emptyList(),
-        private val checkForUpdates: Boolean = false
-): IModuleHandler {
+    private val parentClassLoader: ClassLoader = ClassLoader.getSystemClassLoader(),
+    private val currentLanguage: String = "en",
+    private val modulesWithPermissionToUpdate: List<String> = emptyList(),
+    private val checkForUpdates: Boolean = false,
+    private val handleLoadError: (Throwable) -> Unit = { throw it }
+) : IModuleHandler {
 
     private val loadedModules: MutableList<LoadedModule> = CopyOnWriteArrayList()
 
@@ -67,7 +68,7 @@ class ModuleHandler(
 
     override fun unloadModule(cloudModule: ICloudModule) {
         val loadedModule = getLoadedModuleByCloudModule(cloudModule)
-                ?: throw IllegalArgumentException("Specified cloud module is not registered")
+            ?: throw IllegalArgumentException("Specified cloud module is not registered")
         unloadModule(loadedModule)
     }
 
@@ -134,8 +135,8 @@ class ModuleHandler(
     }
 
     override fun loadModuleList(modulesToLoad: List<LoadedModuleFileContent>): List<LoadedModule> {
-        val moduleListLoader = ModuleListLoader(modulesToLoad, this.loadedModules, this.createModuleClassLoaderFunction)
-        val newModules =  moduleListLoader.loadModules()
+        val moduleListLoader = ModuleListLoader(modulesToLoad, this.loadedModules, this.createModuleClassLoaderFunction, this.handleLoadError)
+        val newModules = moduleListLoader.loadModules()
         this.loadedModules.addAll(newModules)
         newModules.forEach { registerLanguageFile(it) }
         newModules.forEach { enableModule(it) }
@@ -144,11 +145,15 @@ class ModuleHandler(
 
     private fun registerLanguageFile(loadedModule: LoadedModule) {
         ModuleLanguageFileLoader(this.currentLanguage, loadedModule.file, loadedModule.cloudModule)
-                .registerLanguageFileIfExist()
+            .registerLanguageFileIfExist()
     }
 
     private fun enableModule(module: LoadedModule) {
-        module.cloudModule.onEnable()
+        try {
+            module.cloudModule.onEnable()
+        } catch (e: Exception) {
+            this.handleLoadError(e)
+        }
     }
 
 
@@ -156,9 +161,9 @@ class ModuleHandler(
         val moduleFileContent = loadModuleFileContent(file, "module.json")
         val updaterFileContent = this.checkPermissionAndLoadUpdaterFile(file, moduleFileContent)
         return LoadedModuleFileContent(
-                file,
-                moduleFileContent,
-                updaterFileContent
+            file,
+            moduleFileContent,
+            updaterFileContent
         )
     }
 
@@ -167,18 +172,21 @@ class ModuleHandler(
         try {
             val jar = JarFile(file)
             val entry: JarEntry = jar.getJarEntry(path)
-                    ?: throw ModuleLoadException("${file.path}: No '$path' found.")
+                ?: throw ModuleLoadException("${file.path}: No '$path' found.")
             val fileStream = jar.getInputStream(entry)
             val jsonLib = JsonLib.fromInputStream(fileStream)
             jar.close()
             return jsonLib.getObjectOrNull(T::class.java)
-                    ?: throw ModuleLoadException("${file.path}: Invalid '$path'.")
+                ?: throw ModuleLoadException("${file.path}: Invalid '$path'.")
         } catch (ex: Exception) {
             throw ModuleLoadException(file.path, ex)
         }
     }
 
-    private fun checkPermissionAndLoadUpdaterFile(file: File, moduleFileContent: ModuleFileContent): UpdaterFileContent? {
+    private fun checkPermissionAndLoadUpdaterFile(
+        file: File,
+        moduleFileContent: ModuleFileContent
+    ): UpdaterFileContent? {
         if (!this.modulesWithPermissionToUpdate.contains(moduleFileContent.name)) return null
         return runCatching { loadJsonFileInJar<UpdaterFileContent>(file, "updater.json") }.getOrNull()
     }

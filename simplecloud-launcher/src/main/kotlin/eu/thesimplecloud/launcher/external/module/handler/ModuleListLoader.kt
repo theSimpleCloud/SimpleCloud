@@ -38,7 +38,8 @@ import java.net.URL
 class ModuleListLoader(
         private val modulesToLoad: List<LoadedModuleFileContent>,
         private val loadedModuleList: List<LoadedModule>,
-        private val classLoaderFunction: (Array<URL>, String) -> ClassLoader
+        private val classLoaderFunction: (Array<URL>, String) -> ClassLoader,
+        private val handleLoadError: (Throwable) -> Unit = { throw it }
 ) {
 
     private val loadedModules: MutableList<LoadedModule> = ArrayList()
@@ -54,7 +55,7 @@ class ModuleListLoader(
         try {
             loadSingleModule(module)
         } catch (ex: Exception) {
-            throw ModuleLoadException(module.content.name, ex)
+            this.handleLoadError(ModuleLoadException(module.content.name, ex))
         }
     }
 
