@@ -69,7 +69,7 @@ object ProxyEventHandler {
             println("Failed to create CloudPlayer:")
             throw createPromise.cause()
         }
-        val loginRequestPromise = CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketOutPlayerLoginRequest(playerConnection.getUniqueId())).awaitUninterruptibly()
+        val loginRequestPromise = CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketOutPlayerLoginRequest(playerConnection.getUniqueId()), 1000).awaitUninterruptibly()
         if (!loginRequestPromise.isSuccess) {
             loginRequestPromise.cause().printStackTrace()
             cancelEvent("§cLogin failed: " + loginRequestPromise.cause().message)
