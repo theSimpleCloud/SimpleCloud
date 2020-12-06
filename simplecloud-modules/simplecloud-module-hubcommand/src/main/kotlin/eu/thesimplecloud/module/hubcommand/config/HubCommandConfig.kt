@@ -20,19 +20,15 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.hubcommand
+package eu.thesimplecloud.module.hubcommand.config
 
-import eu.thesimplecloud.api.external.ICloudModule
-import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.module.hubcommand.config.HubCommandConfigLoader
-
-class HubCommandModule : ICloudModule {
-
-    override fun onEnable() {
-        val config = HubCommandConfigLoader().loadConfig()
-        Launcher.instance.commandManager.registerCommand(this, HubCommand(config))
-    }
-
-    override fun onDisable() {
-    }
-}
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 06.12.2020
+ * Time: 19:08
+ * @author Frederick Baier
+ */
+class HubCommandConfig(
+    val alreadyLobbyMessage: String = "§cYou are already on a lobby server",
+    val sendingToLobbyMessage: String = "§7Connecting to a lobby server..."
+)

@@ -28,17 +28,24 @@ import eu.thesimplecloud.launcher.console.command.CommandType
 import eu.thesimplecloud.launcher.console.command.ICommandHandler
 import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
+import eu.thesimplecloud.module.hubcommand.config.HubCommandConfig
 
 
 @Command("hub", CommandType.INGAME, aliases = ["lobby", "leave", "l"])
-class HubCommand : ICommandHandler {
+class HubCommand(private val config: HubCommandConfig) : ICommandHandler {
 
     @CommandSubPath
     fun handleCommand(sender: ICommandSender, args: Array<String>) {
         val player = sender as ICloudPlayer
         if (player.getConnectedServer()?.isLobby() == true) {
-            player.sendProperty("ingame.command.hub.already-lobby")
+            if (config.alreadyLobbyMessage.isNotBlank()) {
+                player.sendMessage(config.alreadyLobbyMessage)
+            }
             return
+        }
+
+        if (config.sendingToLobbyMessage.isNotBlank()) {
+            player.sendMessage(config.sendingToLobbyMessage)
         }
         player.sendToLobby()
     }
