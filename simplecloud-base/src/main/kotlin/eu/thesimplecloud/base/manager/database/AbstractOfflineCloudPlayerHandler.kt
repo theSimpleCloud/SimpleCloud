@@ -37,7 +37,7 @@ abstract class AbstractOfflineCloudPlayerHandler : IOfflineCloudPlayerHandler {
     protected val databaseGson  = GsonCreator().excludeAnnotations(DatabaseExclude::class.java).create()
 
     protected fun getPlayerWithLatestLogin(players: List<IOfflineCloudPlayer>): IOfflineCloudPlayer? {
-        return players.maxBy { it.getLastLogin() }
+        return players.maxByOrNull { it.getLastLogin() }
     }
 
 }
