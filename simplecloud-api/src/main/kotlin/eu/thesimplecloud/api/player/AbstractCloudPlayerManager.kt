@@ -72,6 +72,7 @@ abstract class AbstractCloudPlayerManager : AbstractCacheList<ICloudPlayer>(spre
             cachedValue.setConnectedServerName(updateValue.getConnectedServerName())
             cachedValue.propertyMap = HashMap(updateValue.getMapWithNewestProperties(cachedValue.propertyMap) as MutableMap<String, Property<*>>)
             cachedValue.setServerConnectState(updateValue.getServerConnectState())
+            cachedValue.setDisplayName(updateValue.getDisplayName())
         }
 
         override fun addNewValue(value: ICloudPlayer) {
