@@ -54,13 +54,13 @@ import javalinjwt.JavalinJWT
  * Time: 18:01
  * @author Frederick Baier
  */
-class RestServer {
+class RestServer(port: Int) {
 
     private val authService = AuthService()
 
     val controllerHandler = ControllerHandler(this)
 
-    private val app = Javalin.create().start(8585)
+    private val app = Javalin.create().start(port)
 
     val webGson = GsonCreator().excludeAnnotations(WebExclude::class.java).create()
 
@@ -68,7 +68,7 @@ class RestServer {
         instance = this
 
         app.config.accessManager(JWTAccessManager("role", createRolesMapping(), Roles.ANYONE))
-        app.before(JavalinJWT.createHeaderDecodeHandler(JwtProvider.provider))
+        app.before(JavalinJWT.createHeaderDecodeHandler(JwtProvider.instance.provider))
         app.before { ctx ->
             ctx.header("Access-Control-Allow-Headers", "*")
             ctx.header("Access-Control-Allow-Origin", "*")

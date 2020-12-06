@@ -10,9 +10,9 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 
-object JwtProvider {
+class JwtProvider(secret: String) {
 
-    private val jwtAlgorithm: Algorithm = Algorithm.HMAC512("MmNkOGE5NzBiMDJhNGRkYmUyMjcyZjA1ZjNmODE4YzlkZGMyN2RjYWMwZTM2NzRhOWNmZDlmNTBmYWQ1MmM0ZTk2YjdlZWUxODc3NWJjYjgxNjk0MTVkMzVkODc4NjljM2ZmOTExYmFhMzk3MTM0MjE4ZDVjMmFjNjY3MWI0NTM=")
+    private val jwtAlgorithm: Algorithm = Algorithm.HMAC512(secret)
 
     private val jwtGenerator = JWTGenerator { user: User, algorithm: Algorithm ->
         val token = JWT.create()
@@ -24,6 +24,14 @@ object JwtProvider {
     private val jwtVerifier: JWTVerifier = JWT.require(jwtAlgorithm).build()
 
     val provider = JWTProvider(jwtAlgorithm, jwtGenerator, jwtVerifier)
+
+    init {
+        instance = this
+    }
+
+    companion object {
+        lateinit var instance: JwtProvider
+    }
 }
 
 

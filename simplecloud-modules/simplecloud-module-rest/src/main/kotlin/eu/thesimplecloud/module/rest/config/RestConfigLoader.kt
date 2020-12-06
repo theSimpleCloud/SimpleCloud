@@ -20,32 +20,20 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.rest
+package eu.thesimplecloud.module.rest.config
 
-import eu.thesimplecloud.api.external.ICloudModule
-import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.module.rest.auth.JwtProvider
-import eu.thesimplecloud.module.rest.config.RestConfigLoader
-import eu.thesimplecloud.module.rest.javalin.RestServer
+import eu.thesimplecloud.api.config.AbstractJsonLibConfigLoader
+import java.io.File
 
 /**
  * Created by IntelliJ IDEA.
- * Date: 04.10.2020
- * Time: 14:57
+ * Date: 06.12.2020
+ * Time: 19:07
  * @author Frederick Baier
  */
-class RestModule : ICloudModule {
-
-    lateinit var server: RestServer
-
-    override fun onEnable() {
-        val config = RestConfigLoader().loadConfig()
-        JwtProvider(config.secret)
-        this.server = RestServer(config.port)
-        Launcher.instance.consoleSender.sendProperty("module.rest.loaded", config.port.toString())
-    }
-
-    override fun onDisable() {
-        server.shutdown()
-    }
-}
+class RestConfigLoader : AbstractJsonLibConfigLoader<RestConfig>(
+    RestConfig::class.java,
+    File("modules/rest/config.json"),
+    { RestConfig() },
+    true
+)

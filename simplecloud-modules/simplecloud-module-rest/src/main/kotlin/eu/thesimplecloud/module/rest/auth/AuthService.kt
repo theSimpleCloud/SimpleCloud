@@ -57,7 +57,7 @@ class AuthService : IExceptionHelper {
         val user = getUserByName(login.username)
         if (user == null || user.password != login.password)
             return null
-        return JwtProvider.provider.generateToken(user)
+        return JwtProvider.instance.provider.generateToken(user)
     }
 
     fun handleAddUser(user: User): User {

@@ -20,32 +20,17 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.rest
+package eu.thesimplecloud.module.rest.config
 
-import eu.thesimplecloud.api.external.ICloudModule
-import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.module.rest.auth.JwtProvider
-import eu.thesimplecloud.module.rest.config.RestConfigLoader
-import eu.thesimplecloud.module.rest.javalin.RestServer
+import org.apache.commons.lang3.RandomStringUtils
 
 /**
  * Created by IntelliJ IDEA.
- * Date: 04.10.2020
- * Time: 14:57
+ * Date: 06.12.2020
+ * Time: 19:25
  * @author Frederick Baier
  */
-class RestModule : ICloudModule {
-
-    lateinit var server: RestServer
-
-    override fun onEnable() {
-        val config = RestConfigLoader().loadConfig()
-        JwtProvider(config.secret)
-        this.server = RestServer(config.port)
-        Launcher.instance.consoleSender.sendProperty("module.rest.loaded", config.port.toString())
-    }
-
-    override fun onDisable() {
-        server.shutdown()
-    }
-}
+class RestConfig(
+    val port: Int = 8585,
+    val secret: String = RandomStringUtils.randomAlphabetic(170)
+)
