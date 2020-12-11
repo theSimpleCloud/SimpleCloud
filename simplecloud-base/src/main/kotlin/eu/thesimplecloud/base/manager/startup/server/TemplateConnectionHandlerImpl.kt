@@ -27,9 +27,6 @@ import eu.thesimplecloud.launcher.startup.Launcher
 
 class TemplateConnectionHandlerImpl : AbstractCloudConnectionHandler() {
 
-    override fun onConnectionInactive(connection: IConnection) {
-    }
-
     override fun onFailure(connection: IConnection, ex: Throwable) {
         Launcher.instance.logger.exception(ex)
     }

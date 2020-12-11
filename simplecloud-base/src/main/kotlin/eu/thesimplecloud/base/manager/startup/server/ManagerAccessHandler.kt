@@ -35,11 +35,7 @@ import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 class ManagerAccessHandler : IAccessHandler {
 
     override fun isAccessAllowed(connection: IConnection): Boolean {
-        val host = try {
-            connection.getHost()!!
-        } catch (e: Exception) {
-            return false
-        }
+        val host = connection.getHost() ?: return false
         val wrapperByHost = CloudAPI.instance.getWrapperManager().getWrapperByHost(host)
         return wrapperByHost != null
     }

@@ -23,16 +23,18 @@
 package eu.thesimplecloud.base.wrapper.startup
 
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
-import eu.thesimplecloud.clientserverapi.lib.handler.IConnectionHandler
+import eu.thesimplecloud.clientserverapi.lib.handler.DefaultConnectionHandler
 import eu.thesimplecloud.launcher.startup.Launcher
 
-class ConnectionHandlerImpl : IConnectionHandler {
+class ConnectionHandlerImpl : DefaultConnectionHandler() {
     override fun onConnectionActive(connection: IConnection) {
+        super.onConnectionActive(connection)
         Launcher.instance.consoleSender.sendProperty("wrapper.connected")
     }
 
     override fun onConnectionInactive(connection: IConnection) {
-        if (connection === Wrapper.instance.communicationClient) {
+        super.onConnectionInactive(connection)
+        if (connection === Wrapper.instance.communicationClient.getConnection()) {
             Wrapper.instance.resetWrapperAndStartReconnectLoop(Launcher.instance.launcherConfig)
         }
     }

@@ -65,7 +65,7 @@ allprojects {
     }
 
     project.ext {
-        depedencyClientServerAPIVersion = '4.1.7'
+        depedencyClientServerAPIVersion = '4.1.8'
     }
 
     buildscript {

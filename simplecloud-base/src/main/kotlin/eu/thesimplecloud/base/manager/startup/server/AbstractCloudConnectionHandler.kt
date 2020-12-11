@@ -41,7 +41,7 @@ abstract class AbstractCloudConnectionHandler : DefaultConnectionHandler() {
 
     override fun onConnectionActive(connection: IConnection) {
         super.onConnectionActive(connection)
-        val host = connection.getHost()!!
+        val host = connection.getHost() ?: return
         val wrapperByHost = CloudAPI.instance.getWrapperManager().getWrapperByHost(host)
         if (wrapperByHost == null) {
             if (this.unknownHostMessageShownTimeStamps.getMeasuredAmount() < 3) {
