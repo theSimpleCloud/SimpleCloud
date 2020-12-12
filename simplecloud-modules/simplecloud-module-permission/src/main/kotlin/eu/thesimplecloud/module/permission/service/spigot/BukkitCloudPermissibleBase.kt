@@ -41,6 +41,8 @@ class BukkitCloudPermissibleBase(private val player: Player) : PermissibleBase(p
     }
 
     override fun hasPermission(inName: String): Boolean {
+        println(getPermissionPlayer()?.getAllNotExpiredPermissionGroupInfoList()?.map { it.permissionGroupName })
+        println(PermissionPool.instance.getPermissionGroupManager().getAllPermissionGroups().map { it.getName() })
         if (inName.equals("bukkit.broadcast.user", ignoreCase = true)) {
             return true
         }

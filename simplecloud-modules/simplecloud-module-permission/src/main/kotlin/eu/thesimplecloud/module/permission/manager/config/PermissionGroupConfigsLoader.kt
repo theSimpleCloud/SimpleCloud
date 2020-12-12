@@ -20,41 +20,33 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.permission.group.manager
+package eu.thesimplecloud.module.permission.manager.config
 
-import eu.thesimplecloud.module.permission.group.IPermissionGroup
+import eu.thesimplecloud.api.config.AbstractMultipleConfigLoader
 import eu.thesimplecloud.module.permission.group.PermissionGroup
+import eu.thesimplecloud.module.permission.permission.Permission
+import java.io.File
 
-interface IPermissionGroupManager {
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 12.12.2020
+ * Time: 11:29
+ * @author Frederick Baier
+ */
+class PermissionGroupConfigsLoader : AbstractMultipleConfigLoader<PermissionGroup>(
+    PermissionGroup::class.java,
+    File("modules/permissions/groups/"),
+    getDefaultGroups(),
+    true
+) {
 
-    /**
-     * Returns all registered permission groups.
-     */
-    fun getAllPermissionGroups(): Collection<IPermissionGroup>
-
-    /**
-     * Returns the [IPermissionGroup] found by the specified [name]
-     */
-    fun getPermissionGroupByName(name: String): IPermissionGroup?
-
-    /**
-     * Returns the name of the default permission group
-     */
-    fun getDefaultPermissionGroupName(): String
-
-    /**
-     * Returns the default [IPermissionGroup]
-     */
-    fun getDefaultPermissionGroup(): IPermissionGroup = getPermissionGroupByName(getDefaultPermissionGroupName())!!
-
-    /**
-     * Updates the specified [IPermissionGroup]
-     */
-    fun update(permissionGroup: PermissionGroup)
-
-    /**
-     * Deletes the specified [IPermissionGroup]
-     */
-    fun delete(permissionGroup: IPermissionGroup)
+    companion object {
+        fun getDefaultGroups(): List<PermissionGroup> {
+            val adminGroup = PermissionGroup("Admin")
+            adminGroup.addPermission(Permission("*", -1, true))
+            val defaultGroup = PermissionGroup("default")
+            return listOf(adminGroup, defaultGroup)
+        }
+    }
 
 }

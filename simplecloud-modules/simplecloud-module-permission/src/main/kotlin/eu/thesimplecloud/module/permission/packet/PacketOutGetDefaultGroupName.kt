@@ -20,41 +20,22 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.permission.group.manager
+package eu.thesimplecloud.module.permission.packet
 
-import eu.thesimplecloud.module.permission.group.IPermissionGroup
-import eu.thesimplecloud.module.permission.group.PermissionGroup
+import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
+import eu.thesimplecloud.clientserverapi.lib.packet.packettype.ObjectPacket
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
-interface IPermissionGroupManager {
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 12.12.2020
+ * Time: 12:23
+ * @author Frederick Baier
+ */
+class PacketOutGetDefaultGroupName() : ObjectPacket<Unit>() {
 
-    /**
-     * Returns all registered permission groups.
-     */
-    fun getAllPermissionGroups(): Collection<IPermissionGroup>
-
-    /**
-     * Returns the [IPermissionGroup] found by the specified [name]
-     */
-    fun getPermissionGroupByName(name: String): IPermissionGroup?
-
-    /**
-     * Returns the name of the default permission group
-     */
-    fun getDefaultPermissionGroupName(): String
-
-    /**
-     * Returns the default [IPermissionGroup]
-     */
-    fun getDefaultPermissionGroup(): IPermissionGroup = getPermissionGroupByName(getDefaultPermissionGroupName())!!
-
-    /**
-     * Updates the specified [IPermissionGroup]
-     */
-    fun update(permissionGroup: PermissionGroup)
-
-    /**
-     * Deletes the specified [IPermissionGroup]
-     */
-    fun delete(permissionGroup: IPermissionGroup)
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
+        return unit()
+    }
 
 }

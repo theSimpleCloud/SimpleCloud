@@ -20,18 +20,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.permission.manager
+package eu.thesimplecloud.module.permission.event.group
 
-import eu.thesimplecloud.module.permission.group.PermissionGroup
+import eu.thesimplecloud.module.permission.group.IPermissionGroup
 
 /**
  * Created by IntelliJ IDEA.
- * Date: 21.06.2020
- * Time: 16:18
+ * Date: 09.10.2020
+ * Time: 18:23
  * @author Frederick Baier
  */
-
-class PermissionModuleConfig(
-        val defaultPermissionGroupName: String,
-        val groups: Array<PermissionGroup>
-)
+class PermissionGroupDeletedEvent(player: IPermissionGroup) : PermissionGroupEvent(player)

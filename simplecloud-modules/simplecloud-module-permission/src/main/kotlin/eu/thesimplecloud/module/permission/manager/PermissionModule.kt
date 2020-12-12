@@ -26,20 +26,19 @@ import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.external.ICloudModule
 import eu.thesimplecloud.api.player.OfflineCloudPlayer
 import eu.thesimplecloud.base.manager.startup.Manager
-import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.module.permission.PermissionPool
 import eu.thesimplecloud.module.permission.group.PermissionGroup
 import eu.thesimplecloud.module.permission.group.manager.PermissionGroupManager
 import eu.thesimplecloud.module.permission.manager.command.PermissionCommand
-import eu.thesimplecloud.module.permission.permission.Permission
+import eu.thesimplecloud.module.permission.manager.config.PermissionGroupConfigsLoader
+import eu.thesimplecloud.module.permission.manager.config.PermissionModuleConfigLoader
+import eu.thesimplecloud.module.permission.packet.PacketInGetDefaultGroupName
 import eu.thesimplecloud.module.permission.player.IPermissionPlayer
 import eu.thesimplecloud.module.permission.player.PermissionPlayer
-import java.io.File
 
 class PermissionModule : ICloudModule {
     companion object {
-        val GROUPS_FILE = File("modules/permissions/groups.json")
 
         @JvmStatic
         @Volatile
@@ -50,36 +49,30 @@ class PermissionModule : ICloudModule {
 
     private lateinit var permissionGroupManager: PermissionGroupManager
 
+    private val permissionGroupConfigsLoader =  PermissionGroupConfigsLoader()
+
     init {
         instance = this
     }
 
     override fun onEnable() {
-        if (!GROUPS_FILE.exists()) {
-            val adminGroup = PermissionGroup("Admin")
-            adminGroup.addPermission(Permission("*", -1, true))
-            val defaultGroup = PermissionGroup("default")
-            JsonLib.fromObject(PermissionModuleConfig("default", arrayOf(adminGroup, defaultGroup))).saveAsFile(GROUPS_FILE)
-        }
-        val permissionModuleConfig = JsonLib.fromJsonFile(GROUPS_FILE)?.getObject(PermissionModuleConfig::class.java)
-                ?: throw IllegalStateException("Cannot load config file")
-        this.permissionGroupManager = PermissionGroupManager(permissionModuleConfig.groups.toList())
-        this.permissionGroupManager.setDefaultPermissionGroup(permissionModuleConfig.defaultPermissionGroupName)
+        val config = PermissionModuleConfigLoader().loadConfig()
+        val groups = this.permissionGroupConfigsLoader.loadAll()
+
+        this.permissionGroupManager = PermissionGroupManager(groups.toList())
+        this.permissionGroupManager.setDefaultPermissionGroup(config.defaultPermissionGroupName)
         PermissionPool(this.permissionGroupManager)
         CloudAPI.instance.getEventManager().registerListener(this, CloudListener())
         Launcher.instance.commandManager.registerCommand(this, PermissionCommand())
+        Manager.instance.communicationServer.getPacketManager().registerPacket(PacketInGetDefaultGroupName::class.java)
     }
 
     override fun onDisable() {
     }
 
     fun updateGroupsFile() {
-        JsonLib.fromObject(
-                PermissionModuleConfig(
-                        this.permissionGroupManager.getDefaultPermissionGroupName(),
-                        (this.permissionGroupManager.getAllPermissionGroups() as List<PermissionGroup>).toTypedArray()
-                )
-        ).saveAsFile(GROUPS_FILE)
+        val permissionGroups = this.permissionGroupManager.getAllPermissionGroups() as List<PermissionGroup>
+        permissionGroups.forEach { this.permissionGroupConfigsLoader.save(it) }
     }
 
     fun updatePermissionPlayer(permissionPlayer: IPermissionPlayer) {

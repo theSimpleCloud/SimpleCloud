@@ -20,41 +20,21 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.permission.group.manager
+package eu.thesimplecloud.module.permission.manager.config
 
-import eu.thesimplecloud.module.permission.group.IPermissionGroup
-import eu.thesimplecloud.module.permission.group.PermissionGroup
+import eu.thesimplecloud.api.config.AbstractJsonLibConfigLoader
+import java.io.File
 
-interface IPermissionGroupManager {
-
-    /**
-     * Returns all registered permission groups.
-     */
-    fun getAllPermissionGroups(): Collection<IPermissionGroup>
-
-    /**
-     * Returns the [IPermissionGroup] found by the specified [name]
-     */
-    fun getPermissionGroupByName(name: String): IPermissionGroup?
-
-    /**
-     * Returns the name of the default permission group
-     */
-    fun getDefaultPermissionGroupName(): String
-
-    /**
-     * Returns the default [IPermissionGroup]
-     */
-    fun getDefaultPermissionGroup(): IPermissionGroup = getPermissionGroupByName(getDefaultPermissionGroupName())!!
-
-    /**
-     * Updates the specified [IPermissionGroup]
-     */
-    fun update(permissionGroup: PermissionGroup)
-
-    /**
-     * Deletes the specified [IPermissionGroup]
-     */
-    fun delete(permissionGroup: IPermissionGroup)
-
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 12.12.2020
+ * Time: 11:26
+ * @author Frederick Baier
+ */
+class PermissionModuleConfigLoader : AbstractJsonLibConfigLoader<PermissionModuleConfig>(
+    PermissionModuleConfig::class.java,
+    File("modules/permissions/config.json"),
+    { PermissionModuleConfig() },
+    true
+) {
 }

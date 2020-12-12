@@ -23,9 +23,11 @@
 package eu.thesimplecloud.module.permission
 
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.clientserverapi.lib.packet.packetsender.sendQuery
 import eu.thesimplecloud.module.permission.group.manager.IPermissionGroupManager
 import eu.thesimplecloud.module.permission.group.manager.PermissionGroupManager
 import eu.thesimplecloud.module.permission.manager.PermissionModule
+import eu.thesimplecloud.module.permission.packet.PacketOutGetDefaultGroupName
 import eu.thesimplecloud.module.permission.player.manager.IPermissionPlayerManager
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 
@@ -43,6 +45,11 @@ class PermissionPool(private val permissionGroupManager: PermissionGroupManager)
         }
         CloudAPI.instance.getEventManager().registerListener(cloudModule, PermissionCheckListener())
         CloudAPI.instance.getEventManager().registerListener(cloudModule, PermissionPlayerUpdatedEventCaller())
+
+        if (!CloudAPI.instance.isManager()) {
+            CloudPlugin.instance.communicationClient.getConnection().sendQuery<String>(PacketOutGetDefaultGroupName())
+                .then { permissionGroupManager.setDefaultPermissionGroup(it) }
+        }
     }
 
 

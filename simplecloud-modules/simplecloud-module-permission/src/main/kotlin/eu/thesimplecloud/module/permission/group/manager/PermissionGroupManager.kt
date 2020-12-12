@@ -38,6 +38,7 @@ class PermissionGroupManager(
         CopyOnWriteArrayList(list.map { Property(it) })
 ), IPermissionGroupManager {
 
+    @Volatile
     private var defaultPermissionGroupName = "default"
 
     override fun getIdentificationName(): String = "simplecloud-module-permission"
@@ -54,6 +55,14 @@ class PermissionGroupManager(
 
     override fun update(permissionGroup: PermissionGroup) {
         update(Property(permissionGroup), false)
+    }
+
+    override fun delete(permissionGroup: IPermissionGroup) {
+        getCachedObjectByUpdateValue(permissionGroup as PermissionGroup)?.let { super.remove(it, false) }
+        CloudAPI.instance.getEventManager().call(PermissionGroupUpdatedEvent(permissionGroup))
+        if (CloudAPI.instance.isManager()) {
+            PermissionModule.instance.updateGroupsFile()
+        }
     }
 
     override fun update(property: IProperty<PermissionGroup>, fromPacket: Boolean) {

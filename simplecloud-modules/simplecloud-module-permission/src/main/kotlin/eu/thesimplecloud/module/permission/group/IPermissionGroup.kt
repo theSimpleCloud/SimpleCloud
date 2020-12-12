@@ -22,15 +22,11 @@
 
 package eu.thesimplecloud.module.permission.group
 
+import eu.thesimplecloud.api.utils.Nameable
 import eu.thesimplecloud.module.permission.PermissionPool
 import eu.thesimplecloud.module.permission.entity.IPermissionEntity
 
-interface IPermissionGroup : IPermissionEntity {
-
-    /**
-     * Returns the name of this group.
-     */
-    fun getName(): String
+interface IPermissionGroup : IPermissionEntity, Nameable {
 
     /**
      * Adds a permission group to inherit from.

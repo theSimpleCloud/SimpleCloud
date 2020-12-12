@@ -2,6 +2,7 @@
   "module.permission.command.perms.group-already-exist": "&cGroup already exist.",
   "module.permission.command.perms.group-not-exist": "&cGroup not found.",
   "module.permission.command.perms.group.created": "&7Group &e%GROUP% created.",
+  "module.permission.command.perms.group.deleted": "&7Group &e%GROUP% deleted.",
   "module.permission.command.perms.group.permission-added": "&7Added permission %PERMISSION% to group %GROUP%.",
   "module.permission.command.perms.group.permission.already-removed": "&cThe group doesn't have the specified permission.",
   "module.permission.command.perms.group.permission.removed": "&7Permission &e%PERMISSION% &7removed.",

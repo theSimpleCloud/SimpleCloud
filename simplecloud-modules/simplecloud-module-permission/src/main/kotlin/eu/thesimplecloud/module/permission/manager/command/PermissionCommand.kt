@@ -212,6 +212,17 @@ class PermissionCommand : ICommandHandler {
         commandSender.sendProperty("module.permission.command.perms.group.created", group)
     }
 
+    @CommandSubPath("group <group> delete", "Deletes a permission group")
+    fun handleGroupDelete(commandSender: ICommandSender, @CommandArgument("group") group: String) {
+        val permissionGroup = getPermissionGroupByName(group)
+        if (permissionGroup == null) {
+            commandSender.sendProperty("module.permission.command.perms.group-not-exist")
+            return
+        }
+        PermissionPool.instance.getPermissionGroupManager().delete(permissionGroup)
+        commandSender.sendProperty("module.permission.command.perms.group.deleted", group)
+    }
+
     @CommandSubPath("group <group>", "Shows information about a group")
     fun handleGroup(commandSender: ICommandSender, @CommandArgument("group", PermissionGroupCommandSuggestionProvider::class) group: String) {
         val permissionGroup = getPermissionGroupByName(group)
