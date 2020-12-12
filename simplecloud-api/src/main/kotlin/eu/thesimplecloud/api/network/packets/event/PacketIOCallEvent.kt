@@ -34,7 +34,7 @@ class PacketIOCallEvent() : ObjectPacket<ISynchronizedEvent>() {
         this.value = synchronizedEvent
     }
 
-    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         val value = this.value ?: return contentException("value")
         CloudAPI.instance.getEventManager().call(value, fromPacket = true)
         return unit()

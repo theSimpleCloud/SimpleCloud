@@ -42,7 +42,7 @@ class PacketIOExecuteFunction<T : Any>() : BytePacket() {
         this.buffer.writeBytes(serializeString.toByteArray(Charsets.ISO_8859_1))
     }
 
-    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         val string = String(this.buffer.array(), Charsets.ISO_8859_1)
         val noArgsFunction = ObjectSerializer.deserialize<NoArgsFunction<*>>(string) as NoArgsFunction<out Any>?
         noArgsFunction ?: return failure(SerializationException("Object was null"))

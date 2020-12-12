@@ -38,7 +38,7 @@ class PacketIOTeleportPlayer() : JsonPacket() {
                 .append("simpleLocation", simpleLocation)
     }
 
-    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         val playerUniqueId = this.jsonLib.getObject("playerUniqueId", UUID::class.java) ?: return contentException("playerUniqueId")
         val simpleLocation = this.jsonLib.getObject("simpleLocation", SimpleLocation::class.java) ?: return contentException("simpleLocation")
         val cachedCloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(playerUniqueId)

@@ -34,5 +34,5 @@ class PacketOutTeleportOtherService(playerUniqueId: UUID, serviceName: String, s
         this.jsonLib.append("playerUniqueId", playerUniqueId).append("serviceName", serviceName).append("simpleLocation", simpleLocation)
     }
 
-    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> = unit()
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> = unit()
 }

@@ -37,7 +37,7 @@ class PacketIOUpdateCacheObject() : JsonPacket() {
                 .append("action", action)
     }
 
-    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         val cacheListName = this.jsonLib.getString("cacheListName")
                 ?: return contentException("cacheListName")
         val valueClassName = this.jsonLib.getString("valueClass")

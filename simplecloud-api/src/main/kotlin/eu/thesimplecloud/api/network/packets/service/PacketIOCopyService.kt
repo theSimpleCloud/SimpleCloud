@@ -41,7 +41,7 @@ class PacketIOCopyService(): JsonPacket() {
         this.jsonLib.append("service", service.getName()).append("path", path)
     }
 
-    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         val serviceName = this.jsonLib.getString("service") ?: return contentException("service")
         val path = this.jsonLib.getString("path") ?: return contentException("path")
         val service = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(serviceName)

@@ -32,7 +32,7 @@ class PacketIOPing() : ObjectPacket<Long>() {
         this.value = time
     }
 
-    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         val value = this.value ?: return contentException("value")
         return success(System.currentTimeMillis() - value)
     }

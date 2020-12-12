@@ -43,7 +43,7 @@ class PacketIOLanguage() : ObjectPacket<Array<LanguageProperty>>() {
     }
 
 
-    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         val value = this.value ?: return contentException("value")
         val languageManager = CloudAPI.instance.getLanguageManager()
         languageManager.clearAll()

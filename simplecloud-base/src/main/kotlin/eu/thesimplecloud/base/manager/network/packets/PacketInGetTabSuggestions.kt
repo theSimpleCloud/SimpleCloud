@@ -39,7 +39,7 @@ import java.util.*
  */
 class PacketInGetTabSuggestions(): JsonPacket() {
 
-    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         val command = this.jsonLib.getString("command")?: return contentException("command")
         val uuid = this.jsonLib.getObject("uuid", UUID::class.java)?: return contentException("uuid")
 

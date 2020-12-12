@@ -33,7 +33,7 @@ import java.util.*
 
 class PacketInTeleportOtherService : JsonPacket() {
 
-    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         val playerUniqueId = this.jsonLib.getObject("playerUniqueId", UUID::class.java) ?: return contentException("playerUniqueId")
         val serviceName = this.jsonLib.getString("serviceName") ?: return contentException("serviceName")
         val simpleLocation = this.jsonLib.getObject("simpleLocation", SimpleLocation::class.java) ?: return contentException("simpleLocation")

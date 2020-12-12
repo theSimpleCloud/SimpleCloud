@@ -35,7 +35,7 @@ class PacketIOChannelMessage() : ObjectPacket<Message>() {
         this.value = message
     }
 
-    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         val message = this.value ?: return contentException("value")
         val messageChannelManager = CloudAPI.instance.getMessageChannelManager()
                 as MessageChannelManager

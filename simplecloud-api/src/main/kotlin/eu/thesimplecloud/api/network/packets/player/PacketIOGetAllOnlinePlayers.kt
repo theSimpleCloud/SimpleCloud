@@ -31,7 +31,7 @@ class PacketIOGetAllOnlinePlayers() : ObjectPacket<Unit>() {
 
 
 
-    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         return CloudAPI.instance.getCloudPlayerManager().getAllOnlinePlayers().then { it.toTypedArray() }
     }
 }

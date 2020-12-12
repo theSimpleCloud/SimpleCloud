@@ -35,7 +35,7 @@ class PacketIOSendPlayerToLobby() : ObjectPacket<UUID>() {
         this.value = uniqueId
     }
 
-    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         val value = this.value ?: return contentException("value")
         val cloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(value)
         cloudPlayer ?: return failure(NoSuchPlayerException("Player cannot be found"))

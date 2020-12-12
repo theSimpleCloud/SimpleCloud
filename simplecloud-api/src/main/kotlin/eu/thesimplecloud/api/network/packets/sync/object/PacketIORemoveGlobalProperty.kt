@@ -35,7 +35,7 @@ class PacketIORemoveGlobalProperty() : JsonPacket() {
 
     }
 
-    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         val name = this.jsonLib.getString("name") ?: return contentException("name")
         (CloudAPI.instance.getGlobalPropertyHolder() as GlobalPropertyHolder).removePropertyFromPacket(name)
         return unit()

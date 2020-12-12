@@ -39,7 +39,7 @@ class PacketOutGetPlayerOnlineStatus() : ObjectPacket<UUID>() {
         this.value = uuid
     }
 
-    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         return unit()
     }
 

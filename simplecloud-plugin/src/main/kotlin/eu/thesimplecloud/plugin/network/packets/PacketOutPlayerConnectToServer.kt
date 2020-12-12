@@ -33,5 +33,5 @@ class PacketOutPlayerConnectToServer(playerUniqueId: UUID, serviceName: String) 
         this.jsonLib.append("playerUniqueId", playerUniqueId).append("serviceName", serviceName)
     }
 
-    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> = unit()
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> = unit()
 }

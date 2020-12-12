@@ -39,7 +39,7 @@ class PacketOutJvmArguments() : ObjectPacket<JvmArgumentsConfig>() {
         value = jvmArgumentsConfig
     }
 
-    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         return unit()
     }
 }

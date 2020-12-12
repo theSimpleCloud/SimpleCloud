@@ -39,7 +39,7 @@ import java.util.*
  */
 class PacketInGetPlayerOnlineStatus : ObjectPacket<UUID>() {
 
-    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         val uuid = this.value ?: return contentException("value")
 
         return if (CloudPlugin.instance.thisService().getServiceVersion().serviceAPIType == ServiceAPIType.VELOCITY) {

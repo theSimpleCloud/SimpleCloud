@@ -37,7 +37,7 @@ abstract class PacketIOCloudServiceGroupData() : JsonPacket() {
         this.jsonLib.append("serviceType", cloudServiceGroup.getServiceType()).append("group", cloudServiceGroup)
     }
 
-    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         val serviceType = this.jsonLib.getObject("serviceType", ServiceType::class.java) ?: return contentException("serviceType")
         val serviceGroupClass = when(serviceType){
             ServiceType.LOBBY -> DefaultLobbyGroup::class.java
@@ -48,6 +48,6 @@ abstract class PacketIOCloudServiceGroupData() : JsonPacket() {
         return handleData(serviceGroup)
     }
 
-    abstract fun handleData(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<out Any>
+    abstract fun handleData(cloudServiceGroup: ICloudServiceGroup): ICommunicationPromise<Any>
 
 }

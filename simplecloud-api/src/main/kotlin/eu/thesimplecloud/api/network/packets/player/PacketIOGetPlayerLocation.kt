@@ -36,7 +36,7 @@ class PacketIOGetPlayerLocation() : ObjectPacket<UUID>() {
         this.value = cloudPlayer.getUniqueId()
     }
 
-    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         val value = this.value ?: return contentException("value")
         val cloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(value)
                 ?: return failure(NoSuchElementException("Player does not exist"))

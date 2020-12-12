@@ -43,7 +43,7 @@ class PacketIOSendTablistToPlayer() : JsonPacket() {
                 .append("footers", footers)
     }
 
-    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         val uniqueId = this.jsonLib.getObject("uniqueId", UUID::class.java) ?: return contentException("uniqueId")
         val headers = this.jsonLib.getObject("headers", Array<String>::class.java) ?: return contentException("headers")
         val footers = this.jsonLib.getObject("footers", Array<String>::class.java) ?: return contentException("footers")

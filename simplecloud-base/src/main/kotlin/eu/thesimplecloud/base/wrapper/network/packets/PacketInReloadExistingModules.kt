@@ -28,7 +28,7 @@ import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
 class PacketInReloadExistingModules : JsonPacket() {
-    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         Wrapper.instance.reloadExistingModules()
         return unit()
     }

@@ -41,7 +41,7 @@ class PacketIOServiceVersions() : ObjectPacket<Array<ServiceVersion>>() {
         this.value = list.toTypedArray()
     }
 
-    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         val value = this.value ?: return contentException("value")
         val serviceVersionHandler = CloudAPI.instance.getServiceVersionHandler() as ServiceVersionHandler
         serviceVersionHandler.versions = value.asList()

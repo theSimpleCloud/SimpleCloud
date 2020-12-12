@@ -36,7 +36,7 @@ class PacketIOUpdateListProperty() : JsonPacket() {
         this.jsonLib.append("listName", listName).append("property", property)
     }
 
-    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         val listName = this.jsonLib.getString("listName") ?: return contentException("listName")
         val property = this.jsonLib.getObject("property", Property::class.java) as Property<Any>?
                 ?: return contentException("property")

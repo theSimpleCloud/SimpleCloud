@@ -34,7 +34,7 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
  * @author Frederick Baier
  */
 class PacketIOGetNetworkOnlineCount : ObjectPacket<Unit>() {
-    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         return success(CloudAPI.instance.getCloudPlayerManager().getAllCachedObjects().size)
     }
 }

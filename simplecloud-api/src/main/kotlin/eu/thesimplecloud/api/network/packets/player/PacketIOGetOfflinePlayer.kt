@@ -38,7 +38,7 @@ class PacketIOGetOfflinePlayer() : JsonPacket() {
         this.jsonLib.append("name", name)
     }
 
-    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         val uniqueId = this.jsonLib.getObject("uniqueId", UUID::class.java)
         val name = this.jsonLib.getString("name")
         if (uniqueId == null && name == null) return contentException("name and uniqueId null")

@@ -33,7 +33,7 @@ class PacketOutPlayerExecuteCommand() : JsonPacket() {
         this.jsonLib.append("playerUniqueId", cloudPlayer.getUniqueId()).append("command", command)
     }
 
-    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         return unit()
     }
 }

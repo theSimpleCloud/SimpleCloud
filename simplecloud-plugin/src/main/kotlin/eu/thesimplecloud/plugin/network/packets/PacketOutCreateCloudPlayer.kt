@@ -33,5 +33,5 @@ class PacketOutCreateCloudPlayer() : JsonPacket() {
         this.jsonLib.append("playerConnection", defaultPlayerConnection).append("proxyName", proxyName)
     }
 
-    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> = unit()
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> = unit()
 }

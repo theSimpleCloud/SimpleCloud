@@ -29,5 +29,5 @@ import java.util.*
 
 class PacketOutPlayerLoginRequest(val uniqueId: UUID) : ObjectPacket<UUID>(uniqueId) {
 
-    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> = unit()
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> = unit()
 }

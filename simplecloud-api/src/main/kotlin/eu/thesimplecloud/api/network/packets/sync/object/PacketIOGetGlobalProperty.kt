@@ -41,7 +41,7 @@ class PacketIOGetGlobalProperty() : ObjectPacket<String>() {
         this.value = name
     }
 
-    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         val value = this.value ?: return contentException("value")
         val globalPropertyHolder = CloudAPI.instance.getGlobalPropertyHolder()
                 as GlobalPropertyHolder

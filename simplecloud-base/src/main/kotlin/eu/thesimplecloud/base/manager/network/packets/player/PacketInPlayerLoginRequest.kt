@@ -32,7 +32,7 @@ import java.util.*
 
 class PacketInPlayerLoginRequest() : ObjectPacket<UUID>() {
 
-    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         val value = this.value ?: return contentException("value")
         val cloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(value) ?: return failure(NoSuchPlayerException("Player cannot be found"))
         val loginEvent = CloudPlayerLoginRequestEvent(cloudPlayer)

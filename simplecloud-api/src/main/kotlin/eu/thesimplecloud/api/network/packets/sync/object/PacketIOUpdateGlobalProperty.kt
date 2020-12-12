@@ -38,7 +38,7 @@ class PacketIOUpdateGlobalProperty() : JsonPacket() {
 
     }
 
-    override suspend fun handle(connection: IConnection): ICommunicationPromise<out Any> {
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         val name = this.jsonLib.getString("name") ?: return contentException("name")
         val property = this.jsonLib.getObject("property", Property::class.java)
                 ?: return contentException("property")
