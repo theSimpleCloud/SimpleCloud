@@ -28,6 +28,7 @@ import eu.thesimplecloud.api.sync.list.ISynchronizedObjectList
 import eu.thesimplecloud.clientserverapi.client.INettyClient
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
+import eu.thesimplecloud.clientserverapi.lib.promise.combineAllPromises
 import java.util.concurrent.ConcurrentHashMap
 
 class SynchronizedObjectListManager : ISynchronizedObjectListManager {
@@ -39,7 +40,7 @@ class SynchronizedObjectListManager : ISynchronizedObjectListManager {
         if (syncContent && CloudAPI.instance.isManager()) {
             val oldObject = getSynchronizedObjectList(synchronizedObjectList.getIdentificationName())
             oldObject?.let { oldList ->
-                oldList.getAllCachedObjects().forEach { oldList.remove(it) }
+                oldList.getAllCachedObjects().map { oldList.remove(it) }.combineAllPromises().awaitUninterruptibly()
             }
         }
         this.nameToSynchronizedObjectList[synchronizedObjectList.getIdentificationName()] = synchronizedObjectList

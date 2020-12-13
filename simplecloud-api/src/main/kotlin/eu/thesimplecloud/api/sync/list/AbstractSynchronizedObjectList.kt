@@ -32,6 +32,8 @@ import eu.thesimplecloud.api.property.IProperty
 import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.clientserverapi.client.INettyClient
 import eu.thesimplecloud.clientserverapi.lib.packet.IPacket
+import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.clientserverapi.server.INettyServer
 import java.util.concurrent.CopyOnWriteArrayList
 
@@ -41,13 +43,13 @@ abstract class AbstractSynchronizedObjectList<T : Any>(
 
 
 
-    override fun update(property: IProperty<T>, fromPacket: Boolean) {
+    override fun update(property: IProperty<T>, fromPacket: Boolean): ICommunicationPromise<Unit> {
         val cachedValue = getCachedObjectByUpdateValue(property.getValue())
         if (cachedValue == null) {
             this.values.add(property as Property<T>)
         } else {
             if (cachedValue !== property.getValue()) {
-                cachedValue as Property
+                cachedValue as Property<T>
                 cachedValue.resetValue()
                 cachedValue.setStringValue(property.getValueAsString())
             }
@@ -55,13 +57,13 @@ abstract class AbstractSynchronizedObjectList<T : Any>(
         if (CloudAPI.instance.isManager() || fromPacket) {
             CloudAPI.instance.getEventManager().call(SynchronizedListObjectUpdatedEvent(getCachedObjectByUpdateValue(property.getValue())!!))
         }
-        forwardPacketIfNecessary(PacketIOUpdateListProperty(getIdentificationName(), property), fromPacket)
+        return forwardPacketIfNecessary(PacketIOUpdateListProperty(getIdentificationName(), property), fromPacket)
     }
 
     override fun getAllCachedObjects(): Collection<IProperty<T>> = this.values
 
-    override fun remove(property: IProperty<T>, fromPacket: Boolean) {
-        val cachedObject = getCachedObjectByUpdateValue(property.getValue()) ?: return
+    override fun remove(property: IProperty<T>, fromPacket: Boolean): ICommunicationPromise<Unit> {
+        val cachedObject = getCachedObjectByUpdateValue(property.getValue()) ?: return CommunicationPromise.UNIT_PROMISE
 
 
         if (CloudAPI.instance.isManager() || fromPacket) {
@@ -69,18 +71,19 @@ abstract class AbstractSynchronizedObjectList<T : Any>(
             CloudAPI.instance.getEventManager().call(SynchronizedListObjectRemovedEvent(cachedObject))
         }
 
-        forwardPacketIfNecessary(PacketIORemoveListProperty(getIdentificationName(), property), fromPacket)
+        return forwardPacketIfNecessary(PacketIORemoveListProperty(getIdentificationName(), property), fromPacket)
     }
 
-    private fun forwardPacketIfNecessary(packet: IPacket, fromPacket: Boolean) {
+    private fun forwardPacketIfNecessary(packet: IPacket, fromPacket: Boolean): ICommunicationPromise<Unit> {
         if (CloudAPI.instance.isManager()) {
             val server = CloudAPI.instance.getThisSidesCommunicationBootstrap() as INettyServer<*>
-            server.getClientManager().sendPacketToAllAuthenticatedNonWrapperClients(packet)
+            return server.getClientManager().sendPacketToAllAuthenticatedNonWrapperClients(packet)
         } else if (!fromPacket) {
             //send update to the manager
             val client = CloudAPI.instance.getThisSidesCommunicationBootstrap() as INettyClient
-            client.getConnection().sendUnitQuery(packet)
+            return client.getConnection().sendUnitQuery(packet)
         }
+        return CommunicationPromise.UNIT_PROMISE
     }
 
 }

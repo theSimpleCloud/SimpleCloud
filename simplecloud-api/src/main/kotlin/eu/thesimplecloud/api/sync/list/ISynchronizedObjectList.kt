@@ -42,7 +42,7 @@ interface ISynchronizedObjectList<T : Any> {
     /**
      * Updates an object
      */
-    fun update(property: IProperty<T>, fromPacket: Boolean = false)
+    fun update(property: IProperty<T>, fromPacket: Boolean = false): ICommunicationPromise<Unit>
 
     /**
      * Returns the cashed value found by the [value] to update.
@@ -52,7 +52,7 @@ interface ISynchronizedObjectList<T : Any> {
     /**
      * Removes the [property] object from the cache.
      */
-    fun remove(property: IProperty<T>, fromPacket: Boolean = false)
+    fun remove(property: IProperty<T>, fromPacket: Boolean = false): ICommunicationPromise<Unit>
 
     /**
      * Sends an update to one connection

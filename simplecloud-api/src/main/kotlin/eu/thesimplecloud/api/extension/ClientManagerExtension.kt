@@ -41,8 +41,9 @@ fun IClientManager<*>.sendPacketToAllAuthenticatedClients(packet: IPacket): ICom
     return this.getAllAuthenticatedClients().map { it.sendUnitQuery(packet) }.combineAllPromises()
 }
 
-fun IClientManager<*>.sendPacketToAllAuthenticatedNonWrapperClients(packet: IPacket) {
-    this.getAllAuthenticatedClients().filter { it.getClientValue() !is IWrapperInfo }.forEach { it.sendUnitQuery(packet) }
+fun IClientManager<*>.sendPacketToAllAuthenticatedNonWrapperClients(packet: IPacket): ICommunicationPromise<Unit> {
+    return this.getAllAuthenticatedClients().filter { it.getClientValue() !is IWrapperInfo }.map { it.sendUnitQuery(packet) }
+        .combineAllPromises()
 }
 
 fun IClientManager<*>.sendPacketToAllAuthenticatedWrapperClients(packet: IPacket) {
