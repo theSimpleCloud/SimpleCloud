@@ -39,7 +39,8 @@ abstract class AbstractServiceGroup(
         private val wrapperName: String?,
         serviceVersion: ServiceVersion,
         private val startPriority: Int,
-        private var permission: String?
+        private var permission: String?,
+        private var stateUpdating: Boolean = true
 ) : ICloudServiceGroup {
 
     @Volatile
@@ -107,6 +108,14 @@ abstract class AbstractServiceGroup(
 
     override fun getServiceVersion(): ServiceVersion {
         return CloudAPI.instance.getServiceVersionHandler().getServiceVersionByName(serviceVersion)!!
+    }
+
+    override fun isStateUpdatingEnabled(): Boolean {
+        return this.stateUpdating
+    }
+
+    override fun setStateUpdating(stateUpdating: Boolean) {
+        this.stateUpdating = stateUpdating
     }
 
     override fun getStartPriority(): Int = this.startPriority

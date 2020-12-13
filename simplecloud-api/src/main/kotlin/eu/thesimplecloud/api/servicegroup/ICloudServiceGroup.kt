@@ -23,6 +23,7 @@
 package eu.thesimplecloud.api.servicegroup
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.service.ICloudService
+import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.service.ServiceType
 import eu.thesimplecloud.api.service.startconfiguration.IServiceStartConfiguration
 import eu.thesimplecloud.api.service.startconfiguration.ServiceStartConfiguration
@@ -187,6 +188,16 @@ interface ICloudServiceGroup {
      * Returns the amount of online services
      */
     fun getOnlineServiceCount(): Int = getAllServices().filter { it.isOnline() }.size
+
+    /**
+     * Returns whether the state shall automatically be updated to [ServiceState.VISIBLE]
+     */
+    fun isStateUpdatingEnabled(): Boolean
+
+    /**
+     * Sets whether this group shall update its state automatically to [ServiceState.VISIBLE]
+     */
+    fun setStateUpdating(stateUpdating: Boolean)
 
     /**
      * Stops all services of this group.

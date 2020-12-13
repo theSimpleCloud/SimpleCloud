@@ -57,6 +57,7 @@ abstract class AbstractCloudServiceGroupManager : AbstractCacheList<ICloudServic
             cachedValue.setTemplateName(updateValue.getTemplateName())
             cachedValue.setPermission(updateValue.getPermission())
             cachedValue.setServiceVersion(updateValue.getServiceVersion())
+            cachedValue.setStateUpdating(updateValue.isStateUpdatingEnabled())
         }
 
         override fun addNewValue(value: ICloudServiceGroup) {

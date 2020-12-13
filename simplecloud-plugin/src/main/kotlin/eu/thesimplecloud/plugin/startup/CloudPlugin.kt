@@ -48,7 +48,6 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
 
     @Volatile
     private var thisService: ICloudService? = null
-    private var updateState = true
     lateinit var communicationClient: INettyClient
         private set
     lateinit var connectionToManager: IConnection
@@ -115,7 +114,7 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
     }
 
     override fun onEnable() {
-        if (this.updateState && thisService().getState() == ServiceState.STARTING) {
+        if (thisService().getServiceGroup().isStateUpdatingEnabled() && thisService().getState() == ServiceState.STARTING) {
             thisService().setState(ServiceState.VISIBLE)
             updateThisService()
         }
@@ -127,14 +126,6 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
     @Synchronized
     fun updateThisService() {
         thisService().update()
-    }
-
-    /**
-     * Prevents the service from updating its state by itself.
-     */
-    @Synchronized
-    fun disableStateUpdating() {
-        this.updateState = false
     }
 
     fun getGroupName(): String {
