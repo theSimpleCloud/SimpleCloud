@@ -75,6 +75,7 @@ abstract class AbstractCloudServiceManager : AbstractCacheList<ICloudService>(),
             cachedValue.setOnlineCount(updateValue.getOnlineCount())
             cachedValue.setState(updateValue.getState())
             cachedValue.setAuthenticated(updateValue.isAuthenticated())
+            cachedValue.setMaxPlayers(updateValue.getMaxPlayers())
             cachedValue as DefaultCloudService
             cachedValue.setWrapperName(updateValue.getWrapperName())
             cachedValue.setPort(updateValue.getPort())
