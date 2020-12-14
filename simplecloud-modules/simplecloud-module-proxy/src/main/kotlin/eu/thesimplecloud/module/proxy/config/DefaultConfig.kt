@@ -33,12 +33,12 @@ class DefaultConfig {
         fun get(): Config {
             val motdConfiguration = MotdConfiguration(
                     listOf("§b§lSimpleCloud §r§8-§7 Simplyify your Network§8│§f 1.8.x §8- §f1.16.x"),
-                    listOf("§3§lStatus§r§8│ §aOnline"),
+                    listOf("§3§lStatus§r§8│ §aOnline §8- §7%PROXY%"),
                     emptyList(),
                     null)
             val maintenanceMotdConfiguration = MotdConfiguration(
                     listOf("§b§lSimpleCloud §r§8-§7 Simplyify your Network§8│§f 1.8.x §8- §f1.16.x"),
-                    listOf("§3§lStatus§r§8│ §cMaintenance"),
+                    listOf("§3§lStatus§r§8│ §cMaintenance §8- §7%PROXY%"),
                     emptyList(),
                     "§8│ §c§oMaintenance")
             val proxyGroupConfiguration = ProxyGroupConfiguration(

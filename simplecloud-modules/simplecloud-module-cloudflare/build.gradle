@@ -27,6 +27,7 @@ configurations {
 }
 
 dependencies {
+    compile 'com.github.robinbraemer:cloudflareapi:1.3.3'
     implementation(project(":simplecloud-base"))
     implementation(project(":simplecloud-api"))
     implementation(project(":simplecloud-plugin"))

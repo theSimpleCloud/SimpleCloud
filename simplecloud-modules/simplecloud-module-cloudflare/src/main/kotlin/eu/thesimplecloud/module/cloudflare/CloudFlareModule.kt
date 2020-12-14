@@ -24,8 +24,9 @@ package eu.thesimplecloud.module.cloudflare
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.external.ICloudModule
-import eu.thesimplecloud.module.cloudflare.api.CloudFlareAPI
-import eu.thesimplecloud.module.cloudflare.config.ConfigManager
+import eu.thesimplecloud.launcher.startup.Launcher
+import eu.thesimplecloud.module.cloudflare.config.CloudFlareConfigLoader
+import eu.thesimplecloud.module.cloudflare.listener.CloudFlareSingleGroupListener
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,18 +34,37 @@ import eu.thesimplecloud.module.cloudflare.config.ConfigManager
  * Date: 27.02.2020
  * Time: 17:31
  */
-class CloudFlareModule: ICloudModule {
+class CloudFlareModule : ICloudModule {
 
-    val configManager = ConfigManager()
-    val config = configManager.getConfig()
-    val cloudFlareAPI = CloudFlareAPI(config)
+    private val cloudFlareConfigs = CloudFlareConfigLoader().loadAll()
+    private val cloudFlareHelpers = cloudFlareConfigs.map { CloudFlareHelper(it) }
 
     override fun onEnable() {
-        CloudAPI.instance.getEventManager().registerListener(this, CloudListener(this))
+        cloudFlareHelpers.forEach { cloudFlareHelper ->
+            val config = cloudFlareHelper.config
+            if (config.email == "me@example.com") return@forEach
+            cloudFlareHelper.isCloudFlareConfiguredCorrectly().thenAccept {
+                if (it) {
+                    registerAllRunningServices(cloudFlareHelper)
+                    CloudAPI.instance.getEventManager()
+                        .registerListener(this, CloudFlareSingleGroupListener(cloudFlareHelper))
+                    cloudFlareHelper.createARecordIfNotExist()
+                    Launcher.instance.logger.success("The CloudFlare Module is active for group ${config.targetProxyGroup}!")
+                } else {
+                    Launcher.instance.logger.warning("The CloudFlare Module is not configured correctly for group ${config.targetProxyGroup}!")
 
-        cloudFlareAPI.createForAlreadyStartedServices()
+                }
+            }
+        }
+    }
+
+    private fun registerAllRunningServices(cloudFlareHelper: CloudFlareHelper) {
+        val targetProxyGroup = cloudFlareHelper.config.targetProxyGroup
+        val group = CloudAPI.instance.getCloudServiceGroupManager().getProxyGroupByName(targetProxyGroup) ?: return
+        group.getAllServices().filter { it.isOnline() }.forEach { cloudFlareHelper.createSRVRecord(it) }
     }
 
     override fun onDisable() {
+        cloudFlareHelpers.forEach { it.deleteAllSRVRecordsAndWait() }
     }
 }

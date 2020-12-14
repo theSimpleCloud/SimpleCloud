@@ -20,15 +20,20 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.cloudflare.api
+package eu.thesimplecloud.module.cloudflare.config
+
+import eu.thesimplecloud.api.config.AbstractMultipleConfigLoader
+import java.io.File
 
 /**
  * Created by IntelliJ IDEA.
- * User: Philipp.Eistrach
- * Date: 11.04.2020
- * Time: 19:37
+ * Date: 14.12.2020
+ * Time: 17:43
+ * @author Frederick Baier
  */
-data class CloudFlareRecord(
-        val serviceName: String,
-        val recordID: String
+class CloudFlareConfigLoader : AbstractMultipleConfigLoader<CloudFlareConfig>(
+    CloudFlareConfig::class.java,
+    File("modules/cloudflare/configs/"),
+    listOf(CloudFlareConfig()),
+    true
 )

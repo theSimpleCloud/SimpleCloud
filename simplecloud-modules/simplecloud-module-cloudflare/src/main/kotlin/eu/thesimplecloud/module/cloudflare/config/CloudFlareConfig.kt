@@ -22,32 +22,26 @@
 
 package eu.thesimplecloud.module.cloudflare.config
 
-import eu.thesimplecloud.jsonlib.JsonLib
-import java.io.File
+import eu.thesimplecloud.api.utils.Nameable
 
 /**
  * Created by IntelliJ IDEA.
- * User: Philipp.Eistrach
- * Date: 27.02.2020
- * Time: 17:40
+ * Date: 14.12.2020
+ * Time: 16:38
+ * @author Frederick Baier
  */
-class ConfigManager() {
+class CloudFlareConfig(
+    val email: String = "me@example.com",
+    val apiToken: String = "",
+    val zoneId: String = "",
+    val aRecordSubDomain: String = "@",
+    val srvRecordSubDomain: String = "@",
+    val domain: String = "example.com",
+    val targetProxyGroup: String = "Proxy"
+) : Nameable {
 
-    val file = File("modules/cloudflare", "config.json")
-
-    private fun createDefaultConfig(): Config {
-        if (!file.exists()) {
-            val config = Config(listOf(CloudFlareData("proxy", "user@thesimplecloud.eu", "", "thesimplecloud.eu", "", "@")))
-            JsonLib.fromObject(config).saveAsFile(file)
-            return config
-        }
-
-        return getConfig()
-    }
-
-    fun getConfig(): Config {
-        val jsonLib = JsonLib.fromJsonFile(file)
-        return jsonLib?.getObject(Config::class.java) ?: createDefaultConfig()
+    override fun getName(): String {
+        return this.targetProxyGroup
     }
 
 }

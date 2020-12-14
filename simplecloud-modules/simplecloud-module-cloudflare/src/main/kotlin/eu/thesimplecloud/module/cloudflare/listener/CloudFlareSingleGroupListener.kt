@@ -20,19 +20,38 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.cloudflare.config
+package eu.thesimplecloud.module.cloudflare.listener
+
+import eu.thesimplecloud.api.event.service.CloudServiceStartedEvent
+import eu.thesimplecloud.api.event.service.CloudServiceUnregisteredEvent
+import eu.thesimplecloud.api.eventapi.CloudEventHandler
+import eu.thesimplecloud.api.eventapi.IListener
+import eu.thesimplecloud.module.cloudflare.CloudFlareHelper
 
 /**
  * Created by IntelliJ IDEA.
- * User: Philipp.Eistrach
- * Date: 27.02.2020
- * Time: 17:37
+ * Date: 14.12.2020
+ * Time: 17:47
+ * @author Frederick Baier
  */
-data class Config(
-        val cloudFlareDatas: List<CloudFlareData>
-) {
+class CloudFlareSingleGroupListener(private val cloudFlareHelper: CloudFlareHelper) : IListener {
 
-    fun getCloudFlareDataByDomainName(domainName: String): CloudFlareData? {
-        return cloudFlareDatas.firstOrNull { it.domainName == domainName }
+    private val config = cloudFlareHelper.config
+
+    @CloudEventHandler
+    fun handleServiceStarted(event: CloudServiceStartedEvent) {
+        val cloudService = event.cloudService
+        if (cloudService.isProxy() && cloudService.getGroupName() == config.targetProxyGroup) {
+            cloudFlareHelper.createSRVRecord(cloudService)
+        }
     }
+
+    @CloudEventHandler
+    fun handleServiceStarted(event: CloudServiceUnregisteredEvent) {
+        val cloudService = event.cloudService
+        if (cloudService.isProxy() && cloudService.getGroupName() == config.targetProxyGroup) {
+            cloudFlareHelper.deleteSRVRecord(cloudService)
+        }
+    }
+
 }
