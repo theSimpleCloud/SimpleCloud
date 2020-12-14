@@ -57,8 +57,13 @@ class CloudListener : IListener {
     fun on(event: CloudPlayerLoginEvent) {
         event.getCloudPlayer().then {
             Launcher.instance.consoleSender
-                    .sendProperty("manager.player.connected", it.getName(), it.getUniqueId().toString(),
-                            it.getPlayerConnection().getAddress().getHostname())
+                .sendProperty(
+                    "manager.player.connected",
+                    it.getName(),
+                    it.getUniqueId().toString(),
+                    it.getPlayerConnection().getAddress().getHostname(),
+                    it.getConnectedProxyName()
+                )
         }
 
     }
@@ -68,8 +73,10 @@ class CloudListener : IListener {
         val player = event.cloudPlayer
 
         Launcher.instance.consoleSender
-                .sendProperty("manager.player.disconnected", player.getName(), player.getUniqueId().toString(),
-                        player.getPlayerConnection().getAddress().getHostname())
+            .sendProperty(
+                "manager.player.disconnected", player.getName(), player.getUniqueId().toString(),
+                player.getPlayerConnection().getAddress().getHostname()
+            )
 
     }
 

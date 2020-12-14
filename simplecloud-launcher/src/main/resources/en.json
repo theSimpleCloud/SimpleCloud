@@ -87,7 +87,7 @@
   "manager.module.unload": "Unloaded module %NAME% by %AUTHOR%",
   "manager.module.updated": "Updated module %MODULE%",
   "manager.module.updating": "Updating module %MODULE%...",
-  "manager.player.connected": "Player %PLAYER% connected. (%UUID%/%IP%)",
+  "manager.player.connected": "Player %PLAYER% connected. (%UUID%/%IP%/%PROXY%)",
   "manager.player.disconnected": "Player %PLAYER% disconnect. (%UUID%/%IP%)",
   "manager.server.listening": "The cloud is now listening on port %PORT%",
   "manager.server.stopped": "A server is now stopped.",
