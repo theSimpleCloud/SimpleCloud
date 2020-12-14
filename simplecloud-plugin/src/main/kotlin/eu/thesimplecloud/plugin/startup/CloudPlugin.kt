@@ -101,7 +101,6 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
         this.connectionToManager = this.communicationClient.getConnection()
         return true
     }
-
     @Synchronized
     fun thisService(): ICloudService {
         if (this.thisService == null) this.thisService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(thisServiceName)
