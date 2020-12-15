@@ -126,7 +126,7 @@ interface ICloudServiceGroupManager : ICacheList<ICloudServiceGroup> {
             maintenance: Boolean,
             static: Boolean,
             percentToStartNewService: Int,
-            wrapperName: String,
+            wrapperName: String?,
             startPort: Int,
             serviceVersion: ServiceVersion,
             startPriority: Int,

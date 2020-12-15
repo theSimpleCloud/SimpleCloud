@@ -26,12 +26,12 @@ import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.service.version.ServiceVersion
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.base.manager.setup.groups.provider.GroupTemplateSetupAnswerProvider
+import eu.thesimplecloud.base.manager.setup.groups.provider.GroupWrapperSetupAnswerProvider
 import eu.thesimplecloud.base.manager.setup.groups.provider.ProxyVersionTypeSetupAnswerProvider
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
 import eu.thesimplecloud.launcher.console.setup.provider.BooleanSetupAnswerProvider
-import eu.thesimplecloud.launcher.console.setup.provider.WrapperSetupAnswerProvider
 import eu.thesimplecloud.launcher.startup.Launcher
 import kotlin.properties.Delegates
 
@@ -39,7 +39,7 @@ class ProxyGroupSetup : DefaultGroupSetup(), ISetup {
 
     private lateinit var serviceVersion: ServiceVersion
     private var startPort by Delegates.notNull<Int>()
-    private lateinit var wrapper: IWrapperInfo
+    private var wrapper: IWrapperInfo? = null
     private var percent by Delegates.notNull<Int>()
     private var static by Delegates.notNull<Boolean>()
     private var maximumOnlineServices by Delegates.notNull<Int>()
@@ -128,8 +128,12 @@ class ProxyGroupSetup : DefaultGroupSetup(), ISetup {
         this.static = static
     }
 
-    @SetupQuestion(9, "manager.setup.proxy-group.question.wrapper", WrapperSetupAnswerProvider::class)
+    @SetupQuestion(9, "manager.setup.proxy-group.question.wrapper", GroupWrapperSetupAnswerProvider::class)
     fun wrapperQuestion(string: String): Boolean {
+        if (string.isBlank() && static)
+            return false
+        if (string.isBlank() && !static)
+            return true
         val wrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(string)!!
         this.wrapper = wrapper
         return true
@@ -174,7 +178,7 @@ class ProxyGroupSetup : DefaultGroupSetup(), ISetup {
                 true,
                 static,
                 percent,
-                wrapper.getName(),
+                wrapper?.getName(),
                 startPort,
                 serviceVersion,
                 10,
