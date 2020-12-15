@@ -125,7 +125,16 @@ class SQLOfflineCloudPlayerHandler(private val databaseConnectionInformation: Da
             statement.setString(3, offlineCloudPlayer.getUniqueId().toString())
             statement.executeUpdate()
         }
-        //update name
+    }
+
+    override fun getRegisteredPlayerCount(): Int {
+        val statement = connection!!.prepareStatement("SELECT COUNT(*) FROM `$playerCollectionName`")
+        val resultSet = statement.executeQuery()
+        return if (!resultSet.next()) {
+            0
+        } else {
+            resultSet.getInt(1)
+        }
     }
 
     override fun closeConnection() {

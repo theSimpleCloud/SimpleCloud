@@ -206,6 +206,10 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
         return CommunicationPromise.of(CloudAPI.instance.getCloudPlayerManager().getAllCachedObjects().size)
     }
 
+    override fun getRegisteredPlayerCount(): ICommunicationPromise<Int> {
+        return CommunicationPromise.of(Manager.instance.offlineCloudPlayerHandler.getRegisteredPlayerCount())
+    }
+
     override fun savePlayerToDatabase(offlinePlayer: IOfflineCloudPlayer): ICommunicationPromise<Unit> {
         return CommunicationPromise.runAsync {
             Manager.instance.offlineCloudPlayerHandler.saveCloudPlayer(offlinePlayer.toOfflinePlayer() as OfflineCloudPlayer)

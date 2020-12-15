@@ -92,4 +92,10 @@ abstract class AbstractServiceCloudPlayerManager : AbstractCloudPlayerManager() 
         )
     }
 
+    override fun getRegisteredPlayerCount(): ICommunicationPromise<Int> {
+        return CloudPlugin.instance.connectionToManager.sendQuery(
+            PacketIOGetRegisteredPlayerCount()
+        )
+    }
+
 }

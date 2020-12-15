@@ -257,6 +257,11 @@ interface ICloudPlayerManager : ICacheList<ICloudPlayer> {
     fun getNetworkOnlinePlayerCount(): ICommunicationPromise<Int>
 
     /**
+     * Returns the amount of players registered
+     */
+    fun getRegisteredPlayerCount(): ICommunicationPromise<Int>
+
+    /**
      * Saves the specified [offlinePlayer] to the database.
      * @return a promise that completes when the player was saved.
      */

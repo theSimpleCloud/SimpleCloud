@@ -112,6 +112,10 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
         throw UnsupportedOperationException("Players are not supported in the wrapper")
     }
 
+    override fun getRegisteredPlayerCount(): ICommunicationPromise<Int> {
+        throw UnsupportedOperationException("Players are not supported in the wrapper")
+    }
+
     override fun savePlayerToDatabase(offlinePlayer: IOfflineCloudPlayer): ICommunicationPromise<Unit> {
         throw UnsupportedOperationException("Players are not supported in the wrapper")
     }

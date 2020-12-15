@@ -20,37 +20,21 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.base.manager.database
+package eu.thesimplecloud.api.network.packets.player
 
-import eu.thesimplecloud.api.player.IOfflineCloudPlayer
-import eu.thesimplecloud.api.player.OfflineCloudPlayer
-import java.util.*
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
+import eu.thesimplecloud.clientserverapi.lib.packet.packettype.ObjectPacket
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
-interface IOfflineCloudPlayerHandler {
-
-    /**
-     * Returns the [IOfflineCloudPlayer] found by the specified [playerUniqueId]
-     */
-    fun getOfflinePlayer(playerUniqueId: UUID): IOfflineCloudPlayer?
-
-    /**
-     * Returns the [IOfflineCloudPlayer] found by the specified [name]
-     */
-    fun getOfflinePlayer(name: String): IOfflineCloudPlayer?
-
-    /**
-     * Saves the specified [offlineCloudPlayer] to the database.
-     */
-    fun saveCloudPlayer(offlineCloudPlayer: OfflineCloudPlayer)
-
-    /**
-     * Returns the number of registered players
-     */
-    fun getRegisteredPlayerCount(): Int
-
-    /**
-     * Closes the connection to the database
-     */
-    fun closeConnection()
-
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 25.09.2020
+ * Time: 20:11
+ * @author Frederick Baier
+ */
+class PacketIOGetRegisteredPlayerCount : ObjectPacket<Unit>() {
+    override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
+        return CloudAPI.instance.getCloudPlayerManager().getRegisteredPlayerCount()
+    }
 }

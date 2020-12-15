@@ -112,6 +112,10 @@ class MongoOfflineCloudPlayerHandler(val databaseConnectionInformation: Database
 
     }
 
+    override fun getRegisteredPlayerCount(): Int {
+        return this.collection.countDocuments().toInt()
+    }
+
     override fun closeConnection() {
         this.mongoClient.close()
     }
