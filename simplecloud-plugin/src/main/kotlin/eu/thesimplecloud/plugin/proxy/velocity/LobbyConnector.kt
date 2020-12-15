@@ -36,7 +36,7 @@ class LobbyConnector {
 
     fun getLobbyServer(player: Player, filterServices: List<String> = emptyList()): RegisteredServer? {
         val lobbyGroups = CloudAPI.instance.getCloudServiceGroupManager().getLobbyGroups()
-        val sortedLobbyGroups = lobbyGroups.sortedBy { it.getPriority() }.filter { !it.isInMaintenance() || player.hasPermission("cloud.maintenance.join") }
+        val sortedLobbyGroups = lobbyGroups.sortedByDescending { it.getPriority() }.filter { !it.isInMaintenance() || player.hasPermission("cloud.maintenance.join") }
         val groups = sortedLobbyGroups.filter { it.getPermission() == null || player.hasPermission(it.getPermission()) }
         val availableServices = groups.map { group -> group.getAllServices().filter { it.isOnline() }.filter { !it.isFull() } }.flatten()
         val serviceToConnectTo = availableServices.firstOrNull { !filterServices.contains(it.getName()) }
