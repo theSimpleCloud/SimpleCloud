@@ -20,28 +20,20 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.cloudflare.config
+package eu.thesimplecloud.module.cloudflare.config.proxy
 
-import eu.thesimplecloud.api.utils.Nameable
+import eu.thesimplecloud.api.config.AbstractMultipleConfigLoader
+import java.io.File
 
 /**
  * Created by IntelliJ IDEA.
  * Date: 14.12.2020
- * Time: 16:38
+ * Time: 17:43
  * @author Frederick Baier
  */
-class CloudFlareConfig(
-    val email: String = "me@example.com",
-    val apiToken: String = "",
-    val zoneId: String = "",
-    val aRecordSubDomain: String = "@",
-    val srvRecordSubDomain: String = "@",
-    val domain: String = "example.com",
-    val targetProxyGroup: String = "Proxy"
-) : Nameable {
-
-    override fun getName(): String {
-        return this.targetProxyGroup
-    }
-
-}
+class ProxyConfigLoader : AbstractMultipleConfigLoader<ProxyConfig>(
+    ProxyConfig::class.java,
+    File("modules/cloudflare/proxies/"),
+    listOf(ProxyConfig()),
+    true
+)

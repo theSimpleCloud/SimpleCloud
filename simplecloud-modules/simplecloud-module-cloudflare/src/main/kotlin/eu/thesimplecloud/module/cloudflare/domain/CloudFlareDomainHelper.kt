@@ -20,19 +20,21 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.cloudflare
+package eu.thesimplecloud.module.cloudflare.domain
 
 import eu.roboflax.cloudflare.CloudflareAccess
 import eu.roboflax.cloudflare.CloudflareRequest
 import eu.roboflax.cloudflare.constants.Category
 import eu.roboflax.cloudflare.objects.dns.DNSRecord
 import eu.thesimplecloud.api.service.ICloudService
+import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.combineAllPromises
 import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.module.cloudflare.config.CloudFlareConfig
+import eu.thesimplecloud.module.cloudflare.config.domain.DomainConfig
+import eu.thesimplecloud.module.cloudflare.config.proxy.ProxyConfig
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
 
@@ -43,7 +45,9 @@ import java.util.concurrent.ConcurrentHashMap
  * @author Frederick Baier
  */
 
-class CloudFlareHelper(val config: CloudFlareConfig) {
+class CloudFlareDomainHelper(
+    val config: DomainConfig
+) {
 
     private val cfAccess = CloudflareAccess(config.apiToken, config.email)
 
@@ -56,13 +60,26 @@ class CloudFlareHelper(val config: CloudFlareConfig) {
         return future.thenApply { it.errors.isEmpty() }
     }
 
-    fun createARecordIfNotExist() {
+    fun createARecordsForWrappersIfNotExist(wrappers: List<IWrapperInfo>) {
         val request = CloudflareRequest(Category.LIST_DNS_RECORDS, cfAccess)
             .identifiers(config.zoneId)
 
         val records: List<DNSRecord> = request.asObjectList(DNSRecord::class.java).`object`
-        if (records.none { it.name == getFullDomain() && it.type == "A" }) {
-            createARecord()
+        wrappers.forEach { wrapper ->
+            checkARecord(wrapper, records)
+        }
+    }
+
+    private fun checkARecord(wrapper: IWrapperInfo, records: List<DNSRecord>) {
+        val wrapperRecord =
+            records.firstOrNull { it.name.equals(getFullDomainByWrapper(wrapper), true) && it.type == "A" }
+        if (wrapperRecord == null) {
+            createARecord(wrapper)
+            return
+        }
+        if (wrapperRecord.content != wrapper.getHost()) {
+            deleteRecord(wrapperRecord.id)
+            createARecord(wrapper)
         }
     }
 
@@ -72,21 +89,25 @@ class CloudFlareHelper(val config: CloudFlareConfig) {
     }
 
     fun deleteSRVRecord(service: ICloudService): ICommunicationPromise<Unit> {
+        val id = this.serviceToDNSId[service] ?: return CommunicationPromise.UNIT_PROMISE
+        this.serviceToDNSId.remove(service)
+        return deleteRecord(id)
+    }
+
+    fun deleteRecord(id: String): ICommunicationPromise<Unit> {
         return CommunicationPromise.runAsync {
-            val id = serviceToDNSId[service] ?: return@runAsync
             val request = CloudflareRequest(Category.DELETE_DNS_RECORD, cfAccess)
                 .identifiers(config.zoneId, id)
             request.send()
-            serviceToDNSId.remove(service)
             return@runAsync
         }
     }
 
-    fun createSRVRecord(service: ICloudService): ICommunicationPromise<Unit> {
+    fun createSRVRecord(service: ICloudService, proxyConfig: ProxyConfig): ICommunicationPromise<Unit> {
         return CommunicationPromise.runAsync {
             val request = CloudflareRequest(Category.CREATE_DNS_RECORD, cfAccess)
                 .identifiers(config.zoneId)
-                .body(createSRVRecordBody(service).jsonElement)
+                .body(createSRVRecordBody(service, proxyConfig).jsonElement)
             val response = request.asObject(DNSRecord::class.java)
             if (response.errors.isNotEmpty()) {
                 Launcher.instance.logger.warning("Error creating SRV record:")
@@ -98,10 +119,10 @@ class CloudFlareHelper(val config: CloudFlareConfig) {
         }
     }
 
-    private fun createARecord() {
+    private fun createARecord(wrapper: IWrapperInfo) {
         val request = CloudflareRequest(Category.CREATE_DNS_RECORD, cfAccess)
             .identifiers(config.zoneId)
-            .body(createARecordBody().jsonElement)
+            .body(createARecordBody(wrapper).jsonElement)
         val response = request.send()
         if (response.errors.isNotEmpty()) {
             Launcher.instance.logger.warning("Error creating A record:")
@@ -109,18 +130,18 @@ class CloudFlareHelper(val config: CloudFlareConfig) {
         }
     }
 
-    private fun createARecordBody(): JsonLib {
+    private fun createARecordBody(wrapper: IWrapperInfo): JsonLib {
         return JsonLib.empty()
             .append("type", "A")
             .append("ttl", 1)
             .append("proxied", false)
-            .append("name", this.config.aRecordSubDomain)
+            .append("name", getFullDomainByWrapper(wrapper))
             .append("content", Launcher.instance.launcherConfig.host)
 
     }
 
 
-    private fun createSRVRecordBody(service: ICloudService): JsonLib {
+    private fun createSRVRecordBody(service: ICloudService, proxyConfig: ProxyConfig): JsonLib {
         return JsonLib.empty()
             .append("type", "SRV")
             .append("ttl", 1)
@@ -129,16 +150,16 @@ class CloudFlareHelper(val config: CloudFlareConfig) {
                 "data", JsonLib.empty()
                     .append("service", "_minecraft")
                     .append("proto", "_tcp")
-                    .append("name", this.config.srvRecordSubDomain)
+                    .append("name", proxyConfig.subDomain)
                     .append("priority", 0)
                     .append("weight", 0)
                     .append("port", service.getPort())
-                    .append("target", getFullDomain())
+                    .append("target", getFullDomainByWrapper(service.getWrapper()))
             )
     }
 
-    fun getFullDomain(): String {
-        return if (this.config.aRecordSubDomain == "@") this.config.domain else "${this.config.aRecordSubDomain}.${this.config.domain}"
+    private fun getFullDomainByWrapper(wrapper: IWrapperInfo): String {
+        return "${wrapper.getName()}.simplecloud.${config.domain}"
     }
 }
 

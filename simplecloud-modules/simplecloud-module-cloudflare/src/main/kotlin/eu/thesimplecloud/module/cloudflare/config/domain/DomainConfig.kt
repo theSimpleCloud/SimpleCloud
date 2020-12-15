@@ -20,20 +20,23 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.cloudflare.config
+package eu.thesimplecloud.module.cloudflare.config.domain
 
-import eu.thesimplecloud.api.config.AbstractMultipleConfigLoader
-import java.io.File
+import eu.thesimplecloud.api.utils.Nameable
 
 /**
  * Created by IntelliJ IDEA.
- * Date: 14.12.2020
- * Time: 17:43
+ * Date: 15.12.2020
+ * Time: 20:51
  * @author Frederick Baier
  */
-class CloudFlareConfigLoader : AbstractMultipleConfigLoader<CloudFlareConfig>(
-    CloudFlareConfig::class.java,
-    File("modules/cloudflare/configs/"),
-    listOf(CloudFlareConfig()),
-    true
-)
+class DomainConfig(
+    val domain: String = "example.com",
+    val email: String = "me@example.com",
+    val apiToken: String = "",
+    val zoneId: String = ""
+) : Nameable {
+    override fun getName(): String {
+        return this.domain
+    }
+}

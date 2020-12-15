@@ -25,7 +25,10 @@ package eu.thesimplecloud.module.cloudflare
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.external.ICloudModule
 import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.module.cloudflare.config.CloudFlareConfigLoader
+import eu.thesimplecloud.module.cloudflare.config.domain.DomainConfigLoader
+import eu.thesimplecloud.module.cloudflare.config.proxy.ProxyConfig
+import eu.thesimplecloud.module.cloudflare.config.proxy.ProxyConfigLoader
+import eu.thesimplecloud.module.cloudflare.domain.CloudFlareDomainHelper
 import eu.thesimplecloud.module.cloudflare.listener.CloudFlareSingleGroupListener
 
 /**
@@ -36,35 +39,48 @@ import eu.thesimplecloud.module.cloudflare.listener.CloudFlareSingleGroupListene
  */
 class CloudFlareModule : ICloudModule {
 
-    private val cloudFlareConfigs = CloudFlareConfigLoader().loadAll()
-    private val cloudFlareHelpers = cloudFlareConfigs.map { CloudFlareHelper(it) }
+    private val domainConfigs = DomainConfigLoader().loadAll()
+    private val proxyConfigs = ProxyConfigLoader().loadAll()
+    private val domainHelpers = domainConfigs.map { CloudFlareDomainHelper(it) }
 
     override fun onEnable() {
-        cloudFlareHelpers.forEach { cloudFlareHelper ->
+        proxyConfigs.forEach {
+            Launcher.instance.logger.success("Loaded CloudFlare config for proxy ${it.targetProxyGroup}!")
+        }
+
+        domainHelpers.forEach { cloudFlareHelper ->
             val config = cloudFlareHelper.config
             if (config.email == "me@example.com") return@forEach
             cloudFlareHelper.isCloudFlareConfiguredCorrectly().thenAccept {
                 if (it) {
                     registerAllRunningServices(cloudFlareHelper)
                     CloudAPI.instance.getEventManager()
-                        .registerListener(this, CloudFlareSingleGroupListener(cloudFlareHelper))
-                    cloudFlareHelper.createARecordIfNotExist()
-                    Launcher.instance.logger.success("The CloudFlare Module is active for group ${config.targetProxyGroup}!")
+                        .registerListener(this, CloudFlareSingleGroupListener(cloudFlareHelper, proxyConfigs))
+                    cloudFlareHelper.createARecordsForWrappersIfNotExist(CloudAPI.instance.getWrapperManager().getAllCachedObjects())
+                    Launcher.instance.logger.success("The CloudFlare Module is active for domain ${config.domain}!")
                 } else {
-                    Launcher.instance.logger.warning("The CloudFlare Module is not configured correctly for group ${config.targetProxyGroup}!")
+                    Launcher.instance.logger.warning("The CloudFlare Module is not configured correctly for domain ${config.domain}!")
 
                 }
             }
         }
     }
 
-    private fun registerAllRunningServices(cloudFlareHelper: CloudFlareHelper) {
-        val targetProxyGroup = cloudFlareHelper.config.targetProxyGroup
-        val group = CloudAPI.instance.getCloudServiceGroupManager().getProxyGroupByName(targetProxyGroup) ?: return
-        group.getAllServices().filter { it.isOnline() }.forEach { cloudFlareHelper.createSRVRecord(it) }
+    private fun registerAllRunningServices(cloudFlareHelper: CloudFlareDomainHelper) {
+        val proxyConfigs = getAllProxyConfigsByDomain(cloudFlareHelper.config.domain)
+        proxyConfigs.forEach { registerAllServicesByProxyConfig(cloudFlareHelper, it) }
+    }
+
+    private fun registerAllServicesByProxyConfig(cloudFlareHelper: CloudFlareDomainHelper, proxyConfig: ProxyConfig) {
+        val group = CloudAPI.instance.getCloudServiceGroupManager().getProxyGroupByName(proxyConfig.targetProxyGroup) ?: return
+        group.getAllServices().filter { it.isOnline() }.forEach { cloudFlareHelper.createSRVRecord(it, proxyConfig) }
+    }
+
+    private fun getAllProxyConfigsByDomain(domain: String): List<ProxyConfig> {
+        return this.proxyConfigs.filter { it.domain == domain }
     }
 
     override fun onDisable() {
-        cloudFlareHelpers.forEach { it.deleteAllSRVRecordsAndWait() }
+        domainHelpers.forEach { it.deleteAllSRVRecordsAndWait() }
     }
 }
