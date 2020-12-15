@@ -38,11 +38,12 @@ class SpigotListener : Listener {
 
     private val UNKNOWN_ADRESS = "§cYou are connected from an unknown address!"
     private val NOT_REGISTERED = "§cYou are not registered on the network!"
+    private val NO_PERMISSION = "§cYou are not permitted to enter this server!"
 
     @EventHandler
     fun on(event: PlayerLoginEvent) {
         val player = event.player
-
+        val thisService = CloudPlugin.instance.thisService()
         val hostAddress = event.realAddress.hostAddress
         if (hostAddress != "127.0.0.1" && !CloudAPI.instance.getWrapperManager().getAllCachedObjects().any { it.getHost() == hostAddress }) {
             event.disallow(PlayerLoginEvent.Result.KICK_OTHER, UNKNOWN_ADRESS)
@@ -51,6 +52,10 @@ class SpigotListener : Listener {
 
         if (CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(player.uniqueId) == null) {
             event.disallow(PlayerLoginEvent.Result.KICK_OTHER, NOT_REGISTERED)
+        }
+
+        if(thisService.getServiceGroup().getPermission() != null && !player.hasPermission(thisService.getServiceGroup().getPermission()!!)) {
+            event.disallow(PlayerLoginEvent.Result.KICK_OTHER, NO_PERMISSION)
         }
     }
 
