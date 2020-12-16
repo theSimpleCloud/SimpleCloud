@@ -35,7 +35,7 @@ class CommandExecuteManagerImpl : ICommandExecuteManager {
 
     override fun executeCommand(commandExecutable: ICommandExecutable, command: String) {
         if (commandExecutable is ManagerComponent) {
-            executeCommandOnManager(command)
+            executeCommandOnManager("cloud $command")
         }
 
         val cloudClientType = if (commandExecutable is ICloudService) NetworkComponentType.SERVICE else NetworkComponentType.WRAPPER
