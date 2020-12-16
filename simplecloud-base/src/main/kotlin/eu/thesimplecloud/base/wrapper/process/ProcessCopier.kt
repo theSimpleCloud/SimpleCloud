@@ -50,7 +50,7 @@ class ProcessCopier(val cloudService: ICloudService) {
         serviceProcess ?: return CommunicationPromise.failed(IllegalStateException("Cannot copy inactive service"))
 
         val tempDirectory = serviceProcess.getTempDirectory()
-        val dirToCopy = File(tempDirectory, path)
+        val dirToCopy = if (path == ".") tempDirectory else File(tempDirectory, path)
         if (!dirToCopy.exists())
             return CommunicationPromise.failed(IllegalArgumentException("Directory does not exist"))
         if (!dirToCopy.isDirectory)
@@ -67,15 +67,14 @@ class ProcessCopier(val cloudService: ICloudService) {
         val zippedTemplatesDir = File(DirectoryPaths.paths.zippedTemplatesPath)
         val zipFile = File(zippedTemplatesDir, cloudService.getName() + ".zip")
         zipFile.parentFile.mkdirs()
-
-        ZipUtils.zipFiles(zipFile, FileFinder.getAllFiles(dirToCopy), tempDirectory.path)
+        ZipUtils.zipFiles(zipFile, FileFinder.getAllFiles(dirToCopy), tempDirectory.path + "/")
 
         //send file
-        val savePath = DirectoryPaths.paths.zippedTemplatesPath + "T-" + cloudService.getName()
+        val savePath = DirectoryPaths.paths.zippedTemplatesPath + "T-" + cloudService.getName() + ".zip"
         val dirToUnzip = cloudService.getTemplate().getDirectory().path
         return Wrapper.instance.connectionToManager.sendFile(zipFile, savePath, 20 * 1000).thenDelayed(1200, TimeUnit.MILLISECONDS) {
             val relativePathInTemplate = dirToCopy.path.replace(tempDirectory.path, "")
-            val dirToReplace = dirToUnzip + relativePathInTemplate
+            val dirToReplace = dirToUnzip + if (relativePathInTemplate == "/.") "" else relativePathInTemplate
             //delete folder to replace
             Wrapper.instance.connectionToManager.sendUnitQuery(PacketIODeleteFile(dirToReplace))
         }.flatten(10 * 1000).thenDelayed(1000, TimeUnit.MILLISECONDS) {
