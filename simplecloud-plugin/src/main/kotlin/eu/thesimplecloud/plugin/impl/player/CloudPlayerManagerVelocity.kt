@@ -122,12 +122,10 @@ class CloudPlayerManagerVelocity : AbstractServiceCloudPlayerManager() {
     }
 
     override fun forcePlayerCommandExecution(cloudPlayer: ICloudPlayer, command: String) {
-        println("1 spoofing input $command")
         if (cloudPlayer.getConnectedProxyName() != CloudPlugin.instance.thisServiceName) {
             CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketIOCloudPlayerForceCommandExecution(cloudPlayer, command))
             return
         }
-        println("2 spoofing input $command")
         getPlayerByCloudPlayer(cloudPlayer)?.spoofChatInput("/$command")
     }
 
