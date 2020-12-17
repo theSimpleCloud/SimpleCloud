@@ -32,7 +32,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 class PermissionPlayer(
         private val name: String,
         private val uniqueId: UUID,
-        private val permissionGroupInfoList: MutableList<PlayerPermissionGroupInfo> = CopyOnWriteArrayList()
+        private val permissionGroupInfoList: CopyOnWriteArrayList<PlayerPermissionGroupInfo> = CopyOnWriteArrayList()
 ) : PermissionEntity(), IPermissionPlayer {
 
     override fun getName(): String = this.name
