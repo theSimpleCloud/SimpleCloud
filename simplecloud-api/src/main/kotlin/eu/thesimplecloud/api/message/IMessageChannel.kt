@@ -56,7 +56,7 @@ interface IMessageChannel<T> : Nameable {
     /**
      * Sends a message
      * As receiver a [ICloudService] or [IWrapperInfo] can be used.
-     * If you wan't to send a message to the manager you must use [INetworkComponent.MANAGER_COMPONENT]
+     * If you want to send a message to the manager you must use [INetworkComponent.MANAGER_COMPONENT]
      * @param msg the object to send
      * @param receiver the receiver
      */
