@@ -170,5 +170,5 @@
   "wrapper.startup.template-client.not-activated": "Detected that a manager is running in this directory. Using templates in this folder.",
   "wrapper.startup.template-client.using": "Using an extra client to receive / send templates.",
   "wrapper.template.received": "Templates received.",
-  "wrapper.template.requesting": "Requesting templates..."
+  "wrapper.template.requesting": "Requesting templates... (Timeout: 15 Minutes)"
 }

@@ -179,7 +179,7 @@ class Wrapper : ICloudApplication {
         thread(start = true, isDaemon = false) {
             templateClient.start().then {
                 Launcher.instance.consoleSender.sendProperty("wrapper.template.requesting")
-                templateClient.getConnection().sendUnitQuery(PacketOutGetTemplates(), TimeUnit.SECONDS.toMillis((60 * 2) + 30))
+                templateClient.getConnection().sendUnitQuery(PacketOutGetTemplates(), TimeUnit.MINUTES.toMillis(15))
                         .thenDelayed(3, TimeUnit.SECONDS) {
                             reloadExistingModules()
                             val thisWrapper = getThisWrapper() as IMutableWrapperInfo
