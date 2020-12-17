@@ -23,10 +23,11 @@
 package eu.thesimplecloud.module.permission.entity
 
 import eu.thesimplecloud.module.permission.permission.Permission
+import java.util.concurrent.CopyOnWriteArrayList
 
 open class PermissionEntity : IPermissionEntity {
 
-    private val permissions = ArrayList<Permission>()
+    private val permissions = CopyOnWriteArrayList<Permission>()
 
     override fun getPermissions(): Collection<Permission> = this.permissions
 
