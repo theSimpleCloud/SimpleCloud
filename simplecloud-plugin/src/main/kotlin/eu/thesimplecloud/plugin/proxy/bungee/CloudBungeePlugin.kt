@@ -30,6 +30,7 @@ import eu.thesimplecloud.api.servicegroup.grouptype.ICloudServerGroup
 import eu.thesimplecloud.plugin.impl.player.CloudPlayerManagerBungee
 import eu.thesimplecloud.plugin.listener.CloudListener
 import eu.thesimplecloud.plugin.proxy.ICloudProxyPlugin
+import eu.thesimplecloud.plugin.proxy.ProxyEventHandler
 import eu.thesimplecloud.plugin.proxy.bungee.listener.BungeeListener
 import eu.thesimplecloud.plugin.proxy.bungee.listener.IngameCommandListener
 import eu.thesimplecloud.plugin.startup.CloudPlugin
@@ -69,7 +70,9 @@ class CloudBungeePlugin : Plugin(), ICloudProxyPlugin {
         if (cloudService.getServiceType().isProxy())
             return
         val cloudServiceGroup = cloudService.getServiceGroup()
-        if ((cloudServiceGroup as ICloudServerGroup).getHiddenAtProxyGroups().contains(CloudPlugin.instance.getGroupName()))
+        if ((cloudServiceGroup as ICloudServerGroup).getHiddenAtProxyGroups()
+                .contains(CloudPlugin.instance.getGroupName())
+        )
             return
         println("Registered service ${cloudService.getName()}")
         val socketAddress = InetSocketAddress(cloudService.getHost(), cloudService.getPort())
@@ -78,15 +81,17 @@ class CloudBungeePlugin : Plugin(), ICloudProxyPlugin {
 
     private fun registerFallbackService() {
         registerService(
-                "fallback",
-                UUID.fromString("00000000-0000-0000-0000-000000000000"),
-                InetSocketAddress("127.0.0.1", 0)
+            "fallback",
+            UUID.fromString("00000000-0000-0000-0000-000000000000"),
+            InetSocketAddress("127.0.0.1", 0)
         )
     }
 
     private fun registerService(name: String, uniqueId: UUID, socketAddress: InetSocketAddress) {
-        val info = ProxyServer.getInstance().constructServerInfo(name, socketAddress,
-                uniqueId.toString(), false)
+        val info = ProxyServer.getInstance().constructServerInfo(
+            name, socketAddress,
+            uniqueId.toString(), false
+        )
         ProxyServer.getInstance().servers[name] = info
     }
 
@@ -97,7 +102,8 @@ class CloudBungeePlugin : Plugin(), ICloudProxyPlugin {
     override fun onLoad() {
         ProxyServer.getInstance().reconnectHandler = ReconnectHandlerImpl()
         CloudPlugin(this)
-        val synchronizedObjectPromise = CloudAPI.instance.getGlobalPropertyHolder().requestProperty<Array<String>>("simplecloud-ingamecommands")
+        val synchronizedObjectPromise =
+            CloudAPI.instance.getGlobalPropertyHolder().requestProperty<Array<String>>("simplecloud-ingamecommands")
         synchronizedObjectPromise.addResultListener {
             this.synchronizedIngameCommandsProperty = it
         }.throwFailure()
@@ -112,16 +118,27 @@ class CloudBungeePlugin : Plugin(), ICloudProxyPlugin {
 
         registerFallbackService()
         CloudPlugin.instance.onEnable()
-        CloudAPI.instance.getCloudServiceManager().getAllCachedObjects().filter { it.isActive() }.forEach { addServiceToProxy(it) }
+        CloudAPI.instance.getCloudServiceManager().getAllCachedObjects().filter { it.isActive() }
+            .forEach { addServiceToProxy(it) }
         CloudAPI.instance.getEventManager().registerListener(CloudPlugin.instance, CloudListener())
         ProxyServer.getInstance().pluginManager.registerListener(this, BungeeListener())
         ProxyServer.getInstance().pluginManager.registerListener(this, IngameCommandListener())
 
         synchronizeOnlineCountTask()
+        runOfflinePlayerChecker()
     }
 
     override fun onDisable() {
         CloudPlugin.instance.onDisable()
+    }
+
+    private fun runOfflinePlayerChecker() {
+        proxy.scheduler.schedule(this, {
+            val playersOnThisService =
+                CloudAPI.instance.getCloudPlayerManager().getAllCachedObjects()
+            val playersOffline = playersOnThisService.filter { proxy.getPlayer(it.getUniqueId()) == null }
+            playersOffline.forEach { ProxyEventHandler.handleDisconnect(it.getUniqueId(), it.getName()) }
+        }, 2, 30, TimeUnit.SECONDS)
     }
 
     private fun synchronizeOnlineCountTask() {
@@ -131,7 +148,7 @@ class CloudBungeePlugin : Plugin(), ICloudProxyPlugin {
                 service.setOnlineCount(proxy.onlineCount)
                 service.update()
             }
-        }, 30, 30, TimeUnit.SECONDS)
+        }, 0, 30, TimeUnit.SECONDS)
     }
 
     override fun getCloudPlayerManagerClass(): KClass<out ICloudPlayerManager> {

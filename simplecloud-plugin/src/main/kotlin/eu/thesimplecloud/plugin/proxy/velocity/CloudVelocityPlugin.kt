@@ -37,6 +37,7 @@ import eu.thesimplecloud.api.servicegroup.grouptype.ICloudServerGroup
 import eu.thesimplecloud.plugin.impl.player.CloudPlayerManagerVelocity
 import eu.thesimplecloud.plugin.listener.CloudListener
 import eu.thesimplecloud.plugin.proxy.ICloudProxyPlugin
+import eu.thesimplecloud.plugin.proxy.ProxyEventHandler
 import eu.thesimplecloud.plugin.proxy.velocity.commands.VelocityCommand
 import eu.thesimplecloud.plugin.proxy.velocity.listener.VelocityListener
 import eu.thesimplecloud.plugin.startup.CloudPlugin
@@ -68,7 +69,8 @@ class CloudVelocityPlugin @Inject constructor(val proxyServer: ProxyServer) : IC
         instance = this
 
         CloudPlugin(this)
-        val synchronizedObjectPromise = CloudAPI.instance.getGlobalPropertyHolder().requestProperty<Array<String>>("simplecloud-ingamecommands")
+        val synchronizedObjectPromise =
+            CloudAPI.instance.getGlobalPropertyHolder().requestProperty<Array<String>>("simplecloud-ingamecommands")
         synchronizedObjectPromise.addResultListener { property ->
             this.synchronizedIngameCommandsProperty = property
 
@@ -86,11 +88,13 @@ class CloudVelocityPlugin @Inject constructor(val proxyServer: ProxyServer) : IC
     @Subscribe
     fun handleInit(event: ProxyInitializeEvent) {
         CloudPlugin.instance.onEnable()
-        CloudAPI.instance.getCloudServiceManager().getAllCachedObjects().filter { it.isActive() }.forEach { addServiceToProxy(it) }
+        CloudAPI.instance.getCloudServiceManager().getAllCachedObjects().filter { it.isActive() }
+            .forEach { addServiceToProxy(it) }
         CloudAPI.instance.getEventManager().registerListener(CloudPlugin.instance, CloudListener())
         proxyServer.eventManager.register(this, VelocityListener(this))
 
         synchronizeOnlineCountTask()
+        runOfflinePlayerChecker()
     }
 
 
@@ -106,7 +110,9 @@ class CloudVelocityPlugin @Inject constructor(val proxyServer: ProxyServer) : IC
         if (cloudService.getServiceType().isProxy())
             return
         val cloudServiceGroup = cloudService.getServiceGroup()
-        if ((cloudServiceGroup as ICloudServerGroup).getHiddenAtProxyGroups().contains(CloudPlugin.instance.getGroupName()))
+        if ((cloudServiceGroup as ICloudServerGroup).getHiddenAtProxyGroups()
+                .contains(CloudPlugin.instance.getGroupName())
+        )
             return
         println("Registered service ${cloudService.getName()}")
         val socketAddress = InetSocketAddress(cloudService.getHost(), cloudService.getPort())
@@ -119,9 +125,18 @@ class CloudVelocityPlugin @Inject constructor(val proxyServer: ProxyServer) : IC
     }
 
     override fun removeServiceFromProxy(cloudService: ICloudService) {
-        val registeredServer = proxyServer.getServer(cloudService.getName()).orElse(null)?: return
+        val registeredServer = proxyServer.getServer(cloudService.getName()).orElse(null) ?: return
 
         proxyServer.unregisterServer(registeredServer.serverInfo)
+    }
+
+    private fun runOfflinePlayerChecker() {
+        proxyServer.scheduler.buildTask(this) {
+            val playersOnThisService =
+                CloudAPI.instance.getCloudPlayerManager().getAllCachedObjects()
+            val playersOffline = playersOnThisService.filter { proxyServer.getPlayer(it.getUniqueId()) == null }
+            playersOffline.forEach { ProxyEventHandler.handleDisconnect(it.getUniqueId(), it.getName()) }
+        }.delay(2L, TimeUnit.SECONDS).repeat(30L, TimeUnit.SECONDS).schedule()
     }
 
     private fun synchronizeOnlineCountTask() {
