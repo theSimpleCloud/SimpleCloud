@@ -23,6 +23,7 @@
 package eu.thesimplecloud.base.manager.network.packets.player
 
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.dto.PlayerLoginRequestResult
 import eu.thesimplecloud.api.exception.NoSuchPlayerException
 import eu.thesimplecloud.base.manager.events.CloudPlayerLoginRequestEvent
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
@@ -37,9 +38,6 @@ class PacketInPlayerLoginRequest() : ObjectPacket<UUID>() {
         val cloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(value) ?: return failure(NoSuchPlayerException("Player cannot be found"))
         val loginEvent = CloudPlayerLoginRequestEvent(cloudPlayer)
         CloudAPI.instance.getEventManager().call(loginEvent)
-        if (loginEvent.isCancelled()){
-            cloudPlayer.kick(loginEvent.kickMessage)
-        }
-        return unit()
+        return success(PlayerLoginRequestResult(loginEvent.isCancelled(), loginEvent.kickMessage))
     }
 }

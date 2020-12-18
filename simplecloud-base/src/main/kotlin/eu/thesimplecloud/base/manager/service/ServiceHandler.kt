@@ -71,7 +71,7 @@ class ServiceHandler : IServiceHandler {
             -1,
             startConfiguration.maxMemory,
             startConfiguration.maxPlayers,
-            "Cloud service",
+            "Cloud-Service",
             cloudServiceGroup.getServiceVersion()
         )
         CloudAPI.instance.getCloudServiceManager().update(service).awaitUninterruptibly()
