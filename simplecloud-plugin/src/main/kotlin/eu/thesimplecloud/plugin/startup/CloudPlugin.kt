@@ -115,6 +115,7 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
     override fun onEnable() {
         if (thisService().getServiceGroup().isStateUpdatingEnabled() && thisService().getState() == ServiceState.STARTING) {
             thisService().setState(ServiceState.VISIBLE)
+            cloudServicePlugin.onBeforeFirstUpdate()
             updateThisService()
         }
     }

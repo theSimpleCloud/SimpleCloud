@@ -55,6 +55,12 @@ class CloudSpigotPlugin : JavaPlugin(), ICloudServerPlugin {
         synchronizeOnlineCountTask()
     }
 
+    override fun onBeforeFirstUpdate() {
+        //Service will be updated after this function was called
+        val motd = Bukkit.getServer().motd
+        CloudPlugin.instance.thisService().setMOTD(motd)
+    }
+
     override fun onDisable() {
         CloudPlugin.instance.onDisable()
     }
