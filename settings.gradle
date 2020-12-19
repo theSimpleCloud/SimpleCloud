@@ -50,4 +50,6 @@ include 'simplecloud-modules:simplecloud-module-serviceselection'
 findProject(':simplecloud-modules:simplecloud-module-serviceselection')?.name = 'simplecloud-module-serviceselection'
 include 'simplecloud-modules:simplecloud-module-rest'
 findProject(':simplecloud-modules:simplecloud-module-rest')?.name = 'simplecloud-module-rest'
+include 'simplecloud-modules:simplecloud-module-chat-tab'
+findProject(':simplecloud-modules:simplecloud-module-chat-tab')?.name = 'simplecloud-module-chat-tab'
 
