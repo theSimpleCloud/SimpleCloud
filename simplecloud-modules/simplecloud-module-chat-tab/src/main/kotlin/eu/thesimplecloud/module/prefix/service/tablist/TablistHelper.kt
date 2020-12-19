@@ -21,13 +21,14 @@ object TablistHelper {
         Config.getConfig().informationList.forEach {
             val team = scoreboard.getTeam(it.priority.toString()) ?: scoreboard.registerNewTeam(it.priority.toString())
 
-            team.prefix = ChatColor.translateAlternateColorCodes('&', it.prefix)
+            val chatColor = ChatColor.valueOf(it.color)
+
+            team.prefix = ChatColor.translateAlternateColorCodes('&', it.prefix) + chatColor.toString()
             team.suffix = ChatColor.translateAlternateColorCodes('&', it.suffix)
 
             try {
-                team.color = ChatColor.valueOf(it.color)
-            } catch (ex: NoSuchMethodException) {
-            }
+                team.color = chatColor
+            } catch (ex: NoSuchMethodException) {}
         }
 
         Bukkit.getOnlinePlayers().forEach {
