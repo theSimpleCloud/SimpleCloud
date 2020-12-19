@@ -37,7 +37,7 @@ abstract class AbstractCacheList<T : Any>(private val spreadUpdates: Boolean = t
 
     override fun delete(value: T, fromPacket: Boolean): ICommunicationPromise<Unit> {
         return CommunicationPromise.runAsync {
-            super.update(value, fromPacket = true, isCalledFromDelete = true)
+            super.update(value, fromPacket = true, isCalledFromDelete = true).awaitCoroutine()
             val result = super.delete(value, fromPacket).awaitCoroutine()
             values.remove(getUpdater().getCachedObjectByUpdateValue(value))
             return@runAsync result
