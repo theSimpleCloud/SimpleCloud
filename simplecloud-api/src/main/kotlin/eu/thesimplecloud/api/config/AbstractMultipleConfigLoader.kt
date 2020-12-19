@@ -22,6 +22,7 @@
 
 package eu.thesimplecloud.api.config
 
+import com.google.gson.Gson
 import eu.thesimplecloud.api.utils.Nameable
 import eu.thesimplecloud.jsonlib.JsonLib
 import java.io.File
@@ -36,7 +37,8 @@ abstract class AbstractMultipleConfigLoader<T : Nameable>(
     private val clazz: Class<T>,
     private val directory: File,
     private val defaultValues: List<T>,
-    private val saveDefaultOnFirstLoad: Boolean
+    private val saveDefaultOnFirstLoad: Boolean,
+    private val gsonToUse: Gson = JsonLib.GSON
 ) : IFileHandler<T> {
 
     override fun save(value: T) {

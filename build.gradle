@@ -66,7 +66,7 @@ allprojects {
     }
 
     project.ext {
-        depedencyClientServerAPIVersion = '4.1.10'
+        depedencyClientServerAPIVersion = '4.1.12'
     }
 
     buildscript {
@@ -99,12 +99,12 @@ subprojects {
         compileOnly(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion) {
             transitive = false
         }
-        compileOnly(group: 'eu.thesimplecloud.jsonlib', name: 'json-lib', version: "1.0-SNAPSHOT") {
+        compileOnly(group: 'eu.thesimplecloud.jsonlib', name: 'json-lib', version: "1.0.8") {
             transitive = false
         }
 
         testCompile(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion)
-        testCompile(group: 'eu.thesimplecloud.jsonlib', name: 'json-lib', version: "1.0-SNAPSHOT")
+        testCompile(group: 'eu.thesimplecloud.jsonlib', name: 'json-lib', version: "1.0.8")
 
         compileOnly group: 'commons-io', name: 'commons-io', version: '2.6'
         compileOnly group: 'com.google.guava', name: 'guava', version: '21.0'

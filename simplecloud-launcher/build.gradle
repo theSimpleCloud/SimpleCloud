@@ -42,7 +42,7 @@ dependencies {
     implementation(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion) {
         transitive = false
     }
-    compile(group: 'eu.thesimplecloud.jsonlib', name: 'json-lib', version: "1.0-SNAPSHOT") {
+    compile(group: 'eu.thesimplecloud.jsonlib', name: 'json-lib', version: "1.0.8") {
         transitive = false
     }
 

@@ -22,14 +22,16 @@
 
 package eu.thesimplecloud.api.config
 
+import com.google.gson.Gson
 import eu.thesimplecloud.jsonlib.JsonLib
 import java.io.File
 
 abstract class AbstractJsonLibConfigLoader<T : Any>(
-        val configClass: Class<T>,
-        val configFie: File,
-        val lazyDefaultObject: () -> T,
-        val saveDefaultOnFistLoad: Boolean
+    private val configClass: Class<T>,
+    private val configFie: File,
+    private val lazyDefaultObject: () -> T,
+    private val saveDefaultOnFistLoad: Boolean,
+    private val gsonToUse: Gson = JsonLib.GSON
 ) : IConfigLoader<T> {
 
     override fun loadConfig(): T {
@@ -44,7 +46,7 @@ abstract class AbstractJsonLibConfigLoader<T : Any>(
     }
 
     override fun saveConfig(value: T) {
-        JsonLib.fromObject(value).saveAsFile(configFie)
+        JsonLib.fromObject(value, gsonToUse).saveAsFile(configFie)
     }
 
     override fun doesConfigFileExist(): Boolean = this.configFie.exists()
