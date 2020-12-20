@@ -42,7 +42,7 @@ abstract class AbstractMultipleConfigLoader<T : Nameable>(
 ) : IFileHandler<T> {
 
     override fun save(value: T) {
-        JsonLib.fromObject(value).saveAsFile(getFileByObject(value))
+        JsonLib.fromObject(value, gsonToUse).saveAsFile(getFileByObject(value))
     }
 
     override fun delete(value: T) {
@@ -51,7 +51,7 @@ abstract class AbstractMultipleConfigLoader<T : Nameable>(
 
     override fun loadAll(): Set<T> {
         if (!directory.exists() && saveDefaultOnFirstLoad) saveDefaults()
-        return this.directory.listFiles()?.mapNotNull { JsonLib.fromJsonFile(it)?.getObject(clazz) }?.toSet()
+        return this.directory.listFiles()?.mapNotNull { JsonLib.fromJsonFile(it, gsonToUse)?.getObject(clazz) }?.toSet()
             ?: emptySet()
     }
 

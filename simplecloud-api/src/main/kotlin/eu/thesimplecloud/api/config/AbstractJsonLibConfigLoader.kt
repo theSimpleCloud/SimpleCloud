@@ -35,7 +35,7 @@ abstract class AbstractJsonLibConfigLoader<T : Any>(
 ) : IConfigLoader<T> {
 
     override fun loadConfig(): T {
-        val objectFromFile = JsonLib.fromJsonFile(configFie)?.getObjectOrNull(configClass)
+        val objectFromFile = JsonLib.fromJsonFile(configFie, gsonToUse)?.getObjectOrNull(configClass)
         if (objectFromFile == null) {
             val defaultObject = lazyDefaultObject()
             if (saveDefaultOnFistLoad && !doesConfigFileExist())
