@@ -24,6 +24,9 @@ package eu.thesimplecloud.api.service.start.future
 
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromiseListener
+import io.netty.util.concurrent.Future
+import io.netty.util.concurrent.GenericFutureListener
 import java.util.function.Consumer
 
 /**
@@ -48,6 +51,37 @@ interface IServiceStartPromise : ICommunicationPromise<ICloudService> {
      * Calls the specified [consumer] when the service was started
      */
     fun onServiceStarted(consumer: Consumer<ICloudService>)
+
+
+    override fun addCommunicationPromiseListeners(vararg listener: ICommunicationPromiseListener<ICloudService>): IServiceStartPromise
+
+    override fun addCompleteListener(listener: (ICommunicationPromise<ICloudService>) -> Unit): IServiceStartPromise
+
+    override fun addCompleteListener(listener: ICommunicationPromiseListener<ICloudService>): IServiceStartPromise
+
+    override fun addFailureListener(listener: (Throwable) -> Unit): IServiceStartPromise
+
+    override fun addListener(listener: GenericFutureListener<out Future<in ICloudService>>?): IServiceStartPromise
+
+    override fun addListeners(vararg listeners: GenericFutureListener<out Future<in ICloudService>>?): IServiceStartPromise
+
+    override fun addResultListener(listener: (ICloudService) -> Unit): IServiceStartPromise
+
+    override fun await(): IServiceStartPromise
+
+    override fun awaitUninterruptibly(): IServiceStartPromise
+
+    override fun removeListener(listener: GenericFutureListener<out Future<in ICloudService>>?): IServiceStartPromise
+
+    override fun removeListeners(vararg listeners: GenericFutureListener<out Future<in ICloudService>>?): IServiceStartPromise
+
+    override fun setFailure(cause: Throwable): IServiceStartPromise
+
+    override fun setSuccess(result: ICloudService): IServiceStartPromise
+
+    override fun sync(): IServiceStartPromise
+
+    override fun syncUninterruptibly(): ICommunicationPromise<ICloudService>
 
 
 }

@@ -55,36 +55,44 @@ class ServiceStartPromise(
             .then { consumer.accept(it.cloudService) }
     }
 
-    override fun addCommunicationPromiseListeners(vararg listener: ICommunicationPromiseListener<ICloudService>): ICommunicationPromise<ICloudService> {
-        return delegatePromise.addCommunicationPromiseListeners(*listener)
+    override fun addCommunicationPromiseListeners(vararg listener: ICommunicationPromiseListener<ICloudService>): IServiceStartPromise {
+        delegatePromise.addCommunicationPromiseListeners(*listener)
+        return this
     }
 
-    override fun addCompleteListener(listener: (ICommunicationPromise<ICloudService>) -> Unit): ICommunicationPromise<ICloudService> {
-        return delegatePromise.addCompleteListener(listener)
+    override fun addCompleteListener(listener: (ICommunicationPromise<ICloudService>) -> Unit): IServiceStartPromise {
+        delegatePromise.addCompleteListener(listener)
+        return this
     }
 
-    override fun addCompleteListener(listener: ICommunicationPromiseListener<ICloudService>): ICommunicationPromise<ICloudService> {
-        return delegatePromise.addCompleteListener(listener)
+    override fun addCompleteListener(listener: ICommunicationPromiseListener<ICloudService>): IServiceStartPromise {
+        delegatePromise.addCompleteListener(listener)
+        return this
     }
 
-    override fun addFailureListener(listener: (Throwable) -> Unit): ICommunicationPromise<ICloudService> {
-        return delegatePromise.addFailureListener(listener)
+    override fun addFailureListener(listener: (Throwable) -> Unit): IServiceStartPromise {
+        delegatePromise.addFailureListener(listener)
+        return this
     }
 
-    override fun addListener(listener: GenericFutureListener<out Future<in ICloudService>>?): ICommunicationPromise<ICloudService> {
-        return delegatePromise.addListener(listener)
+    override fun addListener(listener: GenericFutureListener<out Future<in ICloudService>>?): IServiceStartPromise {
+        delegatePromise.addListener(listener)
+        return this
     }
 
-    override fun addListeners(vararg listeners: GenericFutureListener<out Future<in ICloudService>>?): ICommunicationPromise<ICloudService> {
-        return delegatePromise.addListeners(*listeners)
+    override fun addListeners(vararg listeners: GenericFutureListener<out Future<in ICloudService>>?): IServiceStartPromise {
+        delegatePromise.addListeners(*listeners)
+        return this
     }
 
-    override fun addResultListener(listener: (ICloudService) -> Unit): ICommunicationPromise<ICloudService> {
-        return delegatePromise.addResultListener(listener)
+    override fun addResultListener(listener: (ICloudService) -> Unit): IServiceStartPromise {
+        delegatePromise.addResultListener(listener)
+        return this
     }
 
-    override fun await(): ICommunicationPromise<ICloudService> {
-        return delegatePromise.await()
+    override fun await(): IServiceStartPromise {
+        delegatePromise.await()
+        return this
     }
 
     override fun await(timeout: Long, unit: TimeUnit?): Boolean {
@@ -95,8 +103,9 @@ class ServiceStartPromise(
         return delegatePromise.await(timeoutMillis)
     }
 
-    override fun awaitUninterruptibly(): ICommunicationPromise<ICloudService> {
-        return delegatePromise.awaitUninterruptibly()
+    override fun awaitUninterruptibly(): IServiceStartPromise {
+        delegatePromise.awaitUninterruptibly()
+        return this
     }
 
     override fun awaitUninterruptibly(timeout: Long, unit: TimeUnit?): Boolean {
@@ -169,28 +178,33 @@ class ServiceStartPromise(
         return delegatePromise.isTimeoutEnabled()
     }
 
-    override fun removeListener(listener: GenericFutureListener<out Future<in ICloudService>>?): ICommunicationPromise<ICloudService> {
-        return delegatePromise.removeListener(listener)
+    override fun removeListener(listener: GenericFutureListener<out Future<in ICloudService>>?): IServiceStartPromise {
+        delegatePromise.removeListener(listener)
+        return this
     }
 
-    override fun removeListeners(vararg listeners: GenericFutureListener<out Future<in ICloudService>>?): ICommunicationPromise<ICloudService> {
-        return delegatePromise.removeListeners(*listeners)
+    override fun removeListeners(vararg listeners: GenericFutureListener<out Future<in ICloudService>>?): IServiceStartPromise {
+        delegatePromise.removeListeners(*listeners)
+        return this
     }
 
-    override fun setFailure(cause: Throwable): ICommunicationPromise<ICloudService> {
-        return delegatePromise.setFailure(cause)
+    override fun setFailure(cause: Throwable): IServiceStartPromise {
+        delegatePromise.setFailure(cause)
+        return this
     }
 
-    override fun setSuccess(result: ICloudService): ICommunicationPromise<ICloudService> {
-        return delegatePromise.setSuccess(result)
+    override fun setSuccess(result: ICloudService): IServiceStartPromise {
+        delegatePromise.setSuccess(result)
+        return this
     }
 
     override fun setUncancellable(): Boolean {
         return delegatePromise.setUncancellable()
     }
 
-    override fun sync(): ICommunicationPromise<ICloudService> {
-        return delegatePromise.sync()
+    override fun sync(): IServiceStartPromise {
+        delegatePromise.sync()
+        return this
     }
 
     override fun syncUninterruptibly(): ICommunicationPromise<ICloudService> {
