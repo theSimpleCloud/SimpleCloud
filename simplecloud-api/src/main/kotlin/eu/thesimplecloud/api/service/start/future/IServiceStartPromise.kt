@@ -40,17 +40,17 @@ interface IServiceStartPromise : ICommunicationPromise<ICloudService> {
     /**
      * Calls the specified [consumer] when the service was registered
      */
-    fun onServiceRegistered(consumer: Consumer<ICloudService>)
+    fun onServiceRegistered(consumer: Consumer<ICloudService>): IServiceStartPromise
 
     /**
      * Calls the specified [consumer] when the service is starting
      */
-    fun onServiceStarting(consumer: Consumer<ICloudService>)
+    fun onServiceStarting(consumer: Consumer<ICloudService>): IServiceStartPromise
 
     /**
      * Calls the specified [consumer] when the service was started
      */
-    fun onServiceStarted(consumer: Consumer<ICloudService>)
+    fun onServiceStarted(consumer: Consumer<ICloudService>): IServiceStartPromise
 
 
     override fun addCommunicationPromiseListeners(vararg listener: ICommunicationPromiseListener<ICloudService>): IServiceStartPromise

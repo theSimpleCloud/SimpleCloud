@@ -41,18 +41,21 @@ class ServiceStartPromise(
     private val delegatePromise: ICommunicationPromise<ICloudService>
 ) : IServiceStartPromise {
 
-    override fun onServiceRegistered(consumer: Consumer<ICloudService>) {
+    override fun onServiceRegistered(consumer: Consumer<ICloudService>): IServiceStartPromise {
         delegatePromise.then { consumer.accept(it) }
+        return this
     }
 
-    override fun onServiceStarting(consumer: Consumer<ICloudService>) {
+    override fun onServiceStarting(consumer: Consumer<ICloudService>): IServiceStartPromise {
         delegatePromise.then { it.createStartingPromise() }.flatten(timeoutEnabled = false)
             .then { consumer.accept(it.cloudService) }
+        return this
     }
 
-    override fun onServiceStarted(consumer: Consumer<ICloudService>) {
+    override fun onServiceStarted(consumer: Consumer<ICloudService>): IServiceStartPromise {
         delegatePromise.then { it.createStartedPromise() }.flatten(timeoutEnabled = false)
             .then { consumer.accept(it.cloudService) }
+        return this
     }
 
     override fun addCommunicationPromiseListeners(vararg listener: ICommunicationPromiseListener<ICloudService>): IServiceStartPromise {
