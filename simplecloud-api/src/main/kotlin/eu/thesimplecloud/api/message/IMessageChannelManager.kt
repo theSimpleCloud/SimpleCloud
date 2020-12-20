@@ -22,17 +22,29 @@
 
 package eu.thesimplecloud.api.message
 
+import eu.thesimplecloud.api.external.ICloudModule
+
 interface IMessageChannelManager {
 
     /**
      * Registers a new [MessageChannel]
      *
      */
-    fun <T> registerMessageChannel(name: String, clazz: Class<T>): IMessageChannel<T>
+    fun <T> registerMessageChannel(cloudModule: ICloudModule, name: String, clazz: Class<T>): IMessageChannel<T>
 
     /**
      * Return the [IMessageChannel] found by the specified [name]
      */
     fun <T> getMessageChannelByName(name: String): IMessageChannel<T>?
+
+    /**
+     * Unregisters the message channel found by the specified [name]
+     */
+    fun unregisterMessageChannel(name: String)
+
+    /**
+     * Unregisters all message channel registered by the specified [cloudModule]
+     */
+    fun unregisterMessageChannel(cloudModule: ICloudModule)
 
 }

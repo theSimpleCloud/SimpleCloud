@@ -23,13 +23,14 @@
 package eu.thesimplecloud.api.message
 
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.external.ICloudModule
 import eu.thesimplecloud.api.network.component.INetworkComponent
 import eu.thesimplecloud.jsonlib.GsonCreator
 import eu.thesimplecloud.jsonlib.JsonLib
 import java.util.concurrent.CopyOnWriteArraySet
 
 
-class MessageChannel<T>(private val name: String, private val clazz: Class<T>) : IMessageChannel<T> {
+class MessageChannel<T>(val cloudModule: ICloudModule, private val name: String, private val clazz: Class<T>) : IMessageChannel<T> {
 
     companion object {
         private val GSON = GsonCreator().create()

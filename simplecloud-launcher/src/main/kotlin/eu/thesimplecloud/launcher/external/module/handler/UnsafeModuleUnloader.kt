@@ -49,6 +49,9 @@ class UnsafeModuleUnloader(val loadedModule: LoadedModule) {
         CloudAPI.instance.getEventManager().unregisterAllListenersByCloudModule(cloudModule)
         (loadedModule.moduleClassLoader as ModuleClassLoader).close()
 
+        //unregister all message channel
+        CloudAPI.instance.getMessageChannelManager().unregisterMessageChannel(cloudModule)
+
         CloudAPI.instance.getEventManager().call(ModuleUnloadedEvent(loadedModule))
 
         //reset all property values

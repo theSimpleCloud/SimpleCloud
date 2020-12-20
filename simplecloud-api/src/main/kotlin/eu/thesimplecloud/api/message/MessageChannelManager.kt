@@ -26,6 +26,7 @@ import com.google.common.collect.Maps
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.client.NetworkComponentReference
 import eu.thesimplecloud.api.client.NetworkComponentType
+import eu.thesimplecloud.api.external.ICloudModule
 import eu.thesimplecloud.api.network.packets.message.PacketIOChannelMessage
 import eu.thesimplecloud.clientserverapi.client.INettyClient
 import eu.thesimplecloud.clientserverapi.server.INettyServer
@@ -34,15 +35,24 @@ class MessageChannelManager : IMessageChannelManager {
 
     private val channels = Maps.newConcurrentMap<String, MessageChannel<*>>()
 
-    override fun <T> registerMessageChannel(name: String, clazz: Class<T>): IMessageChannel<T> {
+    override fun <T> registerMessageChannel(cloudModule: ICloudModule, name: String, clazz: Class<T>): IMessageChannel<T> {
         if (this.channels.containsKey(name)) throw IllegalArgumentException("Channel is already registered")
-        val messageChannel = MessageChannel(name, clazz)
+        val messageChannel = MessageChannel(cloudModule, name, clazz)
         this.channels[name] = messageChannel
         return messageChannel
     }
 
     override fun <T> getMessageChannelByName(name: String): IMessageChannel<T>? {
-        return this.channels[name] as IMessageChannel<T>
+        return this.channels[name] as IMessageChannel<T>?
+    }
+
+    override fun unregisterMessageChannel(name: String) {
+        this.channels.remove(name)
+    }
+
+    override fun unregisterMessageChannel(cloudModule: ICloudModule) {
+        val messageChannelNamesByModule = this.channels.entries.filter { it.value.cloudModule == cloudModule }.map { it.key }
+        messageChannelNamesByModule.forEach { unregisterMessageChannel(it) }
     }
 
     fun sendMessage(message: Message) {
