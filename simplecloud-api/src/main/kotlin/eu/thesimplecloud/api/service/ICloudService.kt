@@ -30,6 +30,8 @@ import eu.thesimplecloud.api.event.service.CloudServiceStartingEvent
 import eu.thesimplecloud.api.event.service.CloudServiceUnregisteredEvent
 import eu.thesimplecloud.api.listenerextension.cloudListener
 import eu.thesimplecloud.api.network.component.INetworkComponent
+import eu.thesimplecloud.api.player.ICloudPlayer
+import eu.thesimplecloud.api.player.SimpleCloudPlayer
 import eu.thesimplecloud.api.property.IPropertyMap
 import eu.thesimplecloud.api.service.version.ServiceVersion
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
@@ -39,6 +41,8 @@ import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.clientserverapi.lib.bootstrap.IBootstrap
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
+import eu.thesimplecloud.clientserverapi.lib.promise.flatten
+import eu.thesimplecloud.clientserverapi.lib.promise.toListPromise
 import java.util.*
 
 interface ICloudService : INetworkComponent, IBootstrap, IPropertyMap {
@@ -165,6 +169,22 @@ interface ICloudService : INetworkComponent, IBootstrap, IPropertyMap {
      * Sets the amount of online players.
      */
     fun setOnlineCount(amount: Int)
+
+    /**
+     *  Returns a promise of players currently connected to this service
+     */
+    fun getOnlinePlayers(): ICommunicationPromise<List<SimpleCloudPlayer>> {
+        return CloudAPI.instance.getCloudPlayerManager().getPlayersConnectedToService(this)
+    }
+
+    /**
+     *  Returns a promise of players currently connected to this service
+     *  If you just need the name or the uniqueId of the the online players use [getOnlinePlayers] instead
+     *  because this function takes much longer
+     */
+    fun getOnlinePlayersDirect(): ICommunicationPromise<List<ICloudPlayer?>> {
+        return getOnlinePlayers().then { simplePlayers -> simplePlayers.map { it.getCloudPlayer() }.toListPromise() }.flatten()
+    }
 
     /**
      * Returns the maximum amount of players for this service

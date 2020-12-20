@@ -266,4 +266,9 @@ interface ICloudPlayerManager : ICacheList<ICloudPlayer> {
      * @return a promise that completes when the player was saved.
      */
     fun savePlayerToDatabase(offlinePlayer: IOfflineCloudPlayer): ICommunicationPromise<Unit>
+
+    /**
+     * Returns all players connected to the specified service
+     */
+    fun getPlayersConnectedToService(cloudService: ICloudService): ICommunicationPromise<List<SimpleCloudPlayer>>
 }

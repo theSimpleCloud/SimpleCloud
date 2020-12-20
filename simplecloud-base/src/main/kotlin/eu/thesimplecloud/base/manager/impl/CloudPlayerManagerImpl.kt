@@ -216,6 +216,13 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
         }
     }
 
+    override fun getPlayersConnectedToService(cloudService: ICloudService): ICommunicationPromise<List<SimpleCloudPlayer>> {
+        val playersOnService = CloudAPI.instance.getCloudPlayerManager().getAllCachedObjects().filter {
+            it.getConnectedProxyName() == cloudService.getName() || it.getConnectedServerName() == cloudService.getName()
+        }
+        return CommunicationPromise.of(playersOnService.map { it.toSimplePlayer() })
+    }
+
     private fun getProxyClientOfCloudPlayer(cloudPlayer: ICloudPlayer): IConnectedClient<*>? {
         return getCloudClientByServiceName(cloudPlayer.getConnectedProxyName())
     }

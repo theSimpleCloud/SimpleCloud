@@ -119,4 +119,8 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
     override fun savePlayerToDatabase(offlinePlayer: IOfflineCloudPlayer): ICommunicationPromise<Unit> {
         throw UnsupportedOperationException("Players are not supported in the wrapper")
     }
+
+    override fun getPlayersConnectedToService(cloudService: ICloudService): ICommunicationPromise<List<SimpleCloudPlayer>> {
+        throw UnsupportedOperationException("Players are not supported in the wrapper")
+    }
 }
