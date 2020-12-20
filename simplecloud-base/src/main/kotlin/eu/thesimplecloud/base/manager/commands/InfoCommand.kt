@@ -29,12 +29,15 @@ import eu.thesimplecloud.launcher.console.command.ICommandHandler
 import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
+import eu.thesimplecloud.launcher.console.command.provider.ServiceCommandSuggestionProvider
+import eu.thesimplecloud.launcher.console.command.provider.ServiceGroupCommandSuggestionProvider
+import eu.thesimplecloud.launcher.console.command.provider.WrapperCommandSuggestionProvider
 
 @Command("info", CommandType.CONSOLE, "cloud.command.info")
 class InfoCommand : ICommandHandler {
 
     @CommandSubPath("wrapper <name>", "Prints some information about the specified wrapper")
-    fun wrapper(commandSender: ICommandSender, @CommandArgument("name") name: String) {
+    fun wrapper(commandSender: ICommandSender, @CommandArgument("name", WrapperCommandSuggestionProvider::class) name: String) {
         val wrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(name)
         if (wrapper == null) {
             commandSender.sendProperty("manager.command.info.wrapper.not-exist")
@@ -45,7 +48,7 @@ class InfoCommand : ICommandHandler {
 
 
     @CommandSubPath("service <name>", "Prints some information about the specified service")
-    fun service(commandSender: ICommandSender, @CommandArgument("name") name: String) {
+    fun service(commandSender: ICommandSender, @CommandArgument("name", ServiceCommandSuggestionProvider::class) name: String) {
         val service = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(name)
         if (service == null) {
             commandSender.sendProperty("manager.command.info.service.not-exist")
@@ -55,7 +58,7 @@ class InfoCommand : ICommandHandler {
     }
 
     @CommandSubPath("group <name>", "Prints some information about the specified group")
-    fun group(commandSender: ICommandSender, @CommandArgument("name") name: String) {
+    fun group(commandSender: ICommandSender, @CommandArgument("name", ServiceGroupCommandSuggestionProvider::class) name: String) {
         val group = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(name)
         if (group == null) {
             commandSender.sendProperty("manager.command.info.group.not-exist")
