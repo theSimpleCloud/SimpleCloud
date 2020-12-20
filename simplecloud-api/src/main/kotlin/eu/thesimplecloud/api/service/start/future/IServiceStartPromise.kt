@@ -20,23 +20,34 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.api.network.packets.service
+package eu.thesimplecloud.api.service.start.future
 
-import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.service.start.configuration.IServiceStartConfiguration
-import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
-import eu.thesimplecloud.clientserverapi.lib.packet.packettype.ObjectPacket
+import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
+import java.util.function.Consumer
 
-class PacketIOStartCloudService(): ObjectPacket<IServiceStartConfiguration>() {
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 20.12.2020
+ * Time: 18:49
+ * @author Frederick Baier
+ */
+interface IServiceStartPromise : ICommunicationPromise<ICloudService> {
 
-    constructor(configuration: IServiceStartConfiguration) :this() {
-        this.value = configuration
-    }
+    /**
+     * Calls the specified [consumer] when the service was registered
+     */
+    fun onServiceRegistered(consumer: Consumer<ICloudService>)
 
-    override suspend fun handle(connection: IConnection): ICommunicationPromise<String> {
-        val value = this.value ?: return contentException("value")
-        val registeredPromise = CloudAPI.instance.getCloudServiceGroupManager().startNewService(value)
-        return registeredPromise.then { it.getName() }
-    }
+    /**
+     * Calls the specified [consumer] when the service is starting
+     */
+    fun onServiceStarting(consumer: Consumer<ICloudService>)
+
+    /**
+     * Calls the specified [consumer] when the service was started
+     */
+    fun onServiceStarted(consumer: Consumer<ICloudService>)
+
+
 }

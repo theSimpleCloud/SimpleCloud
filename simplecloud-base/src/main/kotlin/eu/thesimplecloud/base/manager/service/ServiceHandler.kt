@@ -27,8 +27,8 @@ import eu.thesimplecloud.api.network.packets.service.PacketIOWrapperStartService
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.service.impl.DefaultCloudService
-import eu.thesimplecloud.api.service.startconfiguration.IServiceStartConfiguration
-import eu.thesimplecloud.api.service.startconfiguration.ServiceStartConfiguration
+import eu.thesimplecloud.api.service.start.configuration.IServiceStartConfiguration
+import eu.thesimplecloud.api.service.start.configuration.ServiceStartConfiguration
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.api.utils.time.Timestamp
 import eu.thesimplecloud.api.wrapper.IWrapperInfo

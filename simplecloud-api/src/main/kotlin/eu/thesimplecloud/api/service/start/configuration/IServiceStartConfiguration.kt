@@ -20,13 +20,12 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.api.service.startconfiguration
+package eu.thesimplecloud.api.service.start.configuration
 
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.service.ICloudService
+import eu.thesimplecloud.api.service.start.future.IServiceStartPromise
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.api.template.ITemplate
-import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
 interface IServiceStartConfiguration {
 
@@ -71,9 +70,9 @@ interface IServiceStartConfiguration {
 
     /**
      * Starts the service
-     * @return a promise that completes when the new service was registered
+     * @return a custom promise that completes when the new service was registered
      */
-    fun startService(): ICommunicationPromise<ICloudService> {
+    fun startService(): IServiceStartPromise {
         return CloudAPI.instance.getCloudServiceGroupManager().startNewService(this)
     }
 

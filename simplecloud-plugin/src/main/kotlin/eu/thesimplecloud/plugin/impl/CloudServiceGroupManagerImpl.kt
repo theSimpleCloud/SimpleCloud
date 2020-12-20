@@ -25,8 +25,9 @@ package eu.thesimplecloud.plugin.impl
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.network.packets.service.PacketIOStartCloudService
 import eu.thesimplecloud.api.network.packets.servicegroup.PacketIOCreateServiceGroup
-import eu.thesimplecloud.api.service.ICloudService
-import eu.thesimplecloud.api.service.startconfiguration.IServiceStartConfiguration
+import eu.thesimplecloud.api.service.start.configuration.IServiceStartConfiguration
+import eu.thesimplecloud.api.service.start.future.IServiceStartPromise
+import eu.thesimplecloud.api.service.start.future.ServiceStartPromise
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.api.servicegroup.impl.AbstractCloudServiceGroupManager
 import eu.thesimplecloud.clientserverapi.lib.packet.packetsender.sendQuery
@@ -39,10 +40,11 @@ class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
         return CloudPlugin.instance.connectionToManager.sendQuery(PacketIOCreateServiceGroup(cloudServiceGroup))
     }
 
-    override fun startNewService(serviceStartConfiguration: IServiceStartConfiguration): ICommunicationPromise<ICloudService> {
+    override fun startNewService(serviceStartConfiguration: IServiceStartConfiguration): IServiceStartPromise {
         val namePromise = CloudPlugin.instance.connectionToManager
                 .sendQuery<String>(PacketIOStartCloudService(serviceStartConfiguration))
-        return namePromise.then { CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(it)!! }
+        val servicePromise = namePromise.then { CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(it)!! }
+        return ServiceStartPromise(servicePromise)
     }
 
 }

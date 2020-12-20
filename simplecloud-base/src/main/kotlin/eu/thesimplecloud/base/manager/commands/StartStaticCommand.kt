@@ -24,7 +24,7 @@ package eu.thesimplecloud.base.manager.commands
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.command.ICommandSender
-import eu.thesimplecloud.api.service.startconfiguration.ServiceStartConfiguration
+import eu.thesimplecloud.api.service.start.configuration.ServiceStartConfiguration
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.launcher.console.command.CommandType
 import eu.thesimplecloud.launcher.console.command.ICommandHandler

@@ -23,7 +23,7 @@
 package eu.thesimplecloud.base.manager.service
 
 import eu.thesimplecloud.api.service.ICloudService
-import eu.thesimplecloud.api.service.startconfiguration.IServiceStartConfiguration
+import eu.thesimplecloud.api.service.start.configuration.IServiceStartConfiguration
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 
 interface IServiceHandler {

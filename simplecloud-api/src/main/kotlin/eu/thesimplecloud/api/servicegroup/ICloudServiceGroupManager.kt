@@ -25,8 +25,9 @@ package eu.thesimplecloud.api.servicegroup
 import eu.thesimplecloud.api.cachelist.ICacheList
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceType
-import eu.thesimplecloud.api.service.startconfiguration.IServiceStartConfiguration
-import eu.thesimplecloud.api.service.startconfiguration.ServiceStartConfiguration
+import eu.thesimplecloud.api.service.start.configuration.IServiceStartConfiguration
+import eu.thesimplecloud.api.service.start.configuration.ServiceStartConfiguration
+import eu.thesimplecloud.api.service.start.future.IServiceStartPromise
 import eu.thesimplecloud.api.service.version.ServiceVersion
 import eu.thesimplecloud.api.servicegroup.grouptype.ICloudLobbyGroup
 import eu.thesimplecloud.api.servicegroup.grouptype.ICloudProxyGroup
@@ -218,12 +219,12 @@ interface ICloudServiceGroupManager : ICacheList<ICloudServiceGroup> {
 
     /**
      * Starts a new service by the specified [serviceStartConfiguration]
-     * @return a promise that is completed when the service was registered with its name, or
+     * @return a custom promise that is completed when the service was registered with its name, or
      * when an exception is encountered. [ICommunicationPromise.isSuccess] indicates success
      * or failure.
      * The promise will fail with:
      * - [IllegalArgumentException] if the service to start is already running
      */
-    fun startNewService(serviceStartConfiguration: IServiceStartConfiguration): ICommunicationPromise<ICloudService>
+    fun startNewService(serviceStartConfiguration: IServiceStartConfiguration): IServiceStartPromise
 
 }

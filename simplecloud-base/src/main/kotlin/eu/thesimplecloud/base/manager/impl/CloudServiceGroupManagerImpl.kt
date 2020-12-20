@@ -22,8 +22,9 @@
 
 package eu.thesimplecloud.base.manager.impl
 
-import eu.thesimplecloud.api.service.ICloudService
-import eu.thesimplecloud.api.service.startconfiguration.IServiceStartConfiguration
+import eu.thesimplecloud.api.service.start.configuration.IServiceStartConfiguration
+import eu.thesimplecloud.api.service.start.future.IServiceStartPromise
+import eu.thesimplecloud.api.service.start.future.ServiceStartPromise
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.api.servicegroup.impl.AbstractCloudServiceGroupManager
 import eu.thesimplecloud.base.manager.startup.Manager
@@ -49,14 +50,14 @@ class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
         return super.update(value, fromPacket, isCalledFromDelete)
     }
 
-    override fun startNewService(serviceStartConfiguration: IServiceStartConfiguration): ICommunicationPromise<ICloudService> {
+    override fun startNewService(serviceStartConfiguration: IServiceStartConfiguration): IServiceStartPromise {
         val service = try {
             Manager.instance.serviceHandler.startService(serviceStartConfiguration)
         } catch (ex: IllegalArgumentException) {
             //catch IllegalArgumentException. It will be thrown when the service to start is already registered.
-            return CommunicationPromise.failed(ex)
+            return ServiceStartPromise(CommunicationPromise.failed(ex))
         }
-        return CommunicationPromise.of(service)
+        return ServiceStartPromise(CommunicationPromise.of(service))
     }
 
     override fun delete(value: ICloudServiceGroup, fromPacket: Boolean): ICommunicationPromise<Unit> {
