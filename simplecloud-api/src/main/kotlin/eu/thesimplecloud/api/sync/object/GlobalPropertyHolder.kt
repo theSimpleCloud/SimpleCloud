@@ -63,6 +63,10 @@ class GlobalPropertyHolder : IGlobalPropertyHolder {
         return newProperty
     }
 
+    override fun clearProperties() {
+        throw UnsupportedOperationException("Cannot clear global properties")
+    }
+
     override fun removeProperty(name: String) {
         this.nameToValue.remove(name)
         removePropertyFromNetwork(name)

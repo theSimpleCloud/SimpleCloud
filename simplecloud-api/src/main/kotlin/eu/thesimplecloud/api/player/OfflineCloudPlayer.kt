@@ -73,6 +73,10 @@ open class OfflineCloudPlayer(
         return property
     }
 
+    override fun clearProperties() {
+        this.propertyMap.clear()
+    }
+
     override fun removeProperty(name: String) {
         this.propertyMap.remove(name)
     }

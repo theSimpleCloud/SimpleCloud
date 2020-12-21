@@ -41,6 +41,11 @@ interface IPropertyMap {
     fun <T : Any> setProperty(name: String, value: T): IProperty<T>
 
     /**
+     * Clears all set properties
+     */
+    fun clearProperties()
+
+    /**
      * Removes the [Property] found by the specified [name].
      */
     fun removeProperty(name: String)
