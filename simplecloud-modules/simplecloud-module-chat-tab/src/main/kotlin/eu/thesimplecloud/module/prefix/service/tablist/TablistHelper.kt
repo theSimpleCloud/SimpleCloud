@@ -29,6 +29,7 @@ object TablistHelper {
             try {
                 team.color = chatColor
             } catch (ex: NoSuchMethodException) {}
+              catch (ex: NoSuchMethodError) {}
         }
 
         Bukkit.getOnlinePlayers().forEach {
