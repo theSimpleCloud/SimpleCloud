@@ -125,6 +125,8 @@ object ProxyEventHandler {
 
 
     fun handleServerPreConnect(uniqueId: UUID, serverNameFrom: String?, serverNameTo: String, cancelEvent: (String, CancelType) -> Unit) {
+        if (serverNameFrom == serverNameTo)
+            return
 
         val cloudService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(serverNameTo)
         if (cloudService == null) {
@@ -169,7 +171,6 @@ object ProxyEventHandler {
         //update player
         //use cloned player to compare connected server with old connected server.
         val clonedPlayer = cloudPlayer.clone() as CloudPlayer
-        clonedPlayer.setConnectedServerName(cloudService.getName())
         clonedPlayer.setServerConnectState(PlayerServerConnectState.CONNECTING)
         clonedPlayer.update()
     }
@@ -185,11 +186,12 @@ object ProxyEventHandler {
         val cloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(uniqueId)
         cloudPlayer ?: return
         val clonedPlayer = cloudPlayer.clone() as CloudPlayer
+        clonedPlayer.setConnectedServerName(service.getName())
         clonedPlayer.setServerConnectState(PlayerServerConnectState.CONNECTED)
         clonedPlayer.update()
     }
 
-    fun handleServerKick(kickReasonString: String, serverName: String, cancelEvent: (String, CancelType) -> Unit) {
+    fun handleServerKick(cloudPlayer: ICloudPlayer, kickReasonString: String, serverName: String, cancelEvent: (String, CancelType) -> Unit) {
         if (kickReasonString.isNotEmpty() && kickReasonString.contains("Outdated server") || kickReasonString.contains("Outdated client")) {
             val cloudService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(serverName)
             if (cloudService == null || cloudService.isLobby()) {
@@ -197,6 +199,9 @@ object ProxyEventHandler {
                 return
             }
         }
+        val player = cloudPlayer.clone() as CloudPlayer
+        player.setServerConnectState(PlayerServerConnectState.CONNECTED)
+        player.update()
     }
 
     fun handleTabComplete(uuid: UUID, rawCommand: String): Array<String> {

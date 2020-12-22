@@ -26,6 +26,7 @@ import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.player.connection.DefaultPlayerAddress
 import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
 import eu.thesimplecloud.api.player.text.CloudText
+import eu.thesimplecloud.plugin.extension.getCloudPlayer
 import eu.thesimplecloud.plugin.proxy.CancelType
 import eu.thesimplecloud.plugin.proxy.ProxyEventHandler
 import eu.thesimplecloud.plugin.proxy.bungee.CloudBungeePlugin
@@ -119,7 +120,7 @@ class BungeeListener : Listener {
 
         val proxiedPlayer = event.player
         val kickedServerName = event.kickedFrom.name
-        ProxyEventHandler.handleServerKick(kickReasonString, kickedServerName) { message, cancelMessageType ->
+        ProxyEventHandler.handleServerKick(proxiedPlayer.getCloudPlayer(), kickReasonString, kickedServerName) { message, cancelMessageType ->
             if (cancelMessageType == CancelType.MESSAGE) {
                 proxiedPlayer.sendMessage(CloudTextBuilder().build(CloudText(message)))
             } else {

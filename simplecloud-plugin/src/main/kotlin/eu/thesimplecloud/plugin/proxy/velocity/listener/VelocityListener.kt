@@ -35,6 +35,7 @@ import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.player.connection.DefaultPlayerAddress
 import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
 import eu.thesimplecloud.api.player.text.CloudText
+import eu.thesimplecloud.plugin.extension.getCloudPlayer
 import eu.thesimplecloud.plugin.proxy.CancelType
 import eu.thesimplecloud.plugin.proxy.ProxyEventHandler
 import eu.thesimplecloud.plugin.proxy.velocity.CloudVelocityPlugin
@@ -136,7 +137,7 @@ class VelocityListener(val plugin: CloudVelocityPlugin) {
 
         val player = event.player
         val kickedServerName = event.server.serverInfo.name
-        ProxyEventHandler.handleServerKick(kickReasonString, kickedServerName) { message, cancelMessageType ->
+        ProxyEventHandler.handleServerKick(player.getCloudPlayer(), kickReasonString, kickedServerName) { message, cancelMessageType ->
             if (cancelMessageType == CancelType.MESSAGE) {
                 player.sendMessage(CloudTextBuilder().build(CloudText(message)))
             } else {
