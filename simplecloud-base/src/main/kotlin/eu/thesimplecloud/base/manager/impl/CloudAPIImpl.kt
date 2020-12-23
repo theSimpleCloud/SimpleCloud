@@ -32,7 +32,7 @@ import eu.thesimplecloud.api.screen.ICommandExecuteManager
 import eu.thesimplecloud.api.service.ICloudServiceManager
 import eu.thesimplecloud.api.service.version.IServiceVersionHandler
 import eu.thesimplecloud.api.service.version.ServiceVersionHandler
-import eu.thesimplecloud.api.service.version.ServiceVersionLoader
+import eu.thesimplecloud.api.service.version.ServiceVersionWebLoader
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroupManager
 import eu.thesimplecloud.api.sync.list.manager.ISynchronizedObjectListManager
 import eu.thesimplecloud.api.sync.list.manager.SynchronizedObjectListManager
@@ -52,7 +52,7 @@ class CloudAPIImpl : CloudAPI() {
     private val wrapperManager = WrapperManagerImpl()
     private val eventManager = EventManagerImpl()
     private val synchronizedObjectListManager = SynchronizedObjectListManager()
-    private val serviceVersionHandler = ServiceVersionHandler(ServiceVersionLoader.loadVersions())
+    private val serviceVersionHandler = ServiceVersionHandler(ServiceVersionWebLoader.loadVersions())
     private val languageManager = LanguageManagerImpl()
 
     init {

@@ -32,7 +32,7 @@ import eu.thesimplecloud.base.wrapper.impl.CloudAPIImpl
 import eu.thesimplecloud.base.wrapper.logger.LoggerMessageListenerImpl
 import eu.thesimplecloud.base.wrapper.network.packets.template.PacketOutGetTemplates
 import eu.thesimplecloud.base.wrapper.process.CloudServiceProcessManager
-import eu.thesimplecloud.base.wrapper.process.filehandler.ServiceVersionLoader
+import eu.thesimplecloud.base.wrapper.process.filehandler.ServiceVersionJarLoader
 import eu.thesimplecloud.base.wrapper.process.queue.CloudServiceProcessQueue
 import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.ServiceConfiguratorManager
 import eu.thesimplecloud.client.packets.PacketOutCloudClientLogin
@@ -72,7 +72,7 @@ class Wrapper : ICloudApplication {
     val connectionToManager: IConnection
     var templateClient: INettyClient? = null
         private set
-    val serviceVersionLoader = ServiceVersionLoader()
+    val serviceVersionLoader = ServiceVersionJarLoader()
     var existingModules: List<LoadedModuleFileContent> = ArrayList()
         private set
     val appClassLoader: ApplicationClassLoader

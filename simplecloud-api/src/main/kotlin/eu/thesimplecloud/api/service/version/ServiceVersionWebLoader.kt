@@ -34,7 +34,7 @@ import java.io.FileNotFoundException
  * Time: 19:07
  * @author Frederick Baier
  */
-object ServiceVersionLoader {
+object ServiceVersionWebLoader {
 
     private val file = File(DirectoryPaths.paths.storagePath + "mc-versions.json")
 

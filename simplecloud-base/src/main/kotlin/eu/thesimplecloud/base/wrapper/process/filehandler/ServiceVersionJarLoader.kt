@@ -28,7 +28,7 @@ import eu.thesimplecloud.api.utils.Downloader
 import eu.thesimplecloud.api.utils.ZipUtils
 import java.io.File
 
-class ServiceVersionLoader {
+class ServiceVersionJarLoader {
 
     @Synchronized
     fun loadVersionFile(serviceVersion: ServiceVersion): File {
