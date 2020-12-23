@@ -39,7 +39,7 @@ object ServiceVersionWebLoader {
     private val file = File(DirectoryPaths.paths.storagePath + "mc-versions.json")
 
     fun loadVersions(): List<ServiceVersion> {
-        val contentString = WebContentLoader().loadContent("https://thesimplecloud.eu/download/versions.json")
+        val contentString = WebContentLoader().loadContent("https://api.thesimplecloud.eu/versions")
         return if (contentString == null) {
             loadFromFile()
         } else {
