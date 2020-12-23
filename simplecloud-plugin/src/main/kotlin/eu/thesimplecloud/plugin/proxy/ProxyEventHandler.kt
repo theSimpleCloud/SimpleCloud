@@ -84,7 +84,8 @@ object ProxyEventHandler {
         val cloudPlayer = createPromise.getNow()!!
         val permission = thisGroup.getPermission()
         if (permission != null && !cloudPlayer.hasPermissionSync(permission)) {
-            cancelEvent("§cYou don't have the permission to join this service.")
+            val message = CloudAPI.instance.getLanguageManager().getMessage("ingame.no-permission")
+            cancelEvent(message)
             return
         }
 
@@ -130,7 +131,8 @@ object ProxyEventHandler {
 
         val cloudService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(serverNameTo)
         if (cloudService == null) {
-            cancelEvent("§cServer is not registered in the cloud.", CancelType.KICK)
+            val message = CloudAPI.instance.getLanguageManager().getMessage("ingame.service-not-registered")
+            cancelEvent(message, CancelType.KICK)
             return
         }
         val serviceGroup = cloudService.getServiceGroup()
@@ -143,7 +145,8 @@ object ProxyEventHandler {
 
         if (serviceGroup.isInMaintenance()) {
             if (!cloudPlayer.hasPermissionSync("cloud.maintenance.join")) {
-                cancelEvent("§cThis service is in maintenance.", CancelType.MESSAGE)
+                val message = CloudAPI.instance.getLanguageManager().getMessage("ingame.service-in-maintenance")
+                cancelEvent(message, CancelType.MESSAGE)
                 return
             }
         }
@@ -151,13 +154,15 @@ object ProxyEventHandler {
         if (serviceGroup is ICloudServerGroup) {
             val permission = serviceGroup.getPermission()
             if (permission != null && !cloudPlayer.hasPermissionSync(permission)) {
-                cancelEvent("§cYou don't have the permission to join this service.", CancelType.MESSAGE)
+                val message = CloudAPI.instance.getLanguageManager().getMessage("ingame.no-permission")
+                cancelEvent(message, CancelType.MESSAGE)
                 return
             }
         }
 
         if (cloudService.getState() == ServiceState.STARTING) {
-            cancelEvent("§cServer is still starting.", CancelType.MESSAGE)
+            val message = CloudAPI.instance.getLanguageManager().getMessage("ingame.server-still-starting")
+            cancelEvent(message, CancelType.MESSAGE)
             return
         }
 
