@@ -26,6 +26,7 @@ import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.player.ICloudPlayerManager
 import eu.thesimplecloud.plugin.impl.player.CloudPlayerManagerSpigot
 import eu.thesimplecloud.plugin.listener.CloudListener
+import eu.thesimplecloud.plugin.server.listener.ReloadCommandBlocker
 import eu.thesimplecloud.plugin.server.listener.SpigotListener
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import org.bukkit.Bukkit
@@ -52,6 +53,7 @@ class CloudSpigotPlugin : JavaPlugin(), ICloudServerPlugin {
         CloudPlugin.instance.onEnable()
         CloudAPI.instance.getEventManager().registerListener(CloudPlugin.instance, CloudListener())
         server.pluginManager.registerEvents(SpigotListener(), this)
+        server.pluginManager.registerEvents(ReloadCommandBlocker(), this)
         synchronizeOnlineCountTask()
     }
 
