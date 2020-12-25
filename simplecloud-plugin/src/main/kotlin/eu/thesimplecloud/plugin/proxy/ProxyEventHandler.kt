@@ -90,7 +90,7 @@ object ProxyEventHandler {
         }
 
         //update player to cache to avoid bugs
-        CloudAPI.instance.getCloudPlayerManager().update(cloudPlayer, true)
+        CloudAPI.instance.getCloudPlayerManager().update(cloudPlayer, true).awaitUninterruptibly()
     }
 
     private fun handleAlreadyRegistered(player: ICloudPlayer) {
@@ -102,7 +102,7 @@ object ProxyEventHandler {
     fun handlePostLogin(uniqueId: UUID, name: String) {
         val thisService = CloudPlugin.instance.thisService()
         thisService.setOnlineCount(thisService.getOnlineCount() + 1)
-        thisService.update()
+        thisService.update().awaitUninterruptibly()
 
         CloudAPI.instance.getEventManager().call(CloudPlayerLoginEvent(uniqueId, name))
     }
@@ -118,7 +118,7 @@ object ProxyEventHandler {
             CloudAPI.instance.getCloudPlayerManager().delete(cloudPlayer)
             //send update that the player is now offline
             val connection = CloudPlugin.instance.connectionToManager
-            CloudAPI.instance.getCloudPlayerManager().sendDeleteToConnection(cloudPlayer, connection)
+            CloudAPI.instance.getCloudPlayerManager().sendDeleteToConnection(cloudPlayer, connection).awaitUninterruptibly()
         }
 
         subtractOneFromThisServiceOnlineCount()
@@ -177,7 +177,7 @@ object ProxyEventHandler {
         //use cloned player to compare connected server with old connected server.
         val clonedPlayer = cloudPlayer.clone() as CloudPlayer
         clonedPlayer.setServerConnectState(PlayerServerConnectState.CONNECTING)
-        clonedPlayer.update()
+        clonedPlayer.update().awaitUninterruptibly()
     }
 
 
@@ -193,7 +193,7 @@ object ProxyEventHandler {
         val clonedPlayer = cloudPlayer.clone() as CloudPlayer
         clonedPlayer.setConnectedServerName(service.getName())
         clonedPlayer.setServerConnectState(PlayerServerConnectState.CONNECTED)
-        clonedPlayer.update()
+        clonedPlayer.update().awaitUninterruptibly()
     }
 
     fun handleServerKick(cloudPlayer: ICloudPlayer, kickReasonString: String, serverName: String, cancelEvent: (String, CancelType) -> Unit) {
@@ -206,7 +206,7 @@ object ProxyEventHandler {
         }
         val player = cloudPlayer.clone() as CloudPlayer
         player.setServerConnectState(PlayerServerConnectState.CONNECTED)
-        player.update()
+        player.update().awaitUninterruptibly()
     }
 
     fun handleTabComplete(uuid: UUID, rawCommand: String): Array<String> {
@@ -220,7 +220,7 @@ object ProxyEventHandler {
     private fun subtractOneFromThisServiceOnlineCount() {
         val service = CloudPlugin.instance.thisService()
         service.setOnlineCount(service.getOnlineCount() - 1)
-        service.update()
+        service.update().awaitUninterruptibly()
     }
 
 }
