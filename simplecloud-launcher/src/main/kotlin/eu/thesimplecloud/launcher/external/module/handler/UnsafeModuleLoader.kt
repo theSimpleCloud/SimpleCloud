@@ -48,8 +48,6 @@ class UnsafeModuleLoader(
         installRequiredDependencies(content)
         val classLoader = this.classLoaderFunction(arrayOf(moduleFile.toURI().toURL()), content.name)
         val cloudModule = this.loadModuleClassInstance(classLoader, content.mainClass)
-        //TODO language file, updates
-        //registerLanguageFileIfExist(cloudModule, file)
         val loadedModule = LoadedModule(cloudModule, moduleFile, content, loadedModuleFileContent.updaterFileContent, classLoader)
         CloudAPI.instance.getEventManager().call(ModuleLoadedEvent(loadedModule))
 
