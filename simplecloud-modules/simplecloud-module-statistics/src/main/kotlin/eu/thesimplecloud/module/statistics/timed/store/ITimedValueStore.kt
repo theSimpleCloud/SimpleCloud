@@ -43,8 +43,14 @@ interface ITimedValueStore<T : Any> {
     fun get(fromTimeStamp: Long, toTimeStamp: Long, resolution: Long): List<TimedValue<T>> {
         val list = get(fromTimeStamp, toTimeStamp)
         if (list.isEmpty()) return list
-        var lastTimeStamp = list.first().getTimeStamp()
-        val returnList = mutableListOf(list.first())
+
+        val firstElement = list.first()
+        if (firstElement.value is Number) {
+            return getAveraged(list as List<TimedValue<Number>>, resolution) as List<TimedValue<T>>
+        }
+
+        var lastTimeStamp = firstElement.getTimeStamp()
+        val returnList = mutableListOf(firstElement)
 
         list.drop(1).forEach {
             if (lastTimeStamp + resolution <= it.getTimeStamp()) {
@@ -53,6 +59,41 @@ interface ITimedValueStore<T : Any> {
             }
         }
         return returnList
+    }
+
+    fun <T : Number> getAveraged(
+        valueList: List<TimedValue<T>>,
+        resolution: Long
+    ): List<TimedValue<T>> {
+        if (valueList.isEmpty()) return valueList
+        var lastTimeStamp = valueList.first().getTimeStamp()
+        val indicesList = mutableListOf<Int>(0)
+
+        valueList.drop(1).forEachIndexed { index, value ->
+            if (lastTimeStamp + resolution <= value.getTimeStamp()) {
+                lastTimeStamp = value.getTimeStamp()
+                indicesList.add(index)
+            }
+        }
+
+
+        val listOfValueLists: List<List<TimedValue<T>>> = indicesList.mapIndexed { thisIndex, valueIndex ->
+            val fromIndex = valueIndex
+            val toIndex = if (thisIndex == indicesList.lastIndex) valueList.lastIndex else indicesList[thisIndex + 1]
+            valueList.subList(fromIndex, toIndex)
+        }
+
+        val returnList = listOfValueLists.map { list ->
+            if (list.isEmpty()) return emptyList()
+            val average = calculateAverage(list.map { it.value })
+            TimedValue(average, list.first().getTimeStamp())
+        }
+
+        return returnList as List<TimedValue<T>>
+    }
+
+    private fun calculateAverage(list: List<Number>): Double {
+        return list.sumByDouble { it.toDouble() } / list.size
     }
 
 }
