@@ -24,6 +24,7 @@ package eu.thesimplecloud.base.manager.database
 
 import com.mongodb.ConnectionString
 import com.mongodb.MongoClient
+import com.mongodb.client.MongoDatabase
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Indexes
 import eu.thesimplecloud.api.player.IOfflineCloudPlayer
@@ -44,7 +45,8 @@ import java.util.*
 class MongoOfflineCloudPlayerHandler(val databaseConnectionInformation: DatabaseConnectionInformation) : AbstractOfflineCloudPlayerHandler() {
 
     private val mongoClient: MongoClient = createMongoClient()
-    private val collection = this.mongoClient.getDatabase(databaseConnectionInformation.databaseName).getCollection<Document>(databaseConnectionInformation.collectionPrefix + "players")
+    val database: MongoDatabase = this.mongoClient.getDatabase(databaseConnectionInformation.databaseName)
+    private val collection = database.getCollection<Document>(databaseConnectionInformation.collectionPrefix + "players")
 
     init {
         //make a first request (the first request will take a very long time when using embed mongodb. Following requests will be way faster)

@@ -39,7 +39,8 @@ import java.util.concurrent.TimeUnit
  */
 class SQLOfflineCloudPlayerHandler(private val databaseConnectionInformation: DatabaseConnectionInformation) : AbstractOfflineCloudPlayerHandler() {
 
-    private var connection: Connection? = null
+    var connection: Connection? = null
+        private set
 
     private val playerCollectionName = databaseConnectionInformation.collectionPrefix + "players"
 
