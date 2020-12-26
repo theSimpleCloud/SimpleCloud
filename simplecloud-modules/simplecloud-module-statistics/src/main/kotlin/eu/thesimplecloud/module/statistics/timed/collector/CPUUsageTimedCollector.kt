@@ -48,6 +48,6 @@ class CPUUsageTimedCollector : ITimedValueCollector<Double> {
     }
 
     override fun collectionName(): String {
-        return "cloud_cpu_usage"
+        return "cloud_stats_cpu_usage"
     }
 }
