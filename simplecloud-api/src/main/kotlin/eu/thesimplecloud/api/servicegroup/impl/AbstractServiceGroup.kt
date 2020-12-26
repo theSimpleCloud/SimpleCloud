@@ -36,7 +36,7 @@ abstract class AbstractServiceGroup(
         private var maintenance: Boolean,
         private val static: Boolean,
         private var percentToStartNewService: Int,
-        private val wrapperName: String?,
+        private var wrapperName: String?,
         serviceVersion: ServiceVersion,
         private val startPriority: Int,
         private var permission: String?,
@@ -101,6 +101,10 @@ abstract class AbstractServiceGroup(
     }
 
     override fun getWrapperName(): String? = this.wrapperName
+
+    override fun setWrapperName(name: String?) {
+        this.wrapperName = name
+    }
 
     override fun setServiceVersion(serviceVersion: ServiceVersion) {
         this.serviceVersion = serviceVersion.name
