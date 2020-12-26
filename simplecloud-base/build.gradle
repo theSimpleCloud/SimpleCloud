@@ -50,8 +50,10 @@ dependencies {
     // https://mvnrepository.com/artifact/org.reflections/reflections
     implementation group: 'org.reflections', name: 'reflections', version: '0.9.12'
     implementation 'org.litote.kmongo:kmongo:3.11.2'
-    implementation group: 'de.flapdoodle.embed', name: 'de.flapdoodle.embed.mongo', version: '2.2.0'
     compile(group: 'io.netty', name: 'netty-all', version: "4.1.54.Final")
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
+
 
 
 
