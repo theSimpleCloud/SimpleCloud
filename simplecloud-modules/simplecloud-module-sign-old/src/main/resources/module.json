@@ -1,9 +1,0 @@
-{
-  "name": "SimpleCloud-Sign",
-  "author": "Wetterbericht",
-  "mainClass": "eu.thesimplecloud.module.sign.manager.SignsModule",
-  "moduleCopyType": "LOBBY",
-  "repositories": [],
-  "dependencies": [],
-  "depend": []
-}
