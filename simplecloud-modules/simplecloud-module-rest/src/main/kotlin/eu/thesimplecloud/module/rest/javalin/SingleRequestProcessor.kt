@@ -121,10 +121,12 @@ class SingleRequestProcessor(
                 return JsonLib.fromJsonString(this.ctx.body(), RestServer.instance.webGson).getObject(parameterData.parameterType)
             }
             is RequestParam -> {
-                return this.ctx.req.getParameter(annotation.parameterName)
+                val parameter = this.ctx.req.getParameter(annotation.parameterName) ?: return null
+                return JsonLib.fromJsonString(parameter).getObject(parameterData.parameterType)
             }
             is RequestPathParam -> {
-                return this.ctx.pathParam(annotation.parameterName)
+                val pathParam = this.ctx.pathParam(annotation.parameterName)
+                return JsonLib.fromJsonString(pathParam).getObject(parameterData.parameterType)
             }
         }
         throw IllegalStateException()
