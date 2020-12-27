@@ -61,7 +61,7 @@ class RunnerUpdater : AbstractUpdater(
         Runtime.getRuntime().addShutdownHook(Thread {
             Thread.sleep(200)
             if (!Launcher.instance.isWindows()) {
-                performLinuxUpdate(file, currentRunnerFile)
+                performLinuxUpdate(currentRunnerFile, file)
             } else {
                 performWindowsUpdate(currentRunnerFile, file)
             }
