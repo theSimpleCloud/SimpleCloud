@@ -52,7 +52,7 @@ dependencies {
     implementation 'org.litote.kmongo:kmongo:3.11.2'
     compile(group: 'io.netty', name: 'netty-all', version: "4.1.54.Final")
     // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
-    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
 
 
 

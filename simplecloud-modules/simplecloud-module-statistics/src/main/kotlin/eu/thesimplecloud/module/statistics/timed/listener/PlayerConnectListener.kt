@@ -37,7 +37,7 @@ import java.util.*
  */
 class PlayerConnectListener : IListener {
 
-    private val store = StatisticsModule.instance.createTimedValueStore<UUID>("cloud_player_connects", UUID::class.java)
+    private val store = StatisticsModule.instance.createTimedValueStore<UUID>("cloud_stats_player_connects", UUID::class.java)
 
     @CloudEventHandler
     fun handle(event: CloudPlayerLoginEvent) {
