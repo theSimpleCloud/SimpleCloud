@@ -28,7 +28,7 @@ plugins {
 allprojects {
 
     group 'eu.thesimplecloud.simplecloud'
-    version '2.0.1-SNAPSHOT'
+    version '2.0.0'
 
     repositories {
         mavenCentral()
