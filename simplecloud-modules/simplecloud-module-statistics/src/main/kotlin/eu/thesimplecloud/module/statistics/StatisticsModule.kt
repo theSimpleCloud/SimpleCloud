@@ -32,6 +32,7 @@ import eu.thesimplecloud.module.statistics.rest.timed.TimedValueController
 import eu.thesimplecloud.module.statistics.timed.TimedValueCollectorManager
 import eu.thesimplecloud.module.statistics.timed.collector.CPUUsageTimedCollector
 import eu.thesimplecloud.module.statistics.timed.collector.MemoryTimedCollector
+import eu.thesimplecloud.module.statistics.timed.collector.PlayerCountTimedCollector
 import eu.thesimplecloud.module.statistics.timed.listener.CloudServiceStartListener
 import eu.thesimplecloud.module.statistics.timed.listener.PlayerConnectListener
 import eu.thesimplecloud.module.statistics.timed.store.ITimedValueStore
@@ -55,6 +56,7 @@ class StatisticsModule : ICloudModule {
 
         timedValueCollectorManager.registerValueCollector(CPUUsageTimedCollector(), Double::class.java)
         timedValueCollectorManager.registerValueCollector(MemoryTimedCollector(), Int::class.java)
+        timedValueCollectorManager.registerValueCollector(PlayerCountTimedCollector(), Int::class.java)
         timedValueCollectorManager.start()
 
         RestServer.instance.controllerHandler.registerController(TimedValueController())

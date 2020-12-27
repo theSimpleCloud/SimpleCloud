@@ -22,6 +22,7 @@
 
 package eu.thesimplecloud.module.proxy.manager
 
+import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.external.ICloudModule
 import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.launcher.startup.Launcher
@@ -46,6 +47,8 @@ class ProxyModule : ICloudModule{
         loadConfig()
         Launcher.instance.commandManager
                 .registerCommand(this, ProxyCommand(this))
+
+        CloudAPI.instance.getEventManager().registerListener(this, GroupCreateListener(this))
     }
 
     override fun onDisable() {

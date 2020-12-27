@@ -26,6 +26,7 @@ import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.module.sign.service.SignAPI
 import eu.thesimplecloud.plugin.extension.getCloudPlayer
 import org.bukkit.block.Sign
+import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
@@ -35,6 +36,7 @@ class InteractListener : Listener {
 
     @EventHandler
     fun on(event: PlayerInteractEvent) {
+        if (event.useInteractedBlock() == Event.Result.DENY) return
         if (event.action != Action.RIGHT_CLICK_BLOCK)
             return
         val clickedBlock = event.clickedBlock ?: return

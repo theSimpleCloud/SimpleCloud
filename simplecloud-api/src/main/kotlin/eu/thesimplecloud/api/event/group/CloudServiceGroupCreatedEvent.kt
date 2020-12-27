@@ -20,34 +20,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.statistics.timed.collector
+package eu.thesimplecloud.api.event.group
 
-import com.sun.management.OperatingSystemMXBean
-import eu.thesimplecloud.module.statistics.timed.TimedValue
-import java.lang.management.ManagementFactory
-import java.util.concurrent.TimeUnit
+import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 
 /**
  * Created by IntelliJ IDEA.
- * Date: 25.12.2020
- * Time: 12:19
+ * Date: 15.07.2020
+ * Time: 23:17
  * @author Frederick Baier
+ *
+ * Called when a service was updated
  */
-class CPUUsageTimedCollector : ITimedValueCollector<Double> {
-
-
-    override fun collectValue(): TimedValue<Double> {
-        val osBean: OperatingSystemMXBean = ManagementFactory.getPlatformMXBean(
-            OperatingSystemMXBean::class.java
-        )
-        return TimedValue(osBean.systemCpuLoad)
-    }
-
-    override fun collectInterval(): Long {
-        return TimeUnit.MINUTES.toMillis(1)
-    }
-
-    override fun collectionName(): String {
-        return "cloud_stats_cpu_usage"
-    }
-}
+class CloudServiceGroupCreatedEvent(serviceGroup: ICloudServiceGroup) : CloudServiceGroupEvent(serviceGroup)

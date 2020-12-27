@@ -22,10 +22,13 @@
 
 package eu.thesimplecloud.module.statistics.timed.store
 
+import com.mongodb.BasicDBObject
 import com.mongodb.client.MongoDatabase
+import com.mongodb.client.model.IndexOptions
 import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.module.statistics.timed.TimedValue
 import org.bson.Document
+import org.litote.kmongo.ensureIndex
 import org.litote.kmongo.find
 import org.litote.kmongo.getCollection
 
@@ -42,6 +45,10 @@ class MongoTimedValueStore<T : Any>(
 ) : ITimedValueStore<T> {
 
     private val collection = database.getCollection<Document>(collectionName)
+
+    init {
+        collection.ensureIndex(BasicDBObject("timeStamp", 1), IndexOptions().unique(false))
+    }
 
     override fun store(timedValue: TimedValue<T>) {
         val document = JsonLib.fromObject(timedValue).getObject(Document::class.java)

@@ -31,21 +31,6 @@ package eu.thesimplecloud.module.proxy.config
 class DefaultConfig {
     companion object {
         fun get(): Config {
-            val motdConfiguration = MotdConfiguration(
-                    listOf("§b§lSimpleCloud §r§8-§7 Simplyify your Network§8│§f 1.8.x §8- §f1.16.x"),
-                    listOf("§3§lStatus§r§8│ §aOnline §8- §7%PROXY%"),
-                    emptyList(),
-                    null)
-            val maintenanceMotdConfiguration = MotdConfiguration(
-                    listOf("§b§lSimpleCloud §r§8-§7 Simplyify your Network§8│§f 1.8.x §8- §f1.16.x"),
-                    listOf("§3§lStatus§r§8│ §cMaintenance §8- §7%PROXY%"),
-                    emptyList(),
-                    "§8│ §c§oMaintenance")
-            val proxyGroupConfiguration = ProxyGroupConfiguration(
-                    "Proxy",
-                    mutableListOf("Fllip", "Wetterbericht"),
-                    motdConfiguration,
-                    maintenanceMotdConfiguration)
 
             val tablistConfiguration = TablistConfiguration(
                     listOf("Proxy"),
@@ -64,12 +49,31 @@ class DefaultConfig {
                     ))
 
             val config = Config(
-                    listOf(proxyGroupConfiguration),
+                    emptyList(),
                     listOf(tablistConfiguration),
                     "§cThis service is in maintenance",
                     "§cThis service is full")
 
             return config
+        }
+
+        fun getDefaultProxyGroupConfiguration(groupName: String): ProxyGroupConfiguration {
+            val motdConfiguration = MotdConfiguration(
+                listOf("§b§lSimpleCloud §r§8-§7 Simplyify your Network§8│§f 1.8.x §8- §f1.16.x"),
+                listOf("§3§lStatus§r§8│ §aOnline §8- §7%PROXY%"),
+                emptyList(),
+                null)
+            val maintenanceMotdConfiguration = MotdConfiguration(
+                listOf("§b§lSimpleCloud §r§8-§7 Simplyify your Network§8│§f 1.8.x §8- §f1.16.x"),
+                listOf("§3§lStatus§r§8│ §cMaintenance §8- §7%PROXY%"),
+                emptyList(),
+                "§8│ §c§oMaintenance")
+
+            return ProxyGroupConfiguration(
+                groupName,
+                mutableListOf("Fllip", "Wetterbericht"),
+                motdConfiguration,
+                maintenanceMotdConfiguration)
         }
     }
 }

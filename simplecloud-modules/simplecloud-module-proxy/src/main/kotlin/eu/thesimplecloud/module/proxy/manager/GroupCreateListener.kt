@@ -20,28 +20,39 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.statistics.timed.listener
+package eu.thesimplecloud.module.proxy.manager
 
-import eu.thesimplecloud.api.event.player.CloudPlayerLoginEvent
+import eu.thesimplecloud.api.event.group.CloudServiceGroupCreatedEvent
 import eu.thesimplecloud.api.eventapi.CloudEventHandler
 import eu.thesimplecloud.api.eventapi.IListener
-import eu.thesimplecloud.module.statistics.StatisticsModule
-import eu.thesimplecloud.module.statistics.timed.TimedValue
-import java.util.*
+import eu.thesimplecloud.api.service.ServiceType
+import eu.thesimplecloud.module.proxy.config.Config
+import eu.thesimplecloud.module.proxy.config.DefaultConfig
 
 /**
  * Created by IntelliJ IDEA.
- * Date: 26.12.2020
- * Time: 12:28
+ * Date: 27.12.2020
+ * Time: 18:00
  * @author Frederick Baier
  */
-class PlayerConnectListener : IListener {
-
-    private val store = StatisticsModule.instance.createTimedValueStore<UUID>("cloud_stats_player_connects", UUID::class.java)
+class GroupCreateListener(private val proxyModule: ProxyModule) : IListener {
 
     @CloudEventHandler
-    fun handle(event: CloudPlayerLoginEvent) {
-        store.store(TimedValue(event.playerUniqueId))
+    fun handle(event: CloudServiceGroupCreatedEvent) {
+        val proxyGroup = event.serviceGroup
+        if (proxyGroup.getServiceType() != ServiceType.PROXY)  return
+        if (proxyModule.getProxyConfiguration(proxyGroup.getName()) != null) return
+
+        val proxyGroupConfiguration = DefaultConfig.getDefaultProxyGroupConfiguration(proxyGroup.getName())
+        val newConfig = Config(
+            proxyModule.config.proxyGroupConfigurations.union(listOf(proxyGroupConfiguration)).toList(),
+            proxyModule.config.tablistConfigurations,
+            proxyModule.config.maintenanceKickMessage,
+            proxyModule.config.fullProxyKickMessage
+        )
+        proxyModule.saveConfig(newConfig)
+        proxyModule.loadConfig()
+
     }
 
 }

@@ -44,7 +44,7 @@ class MemoryTimedCollector : ITimedValueCollector<Int> {
     }
 
     override fun collectionName(): String {
-        return "cloud_memory_usage"
+        return "cloud_stats_memory_usage"
     }
 
 }

@@ -22,25 +22,21 @@
 
 package eu.thesimplecloud.module.statistics.timed.collector
 
-import com.sun.management.OperatingSystemMXBean
+import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.module.statistics.timed.TimedValue
-import java.lang.management.ManagementFactory
 import java.util.concurrent.TimeUnit
 
 /**
  * Created by IntelliJ IDEA.
- * Date: 25.12.2020
- * Time: 12:19
+ * Date: 26.12.2020
+ * Time: 23:39
  * @author Frederick Baier
  */
-class CPUUsageTimedCollector : ITimedValueCollector<Double> {
+class PlayerCountTimedCollector : ITimedValueCollector<Int> {
 
-
-    override fun collectValue(): TimedValue<Double> {
-        val osBean: OperatingSystemMXBean = ManagementFactory.getPlatformMXBean(
-            OperatingSystemMXBean::class.java
-        )
-        return TimedValue(osBean.systemCpuLoad)
+    override fun collectValue(): TimedValue<Int> {
+        val onlineCount = CloudAPI.instance.getCloudPlayerManager().getNetworkOnlinePlayerCount().getBlocking()
+        return TimedValue(onlineCount)
     }
 
     override fun collectInterval(): Long {
@@ -48,6 +44,7 @@ class CPUUsageTimedCollector : ITimedValueCollector<Double> {
     }
 
     override fun collectionName(): String {
-        return "cloud_stats_cpu_usage"
+        return "cloud_stats_player_count"
     }
+
 }

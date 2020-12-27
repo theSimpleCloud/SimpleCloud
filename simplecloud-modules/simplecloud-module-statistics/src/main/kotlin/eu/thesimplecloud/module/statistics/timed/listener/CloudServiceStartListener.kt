@@ -36,7 +36,7 @@ import eu.thesimplecloud.module.statistics.timed.TimedValue
  */
 class CloudServiceStartListener : IListener {
 
-    private val store = StatisticsModule.instance.createTimedValueStore<String>("cloud_service_starts", String::class.java)
+    private val store = StatisticsModule.instance.createTimedValueStore<String>("cloud_stats_service_starts", String::class.java)
 
     @CloudEventHandler
     fun handleStarting(event: CloudServiceStartingEvent) {
