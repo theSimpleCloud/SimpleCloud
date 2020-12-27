@@ -77,4 +77,16 @@ The notify module sends notifications to players that have the required permissi
 
 Permission: cloud.module.notify.messages
 
+***REST Module***
+
+The REST Module provides a restful API. It is necessary for the dashboard.
+
+***Statistics Module***
+
+The Statistics Module saves some statistics of the cloud. The data is displayed on the dashboard.
+
+***Chat + Tab Module***
+
+The Chat + Tab Module provides prefixes and suffixes in the tablist and adds a chat configuration.
+
 If you have any question you can contact us via [discord](https://discord.gg/MPZs4h8 "discord").
