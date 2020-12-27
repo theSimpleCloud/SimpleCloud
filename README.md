@@ -31,6 +31,7 @@
 - Have fun :)
 
 **Dashbaord**
+
 SimpleCloud provides a Dashboard accessible for every user. The domain for the dashboard is: http://dashboard-nossl.thesimplecloud.eu. Now you have to enter the IP-Address of your server follwed by the port of the REST module. The default port of the RESR-Module ist 8585. So an ip would be 55.55.55.55:8585. The username and passwort can be found in "modules/rest/users.json"
 
 **Modules**
