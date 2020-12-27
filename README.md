@@ -11,6 +11,7 @@
 - Powerful API
 - Support for Spigot, BungeeCord and Velocity
 - MongoDB and SQL support
+- Dashboard
 
 **Requirements**
 
@@ -28,6 +29,10 @@
 - Create your first group by typing create into the console
 - For more information type help
 - Have fun :)
+
+**Dashbaord**
+
+SimpleCloud provides a Dashboard accessible for every user. The domain for the dashboard is: http://dashboard-nossl.thesimplecloud.eu. Now you have to enter the IP-Address of your server follwed by the port of the REST module. The default port of the RESR-Module ist 8585. So an ip would be 55.55.55.55:8585. The username and passwort can be found in "modules/rest/users.json"
 
 **Modules**
 
@@ -76,5 +81,17 @@ The notify module sends notifications to players that have the required permissi
 ![NotifyModule](https://i.imgur.com/7lcjXbN.jpg "NotifyModule")
 
 Permission: cloud.module.notify.messages
+
+***REST Module***
+
+The REST Module provides a restful API. It is necessary for the dashboard.
+
+***Statistics Module***
+
+The Statistics Module saves some statistics of the cloud. The data is displayed on the dashboard.
+
+***Chat + Tab Module***
+
+The Chat + Tab Module provides prefixes and suffixes in the tablist and adds a chat configuration.
 
 If you have any question you can contact us via [discord](https://discord.gg/MPZs4h8 "discord").
