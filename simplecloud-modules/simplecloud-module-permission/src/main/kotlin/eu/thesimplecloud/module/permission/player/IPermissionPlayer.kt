@@ -23,7 +23,7 @@
 package eu.thesimplecloud.module.permission.player
 
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.player.ICloudPlayer
+import eu.thesimplecloud.api.player.IOfflineCloudPlayer
 import eu.thesimplecloud.api.utils.Nameable
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.module.permission.PermissionPool
@@ -62,9 +62,9 @@ interface IPermissionPlayer : IPermissionEntity, Nameable {
     fun getAllNotExpiredPermissionGroups(): List<IPermissionGroup> = getAllNotExpiredPermissionGroupInfoList().mapNotNull { PermissionPool.instance.getPermissionGroupManager().getPermissionGroupByName(it.permissionGroupName) }
 
     /**
-     * Returns the the [ICloudPlayer] of this permission player wrapped in a promise
+     * Returns the the [IOfflineCloudPlayer] of this permission player wrapped in a promise
      */
-    fun getCloudPlayer(): ICommunicationPromise<ICloudPlayer> = CloudAPI.instance.getCloudPlayerManager().getCloudPlayer(getUniqueId())
+    fun getOfflineCloudPlayer(): ICommunicationPromise<IOfflineCloudPlayer> = CloudAPI.instance.getCloudPlayerManager().getOfflineCloudPlayer(getUniqueId())
 
     /**
      * Returns a promise that is completed when the operation is done. [ICommunicationPromise.isSuccess] indicates success or failure.

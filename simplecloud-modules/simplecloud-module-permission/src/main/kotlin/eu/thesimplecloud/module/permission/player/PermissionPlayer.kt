@@ -46,7 +46,7 @@ class PermissionPlayer(
     }
 
     override fun update(): ICommunicationPromise<Unit> {
-        return getCloudPlayer().then {
+        return getOfflineCloudPlayer().then {
             it.setProperty(PROPERTY_NAME, this)
             it.update()
         }.flatten()

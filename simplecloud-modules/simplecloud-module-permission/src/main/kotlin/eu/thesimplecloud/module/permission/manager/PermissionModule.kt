@@ -77,8 +77,8 @@ class PermissionModule : ICloudModule {
 
     fun updatePermissionPlayer(permissionPlayer: IPermissionPlayer) {
         val offlineCloudPlayerHandler = Manager.instance.offlineCloudPlayerHandler
-        val cloudPlayer = permissionPlayer.getCloudPlayer().getNow()
-        if (cloudPlayer != null) {
+        val cloudPlayer = permissionPlayer.getOfflineCloudPlayer().getBlockingOrNull()
+        if (cloudPlayer?.isOnline() == true) {
             permissionPlayer.update()
             offlineCloudPlayerHandler.saveCloudPlayer(cloudPlayer.toOfflinePlayer() as OfflineCloudPlayer)
         } else {
