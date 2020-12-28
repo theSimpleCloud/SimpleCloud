@@ -36,7 +36,10 @@ class SynchronizedObjectListManager : ISynchronizedObjectListManager {
     private val nameToSynchronizedObjectList = ConcurrentHashMap<String, ISynchronizedObjectList<out Any>>()
 
 
-    override fun registerSynchronizedObjectList(synchronizedObjectList: ISynchronizedObjectList<out Any>, syncContent: Boolean): ICommunicationPromise<Unit> {
+    override fun registerSynchronizedObjectList(
+        synchronizedObjectList: ISynchronizedObjectList<out Any>,
+        syncContent: Boolean
+    ): ICommunicationPromise<Unit> {
         if (syncContent && CloudAPI.instance.isManager()) {
             val oldObject = getSynchronizedObjectList(synchronizedObjectList.getIdentificationName())
             oldObject?.let { oldList ->
@@ -48,7 +51,10 @@ class SynchronizedObjectListManager : ISynchronizedObjectListManager {
             if (!CloudAPI.instance.isManager()) {
                 val client = CloudAPI.instance.getThisSidesCommunicationBootstrap() as INettyClient
                 return client.getConnection()
-                        .sendUnitQuery(PacketIOGetAllCachedListProperties(synchronizedObjectList.getIdentificationName()), 4000)
+                    .sendUnitQuery(
+                        PacketIOGetAllCachedListProperties(synchronizedObjectList.getIdentificationName()),
+                        4000
+                    ).syncUninterruptibly()
             } else {
                 //manager
                 synchronizedObjectList as ISynchronizedObjectList<Any>
@@ -58,7 +64,8 @@ class SynchronizedObjectListManager : ISynchronizedObjectListManager {
         return CommunicationPromise.of(Unit)
     }
 
-    override fun getSynchronizedObjectList(name: String): ISynchronizedObjectList<Any>? = this.nameToSynchronizedObjectList[name] as ISynchronizedObjectList<Any>?
+    override fun getSynchronizedObjectList(name: String): ISynchronizedObjectList<Any>? =
+        this.nameToSynchronizedObjectList[name] as ISynchronizedObjectList<Any>?
 
     override fun unregisterSynchronizedObjectList(name: String) {
         this.nameToSynchronizedObjectList.remove(name)

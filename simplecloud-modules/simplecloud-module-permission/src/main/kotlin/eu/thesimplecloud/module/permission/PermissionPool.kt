@@ -48,7 +48,7 @@ class PermissionPool(private val permissionGroupManager: PermissionGroupManager)
 
         if (!CloudAPI.instance.isManager()) {
             CloudPlugin.instance.communicationClient.getConnection().sendQuery<String>(PacketOutGetDefaultGroupName())
-                .then { permissionGroupManager.setDefaultPermissionGroup(it) }
+                .then { permissionGroupManager.setDefaultPermissionGroup(it) }.syncUninterruptibly()
         }
     }
 
