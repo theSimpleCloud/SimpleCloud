@@ -70,7 +70,7 @@ interface IPropertyMap {
 
     fun getMapWithNewestProperties(compareMap: Map<String, IProperty<*>>): HashMap<String, IProperty<*>> {
         val ownMap = getProperties()
-        val allKeys = ownMap.keys.union(ownMap.keys)
+        val allKeys = ownMap.keys.union(compareMap.keys)
         val map = HashMap<String, IProperty<*>>()
         for (key in allKeys) {
             val valueOne = ownMap[key] as Property<*>?
