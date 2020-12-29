@@ -105,4 +105,14 @@ class SQLTimedValueStore<T : Any>(
         return this.collectionName
     }
 
+    override fun count(): Int {
+        val statement = getConnection().prepareStatement("SELECT COUNT(*) FROM `$collectionName`")
+        val resultSet = statement.executeQuery()
+        return if (!resultSet.next()) {
+            0
+        } else {
+            resultSet.getInt(1)
+        }
+    }
+
 }

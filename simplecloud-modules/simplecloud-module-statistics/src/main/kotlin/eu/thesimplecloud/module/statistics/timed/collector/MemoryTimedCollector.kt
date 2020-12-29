@@ -22,7 +22,7 @@
 
 package eu.thesimplecloud.module.statistics.timed.collector
 
-import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.module.statistics.timed.TimedValue
 import java.util.concurrent.TimeUnit
 
@@ -32,10 +32,10 @@ import java.util.concurrent.TimeUnit
  * Time: 12:15
  * @author Frederick Baier
  */
-class MemoryTimedCollector : ITimedValueCollector<Int> {
+class MemoryTimedCollector(private val wrapperInfo: IWrapperInfo) : ITimedValueCollector<Int> {
 
     override fun collectValue(): TimedValue<Int> {
-        val usedMemory = CloudAPI.instance.getWrapperManager().getAllCachedObjects().sumBy { it.getUsedMemory() }
+        val usedMemory = wrapperInfo.getUsedMemory()
         return TimedValue(usedMemory)
     }
 
@@ -44,7 +44,7 @@ class MemoryTimedCollector : ITimedValueCollector<Int> {
     }
 
     override fun collectionName(): String {
-        return "cloud_stats_memory_usage"
+        return "cloud_stats_memory_usage_${wrapperInfo.getName()}"
     }
 
 }

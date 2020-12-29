@@ -38,6 +38,8 @@ interface ITimedValueStore<T : Any> {
 
     fun getAll(): List<TimedValue<T>>
 
+    fun count(): Int
+
     fun get(fromTimeStamp: Long, toTimeStamp: Long): List<TimedValue<T>>
 
     fun get(fromTimeStamp: Long, toTimeStamp: Long, resolution: Long): List<TimedValue<T>> {
@@ -72,7 +74,7 @@ interface ITimedValueStore<T : Any> {
         valueList.drop(1).forEachIndexed { index, value ->
             if (lastTimeStamp + resolution <= value.getTimeStamp()) {
                 lastTimeStamp = value.getTimeStamp()
-                indicesList.add(index)
+                indicesList.add(index + 1)
             }
         }
 
@@ -84,12 +86,12 @@ interface ITimedValueStore<T : Any> {
         }
 
         val returnList = listOfValueLists.map { list ->
-            if (list.isEmpty()) return emptyList()
+            if (list.isEmpty()) return@map null
             val average = calculateAverage(list.map { it.value })
             TimedValue(average, list.first().getTimeStamp())
         }
 
-        return returnList as List<TimedValue<T>>
+        return returnList.filterNotNull() as List<TimedValue<T>>
     }
 
     private fun calculateAverage(list: List<Number>): Double {

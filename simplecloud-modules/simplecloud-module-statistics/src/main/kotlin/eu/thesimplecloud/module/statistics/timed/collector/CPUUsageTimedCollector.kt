@@ -22,9 +22,8 @@
 
 package eu.thesimplecloud.module.statistics.timed.collector
 
-import com.sun.management.OperatingSystemMXBean
+import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.module.statistics.timed.TimedValue
-import java.lang.management.ManagementFactory
 import java.util.concurrent.TimeUnit
 
 /**
@@ -33,14 +32,11 @@ import java.util.concurrent.TimeUnit
  * Time: 12:19
  * @author Frederick Baier
  */
-class CPUUsageTimedCollector : ITimedValueCollector<Double> {
+class CPUUsageTimedCollector(private val wrapperInfo: IWrapperInfo) : ITimedValueCollector<Float> {
 
 
-    override fun collectValue(): TimedValue<Double> {
-        val osBean: OperatingSystemMXBean = ManagementFactory.getPlatformMXBean(
-            OperatingSystemMXBean::class.java
-        )
-        return TimedValue(osBean.systemCpuLoad)
+    override fun collectValue(): TimedValue<Float> {
+        return TimedValue(wrapperInfo.getCpuUsage())
     }
 
     override fun collectInterval(): Long {
@@ -48,6 +44,6 @@ class CPUUsageTimedCollector : ITimedValueCollector<Double> {
     }
 
     override fun collectionName(): String {
-        return "cloud_stats_cpu_usage"
+        return "cloud_stats_cpu_usage_${wrapperInfo.getName()}"
     }
 }

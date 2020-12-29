@@ -38,6 +38,7 @@ import eu.thesimplecloud.module.statistics.timed.listener.PlayerConnectListener
 import eu.thesimplecloud.module.statistics.timed.store.ITimedValueStore
 import eu.thesimplecloud.module.statistics.timed.store.MongoTimedValueStore
 import eu.thesimplecloud.module.statistics.timed.store.SQLTimedValueStore
+import java.util.concurrent.CopyOnWriteArrayList
 
 /**
  * Created by IntelliJ IDEA.
@@ -47,15 +48,19 @@ import eu.thesimplecloud.module.statistics.timed.store.SQLTimedValueStore
  */
 class StatisticsModule : ICloudModule {
 
-    val timedValueCollectorManager = TimedValueCollectorManager()
+    private val timedValueCollectorManager = TimedValueCollectorManager()
+
+    private val valueStores = CopyOnWriteArrayList<ITimedValueStore<*>>()
 
     override fun onEnable() {
         instance = this
         CloudAPI.instance.getEventManager().registerListener(this, CloudServiceStartListener())
         CloudAPI.instance.getEventManager().registerListener(this, PlayerConnectListener())
 
-        timedValueCollectorManager.registerValueCollector(CPUUsageTimedCollector(), Double::class.java)
-        timedValueCollectorManager.registerValueCollector(MemoryTimedCollector(), Int::class.java)
+        CloudAPI.instance.getWrapperManager().getAllCachedObjects().forEach {
+            timedValueCollectorManager.registerValueCollector(CPUUsageTimedCollector(it), Float::class.java)
+            timedValueCollectorManager.registerValueCollector(MemoryTimedCollector(it), Int::class.java)
+        }
         timedValueCollectorManager.registerValueCollector(PlayerCountTimedCollector(), Int::class.java)
         timedValueCollectorManager.start()
 
@@ -70,12 +75,21 @@ class StatisticsModule : ICloudModule {
             private set
     }
 
+    fun getValueStoreByName(name: String): ITimedValueStore<*>? {
+        return this.valueStores.firstOrNull { it.getCollectionName() == name }
+    }
+
     fun <T : Any> createTimedValueStore(collectionName: String, clazz: Class<T>): ITimedValueStore<T> {
         val offlineCloudPlayerHandler = Manager.instance.offlineCloudPlayerHandler
         if (offlineCloudPlayerHandler is SQLOfflineCloudPlayerHandler) {
-            return SQLTimedValueStore<T>(clazz, collectionName)
+            val sqlTimedValueStore = SQLTimedValueStore<T>(clazz, collectionName)
+            valueStores.add(sqlTimedValueStore)
+            return sqlTimedValueStore
         } else if (offlineCloudPlayerHandler is MongoOfflineCloudPlayerHandler) {
-            return MongoTimedValueStore<T>(clazz, collectionName, offlineCloudPlayerHandler.database)
+            val mongoTimedValueStore =
+                MongoTimedValueStore<T>(clazz, collectionName, offlineCloudPlayerHandler.database)
+            valueStores.add(mongoTimedValueStore)
+            return mongoTimedValueStore
         }
 
         throw IllegalStateException("OfflineCloudPlayerManager was not SQL or MongoDB")
