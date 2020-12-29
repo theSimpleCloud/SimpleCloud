@@ -91,8 +91,9 @@ class BukkitCloudSign(
 
     private fun calculateLayoutType(): LayoutType {
         if (this.serviceGroup!!.isInMaintenance()) return LayoutType.MAINTENANCE
-        if (this.service == null || service!!.getState() == ServiceState.CLOSED) return LayoutType.SEARCHING
+        if (this.service == null) return LayoutType.SEARCHING
         if (this.service!!.getState() == ServiceState.STARTING) return LayoutType.STARTING
+        if (this.service!!.getState() != ServiceState.VISIBLE) return LayoutType.SEARCHING
         if (this.service!!.isFull()) return LayoutType.FULL
         return LayoutType.ONLINE
     }
