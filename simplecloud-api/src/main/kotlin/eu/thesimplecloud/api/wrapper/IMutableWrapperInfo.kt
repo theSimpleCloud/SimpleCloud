@@ -40,6 +40,11 @@ interface IMutableWrapperInfo : IWrapperInfo {
     fun setUsedMemory(memory: Int)
 
     /**
+     * Sets the CPU usage of this wrapper
+     */
+    fun setCpuUsage(usage: Float)
+
+    /**
      * Sets whether the wrapper has received the templates.
      */
     fun setTemplatesReceived(boolean: Boolean)

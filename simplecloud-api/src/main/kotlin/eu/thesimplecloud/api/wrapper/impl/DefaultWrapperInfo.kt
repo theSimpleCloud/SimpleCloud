@@ -46,8 +46,15 @@ data class DefaultWrapperInfo(
     @JsonLibExclude
     private var currentlyStartingServices = 0
 
+    @JsonLibExclude
+    private var cpuUsage = 0.0F
+
     override fun setUsedMemory(memory: Int) {
         this.usedMemory = memory
+    }
+
+    override fun setCpuUsage(usage: Float) {
+        this.cpuUsage = usage
     }
 
     override fun setMaxSimultaneouslyStartingServices(amount: Int) {
@@ -71,6 +78,10 @@ data class DefaultWrapperInfo(
     override fun getUsedMemory(): Int = this.usedMemory
 
     override fun getMaxMemory(): Int = this.maxMemory
+
+    override fun getCpuUsage(): Float {
+        return this.cpuUsage
+    }
 
     override fun isAuthenticated(): Boolean = this.authenticated
 

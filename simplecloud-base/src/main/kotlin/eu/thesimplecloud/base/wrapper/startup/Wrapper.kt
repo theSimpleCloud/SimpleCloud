@@ -102,6 +102,7 @@ class Wrapper : ICloudApplication {
         } else {
             Launcher.instance.consoleSender.sendProperty("wrapper.startup.template-client.using")
         }
+        CpuUsageUpdater().startUpdater()
 
         //shutdown hook
         Runtime.getRuntime().addShutdownHook(Thread {

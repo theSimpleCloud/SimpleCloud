@@ -52,6 +52,12 @@ interface IWrapperInfo : INetworkComponent {
     fun getMaxMemory(): Int
 
     /**
+     * Returns the CPU usage of this wrapper.
+     * The returned value will be between 0 - 1
+     */
+    fun getCpuUsage(): Float
+
+    /**
      * Returns the amount of RAM the wrapper has left
      */
     fun getUnusedMemory(): Int {

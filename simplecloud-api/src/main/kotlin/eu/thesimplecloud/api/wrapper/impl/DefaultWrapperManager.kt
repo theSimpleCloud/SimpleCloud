@@ -48,6 +48,7 @@ open class DefaultWrapperManager : AbstractCacheList<IWrapperInfo>(), IWrapperMa
         override fun mergeUpdateValue(updateValue: IWrapperInfo, cachedValue: IWrapperInfo) {
             cachedValue as IMutableWrapperInfo
 
+            cachedValue.setCpuUsage(updateValue.getCpuUsage())
             cachedValue.setMaxMemory(updateValue.getMaxMemory())
             cachedValue.setUsedMemory(updateValue.getUsedMemory())
 
