@@ -205,8 +205,10 @@ object ProxyEventHandler {
             }
         }
         val player = cloudPlayer.clone() as CloudPlayer
-        player.setServerConnectState(PlayerServerConnectState.CONNECTED)
-        player.update().awaitUninterruptibly()
+        if (player.getConnectedServerName() != null) {
+            player.setServerConnectState(PlayerServerConnectState.CONNECTED)
+            player.update().awaitUninterruptibly()
+        }
     }
 
     fun handleTabComplete(uuid: UUID, rawCommand: String): Array<String> {
