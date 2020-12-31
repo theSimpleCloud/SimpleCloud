@@ -86,7 +86,7 @@ class DeleteCommand : ICommandHandler {
         }
 
         CloudAPI.instance.getWrapperManager().delete(wrapper)
-        Launcher.instance.consoleSender.sendProperty("manager.command.delete.group.success", name)
+        Launcher.instance.consoleSender.sendProperty("manager.command.delete.wrapper.success", name)
     }
 
 
