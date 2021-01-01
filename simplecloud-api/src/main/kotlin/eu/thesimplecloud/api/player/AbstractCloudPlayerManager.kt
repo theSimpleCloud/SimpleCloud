@@ -32,8 +32,8 @@ import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import java.util.*
+import java.util.concurrent.ConcurrentMap
 import kotlin.NoSuchElementException
-import kotlin.collections.HashMap
 
 abstract class AbstractCloudPlayerManager : AbstractCacheList<ICloudPlayer>(spreadUpdates = false), ICloudPlayerManager {
 
@@ -70,7 +70,7 @@ abstract class AbstractCloudPlayerManager : AbstractCacheList<ICloudPlayer>(spre
             cachedValue as CloudPlayer
             cachedValue.setConnectedProxyName(updateValue.getConnectedProxyName())
             cachedValue.setConnectedServerName(updateValue.getConnectedServerName())
-            cachedValue.propertyMap = HashMap(updateValue.getMapWithNewestProperties(cachedValue.propertyMap) as MutableMap<String, Property<*>>)
+            cachedValue.propertyMap = updateValue.getMapWithNewestProperties(cachedValue.propertyMap) as ConcurrentMap<String, Property<*>>
             cachedValue.setServerConnectState(updateValue.getServerConnectState())
             cachedValue.setDisplayName(updateValue.getDisplayName())
         }

@@ -22,6 +22,7 @@
 
 package eu.thesimplecloud.api.service.impl
 
+import com.google.common.collect.Maps
 import eu.thesimplecloud.api.property.IProperty
 import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.api.service.ICloudService
@@ -31,30 +32,33 @@ import eu.thesimplecloud.api.utils.time.Timestamp
 import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.jsonlib.JsonLibExclude
 import java.util.*
-import kotlin.collections.HashMap
+import java.util.concurrent.ConcurrentMap
 
 data class DefaultCloudService(
         private val groupName: String,
         private val serviceNumber: Int,
         private val uniqueId: UUID,
         private val templateName: String,
-        private var wrapperName: String?,
-        private var port: Int,
+        @Volatile private var wrapperName: String?,
+        @Volatile private var port: Int,
         private val maxMemory: Int,
-        private var maxPlayers: Int,
-        private var motd: String,
+        @Volatile private var maxPlayers: Int,
+        @Volatile private var motd: String,
         private val serviceVersion: ServiceVersion
 ) : ICloudService {
 
-    private var serviceState = ServiceState.PREPARED
-    private var onlineCount = 0
-    @Volatile
-    private var usedMemory = 0
-    private var authenticated = false
-    @JsonLibExclude
-    private var lastPlayerUpdate = Timestamp()
+    @Volatile private var serviceState = ServiceState.PREPARED
 
-    var propertyMap = HashMap<String, Property<*>>()
+    @Volatile private var onlineCount = 0
+
+    @Volatile private var usedMemory = 0
+
+    @Volatile private var authenticated = false
+
+    @JsonLibExclude
+    @Volatile private var lastPlayerUpdate = Timestamp()
+
+    @Volatile var propertyMap: ConcurrentMap<String, Property<*>> = Maps.newConcurrentMap()
 
     override fun getGroupName(): String = this.groupName
 

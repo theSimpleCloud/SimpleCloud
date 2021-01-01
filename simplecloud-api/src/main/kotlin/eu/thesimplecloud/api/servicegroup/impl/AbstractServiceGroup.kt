@@ -27,24 +27,23 @@ import eu.thesimplecloud.api.service.version.ServiceVersion
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 
 abstract class AbstractServiceGroup(
-        private val name: String,
-        private var templateName: String,
-        private var maxMemory: Int,
-        private var maxPlayers: Int,
-        private var minimumOnlineServiceCount: Int,
-        private var maximumOnlineServiceCount: Int,
-        private var maintenance: Boolean,
-        private val static: Boolean,
-        private var percentToStartNewService: Int,
-        private var wrapperName: String?,
-        serviceVersion: ServiceVersion,
-        private val startPriority: Int,
-        private var permission: String?,
-        private var stateUpdating: Boolean = true
+    private val name: String,
+    @Volatile private var templateName: String,
+    @Volatile private var maxMemory: Int,
+    @Volatile private var maxPlayers: Int,
+    @Volatile private var minimumOnlineServiceCount: Int,
+    @Volatile private var maximumOnlineServiceCount: Int,
+    @Volatile private var maintenance: Boolean,
+    private val static: Boolean,
+    @Volatile private var percentToStartNewService: Int,
+    @Volatile private var wrapperName: String?,
+    serviceVersion: ServiceVersion,
+    private val startPriority: Int,
+    @Volatile private var permission: String?,
+    @Volatile private var stateUpdating: Boolean = true
 ) : ICloudServiceGroup {
 
-    @Volatile
-    private var serviceVersion = serviceVersion.name
+    @Volatile private var serviceVersion = serviceVersion.name
 
     override fun getName(): String = this.name
 

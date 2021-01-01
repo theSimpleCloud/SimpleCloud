@@ -197,7 +197,8 @@ class Manager : ICloudApplication {
         this.wrapperFileHandler.loadAll().forEach { CloudAPI.instance.getWrapperManager().update(it) }
         this.cloudServiceGroupFileHandler.loadAll()
             .forEach { CloudAPI.instance.getCloudServiceGroupManager().update(it) }
-        this.templatesConfigLoader.loadConfig().templates.forEach { CloudAPI.instance.getTemplateManager().update(it) }
+        val templates = this.templatesConfigLoader.loadConfig().templates
+        templates.forEach { CloudAPI.instance.getTemplateManager().update(it) }
         this.jvmArgumentsConfig = JvmArgumentsConfigLoader().loadConfig()
 
         if (CloudAPI.instance.getWrapperManager().getAllCachedObjects().isNotEmpty()) {
