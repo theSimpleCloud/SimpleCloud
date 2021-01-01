@@ -55,7 +55,7 @@ abstract class AbstractCloudPlayerManager : AbstractCacheList<ICloudPlayer>(spre
                 return events
             }
 
-            if (updateValue.getConnectedServerName() != null && updateValue.getConnectedServerName() != cachedValue.getConnectedServerName()) {
+            if (updateValue.getConnectedServer() != null && updateValue.getConnectedServerName() != cachedValue.getConnectedServerName()) {
                 val oldServer = cachedValue.getConnectedServer()
                 events.add(CloudPlayerServerConnectEvent(playerToUse, oldServer, updateValue.getConnectedServer()!!))
             }
