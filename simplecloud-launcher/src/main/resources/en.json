@@ -46,7 +46,7 @@
   "manager.command.edit.template.inheritance.add.both-equal": "Cannot add a template as inheritance to itself",
   "manager.command.edit.template.inheritance.add.success": "Template %NAME% is now inheriting from %OTHER_NAME%",
   "manager.command.edit.template.inheritance.remove.not-added": "Template %NAME% is not inheriting from %OTHER_NAME%",
-  "manager.command.edit.template.inheritance.remove.success": "The inheritance that was linked to the template %NAME% has been removed",
+  "manager.command.edit.template.inheritance.remove.success": "The inheritance linked to the template %NAME% has been removed",
   "manager.command.edit.template.modules.add.already-added": "Module %MODULE% is already added to template %TEMPLATE%",
   "manager.command.edit.template.modules.add.success": "Added module %MODULE% to template %TEMPLATE%",
   "manager.command.edit.template.modules.remove.not-added": "Module %MODULE% was not added to template %TEMPLATE%",
