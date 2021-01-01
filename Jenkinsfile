@@ -43,9 +43,15 @@ pipeline {
             }
         }
         stage('Publish') {
-           steps {
+            when {
+                anyOf {
+                    branch 'master';
+                    branch 'dev/2.0';
+                }
+            }
+            steps {
                 sh './gradlew publish';
-           }
+            }
         }
     }
 }
