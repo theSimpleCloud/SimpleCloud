@@ -46,7 +46,7 @@
   "manager.command.edit.template.inheritance.add.both-equal": "Ein Template kann nicht als Vererbung zu sich selbst hinzugefügt werden",
   "manager.command.edit.template.inheritance.add.success": "Das Template %NAME% erbt nun von %OTHER_NAME%",
   "manager.command.edit.template.inheritance.remove.not-added": "Das Template %NAME% erbt nicht von %OTHER_NAME%",
-  "manager.command.edit.template.inheritance.remove.success": "Template %NAME%",
+  "manager.command.edit.template.inheritance.remove.success": "Das Template %NAME% erbt nicht mehr von %OTHER_NAME%",
   "manager.command.edit.template.modules.add.already-added": "Das Modul %MODULE% wurde bereits dem Template %TEMPLATE% hinzugefügt",
   "manager.command.edit.template.modules.add.success": "Das Modul %MODULE% wurde dem Template %TEMPLATE% erfolgreich hinzugefügt",
   "manager.command.edit.template.modules.remove.not-added": "Das Modul %MODULE% wurde nicht dem Template %TEMPLATE% hinzugefügt",
