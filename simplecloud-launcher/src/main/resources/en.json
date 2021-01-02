@@ -37,6 +37,7 @@
   "manager.command.delete.template.success": "Template %NAME% deleted",
   "manager.command.delete.wrapper.group-must-start": "Cannot delete wrapper %NAME% while groups are only able to start on it",
   "manager.command.delete.wrapper.not-exist": "Wrapper %NAME% does not exist",
+  "manager.command.delete.wrapper.success": "The wrapper %NAME% has been successfully deleted",
   "manager.command.delete.wrapper.services-running": "Cannot delete wrapper %NAME% while services are still running on it",
   "manager.command.edit.allowed-parameters": "Allowed parameters are:",
   "manager.command.edit.group.invalid-value": "Invalid value. Expected type: %TYPE%",
