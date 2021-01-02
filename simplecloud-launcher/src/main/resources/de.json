@@ -82,7 +82,7 @@
   "manager.command.startstatic.success": "Starte Server...",
   "manager.connection.unknown-host": "Ein Client hat versucht, von einem unbekannten Host sich zu verbinden: %HOST%",
   "manager.converted": "Umgewandelt von %PREVIOUS% zu %CURRENT%",
-  "manager.converting": "Wandle um von %PREVIOUS% to %CURRENT%..",
+  "manager.converting": "Wandle um von %PREVIOUS% zu %CURRENT%..",
   "manager.disconnect.service": "Verbindung des Servers %SERVICE% wurde getrennt",
   "manager.disconnect.wrapper": "Verbindung des Wrappers %WRAPPER% wurde getrennt",
   "manager.login.service": "Verbindung zu Server %SERVICE% wurde aufgebaut",
