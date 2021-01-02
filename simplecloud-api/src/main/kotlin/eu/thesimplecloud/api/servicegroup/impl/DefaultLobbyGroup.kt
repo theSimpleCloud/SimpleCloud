@@ -37,7 +37,7 @@ class DefaultLobbyGroup(
         static: Boolean,
         percentToStartNewService: Int,
         wrapperName: String?,
-        private var priority: Int,
+        @Volatile private var priority: Int,
         permission: String?,
         serviceVersion: ServiceVersion,
         startPriority: Int,

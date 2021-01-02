@@ -35,6 +35,7 @@ import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.launcher.startup.Launcher
 import java.util.*
+import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
@@ -44,7 +45,7 @@ import kotlin.math.min
 class ServiceHandler : IServiceHandler {
 
     private val serviceMinimumCountCalculator = ServiceMinimumCountCalculator()
-    private var serviceQueue: MutableList<ICloudService> = ArrayList()
+    @Volatile private var serviceQueue: MutableList<ICloudService> = CopyOnWriteArrayList()
 
     override fun startServicesByGroup(cloudServiceGroup: ICloudServiceGroup, count: Int): List<ICloudService> {
         require(count >= 1) { "Count must be positive" }
@@ -144,7 +145,7 @@ class ServiceHandler : IServiceHandler {
         thread(start = true, isDaemon = true) {
             while (true) {
                 this.serviceQueue =
-                    this.serviceQueue.sortedByDescending { it.getServiceGroup().getStartPriority() }.toMutableList()
+                    CopyOnWriteArrayList(this.serviceQueue.sortedByDescending { it.getServiceGroup().getStartPriority() })
                 startMinServices()
                 stopRedundantServices()
 

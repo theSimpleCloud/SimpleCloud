@@ -37,7 +37,7 @@ class DefaultProxyGroup(
         static: Boolean,
         percentToStartNewService: Int,
         wrapperName: String?,
-        private var startPort: Int,
+        @Volatile private var startPort: Int,
         serviceVersion: ServiceVersion,
         startPriority: Int,
         permission: String?

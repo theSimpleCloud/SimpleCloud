@@ -22,6 +22,7 @@
 
 package eu.thesimplecloud.api.sync.`object`
 
+import com.google.common.collect.Maps
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.event.sync.`object`.GlobalPropertyUpdatedEvent
 import eu.thesimplecloud.api.network.packets.sync.`object`.PacketIOGetGlobalProperty
@@ -34,14 +35,13 @@ import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.IPacket
 import eu.thesimplecloud.clientserverapi.lib.packet.packetsender.sendQuery
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
-import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArraySet
 
 class GlobalPropertyHolder : IGlobalPropertyHolder {
 
-    private val propertyNameToUpdateClient = HashMap<String, MutableSet<IConnection>>()
+    private val propertyNameToUpdateClient = Maps.newConcurrentMap<String, MutableSet<IConnection>>()
 
-    private val nameToValue: MutableMap<String, IProperty<*>> = ConcurrentHashMap()
+    private val nameToValue: MutableMap<String, IProperty<*>> = Maps.newConcurrentMap()
 
     fun addConnectionToUpdates(propertyName: String, connection: IConnection) {
         val list = this.propertyNameToUpdateClient.getOrPut(propertyName) { CopyOnWriteArraySet() }

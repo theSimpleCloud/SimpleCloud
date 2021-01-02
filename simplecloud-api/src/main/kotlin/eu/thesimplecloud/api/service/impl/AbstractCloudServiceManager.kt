@@ -33,6 +33,7 @@ import eu.thesimplecloud.api.service.ICloudServiceManager
 import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.utils.time.Timestamp
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
+import java.util.concurrent.ConcurrentMap
 
 abstract class AbstractCloudServiceManager : AbstractCacheList<ICloudService>(), ICloudServiceManager {
 
@@ -80,7 +81,7 @@ abstract class AbstractCloudServiceManager : AbstractCacheList<ICloudService>(),
             cachedValue.setWrapperName(updateValue.getWrapperName())
             cachedValue.setPort(updateValue.getPort())
             cachedValue.setUsedMemory(updateValue.getUsedMemory())
-            cachedValue.propertyMap = HashMap(updateValue.getMapWithNewestProperties(cachedValue.propertyMap) as MutableMap<String, Property<*>>)
+            cachedValue.propertyMap = updateValue.getMapWithNewestProperties(cachedValue.propertyMap) as ConcurrentMap<String, Property<*>>
 
             if (updateValue.getOnlineCount() != cachedValue.getOnlineCount())
                 cachedValue.setLastPlayerUpdate(Timestamp())
