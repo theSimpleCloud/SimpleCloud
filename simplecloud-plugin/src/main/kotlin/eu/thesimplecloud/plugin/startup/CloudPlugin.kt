@@ -46,15 +46,18 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
             private set
     }
 
-    @Volatile
-    private var thisService: ICloudService? = null
-    lateinit var communicationClient: INettyClient
+    @Volatile private var thisService: ICloudService? = null
+
+    @Volatile lateinit var communicationClient: INettyClient
         private set
-    lateinit var connectionToManager: IConnection
+
+    @Volatile lateinit var connectionToManager: IConnection
         private set
-    lateinit var thisServiceName: String
+
+    @Volatile lateinit var thisServiceName: String
         private set
-    private var nettyThread: Thread
+
+    @Volatile private var nettyThread: Thread
 
     init {
         println("<---------- Starting SimpleCloud-Plugin ---------->")

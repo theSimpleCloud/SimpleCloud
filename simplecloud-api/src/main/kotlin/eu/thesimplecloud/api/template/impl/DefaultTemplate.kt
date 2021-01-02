@@ -23,11 +23,12 @@
 package eu.thesimplecloud.api.template.impl
 
 import eu.thesimplecloud.api.template.ITemplate
+import java.util.concurrent.ConcurrentHashMap
 
 data class DefaultTemplate(private val name: String) : ITemplate {
 
-    private var inheritedTemplateNames = HashSet<String>()
-    private var moduleNamesToCopy = HashSet<String>()
+    @Volatile private var inheritedTemplateNames: MutableSet<String> = ConcurrentHashMap.newKeySet<String>()
+    @Volatile private var moduleNamesToCopy: MutableSet<String> = ConcurrentHashMap.newKeySet<String>()
 
     override fun getName(): String = this.name
 
@@ -43,7 +44,8 @@ data class DefaultTemplate(private val name: String) : ITemplate {
     }
 
     fun setInheritedTemplateNames(inheritedTemplateNames: Set<String>){
-        this.inheritedTemplateNames = HashSet(inheritedTemplateNames)
+        this.inheritedTemplateNames = ConcurrentHashMap.newKeySet()
+        this.inheritedTemplateNames.addAll(inheritedTemplateNames)
     }
 
     override fun addModuleNameToCopy(name: String) {
@@ -58,7 +60,8 @@ data class DefaultTemplate(private val name: String) : ITemplate {
     override fun getModuleNamesToCopy(): Set<String> = this.moduleNamesToCopy
 
     fun setModuleNamesToCopy(moduleNamesToCopy: Set<String>){
-        this.moduleNamesToCopy = HashSet(moduleNamesToCopy)
+        this.moduleNamesToCopy = ConcurrentHashMap.newKeySet()
+        this.moduleNamesToCopy.addAll(moduleNamesToCopy)
     }
 
 

@@ -22,6 +22,7 @@
 
 package eu.thesimplecloud.api.sync.list.manager
 
+import com.google.common.collect.Maps
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.network.packets.sync.list.PacketIOGetAllCachedListProperties
 import eu.thesimplecloud.api.sync.list.ISynchronizedObjectList
@@ -29,11 +30,10 @@ import eu.thesimplecloud.clientserverapi.client.INettyClient
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.combineAllPromises
-import java.util.concurrent.ConcurrentHashMap
 
 class SynchronizedObjectListManager : ISynchronizedObjectListManager {
 
-    private val nameToSynchronizedObjectList = ConcurrentHashMap<String, ISynchronizedObjectList<out Any>>()
+    private val nameToSynchronizedObjectList = Maps.newConcurrentMap<String, ISynchronizedObjectList<out Any>>()
 
 
     override fun registerSynchronizedObjectList(

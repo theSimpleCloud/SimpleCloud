@@ -31,6 +31,7 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.jsonlib.JsonLibExclude
 import java.util.*
+import java.util.concurrent.ConcurrentMap
 
 class CloudPlayer(
         name: String,
@@ -38,10 +39,10 @@ class CloudPlayer(
         firstLogin: Long,
         lastLogin: Long,
         onlineTime: Long,
-        private var connectedProxyName: String,
-        private var connectedServerName: String?,
+        @Volatile private var connectedProxyName: String,
+        @Volatile private var connectedServerName: String?,
         playerConnection: DefaultPlayerConnection,
-        propertyMap: MutableMap<String, Property<*>>
+        propertyMap: ConcurrentMap<String, Property<*>>
 ) : OfflineCloudPlayer(
         name,
         uniqueId,

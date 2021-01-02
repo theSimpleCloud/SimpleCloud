@@ -22,6 +22,7 @@
 
 package eu.thesimplecloud.base.manager.network.packets.player
 
+import com.google.common.collect.Maps
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.player.CloudPlayer
 import eu.thesimplecloud.api.player.OfflineCloudPlayer
@@ -31,6 +32,7 @@ import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
+import java.util.concurrent.ConcurrentHashMap
 
 class PacketInCreateCloudPlayer() : JsonPacket() {
 
@@ -40,7 +42,7 @@ class PacketInCreateCloudPlayer() : JsonPacket() {
         val proxyName = this.jsonLib.getString("proxyName") ?: return contentException("proxyName")
         val offlinePlayer = Manager.instance.offlineCloudPlayerHandler.getOfflinePlayer(playerConnection.getUniqueId())
         val cloudPlayer = if (offlinePlayer == null) {
-            CloudPlayer(playerConnection.getName(), playerConnection.getUniqueId(), System.currentTimeMillis(), System.currentTimeMillis(), 0L, proxyName, null, playerConnection, HashMap())
+            CloudPlayer(playerConnection.getName(), playerConnection.getUniqueId(), System.currentTimeMillis(), System.currentTimeMillis(), 0L, proxyName, null, playerConnection, Maps.newConcurrentMap())
         } else {
             CloudPlayer(
                     playerConnection.getName(),
@@ -51,7 +53,7 @@ class PacketInCreateCloudPlayer() : JsonPacket() {
                     proxyName,
                     null,
                     playerConnection,
-                    (offlinePlayer.getProperties() as Map<String, Property<*>>).toMutableMap()
+                    ConcurrentHashMap(offlinePlayer.getProperties() as Map<String, Property<*>>)
             )
         }
         CloudAPI.instance.getCloudPlayerManager().update(cloudPlayer)

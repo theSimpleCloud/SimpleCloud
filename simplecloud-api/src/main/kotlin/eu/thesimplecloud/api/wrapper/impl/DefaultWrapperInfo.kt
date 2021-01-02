@@ -28,26 +28,26 @@ import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.jsonlib.JsonLibExclude
 
 data class DefaultWrapperInfo(
-        private val name: String,
-        private val host: String,
-        private var maxSimultaneouslyStartingServices: Int,
-        private var maxMemory: Int
+    private val name: String,
+    private val host: String,
+    @Volatile private var maxSimultaneouslyStartingServices: Int,
+    @Volatile private var maxMemory: Int
 ) : IMutableWrapperInfo {
 
     @JsonLibExclude
-    private var authenticated = false
+    @Volatile private var authenticated = false
 
     @JsonLibExclude
-    private var usedMemory: Int = 0
+    @Volatile private var usedMemory: Int = 0
 
     @JsonLibExclude
-    private var templatesReceived = false
+    @Volatile private var templatesReceived = false
 
     @JsonLibExclude
-    private var currentlyStartingServices = 0
+    @Volatile private var currentlyStartingServices = 0
 
     @JsonLibExclude
-    private var cpuUsage = 0.0F
+    @Volatile private var cpuUsage = 0.0F
 
     override fun setUsedMemory(memory: Int) {
         this.usedMemory = memory
