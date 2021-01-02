@@ -147,7 +147,7 @@
   "manager.setup.service-group.question.priority": "Welche Priorität soll diese Lobbygruppe haben? (0 = Standart)",
   "manager.setup.service-group.question.priority.too-low": "Die angegebene Zahl ist zu klein",
   "manager.setup.service-group.question.static": "Soll diese Servergruppe statisch sein?",
-  "manager.setup.service-group.question.template": "Welches Template soll diese Servergruppe benutzen? (create = Erstellt automatisch ein neues Template mit dem Gruppenname)",
+  "manager.setup.service-group.question.template": "Welches Template soll diese Servergruppe benutzen? (create = Erstellt automatisch ein neues Template mit dem Gruppennamen)",
   "manager.setup.service-group.question.template.created": "Das Template %TEMPLATE% wurde erstellt",
   "manager.setup.service-group.question.template.not-exist": "Das angegebene Template existiert nicht",
   "manager.setup.service-group.question.template.success": "Das Template wurde gesetzt",
