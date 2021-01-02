@@ -96,7 +96,7 @@
   "manager.server.listening": "Die Cloud läuft nun auf dem Port %PORT%",
   "manager.server.stopped": "Ein Server wird nun gestoppt",
   "manager.service.queued": "Der Server %SERVICE% ist nun in der Warteschlange",
-  "manager.service.start": "Der Wrapper %WRAPPER% wurde beauftragt, den Server %SERVICE% zu starten",
+  "manager.service.start": "Der Wrapper %WRAPPER% wurde beauftragt, %SERVICE% zu starten",
   "manager.service.stopped": "Der Server %SERVICE% wurde gestoppt",
   "manager.setup.auto-ip.question": "Möchtest du deine IP-Adresse automatisch durch \"ipify.org\" erkennen lassen? (Das funktioniert nicht auf einer lokalen Maschine)",
   "manager.setup.database-connection.host-invalid": "Der angegebene Hostname ist ungültig",
