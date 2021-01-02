@@ -153,7 +153,7 @@
   "manager.setup.service-group.question.template.success": "Das Template wurde gesetzt",
   "manager.setup.service-group.question.type": "Welche Serverversion soll diese Servergruppe nutzen?",
   "manager.setup.wrapper.finished": "Der Wrapper %WRAPPER% wurde erstellt",
-  "manager.setup.wrapper.question.host": "Unter welcher IP-Adresse soll der Wrapper laufen? (this = IP-Adresse dieses Sytems)",
+  "manager.setup.wrapper.question.host": "Welche IP-Adresse soll für den Wrapper verwendet werden? (this = IP-Adresse dieses Sytems)",
   "manager.setup.wrapper.question.memory": "Wie viel Arbeitsspeicher soll dem Wrapper zugewiesen werden?",
   "manager.setup.wrapper.question.memory.success": "Die Arbeitsspeicherangabe wurde gesetzt",
   "manager.setup.wrapper.question.name": "Welchen Namen soll der Wrapper haben?",
