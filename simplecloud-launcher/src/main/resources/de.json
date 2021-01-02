@@ -12,7 +12,7 @@
   "ingame.server-still-starting": "§cDieser Server startet noch",
   "internalwrapper.setup.memory.finished": "Interner Wrapper erstellt",
   "internalwrapper.setup.memory.question.memory.success": "Arbeitsspeicher gesetzt",
-  "internalwrapper.setup.memory.question.name": "Wie viel Arbeitsspeicher soll der Wrapper haben?",
+  "internalwrapper.setup.memory.question.name": "Wie viel Arbeitsspeicher soll der Wrapper verwenden können?",
   "launcher.base.checking-for-updates": "Suche nach Updates für die Basis..",
   "launcher.base.downloading-update": "Lade Basis Update herunter..",
   "launcher.base.newest-version": "Du besitzt bereits die neuste Version",
