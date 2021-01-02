@@ -35,7 +35,7 @@
   "manager.command.delete.template.in-use.service": "Das Template %NAME% wird noch von registrierten Servern verwendet. Bitte stoppe diese Server zuerst",
   "manager.command.delete.template.not-exist": "Das Template %NAME% existiert nicht",
   "manager.command.delete.template.success": "Das Template %NAME% wurde gelöscht",
-  "manager.command.delete.wrapper.group-must-start": "Der Wrapper %NAME% kann nicht gelöscht werden, da noch Gruppen existieren, die auf ihm Server starten",
+  "manager.command.delete.wrapper.group-must-start": "Der Wrapper %NAME% konnte nicht gelöscht werden, da noch Gruppen existieren, die auf ihm Server starten",
   "manager.command.delete.wrapper.not-exist": "Der Wrapper %NAME% existiert nicht",
   "manager.command.delete.wrapper.services-running": "Der Wrapper %NAME% konnte nicht gelöscht werden, da noch Server auf ihm laufen",
   "manager.command.edit.allowed-parameters": "Erlaubte Argumente sind:",
