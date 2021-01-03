@@ -62,9 +62,9 @@ class VelocityListener(val plugin: VelocityPluginMain) {
         }
 
 
-        val maxPlayers = CloudPlugin.instance.thisService().getMaxPlayers()
+        val maxPlayers = CloudPlugin.instance.thisService().getServiceGroup().getMaxPlayers()
 
-        if (plugin.proxyHandler.getOnlinePlayers() >= maxPlayers) {
+        if (plugin.proxyHandler.getOnlinePlayers() > maxPlayers) {
             if (!player.hasPermission(plugin.proxyHandler.JOIN_FULL_PERMISSION) &&
                 !proxyConfiguration.whitelist.mapToLowerCase().contains(player.username.toLowerCase())
             ) {
@@ -100,14 +100,14 @@ class VelocityListener(val plugin: VelocityPluginMain) {
         val modinfo = if (ping.modinfo.isPresent) ping.modinfo.get() else null
 
         val playerInfo = motdConfiguration.playerInfo
-        var onlinePlayers = plugin.proxyHandler.getOnlinePlayers()
+        val onlinePlayers = plugin.proxyHandler.getOnlinePlayers()
 
         val versionName = motdConfiguration.versionName
         if (versionName != null && versionName.isNotEmpty()) {
             protocol = ServerPing.Version(-1, plugin.proxyHandler.replaceString(versionName))
         }
 
-        val maxPlayers = CloudPlugin.instance.thisService().getMaxPlayers()
+        val maxPlayers = CloudPlugin.instance.thisService().getServiceGroup().getMaxPlayers()
 
         val playerSamples = if (playerInfo != null && playerInfo.isNotEmpty()) {
             val playerInfoString = plugin.proxyHandler.replaceString(playerInfo.joinToString("\n"))
