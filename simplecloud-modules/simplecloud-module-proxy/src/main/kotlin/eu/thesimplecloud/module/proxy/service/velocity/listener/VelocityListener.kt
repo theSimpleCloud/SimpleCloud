@@ -53,7 +53,8 @@ class VelocityListener(val plugin: VelocityPluginMain) {
 
         if (CloudPlugin.instance.thisService().getServiceGroup().isInMaintenance()) {
             if (!player.hasPermission(plugin.proxyHandler.JOIN_MAINTENANCE_PERMISSION) &&
-                    !proxyConfiguration.whitelist.mapToLowerCase().contains(player.username.toLowerCase())) {
+                !proxyConfiguration.whitelist.mapToLowerCase().contains(player.username.toLowerCase())
+            ) {
                 player.disconnect(CloudTextBuilder().build(CloudText(config.maintenanceKickMessage)))
                 event.result = ServerPreConnectEvent.ServerResult.denied()
                 return
@@ -65,7 +66,8 @@ class VelocityListener(val plugin: VelocityPluginMain) {
 
         if (plugin.proxyHandler.getOnlinePlayers() >= maxPlayers) {
             if (!player.hasPermission(plugin.proxyHandler.JOIN_FULL_PERMISSION) &&
-                    !proxyConfiguration.whitelist.mapToLowerCase().contains(player.username.toLowerCase())) {
+                !proxyConfiguration.whitelist.mapToLowerCase().contains(player.username.toLowerCase())
+            ) {
                 player.disconnect(CloudTextBuilder().build(CloudText(config.fullProxyKickMessage)))
                 event.result = ServerPreConnectEvent.ServerResult.denied()
             }
@@ -75,7 +77,7 @@ class VelocityListener(val plugin: VelocityPluginMain) {
     @EventHandler
     fun on(event: ServerConnectedEvent) {
         val player = event.player
-        val tablistConfiguration = plugin.proxyHandler.getTablistConfiguration()?: return
+        val tablistConfiguration = plugin.proxyHandler.getTablistConfiguration() ?: return
         plugin.sendHeaderAndFooter(player, tablistConfiguration)
     }
 
@@ -89,7 +91,7 @@ class VelocityListener(val plugin: VelocityPluginMain) {
         val line2 = motdConfiguration.secondLines.random()
 
         val motd = CloudTextBuilder()
-                .build(CloudText(plugin.proxyHandler.replaceString(line1 + "\n" + line2)))
+            .build(CloudText(plugin.proxyHandler.replaceString(line1 + "\n" + line2)))
 
         val ping = event.ping
         var protocol: ServerPing.Version = ping.version
@@ -107,12 +109,14 @@ class VelocityListener(val plugin: VelocityPluginMain) {
 
         val maxPlayers = CloudPlugin.instance.thisService().getMaxPlayers()
 
-        if (playerInfo != null && playerInfo.isNotEmpty()) {
+        val playerSamples = if (playerInfo != null && playerInfo.isNotEmpty()) {
             val playerInfoString = plugin.proxyHandler.replaceString(playerInfo.joinToString("\n"))
-            val sample = listOf(ServerPing.SamplePlayer(playerInfoString, UUID.randomUUID()))
-            players = ServerPing.Players(onlinePlayers, maxPlayers, sample)
+            listOf(ServerPing.SamplePlayer(playerInfoString, UUID.randomUUID()))
+        } else {
+            emptyList()
         }
 
+        players = ServerPing.Players(onlinePlayers, maxPlayers, playerSamples)
         event.ping = ServerPing(protocol, players, motd, favicon, modinfo)
     }
 
