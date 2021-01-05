@@ -63,7 +63,7 @@
   "manager.command.info.wrapper.not-exist": "Der angegebene Wrapper existiert nicht",
   "manager.command.reload.group-changed": "Es ist ein Fehler beim Neuladen der Gruppe %GROUP% aufgetreten, da sich der Name geändert hat",
   "manager.command.reload.group-success": "Neuladen der Gruppe %GROUP% erfolgreich abgeschlossen",
-  "manager.command.reload.module.not-exists": "Das neuzuladene Modul existiert nicht",
+  "manager.command.reload.module.not-exists": "Das neuzuladende Modul existiert nicht",
   "manager.command.reload.wrapper-changed": "Es ist ein Fehler beim Neuladen des Wrappers %WRAPPER% aufgetreten, da sich der Host geändert hat",
   "manager.command.reload.wrapper-success": "Neuladen des Wrappers %WRAPPER% erfolgreich abgeschlossen",
   "manager.command.screen.list": "Zurzeit sind folgende Konsolen verfügbar:",
