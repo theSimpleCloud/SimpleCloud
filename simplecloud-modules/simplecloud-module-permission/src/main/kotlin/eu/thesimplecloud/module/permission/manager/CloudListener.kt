@@ -33,11 +33,17 @@ class CloudListener : IListener {
     fun on(event: CloudPlayerUpdatedEvent) {
         val cloudPlayer = event.cloudPlayer
         if (!cloudPlayer.hasProperty(PermissionPlayer.PROPERTY_NAME)) {
-            cloudPlayer.setProperty(PermissionPlayer.PROPERTY_NAME, PermissionPlayer(cloudPlayer.getName(), cloudPlayer.getUniqueId()))
+            cloudPlayer.setProperty(
+                PermissionPlayer.PROPERTY_NAME,
+                PermissionPlayer(cloudPlayer.getName(), cloudPlayer.getUniqueId())
+            )
         }
 
         val permissionPlayer = cloudPlayer.getProperty<PermissionPlayer>(PermissionPlayer.PROPERTY_NAME)!!.getValue()
-
+        if (permissionPlayer.getName() != cloudPlayer.getName()) {
+            permissionPlayer.setName(cloudPlayer.getName())
+            permissionPlayer.update().awaitUninterruptibly()
+        }
         val expiredPermissions = permissionPlayer.getPermissions().filter { it.isExpired() }
         expiredPermissions.forEach { permissionPlayer.removePermission(it.permissionString) }
         val expiredGroups = permissionPlayer.getPermissionGroupInfoList().filter { it.isExpired() }
