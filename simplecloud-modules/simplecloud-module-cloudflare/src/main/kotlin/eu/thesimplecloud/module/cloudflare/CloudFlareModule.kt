@@ -45,7 +45,7 @@ class CloudFlareModule : ICloudModule {
 
     override fun onEnable() {
         proxyConfigs.forEach {
-            Launcher.instance.logger.success("Loaded CloudFlare config for proxy ${it.targetProxyGroup}!")
+            Launcher.instance.consoleSender.sendProperty("module.cloudflare.proxy-config.loaded", it.targetProxyGroup)
         }
 
         domainHelpers.forEach { cloudFlareHelper ->
@@ -57,10 +57,9 @@ class CloudFlareModule : ICloudModule {
                     CloudAPI.instance.getEventManager()
                         .registerListener(this, CloudFlareSingleGroupListener(cloudFlareHelper, proxyConfigs))
                     cloudFlareHelper.createARecordsForWrappersIfNotExist(CloudAPI.instance.getWrapperManager().getAllCachedObjects())
-                    Launcher.instance.logger.success("The CloudFlare Module is active for domain ${config.domain}!")
+                    Launcher.instance.consoleSender.sendProperty("module.cloudflare.domain.active", config.domain)
                 } else {
-                    Launcher.instance.logger.warning("The CloudFlare Module is not configured correctly for domain ${config.domain}!")
-
+                    Launcher.instance.consoleSender.sendProperty("module.cloudflare.domain.invalid", config.domain)
                 }
             }
         }

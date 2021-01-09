@@ -34,6 +34,6 @@ import eu.thesimplecloud.launcher.console.setup.provider.ISetupAnswerProvider
 class LanguageSetupAnswerProvider : ISetupAnswerProvider {
 
     override fun getSuggestions(sender: ICommandSender): Collection<String> {
-        return listOf("en")
+        return listOf("en", "de")
     }
 }
