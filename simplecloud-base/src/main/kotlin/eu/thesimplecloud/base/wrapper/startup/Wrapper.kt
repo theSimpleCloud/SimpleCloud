@@ -215,7 +215,7 @@ class Wrapper : ICloudApplication {
         thisWrapper.setUsedMemory(usedMemory)
         thisWrapper.setCurrentlyStartingServices(this.processQueue?.getStartingOrQueuedServiceAmount() ?: 0)
         if (this.connectionToManager.isOpen())
-            CloudAPI.instance.getWrapperManager().update(thisWrapper)
+            CloudAPI.instance.getWrapperManager().update(thisWrapper).awaitUninterruptibly()
     }
 
     override fun onEnable() {

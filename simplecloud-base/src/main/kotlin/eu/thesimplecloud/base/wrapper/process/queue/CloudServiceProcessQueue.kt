@@ -28,16 +28,16 @@ import eu.thesimplecloud.base.wrapper.process.CloudServiceProcess
 import eu.thesimplecloud.base.wrapper.process.ICloudServiceProcess
 import eu.thesimplecloud.base.wrapper.startup.Wrapper
 import eu.thesimplecloud.launcher.startup.Launcher
-import java.util.*
-import java.util.concurrent.LinkedBlockingQueue
+import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.concurrent.thread
 
 class CloudServiceProcessQueue {
 
     private val cloudServiceProcessManager = Wrapper.instance.cloudServiceProcessManager
 
-    private val queue = LinkedBlockingQueue<ICloudServiceProcess>()
-    private val startingServices = ArrayList<ICloudServiceProcess>()
+    private val queue = ConcurrentLinkedQueue<ICloudServiceProcess>()
+    private val startingServices = CopyOnWriteArrayList<ICloudServiceProcess>()
 
     private fun getMaxSimultaneouslyStartingServices() = Wrapper.instance.getThisWrapper().getMaxSimultaneouslyStartingServices()
 

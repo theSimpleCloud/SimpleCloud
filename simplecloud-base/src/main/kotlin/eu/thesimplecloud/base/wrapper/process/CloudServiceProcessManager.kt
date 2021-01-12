@@ -22,9 +22,11 @@
 
 package eu.thesimplecloud.base.wrapper.process
 
+import java.util.concurrent.ConcurrentHashMap
+
 class CloudServiceProcessManager : ICloudServiceProcessManager {
 
-    private val registeredProcesses = HashSet<ICloudServiceProcess>()
+    private val registeredProcesses = ConcurrentHashMap.newKeySet<ICloudServiceProcess>()
 
     override fun registerServiceProcess(cloudServiceProcess: ICloudServiceProcess) {
         this.registeredProcesses.add(cloudServiceProcess)
