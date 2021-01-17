@@ -8,4 +8,4 @@ depend: [SimpleCloud-Plugin]
 
 commands:
   cloudsigns:
-    permission: simplecloud.command.signs
+    permission: cloud.command.signs

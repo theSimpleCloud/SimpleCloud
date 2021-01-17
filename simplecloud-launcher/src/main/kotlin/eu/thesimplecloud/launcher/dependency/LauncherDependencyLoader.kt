@@ -36,7 +36,7 @@ class LauncherDependencyLoader {
         dependencyLoader.loadDependencies(
                 listOf("https://repo.maven.apache.org/maven2/", "https://repo.thesimplecloud.eu/artifactory/gradle-release-local/"),
                 listOf(
-                        LauncherCloudDependency("eu.thesimplecloud.clientserverapi", "clientserverapi", "4.1.12"),
+                        LauncherCloudDependency("eu.thesimplecloud.clientserverapi", "clientserverapi", "4.1.13"),
                         LauncherCloudDependency("org.apache.commons", "commons-lang3", "3.11"),
                         LauncherCloudDependency("org.slf4j", "slf4j-nop", "1.7.10"),
                         LauncherCloudDependency("org.fusesource.jansi", "jansi", "1.18"),

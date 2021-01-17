@@ -41,10 +41,21 @@ class LanguageFileLoader {
 
     private val languageDir = File(DirectoryPaths.paths.languagesPath)
 
+    private val allLanguages = listOf("en", "de")
+
     fun loadFile(launcherConfig: LauncherConfig) {
-        languageDir.mkdirs()
+        if (!languageDir.exists() || languageDir.listFiles().isEmpty()) {
+            languageDir.mkdirs()
+            copyLanguageFiles()
+        }
         val language = launcherConfig.language
         loadLanguage(language)
+    }
+
+    private fun copyLanguageFiles() {
+        allLanguages.forEach {
+            FileCopier.copyFileOutOfJar(getLanguageFileByLanguage(it), "/language/$it.json")
+        }
     }
 
     private fun loadLanguage(language: String) {
@@ -54,10 +65,9 @@ class LanguageFileLoader {
                 loadLanguage(FALLBACK_LANGUAGE)
                 return
             }
-            val fallbackLanguageFile = languageFile
-            FileCopier.copyFileOutOfJar(fallbackLanguageFile, "/en.json")
         }
-        CloudAPI.instance.getLanguageManager().registerLanguageFile(CloudAPI.instance.getThisSidesCloudModule(), loadLanguageFile(languageFile))
+        CloudAPI.instance.getLanguageManager()
+            .registerLanguageFile(CloudAPI.instance.getThisSidesCloudModule(), loadLanguageFile(languageFile))
     }
 
     fun loadLanguageFile(file: File): LoadedLanguageFile {

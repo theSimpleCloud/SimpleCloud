@@ -61,9 +61,9 @@ class BungeeListener(val plugin: BungeePluginMain) : Listener {
         }
 
 
-        val maxPlayers = CloudPlugin.instance.thisService().getMaxPlayers()
+        val maxPlayers = CloudPlugin.instance.thisService().getServiceGroup().getMaxPlayers()
 
-        if (plugin.proxyHandler.getOnlinePlayers() >= maxPlayers) {
+        if (plugin.proxyHandler.getOnlinePlayers() > maxPlayers) {
             if (!player.hasPermission(plugin.proxyHandler.JOIN_FULL_PERMISSION) &&
                     !proxyConfiguration.whitelist.mapToLowerCase().contains(player.name.toLowerCase())) {
                 player.disconnect(CloudTextBuilder().build(CloudText(plugin.proxyHandler.replaceString(config.fullProxyKickMessage))))
@@ -104,14 +104,14 @@ class BungeeListener(val plugin: BungeePluginMain) : Listener {
 
 
         val playerInfo = motdConfiguration.playerInfo
-        var onlinePlayers = plugin.proxyHandler.getOnlinePlayers()
+        val onlinePlayers = plugin.proxyHandler.getOnlinePlayers()
 
         val versionName = motdConfiguration.versionName
         if (versionName != null && versionName.isNotEmpty()) {
             response.version = ServerPing.Protocol(plugin.proxyHandler.replaceString(versionName), -1)
         }
 
-        val maxPlayers = CloudPlugin.instance.thisService().getMaxPlayers()
+        val maxPlayers = CloudPlugin.instance.thisService().getServiceGroup().getMaxPlayers()
 
         if (playerInfo != null && playerInfo.isNotEmpty()) {
             val playerInfoString = plugin.proxyHandler.replaceString(playerInfo.joinToString("\n"))

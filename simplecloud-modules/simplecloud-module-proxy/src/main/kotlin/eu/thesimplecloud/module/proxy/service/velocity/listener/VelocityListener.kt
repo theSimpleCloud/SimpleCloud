@@ -61,9 +61,9 @@ class VelocityListener(val plugin: VelocityPluginMain) {
         }
 
 
-        val maxPlayers = CloudPlugin.instance.thisService().getMaxPlayers()
+        val maxPlayers = CloudPlugin.instance.thisService().getServiceGroup().getMaxPlayers()
 
-        if (plugin.proxyHandler.getOnlinePlayers() >= maxPlayers) {
+        if (plugin.proxyHandler.getOnlinePlayers() > maxPlayers) {
             if (!player.hasPermission(plugin.proxyHandler.JOIN_FULL_PERMISSION) &&
                     !proxyConfiguration.whitelist.mapToLowerCase().contains(player.username.toLowerCase())) {
                 player.disconnect(CloudTextBuilder().build(CloudText(plugin.proxyHandler.replaceString(config.fullProxyKickMessage))))
