@@ -18,7 +18,7 @@ class CloudListener : IListener {
     @CloudEventHandler
     fun handlePermissionUpdate(event: PermissionPlayerUpdatedEvent) {
         val player = Bukkit.getPlayer(event.player.getUniqueId())?: return
-        TablistHelper.updatePlayer(player)
+        TablistHelper.updateScoreboardForAllPlayers()
     }
 
     @CloudEventHandler

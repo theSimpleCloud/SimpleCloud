@@ -1,6 +1,5 @@
 package eu.thesimplecloud.module.prefix.service.listener
 
-import eu.thesimplecloud.module.prefix.config.TablistInformation
 import eu.thesimplecloud.module.prefix.service.tablist.TablistHelper
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -18,7 +17,7 @@ class JoinListener : Listener {
     fun handleJoin(event: PlayerJoinEvent) {
         val player = event.player
 
-        TablistHelper.updatePlayer(player)
+        TablistHelper.updateScoreboardForAllPlayers()
     }
 
 }
