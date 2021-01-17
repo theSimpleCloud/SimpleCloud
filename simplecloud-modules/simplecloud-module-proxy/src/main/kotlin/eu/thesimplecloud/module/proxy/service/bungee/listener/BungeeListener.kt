@@ -54,7 +54,7 @@ class BungeeListener(val plugin: BungeePluginMain) : Listener {
         if (CloudPlugin.instance.thisService().getServiceGroup().isInMaintenance()) {
             if (!player.hasPermission(plugin.proxyHandler.JOIN_MAINTENANCE_PERMISSION) &&
                     !proxyConfiguration.whitelist.mapToLowerCase().contains(player.name.toLowerCase())) {
-                player.disconnect(CloudTextBuilder().build(CloudText(config.maintenanceKickMessage)))
+                player.disconnect(CloudTextBuilder().build(CloudText(plugin.proxyHandler.replaceString(config.maintenanceKickMessage))))
                 event.isCancelled = true
                 return
             }
@@ -66,7 +66,7 @@ class BungeeListener(val plugin: BungeePluginMain) : Listener {
         if (plugin.proxyHandler.getOnlinePlayers() >= maxPlayers) {
             if (!player.hasPermission(plugin.proxyHandler.JOIN_FULL_PERMISSION) &&
                     !proxyConfiguration.whitelist.mapToLowerCase().contains(player.name.toLowerCase())) {
-                player.disconnect(CloudTextBuilder().build(CloudText(config.fullProxyKickMessage)))
+                player.disconnect(CloudTextBuilder().build(CloudText(plugin.proxyHandler.replaceString(config.fullProxyKickMessage))))
                 event.isCancelled = true
             }
         }

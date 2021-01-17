@@ -54,7 +54,7 @@ class VelocityListener(val plugin: VelocityPluginMain) {
         if (CloudPlugin.instance.thisService().getServiceGroup().isInMaintenance()) {
             if (!player.hasPermission(plugin.proxyHandler.JOIN_MAINTENANCE_PERMISSION) &&
                     !proxyConfiguration.whitelist.mapToLowerCase().contains(player.username.toLowerCase())) {
-                player.disconnect(CloudTextBuilder().build(CloudText(config.maintenanceKickMessage)))
+                player.disconnect(CloudTextBuilder().build(CloudText(plugin.proxyHandler.replaceString(config.maintenanceKickMessage))))
                 event.result = ServerPreConnectEvent.ServerResult.denied()
                 return
             }
@@ -66,7 +66,7 @@ class VelocityListener(val plugin: VelocityPluginMain) {
         if (plugin.proxyHandler.getOnlinePlayers() >= maxPlayers) {
             if (!player.hasPermission(plugin.proxyHandler.JOIN_FULL_PERMISSION) &&
                     !proxyConfiguration.whitelist.mapToLowerCase().contains(player.username.toLowerCase())) {
-                player.disconnect(CloudTextBuilder().build(CloudText(config.fullProxyKickMessage)))
+                player.disconnect(CloudTextBuilder().build(CloudText(plugin.proxyHandler.replaceString(config.fullProxyKickMessage))))
                 event.result = ServerPreConnectEvent.ServerResult.denied()
             }
         }
