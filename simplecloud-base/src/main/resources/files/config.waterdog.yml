@@ -1,0 +1,56 @@
+groups:
+  md_5:
+    - admin
+bedrock_encryption: true
+disabled_commands:
+  - disabledcommandhere
+use_xuid_for_uuid: true
+timeout: 30000
+online_mode: true
+servers:
+  lobby:
+    raknet: false
+    motd: '&1Just another Waterfall - Forced Host'
+    transfer_group: default
+    address: localhost:25565
+    restricted: false
+server_connect_timeout: 5000
+listeners:
+  - query_port: 19132
+    motd: '&1Another Bungee server'
+    tab_list: GLOBAL_PING
+    query_enabled: true
+    proxy_protocol: false
+    forced_hosts: &id038
+    ping_passthrough: false
+    raknet: true
+    priorities:
+      - lobby
+    bind_local_address: true
+    host: 0.0.0.0:19132
+    max_players: 1
+    tab_size: 60
+    force_default_server: false
+stats: a84386b6-9df6-4be0-b405-371ded6a63d0
+network_compression_threshold: 256
+log_pings: true
+permissions:
+  default:
+    - bungeecord.command.server
+    - bungeecord.command.list
+  admin:
+    - bungeecord.command.alert
+    - bungeecord.command.end
+    - bungeecord.command.ip
+    - bungeecord.command.reload
+max_mtu: -1
+ip_forward: false
+player_limit: -1
+log_commands: false
+connection_throttle_limit: 3
+connection_throttle: 4000
+replace_username_spaces: true
+prevent_proxy_connections: false
+remote_ping_timeout: 5000
+forge_support: true
+remote_ping_cache: -1

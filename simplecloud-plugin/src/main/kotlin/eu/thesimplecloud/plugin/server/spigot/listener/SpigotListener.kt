@@ -20,9 +20,10 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.plugin.server.listener
+package eu.thesimplecloud.plugin.server.spigot.listener
 
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.plugin.server.ServerEventHandler
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -56,33 +57,17 @@ class SpigotListener : Listener {
 
     @EventHandler
     fun onJoin(event: PlayerJoinEvent) {
-        updateCurrentOnlineCountTo(Bukkit.getOnlinePlayers().size)
+        ServerEventHandler.updateCurrentOnlineCountTo(Bukkit.getOnlinePlayers().size)
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     fun on(event: PlayerQuitEvent) {
-        onPlayerDisconnected(event.player)
+        ServerEventHandler.onPlayerDisconnected(event.player.uniqueId, Bukkit.getOnlinePlayers().size - 1)
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     fun on(event: PlayerKickEvent) {
-        onPlayerDisconnected(event.player)
-    }
-
-    private fun onPlayerDisconnected(player: Player) {
-        val playerManager = CloudAPI.instance.getCloudPlayerManager()
-        val cloudPlayer = playerManager.getCachedCloudPlayer(player.uniqueId)
-
-        if (cloudPlayer != null && !cloudPlayer.isUpdatesEnabled()) {
-            playerManager.delete(cloudPlayer)
-        }
-        updateCurrentOnlineCountTo(Bukkit.getOnlinePlayers().size - 1)
-    }
-
-    private fun updateCurrentOnlineCountTo(count: Int) {
-        val thisService = CloudPlugin.instance.thisService()
-        thisService.setOnlineCount(count)
-        thisService.update()
+        ServerEventHandler.onPlayerDisconnected(event.player.uniqueId, Bukkit.getOnlinePlayers().size - 1)
     }
     
 }

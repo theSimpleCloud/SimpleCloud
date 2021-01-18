@@ -20,24 +20,34 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.base.wrapper.process.serviceconfigurator
+package eu.thesimplecloud.plugin.server.spigot.listener
 
-import eu.thesimplecloud.api.service.version.type.ServiceAPIType
-import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.configurators.*
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.player.PlayerCommandPreprocessEvent
 
-class ServiceConfiguratorManager {
-    private val configurationMap = mapOf(
-        ServiceAPIType.VELOCITY to DefaultVelocityConfigurator(),
-        ServiceAPIType.BUNGEECORD to DefaultBungeeConfigurator(),
-        ServiceAPIType.WATERDOG to DefaultWaterdogConfigurator(),
-        ServiceAPIType.SPIGOT to DefaultSpigotConfigurator(),
-        ServiceAPIType.NUKKIT to DefaultNukkitConfigurator()
-    )
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 24.12.2020
+ * Time: 10:50
+ * @author Frederick Baier
+ */
+class ReloadCommandBlocker : Listener {
 
-    /**
-     * Returns the [IServiceConfigurator] found by the specified [ServiceAPIType]
-     */
-    fun getServiceConfigurator(serviceAPIType: ServiceAPIType): IServiceConfigurator? = configurationMap[serviceAPIType]
-
+    @EventHandler
+    fun handle(event: PlayerCommandPreprocessEvent) {
+        val message = event.message
+        val player = event.player
+        if (message.equals("/rl", true) ||
+            message.equals("/reload", true) ||
+            message.equals("/rl confirm", true) ||
+            message.equals("/reload confirm", true)
+        ) {
+            if (player.hasPermission("bukkit.command.reload")) {
+                event.isCancelled = true
+                player.sendMessage("§cCloud-Servers cannot be reloaded")
+            }
+        }
+    }
 
 }

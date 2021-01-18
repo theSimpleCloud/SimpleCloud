@@ -20,14 +20,15 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.plugin.server
+package eu.thesimplecloud.plugin.server.spigot
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.player.ICloudPlayerManager
 import eu.thesimplecloud.plugin.impl.player.CloudPlayerManagerSpigot
 import eu.thesimplecloud.plugin.listener.CloudListener
-import eu.thesimplecloud.plugin.server.listener.ReloadCommandBlocker
-import eu.thesimplecloud.plugin.server.listener.SpigotListener
+import eu.thesimplecloud.plugin.server.ICloudServerPlugin
+import eu.thesimplecloud.plugin.server.spigot.listener.ReloadCommandBlocker
+import eu.thesimplecloud.plugin.server.spigot.listener.SpigotListener
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin

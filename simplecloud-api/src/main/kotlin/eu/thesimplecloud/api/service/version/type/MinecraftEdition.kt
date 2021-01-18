@@ -30,6 +30,6 @@ package eu.thesimplecloud.api.service.version.type
  */
 enum class MinecraftEdition {
 
-    JAVA, PE
+    JAVA, BEDROCK
 
 }

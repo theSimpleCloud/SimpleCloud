@@ -62,6 +62,10 @@ allprojects {
             name 'spigotmc-repo'
             url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
         }
+        maven {
+            name 'nukkit-repo'
+            url 'http://repo.nukkitx.com/maven-snapshots/'
+        }
 
     }
 

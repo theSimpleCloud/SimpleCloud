@@ -33,6 +33,7 @@ dependencies {
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.0.1'
 
     compileOnly 'org.spigotmc:spigot-api:1.15.1-R0.1-SNAPSHOT' // The full Spigot server with no shadowing. Requires mavenLocal.
+    compileOnly 'cn.nukkit:nukkit:1.0-SNAPSHOT'
     compileOnly 'net.md-5:bungeecord-api:1.12-SNAPSHOT' // The full Spigot server with no shadowing. Requires mavenLocal.
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
     compileOnly 'com.velocitypowered:velocity-api:1.0.0-SNAPSHOT'

@@ -20,11 +20,11 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.plugin.server.listener
+package eu.thesimplecloud.plugin.server.nukkit.listener
 
-import org.bukkit.event.EventHandler
-import org.bukkit.event.Listener
-import org.bukkit.event.player.PlayerCommandPreprocessEvent
+import cn.nukkit.event.EventHandler
+import cn.nukkit.event.Listener
+import cn.nukkit.event.player.PlayerCommandPreprocessEvent
 
 /**
  * Created by IntelliJ IDEA.

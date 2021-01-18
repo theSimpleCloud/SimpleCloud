@@ -20,24 +20,18 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.base.wrapper.process.serviceconfigurator
+package eu.thesimplecloud.module.permission.service.nukkit
 
-import eu.thesimplecloud.api.service.version.type.ServiceAPIType
-import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.configurators.*
+import cn.nukkit.plugin.PluginBase
+import eu.thesimplecloud.module.permission.PermissionPool
+import eu.thesimplecloud.module.permission.group.manager.PermissionGroupManager
 
-class ServiceConfiguratorManager {
-    private val configurationMap = mapOf(
-        ServiceAPIType.VELOCITY to DefaultVelocityConfigurator(),
-        ServiceAPIType.BUNGEECORD to DefaultBungeeConfigurator(),
-        ServiceAPIType.WATERDOG to DefaultWaterdogConfigurator(),
-        ServiceAPIType.SPIGOT to DefaultSpigotConfigurator(),
-        ServiceAPIType.NUKKIT to DefaultNukkitConfigurator()
-    )
+class NukkitPluginMain : PluginBase() {
 
-    /**
-     * Returns the [IServiceConfigurator] found by the specified [ServiceAPIType]
-     */
-    fun getServiceConfigurator(serviceAPIType: ServiceAPIType): IServiceConfigurator? = configurationMap[serviceAPIType]
 
+    override fun onEnable() {
+        PermissionPool(PermissionGroupManager())
+        this.server.pluginManager.registerEvents(NukkitListener(), this)
+    }
 
 }

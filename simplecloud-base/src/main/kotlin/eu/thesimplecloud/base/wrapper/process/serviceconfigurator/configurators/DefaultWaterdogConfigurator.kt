@@ -20,24 +20,26 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.base.wrapper.process.serviceconfigurator
+package eu.thesimplecloud.base.wrapper.process.serviceconfigurator.configurators
 
-import eu.thesimplecloud.api.service.version.type.ServiceAPIType
-import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.configurators.*
+import eu.thesimplecloud.api.service.ICloudService
+import eu.thesimplecloud.api.utils.FileEditor
+import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.IServiceConfigurator
+import eu.thesimplecloud.launcher.utils.FileCopier
+import java.io.File
 
-class ServiceConfiguratorManager {
-    private val configurationMap = mapOf(
-        ServiceAPIType.VELOCITY to DefaultVelocityConfigurator(),
-        ServiceAPIType.BUNGEECORD to DefaultBungeeConfigurator(),
-        ServiceAPIType.WATERDOG to DefaultWaterdogConfigurator(),
-        ServiceAPIType.SPIGOT to DefaultSpigotConfigurator(),
-        ServiceAPIType.NUKKIT to DefaultNukkitConfigurator()
-    )
+class DefaultWaterdogConfigurator : IServiceConfigurator {
 
-    /**
-     * Returns the [IServiceConfigurator] found by the specified [ServiceAPIType]
-     */
-    fun getServiceConfigurator(serviceAPIType: ServiceAPIType): IServiceConfigurator? = configurationMap[serviceAPIType]
+    override fun configureService(cloudService: ICloudService, serviceTmpDirectory: File) {
+        val bungeeConfigFile = File(serviceTmpDirectory, "config.yml")
+        if (!bungeeConfigFile.exists()) {
+            FileCopier.copyFileOutOfJar(bungeeConfigFile, "/files/config.waterdog.yml")
+        }
+        val fileEditor = FileEditor(bungeeConfigFile)
+        fileEditor.replaceLine("    host: 0.0.0.0:19132", "    host: 0.0.0.0:${cloudService.getPort()}")
+        fileEditor.replaceLine("    max_players: 1", "    max_players: ${cloudService.getMaxPlayers()}")
+        fileEditor.save(bungeeConfigFile)
+    }
 
 
 }

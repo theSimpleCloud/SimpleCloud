@@ -28,7 +28,7 @@ import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.IServiceConfig
 import eu.thesimplecloud.launcher.utils.FileCopier
 import java.io.File
 
-class DefaultServerConfigurator : IServiceConfigurator {
+class DefaultSpigotConfigurator : IServiceConfigurator {
 
     override fun configureService(cloudService: ICloudService, serviceTmpDirectory: File) {
         val propertiesFile = File(serviceTmpDirectory, "server.properties")

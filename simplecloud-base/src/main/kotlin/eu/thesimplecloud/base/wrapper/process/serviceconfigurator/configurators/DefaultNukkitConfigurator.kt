@@ -28,18 +28,19 @@ import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.IServiceConfig
 import eu.thesimplecloud.launcher.utils.FileCopier
 import java.io.File
 
-class DefaultBungeeConfigurator : IServiceConfigurator {
+class DefaultNukkitConfigurator : IServiceConfigurator {
 
     override fun configureService(cloudService: ICloudService, serviceTmpDirectory: File) {
-        val bungeeConfigFile = File(serviceTmpDirectory, "config.yml")
-        if (!bungeeConfigFile.exists()) {
-            FileCopier.copyFileOutOfJar(bungeeConfigFile, "/files/config.bungeecord.yml")
-        }
-        val fileEditor = FileEditor(bungeeConfigFile)
-        fileEditor.replaceLine("  host: 0.0.0.0:25565", "  host: 0.0.0.0:${cloudService.getPort()}")
-        fileEditor.replaceLine("  max_players: 1", "  max_players: ${cloudService.getMaxPlayers()}")
-        fileEditor.save(bungeeConfigFile)
+        val propertiesFile = File(serviceTmpDirectory, "server.properties")
+        val nukkitFile = File(serviceTmpDirectory, "nukkit.yml")
+        if (!propertiesFile.exists())
+            FileCopier.copyFileOutOfJar(propertiesFile, "/files/server.properties")
+        if (!nukkitFile.exists())
+            FileCopier.copyFileOutOfJar(nukkitFile, "/files/nukkit.yml")
+        val fileEditor = FileEditor(propertiesFile)
+        fileEditor["server-ip"] = cloudService.getHost()
+        fileEditor["server-port"] = cloudService.getPort().toString()
+        fileEditor["max-players"] = cloudService.getMaxPlayers().toString()
+        fileEditor.save(propertiesFile)
     }
-
-
 }

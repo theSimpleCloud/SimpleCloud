@@ -24,7 +24,7 @@ package eu.thesimplecloud.plugin.extension
 
 import eu.thesimplecloud.plugin.proxy.ICloudProxyPlugin
 import eu.thesimplecloud.plugin.proxy.bungee.CloudBungeePlugin
-import eu.thesimplecloud.plugin.server.CloudSpigotPlugin
+import eu.thesimplecloud.plugin.server.spigot.CloudSpigotPlugin
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import net.md_5.bungee.api.ProxyServer
 import org.bukkit.Bukkit

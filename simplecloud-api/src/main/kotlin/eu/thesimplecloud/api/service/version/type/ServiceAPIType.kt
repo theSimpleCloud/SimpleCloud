@@ -39,9 +39,19 @@ enum class ServiceAPIType(
     SPIGOT(MinecraftEdition.JAVA, ServiceVersionType.SERVER),
 
     /**
+     * Represents a jar with the nukkit api
+     */
+    NUKKIT(MinecraftEdition.BEDROCK, ServiceVersionType.SERVER),
+
+    /**
      * Represents a jar with the bungeecord api
      */
     BUNGEECORD(MinecraftEdition.JAVA, ServiceVersionType.PROXY),
+
+    /**
+     * Represents a jar with the waterdog api
+     */
+    WATERDOG(MinecraftEdition.BEDROCK, ServiceVersionType.PROXY),
 
     /**
      * Represents a jar with the velocity api

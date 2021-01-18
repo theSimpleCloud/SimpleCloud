@@ -26,6 +26,7 @@ import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.player.ICloudPlayerManager
 import eu.thesimplecloud.api.property.IProperty
 import eu.thesimplecloud.api.service.ICloudService
+import eu.thesimplecloud.api.service.version.type.ServiceAPIType
 import eu.thesimplecloud.api.servicegroup.grouptype.ICloudServerGroup
 import eu.thesimplecloud.plugin.impl.player.CloudPlayerManagerBungee
 import eu.thesimplecloud.plugin.listener.CloudListener
@@ -35,8 +36,10 @@ import eu.thesimplecloud.plugin.proxy.bungee.listener.BungeeListener
 import eu.thesimplecloud.plugin.proxy.bungee.listener.IngameCommandListener
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import net.md_5.bungee.api.ProxyServer
+import net.md_5.bungee.api.config.ServerInfo
 import net.md_5.bungee.api.plugin.Plugin
 import java.net.InetSocketAddress
+import java.net.SocketAddress
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
@@ -48,6 +51,8 @@ class CloudBungeePlugin : Plugin(), ICloudProxyPlugin {
     @Volatile
     lateinit var synchronizedIngameCommandsProperty: IProperty<Array<String>>
         private set
+
+    lateinit var thisService: ICloudService
 
     companion object {
         @JvmStatic
@@ -88,11 +93,38 @@ class CloudBungeePlugin : Plugin(), ICloudProxyPlugin {
     }
 
     private fun registerService(name: String, uniqueId: UUID, socketAddress: InetSocketAddress) {
-        val info = ProxyServer.getInstance().constructServerInfo(
+        ProxyServer.getInstance().servers[name] = constructServerInfo(name, uniqueId, socketAddress)
+    }
+
+    private fun constructServerInfo(name: String, uniqueId: UUID, socketAddress: InetSocketAddress): ServerInfo {
+        if (thisService.getServiceVersion().serviceAPIType == ServiceAPIType.WATERDOG) {
+            val clazz = ProxyServer::class.java
+
+            val method = clazz.getMethod(
+                "constructServerInfo",
+                String::class.java,
+                SocketAddress::class.java,
+                String::class.java,
+                Boolean::class.javaPrimitiveType,
+                Boolean::class.javaPrimitiveType,
+                String::class.java
+            )
+            method.isAccessible = true
+            return (method.invoke(
+                proxy,
+                name,
+                socketAddress,
+                uniqueId.toString(),
+                false,
+                true,
+                "default"
+            ) as ServerInfo)
+        }
+
+        return ProxyServer.getInstance().constructServerInfo(
             name, socketAddress,
             uniqueId.toString(), false
         )
-        ProxyServer.getInstance().servers[name] = info
     }
 
     override fun removeServiceFromProxy(cloudService: ICloudService) {
@@ -110,6 +142,8 @@ class CloudBungeePlugin : Plugin(), ICloudProxyPlugin {
     }
 
     override fun onEnable() {
+        this.thisService = CloudPlugin.instance.thisService()
+
         ProxyServer.getInstance().configurationAdapter.servers.clear()
         ProxyServer.getInstance().servers.clear()
         for (info in ProxyServer.getInstance().configurationAdapter.listeners) {

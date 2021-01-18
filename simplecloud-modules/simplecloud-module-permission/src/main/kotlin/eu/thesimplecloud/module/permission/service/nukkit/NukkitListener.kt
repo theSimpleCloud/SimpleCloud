@@ -20,24 +20,32 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.base.wrapper.process.serviceconfigurator
+package eu.thesimplecloud.module.permission.service.nukkit
 
-import eu.thesimplecloud.api.service.version.type.ServiceAPIType
-import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.configurators.*
+import cn.nukkit.event.EventHandler
+import cn.nukkit.event.EventPriority
+import cn.nukkit.event.Listener
+import cn.nukkit.event.player.PlayerLoginEvent
 
-class ServiceConfiguratorManager {
-    private val configurationMap = mapOf(
-        ServiceAPIType.VELOCITY to DefaultVelocityConfigurator(),
-        ServiceAPIType.BUNGEECORD to DefaultBungeeConfigurator(),
-        ServiceAPIType.WATERDOG to DefaultWaterdogConfigurator(),
-        ServiceAPIType.SPIGOT to DefaultSpigotConfigurator(),
-        ServiceAPIType.NUKKIT to DefaultNukkitConfigurator()
-    )
+class NukkitListener : Listener {
 
-    /**
-     * Returns the [IServiceConfigurator] found by the specified [ServiceAPIType]
-     */
-    fun getServiceConfigurator(serviceAPIType: ServiceAPIType): IServiceConfigurator? = configurationMap[serviceAPIType]
 
+    @EventHandler(priority = EventPriority.LOWEST)
+    fun on(event: PlayerLoginEvent) {
+        try {
+            val player = event.player
+            val field = player::class.java.getDeclaredField("perm")?:return
+            field.isAccessible = true
+            field[player] = NukkitCloudPermissibleBase(player)
+        } catch (ex: NoSuchFieldException) {
+            ex.printStackTrace()
+        } catch (ex: SecurityException) {
+            ex.printStackTrace()
+        } catch (ex: IllegalArgumentException) {
+            ex.printStackTrace()
+        } catch (ex: IllegalAccessException) {
+            ex.printStackTrace()
+        }
+    }
 
 }

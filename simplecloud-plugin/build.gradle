@@ -39,6 +39,7 @@ dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.16.3-R0.1-SNAPSHOT'
     compileOnly 'net.md-5:bungeecord-api:1.12-SNAPSHOT'
     compileOnly 'com.velocitypowered:velocity-api:1.1.1'
+    compileOnly 'cn.nukkit:nukkit:1.0-SNAPSHOT'
     annotationProcessor 'com.velocitypowered:velocity-api:1.1.1'
 }
 

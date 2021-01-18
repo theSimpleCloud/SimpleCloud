@@ -1,0 +1,8 @@
+name: SimpleCloud-Plugin
+version: "1.0"
+author: Fllip
+api: [ "1.0.5" ]
+
+main: eu.thesimplecloud.plugin.server.nukkit.CloudNukkitPlugin
+
+commands:
