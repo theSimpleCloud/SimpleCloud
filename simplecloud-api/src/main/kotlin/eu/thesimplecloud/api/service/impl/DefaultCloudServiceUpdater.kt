@@ -22,14 +22,13 @@
 
 package eu.thesimplecloud.api.service.impl
 
-import com.google.common.collect.Maps
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.cachelist.value.AbstractCacheValueUpdater
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ICloudServiceUpdater
 import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.utils.time.Timestamp
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
-import java.util.concurrent.ConcurrentMap
 
 /**
  * Created by IntelliJ IDEA.
@@ -39,13 +38,7 @@ import java.util.concurrent.ConcurrentMap
  */
 class DefaultCloudServiceUpdater(
     private val delegateService: ICloudService
-) : ICloudServiceUpdater {
-
-    private val changes: ConcurrentMap<String, Any> = Maps.newConcurrentMap()
-
-    private fun <T : Any> getChangedValue(key: String): T? {
-        return changes[key] as T?
-    }
+) : AbstractCacheValueUpdater(), ICloudServiceUpdater {
 
     override fun getCloudService(): ICloudService {
         return this.delegateService

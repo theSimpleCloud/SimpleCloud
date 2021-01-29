@@ -22,24 +22,17 @@
 
 package eu.thesimplecloud.api.servicegroup.impl.updater
 
-import com.google.common.collect.Maps
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.cachelist.value.AbstractCacheValueUpdater
 import eu.thesimplecloud.api.service.version.ServiceVersion
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroupUpdater
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.jsonlib.JsonLibExclude
-import java.util.concurrent.ConcurrentMap
 
 open class DefaultServiceGroupUpdater(
     @JsonLibExclude private val serviceGroup: ICloudServiceGroup
-) : ICloudServiceGroupUpdater {
-
-    protected val changes: ConcurrentMap<String, Any> = Maps.newConcurrentMap()
-
-    protected fun <T : Any> getChangedValue(key: String): T? {
-        return changes[key] as T?
-    }
+) : AbstractCacheValueUpdater(), ICloudServiceGroupUpdater {
 
     override fun getServiceGroup(): ICloudServiceGroup {
         return this.serviceGroup

@@ -22,23 +22,16 @@
 
 package eu.thesimplecloud.api.player.impl
 
-import com.google.common.collect.Maps
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.cachelist.value.AbstractCacheValueUpdater
 import eu.thesimplecloud.api.player.ICloudPlayer
 import eu.thesimplecloud.api.player.ICloudPlayerUpdater
 import eu.thesimplecloud.api.player.PlayerServerConnectState
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
-import java.util.concurrent.ConcurrentMap
 
 class CloudPlayerUpdater(
     private val cloudPlayer: ICloudPlayer
-) : ICloudPlayerUpdater {
-
-    private val changes: ConcurrentMap<String, Any> = Maps.newConcurrentMap()
-
-    private fun <T : Any> getChangedValue(key: String): T? {
-        return changes[key] as T?
-    }
+) : AbstractCacheValueUpdater(), ICloudPlayerUpdater {
 
     override fun getCloudPlayer(): ICloudPlayer {
         return cloudPlayer
