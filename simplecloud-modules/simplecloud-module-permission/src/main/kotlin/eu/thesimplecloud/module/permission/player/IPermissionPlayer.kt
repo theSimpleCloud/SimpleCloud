@@ -39,6 +39,13 @@ interface IPermissionPlayer : IPermissionEntity, Nameable {
     fun getUniqueId(): UUID
 
     /**
+     * Returns the highest [IPermissionGroup] of this player
+     */
+    fun getHighestPermissionGroup(): IPermissionGroup {
+        return getAllNotExpiredPermissionGroups().maxByOrNull { it.getPriority() }!!
+    }
+
+    /**
      * Returns the permission group info list
      */
     fun getPermissionGroupInfoList(): Collection<PlayerPermissionGroupInfo>
@@ -59,7 +66,8 @@ interface IPermissionPlayer : IPermissionEntity, Nameable {
     /**
      * Returns the [IPermissionGroup] of this player
      */
-    fun getAllNotExpiredPermissionGroups(): List<IPermissionGroup> = getAllNotExpiredPermissionGroupInfoList().mapNotNull { PermissionPool.instance.getPermissionGroupManager().getPermissionGroupByName(it.permissionGroupName) }
+    fun getAllNotExpiredPermissionGroups(): List<IPermissionGroup> = getAllNotExpiredPermissionGroupInfoList()
+        .mapNotNull { PermissionPool.instance.getPermissionGroupManager().getPermissionGroupByName(it.permissionGroupName) }
 
     /**
      * Returns the the [IOfflineCloudPlayer] of this permission player wrapped in a promise

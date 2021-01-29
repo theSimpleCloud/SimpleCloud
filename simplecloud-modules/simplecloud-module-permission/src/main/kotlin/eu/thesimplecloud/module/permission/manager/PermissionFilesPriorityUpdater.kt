@@ -20,33 +20,33 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.permission.manager.config
+package eu.thesimplecloud.module.permission.manager
 
-import eu.thesimplecloud.api.config.AbstractMultipleConfigLoader
-import eu.thesimplecloud.module.permission.group.PermissionGroup
-import eu.thesimplecloud.module.permission.permission.Permission
+import eu.thesimplecloud.jsonlib.JsonLib
 import java.io.File
 
-/**
- * Created by IntelliJ IDEA.
- * Date: 12.12.2020
- * Time: 11:29
- * @author Frederick Baier
- */
-class PermissionGroupConfigsLoader : AbstractMultipleConfigLoader<PermissionGroup>(
-    PermissionGroup::class.java,
-    File("modules/permissions/groups/"),
-    getDefaultGroups(),
-    true
-) {
+class PermissionFilesPriorityUpdater {
 
-    companion object {
-        fun getDefaultGroups(): List<PermissionGroup> {
-            val adminGroup = PermissionGroup("Admin", 100)
-            adminGroup.addPermission(Permission("*", -1, true))
-            val defaultGroup = PermissionGroup("default", 0)
-            return listOf(adminGroup, defaultGroup)
+    private val groupsDir = File("modules/permissions/groups/")
+
+    fun updateFilesIfNecessary() {
+        if (!groupsDir.exists()) return
+        val files = groupsDir.listFiles()!!
+        if (files.isEmpty()) return
+        if (isOutdatedConfig(files[0])) {
+            files.forEach { updateFile(it) }
         }
+    }
+
+    private fun updateFile(file: File) {
+        val jsonLib = JsonLib.fromJsonFile(file)!!
+        jsonLib.append("priority", 0)
+        jsonLib.saveAsFile(file)
+    }
+
+    private fun isOutdatedConfig(file: File): Boolean {
+        val jsonLib = JsonLib.fromJsonFile(file)!!
+        return jsonLib.getInt("priority") == null
     }
 
 }

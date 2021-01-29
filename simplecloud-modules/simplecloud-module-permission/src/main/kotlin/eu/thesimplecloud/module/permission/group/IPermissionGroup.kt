@@ -50,6 +50,11 @@ interface IPermissionGroup : IPermissionEntity, Nameable {
      */
     fun getAllInheritedPermissionGroups(): List<IPermissionGroup> = getAllInheritedPermissionGroupNames().mapNotNull { PermissionPool.instance.getPermissionGroupManager().getPermissionGroupByName(it) }
 
+    /**
+     * Returns the priority of this group
+     * It is used to determine the highest [IPermissionGroup]
+     */
+    fun getPriority(): Int
 
     override fun hasPermission(permission: String): Boolean {
         return super.hasPermission(permission) || getAllInheritedPermissionGroups().any { it.hasPermission(permission) }
