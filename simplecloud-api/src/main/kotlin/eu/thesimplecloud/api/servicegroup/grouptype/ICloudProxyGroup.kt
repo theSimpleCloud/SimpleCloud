@@ -24,6 +24,7 @@ package eu.thesimplecloud.api.servicegroup.grouptype
 
 import eu.thesimplecloud.api.service.ServiceType
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
+import eu.thesimplecloud.api.servicegroup.grouptype.updater.ICloudProxyGroupUpdater
 
 interface ICloudProxyGroup : ICloudServiceGroup {
 
@@ -39,4 +40,6 @@ interface ICloudProxyGroup : ICloudServiceGroup {
     fun setStartPort(port: Int)
 
     override fun getServiceType(): ServiceType = ServiceType.PROXY
+
+    override fun getUpdater(): ICloudProxyGroupUpdater
 }

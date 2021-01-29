@@ -25,7 +25,7 @@ package eu.thesimplecloud.api.template
 import eu.thesimplecloud.api.cachelist.ICacheList
 
 
-interface ITemplateManager : ICacheList<ITemplate> {
+interface ITemplateManager : ICacheList<ITemplateUpdater, ITemplate> {
 
     /**
      * Removes the template found by the specified name

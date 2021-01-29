@@ -23,8 +23,6 @@
 package eu.thesimplecloud.base.wrapper.network.packets
 
 
-import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.wrapper.IMutableWrapperInfo
 import eu.thesimplecloud.base.wrapper.startup.Wrapper
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.ObjectPacket
@@ -38,9 +36,9 @@ class PacketInSetWrapperName : ObjectPacket<String>() {
         Wrapper.instance.startProcessQueue()
         if (Wrapper.instance.isStartedInManagerDirectory()) {
             val thisWrapper = Wrapper.instance.getThisWrapper()
-            thisWrapper as IMutableWrapperInfo
-            thisWrapper.setTemplatesReceived(true)
-            CloudAPI.instance.getWrapperManager().update(thisWrapper)
+            val wrapperUpdater = thisWrapper.getUpdater()
+            wrapperUpdater.setTemplatesReceived(true)
+            wrapperUpdater.update()
         }
         return unit()
     }

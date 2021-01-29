@@ -101,7 +101,7 @@ class ServiceHandler : IServiceHandler {
         return number
     }
 
-    private fun startMinServices() {
+    private fun queueMinServices() {
         for (serviceGroup in CloudAPI.instance.getCloudServiceGroupManager().getAllCachedObjects()) {
             val allServices = serviceGroup.getAllServices()
             //don't exclude closed services because they will be deleted in a moment.
@@ -146,7 +146,7 @@ class ServiceHandler : IServiceHandler {
             while (true) {
                 this.serviceQueue =
                     CopyOnWriteArrayList(this.serviceQueue.sortedByDescending { it.getServiceGroup().getStartPriority() })
-                startMinServices()
+                queueMinServices()
                 stopRedundantServices()
 
                 val priorityToServices = this.serviceQueue.groupBy { it.getServiceGroup().getStartPriority() }

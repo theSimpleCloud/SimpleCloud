@@ -23,7 +23,6 @@
 package eu.thesimplecloud.base.wrapper.startup
 
 import com.sun.management.OperatingSystemMXBean
-import eu.thesimplecloud.api.wrapper.IMutableWrapperInfo
 import eu.thesimplecloud.launcher.startup.Launcher
 import java.lang.management.ManagementFactory
 import java.util.concurrent.ScheduledFuture
@@ -42,10 +41,11 @@ class CpuUsageUpdater {
     fun startUpdater() {
         this.scheduleFuture = Launcher.instance.scheduler.scheduleAtFixedRate({
             if (Wrapper.instance.isWrapperNameSet()) {
-                val thisWrapper = Wrapper.instance.getThisWrapper() as IMutableWrapperInfo
+                val thisWrapper = Wrapper.instance.getThisWrapper()
+                val wrapperUpdater = thisWrapper.getUpdater()
                 val currentUsage = getCurrentCPUUsage()
                 if (thisWrapper.getCpuUsage() != currentUsage) {
-                    thisWrapper.setCpuUsage(currentUsage)
+                    wrapperUpdater.setCpuUsage(currentUsage)
                     Wrapper.instance.updateWrapperData()
                 }
             }

@@ -33,7 +33,7 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.toListPromise
 import java.util.*
 
-interface ICloudPlayerManager : ICacheList<ICloudPlayer> {
+interface ICloudPlayerManager : ICacheList<ICloudPlayerUpdater, ICloudPlayer> {
 
     /**
      * Returns the cached [ICloudPlayer] found by the specified [uniqueId]

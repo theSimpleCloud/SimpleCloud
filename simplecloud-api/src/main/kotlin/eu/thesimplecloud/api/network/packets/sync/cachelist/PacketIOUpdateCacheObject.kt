@@ -23,6 +23,8 @@
 package eu.thesimplecloud.api.network.packets.sync.cachelist
 
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.cachelist.value.ICacheValue
+import eu.thesimplecloud.api.cachelist.value.ICacheValueUpdater
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
@@ -50,6 +52,7 @@ class PacketIOUpdateCacheObject() : JsonPacket() {
                 connection.getCommunicationBootstrap().getClassLoaderToSearchObjectPacketsClasses()
         )
         val value = this.jsonLib.getObject("value", valueClass) ?: return contentException("value")
+        value as ICacheValue<ICacheValueUpdater>
 
         return when (action) {
             Action.UPDATE -> {

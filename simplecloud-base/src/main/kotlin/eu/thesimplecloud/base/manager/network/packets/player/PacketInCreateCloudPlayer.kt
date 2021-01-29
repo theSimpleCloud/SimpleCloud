@@ -24,9 +24,9 @@ package eu.thesimplecloud.base.manager.network.packets.player
 
 import com.google.common.collect.Maps
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.player.CloudPlayer
 import eu.thesimplecloud.api.player.OfflineCloudPlayer
 import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
+import eu.thesimplecloud.api.player.impl.CloudPlayer
 import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection

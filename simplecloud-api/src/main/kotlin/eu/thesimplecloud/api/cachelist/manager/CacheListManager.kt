@@ -23,17 +23,19 @@
 package eu.thesimplecloud.api.cachelist.manager
 
 import eu.thesimplecloud.api.cachelist.ICacheList
+import eu.thesimplecloud.api.cachelist.value.ICacheValue
+import eu.thesimplecloud.api.cachelist.value.ICacheValueUpdater
 import java.util.concurrent.CopyOnWriteArrayList
 
 class CacheListManager : ICacheListManager {
 
-    private val cacheListList = CopyOnWriteArrayList<ICacheList<Any>>()
+    private val cacheListList = CopyOnWriteArrayList<ICacheList<ICacheValueUpdater, ICacheValue<ICacheValueUpdater>>>()
 
-    override fun registerCacheList(cacheList: ICacheList<out Any>) {
-        this.cacheListList.add(cacheList as ICacheList<Any>)
+    override fun registerCacheList(cacheList: ICacheList<out ICacheValueUpdater, out ICacheValue<out ICacheValueUpdater>>) {
+        this.cacheListList.add(cacheList as ICacheList<ICacheValueUpdater, ICacheValue<ICacheValueUpdater>>)
     }
 
-    override fun getCacheListenerByName(name: String): ICacheList<Any>? {
-        return this.cacheListList.firstOrNull { it.getUpdater().getIdentificationName() == name }
+    override fun getCacheListenerByName(name: String): ICacheList<ICacheValueUpdater, ICacheValue<ICacheValueUpdater>>? {
+        return this.cacheListList.firstOrNull { it.getUpdateExecutor().getIdentificationName() == name }
     }
 }
