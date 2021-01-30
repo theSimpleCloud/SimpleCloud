@@ -29,6 +29,7 @@ import eu.thesimplecloud.api.listenerextension.cloudListener
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.service.impl.DefaultCloudService
+import eu.thesimplecloud.api.service.version.type.ServiceAPIType
 import eu.thesimplecloud.api.servicegroup.grouptype.ICloudProxyGroup
 import eu.thesimplecloud.api.utils.ManifestLoader
 import eu.thesimplecloud.base.wrapper.process.filehandler.ServiceDirectory
@@ -169,8 +170,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
                 ManifestLoader.getMainClassFromManifestFile(jarFile))
         commands.addAll(startArguments)
 
-        val lowerCaseName = cloudService.getServiceVersion().name.toLowerCase()
-        if (lowerCaseName.contains("spigot") || lowerCaseName.contains("paper")) {
+        if (cloudService.getServiceVersion().serviceAPIType == ServiceAPIType.SPIGOT) {
             commands.add("nogui")
         }
         return commands.toTypedArray()

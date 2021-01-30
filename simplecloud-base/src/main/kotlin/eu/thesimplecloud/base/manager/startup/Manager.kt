@@ -99,6 +99,7 @@ class Manager : ICloudApplication {
     init {
         Logger.getLogger("org.mongodb.driver").level = Level.SEVERE
         instance = this
+        VersionConversionManager().convertIfNecessary()
         CloudAPIImpl()
         LanguageFileLoader().loadFile(Launcher.instance.launcherConfig)
         this.serviceHandler = ServiceHandler()
@@ -219,9 +220,7 @@ class Manager : ICloudApplication {
                 .forEach { Launcher.instance.consoleSender.sendMessage("- ${it.getName()}") }
         }
         thread(start = true, isDaemon = false) {
-            VersionConversionManager().convertBeforeModuleLoad()
             this.cloudModuleHandler.loadAllUnloadedModules()
-            VersionConversionManager().convertIfNecessary()
         }
     }
 

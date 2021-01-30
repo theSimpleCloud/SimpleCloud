@@ -35,22 +35,16 @@ import java.io.File
  */
 class VersionConversionManager {
 
-    private val converters = emptyList<IVersionConverter>()
+    private val converters = listOf<IVersionConverter>(Converter_2_0_To_2_1())
     private val lastStartedVersionFile = File(DirectoryPaths.paths.storagePath + "versions/lastStartedVersion.json")
-
-    fun convertBeforeModuleLoad() {
-        getConvertersToExecute().forEach { version ->
-            version.convertBeforeModuleLoad()
-        }
-    }
 
     fun convertIfNecessary() {
         val lastStartedVersion = getLastStartedVersion()
         val currentVersion = Launcher.instance.getCurrentVersion()
         getConvertersToExecute().forEach { version ->
-            Launcher.instance.consoleSender.sendProperty("manager.converting", lastStartedVersion, currentVersion)
-            version.convertAfterModuleLoad()
-            Launcher.instance.consoleSender.sendProperty("manager.converted", lastStartedVersion, currentVersion)
+            //Launcher.instance.consoleSender.sendProperty("manager.converting", lastStartedVersion, currentVersion)
+            version.convert()
+            //Launcher.instance.consoleSender.sendProperty("manager.converted", lastStartedVersion, currentVersion)
         }
         writeLastStartedVersion()
     }

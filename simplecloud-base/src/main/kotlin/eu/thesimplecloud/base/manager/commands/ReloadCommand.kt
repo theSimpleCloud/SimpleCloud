@@ -27,6 +27,7 @@ import eu.thesimplecloud.api.command.ICommandSender
 import eu.thesimplecloud.api.extension.sendPacketToAllAuthenticatedWrapperClients
 import eu.thesimplecloud.base.manager.config.JvmArgumentsConfigLoader
 import eu.thesimplecloud.base.manager.network.packets.PacketOutReloadExistingModules
+import eu.thesimplecloud.base.manager.serviceversion.ManagerServiceVersionHandler
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.launcher.console.command.CommandType
 import eu.thesimplecloud.launcher.console.command.ICommandHandler
@@ -61,6 +62,9 @@ class ReloadCommand : ICommandHandler {
             wrapperUpdater.update()
         }
         loadedWrappers.forEach { commandSender.sendProperty("manager.command.reload.wrapper-success", it.getName()) }
+
+        //service versions
+        (CloudAPI.instance.getServiceVersionHandler() as ManagerServiceVersionHandler).reloadServiceVersions()
 
         //jvm-arguments
         val jvmArgumentsConfigLoader = JvmArgumentsConfigLoader()

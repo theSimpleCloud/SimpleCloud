@@ -24,6 +24,7 @@ package eu.thesimplecloud.base.manager.commands
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.template.impl.DefaultTemplate
+import eu.thesimplecloud.base.manager.setup.ServiceVersionSetup
 import eu.thesimplecloud.base.manager.setup.WrapperSetup
 import eu.thesimplecloud.base.manager.setup.groups.LobbyGroupSetup
 import eu.thesimplecloud.base.manager.setup.groups.ProxyGroupSetup
@@ -59,6 +60,11 @@ class CreateCommand : ICommandHandler {
     @CommandSubPath("wrapper", "Creates a wrapper")
     fun createWrapper(){
         Launcher.instance.setupManager.queueSetup(WrapperSetup())
+    }
+
+    @CommandSubPath("serviceVersion", "Creates a Service Version")
+    fun createServiceVersion(){
+        Launcher.instance.setupManager.queueSetup(ServiceVersionSetup())
     }
 
     @CommandSubPath("template <name>", "Creates a template")

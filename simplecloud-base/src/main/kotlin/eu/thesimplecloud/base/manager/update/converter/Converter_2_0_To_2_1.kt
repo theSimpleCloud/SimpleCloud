@@ -22,17 +22,22 @@
 
 package eu.thesimplecloud.base.manager.update.converter
 
-interface IVersionConverter {
+import eu.thesimplecloud.api.directorypaths.DirectoryPaths
+import java.io.File
 
-    /**
-     * Returns the version this converter converts to
-     *
-     */
-    fun getTargetMinorVersion(): Int
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 29/01/2021
+ * Time: 21:15
+ * @author Frederick Baier
+ */
+class Converter_2_0_To_2_1 : IVersionConverter {
 
-    /**
-     * Coverts from the previous version to [getTargetMinorVersion]
-     */
-    fun convert()
+    override fun getTargetMinorVersion(): Int {
+        return 1
+    }
 
+    override fun convert() {
+         File(DirectoryPaths.paths.storagePath + "mc-versions.json").delete()
+    }
 }

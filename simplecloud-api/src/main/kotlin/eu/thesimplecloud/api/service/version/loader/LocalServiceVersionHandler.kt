@@ -20,42 +20,39 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.api.service.version
+package eu.thesimplecloud.api.service.version.loader
 
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
-import eu.thesimplecloud.api.utils.WebContentLoader
+import eu.thesimplecloud.api.service.version.ServiceVersion
 import eu.thesimplecloud.jsonlib.JsonLib
 import java.io.File
-import java.io.FileNotFoundException
 
 /**
  * Created by IntelliJ IDEA.
- * Date: 14.06.2020
- * Time: 19:07
+ * Date: 29/01/2021
+ * Time: 21:10
  * @author Frederick Baier
  */
-object ServiceVersionWebLoader {
+class LocalServiceVersionHandler : IServiceVersionLoader {
 
-    private val file = File(DirectoryPaths.paths.storagePath + "mc-versions.json")
+    private val file = File(DirectoryPaths.paths.storagePath + "localServiceVersions.json")
 
-    fun loadVersions(): List<ServiceVersion> {
-        val contentString = WebContentLoader().loadContent("https://api.thesimplecloud.eu/versions")
-        return if (contentString == null) {
-            loadFromFile()
-        } else {
-            processWebContent(contentString)
-        }
-    }
-
-    private fun loadFromFile(): List<ServiceVersion> {
-        if (!file.exists()) throw FileNotFoundException("File ${file.absolutePath} does not exist and the web server to load the service versions from is not available")
+    override fun loadVersions(): List<ServiceVersion> {
+        if (!file.exists()) return emptyList()
         return JsonLib.fromJsonFile(file)!!.getObject(Array<ServiceVersion>::class.java).toList()
     }
 
-    private fun processWebContent(contentString: String): List<ServiceVersion> {
-        val jsonLib = JsonLib.fromJsonString(contentString)
-        jsonLib.saveAsFile(file)
-        return jsonLib.getObject(Array<ServiceVersion>::class.java).toList()
+    fun saveServiceVersion(serviceVersion: ServiceVersion) {
+        val existingVersions = loadVersions().toMutableList()
+        existingVersions.removeIf { it.name.equals(serviceVersion.name, true) }
+        existingVersions.add(serviceVersion)
+        JsonLib.fromObject(existingVersions).saveAsFile(file)
+    }
+
+    fun deleteServiceVersion(name: String) {
+        val existingVersions = loadVersions().toMutableList()
+        existingVersions.removeIf { it.name.equals(name, true) }
+        JsonLib.fromObject(existingVersions).saveAsFile(file)
     }
 
 }

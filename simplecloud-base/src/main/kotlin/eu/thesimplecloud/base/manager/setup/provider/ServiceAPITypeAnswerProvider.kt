@@ -20,19 +20,21 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.base.manager.update.converter
+package eu.thesimplecloud.base.manager.setup.provider
 
-interface IVersionConverter {
+import eu.thesimplecloud.api.command.ICommandSender
+import eu.thesimplecloud.api.service.version.type.ServiceAPIType
+import eu.thesimplecloud.launcher.console.setup.provider.ISetupAnswerProvider
 
-    /**
-     * Returns the version this converter converts to
-     *
-     */
-    fun getTargetMinorVersion(): Int
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 30/01/2021
+ * Time: 09:23
+ * @author Frederick Baier
+ */
+class ServiceAPITypeAnswerProvider : ISetupAnswerProvider {
 
-    /**
-     * Coverts from the previous version to [getTargetMinorVersion]
-     */
-    fun convert()
-
+    override fun getSuggestions(sender: ICommandSender): Collection<String> {
+        return ServiceAPIType.values().map { it.name }
+    }
 }

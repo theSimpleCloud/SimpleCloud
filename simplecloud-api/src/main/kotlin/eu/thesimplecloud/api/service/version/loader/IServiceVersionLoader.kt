@@ -20,19 +20,21 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.base.manager.update.converter
+package eu.thesimplecloud.api.service.version.loader
 
-interface IVersionConverter {
+import eu.thesimplecloud.api.service.version.ServiceVersion
+
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 29/01/2021
+ * Time: 21:06
+ * @author Frederick Baier
+ */
+interface IServiceVersionLoader {
 
     /**
-     * Returns the version this converter converts to
-     *
+     * Loads all [ServiceVersion]s this loader can access
      */
-    fun getTargetMinorVersion(): Int
-
-    /**
-     * Coverts from the previous version to [getTargetMinorVersion]
-     */
-    fun convert()
+    fun loadVersions(): List<ServiceVersion>
 
 }
