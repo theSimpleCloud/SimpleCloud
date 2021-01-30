@@ -112,6 +112,7 @@ class BungeeListener : Listener {
     @EventHandler
     fun on(event: ServerKickEvent) {
         if (event.isCancelled) return
+        if (isWaterFallCauseLostConnection(event)) return
         val kickReasonString: String = if (event.kickReasonComponent.isEmpty()) {
             ""
         } else {
@@ -137,6 +138,19 @@ class BungeeListener : Listener {
         proxiedPlayer.sendMessage(*event.kickReasonComponent)
         event.cancelServer = fallback
         event.isCancelled = true
+    }
+
+    private fun isWaterFallCauseLostConnection(event: ServerKickEvent): Boolean {
+        try {
+            val method = ServerKickEvent::class.java.getDeclaredMethod("getCause")
+            if (method.invoke(event).toString() == "LOST_CONNECTION") {
+                return true
+            }
+            return false
+        } catch (e: Exception) {
+            //the method does not exist -> not a waterfall fork
+            return false
+        }
     }
 
     private fun getNoFallbackServerFoundMessage(): String {
