@@ -41,15 +41,15 @@ import eu.thesimplecloud.launcher.console.command.provider.ServiceCommandSuggest
 @Command("setServiceState", CommandType.CONSOLE_AND_INGAME, "cloud.command.setservicestate")
 class SetServiceStateCommand : ICommandHandler {
 
-    @CommandSubPath("<service> <state>")
+    @CommandSubPath("<service> <state>", "Sets the state of a service")
     fun handle(sender: ICommandSender, @CommandArgument("service", ServiceCommandSuggestionProvider::class) service: ICloudService, @CommandArgument("state") state: ServiceState) {
         if (state != ServiceState.VISIBLE && state != ServiceState.INVISIBLE) {
-            sender.sendMessage("Cannot set this state")
+            sender.sendProperty("manager.command.setservicestate.fail")
             return
         }
         service.setState(state)
         service.update()
-        sender.sendMessage("State set")
+        sender.sendProperty("manager.command.setservicestate.success")
     }
 
 }
