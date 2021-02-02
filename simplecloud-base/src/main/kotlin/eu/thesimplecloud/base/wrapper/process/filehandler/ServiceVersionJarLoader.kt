@@ -27,6 +27,7 @@ import eu.thesimplecloud.api.service.version.ServiceVersion
 import eu.thesimplecloud.api.utils.Downloader
 import eu.thesimplecloud.api.utils.ZipUtils
 import java.io.File
+import java.io.FileNotFoundException
 
 class ServiceVersionJarLoader {
 
@@ -34,6 +35,9 @@ class ServiceVersionJarLoader {
     fun loadVersionFile(serviceVersion: ServiceVersion): File {
         val file = File(DirectoryPaths.paths.minecraftJarsPath + serviceVersion.name + ".jar")
         if (!file.exists()){
+            if(serviceVersion.downloadURL.isBlank() || serviceVersion.downloadURL.equals("noDownload", ignoreCase = true))
+                throw FileNotFoundException("Service version " + serviceVersion.name + " is set to no download but does not exist in minecraftJars folder.")
+
             Downloader().userAgentDownload(serviceVersion.downloadURL, file)
             //delete json to prevent bugs in spigot version 1.8
             ZipUtils().deletePath(file, "com/google/gson/")

@@ -33,28 +33,56 @@ import java.io.FileNotFoundException
  * Date: 14.06.2020
  * Time: 19:07
  * @author Frederick Baier
+ *
+ * Added custom version support - NenoxAG (nenox@nenox.dev)
  */
-object ServiceVersionWebLoader {
+object ServiceVersionLoader {
 
-    private val file = File(DirectoryPaths.paths.storagePath + "mc-versions.json")
+    private val webVersionFile = File(DirectoryPaths.paths.storagePath + "mc-versions.json")
+    private val localVersionsFile = File(DirectoryPaths.paths.storagePath + "local-mc-versions.json")
 
     fun loadVersions(): List<ServiceVersion> {
+        val webVersions = loadFromWeb()
+        val localVersions = loadLocalVersions()
+
+        val combinedVersions = ArrayList<ServiceVersion>()
+
+        combinedVersions.addAll(webVersions)
+        combinedVersions.addAll(localVersions)
+
+        return combinedVersions
+    }
+
+    private fun loadLocalVersions(): List<ServiceVersion> {
+        return loadLocalVersionsFromFile()
+    }
+
+    private fun loadFromWeb(): List<ServiceVersion> {
         val contentString = WebContentLoader().loadContent("https://api.thesimplecloud.eu/versions")
         return if (contentString == null) {
-            loadFromFile()
+            loadWebVersionsFromFile()
         } else {
             processWebContent(contentString)
         }
     }
 
-    private fun loadFromFile(): List<ServiceVersion> {
-        if (!file.exists()) throw FileNotFoundException("File ${file.absolutePath} does not exist and the web server to load the service versions from is not available")
-        return JsonLib.fromJsonFile(file)!!.getObject(Array<ServiceVersion>::class.java).toList()
+    private fun loadWebVersionsFromFile(): List<ServiceVersion> {
+        if (!webVersionFile.exists()) throw FileNotFoundException("File ${webVersionFile.absolutePath} does not exist and the web server to load the service versions from is not available.")
+        return JsonLib.fromJsonFile(webVersionFile)!!.getObject(Array<ServiceVersion>::class.java).toList()
+    }
+
+    private fun loadLocalVersionsFromFile(): List<ServiceVersion> {
+        if (!localVersionsFile.exists()) {
+            val jsonLib = JsonLib.fromJsonString("[{\"name\": \"EXAMPLE\", \"serviceAPIType\": \"EXAMPLE\", \"downloadURL\": \"noDownload\"}]")
+            jsonLib.saveAsFile(localVersionsFile)
+        }
+
+        return JsonLib.fromJsonFile(localVersionsFile)!!.getObject(Array<ServiceVersion>::class.java).toList()
     }
 
     private fun processWebContent(contentString: String): List<ServiceVersion> {
         val jsonLib = JsonLib.fromJsonString(contentString)
-        jsonLib.saveAsFile(file)
+        jsonLib.saveAsFile(webVersionFile)
         return jsonLib.getObject(Array<ServiceVersion>::class.java).toList()
     }
 
