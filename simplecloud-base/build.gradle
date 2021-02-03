@@ -45,7 +45,7 @@ dependencies {
     implementation group: 'commons-io', name: 'commons-io', version: dependencyCommonsIOVersion
     implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: dependencyKotlinCouroutinesVersion
     implementation group: 'org.reflections', name: 'reflections', version: '0.9.12'
-    implementation 'org.litote.kmongo:kmongo:4.2.3'
+    implementation group: 'org.litote.kmongo', name: 'kmongo', version: dependencyKMongoVersion
     compile(group: 'io.netty', name: 'netty-all', version: dependencyNettyVersion)
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
 
