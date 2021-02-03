@@ -22,6 +22,7 @@
 
 package eu.thesimplecloud.launcher.language
 
+import com.google.gson.JsonObject
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.language.LanguageProperty
@@ -60,6 +61,10 @@ class LanguageFileLoader {
 
     private fun loadLanguage(language: String) {
         val languageFile = getLanguageFileByLanguage(language)
+
+        if (languageFile.exists())
+            addMissingPropertiesToLanguageFile(languageFile, language)
+
         if (!languageFile.exists()) {
             if (languageFile != getLanguageFileByLanguage(FALLBACK_LANGUAGE)) {
                 loadLanguage(FALLBACK_LANGUAGE)
@@ -68,6 +73,23 @@ class LanguageFileLoader {
         }
         CloudAPI.instance.getLanguageManager()
             .registerLanguageFile(CloudAPI.instance.getThisSidesCloudModule(), loadLanguageFile(languageFile))
+    }
+
+    private fun addMissingPropertiesToLanguageFile(languageFile: File, language: String) {
+        val inputStream = this::class.java.getResourceAsStream("/language/$language.json")
+        val actualJson = JsonLib.fromInputStream(inputStream)
+        val copiedJson = JsonLib.fromJsonFile(languageFile)!!
+        val actualJsonObject = actualJson.jsonElement as JsonObject
+        val allPropertiesActualJson = actualJsonObject.entrySet().map { it.key }
+        val allPropertiesCopiedJson = (copiedJson.jsonElement as JsonObject).entrySet().map { it.key }
+        val missingProperties = allPropertiesActualJson.toMutableList()
+        missingProperties.removeAll(allPropertiesCopiedJson)
+
+        if (missingProperties.isEmpty()) return
+        missingProperties.forEach {
+            copiedJson.append(it, actualJsonObject[it])
+        }
+        copiedJson.saveAsFile(languageFile)
     }
 
     fun loadLanguageFile(file: File): LoadedLanguageFile {
