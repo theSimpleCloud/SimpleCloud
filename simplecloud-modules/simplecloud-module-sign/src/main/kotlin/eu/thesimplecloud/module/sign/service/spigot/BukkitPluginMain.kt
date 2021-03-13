@@ -20,14 +20,30 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.sign.service.event
+package eu.thesimplecloud.module.sign.service.spigot
 
-import eu.thesimplecloud.module.sign.service.BukkitCloudSign
+import eu.thesimplecloud.module.sign.service.spigot.command.CloudSignsCommand
+import eu.thesimplecloud.module.sign.service.spigot.listener.InteractListener
+import org.bukkit.plugin.java.JavaPlugin
 
 /**
  * Created by IntelliJ IDEA.
- * Date: 12.10.2020
- * Time: 11:27
+ * Date: 10.10.2020
+ * Time: 18:00
  * @author Frederick Baier
  */
-class BukkitCloudSignRemovedEvent(bukkitCloudSign: BukkitCloudSign) : BukkitCloudSignEvent(bukkitCloudSign)
+class BukkitPluginMain : JavaPlugin() {
+
+    private lateinit var serviceViewManager: BukkitSignServiceViewManager
+
+    override fun onEnable() {
+        BukkitSignAPI(this)
+        serviceViewManager = BukkitSignAPI.instance.serviceViewManager
+
+        server.pluginManager.registerEvents(InteractListener(), this)
+        getCommand("cloudsigns")!!.setExecutor(CloudSignsCommand())
+
+        BukkitSignManager(serviceViewManager, this)
+    }
+
+}

@@ -29,8 +29,10 @@ import eu.thesimplecloud.launcher.console.command.ICommandHandler
 import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
+import eu.thesimplecloud.module.sign.lib.SignModuleConfig
 import eu.thesimplecloud.module.sign.lib.group.GroupLayouts
 import eu.thesimplecloud.module.sign.lib.layout.LayoutType
+import eu.thesimplecloud.module.sign.lib.sign.CloudSignContainer
 import eu.thesimplecloud.module.sign.manager.SignModuleConfigPersistence
 
 /**
@@ -51,10 +53,10 @@ class SignCommand : ICommandHandler {
 
     @CommandSubPath("layout <group> <layoutType> <layout>", "Sets the layout for a group")
     fun handleEditLayout(
-            sender: ICommandSender,
-            @CommandArgument("group") groupName: String,
-            @CommandArgument("layoutType") layoutType: LayoutType,
-            @CommandArgument("layout") layoutName: String
+        sender: ICommandSender,
+        @CommandArgument("group") groupName: String,
+        @CommandArgument("layoutType") layoutType: LayoutType,
+        @CommandArgument("layout") layoutName: String
     ) {
         val group = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(groupName)
         if (group == null) {
@@ -78,6 +80,16 @@ class SignCommand : ICommandHandler {
         config.update()
         SignModuleConfigPersistence.save(config)
         sender.sendProperty("manager.command.sign.layout.success", group.getName(), layoutName, layoutType.toString())
+    }
+
+    @CommandSubPath("reset", "Resets all signs")
+    fun handleReset(sender: ICommandSender) {
+        val config = SignModuleConfigPersistence.load()
+        val signModuleConfig =
+            SignModuleConfig(config.signLayoutContainer, CloudSignContainer(), config.groupsLayoutContainer)
+        signModuleConfig.update()
+        SignModuleConfigPersistence.save(signModuleConfig)
+        sender.sendProperty("manager.command.sign.reset")
     }
 
 }

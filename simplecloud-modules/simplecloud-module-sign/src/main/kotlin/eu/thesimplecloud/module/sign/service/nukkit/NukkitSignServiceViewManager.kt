@@ -20,14 +20,35 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.sign.service.event
+package eu.thesimplecloud.module.sign.service.nukkit
 
-import eu.thesimplecloud.module.sign.service.BukkitCloudSign
+import cn.nukkit.level.Location
+import cn.nukkit.plugin.PluginBase
+import eu.thesimplecloud.module.serviceselection.api.nukkit.NukkitServiceViewManager
+import eu.thesimplecloud.module.sign.lib.SignModuleConfig
 
 /**
  * Created by IntelliJ IDEA.
- * Date: 12.10.2020
- * Time: 11:27
+ * Date: 11.10.2020
+ * Time: 18:53
  * @author Frederick Baier
  */
-class BukkitCloudSignAddedEvent(bukkitCloudSign: BukkitCloudSign) : BukkitCloudSignEvent(bukkitCloudSign)
+class NukkitSignServiceViewManager(plugin: PluginBase) : NukkitServiceViewManager<NukkitCloudSign>(plugin, 20) {
+
+    init {
+        startUpdateScheduler()
+    }
+
+    override fun performUpdate() {
+        super.performUpdate()
+        val config = SignModuleConfig.getConfig()
+        val signLayoutContainer = config.signLayoutContainer
+        signLayoutContainer.getAllLayouts().forEach { it.nextFrame() }
+    }
+
+    fun getNukkitCloudSignByLocation(location: Location): NukkitCloudSign? {
+        val registeredSigns = this.getAllGroupViewManagers().map { it.getServiceViewers() }.flatten()
+        return registeredSigns.firstOrNull { it.nukkitLocation == location }
+    }
+
+}

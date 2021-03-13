@@ -43,6 +43,11 @@ fun Player.getCloudPlayer(): ICloudPlayer = CloudAPI.instance.getCloudPlayerMana
 /**
  * Returns the CloudPlayer found by the players uuid
  */
+fun cn.nukkit.Player.getCloudPlayer(): ICloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(this.uniqueId) ?: throw NoSuchPlayerException("Cannot find CloudPlayer by uuid: $uniqueId")
+
+/**
+ * Returns the CloudPlayer found by the players uuid
+ */
 fun com.velocitypowered.api.proxy.Player.getCloudPlayer(): ICloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(this.uniqueId) ?: throw NoSuchPlayerException("Cannot find CloudPlayer by uuid: $uniqueId")
 
 /**

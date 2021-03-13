@@ -20,7 +20,7 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.sign.service
+package eu.thesimplecloud.module.sign.service.lib
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.event.group.CloudServiceGroupUpdatedEvent
@@ -30,40 +30,40 @@ import eu.thesimplecloud.api.eventapi.IListener
 import eu.thesimplecloud.api.property.IProperty
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.api.servicegroup.grouptype.ICloudServerGroup
+import eu.thesimplecloud.module.serviceselection.api.AbstractServiceViewManager
 import eu.thesimplecloud.module.serviceselection.api.ServiceViewGroupManager
 import eu.thesimplecloud.module.sign.lib.SignModuleConfig
 import eu.thesimplecloud.module.sign.lib.sign.CloudSign
 import eu.thesimplecloud.module.sign.lib.sign.CloudSignContainer
-import eu.thesimplecloud.module.sign.service.command.CloudSignsCommand
-import eu.thesimplecloud.module.sign.service.event.BukkitCloudSignAddedEvent
-import eu.thesimplecloud.module.sign.service.event.BukkitCloudSignRemovedEvent
-import eu.thesimplecloud.module.sign.service.listener.InteractListener
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import org.bukkit.event.EventHandler
-import org.bukkit.plugin.java.JavaPlugin
 
 /**
  * Created by IntelliJ IDEA.
- * Date: 10.10.2020
- * Time: 18:00
+ * Date: 04/02/2021
+ * Time: 14:19
  * @author Frederick Baier
  */
-class BukkitPluginMain : JavaPlugin() {
+abstract class AbstractSignManager(
+    abstractServiceViewManager: AbstractServiceViewManager<out AbstractCloudSign>
+) {
 
-    private lateinit var serviceViewManager: SignServiceViewManager
+    protected val abstractServiceViewManager: AbstractServiceViewManager<AbstractCloudSign> = abstractServiceViewManager as AbstractServiceViewManager<AbstractCloudSign>
 
-    override fun onEnable() {
-        SignAPI(this)
-        serviceViewManager = SignAPI.instance.serviceViewManager
+    init {
+        initListener()
+    }
+
+    fun setupRegisteredGroups() {
         val config = SignModuleConfig.getConfig()
         CloudAPI.instance.getCloudServiceGroupManager().getServerOrLobbyGroups().forEach {
             setupGroup(it, config)
         }
+    }
 
-        server.pluginManager.registerEvents(InteractListener(), this)
-        getCommand("cloudsigns")!!.setExecutor(CloudSignsCommand())
-
-        CloudAPI.instance.getEventManager().registerListener(CloudAPI.instance.getThisSidesCloudModule(), object : IListener {
+    private fun initListener() {
+        CloudAPI.instance.getEventManager().registerListener(CloudAPI.instance.getThisSidesCloudModule(), object :
+            IListener {
 
             @CloudEventHandler
             fun handleUpdate(event: GlobalPropertyUpdatedEvent) {
@@ -80,7 +80,6 @@ class BukkitPluginMain : JavaPlugin() {
             }
 
         })
-
     }
 
     private fun updateSigns(signContainer: CloudSignContainer) {
@@ -90,7 +89,7 @@ class BukkitPluginMain : JavaPlugin() {
         //remove removed BukkitCloudSigns
         val serverGroups = CloudAPI.instance.getCloudServiceGroupManager().getServerOrLobbyGroups()
         for (group in serverGroups) {
-            val groupView = serviceViewManager.getGroupView(group)
+            val groupView = abstractServiceViewManager.getGroupView(group)
             val signsForThisGroup = signsForTemplate.filter { it.forGroup == group.getName() }
             val serviceViewers = groupView.getServiceViewers()
             val bukkitSignsToUnregister = serviceViewers.filter { !signsForThisGroup.contains(it.cloudSign) }
@@ -98,8 +97,8 @@ class BukkitPluginMain : JavaPlugin() {
         }
 
         //add added BukkitCloudSigns
-        val registeredCloudSigns = serverGroups.map { serviceViewManager.getGroupView(it) }
-                .map { it.getServiceViewers() }.flatten()
+        val registeredCloudSigns = serverGroups.map { abstractServiceViewManager.getGroupView(it) }
+            .map { it.getServiceViewers() }.flatten()
 
         signsForTemplate.forEach { cloudSign ->
             if (!isSignRegistered(cloudSign, registeredCloudSigns)) {
@@ -108,30 +107,22 @@ class BukkitPluginMain : JavaPlugin() {
         }
     }
 
-    private fun unregisterSign(bukkitCloudSign: BukkitCloudSign, groupView: ServiceViewGroupManager<BukkitCloudSign>) {
-        groupView.removeServiceViewer(bukkitCloudSign)
-        CloudAPI.instance.getEventManager().call(BukkitCloudSignRemovedEvent(bukkitCloudSign))
+    private fun setupGroup(group: ICloudServiceGroup, config: SignModuleConfig) {
+        if (this.abstractServiceViewManager.isGroupViewRegistered(group)) return
+        this.abstractServiceViewManager.createServiceViewGroupManager(group)
+        val signsForTemplate = config.signContainer.getSignsForTemplate(CloudPlugin.instance.thisService().getTemplate())
+        val signsToRegister = signsForTemplate.filter { it.forGroup == group.getName() }
+        signsToRegister.forEach {  registerCloudSign(it) }
+
     }
 
-    private fun registerCloudSign(cloudSign: CloudSign) {
-        val groupView = this.serviceViewManager.getGroupView(cloudSign.getGroup())
-        val bukkitCloudSign = BukkitCloudSign(cloudSign)
-        groupView.addServiceViewers(bukkitCloudSign)
-        CloudAPI.instance.getEventManager().call(BukkitCloudSignAddedEvent(bukkitCloudSign))
-    }
-
-    private fun isSignRegistered(cloudSign: CloudSign, allRegisteredSigns: List<BukkitCloudSign>): Boolean {
+    protected fun isSignRegistered(cloudSign: CloudSign, allRegisteredSigns: List<AbstractCloudSign>): Boolean {
         return allRegisteredSigns.map { it.cloudSign }.contains(cloudSign)
     }
 
-    private fun setupGroup(group: ICloudServiceGroup, config: SignModuleConfig) {
-        if (this.serviceViewManager.isGroupViewRegistered(group)) return
-        val serviceViewGroupManager = ServiceViewGroupManager<BukkitCloudSign>(group)
-        val signsForTemplate = config.signContainer.getSignsForTemplate(CloudPlugin.instance.thisService().getTemplate())
-        val signsToRegister = signsForTemplate.filter { it.forGroup == group.getName() }
-        val bukkitSigns = signsToRegister.map { BukkitCloudSign(it) }
-        serviceViewGroupManager.addServiceViewers(*bukkitSigns.toTypedArray())
-        this.serviceViewManager.addServiceViewGroupManager(serviceViewGroupManager)
-    }
+    abstract fun unregisterSign(abstractCloudSign: AbstractCloudSign, groupView: ServiceViewGroupManager<AbstractCloudSign>)
+
+    abstract fun registerCloudSign(cloudSign: CloudSign)
+
 
 }

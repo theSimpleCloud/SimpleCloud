@@ -25,6 +25,7 @@ package eu.thesimplecloud.module.serviceselection.api
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
+import java.util.concurrent.CopyOnWriteArrayList
 
 /**
  * Created by IntelliJ IDEA.
@@ -36,7 +37,7 @@ class ServiceViewGroupManager<T : AbstractServiceViewer>(
         val group: ICloudServiceGroup
 ) {
 
-    private val serviceViewers: MutableList<T> = ArrayList()
+    private val serviceViewers: MutableList<T> = CopyOnWriteArrayList()
 
     fun addServiceViewers(vararg serviceViewer: T) {
         this.serviceViewers.addAll(serviceViewer)

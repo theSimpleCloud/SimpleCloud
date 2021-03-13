@@ -20,17 +20,46 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.sign.service.event
+package eu.thesimplecloud.module.sign.service.spigot
 
-import eu.thesimplecloud.api.eventapi.IEvent
-import eu.thesimplecloud.module.sign.service.BukkitCloudSign
+import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
+import org.bukkit.Location
+import org.bukkit.plugin.java.JavaPlugin
 
 /**
  * Created by IntelliJ IDEA.
- * Date: 12.10.2020
- * Time: 11:27
+ * Date: 11.10.2020
+ * Time: 19:04
  * @author Frederick Baier
  */
-open class BukkitCloudSignEvent(
-        val bukkitCloudSign: BukkitCloudSign
-) : IEvent
+class BukkitSignAPI(plugin: JavaPlugin) {
+
+    val serviceViewManager: BukkitSignServiceViewManager = BukkitSignServiceViewManager(plugin)
+
+    init {
+        instance = this
+    }
+
+    fun getAllRegisteredSigns(): List<BukkitCloudSign> {
+        return this.serviceViewManager.getAllGroupViewManagers().map { it.getServiceViewers() }.flatten()
+    }
+
+    fun getAllRegisteredSignsByGroup(group: ICloudServiceGroup): List<BukkitCloudSign> {
+        return this.serviceViewManager.getGroupView(group).getServiceViewers()
+    }
+
+    fun getSignOnLocation(location: Location): BukkitCloudSign? {
+        return getAllRegisteredSigns().firstOrNull { it.bukkitLocation == location }
+    }
+
+    fun isSignOnLocation(location: Location): Boolean {
+        return getSignOnLocation(location) != null
+    }
+
+
+    companion object {
+        lateinit var instance: BukkitSignAPI
+            private set
+    }
+
+}

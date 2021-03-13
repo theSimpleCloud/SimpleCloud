@@ -26,6 +26,7 @@ dependencies {
 
     compileOnly 'org.spigotmc:spigot-api:1.16.3-R0.1-SNAPSHOT'
     implementation group: 'commons-io', name: 'commons-io', version: '2.6'
+    compileOnly 'cn.nukkit:nukkit:1.0-SNAPSHOT'
 
 }
 

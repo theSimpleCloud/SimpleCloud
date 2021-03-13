@@ -22,6 +22,7 @@
 
 package eu.thesimplecloud.plugin.extension
 
+import cn.nukkit.Server
 import eu.thesimplecloud.api.location.ServiceLocation
 import eu.thesimplecloud.api.location.SimpleLocation
 import eu.thesimplecloud.plugin.startup.CloudPlugin
@@ -38,9 +39,26 @@ fun SimpleLocation.toBukkitLocation(): Location? {
 }
 
 /**
+ * Returns the nukkit location with the content of this location.
+ * Returns null if the world was not found.
+ */
+fun SimpleLocation.toNukkitLocation(): cn.nukkit.level.Location? {
+    val world = Server.getInstance().getLevelByName(this.worldName) ?: return null
+    return cn.nukkit.level.Location(x, y, z, yaw.toDouble(), pitch.toDouble(), world)
+}
+
+/**
  * Returns a this location parsed to a [ServiceLocation]
  */
 fun Location.toCloudLocation(): ServiceLocation {
     if (this.world == null) throw IllegalStateException("World must be not null.")
     return ServiceLocation(CloudPlugin.instance.thisService(), this.world!!.name, this.x, this.y, this.z, this.yaw, this.pitch)
+}
+
+/**
+ * Returns a this location parsed to a [ServiceLocation]
+ */
+fun cn.nukkit.level.Location.toCloudLocation(): ServiceLocation {
+    if (this.level == null) throw IllegalStateException("World must be not null.")
+    return ServiceLocation(CloudPlugin.instance.thisService(), this.level!!.name, this.x, this.y, this.z, this.yaw.toFloat(), this.pitch.toFloat())
 }

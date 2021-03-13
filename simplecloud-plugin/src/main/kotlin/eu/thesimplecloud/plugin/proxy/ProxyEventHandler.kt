@@ -209,6 +209,7 @@ object ProxyEventHandler {
             player.setServerConnectState(PlayerServerConnectState.CONNECTED)
             player.update().awaitUninterruptibly()
         }
+        CloudAPI.instance.getCloudPlayerManager().getNetworkOnlinePlayerCount().getBlocking()
     }
 
     fun handleTabComplete(uuid: UUID, rawCommand: String): Array<String> {

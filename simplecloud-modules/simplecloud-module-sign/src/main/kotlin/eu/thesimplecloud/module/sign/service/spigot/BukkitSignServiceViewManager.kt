@@ -20,28 +20,35 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.serviceselection.api
+package eu.thesimplecloud.module.sign.service.spigot
 
-import eu.thesimplecloud.api.service.ICloudService
-import eu.thesimplecloud.api.service.ServiceState
+import eu.thesimplecloud.module.serviceselection.api.bukkit.BukkitServiceViewManager
+import eu.thesimplecloud.module.sign.lib.SignModuleConfig
+import org.bukkit.Location
+import org.bukkit.plugin.java.JavaPlugin
 
-abstract class AbstractServiceViewer {
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 11.10.2020
+ * Time: 18:53
+ * @author Frederick Baier
+ */
+class BukkitSignServiceViewManager(plugin: JavaPlugin) : BukkitServiceViewManager<BukkitCloudSign>(plugin, 20L) {
 
-    @Volatile
-    var service: ICloudService? = null
+    init {
+        startUpdateScheduler()
+    }
 
-    /**
-     * Update will be called when the service was changed
-     */
-    abstract fun updateView()
+    override fun performUpdate() {
+        super.performUpdate()
+        val config = SignModuleConfig.getConfig()
+        val signLayoutContainer = config.signLayoutContainer
+        signLayoutContainer.getAllLayouts().forEach { it.nextFrame() }
+    }
 
-    /**
-     * Will be called when this viewer shall be removed
-     */
-    abstract fun removeView()
-
-    fun isVacant() = service == null || !service!!.isStartingOrVisible()
-
-    fun isCurrentServiceStarting() = this.service?.getState() == ServiceState.STARTING
+    fun getBukkitCloudSignByLocation(location: Location): BukkitCloudSign? {
+        val registeredSigns = this.getAllGroupViewManagers().map { it.getServiceViewers() }.flatten()
+        return registeredSigns.firstOrNull { it.bukkitLocation == location }
+    }
 
 }

@@ -20,32 +20,30 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.sign.service.listener
+package eu.thesimplecloud.module.sign.service.nukkit.listener
 
+import cn.nukkit.blockentity.BlockEntitySign
+import cn.nukkit.event.EventHandler
+import cn.nukkit.event.Listener
+import cn.nukkit.event.player.PlayerInteractEvent
 import eu.thesimplecloud.api.service.ServiceState
-import eu.thesimplecloud.module.sign.service.SignAPI
+import eu.thesimplecloud.module.sign.service.nukkit.NukkitSignAPI
 import eu.thesimplecloud.plugin.extension.getCloudPlayer
-import org.bukkit.block.Sign
-import org.bukkit.event.Event
-import org.bukkit.event.EventHandler
-import org.bukkit.event.Listener
-import org.bukkit.event.block.Action
-import org.bukkit.event.player.PlayerInteractEvent
 
 class InteractListener : Listener {
 
     @EventHandler
     fun on(event: PlayerInteractEvent) {
-        if (event.useInteractedBlock() == Event.Result.DENY) return
-        if (event.action != Action.RIGHT_CLICK_BLOCK)
+        if (event.isCancelled) return
+        if (event.action != PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK)
             return
-        val clickedBlock = event.clickedBlock ?: return
-        val state = clickedBlock.state
-        if (state is Sign) {
-            val bukkitCloudSign = SignAPI.instance.serviceViewManager.getBukkitCloudSignByLocation(state.location)
+        val clickedBlock = event.block ?: return
+        val blockEntity = clickedBlock.level.getBlockEntity(clickedBlock.location)
+        if (blockEntity is BlockEntitySign) {
+            val nukkitCloudSign = NukkitSignAPI.instance.serviceViewManager.getNukkitCloudSignByLocation(blockEntity.location)
                     ?: return
-            if (bukkitCloudSign.serviceGroup?.isInMaintenance() == true) return
-            val currentServer = bukkitCloudSign.service ?: return
+            if (nukkitCloudSign.serviceGroup?.isInMaintenance() == true) return
+            val currentServer = nukkitCloudSign.service ?: return
             if (currentServer.getState() != ServiceState.VISIBLE) return
             event.player.getCloudPlayer().connect(currentServer)
         }

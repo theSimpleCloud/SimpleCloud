@@ -21,7 +21,7 @@
  */
 
 dependencies {
-    implementation group: 'org.reflections', name: 'reflections', version: '0.9.12'
+    implementation group: 'org.reflections', name: 'reflections', version: '0.9.11'
     compile(group: 'io.netty', name: 'netty-all', version: "4.1.54.Final")
     compile(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion) {
         transitive = false

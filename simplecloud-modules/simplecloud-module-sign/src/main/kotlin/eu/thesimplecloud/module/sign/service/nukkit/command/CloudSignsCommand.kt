@@ -20,20 +20,19 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.sign.service.command
+package eu.thesimplecloud.module.sign.service.nukkit.command
 
+import cn.nukkit.Player
+import cn.nukkit.block.Block
+import cn.nukkit.blockentity.BlockEntitySign
+import cn.nukkit.command.Command
+import cn.nukkit.command.CommandSender
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.service.ServiceType
 import eu.thesimplecloud.module.sign.lib.SignModuleConfig
 import eu.thesimplecloud.module.sign.lib.sign.CloudSign
 import eu.thesimplecloud.plugin.extension.toCloudLocation
 import eu.thesimplecloud.plugin.startup.CloudPlugin
-import org.bukkit.block.Block
-import org.bukkit.block.Sign
-import org.bukkit.command.Command
-import org.bukkit.command.CommandExecutor
-import org.bukkit.command.CommandSender
-import org.bukkit.entity.Player
 
 /**
  * Created by IntelliJ IDEA.
@@ -41,14 +40,15 @@ import org.bukkit.entity.Player
  * Time: 12:05
  * @author Frederick Baier
  */
-class CloudSignsCommand : CommandExecutor {
+class CloudSignsCommand : Command("cloudsigns") {
 
     private val thisService = CloudPlugin.instance.thisService()
 
-    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
+    override fun execute(sender: CommandSender, commandLabel: String, args: Array<out String>): Boolean {
         if (sender !is Player) return true
-        val block: Block = sender.getTargetBlock(null, 4)
-        if (block.state !is Sign) {
+        val block: Block = sender.getTargetBlock(4)
+        val blockEntity = block.level.getBlockEntity(block.location)
+        if (blockEntity !is BlockEntitySign) {
             sender.sendMessage("§cYou must look at a sign.")
             return true
         }

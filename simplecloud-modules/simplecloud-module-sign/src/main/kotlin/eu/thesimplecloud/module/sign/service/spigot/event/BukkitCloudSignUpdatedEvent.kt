@@ -20,9 +20,9 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.sign.service.event
+package eu.thesimplecloud.module.sign.service.spigot.event
 
-import eu.thesimplecloud.module.sign.service.BukkitCloudSign
+import eu.thesimplecloud.module.sign.service.spigot.BukkitCloudSign
 
 /**
  * Created by IntelliJ IDEA.

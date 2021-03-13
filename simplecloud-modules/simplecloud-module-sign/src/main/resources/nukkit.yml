@@ -1,0 +1,10 @@
+name: SimpleCloud-Sign
+version: "1.0"
+author: Wetterbericht
+api: [ "1.0.5" ]
+
+main: eu.thesimplecloud.module.sign.service.nukkit.NukkitPluginMain
+
+commands:
+  cloudsigns:
+    permission: cloud.command.signs

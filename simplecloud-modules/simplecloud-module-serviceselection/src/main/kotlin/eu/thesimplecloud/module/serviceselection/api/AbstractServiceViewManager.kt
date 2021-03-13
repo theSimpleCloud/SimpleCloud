@@ -23,28 +23,17 @@
 package eu.thesimplecloud.module.serviceselection.api
 
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
-import org.bukkit.Bukkit
-import org.bukkit.plugin.java.JavaPlugin
 
-open class ServiceViewManager<T : AbstractServiceViewer>(
-        private val plugin: JavaPlugin,
-        private val updateDelay: Long = 20
-) {
+abstract class AbstractServiceViewManager<T : AbstractServiceViewer>() {
 
     private val groupNameToGroupView = HashMap<String, ServiceViewGroupManager<T>>()
 
-    init {
-        startUpdateScheduler()
-    }
+    abstract fun startUpdateScheduler()
 
-    private fun startUpdateScheduler() {
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, {
-            performUpdate()
-        }, 20, this.updateDelay)
-    }
-
-    fun addServiceViewGroupManager(serviceViewGroupManager: ServiceViewGroupManager<T>) {
-        this.groupNameToGroupView[serviceViewGroupManager.group.getName()] = serviceViewGroupManager
+    fun createServiceViewGroupManager(cloudServiceGroup: ICloudServiceGroup): ServiceViewGroupManager<T> {
+        val serviceViewGroupManager = ServiceViewGroupManager<T>(cloudServiceGroup)
+        this.groupNameToGroupView[cloudServiceGroup.getName()] = serviceViewGroupManager
+        return serviceViewGroupManager
     }
 
     fun getGroupView(group: ICloudServiceGroup): ServiceViewGroupManager<T> {

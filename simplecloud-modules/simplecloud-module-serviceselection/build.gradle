@@ -13,6 +13,7 @@ dependencies {
     testCompile group: 'io.netty', name: 'netty-all', version: '4.1.49.Final'
     testCompile group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: '1.3.5'
     testImplementation "io.mockk:mockk:1.10.0"
+    compileOnly 'cn.nukkit:nukkit:1.0-SNAPSHOT'
 }
 
 configurations {

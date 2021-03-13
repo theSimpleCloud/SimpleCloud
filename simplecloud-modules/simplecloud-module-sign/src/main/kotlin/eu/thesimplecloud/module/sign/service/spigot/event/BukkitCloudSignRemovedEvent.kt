@@ -20,28 +20,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.serviceselection.api
+package eu.thesimplecloud.module.sign.service.spigot.event
 
-import eu.thesimplecloud.api.service.ICloudService
-import eu.thesimplecloud.api.service.ServiceState
+import eu.thesimplecloud.module.sign.service.spigot.BukkitCloudSign
 
-abstract class AbstractServiceViewer {
-
-    @Volatile
-    var service: ICloudService? = null
-
-    /**
-     * Update will be called when the service was changed
-     */
-    abstract fun updateView()
-
-    /**
-     * Will be called when this viewer shall be removed
-     */
-    abstract fun removeView()
-
-    fun isVacant() = service == null || !service!!.isStartingOrVisible()
-
-    fun isCurrentServiceStarting() = this.service?.getState() == ServiceState.STARTING
-
-}
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 12.10.2020
+ * Time: 11:27
+ * @author Frederick Baier
+ */
+class BukkitCloudSignRemovedEvent(bukkitCloudSign: BukkitCloudSign) : BukkitCloudSignEvent(bukkitCloudSign)

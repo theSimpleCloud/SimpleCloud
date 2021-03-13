@@ -20,15 +20,28 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.sign.service
+package eu.thesimplecloud.module.serviceselection.api.nukkit
 
-class Placeholder<T>(
-        private val name: String,
-        private val replaceValueFunction: (T) -> String
-) {
+import cn.nukkit.plugin.PluginBase
+import eu.thesimplecloud.module.serviceselection.api.AbstractServiceViewManager
+import eu.thesimplecloud.module.serviceselection.api.AbstractServiceViewer
 
-    fun replacePlaceholder(type: T, message: String): String {
-        return message.replace("%$name%", replaceValueFunction(type))
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 04/02/2021
+ * Time: 13:49
+ * @author Frederick Baier
+ */
+open class NukkitServiceViewManager<T : AbstractServiceViewer>(
+    private val plugin: PluginBase,
+    private val updateDelay: Int
+) : AbstractServiceViewManager<T>() {
+
+
+    override fun startUpdateScheduler() {
+        plugin.server.scheduler.scheduleRepeatingTask(plugin, Runnable {
+            performUpdate()
+        }, updateDelay)
     }
 
 }

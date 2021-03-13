@@ -20,28 +20,31 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.serviceselection.api
+package eu.thesimplecloud.module.sign.service.nukkit
 
-import eu.thesimplecloud.api.service.ICloudService
-import eu.thesimplecloud.api.service.ServiceState
+import cn.nukkit.plugin.PluginBase
+import eu.thesimplecloud.module.sign.service.nukkit.command.CloudSignsCommand
+import eu.thesimplecloud.module.sign.service.nukkit.listener.InteractListener
 
-abstract class AbstractServiceViewer {
 
-    @Volatile
-    var service: ICloudService? = null
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 04/02/2021
+ * Time: 18:47
+ * @author Frederick Baier
+ */
+class NukkitPluginMain : PluginBase() {
 
-    /**
-     * Update will be called when the service was changed
-     */
-    abstract fun updateView()
+    private lateinit var serviceViewManager: NukkitSignServiceViewManager
 
-    /**
-     * Will be called when this viewer shall be removed
-     */
-    abstract fun removeView()
+    override fun onEnable() {
+        NukkitSignAPI(this)
+        serviceViewManager = NukkitSignAPI.instance.serviceViewManager
 
-    fun isVacant() = service == null || !service!!.isStartingOrVisible()
+        server.pluginManager.registerEvents(InteractListener(), this)
+        server.commandMap.register("cloudsigns", CloudSignsCommand())
 
-    fun isCurrentServiceStarting() = this.service?.getState() == ServiceState.STARTING
+        NukkitSignManager(serviceViewManager, this)
+    }
 
 }

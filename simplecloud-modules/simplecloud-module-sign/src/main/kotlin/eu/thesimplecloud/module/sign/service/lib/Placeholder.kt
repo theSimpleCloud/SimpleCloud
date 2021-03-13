@@ -20,28 +20,15 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.serviceselection.api
+package eu.thesimplecloud.module.sign.service.lib
 
-import eu.thesimplecloud.api.service.ICloudService
-import eu.thesimplecloud.api.service.ServiceState
+class Placeholder<T>(
+        private val name: String,
+        private val replaceValueFunction: (T) -> String
+) {
 
-abstract class AbstractServiceViewer {
-
-    @Volatile
-    var service: ICloudService? = null
-
-    /**
-     * Update will be called when the service was changed
-     */
-    abstract fun updateView()
-
-    /**
-     * Will be called when this viewer shall be removed
-     */
-    abstract fun removeView()
-
-    fun isVacant() = service == null || !service!!.isStartingOrVisible()
-
-    fun isCurrentServiceStarting() = this.service?.getState() == ServiceState.STARTING
+    fun replacePlaceholder(type: T, message: String): String {
+        return message.replace("%$name%", replaceValueFunction(type))
+    }
 
 }

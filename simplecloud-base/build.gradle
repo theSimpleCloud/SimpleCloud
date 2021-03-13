@@ -48,7 +48,7 @@ dependencies {
     // https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-core
     implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: '1.3.3'
     // https://mvnrepository.com/artifact/org.reflections/reflections
-    implementation group: 'org.reflections', name: 'reflections', version: '0.9.12'
+    implementation group: 'org.reflections', name: 'reflections', version: '0.9.11'
     implementation 'org.litote.kmongo:kmongo:3.11.2'
     compile(group: 'io.netty', name: 'netty-all', version: "4.1.54.Final")
     // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3

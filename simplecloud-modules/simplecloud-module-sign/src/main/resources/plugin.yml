@@ -2,7 +2,7 @@ name: SimpleCloud-Sign
 version: 1.0
 author: Wetterbericht
 
-main: eu.thesimplecloud.module.sign.service.BukkitPluginMain
+main: eu.thesimplecloud.module.sign.service.spigot.BukkitPluginMain
 
 depend: [SimpleCloud-Plugin]
 

@@ -20,7 +20,7 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.sign.service
+package eu.thesimplecloud.module.sign.service.lib
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.service.ICloudService
@@ -30,9 +30,6 @@ import eu.thesimplecloud.module.serviceselection.api.AbstractServiceViewer
 import eu.thesimplecloud.module.sign.lib.SignModuleConfig
 import eu.thesimplecloud.module.sign.lib.layout.LayoutType
 import eu.thesimplecloud.module.sign.lib.sign.CloudSign
-import eu.thesimplecloud.module.sign.service.event.BukkitCloudSignUpdatedEvent
-import eu.thesimplecloud.plugin.extension.toBukkitLocation
-import org.bukkit.block.Sign
 
 /**
  * Created by IntelliJ IDEA.
@@ -40,12 +37,11 @@ import org.bukkit.block.Sign
  * Time: 18:25
  * @author Frederick Baier
  */
-class BukkitCloudSign(
+abstract class AbstractCloudSign(
         val cloudSign: CloudSign
 ) : AbstractServiceViewer() {
 
     val serviceGroup = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(cloudSign.forGroup)
-    val location = cloudSign.templateLocation.toBukkitLocation()
     val templateLocation = cloudSign.templateLocation
 
 
@@ -54,32 +50,23 @@ class BukkitCloudSign(
             println("[SimpleCloud-Sign] WARNING: Cannot find group by name: ${cloudSign.forGroup}")
             return
         }
-        if (location == null) {
-            println("[SimpleCloud-Sign] WARNING: Cannot find world by name: ${cloudSign.templateLocation.worldName}")
+
+        if (!shallUpdateSign())
             return
-        }
-        if (!location.chunk.isLoaded) {
-            return
-        }
-        if (location.block.state !is Sign) {
-            return
-        }
-        val currentServer = this.service
-        val sign = location.block.state as Sign
+
         clearSign(false)
 
         val config = SignModuleConfig.getConfig()
         val layoutType = calculateLayoutType()
         val signLayout = config.getSignLayoutForGroup(layoutType, this.serviceGroup.getName())
 
+        val currentServer = this.service
         val currentFrame = signLayout.getCurrentFrame()
-        for (i in 0 until 4) {
-            sign.setLine(i, replacePlaceholders(currentFrame.lines[i], currentServer))
-        }
-        sign.update()
+        val lines = (0 until 4).map { replacePlaceholders(currentFrame.lines[it], currentServer) }
 
-        CloudAPI.instance.getEventManager().call(BukkitCloudSignUpdatedEvent(this))
+        updateSignLines(lines)
     }
+
 
     private fun replacePlaceholders(lineToReplace: String, currentServer: ICloudService?): String {
         var lineToReplace = lineToReplace
@@ -102,17 +89,11 @@ class BukkitCloudSign(
         this.clearSign(true)
     }
 
-    private fun clearSign(update: Boolean = true) {
-        val location = this.location!!
-        if (location.block.state is Sign) {
-            val sign = location.block.state as Sign
-            for (i in 0 until 4) {
-                sign.setLine(i, "")
-            }
-            if (update) sign.update()
-        }
-    }
+    abstract fun clearSign(update: Boolean = true)
 
+    abstract fun shallUpdateSign(): Boolean
+
+    abstract fun updateSignLines(lines: List<String>)
 
     companion object {
         private val PLACEHOLDERS = listOf<Placeholder<ICloudService>>(

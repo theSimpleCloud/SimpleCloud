@@ -48,7 +48,7 @@ class LauncherDependencyLoader {
                         LauncherCloudDependency("org.jetbrains.kotlinx", "kotlinx-coroutines-core", "1.3.5"),
                         LauncherCloudDependency("com.google.code.gson", "gson", "2.8.6"),
                         LauncherCloudDependency("io.netty", "netty-all", "4.1.49.Final"),
-                        LauncherCloudDependency("org.reflections", "reflections", "0.9.12"),
+                        LauncherCloudDependency("org.reflections", "reflections", "0.9.11"),
                         LauncherCloudDependency("org.mariadb.jdbc", "mariadb-java-client", "2.6.0"),
                         LauncherCloudDependency("com.github.ajalt", "clikt", "2.2.0")
                 )

@@ -20,28 +20,30 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.serviceselection.api
+package eu.thesimplecloud.module.serviceselection.api.bukkit
 
-import eu.thesimplecloud.api.service.ICloudService
-import eu.thesimplecloud.api.service.ServiceState
+import eu.thesimplecloud.module.serviceselection.api.AbstractServiceViewManager
+import eu.thesimplecloud.module.serviceselection.api.AbstractServiceViewer
+import org.bukkit.Bukkit
+import org.bukkit.plugin.java.JavaPlugin
 
-abstract class AbstractServiceViewer {
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 04/02/2021
+ * Time: 13:49
+ * @author Frederick Baier
+ */
+open class BukkitServiceViewManager<T : AbstractServiceViewer>(
+    private val plugin: JavaPlugin,
+    private val updateDelay: Long
+) : AbstractServiceViewManager<T>() {
 
-    @Volatile
-    var service: ICloudService? = null
 
-    /**
-     * Update will be called when the service was changed
-     */
-    abstract fun updateView()
+    override fun startUpdateScheduler() {
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, {
+            performUpdate()
+        }, 20, this.updateDelay)
+    }
 
-    /**
-     * Will be called when this viewer shall be removed
-     */
-    abstract fun removeView()
-
-    fun isVacant() = service == null || !service!!.isStartingOrVisible()
-
-    fun isCurrentServiceStarting() = this.service?.getState() == ServiceState.STARTING
 
 }
