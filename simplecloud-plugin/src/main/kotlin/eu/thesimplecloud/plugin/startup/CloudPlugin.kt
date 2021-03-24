@@ -67,10 +67,10 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
         println("<---------- Service-Name: $thisServiceName ---------->")
         CloudAPIImpl(cloudServicePlugin.getCloudPlayerManagerClass().java.newInstance())
 
+        this.communicationClient.setPacketSearchClassLoader(this::class.java.classLoader)
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.plugin.network.packets")
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.client.packets")
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.api.network.packets")
-        this.communicationClient.setPacketSearchClassLoader(this::class.java.classLoader)
 
         nettyThread = thread(true, isDaemon = false, contextClassLoader = this::class.java.classLoader) {
             println("<------Starting cloud client----------->")
