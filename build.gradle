@@ -21,7 +21,7 @@
  */
 
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.4.21'
+    id 'org.jetbrains.kotlin.jvm' version '1.4.32'
     id 'org.jetbrains.dokka' version '0.10.1'
 }
 
@@ -68,7 +68,7 @@ allprojects {
     project.ext {
         depedencyClientServerAPIVersion = '4.1.15'
         dependencyCommonsIOVersion = '2.8.0'
-        dependencyKotlinCouroutinesVersion = '1.4.2'
+        dependencyKotlinCouroutinesVersion = '1.4.3'
         dependencyNettyVersion = '4.1.58.Final'
         dependencyGuavaVersion = '30.0-jre'
         dependencyKMongoVersion = '4.2.3'
