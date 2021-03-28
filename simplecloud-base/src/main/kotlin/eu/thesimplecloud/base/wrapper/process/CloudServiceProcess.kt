@@ -160,7 +160,9 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
         val beginAndEnd = if (CloudAPI.instance.isWindows()) "\"" else ""
         val classPathValue = beginAndEnd + classPathValueList.joinToString(separator) + beginAndEnd
 
-        val jvmArguments = Wrapper.instance.jvmArgumentsConfig.jvmArguments.filter { it.groups.contains("all") || it.groups.contains(this.cloudService.getGroupName()) }
+        val jvmArguments = Wrapper.instance.jvmArgumentsConfig.jvmArguments.filter {
+            it.groups.contains("all") || it.groups.contains(this.cloudService.getGroupName()) || it.groups.contains(this.cloudService.getServiceType().name)
+        }
         val commands = mutableListOf("java")
 
         jvmArguments.forEach { commands.addAll(it.arguments) }
