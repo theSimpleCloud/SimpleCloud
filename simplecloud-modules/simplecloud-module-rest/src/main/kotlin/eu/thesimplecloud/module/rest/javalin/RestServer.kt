@@ -22,6 +22,7 @@
 
 package eu.thesimplecloud.module.rest.javalin
 
+import eu.thesimplecloud.clientserverapi.lib.json.PacketExclude
 import eu.thesimplecloud.jsonlib.GsonCreator
 import eu.thesimplecloud.module.rest.annotation.WebExclude
 import eu.thesimplecloud.module.rest.auth.AuthService
@@ -62,7 +63,7 @@ class RestServer(port: Int) {
 
     private val app = Javalin.create().start(port)
 
-    val webGson = GsonCreator().excludeAnnotations(WebExclude::class.java).create()
+    val webGson = GsonCreator().excludeAnnotations(WebExclude::class.java, PacketExclude::class.java).create()
 
     init {
         instance = this

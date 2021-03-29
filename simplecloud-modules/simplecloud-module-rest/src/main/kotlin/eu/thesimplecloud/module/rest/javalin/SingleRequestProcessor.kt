@@ -42,9 +42,9 @@ import java.lang.reflect.InvocationTargetException
  * @author Frederick Baier
  */
 class SingleRequestProcessor(
-        private val ctx: Context,
-        private val requestMethodData: RequestMethodData,
-        private val requestingUser: User?
+    private val ctx: Context,
+    private val requestMethodData: RequestMethodData,
+    private val requestingUser: User?
 ) {
 
     fun processRequest() {
@@ -66,16 +66,19 @@ class SingleRequestProcessor(
         }
 
         //then the result was set by the called method
-        if (this.ctx.resultString() != null)
+        if (this.ctx.resultString() != null) {
             return
+        }
 
         if (result == null) {
             throw NullResultException()
         }
 
-        if (result == Unit)
+        if (result == Unit) {
             return
+        }
 
+        ctx.status(200)
         val resultDto = ResultDto(result)
         ctx.result(JsonLib.fromObject(resultDto, RestServer.instance.webGson).getAsJsonString())
     }
@@ -87,7 +90,7 @@ class SingleRequestProcessor(
 
     private fun handleParameters(): Map<RequestMethodData.RequestParameterData, Any?> {
         val parameterDataToInvokeValue = requestMethodData.parameters
-                .map { it to handleValueForParameter(it) }.toMap()
+            .map { it to handleValueForParameter(it) }.toMap()
 
         if (parameterDataToInvokeValue.any { isValueIncorrect(it.key, it.value) }) {
             throw IncorrectValueException("A value is incorrect")
@@ -118,7 +121,8 @@ class SingleRequestProcessor(
         val annotation = parameterData.annotation!!
         when (annotation) {
             is RequestBody -> {
-                return JsonLib.fromJsonString(this.ctx.body(), RestServer.instance.webGson).getObject(parameterData.parameterType)
+                return JsonLib.fromJsonString(this.ctx.body(), RestServer.instance.webGson)
+                    .getObject(parameterData.parameterType)
             }
             is RequestParam -> {
                 val parameter = this.ctx.req.getParameter(annotation.parameterName) ?: return null
@@ -132,6 +136,6 @@ class SingleRequestProcessor(
         throw IllegalStateException()
     }
 
-    class IncorrectValueException(message: String): Exception(message)
+    class IncorrectValueException(message: String) : Exception(message)
 
 }
