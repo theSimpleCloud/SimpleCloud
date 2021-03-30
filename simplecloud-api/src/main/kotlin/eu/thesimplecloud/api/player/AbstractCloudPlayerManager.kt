@@ -25,19 +25,18 @@ package eu.thesimplecloud.api.player
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.cachelist.AbstractCacheList
-import eu.thesimplecloud.api.cachelist.ICacheObjectUpdater
+import eu.thesimplecloud.api.cachelist.ICacheObjectUpdateExecutor
 import eu.thesimplecloud.api.event.player.*
 import eu.thesimplecloud.api.eventapi.IEvent
-import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import java.util.*
 import kotlin.NoSuchElementException
-import kotlin.collections.HashMap
 
-abstract class AbstractCloudPlayerManager : AbstractCacheList<ICloudPlayer>(spreadUpdates = false), ICloudPlayerManager {
+abstract class AbstractCloudPlayerManager : AbstractCacheList<ICloudPlayerUpdater, ICloudPlayer>(spreadUpdates = false),
+    ICloudPlayerManager {
 
-    private val updater = object : ICacheObjectUpdater<ICloudPlayer> {
+    private val updater = object : ICacheObjectUpdateExecutor<ICloudPlayerUpdater, ICloudPlayer> {
         override fun getIdentificationName(): String {
             return "player-cache"
         }
@@ -46,33 +45,26 @@ abstract class AbstractCloudPlayerManager : AbstractCacheList<ICloudPlayer>(spre
             return getCachedCloudPlayer(value.getName())
         }
 
-        override fun determineEventsToCall(updateValue: ICloudPlayer, cachedValue: ICloudPlayer?): List<IEvent> {
+        override fun determineEventsToCall(updater: ICloudPlayerUpdater, cachedValue: ICloudPlayer?): List<IEvent> {
             val events = ArrayList<IEvent>()
-            val playerToUse = cachedValue ?: updateValue
+            val playerToUse = cachedValue ?: updater.getCloudPlayer()
             events.add(CloudPlayerUpdatedEvent(playerToUse))
             if (cachedValue == null) {
                 events.add(CloudPlayerRegisteredEvent(playerToUse))
                 return events
             }
-
-            if (updateValue.getConnectedServerName() != null && updateValue.getConnectedServerName() != cachedValue.getConnectedServerName()) {
-                val oldServer = cachedValue.getConnectedServer()
-                events.add(CloudPlayerServerConnectEvent(playerToUse, oldServer, updateValue.getConnectedServer()!!))
-            }
-            if (cachedValue.getServerConnectState() == PlayerServerConnectState.CONNECTING && updateValue.getServerConnectState() == PlayerServerConnectState.CONNECTED) {
-                events.add(CloudPlayerServerConnectedEvent(playerToUse, updateValue.getConnectedServer()!!))
+            val connectedServer = updater.getConnectedServer()
+            connectedServer?.let {
+                if (updater.getConnectedServerName() != cachedValue.getConnectedServerName()) {
+                    val oldServer = cachedValue.getConnectedServer()
+                    events.add(CloudPlayerServerConnectEvent(playerToUse, oldServer, connectedServer))
+                }
+                if (cachedValue.getServerConnectState() == PlayerServerConnectState.CONNECTING && updater.getServerConnectState() == PlayerServerConnectState.CONNECTED) {
+                    events.add(CloudPlayerServerConnectedEvent(playerToUse, connectedServer))
+                }
             }
 
             return events
-        }
-
-        override fun mergeUpdateValue(updateValue: ICloudPlayer, cachedValue: ICloudPlayer) {
-            cachedValue as CloudPlayer
-            cachedValue.setConnectedProxyName(updateValue.getConnectedProxyName())
-            cachedValue.setConnectedServerName(updateValue.getConnectedServerName())
-            cachedValue.propertyMap = HashMap(updateValue.getMapWithNewestProperties(cachedValue.propertyMap) as MutableMap<String, Property<*>>)
-            cachedValue.setServerConnectState(updateValue.getServerConnectState())
-            cachedValue.setDisplayName(updateValue.getDisplayName())
         }
 
         override fun addNewValue(value: ICloudPlayer) {
@@ -81,7 +73,7 @@ abstract class AbstractCloudPlayerManager : AbstractCacheList<ICloudPlayer>(spre
 
     }
 
-    override fun getUpdater(): ICacheObjectUpdater<ICloudPlayer> {
+    override fun getUpdateExecutor(): ICacheObjectUpdateExecutor<ICloudPlayerUpdater, ICloudPlayer> {
         return this.updater
     }
 

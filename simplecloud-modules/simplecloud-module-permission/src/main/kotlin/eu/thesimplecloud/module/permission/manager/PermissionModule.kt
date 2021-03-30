@@ -56,6 +56,7 @@ class PermissionModule : ICloudModule {
     }
 
     override fun onEnable() {
+        PermissionFilesPriorityUpdater().updateFilesIfNecessary()
         val config = PermissionModuleConfigLoader().loadConfig()
         val groups = this.permissionGroupConfigsLoader.loadAll()
 

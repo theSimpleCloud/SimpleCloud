@@ -24,17 +24,18 @@ package eu.thesimplecloud.api.servicegroup.impl
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.cachelist.AbstractCacheList
-import eu.thesimplecloud.api.cachelist.ICacheObjectUpdater
+import eu.thesimplecloud.api.cachelist.ICacheObjectUpdateExecutor
 import eu.thesimplecloud.api.event.group.CloudServiceGroupCreatedEvent
 import eu.thesimplecloud.api.event.group.CloudServiceGroupUpdatedEvent
 import eu.thesimplecloud.api.eventapi.IEvent
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroupManager
+import eu.thesimplecloud.api.servicegroup.ICloudServiceGroupUpdater
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
-abstract class AbstractCloudServiceGroupManager : AbstractCacheList<ICloudServiceGroup>(), ICloudServiceGroupManager {
+abstract class AbstractCloudServiceGroupManager : AbstractCacheList<ICloudServiceGroupUpdater, ICloudServiceGroup>(), ICloudServiceGroupManager {
 
-    private val updater = object : ICacheObjectUpdater<ICloudServiceGroup> {
+    private val updater = object : ICacheObjectUpdateExecutor<ICloudServiceGroupUpdater, ICloudServiceGroup> {
         override fun getIdentificationName(): String {
             return "group-cache"
         }
@@ -43,23 +44,9 @@ abstract class AbstractCloudServiceGroupManager : AbstractCacheList<ICloudServic
             return getServiceGroupByName(value.getName())
         }
 
-        override fun determineEventsToCall(updateValue: ICloudServiceGroup, cachedValue: ICloudServiceGroup?): List<IEvent> {
-            if (cachedValue == null) return listOf(CloudServiceGroupCreatedEvent(updateValue))
+        override fun determineEventsToCall(updater: ICloudServiceGroupUpdater, cachedValue: ICloudServiceGroup?): List<IEvent> {
+            if (cachedValue == null) return listOf(CloudServiceGroupCreatedEvent(updater.getServiceGroup()))
             return listOf(CloudServiceGroupUpdatedEvent(cachedValue))
-        }
-
-        override fun mergeUpdateValue(updateValue: ICloudServiceGroup, cachedValue: ICloudServiceGroup) {
-            cachedValue.setMaintenance(updateValue.isInMaintenance())
-            cachedValue.setMaxMemory(updateValue.getMaxMemory())
-            cachedValue.setMaxPlayers(updateValue.getMaxPlayers())
-            cachedValue.setMaximumOnlineServiceCount(updateValue.getMaximumOnlineServiceCount())
-            cachedValue.setMinimumOnlineServiceCount(updateValue.getMinimumOnlineServiceCount())
-            cachedValue.setPercentToStartNewService(updateValue.getPercentToStartNewService())
-            cachedValue.setTemplateName(updateValue.getTemplateName())
-            cachedValue.setPermission(updateValue.getPermission())
-            cachedValue.setServiceVersion(updateValue.getServiceVersion())
-            cachedValue.setStateUpdating(updateValue.isStateUpdatingEnabled())
-            cachedValue.setWrapperName(updateValue.getWrapperName())
         }
 
         override fun addNewValue(value: ICloudServiceGroup) {
@@ -74,7 +61,7 @@ abstract class AbstractCloudServiceGroupManager : AbstractCacheList<ICloudServic
         return super<AbstractCacheList>.delete(value, fromPacket)
     }
 
-    override fun getUpdater(): ICacheObjectUpdater<ICloudServiceGroup> {
+    override fun getUpdateExecutor(): ICacheObjectUpdateExecutor<ICloudServiceGroupUpdater, ICloudServiceGroup> {
         return this.updater
     }
 

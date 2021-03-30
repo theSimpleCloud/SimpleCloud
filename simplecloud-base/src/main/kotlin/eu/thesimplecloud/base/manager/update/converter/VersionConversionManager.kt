@@ -23,7 +23,6 @@
 package eu.thesimplecloud.base.manager.update.converter
 
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
-import eu.thesimplecloud.base.manager.update.converter.converter_1_2_to_1_3.Converter_1_2_to_1_3
 import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.launcher.startup.Launcher
 import java.io.File
@@ -36,22 +35,16 @@ import java.io.File
  */
 class VersionConversionManager {
 
-    private val converters = listOf(Converter_1_2_to_1_3())
+    private val converters = listOf<IVersionConverter>(Converter_2_0_To_2_1())
     private val lastStartedVersionFile = File(DirectoryPaths.paths.storagePath + "versions/lastStartedVersion.json")
-
-    fun convertBeforeModuleLoad() {
-        getConvertersToExecute().forEach { version ->
-            version.convertBeforeModuleLoad()
-        }
-    }
 
     fun convertIfNecessary() {
         val lastStartedVersion = getLastStartedVersion()
         val currentVersion = Launcher.instance.getCurrentVersion()
         getConvertersToExecute().forEach { version ->
-            Launcher.instance.consoleSender.sendProperty("manager.converting", lastStartedVersion, currentVersion)
-            version.convertAfterModuleLoad()
-            Launcher.instance.consoleSender.sendProperty("manager.converted", lastStartedVersion, currentVersion)
+            //Launcher.instance.consoleSender.sendProperty("manager.converting", lastStartedVersion, currentVersion)
+            version.convert()
+            //Launcher.instance.consoleSender.sendProperty("manager.converted", lastStartedVersion, currentVersion)
         }
         writeLastStartedVersion()
     }

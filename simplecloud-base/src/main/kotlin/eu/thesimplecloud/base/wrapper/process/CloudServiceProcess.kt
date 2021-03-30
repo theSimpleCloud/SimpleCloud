@@ -29,6 +29,7 @@ import eu.thesimplecloud.api.listenerextension.cloudListener
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.service.impl.DefaultCloudService
+import eu.thesimplecloud.api.service.version.type.ServiceAPIType
 import eu.thesimplecloud.api.servicegroup.grouptype.ICloudProxyGroup
 import eu.thesimplecloud.api.utils.ManifestLoader
 import eu.thesimplecloud.base.wrapper.process.filehandler.ServiceDirectory
@@ -85,6 +86,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
                 if (!s.equals("", ignoreCase = true) && !s.equals(" ", ignoreCase = true) && !s.equals(">", ignoreCase = true)
                         && !s.equals(" >", ignoreCase = true) && !s.contains("InitialHandler has pinged")) {
                     Wrapper.instance.connectionToManager.sendUnitQuery(PacketOutScreenMessage(NetworkComponentType.SERVICE, getCloudService(), s))
+                        .awaitUninterruptibly()
                     //Launcher.instance.logger.console("[${cloudService.getName()}]$s")
                 }
             } catch (e: IOException) {
@@ -159,7 +161,9 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
         val beginAndEnd = if (CloudAPI.instance.isWindows()) "\"" else ""
         val classPathValue = beginAndEnd + classPathValueList.joinToString(separator) + beginAndEnd
 
-        val jvmArguments = Wrapper.instance.jvmArgumentsConfig.jvmArguments.filter { it.groups.contains("all") || it.groups.contains(this.cloudService.getGroupName()) }
+        val jvmArguments = Wrapper.instance.jvmArgumentsConfig.jvmArguments.filter {
+            it.groups.contains("all") || it.groups.contains(this.cloudService.getGroupName()) || it.groups.contains(this.cloudService.getServiceType().name)
+        }
         val commands = mutableListOf("java")
 
         jvmArguments.forEach { commands.addAll(it.arguments) }
@@ -169,8 +173,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
                 ManifestLoader.getMainClassFromManifestFile(jarFile))
         commands.addAll(startArguments)
 
-        val lowerCaseName = cloudService.getServiceVersion().name.toLowerCase()
-        if (lowerCaseName.contains("spigot") || lowerCaseName.contains("paper")) {
+        if (cloudService.getServiceVersion().serviceAPIType == ServiceAPIType.SPIGOT) {
             commands.add("nogui")
         }
         return commands.toTypedArray()

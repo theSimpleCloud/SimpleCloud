@@ -24,12 +24,13 @@ package eu.thesimplecloud.api.wrapper
 
 
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.cachelist.value.ICacheValue
 import eu.thesimplecloud.api.client.NetworkComponentType
 import eu.thesimplecloud.api.network.component.INetworkComponent
 import eu.thesimplecloud.api.service.ICloudService
 
 
-interface IWrapperInfo : INetworkComponent {
+interface IWrapperInfo : ICacheValue<IWrapperInfoUpdater>, INetworkComponent {
 
     /**
      * Returns the host of this wrapper.
@@ -50,6 +51,12 @@ interface IWrapperInfo : INetworkComponent {
      * Returns the amount of RAM this wrapper has at maximum
      */
     fun getMaxMemory(): Int
+
+    /**
+     * Returns the CPU usage of this wrapper.
+     * The returned value will be between 0 - 1
+     */
+    fun getCpuUsage(): Float
 
     /**
      * Returns the amount of RAM the wrapper has left

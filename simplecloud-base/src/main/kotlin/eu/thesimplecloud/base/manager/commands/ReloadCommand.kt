@@ -25,9 +25,9 @@ package eu.thesimplecloud.base.manager.commands
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.command.ICommandSender
 import eu.thesimplecloud.api.extension.sendPacketToAllAuthenticatedWrapperClients
-import eu.thesimplecloud.api.wrapper.IMutableWrapperInfo
 import eu.thesimplecloud.base.manager.config.JvmArgumentsConfigLoader
 import eu.thesimplecloud.base.manager.network.packets.PacketOutReloadExistingModules
+import eu.thesimplecloud.base.manager.serviceversion.ManagerServiceVersionHandler
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.launcher.console.command.CommandType
 import eu.thesimplecloud.launcher.console.command.ICommandHandler
@@ -46,7 +46,8 @@ class ReloadCommand : ICommandHandler {
         Manager.instance.appClassLoader.clearCachedClasses()
 
         val loadedWrappers = Manager.instance.wrapperFileHandler.loadAll().toMutableList()
-        val unknownWrappers = loadedWrappers.filter { CloudAPI.instance.getWrapperManager().getWrapperByHost(it.getHost()) == null }
+        val unknownWrappers =
+            loadedWrappers.filter { CloudAPI.instance.getWrapperManager().getWrapperByHost(it.getHost()) == null }
         if (unknownWrappers.isNotEmpty()) {
             unknownWrappers.forEach {
                 commandSender.sendProperty("manager.command.reload.wrapper-changed", it.getName())
@@ -54,12 +55,16 @@ class ReloadCommand : ICommandHandler {
         }
         loadedWrappers.toMutableList().removeAll(unknownWrappers)
         loadedWrappers.forEach {
-            val cachedWrapper = CloudAPI.instance.getWrapperManager().getWrapperByHost(it.getHost()) as IMutableWrapperInfo
-            cachedWrapper.setMaxSimultaneouslyStartingServices(it.getMaxSimultaneouslyStartingServices())
-            cachedWrapper.setMaxMemory(it.getMaxMemory())
-            CloudAPI.instance.getWrapperManager().update(cachedWrapper)
+            val cachedWrapper = CloudAPI.instance.getWrapperManager().getWrapperByHost(it.getHost())!!
+            val wrapperUpdater = cachedWrapper.getUpdater()
+            wrapperUpdater.setMaxSimultaneouslyStartingServices(it.getMaxSimultaneouslyStartingServices())
+            wrapperUpdater.setMaxMemory(it.getMaxMemory())
+            wrapperUpdater.update()
         }
         loadedWrappers.forEach { commandSender.sendProperty("manager.command.reload.wrapper-success", it.getName()) }
+
+        //service versions
+        (CloudAPI.instance.getServiceVersionHandler() as ManagerServiceVersionHandler).reloadServiceVersions()
 
         //jvm-arguments
         val jvmArgumentsConfigLoader = JvmArgumentsConfigLoader()
@@ -67,7 +72,9 @@ class ReloadCommand : ICommandHandler {
 
         //groups
         val loadedGroups = Manager.instance.cloudServiceGroupFileHandler.loadAll().toMutableList()
-        val unknownGroups = loadedGroups.filter { CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(it.getName()) == null }
+        val unknownGroups = loadedGroups.filter {
+            CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(it.getName()) == null
+        }
         if (unknownGroups.isNotEmpty()) {
             unknownGroups.forEach {
                 commandSender.sendProperty("manager.command.reload.group-changed", it.getName())
@@ -78,7 +85,8 @@ class ReloadCommand : ICommandHandler {
         loadedGroups.forEach { commandSender.sendProperty("manager.command.reload.group-success", it.getName()) }
 
         //send all wrappers a packet to reload the modules list
-        Manager.instance.communicationServer.getClientManager().sendPacketToAllAuthenticatedWrapperClients(PacketOutReloadExistingModules())
+        Manager.instance.communicationServer.getClientManager()
+            .sendPacketToAllAuthenticatedWrapperClients(PacketOutReloadExistingModules())
 
         //enable
         Manager.instance.appClassLoader.clearCachedClasses()

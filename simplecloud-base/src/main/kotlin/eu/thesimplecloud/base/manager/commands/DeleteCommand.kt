@@ -23,6 +23,7 @@
 package eu.thesimplecloud.base.manager.commands
 
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.base.manager.serviceversion.ManagerServiceVersionHandler
 import eu.thesimplecloud.launcher.console.command.CommandType
 import eu.thesimplecloud.launcher.console.command.ICommandHandler
 import eu.thesimplecloud.launcher.console.command.annotations.Command
@@ -41,16 +42,20 @@ class DeleteCommand : ICommandHandler {
             Launcher.instance.consoleSender.sendProperty("manager.command.delete.template.not-exist", name)
             return
         }
-        if (CloudAPI.instance.getCloudServiceGroupManager().getAllCachedObjects().any { it.getTemplateName().equals(name, true) }) {
+        if (CloudAPI.instance.getCloudServiceGroupManager().getAllCachedObjects()
+                .any { it.getTemplateName().equals(name, true) }
+        ) {
             Launcher.instance.consoleSender.sendProperty("manager.command.delete.template.in-use.group", name)
             return
         }
-        if (CloudAPI.instance.getCloudServiceManager().getAllCachedObjects().any { it.getTemplateName().equals(name, true) }) {
-            Launcher.instance.consoleSender.sendProperty("manager.command.delete.template.in-use.service",name)
+        if (CloudAPI.instance.getCloudServiceManager().getAllCachedObjects()
+                .any { it.getTemplateName().equals(name, true) }
+        ) {
+            Launcher.instance.consoleSender.sendProperty("manager.command.delete.template.in-use.service", name)
             return
         }
         templateManager.deleteTemplate(name)
-        Launcher.instance.consoleSender.sendProperty("manager.command.delete.template.success",name)
+        Launcher.instance.consoleSender.sendProperty("manager.command.delete.template.success", name)
     }
 
     @CommandSubPath("group <name>", "Deletes a group")
@@ -65,7 +70,7 @@ class DeleteCommand : ICommandHandler {
             Launcher.instance.consoleSender.sendProperty("manager.command.delete.group.services-running", name)
             return
         }
-        Launcher.instance.consoleSender.sendProperty("manager.command.delete.group.success",name)
+        Launcher.instance.consoleSender.sendProperty("manager.command.delete.group.success", name)
     }
 
 
@@ -73,22 +78,38 @@ class DeleteCommand : ICommandHandler {
     fun deleteWrapper(@CommandArgument("wrapper") name: String) {
         val wrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(name)
         if (wrapper == null) {
-            Launcher.instance.consoleSender.sendProperty("manager.command.delete.wrapper.not-exist",name)
+            Launcher.instance.consoleSender.sendProperty("manager.command.delete.wrapper.not-exist", name)
             return
         }
         if (wrapper.getServicesRunningOnThisWrapper().isNotEmpty()) {
             Launcher.instance.consoleSender.sendProperty("manager.command.delete.wrapper.services-running", name)
             return
         }
-        if (CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupsByWrapperName(wrapper.getName()).isNotEmpty()) {
+        if (CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupsByWrapperName(wrapper.getName())
+                .isNotEmpty()
+        ) {
             Launcher.instance.consoleSender.sendProperty("manager.command.delete.wrapper.group-must-start", name)
             return
         }
 
         CloudAPI.instance.getWrapperManager().delete(wrapper)
-        Launcher.instance.consoleSender.sendProperty("manager.command.delete.group.success", name)
+        Launcher.instance.consoleSender.sendProperty("manager.command.delete.wrapper.success", name)
     }
 
+    @CommandSubPath("serviceVersion <name>", "Delete a Service Version")
+    fun createServiceVersion(@CommandArgument("name") name: String) {
+        val serviceVersionHandler = CloudAPI.instance.getServiceVersionHandler() as ManagerServiceVersionHandler
+        if (!serviceVersionHandler.doesVersionExist(name)) {
+            Launcher.instance.consoleSender.sendProperty("manager.command.delete.service-version.not-exist")
+            return
+        }
+        if (serviceVersionHandler.isVersionInUse(name)) {
+            Launcher.instance.consoleSender.sendProperty("manager.command.delete.service-version.still-in-use")
+            return
+        }
+        serviceVersionHandler.deleteServiceVersion(name)
+        Launcher.instance.consoleSender.sendProperty("manager.command.delete.service-version.deleted", name)
+    }
 
 
 }

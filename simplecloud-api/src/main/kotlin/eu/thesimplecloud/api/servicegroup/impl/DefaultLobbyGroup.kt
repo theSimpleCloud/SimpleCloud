@@ -23,46 +23,69 @@
 package eu.thesimplecloud.api.servicegroup.impl
 
 import eu.thesimplecloud.api.service.version.ServiceVersion
+import eu.thesimplecloud.api.servicegroup.ICloudServiceGroupUpdater
 import eu.thesimplecloud.api.servicegroup.grouptype.ICloudLobbyGroup
+import eu.thesimplecloud.api.servicegroup.grouptype.updater.ICloudLobbyGroupUpdater
+import eu.thesimplecloud.api.servicegroup.impl.updater.DefaultLobbyGroupUpdater
+import eu.thesimplecloud.clientserverapi.lib.json.PacketExclude
 import eu.thesimplecloud.jsonlib.JsonLib
+import eu.thesimplecloud.jsonlib.JsonLibExclude
 
 class DefaultLobbyGroup(
-        name: String,
-        templateName: String,
-        maxMemory: Int,
-        maxPlayers: Int,
-        minimumOnlineServiceCount: Int,
-        maximumOnlineServiceCount: Int,
-        maintenance: Boolean,
-        static: Boolean,
-        percentToStartNewService: Int,
-        wrapperName: String?,
-        private var priority: Int,
-        permission: String?,
-        serviceVersion: ServiceVersion,
-        startPriority: Int,
-        hiddenAtProxyGroups: List<String> = emptyList()
+    name: String,
+    templateName: String,
+    maxMemory: Int,
+    maxPlayers: Int,
+    minimumOnlineServiceCount: Int,
+    maximumOnlineServiceCount: Int,
+    maintenance: Boolean,
+    static: Boolean,
+    percentToStartNewService: Int,
+    wrapperName: String?,
+    @Volatile private var priority: Int,
+    permission: String?,
+    serviceVersion: ServiceVersion,
+    startPriority: Int,
+    hiddenAtProxyGroups: List<String> = emptyList()
 ) : DefaultServerGroup(
-        name,
-        templateName,
-        maxMemory,
-        maxPlayers,
-        minimumOnlineServiceCount,
-        maximumOnlineServiceCount,
-        maintenance,
-        static,
-        percentToStartNewService,
-        wrapperName,
-        serviceVersion,
-        startPriority,
-        permission,
-        hiddenAtProxyGroups
+    name,
+    templateName,
+    maxMemory,
+    maxPlayers,
+    minimumOnlineServiceCount,
+    maximumOnlineServiceCount,
+    maintenance,
+    static,
+    percentToStartNewService,
+    wrapperName,
+    serviceVersion,
+    startPriority,
+    permission,
+    hiddenAtProxyGroups
 ), ICloudLobbyGroup {
+
+    @Volatile
+    @JsonLibExclude
+    @PacketExclude
+    private var updater: DefaultLobbyGroupUpdater? = DefaultLobbyGroupUpdater(this)
 
     override fun getPriority(): Int = this.priority
 
     override fun setPriority(priority: Int) {
-        this.priority = priority
+        getUpdater().setPriority(priority)
+    }
+
+    override fun getUpdater(): ICloudLobbyGroupUpdater {
+        if (this.updater == null) {
+            this.updater = DefaultLobbyGroupUpdater(this)
+        }
+        return this.updater!!
+    }
+
+    override fun applyValuesFromUpdater(updater: ICloudServiceGroupUpdater) {
+        super.applyValuesFromUpdater(updater)
+        updater as ICloudLobbyGroupUpdater
+        this.priority = updater.getPriority()
     }
 
     override fun toString(): String {

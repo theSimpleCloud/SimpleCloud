@@ -45,6 +45,7 @@ class Property<T : Any>(
 
     @DatabaseExclude
     @JsonLibExclude
+    @Volatile
     var lastUpdateTimeStamp = 0L
         private set
 

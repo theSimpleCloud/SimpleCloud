@@ -22,12 +22,13 @@
 
 package eu.thesimplecloud.api.player
 
+import com.google.common.collect.Maps
 import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
 import eu.thesimplecloud.api.player.connection.IPlayerConnection
 import eu.thesimplecloud.api.property.IProperty
 import eu.thesimplecloud.api.property.Property
 import java.util.*
-import kotlin.collections.HashMap
+import java.util.concurrent.ConcurrentMap
 
 open class OfflineCloudPlayer(
         name: String,
@@ -36,7 +37,7 @@ open class OfflineCloudPlayer(
         private val lastLogin: Long,
         private val onlineTime: Long,
         protected val lastPlayerConnection: DefaultPlayerConnection,
-        var propertyMap: MutableMap<String, Property<*>> = HashMap()
+        @Volatile var propertyMap: ConcurrentMap<String, Property<*>> = Maps.newConcurrentMap()
 ): SimpleCloudPlayer(name, uniqueId), IOfflineCloudPlayer {
 
     @Volatile

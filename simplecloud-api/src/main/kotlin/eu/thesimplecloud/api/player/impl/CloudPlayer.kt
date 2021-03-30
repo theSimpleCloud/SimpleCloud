@@ -20,8 +20,9 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.api.player
+package eu.thesimplecloud.api.player.impl
 
+import eu.thesimplecloud.api.player.*
 import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
 import eu.thesimplecloud.api.player.connection.IPlayerConnection
 import eu.thesimplecloud.api.player.text.CloudText
@@ -31,6 +32,7 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.jsonlib.JsonLibExclude
 import java.util.*
+import java.util.concurrent.ConcurrentMap
 
 class CloudPlayer(
         name: String,
@@ -38,10 +40,10 @@ class CloudPlayer(
         firstLogin: Long,
         lastLogin: Long,
         onlineTime: Long,
-        private var connectedProxyName: String,
-        private var connectedServerName: String?,
+        @Volatile private var connectedProxyName: String,
+        @Volatile private var connectedServerName: String?,
         playerConnection: DefaultPlayerConnection,
-        propertyMap: MutableMap<String, Property<*>>
+        propertyMap: ConcurrentMap<String, Property<*>>
 ) : OfflineCloudPlayer(
         name,
         uniqueId,
@@ -51,6 +53,11 @@ class CloudPlayer(
         playerConnection,
         propertyMap
 ), ICloudPlayer {
+
+    @Volatile
+    @JsonLibExclude
+    @PacketExclude
+    private var playerUpdater: CloudPlayerUpdater? = CloudPlayerUpdater(this)
 
     @Volatile
     private var connectState: PlayerServerConnectState = PlayerServerConnectState.CONNECTING
@@ -72,10 +79,6 @@ class CloudPlayer(
         return this.connectState
     }
 
-    fun setServerConnectState(connectState: PlayerServerConnectState) {
-        this.connectState = connectState
-    }
-
     @Synchronized
     override fun sendMessage(cloudText: CloudText): ICommunicationPromise<Unit> {
         if (playerMessageQueue == null) playerMessageQueue = PlayerMessageQueue(this)
@@ -87,18 +90,6 @@ class CloudPlayer(
     override fun getConnectedServerName(): String? = this.connectedServerName
 
     override fun isOnline(): Boolean = this.online
-
-    override fun clone(): ICloudPlayer = CloudPlayer(
-            getName(),
-            getUniqueId(),
-            getFirstLogin(),
-            getLastLogin(),
-            getOnlineTime(),
-            connectedProxyName,
-            connectedServerName,
-            this.lastPlayerConnection,
-            propertyMap
-    )
 
     override fun enableUpdates() {
         super.enableUpdates()
@@ -114,17 +105,25 @@ class CloudPlayer(
         return this.updatesEnabled
     }
 
+    override fun getUpdater(): ICloudPlayerUpdater {
+        if (this.playerUpdater == null) {
+            this.playerUpdater = CloudPlayerUpdater(this)
+        }
+        return this.playerUpdater!!
+    }
+
+    override fun applyValuesFromUpdater(updater: ICloudPlayerUpdater) {
+        super.setDisplayName(updater.getDisplayName())
+        updater as CloudPlayerUpdater
+        this.connectedServerName = updater.getConnectedServerName()
+        this.connectedProxyName = updater.getConnectedProxyName()
+        this.connectState = updater.getServerConnectState()
+        this.propertyMap = getMapWithNewestProperties(updater.getCloudPlayer().getProperties())as ConcurrentMap<String, Property<*>>
+    }
+
     @Synchronized
     fun setOffline() {
         this.online = false
-    }
-
-    fun setConnectedProxyName(name: String) {
-        this.connectedProxyName = name
-    }
-
-    fun setConnectedServerName(name: String?) {
-        this.connectedServerName = name
     }
 
 

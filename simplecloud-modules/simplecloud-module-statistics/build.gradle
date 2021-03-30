@@ -28,7 +28,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-    implementation 'org.litote.kmongo:kmongo:3.11.2'
+    implementation group: 'org.litote.kmongo', name: 'kmongo', version: dependencyKMongoVersion
     compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.7.1'
 
 

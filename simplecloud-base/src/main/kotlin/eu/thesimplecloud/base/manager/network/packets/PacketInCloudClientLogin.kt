@@ -45,6 +45,8 @@ class PacketInCloudClientLogin() : JsonPacket() {
         CloudAPI.instance.getCloudServiceManager().sendAllCachedObjectsToConnection(connection).awaitCoroutine()
         CloudAPI.instance.getTemplateManager().sendAllCachedObjectsToConnection(connection).awaitCoroutine()
         CloudAPI.instance.getCloudServiceGroupManager().sendAllCachedObjectsToConnection(connection).awaitCoroutine()
+        connection.sendUnitQuery(PacketIOServiceVersions(CloudAPI.instance.getServiceVersionHandler().getAllVersions()))
+            .awaitCoroutine()
         when (cloudClientType) {
             NetworkComponentType.SERVICE -> {
                 val name = this.jsonLib.getString("name") ?: return contentException("name")
@@ -52,8 +54,6 @@ class PacketInCloudClientLogin() : JsonPacket() {
                         ?: return failure(NoSuchElementException("Service not found"))
                 connection.setClientValue(cloudService)
                 connection.sendUnitQuery(PacketIOLanguage(CloudAPI.instance.getLanguageManager().getAllProperties()))
-                connection.sendUnitQuery(PacketIOServiceVersions(CloudAPI.instance.getServiceVersionHandler().getAllVersions()))
-                        .awaitCoroutine()
                 cloudService.setAuthenticated(true)
                 CloudAPI.instance.getCloudServiceManager().update(cloudService)
                 CloudAPI.instance.getCloudServiceManager().sendUpdateToConnection(cloudService, connection).awaitCoroutine()

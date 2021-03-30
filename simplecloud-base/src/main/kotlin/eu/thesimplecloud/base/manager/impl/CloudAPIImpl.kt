@@ -31,14 +31,13 @@ import eu.thesimplecloud.api.player.ICloudPlayerManager
 import eu.thesimplecloud.api.screen.ICommandExecuteManager
 import eu.thesimplecloud.api.service.ICloudServiceManager
 import eu.thesimplecloud.api.service.version.IServiceVersionHandler
-import eu.thesimplecloud.api.service.version.ServiceVersionHandler
-import eu.thesimplecloud.api.service.version.ServiceVersionWebLoader
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroupManager
 import eu.thesimplecloud.api.sync.list.manager.ISynchronizedObjectListManager
 import eu.thesimplecloud.api.sync.list.manager.SynchronizedObjectListManager
 import eu.thesimplecloud.api.template.ITemplateManager
 import eu.thesimplecloud.api.wrapper.IWrapperManager
 import eu.thesimplecloud.base.manager.language.LanguageManagerImpl
+import eu.thesimplecloud.base.manager.serviceversion.ManagerServiceVersionHandler
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.clientserverapi.lib.bootstrap.ICommunicationBootstrap
 
@@ -52,7 +51,7 @@ class CloudAPIImpl : CloudAPI() {
     private val wrapperManager = WrapperManagerImpl()
     private val eventManager = EventManagerImpl()
     private val synchronizedObjectListManager = SynchronizedObjectListManager()
-    private val serviceVersionHandler = ServiceVersionHandler(ServiceVersionWebLoader.loadVersions())
+    private val serviceVersionHandler = ManagerServiceVersionHandler()
     private val languageManager = LanguageManagerImpl()
 
     init {

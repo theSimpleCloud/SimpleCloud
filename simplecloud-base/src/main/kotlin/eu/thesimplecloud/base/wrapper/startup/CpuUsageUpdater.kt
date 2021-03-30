@@ -20,32 +20,44 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.base.manager.update.converter.converter_1_2_to_1_3
+package eu.thesimplecloud.base.wrapper.startup
 
-import eu.thesimplecloud.base.manager.update.converter.IVersionConverter
+import com.sun.management.OperatingSystemMXBean
+import eu.thesimplecloud.launcher.startup.Launcher
+import java.lang.management.ManagementFactory
+import java.util.concurrent.ScheduledFuture
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by IntelliJ IDEA.
- * Date: 18.06.2020
- * Time: 12:46
+ * Date: 29.12.2020
+ * Time: 11:07
  * @author Frederick Baier
  */
-class Converter_1_2_to_1_3 : IVersionConverter {
+class CpuUsageUpdater {
 
-    override fun getTargetMinorVersion(): Int {
-        return 3
+    private var scheduleFuture: ScheduledFuture<*>? = null
+
+    fun startUpdater() {
+        this.scheduleFuture = Launcher.instance.scheduler.scheduleAtFixedRate({
+            if (Wrapper.instance.isWrapperNameSet()) {
+                val thisWrapper = Wrapper.instance.getThisWrapper()
+                val wrapperUpdater = thisWrapper.getUpdater()
+                val currentUsage = getCurrentCPUUsage()
+                if (thisWrapper.getCpuUsage() != currentUsage) {
+                    wrapperUpdater.setCpuUsage(currentUsage)
+                    Wrapper.instance.updateWrapperData()
+                }
+            }
+        }, 2, 2, TimeUnit.SECONDS)
     }
 
-    override fun convertBeforeModuleLoad() {
-        PermissionFileConverter().convert()
+    private fun getCurrentCPUUsage(): Float {
+        val osBean: OperatingSystemMXBean = ManagementFactory.getPlatformMXBean(
+            OperatingSystemMXBean::class.java
+        )
+        return osBean.systemCpuLoad.toFloat()
     }
 
-    override fun convertAfterModuleLoad() {
-        convertMongoDBPlayers()
-    }
-
-    private fun convertMongoDBPlayers() {
-        MongoDBConverter().convert()
-    }
 
 }

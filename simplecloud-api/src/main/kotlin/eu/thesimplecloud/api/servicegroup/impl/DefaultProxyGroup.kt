@@ -23,8 +23,13 @@
 package eu.thesimplecloud.api.servicegroup.impl
 
 import eu.thesimplecloud.api.service.version.ServiceVersion
+import eu.thesimplecloud.api.servicegroup.ICloudServiceGroupUpdater
 import eu.thesimplecloud.api.servicegroup.grouptype.ICloudProxyGroup
+import eu.thesimplecloud.api.servicegroup.grouptype.updater.ICloudProxyGroupUpdater
+import eu.thesimplecloud.api.servicegroup.impl.updater.DefaultProxyGroupUpdater
+import eu.thesimplecloud.clientserverapi.lib.json.PacketExclude
 import eu.thesimplecloud.jsonlib.JsonLib
+import eu.thesimplecloud.jsonlib.JsonLibExclude
 
 class DefaultProxyGroup(
         name: String,
@@ -37,7 +42,7 @@ class DefaultProxyGroup(
         static: Boolean,
         percentToStartNewService: Int,
         wrapperName: String?,
-        private var startPort: Int,
+        @Volatile private var startPort: Int,
         serviceVersion: ServiceVersion,
         startPriority: Int,
         permission: String?
@@ -57,10 +62,28 @@ class DefaultProxyGroup(
         permission
 ), ICloudProxyGroup {
 
+    @Volatile
+    @JsonLibExclude
+    @PacketExclude
+    private var updater: DefaultProxyGroupUpdater? = DefaultProxyGroupUpdater(this)
+
     override fun getStartPort(): Int = this.startPort
 
     override fun setStartPort(port: Int) {
-        this.startPort = port
+        getUpdater().setStartPort(port)
+    }
+
+    override fun getUpdater(): ICloudProxyGroupUpdater {
+        if (this.updater == null) {
+            this.updater = DefaultProxyGroupUpdater(this)
+        }
+        return this.updater!!
+    }
+
+    override fun applyValuesFromUpdater(updater: ICloudServiceGroupUpdater) {
+        super.applyValuesFromUpdater(updater)
+        updater as ICloudProxyGroupUpdater
+        this.startPort = updater.getStartPort()
     }
 
     override fun toString(): String {

@@ -25,7 +25,10 @@ package eu.thesimplecloud.module.permission.group
 import eu.thesimplecloud.module.permission.PermissionPool
 import eu.thesimplecloud.module.permission.entity.PermissionEntity
 
-class PermissionGroup(private val name: String) : PermissionEntity(), IPermissionGroup {
+class PermissionGroup(
+    private val name: String,
+    private val priority: Int
+) : PermissionEntity(), IPermissionGroup {
 
     private val inheritedPermissionGroups = ArrayList<String>()
 
@@ -46,9 +49,10 @@ class PermissionGroup(private val name: String) : PermissionEntity(), IPermissio
 
     override fun getAllInheritedPermissionGroupNames(): List<String> = this.inheritedPermissionGroups
 
-    /**
-     * Updates this group
-     */
+    override fun getPriority(): Int {
+        return this.priority
+    }
+
     override fun update() {
         PermissionPool.instance.getPermissionGroupManager().update(this)
     }

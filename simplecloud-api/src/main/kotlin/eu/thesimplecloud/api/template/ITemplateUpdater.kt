@@ -20,32 +20,18 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.base.manager.update.converter.converter_1_2_to_1_3
+package eu.thesimplecloud.api.template
 
-import eu.thesimplecloud.jsonlib.JsonLib
-import java.io.File
+import eu.thesimplecloud.api.cachelist.value.ICacheValueUpdater
 
 /**
  * Created by IntelliJ IDEA.
- * Date: 22.06.2020
- * Time: 19:04
+ * Date: 23.01.2021
+ * Time: 21:28
  * @author Frederick Baier
  */
-class PermissionFileConverter {
+interface ITemplateUpdater : ICacheValueUpdater, ITemplateVariables {
 
-    fun convert() {
-        val file = File("modules/permissions/groups.json")
-        if (!file.exists()) return
-        val jsonLib = JsonLib.fromJsonFile(file)!!
-        val permissionGroupName = jsonLib.getString("defaultPermissionGroupName")!!
-        val groups = jsonLib.getAsJsonArray("values")!!
-        val allGroups = groups.map {
-            val oneGroupObjElement = JsonLib.fromJsonElement(it)
-            oneGroupObjElement.getProperty("obj")!!
-        }
-        JsonLib.empty().append("defaultPermissionGroupName", permissionGroupName)
-                .append("groups", allGroups)
-                .saveAsFile(file)
-    }
+    fun getTemplate(): ITemplate
 
 }

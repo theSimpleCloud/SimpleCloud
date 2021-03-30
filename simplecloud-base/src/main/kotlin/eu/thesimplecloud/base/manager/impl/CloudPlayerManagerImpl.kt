@@ -58,7 +58,7 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
 
         val proxyClient = value.getConnectedProxy()?.let { Manager.instance.communicationServer.getClientManager().getClientByClientValue(it) }
         val serverClient = value.getConnectedServer()?.let { Manager.instance.communicationServer.getClientManager().getClientByClientValue(it) }
-        val playerUpdatePacket = PacketIOUpdateCacheObject(getUpdater().getIdentificationName(), value, PacketIOUpdateCacheObject.Action.UPDATE)
+        val playerUpdatePacket = PacketIOUpdateCacheObject(getUpdateExecutor().getIdentificationName(), value, PacketIOUpdateCacheObject.Action.UPDATE)
 
         if (proxyClient?.isOpen() == true)
             proxyClient.sendUnitQuery(playerUpdatePacket)
@@ -75,7 +75,7 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
 
         val proxyClient = value.getConnectedProxy()?.let { Manager.instance.communicationServer.getClientManager().getClientByClientValue(it) }
         val serverClient = value.getConnectedServer()?.let { Manager.instance.communicationServer.getClientManager().getClientByClientValue(it) }
-        val playerRemovePacket = PacketIOUpdateCacheObject(getUpdater().getIdentificationName(), value, PacketIOUpdateCacheObject.Action.DELETE)
+        val playerRemovePacket = PacketIOUpdateCacheObject(getUpdateExecutor().getIdentificationName(), value, PacketIOUpdateCacheObject.Action.DELETE)
         proxyClient?.sendUnitQuery(playerRemovePacket)
         serverClient?.sendUnitQuery(playerRemovePacket)
 

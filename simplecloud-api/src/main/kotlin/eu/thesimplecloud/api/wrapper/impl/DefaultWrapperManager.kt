@@ -24,38 +24,25 @@ package eu.thesimplecloud.api.wrapper.impl
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.cachelist.AbstractCacheList
-import eu.thesimplecloud.api.cachelist.ICacheObjectUpdater
+import eu.thesimplecloud.api.cachelist.ICacheObjectUpdateExecutor
 import eu.thesimplecloud.api.event.wrapper.WrapperUpdatedEvent
 import eu.thesimplecloud.api.eventapi.IEvent
-import eu.thesimplecloud.api.wrapper.IMutableWrapperInfo
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
+import eu.thesimplecloud.api.wrapper.IWrapperInfoUpdater
 import eu.thesimplecloud.api.wrapper.IWrapperManager
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
-open class DefaultWrapperManager : AbstractCacheList<IWrapperInfo>(), IWrapperManager {
+open class DefaultWrapperManager : AbstractCacheList<IWrapperInfoUpdater, IWrapperInfo>(), IWrapperManager {
 
-    private val updateLifecycle = object : ICacheObjectUpdater<IWrapperInfo> {
+    private val updateLifecycle = object : ICacheObjectUpdateExecutor<IWrapperInfoUpdater, IWrapperInfo> {
 
         override fun getCachedObjectByUpdateValue(value: IWrapperInfo): IWrapperInfo? {
             return getWrapperByName(value.getName())
         }
 
-        override fun determineEventsToCall(updateValue: IWrapperInfo, cachedValue: IWrapperInfo?): List<IEvent> {
-            val wrapperToUse = cachedValue ?: updateValue
+        override fun determineEventsToCall(updater: IWrapperInfoUpdater, cachedValue: IWrapperInfo?): List<IEvent> {
+            val wrapperToUse = cachedValue ?: updater.getWrapperInfo()
             return listOf(WrapperUpdatedEvent(wrapperToUse))
-        }
-
-        override fun mergeUpdateValue(updateValue: IWrapperInfo, cachedValue: IWrapperInfo) {
-            cachedValue as IMutableWrapperInfo
-
-            cachedValue.setMaxMemory(updateValue.getMaxMemory())
-            cachedValue.setUsedMemory(updateValue.getUsedMemory())
-
-            cachedValue.setCurrentlyStartingServices(updateValue.getCurrentlyStartingServices())
-            cachedValue.setMaxSimultaneouslyStartingServices(updateValue.getMaxSimultaneouslyStartingServices())
-
-            cachedValue.setTemplatesReceived(updateValue.hasTemplatesReceived())
-            cachedValue.setAuthenticated(updateValue.isAuthenticated())
         }
 
         override fun addNewValue(value: IWrapperInfo) {
@@ -68,7 +55,7 @@ open class DefaultWrapperManager : AbstractCacheList<IWrapperInfo>(), IWrapperMa
 
     }
 
-    override fun getUpdater(): ICacheObjectUpdater<IWrapperInfo> {
+    override fun getUpdateExecutor(): ICacheObjectUpdateExecutor<IWrapperInfoUpdater, IWrapperInfo> {
         return this.updateLifecycle
     }
 

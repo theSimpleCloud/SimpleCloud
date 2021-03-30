@@ -23,41 +23,57 @@
 package eu.thesimplecloud.api.servicegroup.impl
 
 import eu.thesimplecloud.api.service.version.ServiceVersion
+import eu.thesimplecloud.api.servicegroup.ICloudServiceGroupUpdater
 import eu.thesimplecloud.api.servicegroup.grouptype.ICloudServerGroup
+import eu.thesimplecloud.api.servicegroup.impl.updater.DefaultServiceGroupUpdater
+import eu.thesimplecloud.clientserverapi.lib.json.PacketExclude
 import eu.thesimplecloud.jsonlib.JsonLib
+import eu.thesimplecloud.jsonlib.JsonLibExclude
 
 open class DefaultServerGroup(
-        name: String,
-        templateName: String,
-        maxMemory: Int,
-        maxPlayers: Int,
-        minimumOnlineServiceCount: Int,
-        maximumOnlineServiceCount: Int,
-        maintenance: Boolean,
-        static: Boolean,
-        percentToStartNewService: Int,
-        wrapperName: String?,
-        serviceVersion: ServiceVersion,
-        startPriority: Int,
-        permission: String?,
-        private val hiddenAtProxyGroups: List<String> = emptyList()
+    name: String,
+    templateName: String,
+    maxMemory: Int,
+    maxPlayers: Int,
+    minimumOnlineServiceCount: Int,
+    maximumOnlineServiceCount: Int,
+    maintenance: Boolean,
+    static: Boolean,
+    percentToStartNewService: Int,
+    wrapperName: String?,
+    serviceVersion: ServiceVersion,
+    startPriority: Int,
+    permission: String?,
+    private val hiddenAtProxyGroups: List<String> = emptyList()
 ) : AbstractServiceGroup(
-        name,
-        templateName,
-        maxMemory,
-        maxPlayers,
-        minimumOnlineServiceCount,
-        maximumOnlineServiceCount,
-        maintenance,
-        static,
-        percentToStartNewService,
-        wrapperName,
-        serviceVersion,
-        startPriority,
-        permission
+    name,
+    templateName,
+    maxMemory,
+    maxPlayers,
+    minimumOnlineServiceCount,
+    maximumOnlineServiceCount,
+    maintenance,
+    static,
+    percentToStartNewService,
+    wrapperName,
+    serviceVersion,
+    startPriority,
+    permission
 ), ICloudServerGroup {
 
+    @Volatile
+    @JsonLibExclude
+    @PacketExclude
+    private var updater: DefaultServiceGroupUpdater? = null
+
     override fun getHiddenAtProxyGroups(): List<String> = this.hiddenAtProxyGroups
+
+    override fun getUpdater(): ICloudServiceGroupUpdater {
+        if (this.updater == null) {
+            this.updater = DefaultServiceGroupUpdater(this)
+        }
+        return this.updater!!
+    }
 
     override fun toString(): String {
         return JsonLib.fromObject(this).getAsJsonString()

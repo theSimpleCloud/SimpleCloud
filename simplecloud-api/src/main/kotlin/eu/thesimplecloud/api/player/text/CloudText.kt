@@ -28,25 +28,25 @@ class CloudText(val text: String) {
     /**
      * The text shall be shown when hovering over the [text]
      */
-    var hover: String? = null
+    @Volatile var hover: String? = null
         private set
 
     /**
      * The action content to perform when the text is clicked.
      */
-    var click: String? = null
+    @Volatile var click: String? = null
         private set
 
     /**
      * The action that will be performed when the text is clicked.
      */
-    var clickEventType: ClickEventType? = null
+    @Volatile var clickEventType: ClickEventType? = null
         private set
 
     /**
      * The [CloudText] to append to this text.
      */
-    var appendedCloudText: CloudText? = null
+    @Volatile var appendedCloudText: CloudText? = null
         private set
 
     fun addHover(hover: String): CloudText {

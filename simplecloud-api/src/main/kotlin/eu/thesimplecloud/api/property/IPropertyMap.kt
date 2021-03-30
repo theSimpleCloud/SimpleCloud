@@ -22,6 +22,9 @@
 
 package eu.thesimplecloud.api.property
 
+import com.google.common.collect.Maps
+import java.util.concurrent.ConcurrentMap
+
 interface IPropertyMap {
 
     /**
@@ -68,10 +71,10 @@ interface IPropertyMap {
         }
     }
 
-    fun getMapWithNewestProperties(compareMap: Map<String, IProperty<*>>): HashMap<String, IProperty<*>> {
+    fun getMapWithNewestProperties(compareMap: Map<String, IProperty<*>>): ConcurrentMap<String, IProperty<*>> {
         val ownMap = getProperties()
-        val allKeys = ownMap.keys.union(ownMap.keys)
-        val map = HashMap<String, IProperty<*>>()
+        val allKeys = ownMap.keys.union(compareMap.keys)
+        val map = Maps.newConcurrentMap<String, IProperty<*>>()
         for (key in allKeys) {
             val valueOne = ownMap[key] as Property<*>?
             val valueTwo = compareMap[key] as Property<*>?

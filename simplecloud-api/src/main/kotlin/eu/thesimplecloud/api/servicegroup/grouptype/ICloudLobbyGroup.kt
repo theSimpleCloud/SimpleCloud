@@ -23,6 +23,7 @@
 package eu.thesimplecloud.api.servicegroup.grouptype
 
 import eu.thesimplecloud.api.service.ServiceType
+import eu.thesimplecloud.api.servicegroup.grouptype.updater.ICloudLobbyGroupUpdater
 
 interface ICloudLobbyGroup : ICloudServerGroup {
 
@@ -38,5 +39,7 @@ interface ICloudLobbyGroup : ICloudServerGroup {
     fun setPriority(priority: Int)
 
     override fun getServiceType(): ServiceType = ServiceType.LOBBY
+
+    override fun getUpdater(): ICloudLobbyGroupUpdater
 
 }

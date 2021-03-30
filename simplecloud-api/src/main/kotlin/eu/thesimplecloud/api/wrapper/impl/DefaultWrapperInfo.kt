@@ -22,44 +22,47 @@
 
 package eu.thesimplecloud.api.wrapper.impl
 
-import eu.thesimplecloud.api.wrapper.IMutableWrapperInfo
+import eu.thesimplecloud.api.wrapper.IWrapperInfo
+import eu.thesimplecloud.api.wrapper.IWrapperInfoUpdater
+import eu.thesimplecloud.clientserverapi.lib.json.PacketExclude
 import eu.thesimplecloud.jsonlib.GsonCreator
 import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.jsonlib.JsonLibExclude
 
 data class DefaultWrapperInfo(
-        private val name: String,
-        private val host: String,
-        private var maxSimultaneouslyStartingServices: Int,
-        private var maxMemory: Int
-) : IMutableWrapperInfo {
+    private val name: String,
+    private val host: String,
+    @Volatile private var maxSimultaneouslyStartingServices: Int,
+    @Volatile private var maxMemory: Int
+) : IWrapperInfo {
 
     @JsonLibExclude
+    @PacketExclude
+    @Volatile
+    private var wrapperUpdater: DefaultWrapperInfoUpdater? = DefaultWrapperInfoUpdater(this)
+
+    @JsonLibExclude
+    @Volatile
     private var authenticated = false
 
     @JsonLibExclude
+    @Volatile
     private var usedMemory: Int = 0
 
     @JsonLibExclude
+    @Volatile
     private var templatesReceived = false
 
     @JsonLibExclude
+    @Volatile
     private var currentlyStartingServices = 0
 
-    override fun setUsedMemory(memory: Int) {
-        this.usedMemory = memory
-    }
-
-    override fun setMaxSimultaneouslyStartingServices(amount: Int) {
-        this.maxSimultaneouslyStartingServices = amount
-    }
-
-    override fun setMaxMemory(memory: Int) {
-        this.maxMemory = memory
-    }
+    @JsonLibExclude
+    @Volatile
+    private var cpuUsage = 0.0F
 
     override fun setAuthenticated(boolean: Boolean) {
-        this.authenticated = boolean
+        getUpdater().setAuthenticated(boolean)
     }
 
     override fun getName(): String = this.name
@@ -72,18 +75,33 @@ data class DefaultWrapperInfo(
 
     override fun getMaxMemory(): Int = this.maxMemory
 
+    override fun getCpuUsage(): Float {
+        return this.cpuUsage
+    }
+
     override fun isAuthenticated(): Boolean = this.authenticated
 
     override fun hasTemplatesReceived(): Boolean = this.templatesReceived
 
     override fun getCurrentlyStartingServices(): Int = this.currentlyStartingServices
 
-    override fun setTemplatesReceived(boolean: Boolean) {
-        this.templatesReceived = boolean
+    override fun getUpdater(): IWrapperInfoUpdater {
+        if (this.wrapperUpdater == null) {
+            this.wrapperUpdater = DefaultWrapperInfoUpdater(this)
+        }
+        return this.wrapperUpdater!!
     }
 
-    override fun setCurrentlyStartingServices(startingServices: Int) {
-        this.currentlyStartingServices = startingServices
+    override fun applyValuesFromUpdater(updater: IWrapperInfoUpdater) {
+        this.cpuUsage = updater.getCpuUsage()
+        this.maxMemory = updater.getMaxMemory()
+        this.usedMemory = updater.getUsedMemory()
+
+        this.currentlyStartingServices = updater.getCurrentlyStartingServices()
+        this.maxSimultaneouslyStartingServices = updater.getMaxSimultaneouslyStartingServices()
+
+        this.templatesReceived = updater.hasTemplatesReceived()
+        this.authenticated = updater.isAuthenticated()
     }
 
     override fun toString(): String {

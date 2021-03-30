@@ -36,21 +36,21 @@ class LauncherDependencyLoader {
         dependencyLoader.loadDependencies(
                 listOf("https://repo.maven.apache.org/maven2/", "https://repo.thesimplecloud.eu/artifactory/gradle-release-local/"),
                 listOf(
-                        LauncherCloudDependency("eu.thesimplecloud.clientserverapi", "clientserverapi", "4.1.12"),
+                        LauncherCloudDependency("eu.thesimplecloud.clientserverapi", "clientserverapi", "4.1.13"),
                         LauncherCloudDependency("org.apache.commons", "commons-lang3", "3.11"),
                         LauncherCloudDependency("org.slf4j", "slf4j-nop", "1.7.10"),
-                        LauncherCloudDependency("org.fusesource.jansi", "jansi", "1.18"),
-                        LauncherCloudDependency("org.jline", "jline", "3.14.0"),
-                        LauncherCloudDependency("org.litote.kmongo", "kmongo", "3.11.2"),
-                        LauncherCloudDependency("commons-io", "commons-io", "2.6"),
+                        LauncherCloudDependency("org.fusesource.jansi", "jansi", "2.2.0"),
+                        LauncherCloudDependency("org.jline", "jline", "3.19.0"),
+                        LauncherCloudDependency("org.litote.kmongo", "kmongo", "4.2.3"),
+                        LauncherCloudDependency("commons-io", "commons-io", "2.8.0"),
                         LauncherCloudDependency("org.slf4j", "slf4j-simple", "1.7.10"),
-                        LauncherCloudDependency("com.google.guava", "guava", "21.0"),
-                        LauncherCloudDependency("org.jetbrains.kotlinx", "kotlinx-coroutines-core", "1.3.5"),
+                        LauncherCloudDependency("com.google.guava", "guava", "30.0-jre"),
+                        LauncherCloudDependency("org.jetbrains.kotlinx", "kotlinx-coroutines-core", "1.4.2"),
                         LauncherCloudDependency("com.google.code.gson", "gson", "2.8.6"),
-                        LauncherCloudDependency("io.netty", "netty-all", "4.1.49.Final"),
+                        LauncherCloudDependency("io.netty", "netty-all", "4.1.58.Final"),
                         LauncherCloudDependency("org.reflections", "reflections", "0.9.12"),
                         LauncherCloudDependency("org.mariadb.jdbc", "mariadb-java-client", "2.6.0"),
-                        LauncherCloudDependency("com.github.ajalt", "clikt", "2.2.0")
+                        LauncherCloudDependency("com.github.ajalt", "clikt", "2.8.0")
                 )
         )
     }

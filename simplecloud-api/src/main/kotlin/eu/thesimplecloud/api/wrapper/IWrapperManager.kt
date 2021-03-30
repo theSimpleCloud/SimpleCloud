@@ -25,7 +25,7 @@ package eu.thesimplecloud.api.wrapper
 import eu.thesimplecloud.api.cachelist.ICacheList
 
 
-interface IWrapperManager : ICacheList<IWrapperInfo> {
+interface IWrapperManager : ICacheList<IWrapperInfoUpdater, IWrapperInfo> {
 
     /**
      * Returns the [IWrapperInfo] found by the specified name
@@ -44,7 +44,7 @@ interface IWrapperManager : ICacheList<IWrapperInfo> {
         val wrappers = getAllCachedObjects()
                 .filter { it.isAuthenticated() && it.hasTemplatesReceived() && it.hasEnoughMemory(memory) }
                 .filter { it.getCurrentlyStartingServices() != it.getMaxSimultaneouslyStartingServices() }
-        return wrappers.minBy { it.getUsedMemory().toDouble() / it.getMaxMemory() }
+        return wrappers.minByOrNull { it.getUsedMemory().toDouble() / it.getMaxMemory() }
     }
 
 

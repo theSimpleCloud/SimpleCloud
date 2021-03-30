@@ -99,6 +99,7 @@ class Manager : ICloudApplication {
     init {
         Logger.getLogger("org.mongodb.driver").level = Level.SEVERE
         instance = this
+        VersionConversionManager().convertIfNecessary()
         CloudAPIImpl()
         LanguageFileLoader().loadFile(Launcher.instance.launcherConfig)
         this.serviceHandler = ServiceHandler()
@@ -197,7 +198,8 @@ class Manager : ICloudApplication {
         this.wrapperFileHandler.loadAll().forEach { CloudAPI.instance.getWrapperManager().update(it) }
         this.cloudServiceGroupFileHandler.loadAll()
             .forEach { CloudAPI.instance.getCloudServiceGroupManager().update(it) }
-        this.templatesConfigLoader.loadConfig().templates.forEach { CloudAPI.instance.getTemplateManager().update(it) }
+        val templates = this.templatesConfigLoader.loadConfig().templates
+        templates.forEach { CloudAPI.instance.getTemplateManager().update(it) }
         this.jvmArgumentsConfig = JvmArgumentsConfigLoader().loadConfig()
 
         if (CloudAPI.instance.getWrapperManager().getAllCachedObjects().isNotEmpty()) {
@@ -218,9 +220,7 @@ class Manager : ICloudApplication {
                 .forEach { Launcher.instance.consoleSender.sendMessage("- ${it.getName()}") }
         }
         thread(start = true, isDaemon = false) {
-            VersionConversionManager().convertBeforeModuleLoad()
             this.cloudModuleHandler.loadAllUnloadedModules()
-            VersionConversionManager().convertIfNecessary()
         }
     }
 

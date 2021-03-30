@@ -46,15 +46,18 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
             private set
     }
 
-    @Volatile
-    private var thisService: ICloudService? = null
-    lateinit var communicationClient: INettyClient
+    @Volatile private var thisService: ICloudService? = null
+
+    @Volatile lateinit var communicationClient: INettyClient
         private set
-    lateinit var connectionToManager: IConnection
+
+    @Volatile lateinit var connectionToManager: IConnection
         private set
-    lateinit var thisServiceName: String
+
+    @Volatile lateinit var thisServiceName: String
         private set
-    private var nettyThread: Thread
+
+    @Volatile private var nettyThread: Thread
 
     init {
         println("<---------- Starting SimpleCloud-Plugin ---------->")
@@ -64,16 +67,16 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
         println("<---------- Service-Name: $thisServiceName ---------->")
         CloudAPIImpl(cloudServicePlugin.getCloudPlayerManagerClass().java.newInstance())
 
+        this.communicationClient.setPacketSearchClassLoader(this::class.java.classLoader)
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.plugin.network.packets")
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.client.packets")
         this.communicationClient.addPacketsByPackage("eu.thesimplecloud.api.network.packets")
-        this.communicationClient.setPacketSearchClassLoader(this::class.java.classLoader)
 
         nettyThread = thread(true, isDaemon = false, contextClassLoader = this::class.java.classLoader) {
             println("<------Starting cloud client----------->")
             this.communicationClient.start().then {
                 println("<-------- Connection is now set up -------->")
-                this.connectionToManager.sendUnitQuery(PacketOutCloudClientLogin(NetworkComponentType.SERVICE, thisServiceName), 4000)
+                this.connectionToManager.sendUnitQuery(PacketOutCloudClientLogin(NetworkComponentType.SERVICE, thisServiceName), 10000)
                         .addFailureListener { throw it }
             }.addFailureListener { println("<-------- Failed to connect to server -------->") }.addFailureListener { throw it }
         }

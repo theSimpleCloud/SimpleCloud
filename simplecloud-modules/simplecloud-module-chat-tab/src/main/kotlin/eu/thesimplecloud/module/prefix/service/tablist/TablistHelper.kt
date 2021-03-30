@@ -6,6 +6,7 @@ import eu.thesimplecloud.module.prefix.config.TablistInformation
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.entity.Player
+import org.bukkit.scoreboard.Scoreboard
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,6 +19,14 @@ object TablistHelper {
     fun load() {
         val scoreboard = Bukkit.getScoreboardManager()?.mainScoreboard ?: return
 
+        initScoreboard(scoreboard)
+
+        Bukkit.getOnlinePlayers().forEach {
+            updateScoreboardForPlayer(it)
+        }
+    }
+
+    private fun initScoreboard(scoreboard: Scoreboard) {
         Config.getConfig().informationList.forEach {
             val team = scoreboard.getTeam(it.priority.toString()) ?: scoreboard.registerNewTeam(it.priority.toString())
 
@@ -29,16 +38,23 @@ object TablistHelper {
             try {
                 team.color = chatColor
             } catch (ex: NoSuchMethodException) {}
-              catch (ex: NoSuchMethodError) {}
-        }
-
-        Bukkit.getOnlinePlayers().forEach {
-            updatePlayer(it)
+            catch (ex: NoSuchMethodError) {}
         }
     }
 
-    fun updatePlayer(player: Player) {
-        val scoreboard = Bukkit.getScoreboardManager()?.mainScoreboard ?: return
+    fun updateScoreboardForAllPlayers() {
+        Bukkit.getOnlinePlayers().forEach {
+            updateScoreboardForPlayer(it)
+        }
+    }
+
+    fun updateScoreboardForPlayer(player: Player) {
+        val scoreboard = player.scoreboard
+        initScoreboard(scoreboard)
+        Bukkit.getOnlinePlayers().forEach { setPlayerInScoreboard(it, scoreboard) }
+    }
+
+    private fun setPlayerInScoreboard(player: Player, scoreboard: Scoreboard) {
 
         scoreboard.teams.forEach {
             it.removeEntry(player.name)

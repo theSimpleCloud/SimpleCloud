@@ -23,6 +23,7 @@
 package eu.thesimplecloud.api.player
 
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.cachelist.value.ICacheValue
 import eu.thesimplecloud.api.command.ICommandSender
 import eu.thesimplecloud.api.event.player.permission.CloudPlayerPermissionCheckEvent
 import eu.thesimplecloud.api.event.player.permission.PermissionState
@@ -36,7 +37,7 @@ import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
-interface ICloudPlayer : IOfflineCloudPlayer, ICommandSender {
+interface ICloudPlayer : ICacheValue<ICloudPlayerUpdater>, IOfflineCloudPlayer, ICommandSender {
 
     /**
      * Returns the [IPlayerConnection] of this player.
@@ -193,11 +194,6 @@ interface ICloudPlayer : IOfflineCloudPlayer, ICommandSender {
      * - [NoSuchServiceException] if no lobby was available to send the player to.
      */
     fun sendToLobby(): ICommunicationPromise<Unit> = CloudAPI.instance.getCloudPlayerManager().sendPlayerToLobby(this)
-
-    /**
-     * Clones this player.
-     */
-    fun clone(): ICloudPlayer
 
     /**
      * Returns a new [SimpleCloudPlayer] by the data of this player.

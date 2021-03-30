@@ -74,4 +74,8 @@ class MongoTimedValueStore<T : Any>(
         val timeStamp = jsonLib.getLong("timeStamp")!!
         return TimedValue<T>(value, timeStamp)
     }
+
+    override fun count(): Int {
+        return this.collection.countDocuments().toInt()
+    }
 }

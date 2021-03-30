@@ -39,7 +39,7 @@ class TimedValueController : IController {
     /**
      * The parameters [from] and [to] are from negative infinity to 0. 0 is now.
      */
-    @RequestMapping(RequestType.GET, ":name", "web.statistics.get")
+    @RequestMapping(RequestType.GET, "data/:name", "web.statistics.get.data")
     fun handleGet(
         @RequestPathParam("name") name: String,
         @RequestParam("from", true) from: Long,
@@ -47,8 +47,8 @@ class TimedValueController : IController {
         @RequestParam("resolution", false) resolution: Long?
     ): List<TimedValue<out Any>> {
 
-        val timedValueCollectorManager = StatisticsModule.instance.timedValueCollectorManager
-        val valueStore = timedValueCollectorManager.getStoreByCollectionNameUnsafe(name)
+
+        val valueStore = StatisticsModule.instance.getValueStoreByName(name)
             ?: throwNoSuchElement()
 
         val recalculatedFrom = from + System.currentTimeMillis()
@@ -59,6 +59,17 @@ class TimedValueController : IController {
         } else {
             valueStore.get(recalculatedFrom, recalculatedTo, resolution)
         }
+    }
+
+    @RequestMapping(RequestType.GET, "count/:name", "web.statistics.get.count")
+    fun handleGetCount(
+        @RequestPathParam("name") name: String
+    ): Int {
+
+        val valueStore = StatisticsModule.instance.getValueStoreByName(name)
+            ?: throwNoSuchElement()
+
+        return valueStore.count()
     }
 
 }

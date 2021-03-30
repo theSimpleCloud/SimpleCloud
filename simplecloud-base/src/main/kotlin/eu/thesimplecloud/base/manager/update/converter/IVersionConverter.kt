@@ -33,11 +33,6 @@ interface IVersionConverter {
     /**
      * Coverts from the previous version to [getTargetMinorVersion]
      */
-    fun convertBeforeModuleLoad()
-
-    /**
-     * Coverts from the previous version to [getTargetMinorVersion]
-     */
-    fun convertAfterModuleLoad()
+    fun convert()
 
 }

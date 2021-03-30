@@ -23,14 +23,15 @@
 package eu.thesimplecloud.api.template.impl
 
 import eu.thesimplecloud.api.cachelist.AbstractCacheList
-import eu.thesimplecloud.api.cachelist.ICacheObjectUpdater
+import eu.thesimplecloud.api.cachelist.ICacheObjectUpdateExecutor
 import eu.thesimplecloud.api.eventapi.IEvent
 import eu.thesimplecloud.api.template.ITemplate
 import eu.thesimplecloud.api.template.ITemplateManager
+import eu.thesimplecloud.api.template.ITemplateUpdater
 
-open class DefaultTemplateManager : AbstractCacheList<ITemplate>(), ITemplateManager {
+open class DefaultTemplateManager : AbstractCacheList<ITemplateUpdater, ITemplate>(), ITemplateManager {
 
-    private val updater = object : ICacheObjectUpdater<ITemplate> {
+    private val updater = object : ICacheObjectUpdateExecutor<ITemplateUpdater, ITemplate> {
         override fun getIdentificationName(): String {
             return "template-cache"
         }
@@ -39,14 +40,8 @@ open class DefaultTemplateManager : AbstractCacheList<ITemplate>(), ITemplateMan
             return getTemplateByName(value.getName())
         }
 
-        override fun determineEventsToCall(updateValue: ITemplate, cachedValue: ITemplate?): List<IEvent> {
+        override fun determineEventsToCall(updater: ITemplateUpdater, cachedValue: ITemplate?): List<IEvent> {
             return emptyList()
-        }
-
-        override fun mergeUpdateValue(updateValue: ITemplate, cachedValue: ITemplate) {
-            cachedValue as DefaultTemplate
-            cachedValue.setInheritedTemplateNames(updateValue.getInheritedTemplateNames())
-            cachedValue.setModuleNamesToCopy(updateValue.getModuleNamesToCopy())
         }
 
         override fun addNewValue(value: ITemplate) {
@@ -59,7 +54,7 @@ open class DefaultTemplateManager : AbstractCacheList<ITemplate>(), ITemplateMan
         getTemplateByName(name)?.let { this.delete(it) }
     }
 
-    override fun getUpdater(): ICacheObjectUpdater<ITemplate> {
+    override fun getUpdateExecutor(): ICacheObjectUpdateExecutor<ITemplateUpdater, ITemplate> {
         return this.updater
     }
 
