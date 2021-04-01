@@ -22,7 +22,7 @@
 
 **Setup**
 
-- Download the cloud from here
+- Download the cloud from [here](https://www.spigotmc.org/resources/simplecloud-simplify-your-network.79466/download?version=374176 "here").
 - Unzip the folder and execute the start file
 - Follow the setup instructions
 - Connect a wrapper to your manager. It is recommended to use the InternalWrapperModule for this. You can find it below.
