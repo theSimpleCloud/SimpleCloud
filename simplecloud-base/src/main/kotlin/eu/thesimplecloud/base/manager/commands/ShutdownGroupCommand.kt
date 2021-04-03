@@ -36,7 +36,7 @@ class ShutdownGroupCommand : ICommandHandler {
 
     @CommandSubPath("<group>", "Stops all services of a group")
     fun startService(commandSender: ICommandSender, @CommandArgument("group", ServiceGroupCommandSuggestionProvider::class) cloudServiceGroup: ICloudServiceGroup) {
-        if (cloudServiceGroup.getAllServices().isEmpty()){
+        if (cloudServiceGroup.getAllServices().isEmpty()) {
             commandSender.sendProperty("manager.command.shutdowngroup.failure", cloudServiceGroup.getName())
             return
         }

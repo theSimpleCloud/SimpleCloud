@@ -48,7 +48,7 @@ class SignModule : ICloudModule {
         SignModuleConfigPersistence.save(signModuleConfig)
         CloudAPI.instance.getGlobalPropertyHolder().setProperty("sign-config", signModuleConfig)
 
-        CloudAPI.instance.getEventManager().registerListener(this, object: IListener {
+        CloudAPI.instance.getEventManager().registerListener(this, object : IListener {
 
             @CloudEventHandler
             fun handleUpdate(event: GlobalPropertyUpdatedEvent) {

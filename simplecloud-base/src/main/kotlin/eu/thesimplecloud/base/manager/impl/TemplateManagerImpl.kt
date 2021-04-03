@@ -39,7 +39,7 @@ class TemplateManagerImpl : DefaultTemplateManager() {
         templateConfig.templates.add(value as DefaultTemplate)
         templatesConfigLoader.saveConfig(templateConfig)
 
-        if (!value.getDirectory().exists()){
+        if (!value.getDirectory().exists()) {
             value.getDirectory().mkdirs()
         }
         return result
@@ -49,7 +49,7 @@ class TemplateManagerImpl : DefaultTemplateManager() {
         val result = super.delete(value, fromPacket)
 
         val templateConfig = this.templatesConfigLoader.loadConfig()
-        templateConfig.templates.removeIf { it.getName().equals(value.getName(), true)}
+        templateConfig.templates.removeIf { it.getName().equals(value.getName(), true) }
         templatesConfigLoader.saveConfig(templateConfig)
         return result
     }

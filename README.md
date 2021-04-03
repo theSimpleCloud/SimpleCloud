@@ -1,4 +1,3 @@
-
 ![Banner](https://i.imgur.com/eTQJ1IX.png "Banner")
 
 **Features**
@@ -22,7 +21,9 @@
 
 **Setup**
 
-- Download the cloud from [here](https://www.spigotmc.org/resources/simplecloud-simplify-your-network.79466/download?version=374176 "here").
+- Download the cloud
+  from [here](https://www.spigotmc.org/resources/simplecloud-simplify-your-network.79466/download?version=374176 "here")
+  .
 - Unzip the folder and execute the start file
 - Follow the setup instructions
 - Connect a wrapper to your manager. It is recommended to use the InternalWrapperModule for this. You can find it below.
@@ -32,7 +33,10 @@
 
 **Dashbaord**
 
-SimpleCloud provides a Dashboard accessible for every user. The domain for the dashboard is: http://dashboard-nossl.thesimplecloud.eu. Now you have to enter the IP-Address of your server follwed by the port of the REST module. The default port of the RESR-Module ist 8585. So an ip would be 55.55.55.55:8585. The username and passwort can be found in "modules/rest/users.json"
+SimpleCloud provides a Dashboard accessible for every user. The domain for the dashboard
+is: http://dashboard-nossl.thesimplecloud.eu. Now you have to enter the IP-Address of your server follwed by the port of
+the REST module. The default port of the RESR-Module ist 8585. So an ip would be 55.55.55.55:8585. The username and
+passwort can be found in "modules/rest/users.json"
 
 **Modules**
 
@@ -40,25 +44,30 @@ SimpleCloud provides some modules by default.
 
 ***Internal-Wrapper Module***
 
-The Internal-Wrapper Module starts a wrapper every time the manager of the cloud gets started. This wrapper does only run when the manager is running. It connects automatically with no need to set it up. The wrapper will be automatically named "InternalWrapper" and it will have 2GB of memory. To edit the memory of the wrapper you can use the command:
+The Internal-Wrapper Module starts a wrapper every time the manager of the cloud gets started. This wrapper does only
+run when the manager is running. It connects automatically with no need to set it up. The wrapper will be automatically
+named "InternalWrapper" and it will have 2GB of memory. To edit the memory of the wrapper you can use the command:
 
 `edit wrapper InternalWrapper maxMemory <amount in MB>`
 
 ***Sign Module***
 
-The Sign Module is used to show available services for players in the lobby via a sign. The players can click on that sign and will be sent to the server. The layout of the signs is fully customizable.
+The Sign Module is used to show available services for players in the lobby via a sign. The players can click on that
+sign and will be sent to the server. The layout of the signs is fully customizable.
 
 ![SignModule](https://i.imgur.com/w534aZG.gif "SignModule")
 
 ***Permission Module***
 
-With the Permission Module, you can easily manage your permissions. You can define groups and add permissions to them. You can also add permissions to single users
+With the Permission Module, you can easily manage your permissions. You can define groups and add permissions to them.
+You can also add permissions to single users
 
 ![PermissionModule](https://i.imgur.com/5LXMwCk.jpg "PermissionModule")
 
 ***Proxy Module***
 
-The Proxy Module is used to manage your proxies. It controls the MOTD, Tablist, maintenance and the online count. The online count of proxies of one group will be summed up and displayed in the player info.
+The Proxy Module is used to manage your proxies. It controls the MOTD, Tablist, maintenance and the online count. The
+online count of proxies of one group will be summed up and displayed in the player info.
 
 ![ProxyModuleTab](https://i.imgur.com/2djSS9l.jpg "ProxyModuleTab")
 
@@ -67,8 +76,7 @@ The Proxy Module is used to manage your proxies. It controls the MOTD, Tablist, 
 ![ProxyModuleMotdMaintenance](https://i.imgur.com/eCSXSJo.png "ProxyModuleMotdMaintenance")
 
 Permissions:
-Maintenance join: cloud.maintenance.join
-Full join: cloud.full.join
+Maintenance join: cloud.maintenance.join Full join: cloud.full.join
 
 ***Hub Module***
 
@@ -76,7 +84,8 @@ The Hub Module provides a hub command for players to switch to a lobby server.
 
 ***Notify Module***
 
-The notify module sends notifications to players that have the required permission when a server gets started or stopped.
+The notify module sends notifications to players that have the required permission when a server gets started or
+stopped.
 
 ![NotifyModule](https://i.imgur.com/7lcjXbN.jpg "NotifyModule")
 

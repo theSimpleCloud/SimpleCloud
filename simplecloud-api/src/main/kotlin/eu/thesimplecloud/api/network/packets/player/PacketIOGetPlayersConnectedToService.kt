@@ -37,14 +37,14 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
  */
 class PacketIOGetPlayersConnectedToService() : ObjectPacket<String>() {
 
-    constructor(service: ICloudService): this() {
+    constructor(service: ICloudService) : this() {
         this.value = service.getName()
     }
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         val value = this.value ?: return contentException("value")
         val service = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(value)
-            ?: return failure(NoSuchServiceException("Service cannot be found"))
+                ?: return failure(NoSuchServiceException("Service cannot be found"))
         return service.getOnlinePlayers().then { it.toTypedArray() }
     }
 }

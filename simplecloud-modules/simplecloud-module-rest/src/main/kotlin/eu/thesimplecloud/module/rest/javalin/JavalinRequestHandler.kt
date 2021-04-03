@@ -70,7 +70,7 @@ class JavalinRequestHandler(val requestMethodData: RequestMethodData, private va
 
     private fun getUserByContext(context: Context): User? {
         val decodedJWTOptional: Optional<DecodedJWT> = JavalinJWT.getTokenFromHeader(context)
-            .flatMap(JwtProvider.instance.provider::validateToken) as Optional<DecodedJWT>
+                .flatMap(JwtProvider.instance.provider::validateToken) as Optional<DecodedJWT>
 
         if (!decodedJWTOptional.isPresent) {
             return null

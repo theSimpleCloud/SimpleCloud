@@ -33,11 +33,11 @@ import java.util.*
 class PacketIOGetCloudPlayer() : JsonPacket() {
 
 
-    constructor(name: String): this() {
+    constructor(name: String) : this() {
         this.jsonLib.append("name", name)
     }
 
-    constructor(uniqueId: UUID): this() {
+    constructor(uniqueId: UUID) : this() {
         this.jsonLib.append("uniqueId", uniqueId)
     }
 

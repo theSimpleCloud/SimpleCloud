@@ -29,6 +29,6 @@ package eu.thesimplecloud.api.dto
  * @author Frederick Baier
  */
 data class PlayerLoginRequestResult(
-    val cancel: Boolean,
-    val kickMessage: String
+        val cancel: Boolean,
+        val kickMessage: String
 )

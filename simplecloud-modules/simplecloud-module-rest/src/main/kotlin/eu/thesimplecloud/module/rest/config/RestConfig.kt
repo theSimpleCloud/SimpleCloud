@@ -31,6 +31,6 @@ import org.apache.commons.lang3.RandomStringUtils
  * @author Frederick Baier
  */
 class RestConfig(
-    val port: Int = 8585,
-    val secret: String = RandomStringUtils.randomAlphabetic(170)
+        val port: Int = 8585,
+        val secret: String = RandomStringUtils.randomAlphabetic(170)
 )

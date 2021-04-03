@@ -70,7 +70,7 @@ class CloudVelocityPlugin @Inject constructor(val proxyServer: ProxyServer) : IC
 
         CloudPlugin(this)
         val synchronizedObjectPromise =
-            CloudAPI.instance.getGlobalPropertyHolder().requestProperty<Array<String>>("simplecloud-ingamecommands")
+                CloudAPI.instance.getGlobalPropertyHolder().requestProperty<Array<String>>("simplecloud-ingamecommands")
         synchronizedObjectPromise.addResultListener { property ->
             this.synchronizedIngameCommandsProperty = property
 
@@ -89,7 +89,7 @@ class CloudVelocityPlugin @Inject constructor(val proxyServer: ProxyServer) : IC
     fun handleInit(event: ProxyInitializeEvent) {
         CloudPlugin.instance.onEnable()
         CloudAPI.instance.getCloudServiceManager().getAllCachedObjects().filter { it.isActive() }
-            .forEach { addServiceToProxy(it) }
+                .forEach { addServiceToProxy(it) }
         CloudAPI.instance.getEventManager().registerListener(CloudPlugin.instance, CloudListener())
         proxyServer.eventManager.register(this, VelocityListener(this))
 
@@ -111,7 +111,7 @@ class CloudVelocityPlugin @Inject constructor(val proxyServer: ProxyServer) : IC
             return
         val cloudServiceGroup = cloudService.getServiceGroup()
         if ((cloudServiceGroup as ICloudServerGroup).getHiddenAtProxyGroups()
-                .contains(CloudPlugin.instance.getGroupName())
+                        .contains(CloudPlugin.instance.getGroupName())
         )
             return
         println("Registered service ${cloudService.getName()}")
@@ -133,7 +133,7 @@ class CloudVelocityPlugin @Inject constructor(val proxyServer: ProxyServer) : IC
     private fun runOfflinePlayerChecker() {
         proxyServer.scheduler.buildTask(this) {
             val playersOnThisService =
-                CloudAPI.instance.getCloudPlayerManager().getAllCachedObjects()
+                    CloudAPI.instance.getCloudPlayerManager().getAllCachedObjects()
             val playersOffline = playersOnThisService.filter { proxyServer.getPlayer(it.getUniqueId()) == null }
             playersOffline.forEach { ProxyEventHandler.handleDisconnect(it.getUniqueId(), it.getName()) }
         }.delay(2L, TimeUnit.SECONDS).repeat(30L, TimeUnit.SECONDS).schedule()

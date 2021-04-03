@@ -39,12 +39,12 @@ commands:
   silent-commandblock-console: false
   log: true
   spam-exclusions:
-  - /skill
+    - /skill
   replace-commands:
-  - setblock
-  - summon
-  - testforblock
-  - tellraw
+    - setblock
+    - summon
+    - testforblock
+    - tellraw
 messages:
   whitelist: You are not whitelisted on this server!
   unknown-command: Unknown command. Type "/help" for help.
@@ -54,7 +54,7 @@ messages:
   restart: Server is restarting
 stats:
   disable-saving: false
-  forced-stats: {}
+  forced-stats: { }
 world-settings:
   default:
     verbose: true
@@ -93,22 +93,22 @@ world-settings:
       enabled: true
       engine-mode: 1
       hide-blocks:
-      - 14
-      - 15
-      - 16
-      - 21
-      - 48
-      - 49
-      - 54
-      - 56
-      - 73
-      - 74
-      - 82
-      - 129
-      - 130
+        - 14
+        - 15
+        - 16
+        - 21
+        - 48
+        - 49
+        - 54
+        - 56
+        - 73
+        - 74
+        - 82
+        - 129
+        - 130
       replace-blocks:
-      - 1
-      - 5
+        - 1
+        - 5
     save-structure-info: true
     max-tnt-per-tick: 100
     ticks-per:

@@ -39,9 +39,9 @@ import org.litote.kmongo.getCollection
  * @author Frederick Baier
  */
 class MongoTimedValueStore<T : Any>(
-    private val classOfT: Class<T>,
-    private val collectionName: String,
-    database: MongoDatabase
+        private val classOfT: Class<T>,
+        private val collectionName: String,
+        database: MongoDatabase
 ) : ITimedValueStore<T> {
 
     private val collection = database.getCollection<Document>(collectionName)
@@ -61,7 +61,7 @@ class MongoTimedValueStore<T : Any>(
 
     override fun get(fromTimeStamp: Long, toTimeStamp: Long): List<TimedValue<T>> {
         return collection.find("{ timeStamp : { \$gt :  $fromTimeStamp, \$lt : $toTimeStamp}}").toList()
-            .map { constructTimedValueFromDocument(it) }
+                .map { constructTimedValueFromDocument(it) }
     }
 
     override fun getCollectionName(): String {

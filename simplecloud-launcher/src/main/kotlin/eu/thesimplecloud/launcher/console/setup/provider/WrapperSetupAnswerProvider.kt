@@ -31,7 +31,7 @@ import eu.thesimplecloud.api.command.ICommandSender
  * Date: 14.04.2020
  * Time: 18:39
  */
-class WrapperSetupAnswerProvider: ISetupAnswerProvider {
+class WrapperSetupAnswerProvider : ISetupAnswerProvider {
 
     override fun getSuggestions(sender: ICommandSender): List<String> {
         return CloudAPI.instance.getWrapperManager().getAllCachedObjects().map { it.getName() }

@@ -29,7 +29,7 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
 class PacketIOWrapperStartService() : ObjectPacket<String>() {
 
-    constructor(name: String): this() {
+    constructor(name: String) : this() {
         this.value = name
     }
 

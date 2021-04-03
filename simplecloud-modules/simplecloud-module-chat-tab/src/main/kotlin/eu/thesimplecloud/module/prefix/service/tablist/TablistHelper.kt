@@ -37,8 +37,9 @@ object TablistHelper {
 
             try {
                 team.color = chatColor
-            } catch (ex: NoSuchMethodException) {}
-            catch (ex: NoSuchMethodError) {}
+            } catch (ex: NoSuchMethodException) {
+            } catch (ex: NoSuchMethodError) {
+            }
         }
     }
 
@@ -69,8 +70,8 @@ object TablistHelper {
 
     fun getTablistInformationByPlayer(player: Player): TablistInformation? {
         val permissionPlayer =
-            PermissionPool.instance.getPermissionPlayerManager().getCachedPermissionPlayer(player.uniqueId)
-                ?: return null
+                PermissionPool.instance.getPermissionPlayerManager().getCachedPermissionPlayer(player.uniqueId)
+                        ?: return null
 
         val informationList = Config.getConfig().informationList
         val tablistInformation = informationList.sortedBy { it.priority }.first {

@@ -108,19 +108,19 @@ class Manager : ICloudApplication {
         this.appClassLoader = this::class.java.classLoader as ApplicationClassLoader
 
         this.cloudModuleHandler = ModuleHandler(
-            appClassLoader,
-            Launcher.instance.launcherConfig.language,
-            ModuleUpdaterConfigLoader().loadConfig().modules,
-            true
+                appClassLoader,
+                Launcher.instance.launcherConfig.language,
+                ModuleUpdaterConfigLoader().loadConfig().modules,
+                true
         ) { Launcher.instance.logger.exception(it) }
         this.appClassLoader.moduleHandler = this.cloudModuleHandler
 
         this.cloudModuleHandler.setCreateModuleClassLoader { urls, name ->
             ModuleClassLoader(
-                urls,
-                this.appClassLoader,
-                name,
-                this.cloudModuleHandler
+                    urls,
+                    this.appClassLoader,
+                    name,
+                    this.cloudModuleHandler
             )
         }
         Property.propertyClassFindFunction = { this.cloudModuleHandler.findModuleOrSystemClass(it) }
@@ -135,20 +135,20 @@ class Manager : ICloudApplication {
         val launcherConfig = Launcher.instance.launcherConfig
         val baseAndLauncherLoader = Launcher.instance.getNewClassLoaderWithLauncherAndBase()
         this.communicationServer = NettyServer<ICommandExecutable>(
-            launcherConfig.host,
-            launcherConfig.port,
-            CommunicationConnectionHandlerImpl(),
-            ServerHandlerImpl()
+                launcherConfig.host,
+                launcherConfig.port,
+                CommunicationConnectionHandlerImpl(),
+                ServerHandlerImpl()
         )
         this.communicationServer.setAccessHandler(ManagerAccessHandler())
         this.communicationServer.setPacketSearchClassLoader(baseAndLauncherLoader)
         this.communicationServer.setClassLoaderToSearchObjectPacketClasses(appClassLoader)
         this.communicationServer.setPacketClassConverter { moveToApplicationClassLoader(it) }
         this.templateServer = NettyServer<ICommandExecutable>(
-            launcherConfig.host,
-            launcherConfig.port + 1,
-            TemplateConnectionHandlerImpl(),
-            ServerHandlerImpl()
+                launcherConfig.host,
+                launcherConfig.port + 1,
+                TemplateConnectionHandlerImpl(),
+                ServerHandlerImpl()
         )
         this.templateServer.setAccessHandler(ManagerAccessHandler())
         this.templateServer.setPacketSearchClassLoader(baseAndLauncherLoader)
@@ -170,9 +170,9 @@ class Manager : ICloudApplication {
 
         this.templateServer.getDirectorySyncManager().setTmpZipDirectory(File(DirectoryPaths.paths.zippedTemplatesPath))
         this.templateServer.getDirectorySyncManager()
-            .createDirectorySync(File(DirectoryPaths.paths.templatesPath), DirectoryPaths.paths.templatesPath)
+                .createDirectorySync(File(DirectoryPaths.paths.templatesPath), DirectoryPaths.paths.templatesPath)
         this.templateServer.getDirectorySyncManager()
-            .createDirectorySync(File(DirectoryPaths.paths.modulesPath), DirectoryPaths.paths.modulesPath)
+                .createDirectorySync(File(DirectoryPaths.paths.modulesPath), DirectoryPaths.paths.modulesPath)
         this.serviceHandler.startThread()
         thread(start = true, isDaemon = false) { templateServer.start() }
         VersionConversionManager().writeLastStartedVersionIfFileDoesNotExist()
@@ -189,15 +189,15 @@ class Manager : ICloudApplication {
     override fun onEnable() {
         GlobalScope.launch {
             Launcher.instance.commandManager.registerAllCommands(
-                instance,
-                appClassLoader,
-                "eu.thesimplecloud.base.manager.commands"
+                    instance,
+                    appClassLoader,
+                    "eu.thesimplecloud.base.manager.commands"
             )
         }
         Launcher.instance.setupManager.waitFroAllSetups()
         this.wrapperFileHandler.loadAll().forEach { CloudAPI.instance.getWrapperManager().update(it) }
         this.cloudServiceGroupFileHandler.loadAll()
-            .forEach { CloudAPI.instance.getCloudServiceGroupManager().update(it) }
+                .forEach { CloudAPI.instance.getCloudServiceGroupManager().update(it) }
         val templates = this.templatesConfigLoader.loadConfig().templates
         templates.forEach { CloudAPI.instance.getTemplateManager().update(it) }
         this.jvmArgumentsConfig = JvmArgumentsConfigLoader().loadConfig()
@@ -205,19 +205,19 @@ class Manager : ICloudApplication {
         if (CloudAPI.instance.getWrapperManager().getAllCachedObjects().isNotEmpty()) {
             Launcher.instance.consoleSender.sendProperty("manager.startup.loaded.wrappers")
             CloudAPI.instance.getWrapperManager().getAllCachedObjects()
-                .forEach { Launcher.instance.consoleSender.sendMessage("- ${it.getName()}") }
+                    .forEach { Launcher.instance.consoleSender.sendMessage("- ${it.getName()}") }
         }
 
         if (CloudAPI.instance.getTemplateManager().getAllCachedObjects().isNotEmpty()) {
             Launcher.instance.consoleSender.sendProperty("manager.startup.loaded.templates")
             CloudAPI.instance.getTemplateManager().getAllCachedObjects()
-                .forEach { Launcher.instance.consoleSender.sendMessage("- ${it.getName()}") }
+                    .forEach { Launcher.instance.consoleSender.sendMessage("- ${it.getName()}") }
         }
 
         if (CloudAPI.instance.getCloudServiceGroupManager().getAllCachedObjects().isNotEmpty()) {
             Launcher.instance.consoleSender.sendProperty("manager.startup.loaded.groups")
             CloudAPI.instance.getCloudServiceGroupManager().getAllCachedObjects()
-                .forEach { Launcher.instance.consoleSender.sendMessage("- ${it.getName()}") }
+                    .forEach { Launcher.instance.consoleSender.sendMessage("- ${it.getName()}") }
         }
         thread(start = true, isDaemon = false) {
             this.cloudModuleHandler.loadAllUnloadedModules()
@@ -227,18 +227,18 @@ class Manager : ICloudApplication {
 
     private fun createDirectories() {
         for (file in listOf(
-            File(DirectoryPaths.paths.storagePath),
-            File(DirectoryPaths.paths.wrappersPath),
-            File(DirectoryPaths.paths.minecraftJarsPath),
-            File(DirectoryPaths.paths.serverGroupsPath),
-            File(DirectoryPaths.paths.lobbyGroupsPath),
-            File(DirectoryPaths.paths.proxyGroupsPath),
-            File(DirectoryPaths.paths.languagesPath),
-            File(DirectoryPaths.paths.modulesPath),
-            File(DirectoryPaths.paths.templatesPath),
-            File(DirectoryPaths.paths.templatesPath + "EVERY"),
-            File(DirectoryPaths.paths.templatesPath + "EVERY_SERVER"),
-            File(DirectoryPaths.paths.templatesPath + "EVERY_PROXY")
+                File(DirectoryPaths.paths.storagePath),
+                File(DirectoryPaths.paths.wrappersPath),
+                File(DirectoryPaths.paths.minecraftJarsPath),
+                File(DirectoryPaths.paths.serverGroupsPath),
+                File(DirectoryPaths.paths.lobbyGroupsPath),
+                File(DirectoryPaths.paths.proxyGroupsPath),
+                File(DirectoryPaths.paths.languagesPath),
+                File(DirectoryPaths.paths.modulesPath),
+                File(DirectoryPaths.paths.templatesPath),
+                File(DirectoryPaths.paths.templatesPath + "EVERY"),
+                File(DirectoryPaths.paths.templatesPath + "EVERY_SERVER"),
+                File(DirectoryPaths.paths.templatesPath + "EVERY_PROXY")
         )) {
             file.mkdirs()
         }

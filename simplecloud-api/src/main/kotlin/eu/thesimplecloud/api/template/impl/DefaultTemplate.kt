@@ -31,6 +31,7 @@ data class DefaultTemplate(private val name: String) : ITemplate {
 
     @Volatile
     private var inheritedTemplateNames: Set<String> = emptySet()
+
     @Volatile
     private var moduleNamesToCopy: Set<String> = emptySet()
 
@@ -70,7 +71,7 @@ data class DefaultTemplate(private val name: String) : ITemplate {
 
     override fun applyValuesFromUpdater(updater: ITemplateUpdater) {
         this.inheritedTemplateNames = HashSet(updater.getInheritedTemplateNames())
-        this.moduleNamesToCopy =  HashSet(updater.getModuleNamesToCopy())
+        this.moduleNamesToCopy = HashSet(updater.getModuleNamesToCopy())
     }
 
 

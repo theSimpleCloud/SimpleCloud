@@ -29,7 +29,7 @@ import eu.thesimplecloud.api.utils.getEnumValues
 import eu.thesimplecloud.jsonlib.JsonLib
 import java.util.*
 
-class StringParser : ITypeFromClassParser<String>{
+class StringParser : ITypeFromClassParser<String> {
 
     private val parsableTypes = listOf(String::class.java, Int::class.java, UUID::class.java)
 

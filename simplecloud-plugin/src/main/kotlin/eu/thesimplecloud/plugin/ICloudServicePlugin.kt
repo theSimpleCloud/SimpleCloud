@@ -30,7 +30,7 @@ interface ICloudServicePlugin {
 
     fun getCloudPlayerManagerClass(): KClass<out ICloudPlayerManager>
 
-    fun onBeforeFirstUpdate() { }
+    fun onBeforeFirstUpdate() {}
 
     fun shutdown()
 

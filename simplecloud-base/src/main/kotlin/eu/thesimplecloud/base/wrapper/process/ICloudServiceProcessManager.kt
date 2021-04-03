@@ -51,7 +51,7 @@ interface ICloudServiceProcessManager {
      */
     fun getCloudServiceProcessByService(service: ICloudService): ICloudServiceProcess? = getCloudServiceProcessByServiceName(service.getName())
 
-        /**
+    /**
      * Stops all registered services.
      */
     fun stopAllServices() = getAllProcesses().forEach { it.shutdown() }

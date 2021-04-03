@@ -37,16 +37,16 @@ import java.util.*
 import java.util.concurrent.ConcurrentMap
 
 data class DefaultCloudService(
-    private val groupName: String,
-    private val serviceNumber: Int,
-    private val uniqueId: UUID,
-    private val templateName: String,
-    @Volatile private var wrapperName: String?,
-    @Volatile private var port: Int,
-    private val maxMemory: Int,
-    @Volatile private var maxPlayers: Int,
-    @Volatile private var motd: String,
-    private val serviceVersion: ServiceVersion
+        private val groupName: String,
+        private val serviceNumber: Int,
+        private val uniqueId: UUID,
+        private val templateName: String,
+        @Volatile private var wrapperName: String?,
+        @Volatile private var port: Int,
+        private val maxMemory: Int,
+        @Volatile private var maxPlayers: Int,
+        @Volatile private var motd: String,
+        private val serviceVersion: ServiceVersion
 ) : ICloudService {
 
     @JsonLibExclude

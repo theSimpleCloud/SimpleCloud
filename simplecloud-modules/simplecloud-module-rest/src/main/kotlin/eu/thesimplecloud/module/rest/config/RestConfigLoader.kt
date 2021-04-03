@@ -32,8 +32,8 @@ import java.io.File
  * @author Frederick Baier
  */
 class RestConfigLoader : AbstractJsonLibConfigLoader<RestConfig>(
-    RestConfig::class.java,
-    File("modules/rest/config.json"),
-    { RestConfig() },
-    true
+        RestConfig::class.java,
+        File("modules/rest/config.json"),
+        { RestConfig() },
+        true
 )

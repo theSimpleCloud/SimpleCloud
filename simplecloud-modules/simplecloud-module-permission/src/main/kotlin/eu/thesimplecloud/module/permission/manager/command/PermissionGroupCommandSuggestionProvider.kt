@@ -32,7 +32,7 @@ import eu.thesimplecloud.module.permission.PermissionPool
  * Date: 14.04.2020
  * Time: 18:39
  */
-class PermissionGroupCommandSuggestionProvider: ICommandSuggestionProvider {
+class PermissionGroupCommandSuggestionProvider : ICommandSuggestionProvider {
 
     override fun getSuggestions(sender: ICommandSender, fullCommand: String, lastArgument: String): List<String> {
         return PermissionPool.instance.getPermissionGroupManager().getAllPermissionGroups().map { it.getName() }

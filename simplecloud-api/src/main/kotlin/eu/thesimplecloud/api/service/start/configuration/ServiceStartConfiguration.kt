@@ -38,26 +38,30 @@ class ServiceStartConfiguration(serviceGroup: ICloudServiceGroup) : IServiceStar
     /**
      * The memory amount in MB for the new service.
      */
-    @Volatile var maxMemory = serviceGroup.getMaxMemory()
+    @Volatile
+    var maxMemory = serviceGroup.getMaxMemory()
         private set
 
     /**
      * The maximum amount of players for the new service.
      */
-    @Volatile var maxPlayers = serviceGroup.getMaxPlayers()
+    @Volatile
+    var maxPlayers = serviceGroup.getMaxPlayers()
         private set
 
     /**
      * The template the new service shall use.
      */
-    @Volatile var template = serviceGroup.getTemplateName()
+    @Volatile
+    var template = serviceGroup.getTemplateName()
         private set
 
     /**
      * The number of the new service.
      * e.g: Lobby-2 -> 2 is the service number
      */
-    @Volatile var serviceNumber: Int? = null
+    @Volatile
+    var serviceNumber: Int? = null
         private set
 
 

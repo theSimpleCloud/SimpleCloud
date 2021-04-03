@@ -30,6 +30,7 @@ import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 import eu.thesimplecloud.launcher.console.command.provider.ServiceCommandSuggestionProvider
+
 /**
  * Created by IntelliJ IDEA.
  * Date: 09.06.2020

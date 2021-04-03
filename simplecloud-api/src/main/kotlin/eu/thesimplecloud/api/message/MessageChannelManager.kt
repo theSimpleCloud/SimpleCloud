@@ -74,7 +74,7 @@ class MessageChannelManager : IMessageChannelManager {
 
     fun incomingMessage(message: Message) {
         val channel = this.channels[message.channel]
-        if (CloudAPI.instance.isManager()){
+        if (CloudAPI.instance.isManager()) {
             sendMessage(message)
             if (message.receivers.contains(NetworkComponentReference.MANAGER_COMPONENT_REFERENCE))
                 channel?.notifyListeners(message)

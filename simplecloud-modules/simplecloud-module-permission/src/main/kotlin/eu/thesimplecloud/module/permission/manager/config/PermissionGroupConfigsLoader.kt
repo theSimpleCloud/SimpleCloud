@@ -34,10 +34,10 @@ import java.io.File
  * @author Frederick Baier
  */
 class PermissionGroupConfigsLoader : AbstractMultipleConfigLoader<PermissionGroup>(
-    PermissionGroup::class.java,
-    File("modules/permissions/groups/"),
-    getDefaultGroups(),
-    true
+        PermissionGroup::class.java,
+        File("modules/permissions/groups/"),
+        getDefaultGroups(),
+        true
 ) {
 
     companion object {

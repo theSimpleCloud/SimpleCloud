@@ -46,7 +46,7 @@ class ModuleUpdateInstaller(
         if (updaterFileContent != null && !Launcher.instance.launcherStartArguments.disableAutoUpdater) {
             val updater = ModuleUpdater(updaterFileContent, loadedModuleFileContent.file)
             if (updater.isUpdateAvailable()) {
-                Launcher.instance.consoleSender.sendProperty("manager.module.updating",  content.name)
+                Launcher.instance.consoleSender.sendProperty("manager.module.updating", content.name)
                 UpdateExecutor().executeUpdate(updater)
                 Launcher.instance.consoleSender.sendProperty("manager.module.updated", content.name)
                 return true

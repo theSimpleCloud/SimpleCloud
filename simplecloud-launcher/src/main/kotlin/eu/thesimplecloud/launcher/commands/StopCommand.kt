@@ -36,7 +36,7 @@ import eu.thesimplecloud.launcher.startup.Launcher
  * Time: 14:15+
  */
 @Command("stop", CommandType.CONSOLE)
-class StopCommand(): ICommandHandler {
+class StopCommand() : ICommandHandler {
 
     @CommandSubPath(description = "Stops the cloud")
     fun handleCommand(sender: ICommandSender) {

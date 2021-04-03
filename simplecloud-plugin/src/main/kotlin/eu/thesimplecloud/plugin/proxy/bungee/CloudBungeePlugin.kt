@@ -71,7 +71,7 @@ class CloudBungeePlugin : Plugin(), ICloudProxyPlugin {
             return
         val cloudServiceGroup = cloudService.getServiceGroup()
         if ((cloudServiceGroup as ICloudServerGroup).getHiddenAtProxyGroups()
-                .contains(CloudPlugin.instance.getGroupName())
+                        .contains(CloudPlugin.instance.getGroupName())
         )
             return
         println("Registered service ${cloudService.getName()}")
@@ -81,16 +81,16 @@ class CloudBungeePlugin : Plugin(), ICloudProxyPlugin {
 
     private fun registerFallbackService() {
         registerService(
-            "fallback",
-            UUID.fromString("00000000-0000-0000-0000-000000000000"),
-            InetSocketAddress("127.0.0.1", 0)
+                "fallback",
+                UUID.fromString("00000000-0000-0000-0000-000000000000"),
+                InetSocketAddress("127.0.0.1", 0)
         )
     }
 
     private fun registerService(name: String, uniqueId: UUID, socketAddress: InetSocketAddress) {
         val info = ProxyServer.getInstance().constructServerInfo(
-            name, socketAddress,
-            uniqueId.toString(), false
+                name, socketAddress,
+                uniqueId.toString(), false
         )
         ProxyServer.getInstance().servers[name] = info
     }
@@ -103,7 +103,7 @@ class CloudBungeePlugin : Plugin(), ICloudProxyPlugin {
         ProxyServer.getInstance().reconnectHandler = ReconnectHandlerImpl()
         CloudPlugin(this)
         val synchronizedObjectPromise =
-            CloudAPI.instance.getGlobalPropertyHolder().requestProperty<Array<String>>("simplecloud-ingamecommands")
+                CloudAPI.instance.getGlobalPropertyHolder().requestProperty<Array<String>>("simplecloud-ingamecommands")
         synchronizedObjectPromise.addResultListener {
             this.synchronizedIngameCommandsProperty = it
         }.throwFailure()
@@ -119,7 +119,7 @@ class CloudBungeePlugin : Plugin(), ICloudProxyPlugin {
         registerFallbackService()
         CloudPlugin.instance.onEnable()
         CloudAPI.instance.getCloudServiceManager().getAllCachedObjects().filter { it.isActive() }
-            .forEach { addServiceToProxy(it) }
+                .forEach { addServiceToProxy(it) }
         CloudAPI.instance.getEventManager().registerListener(CloudPlugin.instance, CloudListener())
         ProxyServer.getInstance().pluginManager.registerListener(this, BungeeListener())
         ProxyServer.getInstance().pluginManager.registerListener(this, IngameCommandListener())
@@ -135,7 +135,7 @@ class CloudBungeePlugin : Plugin(), ICloudProxyPlugin {
     private fun runOfflinePlayerChecker() {
         proxy.scheduler.schedule(this, {
             val playersOnThisService =
-                CloudAPI.instance.getCloudPlayerManager().getAllCachedObjects()
+                    CloudAPI.instance.getCloudPlayerManager().getAllCachedObjects()
             val playersOffline = playersOnThisService.filter { proxy.getPlayer(it.getUniqueId()) == null }
             playersOffline.forEach { ProxyEventHandler.handleDisconnect(it.getUniqueId(), it.getName()) }
         }, 2, 30, TimeUnit.SECONDS)

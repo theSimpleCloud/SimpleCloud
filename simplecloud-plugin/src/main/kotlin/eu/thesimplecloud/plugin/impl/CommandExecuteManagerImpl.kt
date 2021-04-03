@@ -33,11 +33,11 @@ class CommandExecuteManagerImpl : ICommandExecuteManager {
     override fun executeCommand(commandExecutable: ICommandExecutable, command: String) {
         if (commandExecutable !is INetworkComponent) return
         CloudPlugin.instance.connectionToManager.sendUnitQuery(
-            PacketIOExecuteCommand(
-                commandExecutable.getNetworkComponentType(),
-                commandExecutable.getName(),
-                command
-            )
+                PacketIOExecuteCommand(
+                        commandExecutable.getNetworkComponentType(),
+                        commandExecutable.getName(),
+                        command
+                )
         )
     }
 }

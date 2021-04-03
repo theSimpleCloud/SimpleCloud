@@ -28,10 +28,12 @@ enum class ServiceType {
      * Represents a proxy service
      */
     PROXY,
+
     /**
      * Represents a normal minecraft server
      */
     SERVER,
+
     /**
      * Represents a lobby server
      */

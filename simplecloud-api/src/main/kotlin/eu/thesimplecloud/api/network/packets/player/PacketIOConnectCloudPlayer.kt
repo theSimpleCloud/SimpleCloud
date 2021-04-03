@@ -40,9 +40,12 @@ class PacketIOConnectCloudPlayer() : JsonPacket() {
     }
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<ConnectionResponse> {
-        val playerUniqueId = this.jsonLib.getObject("playerUniqueId", UUID::class.java) ?: return contentException("playerUniqueId")
+        val playerUniqueId = this.jsonLib.getObject("playerUniqueId", UUID::class.java)
+                ?: return contentException("playerUniqueId")
         val serviceName = this.jsonLib.getString("serviceName") ?: return contentException("serviceName")
-        val cloudService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(serviceName) ?: return failure(UnreachableComponentException(""))
-        return CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(playerUniqueId)?.connect(cloudService) ?: return failure(NoSuchElementException("Player not found"))
+        val cloudService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(serviceName)
+                ?: return failure(UnreachableComponentException(""))
+        return CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(playerUniqueId)?.connect(cloudService)
+                ?: return failure(NoSuchElementException("Player not found"))
     }
 }

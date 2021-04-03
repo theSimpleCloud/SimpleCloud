@@ -30,7 +30,6 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 class PacketIOGetAllOnlinePlayers() : ObjectPacket<Unit>() {
 
 
-
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         return CloudAPI.instance.getCloudPlayerManager().getAllOnlinePlayers().then { it.toTypedArray() }
     }

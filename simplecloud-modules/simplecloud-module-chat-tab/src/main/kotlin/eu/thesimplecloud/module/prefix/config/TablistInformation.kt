@@ -7,9 +7,9 @@ package eu.thesimplecloud.module.prefix.config
  * Time: 13:38
  */
 data class TablistInformation(
-    val groupName: String = "default",
-    val color: String = "GREEN",
-    val prefix: String = "§7",
-    val suffix: String = "",
-    val priority: Int = 99
+        val groupName: String = "default",
+        val color: String = "GREEN",
+        val prefix: String = "§7",
+        val suffix: String = "",
+        val priority: Int = 99
 )

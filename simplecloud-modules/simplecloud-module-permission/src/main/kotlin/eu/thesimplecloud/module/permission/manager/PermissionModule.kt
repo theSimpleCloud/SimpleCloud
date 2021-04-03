@@ -49,7 +49,7 @@ class PermissionModule : ICloudModule {
 
     private lateinit var permissionGroupManager: PermissionGroupManager
 
-    private val permissionGroupConfigsLoader =  PermissionGroupConfigsLoader()
+    private val permissionGroupConfigsLoader = PermissionGroupConfigsLoader()
 
     init {
         instance = this

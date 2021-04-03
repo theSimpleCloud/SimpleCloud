@@ -55,7 +55,6 @@ class ResourceFinder {
         private fun getThreadClassLoader() = Thread.currentThread().contextClassLoader as URLClassLoader
 
 
-
         @Throws(FileNotFoundException::class)
         fun getFileFromClass(clazz: Class<*>): File {
             val resource = clazz.getResource("/${clazz.name.replace('.', '/')}.class").toString()

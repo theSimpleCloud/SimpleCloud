@@ -29,5 +29,5 @@ package eu.thesimplecloud.base.manager.config.updater
  * @author Frederick Baier
  */
 class ModuleUpdaterConfig(
-    val modules: List<String>
+        val modules: List<String>
 )

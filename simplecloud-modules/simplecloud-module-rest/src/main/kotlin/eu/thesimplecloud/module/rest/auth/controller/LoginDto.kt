@@ -7,6 +7,6 @@ package eu.thesimplecloud.module.rest.auth.controller
  * Time: 17:46
  */
 data class LoginDto(
-    val username: String,
-    val password: String
+        val username: String,
+        val password: String
 )

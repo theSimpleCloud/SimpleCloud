@@ -39,12 +39,12 @@ import java.util.concurrent.TimeUnit
 class TimedValueCollectorManager {
 
     private val storeAndCollectorToLastExecutedTime =
-        Maps.newConcurrentMap<StoreAndValueCollector<out Any>, Timestamp>()
+            Maps.newConcurrentMap<StoreAndValueCollector<out Any>, Timestamp>()
 
     fun start() {
         Launcher.instance.scheduler.scheduleAtFixedRate({
             val collectors =
-                storeAndCollectorToLastExecutedTime.filter { it.value.hasTimePassed(it.key.collector.collectInterval()) }.keys
+                    storeAndCollectorToLastExecutedTime.filter { it.value.hasTimePassed(it.key.collector.collectInterval()) }.keys
             collectors.forEach {
                 it.storeNextValue()
                 this.storeAndCollectorToLastExecutedTime[it] = Timestamp()
@@ -59,14 +59,13 @@ class TimedValueCollectorManager {
     }
 
 
-
     fun getStoreByCollectionNameUnsafe(name: String): ITimedValueStore<out Any>? {
         return this.storeAndCollectorToLastExecutedTime.keys.firstOrNull { it.collector.collectionName() == name }?.store
     }
 
     class StoreAndValueCollector<T : Any>(
-        val collector: ITimedValueCollector<T>,
-        val store: ITimedValueStore<T>
+            val collector: ITimedValueCollector<T>,
+            val store: ITimedValueStore<T>
     ) {
 
         fun storeNextValue() {

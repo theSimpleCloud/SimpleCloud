@@ -34,8 +34,8 @@ class CloudListener : IListener {
         val cloudPlayer = event.cloudPlayer
         if (!cloudPlayer.hasProperty(PermissionPlayer.PROPERTY_NAME)) {
             cloudPlayer.setProperty(
-                PermissionPlayer.PROPERTY_NAME,
-                PermissionPlayer(cloudPlayer.getName(), cloudPlayer.getUniqueId())
+                    PermissionPlayer.PROPERTY_NAME,
+                    PermissionPlayer(cloudPlayer.getName(), cloudPlayer.getUniqueId())
             )
         }
 

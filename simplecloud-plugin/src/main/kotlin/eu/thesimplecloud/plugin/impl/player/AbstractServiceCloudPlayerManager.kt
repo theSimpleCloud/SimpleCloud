@@ -95,13 +95,13 @@ abstract class AbstractServiceCloudPlayerManager : AbstractCloudPlayerManager() 
 
     override fun getRegisteredPlayerCount(): ICommunicationPromise<Int> {
         return CloudPlugin.instance.connectionToManager.sendQuery(
-            PacketIOGetRegisteredPlayerCount()
+                PacketIOGetRegisteredPlayerCount()
         )
     }
 
     override fun getPlayersConnectedToService(cloudService: ICloudService): ICommunicationPromise<List<SimpleCloudPlayer>> {
         return CloudPlugin.instance.connectionToManager.sendQuery<Array<SimpleCloudPlayer>>(
-            PacketIOGetPlayersConnectedToService(cloudService), 700
+                PacketIOGetPlayersConnectedToService(cloudService), 700
         ).then { it.toList() }
     }
 

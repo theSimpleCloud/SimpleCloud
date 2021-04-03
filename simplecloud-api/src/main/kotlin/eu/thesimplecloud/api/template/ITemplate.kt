@@ -21,6 +21,7 @@
  */
 
 package eu.thesimplecloud.api.template
+
 import eu.thesimplecloud.api.cachelist.value.ICacheValue
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import java.io.File

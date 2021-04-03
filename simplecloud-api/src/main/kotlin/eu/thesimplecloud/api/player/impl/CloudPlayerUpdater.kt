@@ -30,7 +30,7 @@ import eu.thesimplecloud.api.player.PlayerServerConnectState
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
 class CloudPlayerUpdater(
-    private val cloudPlayer: ICloudPlayer
+        private val cloudPlayer: ICloudPlayer
 ) : AbstractCacheValueUpdater(), ICloudPlayerUpdater {
 
     override fun getCloudPlayer(): ICloudPlayer {

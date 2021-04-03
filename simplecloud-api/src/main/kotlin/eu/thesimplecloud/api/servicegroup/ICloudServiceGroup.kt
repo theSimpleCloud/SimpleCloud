@@ -21,6 +21,7 @@
  */
 
 package eu.thesimplecloud.api.servicegroup
+
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.cachelist.value.ICacheValue
 import eu.thesimplecloud.api.service.ICloudService
@@ -47,7 +48,8 @@ interface ICloudServiceGroup : ICacheValue<ICloudServiceGroupUpdater>, ICloudSer
      * Returns the template that this service uses
      * e.g. Lobby
      */
-    fun getTemplate(): ITemplate = CloudAPI.instance.getTemplateManager().getTemplateByName(getTemplateName()) ?: throw IllegalStateException("Can't find the template of an registered group (group: ${getName()} templates: ${CloudAPI.instance.getTemplateManager().getAllCachedObjects().joinToString { it.getName() }})")
+    fun getTemplate(): ITemplate = CloudAPI.instance.getTemplateManager().getTemplateByName(getTemplateName())
+            ?: throw IllegalStateException("Can't find the template of an registered group (group: ${getName()} templates: ${CloudAPI.instance.getTemplateManager().getAllCachedObjects().joinToString { it.getName() }})")
 
     /**
      * Returns whether this service is static.

@@ -32,8 +32,8 @@ import java.io.File
  * @author Frederick Baier
  */
 class DomainConfigLoader : AbstractMultipleConfigLoader<DomainConfig>(
-    DomainConfig::class.java,
-    File("modules/cloudflare/domains/"),
-    listOf(DomainConfig()),
-    true
+        DomainConfig::class.java,
+        File("modules/cloudflare/domains/"),
+        listOf(DomainConfig()),
+        true
 )

@@ -47,7 +47,7 @@ class ReloadCommand : ICommandHandler {
 
         val loadedWrappers = Manager.instance.wrapperFileHandler.loadAll().toMutableList()
         val unknownWrappers =
-            loadedWrappers.filter { CloudAPI.instance.getWrapperManager().getWrapperByHost(it.getHost()) == null }
+                loadedWrappers.filter { CloudAPI.instance.getWrapperManager().getWrapperByHost(it.getHost()) == null }
         if (unknownWrappers.isNotEmpty()) {
             unknownWrappers.forEach {
                 commandSender.sendProperty("manager.command.reload.wrapper-changed", it.getName())
@@ -86,7 +86,7 @@ class ReloadCommand : ICommandHandler {
 
         //send all wrappers a packet to reload the modules list
         Manager.instance.communicationServer.getClientManager()
-            .sendPacketToAllAuthenticatedWrapperClients(PacketOutReloadExistingModules())
+                .sendPacketToAllAuthenticatedWrapperClients(PacketOutReloadExistingModules())
 
         //enable
         Manager.instance.appClassLoader.clearCachedClasses()

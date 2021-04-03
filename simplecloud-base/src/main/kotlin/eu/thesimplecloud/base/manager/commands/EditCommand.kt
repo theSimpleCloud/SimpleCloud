@@ -188,12 +188,12 @@ class EditCommand : ICommandHandler {
     @CommandSubPath("template <name> module remove <module>", "Removes a module from a template")
     fun removeModuleNameToCopy(commandSender: ICommandSender, @CommandArgument("name", TemplateCommandSuggestionProvider::class) template: ITemplate, @CommandArgument("module") module: String) {
         if (!template.getModuleNamesToCopy().map { it.toLowerCase() }.contains(module)) {
-            commandSender.sendProperty("manager.command.edit.template.modules.remove.not-added", module,  template.getName())
+            commandSender.sendProperty("manager.command.edit.template.modules.remove.not-added", module, template.getName())
             return
         }
         template.removeModuleNameToCopy(module)
         CloudAPI.instance.getTemplateManager().update(template)
-        commandSender.sendProperty("manager.command.edit.template.modules.remove.success",  module, template.getName())
+        commandSender.sendProperty("manager.command.edit.template.modules.remove.success", module, template.getName())
     }
 
 }

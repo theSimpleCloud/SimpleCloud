@@ -34,17 +34,19 @@ import java.io.File
  */
 class ModuleUpdaterConfigLoader : AbstractJsonLibConfigLoader<ModuleUpdaterConfig>(ModuleUpdaterConfig::class.java,
         File(DirectoryPaths.paths.storagePath, "updateable-modules.json"),
-        { ModuleUpdaterConfig(listOf(
-                "SimpleCloud-Chat+Tab",
-                "SimpleCloud-CloudFlare",
-                "SimpleCloud-HubCommand",
-                "SimpleCloud-InternalWrapper",
-                "SimpleCloud-Notify",
-                "SimpleCloud-Permission",
-                "SimpleCloud-Proxy",
-                "SimpleCloud-Rest",
-                "SimpleCloud-Sign",
-                "SimpleCloud-Statistics"
-        )) },
+        {
+            ModuleUpdaterConfig(listOf(
+                    "SimpleCloud-Chat+Tab",
+                    "SimpleCloud-CloudFlare",
+                    "SimpleCloud-HubCommand",
+                    "SimpleCloud-InternalWrapper",
+                    "SimpleCloud-Notify",
+                    "SimpleCloud-Permission",
+                    "SimpleCloud-Proxy",
+                    "SimpleCloud-Rest",
+                    "SimpleCloud-Sign",
+                    "SimpleCloud-Statistics"
+            ))
+        },
         true
 )

@@ -66,8 +66,8 @@ interface IPermissionEntity {
     fun clearAllPermission()
 
     /**
-    * Returns all not expired permissions
-    */
+     * Returns all not expired permissions
+     */
     fun getAllNotExpiredPermissions(): Collection<Permission> = getPermissions().filter { !it.isExpired() }
 
     /**

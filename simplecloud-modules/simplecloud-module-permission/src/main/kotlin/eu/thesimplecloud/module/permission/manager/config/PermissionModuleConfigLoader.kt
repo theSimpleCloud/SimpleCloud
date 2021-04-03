@@ -32,9 +32,9 @@ import java.io.File
  * @author Frederick Baier
  */
 class PermissionModuleConfigLoader : AbstractJsonLibConfigLoader<PermissionModuleConfig>(
-    PermissionModuleConfig::class.java,
-    File("modules/permissions/config.json"),
-    { PermissionModuleConfig() },
-    true
+        PermissionModuleConfig::class.java,
+        File("modules/permissions/config.json"),
+        { PermissionModuleConfig() },
+        true
 ) {
 }

@@ -4,6 +4,6 @@ author: Wetterbericht
 
 main: eu.thesimplecloud.module.permission.service.spigot.SpigotPluginMain
 
-depend: [SimpleCloud-Plugin]
+depend: [ SimpleCloud-Plugin ]
 
 commands:

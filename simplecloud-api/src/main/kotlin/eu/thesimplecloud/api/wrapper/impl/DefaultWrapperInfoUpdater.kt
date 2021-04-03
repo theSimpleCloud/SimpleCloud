@@ -29,7 +29,7 @@ import eu.thesimplecloud.api.wrapper.IWrapperInfoUpdater
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
 class DefaultWrapperInfoUpdater(
-    private val wrapperInfo: IWrapperInfo
+        private val wrapperInfo: IWrapperInfo
 ) : AbstractCacheValueUpdater(), IWrapperInfoUpdater {
 
     override fun getWrapperInfo(): IWrapperInfo {

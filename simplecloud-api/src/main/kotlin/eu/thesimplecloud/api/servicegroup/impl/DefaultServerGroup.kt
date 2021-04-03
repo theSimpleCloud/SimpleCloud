@@ -31,34 +31,34 @@ import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.jsonlib.JsonLibExclude
 
 open class DefaultServerGroup(
-    name: String,
-    templateName: String,
-    maxMemory: Int,
-    maxPlayers: Int,
-    minimumOnlineServiceCount: Int,
-    maximumOnlineServiceCount: Int,
-    maintenance: Boolean,
-    static: Boolean,
-    percentToStartNewService: Int,
-    wrapperName: String?,
-    serviceVersion: ServiceVersion,
-    startPriority: Int,
-    permission: String?,
-    private val hiddenAtProxyGroups: List<String> = emptyList()
+        name: String,
+        templateName: String,
+        maxMemory: Int,
+        maxPlayers: Int,
+        minimumOnlineServiceCount: Int,
+        maximumOnlineServiceCount: Int,
+        maintenance: Boolean,
+        static: Boolean,
+        percentToStartNewService: Int,
+        wrapperName: String?,
+        serviceVersion: ServiceVersion,
+        startPriority: Int,
+        permission: String?,
+        private val hiddenAtProxyGroups: List<String> = emptyList()
 ) : AbstractServiceGroup(
-    name,
-    templateName,
-    maxMemory,
-    maxPlayers,
-    minimumOnlineServiceCount,
-    maximumOnlineServiceCount,
-    maintenance,
-    static,
-    percentToStartNewService,
-    wrapperName,
-    serviceVersion,
-    startPriority,
-    permission
+        name,
+        templateName,
+        maxMemory,
+        maxPlayers,
+        minimumOnlineServiceCount,
+        maximumOnlineServiceCount,
+        maintenance,
+        static,
+        percentToStartNewService,
+        wrapperName,
+        serviceVersion,
+        startPriority,
+        permission
 ), ICloudServerGroup {
 
     @Volatile

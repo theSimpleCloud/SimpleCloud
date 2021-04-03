@@ -38,6 +38,6 @@ class Converter_2_0_To_2_1 : IVersionConverter {
     }
 
     override fun convert() {
-         File(DirectoryPaths.paths.storagePath + "mc-versions.json").delete()
+        File(DirectoryPaths.paths.storagePath + "mc-versions.json").delete()
     }
 }

@@ -75,7 +75,7 @@ class SQLOfflineCloudPlayerHandler(private val databaseConnectionInformation: Da
         statement.executeUpdate()
     }
 
-    override fun getOfflinePlayer(playerUniqueId: UUID): IOfflineCloudPlayer?{
+    override fun getOfflinePlayer(playerUniqueId: UUID): IOfflineCloudPlayer? {
         return loadPlayer(playerUniqueId.toString(), "uniqueId")
     }
 
@@ -93,7 +93,7 @@ class SQLOfflineCloudPlayerHandler(private val databaseConnectionInformation: Da
         return getPlayerWithLatestLogin(players)
     }
 
-    private fun getAllDataStringsFromResultSet(resultSet: ResultSet) : List<String> {
+    private fun getAllDataStringsFromResultSet(resultSet: ResultSet): List<String> {
         val returnList = mutableListOf<String>()
         while (resultSet.next()) {
             try {

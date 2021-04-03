@@ -34,11 +34,11 @@ import java.io.File
  * @author Frederick Baier
  */
 abstract class AbstractMultipleConfigLoader<T : Nameable>(
-    private val clazz: Class<T>,
-    private val directory: File,
-    private val defaultValues: List<T>,
-    private val saveDefaultOnFirstLoad: Boolean,
-    private val gsonToUse: Gson = JsonLib.GSON
+        private val clazz: Class<T>,
+        private val directory: File,
+        private val defaultValues: List<T>,
+        private val saveDefaultOnFirstLoad: Boolean,
+        private val gsonToUse: Gson = JsonLib.GSON
 ) : IFileHandler<T> {
 
     override fun save(value: T) {
@@ -52,7 +52,7 @@ abstract class AbstractMultipleConfigLoader<T : Nameable>(
     override fun loadAll(): Set<T> {
         if (!directory.exists() && saveDefaultOnFirstLoad) saveDefaults()
         return this.directory.listFiles()?.mapNotNull { JsonLib.fromJsonFile(it, gsonToUse)?.getObject(clazz) }?.toSet()
-            ?: emptySet()
+                ?: emptySet()
     }
 
     private fun saveDefaults() {

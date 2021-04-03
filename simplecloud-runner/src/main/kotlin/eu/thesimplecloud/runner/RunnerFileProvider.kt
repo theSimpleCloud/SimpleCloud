@@ -31,7 +31,7 @@ import java.io.File
  * @author Frederick Baier
  */
 object RunnerFileProvider {
-    
+
     val RUNNER_FILE = File(this::class.java.protectionDomain.codeSource.location.toURI())
 
 }

@@ -41,7 +41,8 @@ class PacketIOSendTitleToCloudPlayer() : JsonPacket() {
     }
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Unit> {
-        val playerUniqueId = this.jsonLib.getObject("playerUniqueId", UUID::class.java) ?: return contentException("playerUniqueId")
+        val playerUniqueId = this.jsonLib.getObject("playerUniqueId", UUID::class.java)
+                ?: return contentException("playerUniqueId")
         val title = this.jsonLib.getString("title") ?: return contentException("title")
         val subTitle = this.jsonLib.getString("subTitle") ?: return contentException("subTitle")
         val fadeIn = this.jsonLib.getInt("fadeIn") ?: return contentException("fadeIn")

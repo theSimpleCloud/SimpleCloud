@@ -43,13 +43,13 @@ class DeleteCommand : ICommandHandler {
             return
         }
         if (CloudAPI.instance.getCloudServiceGroupManager().getAllCachedObjects()
-                .any { it.getTemplateName().equals(name, true) }
+                        .any { it.getTemplateName().equals(name, true) }
         ) {
             Launcher.instance.consoleSender.sendProperty("manager.command.delete.template.in-use.group", name)
             return
         }
         if (CloudAPI.instance.getCloudServiceManager().getAllCachedObjects()
-                .any { it.getTemplateName().equals(name, true) }
+                        .any { it.getTemplateName().equals(name, true) }
         ) {
             Launcher.instance.consoleSender.sendProperty("manager.command.delete.template.in-use.service", name)
             return
@@ -86,7 +86,7 @@ class DeleteCommand : ICommandHandler {
             return
         }
         if (CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupsByWrapperName(wrapper.getName())
-                .isNotEmpty()
+                        .isNotEmpty()
         ) {
             Launcher.instance.consoleSender.sendProperty("manager.command.delete.wrapper.group-must-start", name)
             return

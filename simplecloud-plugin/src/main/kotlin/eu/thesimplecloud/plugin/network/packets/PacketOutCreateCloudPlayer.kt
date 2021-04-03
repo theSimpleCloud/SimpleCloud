@@ -29,7 +29,7 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
 class PacketOutCreateCloudPlayer() : JsonPacket() {
 
-    constructor(defaultPlayerConnection: DefaultPlayerConnection, proxyName: String): this() {
+    constructor(defaultPlayerConnection: DefaultPlayerConnection, proxyName: String) : this() {
         this.jsonLib.append("playerConnection", defaultPlayerConnection).append("proxyName", proxyName)
     }
 

@@ -55,7 +55,7 @@ class CloudFlareModule : ICloudModule {
                 if (it) {
                     registerAllRunningServices(cloudFlareHelper)
                     CloudAPI.instance.getEventManager()
-                        .registerListener(this, CloudFlareSingleGroupListener(cloudFlareHelper, proxyConfigs))
+                            .registerListener(this, CloudFlareSingleGroupListener(cloudFlareHelper, proxyConfigs))
                     cloudFlareHelper.createARecordsForWrappersIfNotExist(CloudAPI.instance.getWrapperManager().getAllCachedObjects())
                     Launcher.instance.consoleSender.sendProperty("module.cloudflare.domain.active", config.domain)
                 } else {
@@ -71,7 +71,8 @@ class CloudFlareModule : ICloudModule {
     }
 
     private fun registerAllServicesByProxyConfig(cloudFlareHelper: CloudFlareDomainHelper, proxyConfig: ProxyConfig) {
-        val group = CloudAPI.instance.getCloudServiceGroupManager().getProxyGroupByName(proxyConfig.targetProxyGroup) ?: return
+        val group = CloudAPI.instance.getCloudServiceGroupManager().getProxyGroupByName(proxyConfig.targetProxyGroup)
+                ?: return
         group.getAllServices().filter { it.isOnline() }.forEach { cloudFlareHelper.createSRVRecord(it, proxyConfig) }
     }
 

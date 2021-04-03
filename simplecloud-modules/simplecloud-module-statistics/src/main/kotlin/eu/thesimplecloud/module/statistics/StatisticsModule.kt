@@ -87,7 +87,7 @@ class StatisticsModule : ICloudModule {
             return sqlTimedValueStore
         } else if (offlineCloudPlayerHandler is MongoOfflineCloudPlayerHandler) {
             val mongoTimedValueStore =
-                MongoTimedValueStore<T>(clazz, collectionName, offlineCloudPlayerHandler.database)
+                    MongoTimedValueStore<T>(clazz, collectionName, offlineCloudPlayerHandler.database)
             valueStores.add(mongoTimedValueStore)
             return mongoTimedValueStore
         }

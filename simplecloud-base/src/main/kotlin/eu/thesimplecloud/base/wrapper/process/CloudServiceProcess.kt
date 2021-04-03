@@ -86,7 +86,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
                 if (!s.equals("", ignoreCase = true) && !s.equals(" ", ignoreCase = true) && !s.equals(">", ignoreCase = true)
                         && !s.equals(" >", ignoreCase = true) && !s.contains("InitialHandler has pinged")) {
                     Wrapper.instance.connectionToManager.sendUnitQuery(PacketOutScreenMessage(NetworkComponentType.SERVICE, getCloudService(), s))
-                        .awaitUninterruptibly()
+                            .awaitUninterruptibly()
                     //Launcher.instance.logger.console("[${cloudService.getName()}]$s")
                 }
             } catch (e: IOException) {

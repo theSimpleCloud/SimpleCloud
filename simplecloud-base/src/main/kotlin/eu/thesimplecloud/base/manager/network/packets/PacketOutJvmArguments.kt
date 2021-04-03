@@ -35,7 +35,7 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
  */
 class PacketOutJvmArguments() : ObjectPacket<JvmArgumentsConfig>() {
 
-    constructor(jvmArgumentsConfig: JvmArgumentsConfig): this() {
+    constructor(jvmArgumentsConfig: JvmArgumentsConfig) : this() {
         value = jvmArgumentsConfig
     }
 

@@ -36,7 +36,7 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
 abstract class AbstractCloudServiceManager : AbstractCacheList<ICloudServiceUpdater, ICloudService>(), ICloudServiceManager {
 
-    private val updater = object: ICacheObjectUpdateExecutor<ICloudServiceUpdater, ICloudService> {
+    private val updater = object : ICacheObjectUpdateExecutor<ICloudServiceUpdater, ICloudService> {
 
         override fun getCachedObjectByUpdateValue(value: ICloudService): ICloudService? {
             return getCloudServiceByName(value.getName())
@@ -44,7 +44,7 @@ abstract class AbstractCloudServiceManager : AbstractCacheList<ICloudServiceUpda
 
         override fun determineEventsToCall(updater: ICloudServiceUpdater, cachedValue: ICloudService?): List<IEvent> {
             val serviceToUse = cachedValue ?: updater.getCloudService()
-            if (cachedValue == null){
+            if (cachedValue == null) {
                 return listOf(CloudServiceRegisteredEvent(serviceToUse), CloudServiceUpdatedEvent(serviceToUse))
             }
             val nowStarting = cachedValue.getState() == ServiceState.PREPARED && updater.getState() == ServiceState.STARTING

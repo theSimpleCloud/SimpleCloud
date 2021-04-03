@@ -46,7 +46,7 @@ import java.util.concurrent.ConcurrentHashMap
  */
 
 class CloudFlareDomainHelper(
-    val config: DomainConfig
+        val config: DomainConfig
 ) {
 
     private val cfAccess = CloudflareAccess(config.apiToken, config.email)
@@ -55,14 +55,14 @@ class CloudFlareDomainHelper(
 
     fun isCloudFlareConfiguredCorrectly(): CompletableFuture<Boolean> {
         val request = CloudflareRequest(Category.SSL_VERIFICATION, cfAccess)
-            .identifiers(config.zoneId)
+                .identifiers(config.zoneId)
         val future = request.sendAsync()
         return future.thenApply { it.errors.isEmpty() }
     }
 
     fun createARecordsForWrappersIfNotExist(wrappers: List<IWrapperInfo>) {
         val request = CloudflareRequest(Category.LIST_DNS_RECORDS, cfAccess)
-            .identifiers(config.zoneId)
+                .identifiers(config.zoneId)
 
         val records: List<DNSRecord> = request.asObjectList(DNSRecord::class.java).`object`
         wrappers.forEach { wrapper ->
@@ -72,7 +72,7 @@ class CloudFlareDomainHelper(
 
     private fun checkARecord(wrapper: IWrapperInfo, records: List<DNSRecord>) {
         val wrapperRecord =
-            records.firstOrNull { it.name.equals(getFullDomainByWrapper(wrapper), true) && it.type == "A" }
+                records.firstOrNull { it.name.equals(getFullDomainByWrapper(wrapper), true) && it.type == "A" }
         if (wrapperRecord == null) {
             createARecord(wrapper)
             return
@@ -97,7 +97,7 @@ class CloudFlareDomainHelper(
     fun deleteRecord(id: String): ICommunicationPromise<Unit> {
         return CommunicationPromise.runAsync {
             val request = CloudflareRequest(Category.DELETE_DNS_RECORD, cfAccess)
-                .identifiers(config.zoneId, id)
+                    .identifiers(config.zoneId, id)
             request.send()
             return@runAsync
         }
@@ -106,8 +106,8 @@ class CloudFlareDomainHelper(
     fun createSRVRecord(service: ICloudService, proxyConfig: ProxyConfig): ICommunicationPromise<Unit> {
         return CommunicationPromise.runAsync {
             val request = CloudflareRequest(Category.CREATE_DNS_RECORD, cfAccess)
-                .identifiers(config.zoneId)
-                .body(createSRVRecordBody(service, proxyConfig).jsonElement)
+                    .identifiers(config.zoneId)
+                    .body(createSRVRecordBody(service, proxyConfig).jsonElement)
             val response = request.asObject(DNSRecord::class.java)
             if (response.errors.isNotEmpty()) {
                 Launcher.instance.logger.warning("Error creating SRV record:")
@@ -121,8 +121,8 @@ class CloudFlareDomainHelper(
 
     private fun createARecord(wrapper: IWrapperInfo) {
         val request = CloudflareRequest(Category.CREATE_DNS_RECORD, cfAccess)
-            .identifiers(config.zoneId)
-            .body(createARecordBody(wrapper).jsonElement)
+                .identifiers(config.zoneId)
+                .body(createARecordBody(wrapper).jsonElement)
         val response = request.send()
         if (response.errors.isNotEmpty()) {
             Launcher.instance.logger.warning("Error creating A record:")
@@ -132,30 +132,30 @@ class CloudFlareDomainHelper(
 
     private fun createARecordBody(wrapper: IWrapperInfo): JsonLib {
         return JsonLib.empty()
-            .append("type", "A")
-            .append("ttl", 1)
-            .append("proxied", false)
-            .append("name", getFullDomainByWrapper(wrapper))
-            .append("content", Launcher.instance.launcherConfig.host)
+                .append("type", "A")
+                .append("ttl", 1)
+                .append("proxied", false)
+                .append("name", getFullDomainByWrapper(wrapper))
+                .append("content", Launcher.instance.launcherConfig.host)
 
     }
 
 
     private fun createSRVRecordBody(service: ICloudService, proxyConfig: ProxyConfig): JsonLib {
         return JsonLib.empty()
-            .append("type", "SRV")
-            .append("ttl", 1)
-            .append("proxied", false)
-            .append(
-                "data", JsonLib.empty()
-                    .append("service", "_minecraft")
-                    .append("proto", "_tcp")
-                    .append("name", proxyConfig.subDomain)
-                    .append("priority", 0)
-                    .append("weight", 0)
-                    .append("port", service.getPort())
-                    .append("target", getFullDomainByWrapper(service.getWrapper()))
-            )
+                .append("type", "SRV")
+                .append("ttl", 1)
+                .append("proxied", false)
+                .append(
+                        "data", JsonLib.empty()
+                        .append("service", "_minecraft")
+                        .append("proto", "_tcp")
+                        .append("name", proxyConfig.subDomain)
+                        .append("priority", 0)
+                        .append("weight", 0)
+                        .append("port", service.getPort())
+                        .append("target", getFullDomainByWrapper(service.getWrapper()))
+                )
     }
 
     private fun getFullDomainByWrapper(wrapper: IWrapperInfo): String {

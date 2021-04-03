@@ -54,7 +54,6 @@ open class SimpleLocation(
     }
 
 
-
     override fun hashCode(): Int {
         var result = worldName.hashCode()
         result = 31 * result + x.hashCode()
