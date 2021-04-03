@@ -37,7 +37,7 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
  * @author Frederick Baier
  */
 class DefaultCloudServiceUpdater(
-    private val delegateService: ICloudService
+        private val delegateService: ICloudService
 ) : AbstractCacheValueUpdater(), ICloudServiceUpdater {
 
     override fun getCloudService(): ICloudService {

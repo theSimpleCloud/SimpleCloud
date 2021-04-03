@@ -41,7 +41,7 @@ class IngameCommandListener : Listener {
     fun on(event: ChatEvent) {
         if (event.sender !is ProxiedPlayer) return
         val player = event.sender as ProxiedPlayer
-        if (event.isCommand){
+        if (event.isCommand) {
             val rawCommand = event.message.replaceFirst("/", "")
             val commandStart = rawCommand.split(" ")[0]
             if (CloudBungeePlugin.instance.synchronizedIngameCommandsProperty.getValue().contains(commandStart.toLowerCase())) {
@@ -54,7 +54,7 @@ class IngameCommandListener : Listener {
 
     @EventHandler
     fun on(event: TabCompleteEvent) {
-        val player = event.sender as? ProxiedPlayer?: return
+        val player = event.sender as? ProxiedPlayer ?: return
 
         event.suggestions.addAll(ProxyEventHandler.handleTabComplete(player.uniqueId, event.cursor))
     }

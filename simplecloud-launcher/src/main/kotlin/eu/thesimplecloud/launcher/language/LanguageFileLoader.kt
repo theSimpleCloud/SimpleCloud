@@ -72,7 +72,7 @@ class LanguageFileLoader {
             }
         }
         CloudAPI.instance.getLanguageManager()
-            .registerLanguageFile(CloudAPI.instance.getThisSidesCloudModule(), loadLanguageFile(languageFile))
+                .registerLanguageFile(CloudAPI.instance.getThisSidesCloudModule(), loadLanguageFile(languageFile))
     }
 
     private fun addMissingPropertiesToLanguageFile(languageFile: File, language: String) {

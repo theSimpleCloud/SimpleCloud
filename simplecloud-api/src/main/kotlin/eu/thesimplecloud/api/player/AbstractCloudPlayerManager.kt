@@ -34,7 +34,7 @@ import java.util.*
 import kotlin.NoSuchElementException
 
 abstract class AbstractCloudPlayerManager : AbstractCacheList<ICloudPlayerUpdater, ICloudPlayer>(spreadUpdates = false),
-    ICloudPlayerManager {
+        ICloudPlayerManager {
 
     private val updater = object : ICacheObjectUpdateExecutor<ICloudPlayerUpdater, ICloudPlayer> {
         override fun getIdentificationName(): String {

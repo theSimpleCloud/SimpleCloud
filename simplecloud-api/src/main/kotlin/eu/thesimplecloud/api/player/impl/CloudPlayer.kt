@@ -118,7 +118,7 @@ class CloudPlayer(
         this.connectedServerName = updater.getConnectedServerName()
         this.connectedProxyName = updater.getConnectedProxyName()
         this.connectState = updater.getServerConnectState()
-        this.propertyMap = getMapWithNewestProperties(updater.getCloudPlayer().getProperties())as ConcurrentMap<String, Property<*>>
+        this.propertyMap = getMapWithNewestProperties(updater.getCloudPlayer().getProperties()) as ConcurrentMap<String, Property<*>>
     }
 
     @Synchronized

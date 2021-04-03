@@ -35,11 +35,12 @@ import java.util.concurrent.ConcurrentHashMap
  * @author Frederick Baier
  */
 class DefaultTemplateUpdater(
-    private val template: ITemplate
+        private val template: ITemplate
 ) : ITemplateUpdater {
 
     @Volatile
     private var inheritedTemplateNames: MutableSet<String> = ConcurrentHashMap.newKeySet<String>()
+
     @Volatile
     private var moduleNamesToCopy: MutableSet<String> = ConcurrentHashMap.newKeySet<String>()
 

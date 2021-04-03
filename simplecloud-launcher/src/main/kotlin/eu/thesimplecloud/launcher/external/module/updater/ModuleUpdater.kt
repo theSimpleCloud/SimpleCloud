@@ -39,7 +39,7 @@ class ModuleUpdater(
 ) : AbstractUpdater(updaterFileContent.groupId, updaterFileContent.artifactId, moduleFile) {
 
     override fun getCurrentVersion(): String {
-       return getVersionFromManifestFile(this.updateFile)
+        return getVersionFromManifestFile(this.updateFile)
     }
 
     override fun executeJar() {

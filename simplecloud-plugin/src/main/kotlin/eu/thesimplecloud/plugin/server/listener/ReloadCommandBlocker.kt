@@ -39,9 +39,9 @@ class ReloadCommandBlocker : Listener {
         val message = event.message
         val player = event.player
         if (message.equals("/rl", true) ||
-            message.equals("/reload", true) ||
-            message.equals("/rl confirm", true) ||
-            message.equals("/reload confirm", true)
+                message.equals("/reload", true) ||
+                message.equals("/rl confirm", true) ||
+                message.equals("/reload confirm", true)
         ) {
             if (player.hasPermission("bukkit.command.reload")) {
                 event.isCancelled = true

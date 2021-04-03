@@ -24,8 +24,8 @@ class ChatListener : Listener {
 
         val tablistInformation = TablistHelper.getTablistInformationByPlayer(player) ?: return
         val format = Config.getConfig().chatFormat
-            .replace("%PLAYER%", buildPrompt(tablistInformation))
-            .replace("%MESSAGE%", "%2\$s")
+                .replace("%PLAYER%", buildPrompt(tablistInformation))
+                .replace("%MESSAGE%", "%2\$s")
 
         event.format = format
     }

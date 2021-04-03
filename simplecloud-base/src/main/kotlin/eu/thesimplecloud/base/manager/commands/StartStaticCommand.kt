@@ -45,7 +45,7 @@ class StartStaticCommand : ICommandHandler {
         }
         val groupName = serviceName.split("-").dropLast(1).joinToString("-")
         val numberString = serviceName.split("-").last()
-        val number  = kotlin.runCatching { numberString.toInt() }.getOrNull()
+        val number = kotlin.runCatching { numberString.toInt() }.getOrNull()
         val serviceGroup = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(groupName)
         if (number == null || serviceGroup == null) {
             commandSender.sendProperty("manager.command.startstatic.service-invalid")

@@ -84,12 +84,14 @@ interface ICloudService : ICacheValue<ICloudServiceUpdater>, ICloudServiceVariab
      * Returns the template that this service uses
      * e.g. Lobby
      */
-    fun getTemplate(): ITemplate = CloudAPI.instance.getTemplateManager().getTemplateByName(getTemplateName()) ?: throw IllegalStateException("Can't find the template of an registered service (templates: ${CloudAPI.instance.getTemplateManager().getAllCachedObjects().joinToString { it.getName() }})")
+    fun getTemplate(): ITemplate = CloudAPI.instance.getTemplateManager().getTemplateByName(getTemplateName())
+            ?: throw IllegalStateException("Can't find the template of an registered service (templates: ${CloudAPI.instance.getTemplateManager().getAllCachedObjects().joinToString { it.getName() }})")
 
     /**
      * Returns the service group of this service
      */
-    fun getServiceGroup(): ICloudServiceGroup = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(getGroupName()) ?: throw IllegalStateException("Can't find the service group of an registered service")
+    fun getServiceGroup(): ICloudServiceGroup = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(getGroupName())
+            ?: throw IllegalStateException("Can't find the service group of an registered service")
 
     /**
      * Returns the maximum amount of RAM for this service in MB

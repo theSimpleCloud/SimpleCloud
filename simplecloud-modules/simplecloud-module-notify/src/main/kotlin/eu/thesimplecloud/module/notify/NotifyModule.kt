@@ -44,7 +44,7 @@ class NotifyModule : ICloudModule {
         loadConfig()
         CloudAPI.instance.getEventManager().registerListener(this, CloudListener(this))
         //Launcher.instance.commandManager
-                //.registerCommand(this, NotifyCommand(this))
+        //.registerCommand(this, NotifyCommand(this))
     }
 
     override fun onDisable() {

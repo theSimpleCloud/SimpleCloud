@@ -30,7 +30,7 @@ import java.util.*
 open class SimpleCloudPlayer(
         private val name: String,
         private val uniqueId: UUID
-): Nameable {
+) : Nameable {
 
     override fun getName(): String {
         return name

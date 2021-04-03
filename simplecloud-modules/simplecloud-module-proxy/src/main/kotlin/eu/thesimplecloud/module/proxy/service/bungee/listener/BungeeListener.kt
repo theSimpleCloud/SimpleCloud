@@ -49,7 +49,7 @@ class BungeeListener(val plugin: BungeePluginMain) : Listener {
         val player = event.player
 
         val config = plugin.proxyHandler.configHolder.getValue()
-        val proxyConfiguration = plugin.proxyHandler.getProxyConfiguration()?: return
+        val proxyConfiguration = plugin.proxyHandler.getProxyConfiguration() ?: return
 
         if (CloudPlugin.instance.thisService().getServiceGroup().isInMaintenance()) {
             if (!player.hasPermission(plugin.proxyHandler.JOIN_MAINTENANCE_PERMISSION) &&
@@ -76,7 +76,7 @@ class BungeeListener(val plugin: BungeePluginMain) : Listener {
     @EventHandler
     fun on(event: ServerConnectedEvent) {
         val player = event.player
-        val tablistConfiguration = plugin.proxyHandler.getTablistConfiguration()?: return
+        val tablistConfiguration = plugin.proxyHandler.getTablistConfiguration() ?: return
         plugin.sendHeaderAndFooter(player, tablistConfiguration)
     }
 
@@ -84,7 +84,7 @@ class BungeeListener(val plugin: BungeePluginMain) : Listener {
     fun on(event: ServerSwitchEvent) {
         val player = event.player
 
-        val tablistConfiguration = plugin.proxyHandler.getTablistConfiguration()?: return
+        val tablistConfiguration = plugin.proxyHandler.getTablistConfiguration() ?: return
         plugin.sendHeaderAndFooter(player, tablistConfiguration)
     }
 

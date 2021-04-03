@@ -64,8 +64,8 @@ interface ITimedValueStore<T : Any> {
     }
 
     fun <T : Number> getAveraged(
-        valueList: List<TimedValue<T>>,
-        resolution: Long
+            valueList: List<TimedValue<T>>,
+            resolution: Long
     ): List<TimedValue<T>> {
         if (valueList.isEmpty()) return valueList
         var lastTimeStamp = valueList.first().getTimeStamp()

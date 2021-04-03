@@ -10,10 +10,10 @@ import java.io.File
  * Time: 13:36
  */
 class ConfigLoader : AbstractJsonLibConfigLoader<Config>(
-    Config::class.java,
-    File("modules/chat+tablist/config.json"),
-    {
-        Config()
-    },
-    true
+        Config::class.java,
+        File("modules/chat+tablist/config.json"),
+        {
+            Config()
+        },
+        true
 )

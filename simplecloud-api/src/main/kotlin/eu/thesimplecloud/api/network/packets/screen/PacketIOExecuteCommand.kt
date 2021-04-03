@@ -37,10 +37,11 @@ class PacketIOExecuteCommand() : JsonPacket() {
     }
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Unit> {
-        val cloudClientType = this.jsonLib.getObject("cloudClientType", NetworkComponentType::class.java) ?: return contentException("cloudClientType")
+        val cloudClientType = this.jsonLib.getObject("cloudClientType", NetworkComponentType::class.java)
+                ?: return contentException("cloudClientType")
         val serviceName = this.jsonLib.getString("serviceName") ?: return contentException("serviceName")
         val command = this.jsonLib.getString("command") ?: return contentException("command")
-        val commandExecutable: ICommandExecutable? = when(cloudClientType) {
+        val commandExecutable: ICommandExecutable? = when (cloudClientType) {
             NetworkComponentType.WRAPPER -> {
                 CloudAPI.instance.getWrapperManager().getWrapperByName(serviceName)
             }

@@ -29,8 +29,8 @@ package eu.thesimplecloud.module.statistics.timed
  * @author Frederick Baier
  */
 data class TimedValue<T : Any>(
-    val value: T,
-    private val timeStamp: Long = System.currentTimeMillis()
+        val value: T,
+        private val timeStamp: Long = System.currentTimeMillis()
 ) : Timed {
 
     override fun getTimeStamp(): Long {

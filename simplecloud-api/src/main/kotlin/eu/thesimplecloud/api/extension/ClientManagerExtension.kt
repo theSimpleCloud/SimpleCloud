@@ -43,7 +43,7 @@ fun IClientManager<*>.sendPacketToAllAuthenticatedClients(packet: IPacket): ICom
 
 fun IClientManager<*>.sendPacketToAllAuthenticatedNonWrapperClients(packet: IPacket): ICommunicationPromise<Unit> {
     return this.getAllAuthenticatedClients().filter { it.getClientValue() !is IWrapperInfo }.map { it.sendUnitQuery(packet) }
-        .combineAllPromises()
+            .combineAllPromises()
 }
 
 fun IClientManager<*>.sendPacketToAllAuthenticatedWrapperClients(packet: IPacket) {

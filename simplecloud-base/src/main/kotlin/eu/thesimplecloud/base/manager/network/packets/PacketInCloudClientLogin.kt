@@ -46,7 +46,7 @@ class PacketInCloudClientLogin() : JsonPacket() {
         CloudAPI.instance.getTemplateManager().sendAllCachedObjectsToConnection(connection).awaitCoroutine()
         CloudAPI.instance.getCloudServiceGroupManager().sendAllCachedObjectsToConnection(connection).awaitCoroutine()
         connection.sendUnitQuery(PacketIOServiceVersions(CloudAPI.instance.getServiceVersionHandler().getAllVersions()))
-            .awaitCoroutine()
+                .awaitCoroutine()
         when (cloudClientType) {
             NetworkComponentType.SERVICE -> {
                 val name = this.jsonLib.getString("name") ?: return contentException("name")

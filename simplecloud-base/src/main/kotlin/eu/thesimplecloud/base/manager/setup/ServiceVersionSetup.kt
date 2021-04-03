@@ -80,7 +80,7 @@ class ServiceVersionSetup : ISetup {
         LocalServiceVersionHandler().saveServiceVersion(serviceVersion)
         val serviceVersionHandler = CloudAPI.instance.getServiceVersionHandler() as ManagerServiceVersionHandler
         serviceVersionHandler.reloadServiceVersions()
-        Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-versions.finished",  name)
+        Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-versions.finished", name)
     }
 
 

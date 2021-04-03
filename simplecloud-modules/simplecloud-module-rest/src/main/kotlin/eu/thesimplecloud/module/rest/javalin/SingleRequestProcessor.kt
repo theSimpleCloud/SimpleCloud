@@ -42,9 +42,9 @@ import java.lang.reflect.InvocationTargetException
  * @author Frederick Baier
  */
 class SingleRequestProcessor(
-    private val ctx: Context,
-    private val requestMethodData: RequestMethodData,
-    private val requestingUser: User?
+        private val ctx: Context,
+        private val requestMethodData: RequestMethodData,
+        private val requestingUser: User?
 ) {
 
     fun processRequest() {
@@ -90,7 +90,7 @@ class SingleRequestProcessor(
 
     private fun handleParameters(): Map<RequestMethodData.RequestParameterData, Any?> {
         val parameterDataToInvokeValue = requestMethodData.parameters
-            .map { it to handleValueForParameter(it) }.toMap()
+                .map { it to handleValueForParameter(it) }.toMap()
 
         if (parameterDataToInvokeValue.any { isValueIncorrect(it.key, it.value) }) {
             throw IncorrectValueException("A value is incorrect")
@@ -122,7 +122,7 @@ class SingleRequestProcessor(
         when (annotation) {
             is RequestBody -> {
                 return JsonLib.fromJsonString(this.ctx.body(), RestServer.instance.webGson)
-                    .getObject(parameterData.parameterType)
+                        .getObject(parameterData.parameterType)
             }
             is RequestParam -> {
                 val parameter = this.ctx.req.getParameter(annotation.parameterName) ?: return null

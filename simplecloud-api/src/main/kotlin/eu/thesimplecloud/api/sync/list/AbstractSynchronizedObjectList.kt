@@ -42,7 +42,6 @@ abstract class AbstractSynchronizedObjectList<T : Any>(
 ) : ISynchronizedObjectList<T> {
 
 
-
     override fun update(property: IProperty<T>, fromPacket: Boolean): ICommunicationPromise<Unit> {
         val cachedValue = getCachedObjectByUpdateValue(property.getValue())
         if (cachedValue == null) {

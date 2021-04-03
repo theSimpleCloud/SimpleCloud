@@ -11,8 +11,8 @@ import eu.thesimplecloud.api.utils.Nameable
  * Time: 13:36
  */
 data class Config(
-    val chatFormat: String = "%PLAYER% §8» §7%MESSAGE%",
-    val informationList: List<TablistInformation> = listOf(TablistInformation())
+        val chatFormat: String = "%PLAYER% §8» §7%MESSAGE%",
+        val informationList: List<TablistInformation> = listOf(TablistInformation())
 ) {
     companion object {
 

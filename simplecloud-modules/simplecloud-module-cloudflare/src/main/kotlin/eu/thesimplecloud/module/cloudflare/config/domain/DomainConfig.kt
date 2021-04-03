@@ -31,10 +31,10 @@ import eu.thesimplecloud.api.utils.Nameable
  * @author Frederick Baier
  */
 class DomainConfig(
-    val domain: String = "example.com",
-    val email: String = "me@example.com",
-    val apiToken: String = "",
-    val zoneId: String = ""
+        val domain: String = "example.com",
+        val email: String = "me@example.com",
+        val apiToken: String = "",
+        val zoneId: String = ""
 ) : Nameable {
     override fun getName(): String {
         return this.domain

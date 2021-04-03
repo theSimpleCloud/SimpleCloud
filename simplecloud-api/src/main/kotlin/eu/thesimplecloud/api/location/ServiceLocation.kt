@@ -38,7 +38,7 @@ class ServiceLocation(
 
     val groupName = serviceName.split("-").dropLast(1).joinToString("-")
 
-    constructor(service: ICloudService, worldName: String, x: Double, y: Double, z: Double, yaw: Float, pitch: Float): this(service.getName(), worldName, x, y, z, yaw, pitch)
+    constructor(service: ICloudService, worldName: String, x: Double, y: Double, z: Double, yaw: Float, pitch: Float) : this(service.getName(), worldName, x, y, z, yaw, pitch)
 
     constructor(service: ICloudService, worldName: String, x: Double, y: Double, z: Double) : this(service, worldName, x, y, z, 0F, 0F)
 

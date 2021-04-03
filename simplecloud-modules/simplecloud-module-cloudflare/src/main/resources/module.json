@@ -3,7 +3,10 @@
   "author": "Wetterbericht",
   "mainClass": "eu.thesimplecloud.module.cloudflare.CloudFlareModule",
   "moduleCopyType": "NONE",
-  "repositories": ["https://jitpack.io/", "https://repo.maven.apache.org/maven2/"],
+  "repositories": [
+    "https://jitpack.io/",
+    "https://repo.maven.apache.org/maven2/"
+  ],
   "dependencies": [
     {
       "groupId": "com.github.robinbraemer",

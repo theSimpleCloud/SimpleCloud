@@ -54,7 +54,7 @@ class CpuUsageUpdater {
 
     private fun getCurrentCPUUsage(): Float {
         val osBean: OperatingSystemMXBean = ManagementFactory.getPlatformMXBean(
-            OperatingSystemMXBean::class.java
+                OperatingSystemMXBean::class.java
         )
         return osBean.systemCpuLoad.toFloat()
     }

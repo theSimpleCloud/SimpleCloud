@@ -2,44 +2,44 @@ forge_support: false
 online_mode: true
 log_commands: false
 listeners:
-- query_port: 25577
-  motd: '&1Another Bungee server'
-  tab_list: GLOBAL_PING
-  query_enabled: false
-  proxy_protocol: false
-  forced_hosts:
-    pvp.md-5.net: pvp
-  ping_passthrough: false
-  priorities:
-  - lobby
-  bind_local_address: true
-  host: 0.0.0.0:25565
-  max_players: 1
-  tab_size: 60
-  force_default_server: false
+  - query_port: 25577
+    motd: '&1Another Bungee server'
+    tab_list: GLOBAL_PING
+    query_enabled: false
+    proxy_protocol: false
+    forced_hosts:
+      pvp.md-5.net: pvp
+    ping_passthrough: false
+    priorities:
+      - lobby
+    bind_local_address: true
+    host: 0.0.0.0:25565
+    max_players: 1
+    tab_size: 60
+    force_default_server: false
 connection_throttle: 0
 groups:
   Wetterbericht:
-  - admin
+    - admin
 log_pings: true
 ip_forward: true
 prevent_proxy_connections: false
 network_compression_threshold: 256
 stats: e65ec8da-7f35-4741-a904-9b1dfcf138d6
 disabled_commands:
-- disabledcommandhere
+  - disabledcommandhere
 timeout: 30000
 permissions:
   default:
-  - bungeecord.command.server
-  - bungeecord.command.list
+    - bungeecord.command.server
+    - bungeecord.command.list
   admin:
-  - bungeecord.command.alert
-  - bungeecord.command.end
-  - bungeecord.command.ip
-  - bungeecord.command.reload
-  - reportsystem.goto
-  - reportsystem.show
+    - bungeecord.command.alert
+    - bungeecord.command.end
+    - bungeecord.command.ip
+    - bungeecord.command.reload
+    - reportsystem.goto
+    - reportsystem.show
 servers:
   lobby:
     motd: '&1Just another BungeeCord - Forced Host'

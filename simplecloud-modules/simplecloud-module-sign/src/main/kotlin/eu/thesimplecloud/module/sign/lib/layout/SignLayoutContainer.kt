@@ -21,6 +21,7 @@
  */
 
 package eu.thesimplecloud.module.sign.lib.layout
+
 import java.util.concurrent.CopyOnWriteArrayList
 
 /**

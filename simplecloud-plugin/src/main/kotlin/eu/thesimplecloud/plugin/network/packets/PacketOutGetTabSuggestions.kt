@@ -33,9 +33,9 @@ import java.util.*
  * Date: 14.04.2020
  * Time: 19:05
  */
-class PacketOutGetTabSuggestions(): JsonPacket() {
+class PacketOutGetTabSuggestions() : JsonPacket() {
 
-    constructor(uuid: UUID, command: String): this() {
+    constructor(uuid: UUID, command: String) : this() {
         this.jsonLib
                 .append("uuid", uuid)
                 .append("command", command)

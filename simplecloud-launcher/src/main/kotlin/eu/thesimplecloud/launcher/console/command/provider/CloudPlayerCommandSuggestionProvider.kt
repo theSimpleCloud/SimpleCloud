@@ -31,7 +31,7 @@ import eu.thesimplecloud.api.command.ICommandSender
  * Date: 14.04.2020
  * Time: 18:39
  */
-class CloudPlayerCommandSuggestionProvider: ICommandSuggestionProvider {
+class CloudPlayerCommandSuggestionProvider : ICommandSuggestionProvider {
 
     override fun getSuggestions(sender: ICommandSender, fullCommand: String, lastArgument: String): List<String> {
         return CloudAPI.instance.getCloudPlayerManager().getAllCachedObjects().map { it.getName() }

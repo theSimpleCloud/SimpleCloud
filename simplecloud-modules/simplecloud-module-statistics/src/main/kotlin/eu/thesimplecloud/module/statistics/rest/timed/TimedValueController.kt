@@ -41,15 +41,15 @@ class TimedValueController : IController {
      */
     @RequestMapping(RequestType.GET, "data/:name", "web.statistics.get.data")
     fun handleGet(
-        @RequestPathParam("name") name: String,
-        @RequestParam("from", true) from: Long,
-        @RequestParam("to", true) to: Long,
-        @RequestParam("resolution", false) resolution: Long?
+            @RequestPathParam("name") name: String,
+            @RequestParam("from", true) from: Long,
+            @RequestParam("to", true) to: Long,
+            @RequestParam("resolution", false) resolution: Long?
     ): List<TimedValue<out Any>> {
 
 
         val valueStore = StatisticsModule.instance.getValueStoreByName(name)
-            ?: throwNoSuchElement()
+                ?: throwNoSuchElement()
 
         val recalculatedFrom = from + System.currentTimeMillis()
         val recalculatedTo = to + System.currentTimeMillis()
@@ -63,11 +63,11 @@ class TimedValueController : IController {
 
     @RequestMapping(RequestType.GET, "count/:name", "web.statistics.get.count")
     fun handleGetCount(
-        @RequestPathParam("name") name: String
+            @RequestPathParam("name") name: String
     ): Int {
 
         val valueStore = StatisticsModule.instance.getValueStoreByName(name)
-            ?: throwNoSuchElement()
+                ?: throwNoSuchElement()
 
         return valueStore.count()
     }

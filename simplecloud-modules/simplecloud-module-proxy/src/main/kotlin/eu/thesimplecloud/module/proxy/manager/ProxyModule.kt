@@ -38,7 +38,7 @@ import java.io.File
  * Date: 14.03.2020
  * Time: 21:31
  */
-class ProxyModule : ICloudModule{
+class ProxyModule : ICloudModule {
 
     val configFile = File("modules/proxy", "config.json")
     lateinit var config: Config

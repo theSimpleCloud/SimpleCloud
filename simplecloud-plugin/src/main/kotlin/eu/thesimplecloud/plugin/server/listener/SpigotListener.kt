@@ -84,5 +84,5 @@ class SpigotListener : Listener {
         thisService.setOnlineCount(count)
         thisService.update()
     }
-    
+
 }

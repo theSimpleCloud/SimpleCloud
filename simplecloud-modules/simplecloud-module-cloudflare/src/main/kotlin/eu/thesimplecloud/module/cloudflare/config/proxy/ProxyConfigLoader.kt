@@ -32,8 +32,8 @@ import java.io.File
  * @author Frederick Baier
  */
 class ProxyConfigLoader : AbstractMultipleConfigLoader<ProxyConfig>(
-    ProxyConfig::class.java,
-    File("modules/cloudflare/proxies/"),
-    listOf(ProxyConfig()),
-    true
+        ProxyConfig::class.java,
+        File("modules/cloudflare/proxies/"),
+        listOf(ProxyConfig()),
+        true
 )

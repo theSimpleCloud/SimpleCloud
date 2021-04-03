@@ -43,6 +43,7 @@ class ScreenSession(
          */
 
         CLOSE,
+
         /**
          * Keeps the screen open until "leave" was typed into the console
          */
@@ -52,8 +53,6 @@ class ScreenSession(
          * Reopens the screen if the service starts again
          */
         REOPEN;
-
-
 
 
     }

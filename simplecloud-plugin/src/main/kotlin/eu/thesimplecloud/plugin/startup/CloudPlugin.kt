@@ -46,18 +46,23 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
             private set
     }
 
-    @Volatile private var thisService: ICloudService? = null
+    @Volatile
+    private var thisService: ICloudService? = null
 
-    @Volatile lateinit var communicationClient: INettyClient
+    @Volatile
+    lateinit var communicationClient: INettyClient
         private set
 
-    @Volatile lateinit var connectionToManager: IConnection
+    @Volatile
+    lateinit var connectionToManager: IConnection
         private set
 
-    @Volatile lateinit var thisServiceName: String
+    @Volatile
+    lateinit var thisServiceName: String
         private set
 
-    @Volatile private var nettyThread: Thread
+    @Volatile
+    private var nettyThread: Thread
 
     init {
         println("<---------- Starting SimpleCloud-Plugin ---------->")
@@ -104,6 +109,7 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
         this.connectionToManager = this.communicationClient.getConnection()
         return true
     }
+
     @Synchronized
     fun thisService(): ICloudService {
         if (this.thisService == null) this.thisService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(thisServiceName)

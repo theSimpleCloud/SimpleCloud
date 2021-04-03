@@ -56,7 +56,7 @@ class CloudSignsCommand : CommandExecutor {
             sender.sendMessage("§cUsage: /cloudsigns <add/remove> [group]")
             return true
         }
-        when(args[0].toLowerCase()) {
+        when (args[0].toLowerCase()) {
             "add" -> {
                 if (args.size != 2) {
                     sender.sendMessage("§cUsage: /cloudsigns <add> <group>")

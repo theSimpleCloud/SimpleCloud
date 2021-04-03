@@ -38,7 +38,7 @@ import java.util.function.Consumer
  * @author Frederick Baier
  */
 class ServiceStartPromise(
-    private val delegatePromise: ICommunicationPromise<ICloudService>
+        private val delegatePromise: ICommunicationPromise<ICloudService>
 ) : IServiceStartPromise {
 
     override fun onServiceRegistered(consumer: Consumer<ICloudService>): IServiceStartPromise {
@@ -48,13 +48,13 @@ class ServiceStartPromise(
 
     override fun onServiceStarting(consumer: Consumer<ICloudService>): IServiceStartPromise {
         delegatePromise.then { it.createStartingPromise() }.flatten(timeoutEnabled = false)
-            .then { consumer.accept(it.cloudService) }
+                .then { consumer.accept(it.cloudService) }
         return this
     }
 
     override fun onServiceStarted(consumer: Consumer<ICloudService>): IServiceStartPromise {
         delegatePromise.then { it.createStartedPromise() }.flatten(timeoutEnabled = false)
-            .then { consumer.accept(it.cloudService) }
+                .then { consumer.accept(it.cloudService) }
         return this
     }
 
@@ -128,15 +128,15 @@ class ServiceStartPromise(
     }
 
     override fun combine(
-        communicationPromise: ICommunicationPromise<*>,
-        sumUpTimeouts: Boolean
+            communicationPromise: ICommunicationPromise<*>,
+            sumUpTimeouts: Boolean
     ): ICommunicationPromise<Unit> {
         return delegatePromise.combine(communicationPromise, sumUpTimeouts)
     }
 
     override fun combineAll(
-        promises: List<ICommunicationPromise<*>>,
-        sumUpTimeouts: Boolean
+            promises: List<ICommunicationPromise<*>>,
+            sumUpTimeouts: Boolean
     ): ICommunicationPromise<Unit> {
         return delegatePromise.combineAll(promises, sumUpTimeouts)
     }
@@ -215,9 +215,9 @@ class ServiceStartPromise(
     }
 
     override fun <R : Any> thenDelayed(
-        delay: Long,
-        timeUnit: TimeUnit,
-        function: (ICloudService) -> R?
+            delay: Long,
+            timeUnit: TimeUnit,
+            function: (ICloudService) -> R?
     ): ICommunicationPromise<R> {
         return delegatePromise.thenDelayed(delay, timeUnit, function)
     }

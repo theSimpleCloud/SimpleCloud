@@ -30,10 +30,10 @@ import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.jsonlib.JsonLibExclude
 
 data class DefaultWrapperInfo(
-    private val name: String,
-    private val host: String,
-    @Volatile private var maxSimultaneouslyStartingServices: Int,
-    @Volatile private var maxMemory: Int
+        private val name: String,
+        private val host: String,
+        @Volatile private var maxSimultaneouslyStartingServices: Int,
+        @Volatile private var maxMemory: Int
 ) : IWrapperInfo {
 
     @JsonLibExclude

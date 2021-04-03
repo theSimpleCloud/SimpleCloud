@@ -76,7 +76,6 @@ open class ServiceVersionHandler(
     }
 
 
-
     override fun getServiceVersionByName(name: String): ServiceVersion? {
         return this.versions.firstOrNull { it.name == name }
     }

@@ -31,9 +31,9 @@ import eu.thesimplecloud.api.utils.Nameable
  * @author Frederick Baier
  */
 class ProxyConfig(
-    val targetProxyGroup: String = "Proxy",
-    val domain: String = "example.com",
-    val subDomain: String = "@"
+        val targetProxyGroup: String = "Proxy",
+        val domain: String = "example.com",
+        val subDomain: String = "@"
 ) : Nameable {
     override fun getName(): String {
         return this.targetProxyGroup

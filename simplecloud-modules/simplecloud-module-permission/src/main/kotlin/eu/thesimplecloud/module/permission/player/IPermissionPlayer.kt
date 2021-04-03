@@ -67,7 +67,7 @@ interface IPermissionPlayer : IPermissionEntity, Nameable {
      * Returns the [IPermissionGroup] of this player
      */
     fun getAllNotExpiredPermissionGroups(): List<IPermissionGroup> = getAllNotExpiredPermissionGroupInfoList()
-        .mapNotNull { PermissionPool.instance.getPermissionGroupManager().getPermissionGroupByName(it.permissionGroupName) }
+            .mapNotNull { PermissionPool.instance.getPermissionGroupManager().getPermissionGroupByName(it.permissionGroupName) }
 
     /**
      * Returns the the [IOfflineCloudPlayer] of this permission player wrapped in a promise

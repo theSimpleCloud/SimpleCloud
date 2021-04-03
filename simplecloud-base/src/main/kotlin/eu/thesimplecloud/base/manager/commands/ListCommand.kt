@@ -45,8 +45,8 @@ class ListCommand : ICommandHandler {
         CloudAPI.instance.getWrapperManager().getAllCachedObjects().forEach {
             val connectedMessage = if (it.isAuthenticated()) "&aConnected" else "§cNot Connected"
             commandSender.sendMessage(darkChatColor + ">> &3" + it.getName() + darkChatColor + " (&f" + it.getUsedMemory()
-                    + darkChatColor  + "/&f"
-                    + it.getMaxMemory()+ "MB" + darkChatColor + " | " + connectedMessage + darkChatColor + ")")
+                    + darkChatColor + "/&f"
+                    + it.getMaxMemory() + "MB" + darkChatColor + " | " + connectedMessage + darkChatColor + ")")
         }
 
         commandSender.sendMessage(" ")
@@ -61,7 +61,7 @@ class ListCommand : ICommandHandler {
                     + groups.getRegisteredServiceCount() + " " + serviceName + darkChatColor + ")")
 
             groups.getAllServices().forEach {
-                val wrapperDesign = if (it.getWrapperName() != null) " " + darkChatColor  + "|&3 " + it.getWrapperName() else ""
+                val wrapperDesign = if (it.getWrapperName() != null) " " + darkChatColor + "|&3 " + it.getWrapperName() else ""
                 commandSender.sendMessage(darkChatColor + "- &b" + it.getName() + " " + darkChatColor + "(&f"
                         + it.getUsedMemory() + "MB" + " ${darkChatColor}| "
                         + "&f" + it.getOnlineCount()

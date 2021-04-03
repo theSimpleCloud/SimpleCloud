@@ -35,9 +35,11 @@ import java.util.*
 class PacketInPlayerConnectToServer() : JsonPacket() {
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Unit> {
-        val uniqueId = this.jsonLib.getObject("playerUniqueId", UUID::class.java) ?: return contentException("playerUniqueId")
+        val uniqueId = this.jsonLib.getObject("playerUniqueId", UUID::class.java)
+                ?: return contentException("playerUniqueId")
         val serviceName = this.jsonLib.getString("serviceName") ?: return contentException("serviceName")
-        val cloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(uniqueId) ?: return failure(NoSuchPlayerException("Player cannot be found"))
+        val cloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(uniqueId)
+                ?: return failure(NoSuchPlayerException("Player cannot be found"))
         cloudPlayer as CloudPlayer
         /*
         val oldConnectedServer = cloudPlayer.getConnectedServer()
@@ -46,8 +48,10 @@ class PacketInPlayerConnectToServer() : JsonPacket() {
             oldClient?.sendUnitQuery(PacketIORemoveCloudPlayer(cloudPlayer.getUniqueId()))
         }
          */
-        val newService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(serviceName) ?: return failure(NoSuchServiceException("New service cannot be found"))
-        val newServiceClient = Manager.instance.communicationServer.getClientManager().getClientByClientValue(newService) ?: return failure(NoSuchServiceException("New service is not connected to the manager"))
+        val newService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(serviceName)
+                ?: return failure(NoSuchServiceException("New service cannot be found"))
+        val newServiceClient = Manager.instance.communicationServer.getClientManager().getClientByClientValue(newService)
+                ?: return failure(NoSuchServiceException("New service is not connected to the manager"))
         return CloudAPI.instance.getCloudPlayerManager().sendUpdateToConnection(cloudPlayer, newServiceClient)
     }
 }

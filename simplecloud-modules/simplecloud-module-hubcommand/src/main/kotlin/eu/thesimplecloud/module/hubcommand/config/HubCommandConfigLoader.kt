@@ -32,8 +32,8 @@ import java.io.File
  * @author Frederick Baier
  */
 class HubCommandConfigLoader : AbstractJsonLibConfigLoader<HubCommandConfig>(
-    HubCommandConfig::class.java,
-    File("modules/hub/config.json"),
-    { HubCommandConfig() },
-    true
+        HubCommandConfig::class.java,
+        File("modules/hub/config.json"),
+        { HubCommandConfig() },
+        true
 )

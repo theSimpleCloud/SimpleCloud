@@ -4,4 +4,4 @@ author: Fllip
 
 main: eu.thesimplecloud.module.proxy.service.bungee.BungeePluginMain
 
-depend: [SimpleCloud-Plugin]
+depend: [ SimpleCloud-Plugin ]

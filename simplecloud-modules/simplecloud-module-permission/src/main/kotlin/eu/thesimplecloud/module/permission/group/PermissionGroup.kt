@@ -26,8 +26,8 @@ import eu.thesimplecloud.module.permission.PermissionPool
 import eu.thesimplecloud.module.permission.entity.PermissionEntity
 
 class PermissionGroup(
-    private val name: String,
-    private val priority: Int
+        private val name: String,
+        private val priority: Int
 ) : PermissionEntity(), IPermissionGroup {
 
     private val inheritedPermissionGroups = ArrayList<String>()

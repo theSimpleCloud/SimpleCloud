@@ -47,7 +47,7 @@ class RunnerUpdater : AbstractUpdater(
 
     override fun getVersionToInstall(): String? {
         if (versionToInstall != null) return versionToInstall
-        val content =  WebContentLoader().loadContent("https://update.thesimplecloud.eu/latestVersion/${getCurrentVersion()}")
+        val content = WebContentLoader().loadContent("https://update.thesimplecloud.eu/latestVersion/${getCurrentVersion()}")
                 ?: return null
         this.versionToInstall = JsonLib.fromJsonString(content).getString("latestVersion")
         return this.versionToInstall

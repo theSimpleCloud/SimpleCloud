@@ -32,7 +32,7 @@ import eu.thesimplecloud.launcher.console.setup.provider.ISetupAnswerProvider
  * Date: 14.04.2020
  * Time: 18:39
  */
-class GroupTemplateSetupAnswerProvider: ISetupAnswerProvider {
+class GroupTemplateSetupAnswerProvider : ISetupAnswerProvider {
 
     override fun getSuggestions(sender: ICommandSender): List<String> {
         return CloudAPI.instance.getTemplateManager().getAllCachedObjects().map { it.getName() }

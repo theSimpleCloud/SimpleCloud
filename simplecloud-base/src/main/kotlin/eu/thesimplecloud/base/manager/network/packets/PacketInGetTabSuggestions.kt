@@ -37,13 +37,14 @@ import java.util.*
  * Date: 14.04.2020
  * Time: 19:05
  */
-class PacketInGetTabSuggestions(): JsonPacket() {
+class PacketInGetTabSuggestions() : JsonPacket() {
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
-        val command = this.jsonLib.getString("command")?: return contentException("command")
-        val uuid = this.jsonLib.getObject("uuid", UUID::class.java)?: return contentException("uuid")
+        val command = this.jsonLib.getString("command") ?: return contentException("command")
+        val uuid = this.jsonLib.getObject("uuid", UUID::class.java) ?: return contentException("uuid")
 
-        val player = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(uuid)?: return CommunicationPromise.failed(NoSuchPlayerException(uuid.toString()))
+        val player = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(uuid)
+                ?: return CommunicationPromise.failed(NoSuchPlayerException(uuid.toString()))
 
         return CommunicationPromise.of(Launcher.instance.commandManager.getAvailableTabCompleteArgs(command, player).toTypedArray())
     }

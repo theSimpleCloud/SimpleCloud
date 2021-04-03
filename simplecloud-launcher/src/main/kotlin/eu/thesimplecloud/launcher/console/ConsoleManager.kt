@@ -71,7 +71,7 @@ class ConsoleManager(val commandManager: CommandManager, val consoleSender: Cons
                     handleInput(readLine)
                 }
             } catch (ex: UserInterruptException) {
-            }  catch (ex: IllegalStateException) {
+            } catch (ex: IllegalStateException) {
             }
         }
         thread?.start()

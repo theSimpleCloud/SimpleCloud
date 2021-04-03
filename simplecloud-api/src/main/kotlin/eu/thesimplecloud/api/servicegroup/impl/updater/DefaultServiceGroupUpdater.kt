@@ -31,7 +31,7 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.jsonlib.JsonLibExclude
 
 open class DefaultServiceGroupUpdater(
-    @JsonLibExclude private val serviceGroup: ICloudServiceGroup
+        @JsonLibExclude private val serviceGroup: ICloudServiceGroup
 ) : AbstractCacheValueUpdater(), ICloudServiceGroupUpdater {
 
     override fun getServiceGroup(): ICloudServiceGroup {

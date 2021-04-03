@@ -33,7 +33,7 @@ class ServiceVersionJarLoader {
     @Synchronized
     fun loadVersionFile(serviceVersion: ServiceVersion): File {
         val file = File(DirectoryPaths.paths.minecraftJarsPath + serviceVersion.name + ".jar")
-        if (!file.exists()){
+        if (!file.exists()) {
             Downloader().userAgentDownload(serviceVersion.downloadURL, file)
             //delete json to prevent bugs in spigot version 1.8
             ZipUtils().deletePath(file, "com/google/gson/")

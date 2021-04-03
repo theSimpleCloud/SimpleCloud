@@ -37,8 +37,8 @@ import java.sql.ResultSet
  * @author Frederick Baier
  */
 class SQLTimedValueStore<T : Any>(
-    private val classOfT: Class<T>,
-    private val collectionName: String
+        private val classOfT: Class<T>,
+        private val collectionName: String
 ) : ITimedValueStore<T> {
 
     init {
@@ -53,7 +53,7 @@ class SQLTimedValueStore<T : Any>(
     private fun createDatabaseAndIndicesIfNotExist() {
         if (!doesTableExist()) {
             val statement =
-                getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS `$collectionName` (`value` varchar(36), `timestamp` BIGINT(20))")
+                    getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS `$collectionName` (`value` varchar(36), `timestamp` BIGINT(20))")
             statement.executeUpdate()
             createIndex("timestamp")
         }
@@ -86,7 +86,7 @@ class SQLTimedValueStore<T : Any>(
 
     override fun get(fromTimeStamp: Long, toTimeStamp: Long): List<TimedValue<T>> {
         val statement =
-            getConnection().prepareStatement("SELECT * FROM `$collectionName` WHERE timestamp BETWEEN $fromTimeStamp and $toTimeStamp ORDER BY timestamp ASC")
+                getConnection().prepareStatement("SELECT * FROM `$collectionName` WHERE timestamp BETWEEN $fromTimeStamp and $toTimeStamp ORDER BY timestamp ASC")
         val resultSet = statement.executeQuery()
         return getAllTimedValuesFromResultSet(resultSet)
     }

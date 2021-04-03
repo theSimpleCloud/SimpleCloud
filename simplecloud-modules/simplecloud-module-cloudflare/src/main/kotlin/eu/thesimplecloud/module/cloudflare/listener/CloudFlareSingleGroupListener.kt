@@ -37,8 +37,8 @@ import eu.thesimplecloud.module.cloudflare.domain.CloudFlareDomainHelper
  * @author Frederick Baier
  */
 class CloudFlareSingleGroupListener(
-    private val cloudFlareHelper: CloudFlareDomainHelper,
-    private val allProxyConfigs: Collection<ProxyConfig>
+        private val cloudFlareHelper: CloudFlareDomainHelper,
+        private val allProxyConfigs: Collection<ProxyConfig>
 ) : IListener {
 
     private val config = cloudFlareHelper.config

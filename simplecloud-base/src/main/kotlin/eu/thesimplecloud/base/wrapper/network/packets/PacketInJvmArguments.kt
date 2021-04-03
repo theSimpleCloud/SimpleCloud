@@ -37,7 +37,7 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 class PacketInJvmArguments() : ObjectPacket<JvmArgumentsConfig>() {
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
-        val value = this.value?: return contentException("value")
+        val value = this.value ?: return contentException("value")
         Wrapper.instance.jvmArgumentsConfig = value
 
         return unit()

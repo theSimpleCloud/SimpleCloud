@@ -53,7 +53,7 @@ class VelocityListener(val plugin: VelocityPluginMain) {
 
         if (CloudPlugin.instance.thisService().getServiceGroup().isInMaintenance()) {
             if (!player.hasPermission(plugin.proxyHandler.JOIN_MAINTENANCE_PERMISSION) &&
-                !proxyConfiguration.whitelist.mapToLowerCase().contains(player.username.toLowerCase())
+                    !proxyConfiguration.whitelist.mapToLowerCase().contains(player.username.toLowerCase())
             ) {
                 player.disconnect(CloudTextBuilder().build(CloudText(config.maintenanceKickMessage)))
                 event.result = ServerPreConnectEvent.ServerResult.denied()
@@ -66,7 +66,7 @@ class VelocityListener(val plugin: VelocityPluginMain) {
 
         if (plugin.proxyHandler.getOnlinePlayers() > maxPlayers) {
             if (!player.hasPermission(plugin.proxyHandler.JOIN_FULL_PERMISSION) &&
-                !proxyConfiguration.whitelist.mapToLowerCase().contains(player.username.toLowerCase())
+                    !proxyConfiguration.whitelist.mapToLowerCase().contains(player.username.toLowerCase())
             ) {
                 player.disconnect(CloudTextBuilder().build(CloudText(config.fullProxyKickMessage)))
                 event.result = ServerPreConnectEvent.ServerResult.denied()
@@ -91,7 +91,7 @@ class VelocityListener(val plugin: VelocityPluginMain) {
         val line2 = motdConfiguration.secondLines.random()
 
         val motd = CloudTextBuilder()
-            .build(CloudText(plugin.proxyHandler.replaceString(line1 + "\n" + line2)))
+                .build(CloudText(plugin.proxyHandler.replaceString(line1 + "\n" + line2)))
 
         val ping = event.ping
         var protocol: ServerPing.Version = ping.version

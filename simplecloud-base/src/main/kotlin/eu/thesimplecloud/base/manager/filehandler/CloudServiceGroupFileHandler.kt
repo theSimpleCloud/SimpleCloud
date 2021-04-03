@@ -51,7 +51,7 @@ class CloudServiceGroupFileHandler : IFileHandler<ICloudServiceGroup> {
         return proxyGroups.union(lobbyGroups).union(serverGroups)
     }
 
-    private fun <T : Any> getAllFilesInDirectoryParsedAs(directory: File, clazz: Class<T>) : List<T> {
+    private fun <T : Any> getAllFilesInDirectoryParsedAs(directory: File, clazz: Class<T>): List<T> {
         val list = directory.listFiles()?.map { JsonLib.fromJsonFile(it)?.getObjectOrNull(clazz) } ?: emptyList<T>()
         return list.filterNotNull()
     }

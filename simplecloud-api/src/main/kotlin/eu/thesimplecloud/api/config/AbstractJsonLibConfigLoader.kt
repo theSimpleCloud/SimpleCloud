@@ -27,11 +27,11 @@ import eu.thesimplecloud.jsonlib.JsonLib
 import java.io.File
 
 abstract class AbstractJsonLibConfigLoader<T : Any>(
-    private val configClass: Class<T>,
-    private val configFie: File,
-    private val lazyDefaultObject: () -> T,
-    private val saveDefaultOnFistLoad: Boolean,
-    private val gsonToUse: Gson = JsonLib.GSON
+        private val configClass: Class<T>,
+        private val configFie: File,
+        private val lazyDefaultObject: () -> T,
+        private val saveDefaultOnFistLoad: Boolean,
+        private val gsonToUse: Gson = JsonLib.GSON
 ) : IConfigLoader<T> {
 
     override fun loadConfig(): T {

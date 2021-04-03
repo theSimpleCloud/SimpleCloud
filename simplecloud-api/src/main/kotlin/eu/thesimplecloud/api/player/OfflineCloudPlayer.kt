@@ -38,7 +38,7 @@ open class OfflineCloudPlayer(
         private val onlineTime: Long,
         protected val lastPlayerConnection: DefaultPlayerConnection,
         @Volatile var propertyMap: ConcurrentMap<String, Property<*>> = Maps.newConcurrentMap()
-): SimpleCloudPlayer(name, uniqueId), IOfflineCloudPlayer {
+) : SimpleCloudPlayer(name, uniqueId), IOfflineCloudPlayer {
 
     @Volatile
     private var displayName = name
