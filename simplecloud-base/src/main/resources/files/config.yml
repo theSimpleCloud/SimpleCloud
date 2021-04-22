@@ -38,13 +38,13 @@ listeners:
     max_players: 1
     tab_size: 60
     force_default_server: false
-ip_forward: false
+ip_forward: true
 remote_ping_timeout: 5000
 prevent_proxy_connections: false
 groups:
   md_5:
     - admin
-connection_throttle: 4000
+connection_throttle: -1
 stats: a83781af-9bc4-48a0-b5d1-66367af0966b
 connection_throttle_limit: 3
 log_pings: true
