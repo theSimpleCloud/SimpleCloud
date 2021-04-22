@@ -71,7 +71,7 @@ allprojects {
         dependencyKotlinCouroutinesVersion = '1.4.3'
         dependencyNettyVersion = '4.1.58.Final'
         dependencyGuavaVersion = '30.0-jre'
-        dependencyKMongoVersion = '4.2.3'
+        dependencyKMongoVersion = '4.2.6'
     }
 
     buildscript {

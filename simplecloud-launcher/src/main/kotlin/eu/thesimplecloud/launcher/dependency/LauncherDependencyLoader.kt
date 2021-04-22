@@ -41,7 +41,7 @@ class LauncherDependencyLoader {
                         LauncherCloudDependency("org.slf4j", "slf4j-nop", "1.7.10"),
                         LauncherCloudDependency("org.fusesource.jansi", "jansi", "2.2.0"),
                         LauncherCloudDependency("org.jline", "jline", "3.19.0"),
-                        LauncherCloudDependency("org.litote.kmongo", "kmongo", "4.2.3"),
+                        LauncherCloudDependency("org.litote.kmongo", "kmongo", "4.2.6"),
                         LauncherCloudDependency("commons-io", "commons-io", "2.8.0"),
                         LauncherCloudDependency("org.slf4j", "slf4j-simple", "1.7.10"),
                         LauncherCloudDependency("com.google.guava", "guava", "30.0-jre"),
@@ -49,7 +49,7 @@ class LauncherDependencyLoader {
                         LauncherCloudDependency("com.google.code.gson", "gson", "2.8.6"),
                         LauncherCloudDependency("io.netty", "netty-all", "4.1.58.Final"),
                         LauncherCloudDependency("org.reflections", "reflections", "0.9.12"),
-                        LauncherCloudDependency("org.mariadb.jdbc", "mariadb-java-client", "2.6.0"),
+                        LauncherCloudDependency("org.mariadb.jdbc", "mariadb-java-client", "2.7.2"),
                         LauncherCloudDependency("com.github.ajalt", "clikt", "2.8.0")
                 )
         )
