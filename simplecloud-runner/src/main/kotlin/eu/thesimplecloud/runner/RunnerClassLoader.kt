@@ -33,12 +33,6 @@ import java.net.URLClassLoader
  */
 class RunnerClassLoader(urls: Array<URL>) : URLClassLoader(urls, getSystemClassLoader()) {
 
-    companion object {
-        init {
-            ClassLoader.registerAsParallelCapable()
-        }
-    }
-
     override fun addURL(url: URL?) {
         super.addURL(url)
     }
