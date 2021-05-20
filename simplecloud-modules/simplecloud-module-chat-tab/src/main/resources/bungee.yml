@@ -1,0 +1,5 @@
+name: SimpleCloud-Chat-Tab
+author: KxmischesDomi
+depend: [SimpleCloud-Plugin]
+
+main: eu.thesimplecloud.module.prefix.service.bungee.BungeePluginMain

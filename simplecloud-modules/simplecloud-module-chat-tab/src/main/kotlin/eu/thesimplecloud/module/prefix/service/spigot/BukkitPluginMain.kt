@@ -1,9 +1,9 @@
-package eu.thesimplecloud.module.prefix.service
+package eu.thesimplecloud.module.prefix.service.spigot
 
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.module.prefix.service.listener.ChatListener
-import eu.thesimplecloud.module.prefix.service.listener.CloudListener
-import eu.thesimplecloud.module.prefix.service.listener.JoinListener
+import eu.thesimplecloud.module.prefix.service.spigot.listener.ChatListener
+import eu.thesimplecloud.module.prefix.service.spigot.listener.CloudListener
+import eu.thesimplecloud.module.prefix.service.spigot.listener.JoinListener
 import eu.thesimplecloud.module.prefix.service.tablist.TablistHelper
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin

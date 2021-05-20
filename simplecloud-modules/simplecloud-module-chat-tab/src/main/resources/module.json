@@ -2,7 +2,7 @@
   "name": "SimpleCloud-Chat+Tab",
   "author": "Fllip",
   "mainClass": "eu.thesimplecloud.module.prefix.manager.PrefixModule",
-  "moduleCopyType": "SERVER",
+  "moduleCopyType": "ALL",
   "repositories": [],
   "dependencies": [],
   "depend": [],

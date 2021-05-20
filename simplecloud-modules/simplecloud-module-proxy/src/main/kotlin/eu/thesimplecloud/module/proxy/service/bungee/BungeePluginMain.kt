@@ -71,8 +71,8 @@ class BungeePluginMain : Plugin() {
     fun sendHeaderAndFooter(player: ProxiedPlayer, header: String, footer: String) {
         if (player.server == null) return
         val serverName = player.server.info.name
-        player.setTabHeader(CloudTextBuilder().build(CloudText(proxyHandler.replaceString(header, serverName))),
-                CloudTextBuilder().build(CloudText(proxyHandler.replaceString(footer, serverName))))
+        player.setTabHeader(CloudTextBuilder().build(CloudText(proxyHandler.replaceString(header, serverName, player.uniqueId))),
+                CloudTextBuilder().build(CloudText(proxyHandler.replaceString(footer, serverName, player.uniqueId))))
     }
 
 }

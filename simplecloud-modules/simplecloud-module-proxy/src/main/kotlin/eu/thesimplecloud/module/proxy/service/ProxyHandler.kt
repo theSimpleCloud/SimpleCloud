@@ -25,12 +25,16 @@ package eu.thesimplecloud.module.proxy.service
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.property.IProperty
 import eu.thesimplecloud.api.property.Property
+import eu.thesimplecloud.module.permission.PermissionPool
+import eu.thesimplecloud.module.prefix.config.TablistInformation
+import eu.thesimplecloud.module.prefix.service.tablist.ProxyTablistHelper
 import eu.thesimplecloud.module.proxy.config.Config
 import eu.thesimplecloud.module.proxy.config.DefaultConfig
 import eu.thesimplecloud.module.proxy.config.ProxyGroupConfiguration
 import eu.thesimplecloud.module.proxy.config.TablistConfiguration
 import eu.thesimplecloud.module.proxy.extensions.mapToLowerCase
 import eu.thesimplecloud.plugin.startup.CloudPlugin
+import java.util.*
 
 /**
  * Created by IntelliJ IDEA.
@@ -79,6 +83,45 @@ class ProxyHandler() {
     fun replaceString(message: String, serverName: String): String {
         return replaceString(message)
                 .replace("%SERVER%", serverName)
+    }
+
+    fun replaceString(message: String, serverName: String, uuid: UUID): String {
+        var replacedString = replaceString(message, serverName);
+
+        val groupName = getPermissionsGroupName(uuid)
+        if (groupName != null) replacedString = replacedString.replace("%GROUP%", groupName)
+
+        val tablistInformation = getTablistInformation(uuid)
+        if (tablistInformation == null) {
+            return replacedString
+        }
+        println("awdasdwads")
+
+        return replacedString
+                .replace("%COLOR%", tablistInformation.color)
+                .replace("%PRIORITY%", tablistInformation.priority.toString())
+                .replace("%PREFIX%", tablistInformation.prefix)
+                .replace("%SUFFIX%", tablistInformation.suffix)
+    }
+
+    private fun getTablistInformation(uuid: UUID): TablistInformation? {
+        try {
+            return ProxyTablistHelper.getTablistInformationByPlayer(uuid);
+        } catch (t: Throwable) {
+            t.printStackTrace()
+        }
+        return null
+    }
+
+    private fun getPermissionsGroupName(uuid: UUID): String? {
+        try {
+            val permissionPlayer = PermissionPool.instance.getPermissionPlayerManager().getCachedPermissionPlayer(uuid) ?: return null
+            val permissionGroup = permissionPlayer.getHighestPermissionGroup()
+            return permissionGroup.getName()
+        } catch (t: Throwable) {
+            t.printStackTrace()
+        }
+        return null
     }
 
 }
