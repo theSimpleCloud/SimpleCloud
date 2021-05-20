@@ -22,7 +22,7 @@ class ChatListener : Listener {
         val player = event.player
 
         val permissionPlayer = PermissionPool.instance.getPermissionPlayerManager().getCachedPermissionPlayer(player.uniqueId) ?: return
-
+        val canWriteColored = event.player.hasPermission("cloud.module.chat.color")
         val tablistInformation = TablistHelper.getTablistInformationByUUID(player.uniqueId) ?: return
         val format = ChatColor.translateAlternateColorCodes('&', Config.getConfig().chatFormat)
             .replace("%PLAYER%", buildPrompt(tablistInformation))
@@ -30,7 +30,7 @@ class ChatListener : Listener {
             .replace("%PREFIX%", ChatColor.translateAlternateColorCodes('&', tablistInformation.prefix))
             .replace("%SUFFIX%", ChatColor.translateAlternateColorCodes('&', tablistInformation.suffix))
             .replace("%COLOR%", tablistInformation.color)
-            .replace("%MESSAGE%", "%2\$s")
+            .replace("%MESSAGE%", if (canWriteColored) ChatColor.translateAlternateColorCodes('&', event.message) else "%2\$s")
             .replace("%GROUP%", permissionPlayer.getHighestPermissionGroup().getName())
 
         event.format = format
