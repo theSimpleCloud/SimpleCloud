@@ -91,11 +91,7 @@ class ProxyHandler() {
         val groupName = getPermissionsGroupName(uuid)
         if (groupName != null) replacedString = replacedString.replace("%GROUP%", groupName)
 
-        val tablistInformation = getTablistInformation(uuid)
-        if (tablistInformation == null) {
-            return replacedString
-        }
-        println("awdasdwads")
+        val tablistInformation = getTablistInformation(uuid) ?: return replacedString
 
         return replacedString
                 .replace("%COLOR%", tablistInformation.color)
@@ -108,7 +104,6 @@ class ProxyHandler() {
         try {
             return ProxyTablistHelper.getTablistInformationByPlayer(uuid);
         } catch (t: Throwable) {
-            t.printStackTrace()
         }
         return null
     }
@@ -119,7 +114,6 @@ class ProxyHandler() {
             val permissionGroup = permissionPlayer.getHighestPermissionGroup()
             return permissionGroup.getName()
         } catch (t: Throwable) {
-            t.printStackTrace()
         }
         return null
     }
