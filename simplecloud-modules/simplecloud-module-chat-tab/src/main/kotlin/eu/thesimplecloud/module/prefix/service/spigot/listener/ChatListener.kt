@@ -26,6 +26,7 @@ class ChatListener : Listener {
         val tablistInformation = TablistHelper.getTablistInformationByUUID(player.uniqueId) ?: return
         val format = ChatColor.translateAlternateColorCodes('&', Config.getConfig().chatFormat)
             .replace("%PLAYER%", buildPrompt(tablistInformation))
+            .replace("%NAME%", event.player.name)
             .replace("%PREFIX%", ChatColor.translateAlternateColorCodes('&', tablistInformation.prefix))
             .replace("%SUFFIX%", ChatColor.translateAlternateColorCodes('&', tablistInformation.suffix))
             .replace("%COLOR%", tablistInformation.color)
