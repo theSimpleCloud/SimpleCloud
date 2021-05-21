@@ -30,6 +30,7 @@ class ChatListener : Listener {
             .replace("%PREFIX%", ChatColor.translateAlternateColorCodes('&', tablistInformation.prefix))
             .replace("%SUFFIX%", ChatColor.translateAlternateColorCodes('&', tablistInformation.suffix))
             .replace("%COLOR%", tablistInformation.color)
+            .replace("%COLOR_CODE%", ChatColor.valueOf(tablistInformation.color).toString())
             .replace("%MESSAGE%", if (canWriteColored) ChatColor.translateAlternateColorCodes('&', event.message) else "%2\$s")
             .replace("%GROUP%", permissionPlayer.getHighestPermissionGroup().getName())
 

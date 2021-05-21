@@ -34,6 +34,7 @@ import eu.thesimplecloud.module.proxy.config.ProxyGroupConfiguration
 import eu.thesimplecloud.module.proxy.config.TablistConfiguration
 import eu.thesimplecloud.module.proxy.extensions.mapToLowerCase
 import eu.thesimplecloud.plugin.startup.CloudPlugin
+import net.md_5.bungee.api.ChatColor
 import java.util.*
 
 /**
@@ -112,6 +113,7 @@ class ProxyHandler() {
                 .replace("%PRIORITY%", tablistInformation.priority.toString())
                 .replace("%PREFIX%", tablistInformation.prefix)
                 .replace("%SUFFIX%", tablistInformation.suffix)
+                .replace("%COLOR_CODE%", ChatColor.valueOf(tablistInformation.color).toString())
     }
 
     private fun getTablistInformation(uuid: UUID): TablistInformation? {
