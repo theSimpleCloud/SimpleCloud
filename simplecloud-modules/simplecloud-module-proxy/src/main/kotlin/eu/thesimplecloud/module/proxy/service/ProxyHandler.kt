@@ -116,9 +116,7 @@ class ProxyHandler() {
 
     private fun getTablistInformation(uuid: UUID): TablistInformation? {
         try {
-            val tablistInformation = ProxyTablistHelper.getTablistInformationByUUID(uuid)
-            println(tablistInformation)
-            return tablistInformation
+            return ProxyTablistHelper.getTablistInformationByUUID(uuid)
         } catch (t: Throwable) {
         }
         return null
