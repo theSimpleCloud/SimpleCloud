@@ -37,7 +37,7 @@ class ChatListener : Listener {
     }
 
     private fun buildPrompt(information: TablistInformation): String {
-        return ChatColor.valueOf(information.color).toString() + "%1\$s"
+        return information.prefix + ChatColor.valueOf(information.color).toString() + "%1\$s" + information.suffix
     }
 
 }
