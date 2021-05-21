@@ -61,7 +61,7 @@ class VelocityPluginMain @Inject constructor(val proxyServer: ProxyServer) {
 
     private fun startScheduler() {
         proxyServer.scheduler.buildTask(this) {
-            val tablistConfiguration = proxyHandler.getTablistConfiguration() ?: return@buildTask
+            val tablistConfiguration = proxyHandler.getCurrentTablistConfiguration() ?: return@buildTask
             proxyServer.allPlayers.forEach {
                 sendHeaderAndFooter(it, tablistConfiguration)
             }

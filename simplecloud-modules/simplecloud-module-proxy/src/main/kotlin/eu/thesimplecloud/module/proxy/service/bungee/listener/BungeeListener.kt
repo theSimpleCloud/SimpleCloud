@@ -76,7 +76,7 @@ class BungeeListener(val plugin: BungeePluginMain) : Listener {
     @EventHandler
     fun on(event: ServerConnectedEvent) {
         val player = event.player
-        val tablistConfiguration = plugin.proxyHandler.getTablistConfiguration()?: return
+        val tablistConfiguration = plugin.proxyHandler.getCurrentTablistConfiguration()?: return
         plugin.sendHeaderAndFooter(player, tablistConfiguration)
     }
 
@@ -84,7 +84,7 @@ class BungeeListener(val plugin: BungeePluginMain) : Listener {
     fun on(event: ServerSwitchEvent) {
         val player = event.player
 
-        val tablistConfiguration = plugin.proxyHandler.getTablistConfiguration()?: return
+        val tablistConfiguration = plugin.proxyHandler.getCurrentTablistConfiguration()?: return
         plugin.sendHeaderAndFooter(player, tablistConfiguration)
     }
 

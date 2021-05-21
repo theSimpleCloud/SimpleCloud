@@ -10,11 +10,7 @@ import java.util.*
  */
 object ProxyTablistHelper {
 
-    fun load() {
-
-    }
-
-    fun getTablistInformationByPlayer(uuid: UUID): TablistInformation? {
+    fun getTablistInformationByUUID(uuid: UUID): TablistInformation? {
         val permissionPlayer = PermissionPool.instance.getPermissionPlayerManager().getCachedPermissionPlayer(uuid) ?: return null
 
         val informationList = Config.getConfig().informationList

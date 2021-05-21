@@ -58,8 +58,22 @@ class ProxyHandler() {
                 }
     }
 
-    fun getTablistConfiguration(): TablistConfiguration? {
-        return configHolder.getValue().tablistConfigurations.firstOrNull {
+    var index = 0;
+
+    fun getCurrentTablistConfiguration(): TablistConfiguration? {
+        val configurations = getTabListConfigurations()
+        if (configurations.isEmpty()) return null
+        index++;
+
+        if (index >= configurations.size) {
+            index = 0;
+        }
+
+        return configurations[index]
+    }
+
+    fun getTabListConfigurations(): List<TablistConfiguration> {
+        return configHolder.getValue().tablistConfigurations.filter {
             it.proxies.mapToLowerCase().contains(CloudPlugin.instance.thisService().getGroupName().toLowerCase())
         }
     }
@@ -102,7 +116,9 @@ class ProxyHandler() {
 
     private fun getTablistInformation(uuid: UUID): TablistInformation? {
         try {
-            return ProxyTablistHelper.getTablistInformationByPlayer(uuid);
+            val tablistInformation = ProxyTablistHelper.getTablistInformationByUUID(uuid)
+            println(tablistInformation)
+            return tablistInformation
         } catch (t: Throwable) {
         }
         return null
