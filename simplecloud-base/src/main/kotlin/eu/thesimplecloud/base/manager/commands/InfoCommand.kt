@@ -33,7 +33,7 @@ import eu.thesimplecloud.launcher.console.command.provider.ServiceCommandSuggest
 import eu.thesimplecloud.launcher.console.command.provider.ServiceGroupCommandSuggestionProvider
 import eu.thesimplecloud.launcher.console.command.provider.WrapperCommandSuggestionProvider
 
-@Command("info", CommandType.CONSOLE, "cloud.command.info")
+@Command("info", CommandType.CONSOLE_AND_INGAME, "cloud.command.info")
 class InfoCommand : ICommandHandler {
 
     @CommandSubPath("wrapper <name>", "Prints some information about the specified wrapper")

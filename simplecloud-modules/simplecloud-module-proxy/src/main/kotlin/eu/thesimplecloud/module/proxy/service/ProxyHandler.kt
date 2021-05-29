@@ -45,10 +45,6 @@ import java.util.*
  */
 class ProxyHandler() {
 
-    val JOIN_MAINTENANCE_PERMISSION = "cloud.maintenance.join"
-    val JOIN_FULL_PERMISSION = "cloud.full.join"
-
-
     var configHolder: IProperty<Config> = Property(DefaultConfig.get())
 
     fun onEnable() {
@@ -132,6 +128,11 @@ class ProxyHandler() {
         } catch (t: Throwable) {
         }
         return null
+    }
+      
+    companion object {
+        const val JOIN_MAINTENANCE_PERMISSION = "cloud.maintenance.join"
+        const val JOIN_FULL_PERMISSION = "cloud.full.join"
     }
 
 }

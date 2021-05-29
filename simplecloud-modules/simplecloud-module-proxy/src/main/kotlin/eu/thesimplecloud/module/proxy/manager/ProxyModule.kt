@@ -40,8 +40,9 @@ import java.io.File
  */
 class ProxyModule : ICloudModule{
 
-    val configFile = File("modules/proxy", "config.json")
+    private val configFile = File("modules/proxy", "config.json")
     lateinit var config: Config
+        private set
 
     override fun onEnable() {
         loadConfig()
@@ -49,6 +50,7 @@ class ProxyModule : ICloudModule{
                 .registerCommand(this, ProxyCommand(this))
 
         CloudAPI.instance.getEventManager().registerListener(this, GroupCreateListener(this))
+        CloudAPI.instance.getEventManager().registerListener(this, MaintenanceToggleListener(this))
     }
 
     override fun onDisable() {
