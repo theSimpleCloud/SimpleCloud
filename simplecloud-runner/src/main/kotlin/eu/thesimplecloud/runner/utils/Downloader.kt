@@ -20,36 +20,24 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.api.utils
+package eu.thesimplecloud.runner.utils
 
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.net.HttpURLConnection
+import java.io.File
+import java.io.IOException
 import java.net.URL
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.nio.file.StandardCopyOption
 
-class WebContentLoader {
+class Downloader {
 
-    fun loadContent(urlstring: String): String? {
-        return runCatching {
-            val url = URL(urlstring)
-            val connection = url.openConnection() as HttpURLConnection
-            connection.requestMethod = "GET"
-            connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:58.0) Gecko/20100101 Firefox/58.0")
-            connection.connect()
-            val responseCode = connection.responseCode
-            if (responseCode != 200) {
-                connection.disconnect()
-                return@runCatching null
-            }
-            val reader = BufferedReader(InputStreamReader(connection.inputStream))
-
-            // write the output to stdout
-            var line = ""
-            reader.lines().forEach { line += it }
-            reader.close()
-            connection.disconnect()
-            return@runCatching line
-        }.getOrNull()
+    @Throws(IOException::class)
+    fun userAgentDownload(url: String, file: File) {
+        file.parentFile?.mkdirs()
+        val urlConnection = URL(url).openConnection()
+        urlConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:58.0) Gecko/20100101 Firefox/58.0")
+        urlConnection.connect()
+        Files.copy(urlConnection.getInputStream(), Paths.get(file.absolutePath), StandardCopyOption.REPLACE_EXISTING)
     }
 
 }

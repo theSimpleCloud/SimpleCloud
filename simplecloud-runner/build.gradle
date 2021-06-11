@@ -10,6 +10,7 @@ repositories {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile(group: 'eu.thesimplecloud.jsonlib', name: 'json-lib', version: "1.0.8")
 }
 
 configurations {
@@ -25,7 +26,7 @@ compileTestKotlin {
 }
 
 jar {
-    dependsOn ':simplecloud-launcher:jar'
+    dependsOn ':simplecloud-dependency-loader:jar'
     manifest {
         attributes(
                 'Main-Class': 'eu.thesimplecloud.runner.RunnerClassLoaderInitMainKt',
@@ -37,7 +38,7 @@ jar {
     // files or particular types at will
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 
-    from('../simplecloud-launcher/build/libs') {
-        include 'launcher.jar'
+    from('../simplecloud-dependency-loader/build/libs') {
+        include 'dependency-loader.jar'
     }
 }

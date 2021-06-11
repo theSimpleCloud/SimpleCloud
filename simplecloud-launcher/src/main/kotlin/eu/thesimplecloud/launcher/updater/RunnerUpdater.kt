@@ -23,11 +23,11 @@
 package eu.thesimplecloud.launcher.updater
 
 
-import eu.thesimplecloud.api.utils.WebContentLoader
 import eu.thesimplecloud.jsonlib.JsonLib
-import eu.thesimplecloud.launcher.dependency.LauncherCloudDependency
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.runner.RunnerFileProvider
+import eu.thesimplecloud.runner.dependency.AdvancedCloudDependency
+import eu.thesimplecloud.runner.utils.WebContentLoader
 import java.io.File
 import java.net.URLClassLoader
 import java.nio.file.Files
@@ -73,7 +73,7 @@ class RunnerUpdater : AbstractUpdater(
 
     private fun performWindowsUpdate(currentRunnerFile: File, file: File) {
         val updaterFile = File("storage/updater.jar")
-        val dependency = LauncherCloudDependency("eu.thesimplecloud.simplecloud", "simplecloud-updater", getVersionToInstall()!!)
+        val dependency = AdvancedCloudDependency("eu.thesimplecloud.simplecloud", "simplecloud-updater", getVersionToInstall()!!)
         dependency.download(getRepositoryURL(), updaterFile)
         val processBuilder = ProcessBuilder(
                 "java",

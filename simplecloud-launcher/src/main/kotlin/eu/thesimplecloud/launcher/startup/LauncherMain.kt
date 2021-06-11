@@ -22,18 +22,13 @@
 
 package eu.thesimplecloud.launcher.startup
 
-import eu.thesimplecloud.launcher.dependency.LauncherDependencyLoader
-
 class LauncherMain {
     companion object {
         var specifiedArguments: Array<String>? = null
-
-
     }
 }
 
 fun main(args: Array<String>) {
     LauncherMain.specifiedArguments = args
-    LauncherDependencyLoader().loadLauncherDependencies()
     LauncherStartArguments().main(args)
 }

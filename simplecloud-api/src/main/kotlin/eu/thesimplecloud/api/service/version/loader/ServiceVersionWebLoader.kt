@@ -24,8 +24,8 @@ package eu.thesimplecloud.api.service.version.loader
 
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.service.version.ServiceVersion
-import eu.thesimplecloud.api.utils.WebContentLoader
 import eu.thesimplecloud.jsonlib.JsonLib
+import eu.thesimplecloud.runner.utils.WebContentLoader
 import java.io.File
 import java.io.FileNotFoundException
 

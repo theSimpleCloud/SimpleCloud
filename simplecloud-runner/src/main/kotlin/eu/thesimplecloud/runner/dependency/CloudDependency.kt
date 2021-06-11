@@ -20,7 +20,7 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.api.depedency
+package eu.thesimplecloud.runner.dependency
 
 open class CloudDependency(val groupId: String, val artifactId: String, val version: String) {
 

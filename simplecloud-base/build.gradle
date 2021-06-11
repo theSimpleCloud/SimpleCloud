@@ -38,6 +38,8 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation project(":simplecloud-api")
+    implementation project(":simplecloud-runner")
+    implementation project(":simplecloud-dependency-loader")
     implementation project(":simplecloud-launcher")
     compile(project(":simplecloud-client")) {
         transitive = false

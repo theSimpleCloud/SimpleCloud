@@ -22,6 +22,7 @@
 
 package eu.thesimplecloud.launcher.application
 
+import com.google.common.collect.Maps
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.launcher.external.module.LoadedModuleFileContent
 import eu.thesimplecloud.launcher.external.module.handler.ModuleHandler
@@ -31,19 +32,16 @@ import eu.thesimplecloud.launcher.updater.BaseUpdater
 import eu.thesimplecloud.launcher.updater.UpdateExecutor
 import java.io.File
 import java.net.URL
+import java.net.URLClassLoader
 
 class ApplicationStarter {
     //TODO replace properties
     fun startApplication(applicationType: CloudApplicationType) {
-        //set thread class loader to load the base with the same class loader
         val launcherClassLoader = Launcher.instance.currentClassLoader
         Thread.currentThread().contextClassLoader = launcherClassLoader
         val moduleHandler = ModuleHandler()
         val createClassLoaderFunction: (Array<URL>, String) -> ClassLoader = { urls, name -> ApplicationClassLoader(urls, launcherClassLoader, name, moduleHandler) }
         val moduleFileName = applicationType.name.toLowerCase() + ".json"
-        //Launcher.instance.consoleManager.stopThread()
-        //Launcher.instance.consoleManager.applicationName = applicationType.getApplicationName()
-        //Launcher.instance.consoleManager.startThread()
         val file = File(DirectoryPaths.paths.storagePath + "base.jar")
         if (!Launcher.instance.launcherStartArguments.disableAutoUpdater || !file.exists()) {
             Launcher.instance.consoleSender.sendMessage("Checking for base updates...")
@@ -60,6 +58,8 @@ class ApplicationStarter {
         val moduleFileContent = moduleHandler.loadModuleFileContent(file, moduleFileName)
         val loadedModuleFileContent = LoadedModuleFileContent(file, moduleFileContent, null)
         val loadedModule = UnsafeModuleLoader(createClassLoaderFunction).loadModule(loadedModuleFileContent)
+
+
         val cloudModule = loadedModule.cloudModule as ICloudApplication
         cloudModule.onEnable()
         Launcher.instance.activeApplication = cloudModule
