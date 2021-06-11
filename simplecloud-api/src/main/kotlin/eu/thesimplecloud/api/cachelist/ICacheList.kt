@@ -23,13 +23,15 @@
 package eu.thesimplecloud.api.cachelist
 
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.cachelist.value.ICacheValue
+import eu.thesimplecloud.api.cachelist.value.ICacheValueUpdater
 import eu.thesimplecloud.api.network.packets.sync.cachelist.PacketIOUpdateCacheObject
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.combineAllPromises
 
-interface ICacheList<T : Any> {
+interface ICacheList<U : ICacheValueUpdater, T : ICacheValue<U>> {
 
     /**
      * Updates the cashed value with the content of the specified one.
@@ -38,19 +40,20 @@ interface ICacheList<T : Any> {
      * @return a promise that completes when the update was sent
      */
     fun update(value: T, fromPacket: Boolean = false, isCalledFromDelete: Boolean = false): ICommunicationPromise<Unit> {
-        val updater = getUpdater()
-        val cachedValue = updater.getCachedObjectByUpdateValue(value)
-        val eventsToCall = updater.determineEventsToCall(value, cachedValue)
+        val valueUpdater = value.getUpdater()
+        val updateExecutor = getUpdateExecutor()
+        val cachedValue = updateExecutor.getCachedObjectByUpdateValue(value)
+        val eventsToCall = updateExecutor.determineEventsToCall(valueUpdater, cachedValue)
         if (cachedValue == null) {
-            updater.addNewValue(value)
+            updateExecutor.addNewValue(value)
         } else {
-            updater.mergeUpdateValue(value, cachedValue)
+            cachedValue.applyValuesFromUpdater(valueUpdater)
         }
         eventsToCall.forEach { CloudAPI.instance.getEventManager().call(it) }
         if (shallSpreadUpdates())
             if (!isCalledFromDelete)
                 if (CloudAPI.instance.isManager() || !fromPacket)
-                    return updater.sendUpdatesToOtherComponents(value, PacketIOUpdateCacheObject.Action.UPDATE)
+                    return updateExecutor.sendUpdatesToOtherComponents(value, PacketIOUpdateCacheObject.Action.UPDATE)
 
         return CommunicationPromise.UNIT_PROMISE
     }
@@ -63,7 +66,7 @@ interface ICacheList<T : Any> {
     /**
      * Returns ht update lifecycle of this object
      */
-    fun getUpdater(): ICacheObjectUpdater<T>
+    fun getUpdateExecutor(): ICacheObjectUpdateExecutor<U, T>
 
     /**
      * Deletes the specified value.
@@ -72,7 +75,7 @@ interface ICacheList<T : Any> {
      * @return a promise that completes when the delete was sent
      */
     fun delete(value: T, fromPacket: Boolean = false): ICommunicationPromise<Unit> {
-        val updater = getUpdater()
+        val updater = getUpdateExecutor()
         if (shallSpreadUpdates())
             if (CloudAPI.instance.isManager() || !fromPacket)
                 return updater.sendUpdatesToOtherComponents(value, PacketIOUpdateCacheObject.Action.DELETE)
@@ -92,7 +95,7 @@ interface ICacheList<T : Any> {
      * @return the a promise that completes when the packet was handled.
      */
     fun sendUpdateToConnection(value: T, connection: IConnection): ICommunicationPromise<Unit> {
-        return connection.sendUnitQuery(PacketIOUpdateCacheObject(getUpdater().getIdentificationName(), value, PacketIOUpdateCacheObject.Action.UPDATE))
+        return connection.sendUnitQuery(PacketIOUpdateCacheObject(getUpdateExecutor().getIdentificationName(), value, PacketIOUpdateCacheObject.Action.UPDATE))
     }
 
     /**
@@ -102,7 +105,7 @@ interface ICacheList<T : Any> {
      * @return the a promise that completes when the packet was handled.
      */
     fun sendDeleteToConnection(value: T, connection: IConnection): ICommunicationPromise<Unit> {
-        return connection.sendUnitQuery(PacketIOUpdateCacheObject(getUpdater().getIdentificationName(), value, PacketIOUpdateCacheObject.Action.DELETE))
+        return connection.sendUnitQuery(PacketIOUpdateCacheObject(getUpdateExecutor().getIdentificationName(), value, PacketIOUpdateCacheObject.Action.DELETE))
     }
 
     /**

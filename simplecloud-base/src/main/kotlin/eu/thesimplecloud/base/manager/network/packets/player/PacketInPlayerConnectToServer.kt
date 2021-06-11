@@ -25,7 +25,7 @@ package eu.thesimplecloud.base.manager.network.packets.player
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.exception.NoSuchPlayerException
 import eu.thesimplecloud.api.exception.NoSuchServiceException
-import eu.thesimplecloud.api.player.CloudPlayer
+import eu.thesimplecloud.api.player.impl.CloudPlayer
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket

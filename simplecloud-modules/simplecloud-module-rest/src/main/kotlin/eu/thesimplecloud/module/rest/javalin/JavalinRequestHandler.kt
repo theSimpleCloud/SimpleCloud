@@ -55,14 +55,12 @@ class JavalinRequestHandler(val requestMethodData: RequestMethodData, private va
         try {
             SingleRequestProcessor(ctx, requestMethodData, user).processRequest()
         } catch (ex: Exception) {
-            val exception = if (ex is InvocationTargetException) ex.cause else ex
+            val exception = if (ex is InvocationTargetException) ex.cause!! else ex
             ctx.status(500)
-            if (exception != null) {
-                val json = JsonLib.fromObject(ErrorDto.fromException(exception))
-                ctx.result(json.getAsJsonString())
-            }
+            val json = JsonLib.fromObject(ErrorDto.fromException(exception))
+            ctx.result(json.getAsJsonString())
 
-            //ex.printStackTrace()
+            ex.printStackTrace()
         }
     }
 
@@ -72,7 +70,7 @@ class JavalinRequestHandler(val requestMethodData: RequestMethodData, private va
 
     private fun getUserByContext(context: Context): User? {
         val decodedJWTOptional: Optional<DecodedJWT> = JavalinJWT.getTokenFromHeader(context)
-                .flatMap(JwtProvider.instance.provider::validateToken) as Optional<DecodedJWT>
+            .flatMap(JwtProvider.instance.provider::validateToken) as Optional<DecodedJWT>
 
         if (!decodedJWTOptional.isPresent) {
             return null

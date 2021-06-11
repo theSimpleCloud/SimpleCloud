@@ -17,11 +17,16 @@ import org.bukkit.plugin.java.JavaPlugin
 class BukkitPluginMain : JavaPlugin() {
 
     override fun onEnable() {
+        instance = this
         TablistHelper.load()
         Bukkit.getPluginManager().registerEvents(JoinListener(), this)
         Bukkit.getPluginManager().registerEvents(ChatListener(), this)
 
         CloudAPI.instance.getEventManager().registerListener(CloudAPI.instance.getThisSidesCloudModule(), CloudListener())
+    }
+
+    companion object {
+        lateinit var instance: BukkitPluginMain
     }
 
 }

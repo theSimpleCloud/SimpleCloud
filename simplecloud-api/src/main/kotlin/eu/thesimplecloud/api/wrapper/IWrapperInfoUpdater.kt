@@ -22,7 +22,12 @@
 
 package eu.thesimplecloud.api.wrapper
 
-interface IMutableWrapperInfo : IWrapperInfo {
+import eu.thesimplecloud.api.cachelist.value.ICacheValueUpdater
+import eu.thesimplecloud.api.network.component.IAuthenticatable
+
+interface IWrapperInfoUpdater : ICacheValueUpdater, IAuthenticatable {
+
+    fun getWrapperInfo(): IWrapperInfo
 
     /**
      * Sets the amount of services this wrapper can start simultaneously
@@ -30,9 +35,19 @@ interface IMutableWrapperInfo : IWrapperInfo {
     fun setMaxSimultaneouslyStartingServices(amount: Int)
 
     /**
+     * Returns the amount of services this wrapper can start simultaneously
+     */
+    fun getMaxSimultaneouslyStartingServices(): Int
+
+    /**
      * Sets the maximum MB of RAM for this wrapper
      */
     fun setMaxMemory(memory: Int)
+
+    /**
+     * Returns the maximum MB of RAM for this wrapper
+     */
+    fun getMaxMemory(): Int
 
     /**
      * Sets the amount of RAM in MB the wrapper currently uses
@@ -40,18 +55,38 @@ interface IMutableWrapperInfo : IWrapperInfo {
     fun setUsedMemory(memory: Int)
 
     /**
+     * Return the amount of RAM in MB the wrapper currently uses
+     */
+    fun getUsedMemory(): Int
+
+    /**
      * Sets the CPU usage of this wrapper
      */
     fun setCpuUsage(usage: Float)
 
     /**
-     * Sets whether the wrapper has received the templates.
+     * Returns the CPU usage of this wrapper
+     */
+    fun getCpuUsage(): Float
+
+    /**
+     * Sets whether the wrapper has received the templates
      */
     fun setTemplatesReceived(boolean: Boolean)
+
+    /**
+     * Returns whether the wrapper has received the templates
+     */
+    fun hasTemplatesReceived(): Boolean
 
     /**
      * Sets the amount of services this wrapper is currently starting
      */
     fun setCurrentlyStartingServices(startingServices: Int)
+
+    /**
+     * Return the amount of services this wrapper is currently starting
+     */
+    fun getCurrentlyStartingServices(): Int
 
 }

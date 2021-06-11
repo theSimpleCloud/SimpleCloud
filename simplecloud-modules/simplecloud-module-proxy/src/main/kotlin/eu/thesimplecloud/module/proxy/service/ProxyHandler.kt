@@ -40,8 +40,7 @@ import eu.thesimplecloud.plugin.startup.CloudPlugin
  */
 class ProxyHandler() {
 
-    val JOIN_MAINTENANCE_PERMISSION = "cloud.maintenance.join"
-    val JOIN_FULL_PERMISSION = "cloud.full.join"
+
 
 
     var configHolder: IProperty<Config> = Property(DefaultConfig.get())
@@ -79,6 +78,11 @@ class ProxyHandler() {
     fun replaceString(message: String, serverName: String): String {
         return replaceString(message)
                 .replace("%SERVER%", serverName)
+    }
+
+    companion object {
+        const val JOIN_MAINTENANCE_PERMISSION = "cloud.maintenance.join"
+        const val JOIN_FULL_PERMISSION = "cloud.full.join"
     }
 
 }

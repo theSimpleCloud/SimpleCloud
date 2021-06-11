@@ -24,34 +24,33 @@ package eu.thesimplecloud.api.service.impl
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.cachelist.AbstractCacheList
-import eu.thesimplecloud.api.cachelist.ICacheObjectUpdater
+import eu.thesimplecloud.api.cachelist.ICacheObjectUpdateExecutor
 import eu.thesimplecloud.api.event.service.*
 import eu.thesimplecloud.api.eventapi.IEvent
-import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ICloudServiceManager
+import eu.thesimplecloud.api.service.ICloudServiceUpdater
 import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.utils.time.Timestamp
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
-import java.util.concurrent.ConcurrentMap
 
-abstract class AbstractCloudServiceManager : AbstractCacheList<ICloudService>(), ICloudServiceManager {
+abstract class AbstractCloudServiceManager : AbstractCacheList<ICloudServiceUpdater, ICloudService>(), ICloudServiceManager {
 
-    private val updater = object: ICacheObjectUpdater<ICloudService> {
+    private val updater = object: ICacheObjectUpdateExecutor<ICloudServiceUpdater, ICloudService> {
 
         override fun getCachedObjectByUpdateValue(value: ICloudService): ICloudService? {
             return getCloudServiceByName(value.getName())
         }
 
-        override fun determineEventsToCall(updateValue: ICloudService, cachedValue: ICloudService?): List<IEvent> {
-            val serviceToUse = cachedValue ?: updateValue
+        override fun determineEventsToCall(updater: ICloudServiceUpdater, cachedValue: ICloudService?): List<IEvent> {
+            val serviceToUse = cachedValue ?: updater.getCloudService()
             if (cachedValue == null){
                 return listOf(CloudServiceRegisteredEvent(serviceToUse), CloudServiceUpdatedEvent(serviceToUse))
             }
-            val nowStarting = cachedValue.getState() == ServiceState.PREPARED && updateValue.getState() == ServiceState.STARTING
-            val nowOnline = !cachedValue.isOnline() && updateValue.isOnline()
-            val nowConnected = !cachedValue.isAuthenticated() && updateValue.isAuthenticated()
-            val nowInvisible = cachedValue.getState() == ServiceState.VISIBLE && updateValue.getState() == ServiceState.INVISIBLE
+            val nowStarting = cachedValue.getState() == ServiceState.PREPARED && updater.getState() == ServiceState.STARTING
+            val nowOnline = !cachedValue.isOnline() && updater.isServiceJoinable()
+            val nowConnected = !cachedValue.isAuthenticated() && updater.isAuthenticated()
+            val nowInvisible = cachedValue.getState() == ServiceState.VISIBLE && updater.getState() == ServiceState.INVISIBLE
 
             val events = ArrayList<IEvent>()
             events.add(CloudServiceUpdatedEvent(cachedValue))
@@ -71,22 +70,6 @@ abstract class AbstractCloudServiceManager : AbstractCacheList<ICloudService>(),
             return events
         }
 
-        override fun mergeUpdateValue(updateValue: ICloudService, cachedValue: ICloudService) {
-            cachedValue.setMOTD(updateValue.getMOTD())
-            cachedValue.setOnlineCount(updateValue.getOnlineCount())
-            cachedValue.setState(updateValue.getState())
-            cachedValue.setAuthenticated(updateValue.isAuthenticated())
-            cachedValue.setMaxPlayers(updateValue.getMaxPlayers())
-            cachedValue as DefaultCloudService
-            cachedValue.setWrapperName(updateValue.getWrapperName())
-            cachedValue.setPort(updateValue.getPort())
-            cachedValue.setUsedMemory(updateValue.getUsedMemory())
-            cachedValue.propertyMap = updateValue.getMapWithNewestProperties(cachedValue.propertyMap) as ConcurrentMap<String, Property<*>>
-
-            if (updateValue.getOnlineCount() != cachedValue.getOnlineCount())
-                cachedValue.setLastPlayerUpdate(Timestamp())
-        }
-
         override fun addNewValue(value: ICloudService) {
             value.setLastPlayerUpdate(Timestamp())
             values.add(value)
@@ -98,7 +81,7 @@ abstract class AbstractCloudServiceManager : AbstractCacheList<ICloudService>(),
 
     }
 
-    override fun getUpdater(): ICacheObjectUpdater<ICloudService> {
+    override fun getUpdateExecutor(): ICacheObjectUpdateExecutor<ICloudServiceUpdater, ICloudService> {
         return this.updater
     }
 

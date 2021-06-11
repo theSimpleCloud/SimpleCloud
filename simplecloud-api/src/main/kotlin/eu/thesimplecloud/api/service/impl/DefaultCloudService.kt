@@ -26,39 +26,52 @@ import com.google.common.collect.Maps
 import eu.thesimplecloud.api.property.IProperty
 import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.api.service.ICloudService
+import eu.thesimplecloud.api.service.ICloudServiceUpdater
 import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.service.version.ServiceVersion
 import eu.thesimplecloud.api.utils.time.Timestamp
+import eu.thesimplecloud.clientserverapi.lib.json.PacketExclude
 import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.jsonlib.JsonLibExclude
 import java.util.*
 import java.util.concurrent.ConcurrentMap
 
 data class DefaultCloudService(
-        private val groupName: String,
-        private val serviceNumber: Int,
-        private val uniqueId: UUID,
-        private val templateName: String,
-        @Volatile private var wrapperName: String?,
-        @Volatile private var port: Int,
-        private val maxMemory: Int,
-        @Volatile private var maxPlayers: Int,
-        @Volatile private var motd: String,
-        private val serviceVersion: ServiceVersion
+    private val groupName: String,
+    private val serviceNumber: Int,
+    private val uniqueId: UUID,
+    private val templateName: String,
+    @Volatile private var wrapperName: String?,
+    @Volatile private var port: Int,
+    private val maxMemory: Int,
+    @Volatile private var maxPlayers: Int,
+    @Volatile private var motd: String,
+    private val serviceVersion: ServiceVersion
 ) : ICloudService {
 
-    @Volatile private var serviceState = ServiceState.PREPARED
+    @JsonLibExclude
+    @PacketExclude
+    @Volatile
+    private var serviceUpdater: DefaultCloudServiceUpdater? = DefaultCloudServiceUpdater(this)
 
-    @Volatile private var onlineCount = 0
+    @Volatile
+    private var serviceState = ServiceState.PREPARED
 
-    @Volatile private var usedMemory = 0
+    @Volatile
+    private var onlineCount = 0
 
-    @Volatile private var authenticated = false
+    @Volatile
+    private var usedMemory = 0
+
+    @Volatile
+    private var authenticated = false
 
     @JsonLibExclude
-    @Volatile private var lastPlayerUpdate = Timestamp()
+    @Volatile
+    private var lastPlayerUpdate = Timestamp()
 
-    @Volatile var propertyMap: ConcurrentMap<String, Property<*>> = Maps.newConcurrentMap()
+    @Volatile
+    var propertyMap: ConcurrentMap<String, Property<*>> = Maps.newConcurrentMap()
 
     override fun getGroupName(): String = this.groupName
 
@@ -71,6 +84,13 @@ data class DefaultCloudService(
     override fun getTemplateName(): String = this.templateName
 
     override fun getPort(): Int = this.port
+
+    override fun getUpdater(): ICloudServiceUpdater {
+        if (this.serviceUpdater == null) {
+            this.serviceUpdater = DefaultCloudServiceUpdater(this)
+        }
+        return this.serviceUpdater!!
+    }
 
     fun setPort(port: Int) {
         this.port = port
@@ -85,7 +105,7 @@ data class DefaultCloudService(
     override fun getState(): ServiceState = this.serviceState
 
     override fun setState(serviceState: ServiceState) {
-        this.serviceState = serviceState
+        getUpdater().setState(serviceState)
     }
 
     override fun getOnlineCount(): Int {
@@ -93,7 +113,7 @@ data class DefaultCloudService(
     }
 
     override fun setOnlineCount(amount: Int) {
-        this.onlineCount = amount
+        getUpdater().setOnlineCount(amount)
     }
 
     override fun getMaxPlayers(): Int {
@@ -101,13 +121,13 @@ data class DefaultCloudService(
     }
 
     override fun setMaxPlayers(amount: Int) {
-        this.maxPlayers = amount
+        getUpdater().setMaxPlayers(amount)
     }
 
     override fun getMOTD(): String = this.motd
 
     override fun setMOTD(motd: String) {
-        this.motd = motd
+        getUpdater().setMOTD(motd)
     }
 
     override fun isAuthenticated(): Boolean = this.authenticated
@@ -123,7 +143,7 @@ data class DefaultCloudService(
     override fun getLastPlayerUpdate(): Timestamp = this.lastPlayerUpdate
 
     override fun setLastPlayerUpdate(timeStamp: Timestamp) {
-        this.lastPlayerUpdate = timeStamp
+        getUpdater().setLastPlayerUpdate(timeStamp)
     }
 
 
@@ -146,6 +166,24 @@ data class DefaultCloudService(
 
     override fun removeProperty(name: String) {
         this.propertyMap.remove(name)
+    }
+
+    override fun applyValuesFromUpdater(updater: ICloudServiceUpdater) {
+        this.serviceState = updater.getState()
+        this.onlineCount = updater.getOnlineCount()
+        this.lastPlayerUpdate = updater.getLastPlayerUpdate()
+        this.motd = updater.getMOTD()
+        this.maxPlayers = updater.getMaxPlayers()
+
+        val updateService = updater.getCloudService()
+        this.authenticated = updateService.isAuthenticated()
+        this.wrapperName = updateService.getWrapperName()
+        this.port = updateService.getPort()
+        this.usedMemory = updateService.getUsedMemory()
+        this.propertyMap = this.getMapWithNewestProperties(updateService.getProperties()) as ConcurrentMap<String, Property<*>>
+
+        if (this.getOnlineCount() != updateService.getOnlineCount())
+            this.lastPlayerUpdate = Timestamp()
     }
 
     fun setUsedMemory(usedMemory: Int) {

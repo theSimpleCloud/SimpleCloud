@@ -25,7 +25,6 @@ package eu.thesimplecloud.base.wrapper.startup
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.client.NetworkComponentType
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
-import eu.thesimplecloud.api.wrapper.IMutableWrapperInfo
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.base.core.jvm.JvmArgumentsConfig
 import eu.thesimplecloud.base.wrapper.impl.CloudAPIImpl
@@ -161,7 +160,7 @@ class Wrapper : ICloudApplication {
             } catch (e: InterruptedException) {
             }
         }
-        this.connectionToManager.sendUnitQuery(PacketOutCloudClientLogin(NetworkComponentType.WRAPPER), 4000).syncUninterruptibly()
+        this.connectionToManager.sendUnitQuery(PacketOutCloudClientLogin(NetworkComponentType.WRAPPER), 10000).syncUninterruptibly()
 
         if (!isStartedInManagerDirectory()) {
             val templateClient = NettyClient(launcherConfig.host, launcherConfig.port + 1, ConnectionHandlerImpl())
@@ -183,9 +182,9 @@ class Wrapper : ICloudApplication {
                 templateClient.getConnection().sendUnitQuery(PacketOutGetTemplates(), TimeUnit.MINUTES.toMillis(15))
                         .thenDelayed(3, TimeUnit.SECONDS) {
                             reloadExistingModules()
-                            val thisWrapper = getThisWrapper() as IMutableWrapperInfo
-                            thisWrapper.setTemplatesReceived(true)
-                            CloudAPI.instance.getWrapperManager().update(thisWrapper)
+                            val wrapperUpdater = getThisWrapper().getUpdater()
+                            wrapperUpdater.setTemplatesReceived(true)
+                            wrapperUpdater.update()
                             Launcher.instance.consoleSender.sendProperty("wrapper.template.received")
                         }.addFailureListener {
                             Launcher.instance.logger.severe("An error occurred while requesting templates:")
@@ -211,11 +210,11 @@ class Wrapper : ICloudApplication {
     fun updateWrapperData() {
         val usedMemory = this.cloudServiceProcessManager.getAllProcesses().sumBy { it.getCloudService().getMaxMemory() }
         val thisWrapper = this.getThisWrapper()
-        thisWrapper as IMutableWrapperInfo
-        thisWrapper.setUsedMemory(usedMemory)
-        thisWrapper.setCurrentlyStartingServices(this.processQueue?.getStartingOrQueuedServiceAmount() ?: 0)
+        val wrapperUpdater = thisWrapper.getUpdater()
+        wrapperUpdater.setUsedMemory(usedMemory)
+        wrapperUpdater.setCurrentlyStartingServices(this.processQueue?.getStartingOrQueuedServiceAmount() ?: 0)
         if (this.connectionToManager.isOpen())
-            CloudAPI.instance.getWrapperManager().update(thisWrapper).awaitUninterruptibly()
+            wrapperUpdater.update().awaitUninterruptibly()
     }
 
     override fun onEnable() {

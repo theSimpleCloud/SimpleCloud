@@ -28,7 +28,7 @@ import eu.thesimplecloud.api.screen.ICommandExecutable
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.sync.`object`.GlobalPropertyHolder
-import eu.thesimplecloud.api.wrapper.IMutableWrapperInfo
+import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.base.manager.impl.CloudPlayerManagerImpl
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnectedClient
@@ -44,12 +44,13 @@ class CommunicationConnectionHandlerImpl : AbstractCloudConnectionHandler() {
         clientValue as IAuthenticatable
         clientValue.setAuthenticated(false)
 
-        if (clientValue is IMutableWrapperInfo) {
+        if (clientValue is IWrapperInfo) {
             unregisterServicesRunningOnWrapper(clientValue)
-            clientValue.setTemplatesReceived(false)
-            clientValue.setCurrentlyStartingServices(0)
-            clientValue.setUsedMemory(0)
-            CloudAPI.instance.getWrapperManager().update(clientValue)
+            val wrapperUpdater = clientValue.getUpdater()
+            wrapperUpdater.setTemplatesReceived(false)
+            wrapperUpdater.setCurrentlyStartingServices(0)
+            wrapperUpdater.setUsedMemory(0)
+            wrapperUpdater.update()
             Launcher.instance.consoleSender.sendProperty("manager.disconnect.wrapper", clientValue.getName())
         }
 
@@ -63,7 +64,7 @@ class CommunicationConnectionHandlerImpl : AbstractCloudConnectionHandler() {
         globalPropertyHolder.removeConnectionFromUpdates(connection)
     }
 
-    private fun unregisterServicesRunningOnWrapper(clientValue: IMutableWrapperInfo) {
+    private fun unregisterServicesRunningOnWrapper(clientValue: IWrapperInfo) {
         val services = CloudAPI.instance.getCloudServiceManager().getServicesRunningOnWrapper(clientValue.getName())
         services.forEach {
             it.setState(ServiceState.CLOSED)

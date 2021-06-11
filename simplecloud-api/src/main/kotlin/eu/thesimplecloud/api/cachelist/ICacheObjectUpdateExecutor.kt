@@ -23,6 +23,8 @@
 package eu.thesimplecloud.api.cachelist
 
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.cachelist.value.ICacheValue
+import eu.thesimplecloud.api.cachelist.value.ICacheValueUpdater
 import eu.thesimplecloud.api.eventapi.IEvent
 import eu.thesimplecloud.api.extension.sendPacketToAllAuthenticatedClients
 import eu.thesimplecloud.api.network.packets.sync.cachelist.PacketIOUpdateCacheObject
@@ -30,7 +32,7 @@ import eu.thesimplecloud.clientserverapi.client.INettyClient
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.clientserverapi.server.INettyServer
 
-interface ICacheObjectUpdater<T : Any> {
+interface ICacheObjectUpdateExecutor<U : ICacheValueUpdater, T : ICacheValue<U>> {
 
     /**
      * Returns the identification name
@@ -49,12 +51,7 @@ interface ICacheObjectUpdater<T : Any> {
      * the events will be called after the update value was updated to the cache
      * All events should be called with the [cachedValue] if it is not null
      */
-    fun determineEventsToCall(updateValue: T, cachedValue: T?): List<IEvent>
-
-    /**
-     * Merges the information of the [updateValue] into the [cachedValue]
-     */
-    fun mergeUpdateValue(updateValue: T, cachedValue: T)
+    fun determineEventsToCall(updater: U, cachedValue: T?): List<IEvent>
 
     /**
      * Sends the [value] to every network component that shall receive the update.

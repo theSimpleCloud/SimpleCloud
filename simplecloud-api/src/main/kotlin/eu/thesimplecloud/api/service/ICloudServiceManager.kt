@@ -25,7 +25,7 @@ package eu.thesimplecloud.api.service
 import eu.thesimplecloud.api.cachelist.ICacheList
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
-interface ICloudServiceManager : ICacheList<ICloudService> {
+interface ICloudServiceManager : ICacheList<ICloudServiceUpdater, ICloudService> {
 
     /**
      * Removes the [ICloudService] found by the specified name

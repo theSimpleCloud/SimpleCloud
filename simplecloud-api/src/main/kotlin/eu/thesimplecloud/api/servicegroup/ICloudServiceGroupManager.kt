@@ -37,7 +37,7 @@ import eu.thesimplecloud.api.servicegroup.impl.DefaultProxyGroup
 import eu.thesimplecloud.api.servicegroup.impl.DefaultServerGroup
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
-interface ICloudServiceGroupManager : ICacheList<ICloudServiceGroup> {
+interface ICloudServiceGroupManager : ICacheList<ICloudServiceGroupUpdater, ICloudServiceGroup> {
 
 
     /**

@@ -39,8 +39,14 @@ class FileEditor() {
     }
 
     constructor(stream: InputStream) : this() {
-        lines = ArrayList(BufferedReader(InputStreamReader(stream,
-                StandardCharsets.UTF_8)).lines().toList())
+        lines = ArrayList(
+            BufferedReader(
+                InputStreamReader(
+                    stream,
+                    StandardCharsets.UTF_8
+                )
+            ).lines().toList()
+        )
     }
 
     constructor(file: File) : this() {
@@ -109,15 +115,9 @@ class FileEditor() {
     }
 
     fun replaceLine(line: String, replace: String) {
-        for (i in lines.indices) {
-            val s = lines[i]
-            if (s.equals(line, ignoreCase = true)) {
-                lines.removeAt(i)
-                lines[i] = replace
-                return
-            }
-
-        }
+        val index = this.lines.indexOf(line)
+        if (index == -1) throw IllegalArgumentException("Line $line could not be found")
+        this.lines[index] = replace
     }
 
     fun replaceInAllLines(old: String, new: String) {

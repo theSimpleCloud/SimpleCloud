@@ -24,12 +24,13 @@ package eu.thesimplecloud.api.wrapper
 
 
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.cachelist.value.ICacheValue
 import eu.thesimplecloud.api.client.NetworkComponentType
 import eu.thesimplecloud.api.network.component.INetworkComponent
 import eu.thesimplecloud.api.service.ICloudService
 
 
-interface IWrapperInfo : INetworkComponent {
+interface IWrapperInfo : ICacheValue<IWrapperInfoUpdater>, INetworkComponent {
 
     /**
      * Returns the host of this wrapper.

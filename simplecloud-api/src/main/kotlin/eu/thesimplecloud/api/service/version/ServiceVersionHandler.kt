@@ -31,7 +31,7 @@ import eu.thesimplecloud.api.service.version.type.ServiceVersionType
  * Time: 13:27
  * @author Frederick Baier
  */
-class ServiceVersionHandler(
+open class ServiceVersionHandler(
         @Volatile
         var versions: List<ServiceVersion> = emptyList()
 ) : IServiceVersionHandler {

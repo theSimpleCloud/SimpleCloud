@@ -42,9 +42,9 @@ class PermissionGroupConfigsLoader : AbstractMultipleConfigLoader<PermissionGrou
 
     companion object {
         fun getDefaultGroups(): List<PermissionGroup> {
-            val adminGroup = PermissionGroup("Admin")
+            val adminGroup = PermissionGroup("Admin", 100)
             adminGroup.addPermission(Permission("*", -1, true))
-            val defaultGroup = PermissionGroup("default")
+            val defaultGroup = PermissionGroup("default", 0)
             return listOf(adminGroup, defaultGroup)
         }
     }

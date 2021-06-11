@@ -26,10 +26,11 @@ import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.dto.PlayerLoginRequestResult
 import eu.thesimplecloud.api.event.player.CloudPlayerDisconnectEvent
 import eu.thesimplecloud.api.event.player.CloudPlayerLoginEvent
-import eu.thesimplecloud.api.player.CloudPlayer
 import eu.thesimplecloud.api.player.ICloudPlayer
 import eu.thesimplecloud.api.player.PlayerServerConnectState
 import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
+import eu.thesimplecloud.api.player.impl.CloudPlayer
+import eu.thesimplecloud.api.player.impl.CloudPlayerUpdater
 import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.servicegroup.grouptype.ICloudServerGroup
 import eu.thesimplecloud.clientserverapi.lib.packet.packetsender.sendQuery
@@ -173,11 +174,10 @@ object ProxyEventHandler {
                 }
 
 
-        //update player
-        //use cloned player to compare connected server with old connected server.
-        val clonedPlayer = cloudPlayer.clone() as CloudPlayer
-        clonedPlayer.setServerConnectState(PlayerServerConnectState.CONNECTING)
-        clonedPlayer.update().awaitUninterruptibly()
+        val playerUpdater = cloudPlayer.getUpdater()
+        playerUpdater as CloudPlayerUpdater
+        playerUpdater.setServerConnectState(PlayerServerConnectState.CONNECTING)
+        playerUpdater.update().awaitUninterruptibly()
     }
 
 
@@ -190,10 +190,11 @@ object ProxyEventHandler {
 
         val cloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(uniqueId)
         cloudPlayer ?: return
-        val clonedPlayer = cloudPlayer.clone() as CloudPlayer
-        clonedPlayer.setConnectedServerName(service.getName())
-        clonedPlayer.setServerConnectState(PlayerServerConnectState.CONNECTED)
-        clonedPlayer.update().awaitUninterruptibly()
+        val playerUpdater = cloudPlayer.getUpdater()
+        playerUpdater as CloudPlayerUpdater
+        playerUpdater.setConnectedServerName(service.getName())
+        playerUpdater.setServerConnectState(PlayerServerConnectState.CONNECTED)
+        playerUpdater.update().awaitUninterruptibly()
     }
 
     fun handleServerKick(cloudPlayer: ICloudPlayer, kickReasonString: String, serverName: String, cancelEvent: (String, CancelType) -> Unit) {
@@ -204,10 +205,11 @@ object ProxyEventHandler {
                 return
             }
         }
-        val player = cloudPlayer.clone() as CloudPlayer
-        if (player.getConnectedServerName() != null) {
-            player.setServerConnectState(PlayerServerConnectState.CONNECTED)
-            player.update().awaitUninterruptibly()
+        val playerUpdater = cloudPlayer.getUpdater()
+        playerUpdater as CloudPlayerUpdater
+        if (playerUpdater.getConnectedServerName() != null) {
+            playerUpdater.setServerConnectState(PlayerServerConnectState.CONNECTED)
+            playerUpdater.update().awaitUninterruptibly()
         }
     }
 

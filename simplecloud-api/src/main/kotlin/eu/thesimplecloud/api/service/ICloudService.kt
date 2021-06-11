@@ -23,6 +23,7 @@
 package eu.thesimplecloud.api.service
 
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.cachelist.value.ICacheValue
 import eu.thesimplecloud.api.client.NetworkComponentType
 import eu.thesimplecloud.api.event.service.CloudServiceConnectedEvent
 import eu.thesimplecloud.api.event.service.CloudServiceStartedEvent
@@ -36,7 +37,6 @@ import eu.thesimplecloud.api.property.IPropertyMap
 import eu.thesimplecloud.api.service.version.ServiceVersion
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.api.template.ITemplate
-import eu.thesimplecloud.api.utils.time.Timestamp
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.clientserverapi.lib.bootstrap.IBootstrap
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
@@ -45,7 +45,7 @@ import eu.thesimplecloud.clientserverapi.lib.promise.flatten
 import eu.thesimplecloud.clientserverapi.lib.promise.toListPromise
 import java.util.*
 
-interface ICloudService : INetworkComponent, IBootstrap, IPropertyMap {
+interface ICloudService : ICacheValue<ICloudServiceUpdater>, ICloudServiceVariables, INetworkComponent, IBootstrap, IPropertyMap {
 
     /**
      * Returns the service group name of this service
@@ -141,36 +141,6 @@ interface ICloudService : INetworkComponent, IBootstrap, IPropertyMap {
     override fun getName(): String = getGroupName() + "-" + getServiceNumber()
 
     /**
-     * Returns the last time stamp a player interacted with the server.
-     */
-    fun getLastPlayerUpdate(): Timestamp
-
-    /**
-     * Sets the last time a player interacted with the server.
-     */
-    fun setLastPlayerUpdate(timeStamp: Timestamp)
-
-    /**
-     * Returns the state of this service.
-     */
-    fun getState(): ServiceState
-
-    /**
-     * Sets the state of this service
-     */
-    fun setState(serviceState: ServiceState)
-
-    /**
-     * Returns the amount of players that are currently on this service
-     */
-    fun getOnlineCount(): Int
-
-    /**
-     * Sets the amount of online players.
-     */
-    fun setOnlineCount(amount: Int)
-
-    /**
      *  Returns a promise of players currently connected to this service
      */
     fun getOnlinePlayers(): ICommunicationPromise<List<SimpleCloudPlayer>> {
@@ -187,30 +157,9 @@ interface ICloudService : INetworkComponent, IBootstrap, IPropertyMap {
     }
 
     /**
-     * Returns the maximum amount of players for this service
-     */
-    fun getMaxPlayers(): Int
-
-    /**
-     * Sets the maximum amount of players for this service.
-     * The amount has no effect on players trying to join.
-     */
-    fun setMaxPlayers(amount: Int)
-
-    /**
-     * Returns the MOTD of this service.
-     */
-    fun getMOTD(): String
-
-    /**
-     * Sets the MOTD of this service.
-     */
-    fun setMOTD(motd: String)
-
-    /**
      * Returns weather this service is joinable for players.
      */
-    fun isOnline() = getState() == ServiceState.VISIBLE || getState() == ServiceState.INVISIBLE
+    fun isOnline() = isServiceJoinable()
 
     /**
      * Returns whether this service is full.
@@ -276,7 +225,9 @@ interface ICloudService : INetworkComponent, IBootstrap, IPropertyMap {
     /**
      * Updates this service to the network
      */
-    fun update() = CloudAPI.instance.getCloudServiceManager().update(this)
+    fun update(): ICommunicationPromise<Unit> {
+        return getUpdater().update()
+    }
 
     /**
      * Copies the service to the template directory.

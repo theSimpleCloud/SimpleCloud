@@ -30,6 +30,7 @@ import com.velocitypowered.api.event.proxy.ProxyPingEvent
 import com.velocitypowered.api.proxy.server.ServerPing
 import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.module.proxy.extensions.mapToLowerCase
+import eu.thesimplecloud.module.proxy.service.ProxyHandler
 import eu.thesimplecloud.module.proxy.service.velocity.VelocityPluginMain
 import eu.thesimplecloud.plugin.proxy.velocity.text.CloudTextBuilder
 import eu.thesimplecloud.plugin.startup.CloudPlugin
@@ -52,9 +53,10 @@ class VelocityListener(val plugin: VelocityPluginMain) {
         val proxyConfiguration = plugin.proxyHandler.getProxyConfiguration() ?: return
 
         if (CloudPlugin.instance.thisService().getServiceGroup().isInMaintenance()) {
-            if (!player.hasPermission(plugin.proxyHandler.JOIN_MAINTENANCE_PERMISSION) &&
-                    !proxyConfiguration.whitelist.mapToLowerCase().contains(player.username.toLowerCase())) {
-                player.disconnect(CloudTextBuilder().build(CloudText(plugin.proxyHandler.replaceString(config.maintenanceKickMessage))))
+            if (!player.hasPermission(ProxyHandler.JOIN_MAINTENANCE_PERMISSION) &&
+                !proxyConfiguration.whitelist.mapToLowerCase().contains(player.username.toLowerCase())
+            ) {
+                player.disconnect(CloudTextBuilder().build(CloudText(config.maintenanceKickMessage)))
                 event.result = ServerPreConnectEvent.ServerResult.denied()
                 return
             }
@@ -64,9 +66,10 @@ class VelocityListener(val plugin: VelocityPluginMain) {
         val maxPlayers = CloudPlugin.instance.thisService().getServiceGroup().getMaxPlayers()
 
         if (plugin.proxyHandler.getOnlinePlayers() > maxPlayers) {
-            if (!player.hasPermission(plugin.proxyHandler.JOIN_FULL_PERMISSION) &&
-                    !proxyConfiguration.whitelist.mapToLowerCase().contains(player.username.toLowerCase())) {
-                player.disconnect(CloudTextBuilder().build(CloudText(plugin.proxyHandler.replaceString(config.fullProxyKickMessage))))
+            if (!player.hasPermission(ProxyHandler.JOIN_FULL_PERMISSION) &&
+                !proxyConfiguration.whitelist.mapToLowerCase().contains(player.username.toLowerCase())
+            ) {
+                player.disconnect(CloudTextBuilder().build(CloudText(config.fullProxyKickMessage)))
                 event.result = ServerPreConnectEvent.ServerResult.denied()
             }
         }
@@ -75,7 +78,7 @@ class VelocityListener(val plugin: VelocityPluginMain) {
     @EventHandler
     fun on(event: ServerConnectedEvent) {
         val player = event.player
-        val tablistConfiguration = plugin.proxyHandler.getTablistConfiguration()?: return
+        val tablistConfiguration = plugin.proxyHandler.getTablistConfiguration() ?: return
         plugin.sendHeaderAndFooter(player, tablistConfiguration)
     }
 
@@ -89,7 +92,7 @@ class VelocityListener(val plugin: VelocityPluginMain) {
         val line2 = motdConfiguration.secondLines.random()
 
         val motd = CloudTextBuilder()
-                .build(CloudText(plugin.proxyHandler.replaceString(line1 + "\n" + line2)))
+            .build(CloudText(plugin.proxyHandler.replaceString(line1 + "\n" + line2)))
 
         val ping = event.ping
         var protocol: ServerPing.Version = ping.version
@@ -98,21 +101,23 @@ class VelocityListener(val plugin: VelocityPluginMain) {
         val modinfo = if (ping.modinfo.isPresent) ping.modinfo.get() else null
 
         val playerInfo = motdConfiguration.playerInfo
-        var onlinePlayers = plugin.proxyHandler.getOnlinePlayers()
+        val onlinePlayers = plugin.proxyHandler.getOnlinePlayers()
 
         val versionName = motdConfiguration.versionName
         if (versionName != null && versionName.isNotEmpty()) {
             protocol = ServerPing.Version(-1, plugin.proxyHandler.replaceString(versionName))
         }
 
-        val maxPlayers = CloudPlugin.instance.thisService().getMaxPlayers()
+        val maxPlayers = CloudPlugin.instance.thisService().getServiceGroup().getMaxPlayers()
 
-        if (playerInfo != null && playerInfo.isNotEmpty()) {
+        val playerSamples = if (playerInfo != null && playerInfo.isNotEmpty()) {
             val playerInfoString = plugin.proxyHandler.replaceString(playerInfo.joinToString("\n"))
-            val sample = listOf(ServerPing.SamplePlayer(playerInfoString, UUID.randomUUID()))
-            players = ServerPing.Players(onlinePlayers, maxPlayers, sample)
+            listOf(ServerPing.SamplePlayer(playerInfoString, UUID.randomUUID()))
+        } else {
+            emptyList()
         }
 
+        players = ServerPing.Players(onlinePlayers, maxPlayers, playerSamples)
         event.ping = ServerPing(protocol, players, motd, favicon, modinfo)
     }
 

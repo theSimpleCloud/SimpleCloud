@@ -22,33 +22,65 @@
 
 package eu.thesimplecloud.base.wrapper.startup
 
+import java.io.IOException
+import java.net.Socket
+import java.util.concurrent.ConcurrentHashMap
+
+
 class PortManager {
 
     companion object {
         const val START_PORT = 50_000
     }
 
-    private val usedPorts = HashSet<Int>()
+    private val usedPorts = ConcurrentHashMap.newKeySet<Int>()
+
+    private val blockedPorts = ConcurrentHashMap.newKeySet<Int>()
 
 
     @Synchronized
     fun getUnusedPort(startPort: Int = START_PORT): Int {
         var port = startPort
-        while (usedPorts.contains(port)) {
+        while (isInUse(port) || isPortBlockedByOtherApp(port)) {
             port++
         }
         usedPorts.add(port)
 
-        /*val serverSocket = ServerSocket(0)
-        serverSocket.localPort
-        serverSocket.close()*/
-
         return port
+    }
+
+    private fun isPortBlockedByOtherApp(port: Int): Boolean {
+        if (this.blockedPorts.contains(port)) {
+            return true
+        }
+        val isPortAvailable = isPortAvailable(port)
+        if (!isPortAvailable) {
+            addBlockedPort(port)
+        }
+        return !isPortAvailable
+    }
+
+    private fun isInUse(port: Int): Boolean {
+        return this.usedPorts.contains(port)
+    }
+
+    private fun isPortAvailable(port: Int): Boolean {
+        try {
+            Socket("127.0.0.1", port).use { return false }
+        } catch (ignored: IOException) {
+            return true
+        }
     }
 
     fun setPortUnused(port: Int) {
         this.usedPorts.remove(port)
     }
 
+    private fun addBlockedPort(port: Int) {
+        if (this.blockedPorts.size > 200) {
+            this.blockedPorts.clear()
+        }
+        this.blockedPorts.add(port)
+    }
 
 }

@@ -24,6 +24,7 @@ package eu.thesimplecloud.module.proxy.service.bungee.listener
 
 import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.module.proxy.extensions.mapToLowerCase
+import eu.thesimplecloud.module.proxy.service.ProxyHandler
 import eu.thesimplecloud.module.proxy.service.bungee.BungeePluginMain
 import eu.thesimplecloud.plugin.proxy.bungee.text.CloudTextBuilder
 import eu.thesimplecloud.plugin.startup.CloudPlugin
@@ -52,7 +53,7 @@ class BungeeListener(val plugin: BungeePluginMain) : Listener {
         val proxyConfiguration = plugin.proxyHandler.getProxyConfiguration()?: return
 
         if (CloudPlugin.instance.thisService().getServiceGroup().isInMaintenance()) {
-            if (!player.hasPermission(plugin.proxyHandler.JOIN_MAINTENANCE_PERMISSION) &&
+            if (!player.hasPermission(ProxyHandler.JOIN_MAINTENANCE_PERMISSION) &&
                     !proxyConfiguration.whitelist.mapToLowerCase().contains(player.name.toLowerCase())) {
                 player.disconnect(CloudTextBuilder().build(CloudText(plugin.proxyHandler.replaceString(config.maintenanceKickMessage))))
                 event.isCancelled = true
@@ -64,7 +65,7 @@ class BungeeListener(val plugin: BungeePluginMain) : Listener {
         val maxPlayers = CloudPlugin.instance.thisService().getServiceGroup().getMaxPlayers()
 
         if (plugin.proxyHandler.getOnlinePlayers() > maxPlayers) {
-            if (!player.hasPermission(plugin.proxyHandler.JOIN_FULL_PERMISSION) &&
+            if (!player.hasPermission(ProxyHandler.JOIN_FULL_PERMISSION) &&
                     !proxyConfiguration.whitelist.mapToLowerCase().contains(player.name.toLowerCase())) {
                 player.disconnect(CloudTextBuilder().build(CloudText(plugin.proxyHandler.replaceString(config.fullProxyKickMessage))))
                 event.isCancelled = true

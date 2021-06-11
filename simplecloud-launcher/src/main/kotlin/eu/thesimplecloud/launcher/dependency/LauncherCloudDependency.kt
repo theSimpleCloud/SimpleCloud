@@ -98,18 +98,24 @@ class LauncherCloudDependency(groupId: String, artifactId: String, version: Stri
     private fun getVersionStringAsIntArray(version: String): Array<Int> {
         val versionParts = version.split(".")
         val major = versionParts[0].toInt()
-        val minor = versionParts[1].toInt()
-        val patch = versionParts.getOrNull(2)
-        val pathBuilder = StringBuilder()
-        if (patch == null) return arrayOf(major, minor, 0)
-        for (char in patch.toCharArray()) {
-            if (char - '0' in 0..9) {
-                pathBuilder.append(char)
+        val minor = parseVersionPart(versionParts.getOrNull(1))
+        val patch = parseVersionPart(versionParts.getOrNull(2))
+        return arrayOf(major, minor, patch)
+    }
+
+    private fun parseVersionPart(part: String?): Int {
+        if (part == null) return 0
+        val charArray = part.toCharArray()
+        val numbers = mutableListOf<Int>()
+        for (char in charArray) {
+            if (char.isDigit()) {
+                numbers.add(char.toInt())
             } else {
                 break
             }
         }
-        return arrayOf(major, minor, pathBuilder.toString().toInt())
+        if (numbers.isEmpty()) return 0
+        return numbers.joinToString("").toInt()
     }
 
 

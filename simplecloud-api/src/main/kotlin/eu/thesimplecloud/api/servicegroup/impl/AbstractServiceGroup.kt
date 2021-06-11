@@ -25,6 +25,7 @@ package eu.thesimplecloud.api.servicegroup.impl
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.service.version.ServiceVersion
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
+import eu.thesimplecloud.api.servicegroup.ICloudServiceGroupUpdater
 
 abstract class AbstractServiceGroup(
     private val name: String,
@@ -52,43 +53,43 @@ abstract class AbstractServiceGroup(
     }
 
     override fun setPermission(permission: String?) {
-        this.permission = permission
+        getUpdater().setPermission(permission)
     }
 
     override fun getTemplateName(): String = this.templateName
 
     override fun setTemplateName(name: String) {
-        this.templateName = name
+        getUpdater().setTemplateName(name)
     }
 
     override fun getMaxMemory(): Int = this.maxMemory
 
     override fun setMaxMemory(memory: Int) {
-        this.maxMemory = memory
+        getUpdater().setMaxMemory(memory)
     }
 
     override fun getMaxPlayers(): Int = this.maxPlayers
 
     override fun setMaxPlayers(maxPlayers: Int) {
-        this.maxPlayers = maxPlayers
+        getUpdater().setMaxPlayers(maxPlayers)
     }
 
     override fun getMinimumOnlineServiceCount(): Int = this.minimumOnlineServiceCount
 
     override fun setMinimumOnlineServiceCount(count: Int) {
-        this.minimumOnlineServiceCount = count
+        getUpdater().setMinimumOnlineServiceCount(count)
     }
 
     override fun getMaximumOnlineServiceCount(): Int = this.maximumOnlineServiceCount
 
     override fun setMaximumOnlineServiceCount(count: Int) {
-        this.maximumOnlineServiceCount = count
+        getUpdater().setMaximumOnlineServiceCount(count)
     }
 
     override fun isInMaintenance(): Boolean = this.maintenance
 
     override fun setMaintenance(maintenance: Boolean) {
-        this.maintenance = maintenance
+        getUpdater().setMaintenance(maintenance)
     }
 
     override fun isStatic(): Boolean = this.static
@@ -96,17 +97,17 @@ abstract class AbstractServiceGroup(
     override fun getPercentToStartNewService(): Int = this.percentToStartNewService
 
     override fun setPercentToStartNewService(percentage: Int) {
-        this.percentToStartNewService = percentage
+        getUpdater().setPercentToStartNewService(percentage)
     }
 
     override fun getWrapperName(): String? = this.wrapperName
 
     override fun setWrapperName(name: String?) {
-        this.wrapperName = name
+        getUpdater().setWrapperName(name)
     }
 
     override fun setServiceVersion(serviceVersion: ServiceVersion) {
-        this.serviceVersion = serviceVersion.name
+        getUpdater().setServiceVersion(serviceVersion)
     }
 
     override fun getServiceVersion(): ServiceVersion {
@@ -118,9 +119,23 @@ abstract class AbstractServiceGroup(
     }
 
     override fun setStateUpdating(stateUpdating: Boolean) {
-        this.stateUpdating = stateUpdating
+        getUpdater().setStateUpdating(stateUpdating)
     }
 
     override fun getStartPriority(): Int = this.startPriority
+
+    override fun applyValuesFromUpdater(updater: ICloudServiceGroupUpdater) {
+        this.templateName = updater.getTemplateName()
+        this.maxMemory = updater.getMaxMemory()
+        this.maxPlayers = updater.getMaxPlayers()
+        this.minimumOnlineServiceCount = updater.getMinimumOnlineServiceCount()
+        this.maximumOnlineServiceCount = updater.getMaximumOnlineServiceCount()
+        this.maintenance = updater.isInMaintenance()
+        this.percentToStartNewService = updater.getPercentToStartNewService()
+        this.wrapperName = updater.getWrapperName()
+        this.permission = updater.getPermission()
+        this.stateUpdating = updater.isStateUpdatingEnabled()
+        this.serviceVersion = updater.getServiceVersion().name
+    }
 
 }

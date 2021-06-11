@@ -23,45 +23,54 @@
 package eu.thesimplecloud.api.template.impl
 
 import eu.thesimplecloud.api.template.ITemplate
-import java.util.concurrent.ConcurrentHashMap
+import eu.thesimplecloud.api.template.ITemplateUpdater
+import eu.thesimplecloud.clientserverapi.lib.json.PacketExclude
+import eu.thesimplecloud.jsonlib.JsonLibExclude
 
 data class DefaultTemplate(private val name: String) : ITemplate {
 
-    @Volatile private var inheritedTemplateNames: MutableSet<String> = ConcurrentHashMap.newKeySet<String>()
-    @Volatile private var moduleNamesToCopy: MutableSet<String> = ConcurrentHashMap.newKeySet<String>()
+    @Volatile
+    private var inheritedTemplateNames: Set<String> = emptySet()
+    @Volatile
+    private var moduleNamesToCopy: Set<String> = emptySet()
+
+    @PacketExclude
+    @JsonLibExclude
+    @Volatile
+    private var templateUpdater: DefaultTemplateUpdater? = DefaultTemplateUpdater(this)
 
     override fun getName(): String = this.name
 
     override fun getInheritedTemplateNames(): Set<String> = this.inheritedTemplateNames
 
     override fun addInheritanceTemplate(template: ITemplate) {
-        removeInheritanceTemplate(template)
-        this.inheritedTemplateNames.add(template.getName())
+        getUpdater().addInheritanceTemplate(template)
     }
 
     override fun removeInheritanceTemplate(template: ITemplate) {
-        this.inheritedTemplateNames.removeIf { it.equals(template.getName(), true) }
-    }
-
-    fun setInheritedTemplateNames(inheritedTemplateNames: Set<String>){
-        this.inheritedTemplateNames = ConcurrentHashMap.newKeySet()
-        this.inheritedTemplateNames.addAll(inheritedTemplateNames)
+        getUpdater().removeInheritanceTemplate(template)
     }
 
     override fun addModuleNameToCopy(name: String) {
-        removeModuleNameToCopy(name)
-        this.moduleNamesToCopy.add(name)
+        getUpdater().addModuleNameToCopy(name)
     }
 
     override fun removeModuleNameToCopy(name: String) {
-        this.moduleNamesToCopy.removeIf { it.equals(name, true) }
+        getUpdater().removeModuleNameToCopy(name)
     }
 
     override fun getModuleNamesToCopy(): Set<String> = this.moduleNamesToCopy
 
-    fun setModuleNamesToCopy(moduleNamesToCopy: Set<String>){
-        this.moduleNamesToCopy = ConcurrentHashMap.newKeySet()
-        this.moduleNamesToCopy.addAll(moduleNamesToCopy)
+    override fun getUpdater(): ITemplateUpdater {
+        if (this.templateUpdater == null) {
+            this.templateUpdater = DefaultTemplateUpdater(this)
+        }
+        return this.templateUpdater!!
+    }
+
+    override fun applyValuesFromUpdater(updater: ITemplateUpdater) {
+        this.inheritedTemplateNames = HashSet(updater.getInheritedTemplateNames())
+        this.moduleNamesToCopy =  HashSet(updater.getModuleNamesToCopy())
     }
 
 

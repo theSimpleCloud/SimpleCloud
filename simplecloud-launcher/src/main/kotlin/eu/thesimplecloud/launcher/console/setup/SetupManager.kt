@@ -50,7 +50,13 @@ class SetupManager(val launcher: Launcher) {
         val methods = setup::class.java.declaredMethods
         methods.filter { it.isAnnotationPresent(SetupQuestion::class.java) }.forEach { method ->
             check(method.parameters.size == 1) { "Function marked with SetupQuestion must have one parameter." }
-            questions.add(SetupQuestionData(method.getAnnotation(SetupQuestion::class.java), method, method.parameters[0]))
+            questions.add(
+                SetupQuestionData(
+                    method.getAnnotation(SetupQuestion::class.java),
+                    method,
+                    method.parameters[0]
+                )
+            )
         }
 
         val setupFinishedMethods = methods.filter { it.isAnnotationPresent(SetupFinished::class.java) }
@@ -62,7 +68,8 @@ class SetupManager(val launcher: Launcher) {
         finishedMethod?.let { check(it.parameters.isEmpty()) { "The function marked with SetupFinished must have 0 parameters." } }
         cancelledMethod?.let { check(it.parameters.isEmpty()) { "The function marked with SetupFinished must have 0 parameters." } }
 
-        val setupData = SetupData(setup, cancelledMethod, finishedMethod, questions.sortedBy { it.setupQuestion.number })
+        val setupData =
+            SetupData(setup, cancelledMethod, finishedMethod, questions.sortedBy { it.setupQuestion.number })
         if (this.currentSetup == null) {
             startSetup(setupData)
             return
@@ -88,11 +95,11 @@ class SetupManager(val launcher: Launcher) {
 
     private fun printCurrentQuestion() {
         val currentQuestion = this.currentQuestion
-                ?: throw IllegalStateException("There is no setup at the moment")
+            ?: throw IllegalStateException("There is no setup at the moment")
         val suggestionProvider = currentQuestion.setupQuestion.answerProvider.java.newInstance()
         //search suggestions for an empty input
         val suggestions = suggestionProvider.getSuggestions(launcher.consoleSender)
-                .replace("", "<empty>")
+            .replace("", "<empty>")
         val suffix = if (suggestions.isNotEmpty()) "§ePossible answers: " + suggestions.joinToString() else ""
         if (suffix.isEmpty()) {
             launcher.consoleSender.sendPropertyInSetup(currentQuestion.setupQuestion.property)
@@ -106,10 +113,12 @@ class SetupManager(val launcher: Launcher) {
         val currentQuestion = this.currentQuestion ?: return
         val parsedValue = StringParser().parseToObject(response, currentQuestion.parameter.type)
         val possibleAnswers = currentQuestion.setupQuestion.answerProvider.java.newInstance()
-                .getSuggestions(launcher.consoleSender)
-        if (parsedValue is String && possibleAnswers.isNotEmpty() && !possibleAnswers.containsIgnoreCase(parsedValue)) {
-            this.launcher.consoleSender.sendPropertyInSetup("")
-            return
+            .getSuggestions(launcher.consoleSender)
+        if (parsedValue is String) {
+            if (possibleAnswers.isNotEmpty() && !possibleAnswers.containsIgnoreCase(parsedValue)) {
+                Launcher.instance.logger.setup("Invalid response")
+                return
+            }
         }
         val invokeResponse = try {
             currentQuestion.method.invoke(this.currentSetup!!.source, parsedValue)
@@ -195,13 +204,18 @@ class SetupManager(val launcher: Launcher) {
         }
 
         val suggestions = currentQuestion!!.setupQuestion.answerProvider.java.newInstance()
-                .getSuggestions(consoleSender)
+            .getSuggestions(consoleSender)
 
         return suggestions.filter { it.toLowerCase().startsWith(userInput.toLowerCase()) }
     }
 
 
-    class SetupData(val source: ISetup, val cancelledMethod: Method?, val finishedMethod: Method?, val questions: List<SetupQuestionData>) {
+    class SetupData(
+        val source: ISetup,
+        val cancelledMethod: Method?,
+        val finishedMethod: Method?,
+        val questions: List<SetupQuestionData>
+    ) {
 
         fun callFinishedMethod() {
             finishedMethod?.invoke(source)
