@@ -39,8 +39,4 @@ class RunnerClassLoader(urls: Array<URL>) : URLClassLoader(urls, getSystemClassL
         }
     }
 
-    override fun addURL(url: URL?) {
-        super.addURL(url)
-    }
-
 }
