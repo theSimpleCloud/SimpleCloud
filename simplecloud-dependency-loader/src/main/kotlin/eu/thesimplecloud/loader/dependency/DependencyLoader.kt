@@ -42,6 +42,10 @@ class DependencyLoader {
     private val resolvedDependencies = CopyOnWriteArraySet<AdvancedCloudDependency>()
     private val installedDependencies = CopyOnWriteArraySet<AdvancedCloudDependency>()
 
+    fun reset() {
+        resolvedDependencies.clear()
+    }
+
     fun loadDependencies(repositories: List<String>, dependencies: List<AdvancedCloudDependency>): Set<File> {
         if (dependencies.isEmpty()) return emptySet()
         val dependenciesString = dependencies.joinToString { it.getName() }
@@ -95,7 +99,7 @@ class DependencyLoader {
     }
 
     fun getInstalledDependencies(): Collection<AdvancedCloudDependency> {
-        return installedDependencies
+        return this.installedDependencies
     }
 
 }

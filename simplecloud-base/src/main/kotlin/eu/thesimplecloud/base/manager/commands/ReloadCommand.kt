@@ -34,6 +34,7 @@ import eu.thesimplecloud.launcher.console.command.ICommandHandler
 import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
+import eu.thesimplecloud.loader.dependency.DependencyLoader
 import kotlin.concurrent.thread
 
 @Command("reload", CommandType.CONSOLE, "cloud.command.reload", ["rl"])
@@ -44,6 +45,7 @@ class ReloadCommand : ICommandHandler {
         //disable
         Manager.instance.cloudModuleHandler.unloadAllReloadableModules()
         Manager.instance.appClassLoader.clearCachedClasses()
+        DependencyLoader.INSTANCE.reset()
 
         val loadedWrappers = Manager.instance.wrapperFileHandler.loadAll().toMutableList()
         val unknownWrappers =
@@ -90,7 +92,7 @@ class ReloadCommand : ICommandHandler {
 
         //enable
         Manager.instance.appClassLoader.clearCachedClasses()
-        thread(start = true, isDaemon = false) { Manager.instance.cloudModuleHandler.loadAllUnloadedModules() }
+        thread(start = true, isDaemon = false, Manager.instance.appClassLoader) { Manager.instance.cloudModuleHandler.loadAllUnloadedModules() }
     }
 
     @CommandSubPath("module <name>", "Reloads a specific module")
