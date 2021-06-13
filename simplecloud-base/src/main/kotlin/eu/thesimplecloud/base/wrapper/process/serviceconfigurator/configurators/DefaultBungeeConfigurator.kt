@@ -36,8 +36,8 @@ class DefaultBungeeConfigurator : IServiceConfigurator {
             FileCopier.copyFileOutOfJar(bungeeConfigFile, "/files/config.yml")
         }
         val fileEditor = FileEditor(bungeeConfigFile)
-        fileEditor.replaceLine("    host: 0.0.0.0:25565", "    host: 0.0.0.0:${cloudService.getPort()}")
-        fileEditor.replaceLine("    max_players: 1", "    max_players: ${cloudService.getMaxPlayers()}")
+        fileEditor.replaceInAllLines("host: 0.0.0.0:25565", "host: 0.0.0.0:${cloudService.getPort()}")
+        fileEditor.replaceInAllLines("max_players: 1", "max_players: ${cloudService.getMaxPlayers()}")
         fileEditor.save(bungeeConfigFile)
     }
 
