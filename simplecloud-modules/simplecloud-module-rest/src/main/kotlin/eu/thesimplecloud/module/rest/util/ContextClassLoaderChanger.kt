@@ -20,45 +20,22 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.rest
-
-import eu.thesimplecloud.api.external.ICloudModule
-import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.module.rest.auth.JwtProvider
-import eu.thesimplecloud.module.rest.config.RestConfig
-import eu.thesimplecloud.module.rest.config.RestConfigLoader
-import eu.thesimplecloud.module.rest.javalin.RestServer
-import eu.thesimplecloud.module.rest.util.executeWithDifferentContextClassLoader
+package eu.thesimplecloud.module.rest.util
 
 /**
  * Created by IntelliJ IDEA.
- * Date: 04.10.2020
- * Time: 14:57
+ * Date: 13.06.2021
+ * Time: 11:55
  * @author Frederick Baier
  */
-class RestModule : ICloudModule {
 
-    lateinit var server: RestServer
+fun executeWithDifferentContextClassLoader(classLoader: ClassLoader, runnable: Runnable) {
+    val currentContextClassLoader = Thread.currentThread().contextClassLoader
+    changedContextClassLoader(classLoader)
+    runnable.run()
+    changedContextClassLoader(currentContextClassLoader)
+}
 
-    override fun onEnable() {
-        val config = loadConfig()
-        val moduleClassLoader = this::class.java.classLoader
-        executeWithDifferentContextClassLoader(moduleClassLoader) {
-            startRestServer(config)
-        }
-        Launcher.instance.consoleSender.sendProperty("module.rest.loaded", config.port.toString())
-    }
-
-    private fun loadConfig(): RestConfig {
-        return RestConfigLoader().loadConfig()
-    }
-
-    private fun startRestServer(config: RestConfig) {
-        JwtProvider(config.secret)
-        this.server = RestServer(config.port)
-    }
-
-    override fun onDisable() {
-        server.shutdown()
-    }
+private fun changedContextClassLoader(classLoader: ClassLoader) {
+    Thread.currentThread().contextClassLoader = classLoader
 }
