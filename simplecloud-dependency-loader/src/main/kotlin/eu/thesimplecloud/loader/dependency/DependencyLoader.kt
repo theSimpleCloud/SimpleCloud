@@ -41,6 +41,11 @@ class DependencyLoader {
 
     private val resolvedDependencies = CopyOnWriteArraySet<AdvancedCloudDependency>()
     private val installedDependencies = CopyOnWriteArraySet<AdvancedCloudDependency>()
+    private var loggerEnabled: Boolean = true
+
+    fun disableLogger() {
+        this.loggerEnabled = false
+    }
 
     fun reset() {
         resolvedDependencies.clear()
@@ -95,7 +100,9 @@ class DependencyLoader {
     }
 
     private fun loggerMessage(message: String) {
-        println(message)
+        if (loggerEnabled) {
+            println(message)
+        }
     }
 
     fun getInstalledDependencies(): Collection<AdvancedCloudDependency> {

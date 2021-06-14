@@ -42,6 +42,7 @@ import eu.thesimplecloud.launcher.setups.LanguageSetup
 import eu.thesimplecloud.launcher.setups.StartSetup
 import eu.thesimplecloud.launcher.updater.RunnerUpdater
 import eu.thesimplecloud.launcher.updater.UpdateExecutor
+import eu.thesimplecloud.loader.dependency.DependencyLoader
 import java.io.File
 import java.io.IOException
 import java.net.URLClassLoader
@@ -112,6 +113,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
     }
 
     fun start() {
+        DependencyLoader.INSTANCE.disableLogger()
         clearConsole()
         if (!launcherStartArguments.disableAutoUpdater) {
             if (executeUpdateIfAvailable()) {
