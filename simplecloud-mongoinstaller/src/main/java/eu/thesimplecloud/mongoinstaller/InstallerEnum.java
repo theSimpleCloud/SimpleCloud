@@ -35,7 +35,7 @@ public enum InstallerEnum {
     DEBIAN_10("echo \"deb http://repo.mongodb.org/apt/debian buster/mongodb-org/4.2 main\" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.2.list"),
     DEBIAN_9("echo \"deb http://repo.mongodb.org/apt/debian stretch/mongodb-org/4.2 main\" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.2.list"),
     UBUNTU_18("echo \"deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.2 multiverse\" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.2.list"),
-    DEBIAN_16("echo \"deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/4.2 multiverse\" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.2.list")
+    UBUNTU_16("echo \"deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/4.2 multiverse\" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.2.list")
 
     ;
 
