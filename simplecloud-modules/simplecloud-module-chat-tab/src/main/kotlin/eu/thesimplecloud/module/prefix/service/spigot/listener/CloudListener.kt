@@ -1,4 +1,4 @@
-package eu.thesimplecloud.module.prefix.service.listener
+package eu.thesimplecloud.module.prefix.service.spigot.listener
 
 import eu.thesimplecloud.api.event.sync.`object`.GlobalPropertyUpdatedEvent
 import eu.thesimplecloud.api.eventapi.CloudEventHandler

@@ -1,5 +1,3 @@
-
-
 /*
  * MIT License
  *
@@ -22,20 +20,17 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-configurations {
-    jar.archiveName = 'SimpleCloud-Chat+Tab.jar'
-}
+package eu.thesimplecloud.module.prefix.service.velocity
 
-dependencies {
-    implementation(project(":simplecloud-base"))
-    implementation(project(":simplecloud-api"))
-    implementation(project(":simplecloud-plugin"))
-    implementation(project(":simplecloud-launcher"))
-    implementation(project(":simplecloud-modules:simplecloud-module-permission"))
-    implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.6'
-    implementation 'org.spigotmc:spigot-api:1.16.3-R0.1-SNAPSHOT'
-    compileOnly 'net.md-5:bungeecord-api:1.12-SNAPSHOT' // The full Spigot server with no shadowing. Requires mavenLocal.
-    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
-    compileOnly 'com.velocitypowered:velocity-api:1.0.0-SNAPSHOT'
-    annotationProcessor 'com.velocitypowered:velocity-api:1.0.0-SNAPSHOT'
+import com.google.inject.Inject
+import com.velocitypowered.api.plugin.Dependency
+import com.velocitypowered.api.plugin.Plugin
+import com.velocitypowered.api.proxy.ProxyServer
+
+/**
+ * @author KxmischesDomi | https://github.com/kxmischesdomi
+ */
+@Plugin(id = "simplecloud_prefix", dependencies = [Dependency(id = "simplecloud_plugin")])
+class VelocityPluginMain @Inject constructor(val proxyServer: ProxyServer) {
+
 }

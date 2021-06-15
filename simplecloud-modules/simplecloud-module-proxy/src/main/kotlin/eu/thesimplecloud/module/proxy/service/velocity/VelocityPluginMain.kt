@@ -61,7 +61,7 @@ class VelocityPluginMain @Inject constructor(val proxyServer: ProxyServer) {
 
     private fun startScheduler() {
         proxyServer.scheduler.buildTask(this) {
-            val tablistConfiguration = proxyHandler.getTablistConfiguration() ?: return@buildTask
+            val tablistConfiguration = proxyHandler.getCurrentTablistConfiguration() ?: return@buildTask
             proxyServer.allPlayers.forEach {
                 sendHeaderAndFooter(it, tablistConfiguration)
             }
@@ -78,8 +78,8 @@ class VelocityPluginMain @Inject constructor(val proxyServer: ProxyServer) {
         val currentServer = player.currentServer
         if (currentServer.isPresent) {
             val serverName = currentServer.get().serverInfo.name
-            player.tabList.setHeaderAndFooter(CloudTextBuilder().build(CloudText(proxyHandler.replaceString(header, serverName))),
-                    CloudTextBuilder().build(CloudText(proxyHandler.replaceString(footer, serverName))))
+            player.tabList.setHeaderAndFooter(CloudTextBuilder().build(CloudText(proxyHandler.replaceString(header, serverName, player.uniqueId))),
+                    CloudTextBuilder().build(CloudText(proxyHandler.replaceString(footer, serverName, player.uniqueId))))
         }
     }
 

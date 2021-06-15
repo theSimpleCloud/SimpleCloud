@@ -7,6 +7,7 @@ import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 import org.bukkit.scoreboard.Scoreboard
+import java.util.*
 
 /**
  * Created by IntelliJ IDEA.
@@ -68,9 +69,13 @@ object TablistHelper {
     }
 
     fun getTablistInformationByPlayer(player: Player): TablistInformation? {
+        return getTablistInformationByUUID(player.uniqueId)
+    }
+
+    fun getTablistInformationByUUID(uuid: UUID): TablistInformation? {
         val permissionPlayer =
-            PermissionPool.instance.getPermissionPlayerManager().getCachedPermissionPlayer(player.uniqueId)
-                ?: return null
+                PermissionPool.instance.getPermissionPlayerManager().getCachedPermissionPlayer(uuid)
+                        ?: return null
 
         val informationList = Config.getConfig().informationList
         val tablistInformation = informationList.sortedBy { it.priority }.first {
