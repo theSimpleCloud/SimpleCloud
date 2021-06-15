@@ -27,6 +27,7 @@ import eu.thesimplecloud.module.proxy.config.TablistConfiguration
 import eu.thesimplecloud.module.proxy.service.ProxyHandler
 import eu.thesimplecloud.module.proxy.service.bungee.listener.BungeeListener
 import eu.thesimplecloud.plugin.proxy.bungee.text.CloudTextBuilder
+import net.kyori.adventure.platform.bungeecord.BungeeAudiences
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import net.md_5.bungee.api.plugin.Plugin
@@ -41,16 +42,22 @@ import java.util.concurrent.TimeUnit
  */
 class BungeePluginMain : Plugin() {
 
-
     var tablistStarted = false
+
+    lateinit var bungeeAudiences: BungeeAudiences
     lateinit var proxyHandler: ProxyHandler
 
     override fun onEnable() {
         proxyHandler = ProxyHandler()
+        bungeeAudiences = BungeeAudiences.create(this)
 
         proxyHandler.onEnable()
         proxy.pluginManager.registerListener(this, BungeeListener(this))
         startScheduler()
+    }
+
+    override fun onDisable() {
+        bungeeAudiences.close()
     }
 
     private fun startScheduler() {
