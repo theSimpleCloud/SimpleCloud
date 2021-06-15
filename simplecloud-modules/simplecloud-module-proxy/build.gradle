@@ -21,6 +21,15 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+repositories {
+
+    maven {
+        url 'https://oss.sonatype.org/content/repositories/snapshots/'
+        name 'sonatype-oss-snapshots'
+    }
+
+}
+
 configurations {
     jar.archiveName = 'SimpleCloud-Proxy.jar'
 }
@@ -34,4 +43,17 @@ dependencies {
     compileOnly 'net.md-5:bungeecord-api:1.12-SNAPSHOT'
     compileOnly 'com.velocitypowered:velocity-api:1.1.0-SNAPSHOT'
     annotationProcessor 'com.velocitypowered:velocity-api:1.1.0-SNAPSHOT'
+
+    compile("net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT")
+    compile "net.kyori:adventure-platform-bungeecord:4.0.0-SNAPSHOT"
+
+}
+
+jar {
+    from {
+        configurations.compile.collect {
+            if (it.name.contains("netty")) return
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
 }

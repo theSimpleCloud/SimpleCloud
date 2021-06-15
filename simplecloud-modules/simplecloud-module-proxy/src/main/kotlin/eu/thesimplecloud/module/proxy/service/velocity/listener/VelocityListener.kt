@@ -34,6 +34,8 @@ import eu.thesimplecloud.module.proxy.service.ProxyHandler
 import eu.thesimplecloud.module.proxy.service.velocity.VelocityPluginMain
 import eu.thesimplecloud.plugin.proxy.velocity.text.CloudTextBuilder
 import eu.thesimplecloud.plugin.startup.CloudPlugin
+import net.kyori.adventure.text.TextComponent
+import net.kyori.adventure.text.minimessage.MiniMessage
 import net.md_5.bungee.event.EventHandler
 import java.util.*
 
@@ -75,7 +77,7 @@ class VelocityListener(val plugin: VelocityPluginMain) {
         }
     }
 
-    @EventHandler
+    @Subscribe
     fun on(event: ServerConnectedEvent) {
         val player = event.player
         val tablistConfiguration = plugin.proxyHandler.getTablistConfiguration() ?: return
@@ -91,8 +93,8 @@ class VelocityListener(val plugin: VelocityPluginMain) {
         val line1 = motdConfiguration.firstLines.random()
         val line2 = motdConfiguration.secondLines.random()
 
-        val motd = CloudTextBuilder()
-            .build(CloudText(plugin.proxyHandler.replaceString(line1 + "\n" + line2)))
+        val motd = TextComponent.ofChildren(MiniMessage.get()
+            .parse(plugin.proxyHandler.replaceString(line1 + "\n" + line2)))
 
         val ping = event.ping
         var protocol: ServerPing.Version = ping.version

@@ -28,6 +28,9 @@ import eu.thesimplecloud.module.proxy.service.ProxyHandler
 import eu.thesimplecloud.module.proxy.service.bungee.BungeePluginMain
 import eu.thesimplecloud.plugin.proxy.bungee.text.CloudTextBuilder
 import eu.thesimplecloud.plugin.startup.CloudPlugin
+import net.kyori.adventure.text.TextComponent
+import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer
 import net.md_5.bungee.api.ServerPing
 import net.md_5.bungee.api.event.ProxyPingEvent
 import net.md_5.bungee.api.event.ServerConnectEvent
@@ -100,8 +103,8 @@ class BungeeListener(val plugin: BungeePluginMain) : Listener {
         val line1 = motdConfiguration.firstLines.random()
         val line2 = motdConfiguration.secondLines.random()
 
-        response.descriptionComponent = CloudTextBuilder()
-                .build(CloudText(plugin.proxyHandler.replaceString(line1 + "\n" + line2)))
+        response.descriptionComponent = BungeeComponentSerializer.get().serialize(TextComponent.ofChildren(MiniMessage.get()
+            .parse(plugin.proxyHandler.replaceString(line1 + "\n" + line2))))[0]
 
 
         val playerInfo = motdConfiguration.playerInfo
