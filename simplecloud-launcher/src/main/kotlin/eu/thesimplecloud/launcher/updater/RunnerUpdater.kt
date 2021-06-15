@@ -34,10 +34,12 @@ import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 
 class RunnerUpdater : AbstractUpdater(
-        "eu.thesimplecloud.simplecloud",
-        "simplecloud-runner",
-        File("runner-update.jar")
+    "eu.thesimplecloud.simplecloud",
+    "simplecloud-runner",
+    File("runner-update.jar")
 ) {
+
+    private val dependencyLoaderFile = File("storage", "dependency-loader.jar")
 
     private var versionToInstall: String? = null
 
@@ -47,7 +49,8 @@ class RunnerUpdater : AbstractUpdater(
 
     override fun getVersionToInstall(): String? {
         if (versionToInstall != null) return versionToInstall
-        val content =  WebContentLoader().loadContent("https://update.thesimplecloud.eu/latestVersion/${getCurrentVersion()}")
+        val content =
+            WebContentLoader().loadContent("https://update.thesimplecloud.eu/latestVersion/${getCurrentVersion()}")
                 ?: return null
         this.versionToInstall = JsonLib.fromJsonString(content).getString("latestVersion")
         return this.versionToInstall
@@ -60,10 +63,10 @@ class RunnerUpdater : AbstractUpdater(
         Thread.currentThread().contextClassLoader = newClassLoader
         Runtime.getRuntime().addShutdownHook(Thread {
             Thread.sleep(200)
-            if (!Launcher.instance.isWindows()) {
-                performLinuxUpdate(currentRunnerFile, file)
-            } else {
+            if (Launcher.instance.isWindows()) {
                 performWindowsUpdate(currentRunnerFile, file)
+            } else {
+                performLinuxUpdate(currentRunnerFile, file)
             }
             println("Update installed. Stopping in 5 seconds...")
             Thread.sleep(5 * 1000)
@@ -71,18 +74,20 @@ class RunnerUpdater : AbstractUpdater(
         Launcher.instance.shutdown()
     }
 
-    private fun performWindowsUpdate(currentRunnerFile: File, file: File) {
+    private fun performWindowsUpdate(currentRunnerFile: File, updateRunnerFile: File) {
         val updaterFile = File("storage/updater.jar")
-        val dependency = AdvancedCloudDependency("eu.thesimplecloud.simplecloud", "simplecloud-updater", getVersionToInstall()!!)
+        val dependency =
+            AdvancedCloudDependency("eu.thesimplecloud.simplecloud", "simplecloud-updater", getVersionToInstall()!!)
         dependency.download(getRepositoryURL(), updaterFile)
         val processBuilder = ProcessBuilder(
-                "java",
-                "-jar",
-                "storage/updater.jar",
-                "300",
-                currentRunnerFile.absolutePath,
-                file.absolutePath,
-                Launcher.instance.getLauncherFile().absolutePath
+            "java",
+            "-jar",
+            "storage/updater.jar",
+            "300",
+            currentRunnerFile.absolutePath,
+            updateRunnerFile.absolutePath,
+            Launcher.instance.getLauncherFile().absolutePath,
+            this.dependencyLoaderFile.absolutePath
         )
         processBuilder.directory(File("."))
         processBuilder.start()
@@ -90,6 +95,11 @@ class RunnerUpdater : AbstractUpdater(
 
     private fun performLinuxUpdate(currentRunnerFile: File, file: File) {
         Files.move(file.toPath(), currentRunnerFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
+        deleteLauncherAndDependencyLoader()
+    }
+
+    private fun deleteLauncherAndDependencyLoader() {
         Launcher.instance.getLauncherFile().delete()
+        this.dependencyLoaderFile.delete()
     }
 }

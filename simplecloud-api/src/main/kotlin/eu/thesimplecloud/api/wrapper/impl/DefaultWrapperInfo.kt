@@ -105,7 +105,8 @@ data class DefaultWrapperInfo(
     }
 
     override fun toString(): String {
-        return JsonLib.fromObject(this, GsonCreator().create()).getAsJsonString()
+        val gson = GsonCreator().excludeAnnotations(PacketExclude::class.java).create()
+        return JsonLib.fromObject(this, gson).getAsJsonString()
     }
 
 }
