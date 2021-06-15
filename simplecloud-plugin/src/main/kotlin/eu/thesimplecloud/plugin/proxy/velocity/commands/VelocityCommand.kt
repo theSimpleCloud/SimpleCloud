@@ -22,8 +22,7 @@
 
 package eu.thesimplecloud.plugin.proxy.velocity.commands
 
-import com.velocitypowered.api.command.Command
-import com.velocitypowered.api.command.CommandSource
+import com.velocitypowered.api.command.RawCommand
 import com.velocitypowered.api.proxy.Player
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.event.player.CloudPlayerCommandExecuteEvent
@@ -39,12 +38,11 @@ import eu.thesimplecloud.plugin.startup.CloudPlugin
  * Date: 19.05.2020
  * Time: 20:08
  */
-class VelocityCommand(private val commandStart: String) : Command {
+class VelocityCommand(private val commandStart: String) : RawCommand {
 
-    override fun execute(source: CommandSource?, args: Array<out String>) {
-        val player = source as? Player?: return
-
-        val command = "$commandStart " + args.joinToString(" ").trim()
+    override fun execute(invocation: RawCommand.Invocation) {
+        val player = invocation.source() as? Player?: return
+        val command = "$commandStart " + invocation.arguments()
 
         if (CloudVelocityPlugin.instance.synchronizedIngameCommandsProperty.getValue().contains(commandStart.toLowerCase())) {
             CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketOutPlayerExecuteCommand(player.getCloudPlayer(), command))
@@ -52,9 +50,9 @@ class VelocityCommand(private val commandStart: String) : Command {
         CloudAPI.instance.getEventManager().call(CloudPlayerCommandExecuteEvent(player.uniqueId, player.username, command))
     }
 
-    override fun suggest(source: CommandSource?, args: Array<out String>): MutableList<String> {
-        val player = source as? Player?: return super.suggest(source, args)
-        val rawCommand = listOf(commandStart).union(args.toList()).joinToString(" ")
+    override fun suggest(invocation: RawCommand.Invocation): MutableList<String> {
+        val player = invocation.source() as? Player?: return super.suggest(invocation)
+        val rawCommand = "$commandStart " + invocation.arguments()
         return ProxyEventHandler.handleTabComplete(player.uniqueId, rawCommand).toMutableList()
     }
 

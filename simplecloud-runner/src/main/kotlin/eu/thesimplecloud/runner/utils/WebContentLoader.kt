@@ -20,7 +20,7 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.api.utils
+package eu.thesimplecloud.runner.utils
 
 import java.io.BufferedReader
 import java.io.InputStreamReader

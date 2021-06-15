@@ -20,26 +20,23 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.base.wrapper.process.serviceconfigurator.configurators
+package eu.thesimplecloud.runner.dependency
 
-import eu.thesimplecloud.api.service.ICloudService
-import eu.thesimplecloud.api.utils.FileEditor
-import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.IServiceConfigurator
-import eu.thesimplecloud.launcher.utils.FileCopier
-import java.io.File
+open class CloudDependency(val groupId: String, val artifactId: String, val version: String) {
 
-class DefaultBungeeConfigurator : IServiceConfigurator {
+    fun getName() = "$artifactId-$version"
 
-    override fun configureService(cloudService: ICloudService, serviceTmpDirectory: File) {
-        val bungeeConfigFile = File(serviceTmpDirectory, "config.yml")
-        if (!bungeeConfigFile.exists()) {
-            FileCopier.copyFileOutOfJar(bungeeConfigFile, "/files/config.yml")
-        }
-        val fileEditor = FileEditor(bungeeConfigFile)
-        fileEditor.replaceInAllLines("host: 0.0.0.0:25565", "host: 0.0.0.0:${cloudService.getPort()}")
-        fileEditor.replaceInAllLines("max_players: 1", "max_players: ${cloudService.getMaxPlayers()}")
-        fileEditor.save(bungeeConfigFile)
+    override fun equals(other: Any?): Boolean {
+        if (other == null) return false
+        if (other !is CloudDependency) return false
+        return this.groupId == other.groupId && this.artifactId == other.artifactId && this.version == other.version
     }
 
+    override fun hashCode(): Int {
+        var result = groupId.hashCode()
+        result = 31 * result + artifactId.hashCode()
+        result = 31 * result + version.hashCode()
+        return result
+    }
 
 }

@@ -20,23 +20,24 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.api.depedency
+package eu.thesimplecloud.runner.utils
 
-open class CloudDependency(val groupId: String, val artifactId: String, val version: String) {
+import java.io.File
+import java.io.IOException
+import java.net.URL
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.nio.file.StandardCopyOption
 
-    fun getName() = "$artifactId-$version"
+class Downloader {
 
-    override fun equals(other: Any?): Boolean {
-        if (other == null) return false
-        if (other !is CloudDependency) return false
-        return this.groupId == other.groupId && this.artifactId == other.artifactId && this.version == other.version
-    }
-
-    override fun hashCode(): Int {
-        var result = groupId.hashCode()
-        result = 31 * result + artifactId.hashCode()
-        result = 31 * result + version.hashCode()
-        return result
+    @Throws(IOException::class)
+    fun userAgentDownload(url: String, file: File) {
+        file.parentFile?.mkdirs()
+        val urlConnection = URL(url).openConnection()
+        urlConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:58.0) Gecko/20100101 Firefox/58.0")
+        urlConnection.connect()
+        Files.copy(urlConnection.getInputStream(), Paths.get(file.absolutePath), StandardCopyOption.REPLACE_EXISTING)
     }
 
 }

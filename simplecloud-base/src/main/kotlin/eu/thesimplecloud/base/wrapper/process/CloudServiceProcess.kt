@@ -37,8 +37,8 @@ import eu.thesimplecloud.base.wrapper.startup.Wrapper
 import eu.thesimplecloud.client.packets.PacketOutScreenMessage
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
-import eu.thesimplecloud.launcher.dependency.DependencyLoader
 import eu.thesimplecloud.launcher.startup.Launcher
+import eu.thesimplecloud.loader.dependency.DependencyLoader
 import java.io.BufferedReader
 import java.io.File
 import java.io.IOException

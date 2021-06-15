@@ -219,7 +219,7 @@ class Manager : ICloudApplication {
             CloudAPI.instance.getCloudServiceGroupManager().getAllCachedObjects()
                 .forEach { Launcher.instance.consoleSender.sendMessage("- ${it.getName()}") }
         }
-        thread(start = true, isDaemon = false) {
+        thread(start = true, isDaemon = false, appClassLoader) {
             this.cloudModuleHandler.loadAllUnloadedModules()
         }
     }

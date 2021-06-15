@@ -22,5 +22,7 @@
 
 package eu.thesimplecloud.api.depedency
 
+import eu.thesimplecloud.runner.dependency.CloudDependency
+
 class DependenciesInformation(val repositories: List<String>, val dependencies: List<CloudDependency>) {
 }

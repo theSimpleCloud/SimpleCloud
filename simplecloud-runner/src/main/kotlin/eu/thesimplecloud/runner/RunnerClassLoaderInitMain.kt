@@ -22,7 +22,9 @@
 
 package eu.thesimplecloud.runner
 
+import eu.thesimplecloud.runner.dependency.DependencyLoaderStartup
 import java.io.File
+import java.net.URL
 import java.net.URLClassLoader
 import java.nio.file.Files
 
@@ -33,35 +35,39 @@ import java.nio.file.Files
  * @author Frederick Baier
  */
 
-private val copiedLauncherFile = File("launcher.jar")
+private val copiedDependencyLoaderFile = File("storage", "dependency-loader.jar")
 
 fun main(args: Array<String>) {
-    copyLauncherOutOfJar()
-    val classLoader = initClassLoader()
+    copyDependencyLoaderOutOfJar()
+
+    val dependencyLoaderStartup = DependencyLoaderStartup()
+
+    val loadedDependencyFiles = dependencyLoaderStartup.loadDependenciesToResolveDependencies()
+    val loadedDependencyUrls = loadedDependencyFiles.map { it.toURI().toURL() }.toTypedArray()
+
+    val classLoader = initClassLoader(loadedDependencyUrls)
     Thread.currentThread().contextClassLoader = classLoader
 
-    executeLauncherMain(classLoader, args)
+    executeDependencyLoaderMain(classLoader, args)
 }
 
-fun copyLauncherOutOfJar() {
-    val launcherResource = RunnerClassLoader::class.java.getResourceAsStream("/launcher.jar")
-    if (!copiedLauncherFile.exists())
-        Files.copy(launcherResource, copiedLauncherFile.toPath())
+fun copyDependencyLoaderOutOfJar() {
+    val launcherResource = RunnerClassLoader::class.java.getResourceAsStream("/dependency-loader.jar")
+    if (!copiedDependencyLoaderFile.exists()) {
+        copiedDependencyLoaderFile.parentFile.mkdirs()
+        Files.copy(launcherResource, copiedDependencyLoaderFile.toPath())
+    }
 }
 
-private fun executeLauncherMain(classLoader: URLClassLoader, args: Array<String>) {
-    val loadedClass = classLoader.loadClass("eu.thesimplecloud.launcher.startup.LauncherMainKt")
+private fun executeDependencyLoaderMain(classLoader: URLClassLoader, args: Array<String>) {
+    val loadedClass = classLoader.loadClass("eu.thesimplecloud.loader.dependency.DependencyLoaderMainKt")
     val method = loadedClass.getMethod("main", Array<String>::class.java)
     method.invoke(null, args)
 }
 
 
-private fun initClassLoader(): URLClassLoader {
+private fun initClassLoader(loadedDependencies: Array<URL>): URLClassLoader {
     return RunnerClassLoader(
-            arrayOf(copiedLauncherFile.toURI().toURL())
+            arrayOf(copiedDependencyLoaderFile.toURI().toURL(), *loadedDependencies)
     )
-}
-
-private fun getRunningJarFile(): File {
-    return File(RunnerClassLoader::class.java.protectionDomain.codeSource.location.toURI())
 }

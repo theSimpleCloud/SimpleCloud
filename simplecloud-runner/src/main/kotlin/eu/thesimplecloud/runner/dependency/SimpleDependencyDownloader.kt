@@ -20,7 +20,7 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.launcher.dependency
+package eu.thesimplecloud.runner.dependency
 
 import java.io.IOException
 
@@ -31,10 +31,9 @@ import java.io.IOException
  * Time: 15:39
  * @author Frederick Baier
  */
-class SimpleDependencyDownloader(private val repositories: List<String>) {
+open class SimpleDependencyDownloader(protected val repositories: List<String>) {
 
-
-    fun downloadOnlyJar(dependency: LauncherCloudDependency) {
+    fun downloadOnlyJar(dependency: AdvancedCloudDependency) {
         if (dependency.getDownloadedFile().exists()) return
         this.repositories.forEach { repoUrl ->
             if (dependency.existInRepo(repoUrl)) {
@@ -42,26 +41,5 @@ class SimpleDependencyDownloader(private val repositories: List<String>) {
             }
         }
     }
-
-    fun downloadFiles(dependency: LauncherCloudDependency) {
-        if (dependency.getDownloadedFile().exists()) return
-        this.repositories.forEach { repoUrl ->
-            try {
-                downloadAnyways(dependency, repoUrl)
-                return
-            } catch (e: Exception) {
-                //ignore because the repository was wrong and another repository will be correct
-            }
-        }
-
-        throw IllegalArgumentException("No valid repository was found for ${dependency.getName()} repos: $repositories")
-    }
-
-    @Throws(IOException::class)
-    private fun downloadAnyways(dependency: LauncherCloudDependency, repoUrl: String) {
-        dependency.download(repoUrl)
-        dependency.resolveDependenciesAndSaveToInfoFile(repoUrl)
-    }
-
 
 }

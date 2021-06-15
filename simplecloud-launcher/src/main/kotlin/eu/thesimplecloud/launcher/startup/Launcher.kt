@@ -24,7 +24,6 @@ package eu.thesimplecloud.launcher.startup
 
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.external.ICloudModule
-import eu.thesimplecloud.api.external.ResourceFinder
 import eu.thesimplecloud.launcher.application.ApplicationStarter
 import eu.thesimplecloud.launcher.application.CloudApplicationType
 import eu.thesimplecloud.launcher.application.ICloudApplication
@@ -43,6 +42,7 @@ import eu.thesimplecloud.launcher.setups.LanguageSetup
 import eu.thesimplecloud.launcher.setups.StartSetup
 import eu.thesimplecloud.launcher.updater.RunnerUpdater
 import eu.thesimplecloud.launcher.updater.UpdateExecutor
+import eu.thesimplecloud.loader.dependency.DependencyLoader
 import java.io.File
 import java.io.IOException
 import java.net.URLClassLoader
@@ -113,6 +113,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
     }
 
     fun start() {
+        DependencyLoader.INSTANCE.disableLogger()
         clearConsole()
         if (!launcherStartArguments.disableAutoUpdater) {
             if (executeUpdateIfAvailable()) {
@@ -121,7 +122,11 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
         } else {
             this.logger.warning("Auto updater is disabled.")
         }
-        this.commandManager.registerAllCommands(launcherCloudModule, this.currentClassLoader, "eu.thesimplecloud.launcher.commands")
+        this.commandManager.registerAllCommands(
+            launcherCloudModule,
+            this.currentClassLoader,
+            "eu.thesimplecloud.launcher.commands"
+        )
         this.consoleManager.startThread()
 
         if (LanguageFileLoader.isFirstStart)
@@ -193,10 +198,15 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
     }
 
     fun getNewClassLoaderWithLauncherAndBase(): URLClassLoader {
-        return if (isBaseLoaded)
-            ResourceFinder.createClassLoaderByFiles(this.getBaseFile(), this.getLauncherFile())
-        else
-            ResourceFinder.createClassLoaderByFiles(this.getLauncherFile())
+        val launcherFileURL = this.getLauncherFile().toURI().toURL()
+        val currentContextClassLoader = Thread.currentThread().contextClassLoader
+
+        return if (isBaseLoaded) {
+            val baseFileURL = this.getBaseFile().toURI().toURL()
+            URLClassLoader(arrayOf(baseFileURL, launcherFileURL), currentContextClassLoader)
+        } else {
+            URLClassLoader(arrayOf(launcherFileURL), currentContextClassLoader)
+        }
     }
 
     fun isSnapshotBuild(): Boolean {

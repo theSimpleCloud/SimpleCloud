@@ -25,8 +25,10 @@ package eu.thesimplecloud.module.rest
 import eu.thesimplecloud.api.external.ICloudModule
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.module.rest.auth.JwtProvider
+import eu.thesimplecloud.module.rest.config.RestConfig
 import eu.thesimplecloud.module.rest.config.RestConfigLoader
 import eu.thesimplecloud.module.rest.javalin.RestServer
+import eu.thesimplecloud.module.rest.util.executeWithDifferentContextClassLoader
 
 /**
  * Created by IntelliJ IDEA.
@@ -39,10 +41,21 @@ class RestModule : ICloudModule {
     lateinit var server: RestServer
 
     override fun onEnable() {
-        val config = RestConfigLoader().loadConfig()
+        val config = loadConfig()
+        val moduleClassLoader = this::class.java.classLoader
+        executeWithDifferentContextClassLoader(moduleClassLoader) {
+            startRestServer(config)
+        }
+        Launcher.instance.consoleSender.sendProperty("module.rest.loaded", config.port.toString())
+    }
+
+    private fun loadConfig(): RestConfig {
+        return RestConfigLoader().loadConfig()
+    }
+
+    private fun startRestServer(config: RestConfig) {
         JwtProvider(config.secret)
         this.server = RestServer(config.port)
-        Launcher.instance.consoleSender.sendProperty("module.rest.loaded", config.port.toString())
     }
 
     override fun onDisable() {

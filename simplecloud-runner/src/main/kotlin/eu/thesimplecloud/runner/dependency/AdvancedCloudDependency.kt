@@ -20,13 +20,10 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.launcher.dependency
+package eu.thesimplecloud.runner.dependency
 
-import eu.thesimplecloud.api.depedency.CloudDependency
-import eu.thesimplecloud.api.utils.Downloader
-import eu.thesimplecloud.api.utils.WebContentLoader
-import eu.thesimplecloud.jsonlib.JsonLib
-import org.eclipse.aether.artifact.DefaultArtifact
+import eu.thesimplecloud.runner.utils.Downloader
+import eu.thesimplecloud.runner.utils.WebContentLoader
 import java.io.File
 import java.io.IOException
 
@@ -36,7 +33,7 @@ import java.io.IOException
  * Time: 16:45
  * @author Frederick Baier
  */
-class LauncherCloudDependency(groupId: String, artifactId: String, version: String) : CloudDependency(groupId, artifactId, version) {
+class AdvancedCloudDependency(groupId: String, artifactId: String, version: String) : CloudDependency(groupId, artifactId, version) {
 
     private fun getDownloadURL(repoUrl: String): String {
         return getUrlWithoutExtension(repoUrl) + ".jar"
@@ -48,14 +45,6 @@ class LauncherCloudDependency(groupId: String, artifactId: String, version: Stri
 
     fun getDownloadedInfoFile(): File {
         return File(DEPENDENCY_INFO_DIR, "${getName()}.info")
-    }
-
-    fun resolveDependenciesAndSaveToInfoFile(repoUrl: String) {
-        val aetherArtifact = DefaultArtifact("${groupId}:${artifactId}:${version}")
-        val dependencies = DependencyResolver(repoUrl, aetherArtifact).collectDependencies()
-        val cloudDependencies = dependencies.map { it.artifact }
-                .map { CloudDependency(it.groupId, it.artifactId, it.version) }
-        JsonLib.fromObject(cloudDependencies).saveAsFile(getDownloadedInfoFile())
     }
 
     fun existInRepo(repoUrl: String): Boolean {
@@ -80,7 +69,7 @@ class LauncherCloudDependency(groupId: String, artifactId: String, version: Stri
         return getMainURL(repoUrl) + version + "/" + artifactId + "-" + version
     }
 
-    fun getDependencyWithNewerVersion(other: LauncherCloudDependency): LauncherCloudDependency {
+    fun getDependencyWithNewerVersion(other: AdvancedCloudDependency): AdvancedCloudDependency {
         val dependencyVersion = getVersionStringAsIntArray(this.version)
         val otherDependencyVersion = getVersionStringAsIntArray(other.version)
         if (dependencyVersion[0] > otherDependencyVersion[0]) return this
@@ -126,10 +115,10 @@ class LauncherCloudDependency(groupId: String, artifactId: String, version: Stri
         val DEPENDENCY_INFO_DIR = File("dependencies/info/")
 
 
-        fun fromCoords(coords: String): LauncherCloudDependency {
+        fun fromCoords(coords: String): AdvancedCloudDependency {
             val split = coords.split(":")
             require(split.size == 3)
-            return LauncherCloudDependency(split[0], split[1], split[2])
+            return AdvancedCloudDependency(split[0], split[1], split[2])
         }
     }
 }
