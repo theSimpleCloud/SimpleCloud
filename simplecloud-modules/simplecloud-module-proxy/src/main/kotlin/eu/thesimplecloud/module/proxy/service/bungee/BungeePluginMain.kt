@@ -28,6 +28,7 @@ import eu.thesimplecloud.module.proxy.service.ProxyHandler
 import eu.thesimplecloud.module.proxy.service.bungee.listener.BungeeListener
 import eu.thesimplecloud.plugin.proxy.bungee.text.CloudTextBuilder
 import net.kyori.adventure.platform.bungeecord.BungeeAudiences
+import net.kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import net.md_5.bungee.api.plugin.Plugin
@@ -41,8 +42,6 @@ import java.util.concurrent.TimeUnit
  * Time: 21:33
  */
 class BungeePluginMain : Plugin() {
-
-    var tablistStarted = false
 
     lateinit var bungeeAudiences: BungeeAudiences
     lateinit var proxyHandler: ProxyHandler
@@ -75,11 +74,16 @@ class BungeePluginMain : Plugin() {
         sendHeaderAndFooter(proxiedPlayer, headerString, footerString)
     }
 
-    fun sendHeaderAndFooter(player: ProxiedPlayer, header: String, footer: String) {
+    private fun sendHeaderAndFooter(player: ProxiedPlayer, header: String, footer: String) {
         if (player.server == null) return
         val serverName = player.server.info.name
-        player.setTabHeader(CloudTextBuilder().build(CloudText(proxyHandler.replaceString(header, serverName))),
-                CloudTextBuilder().build(CloudText(proxyHandler.replaceString(footer, serverName))))
+
+        val headerBaseComponent = BungeeComponentSerializer.get()
+            .serialize(this.proxyHandler.getHexColorComponent(this.proxyHandler.replaceString(header, serverName)))
+        val footerBaseComponent = BungeeComponentSerializer.get()
+            .serialize(this.proxyHandler.getHexColorComponent(this.proxyHandler.replaceString(footer, serverName)))
+
+        player.setTabHeader(headerBaseComponent, footerBaseComponent)
     }
 
 }

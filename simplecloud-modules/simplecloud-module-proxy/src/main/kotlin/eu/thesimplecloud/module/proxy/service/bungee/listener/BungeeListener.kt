@@ -103,9 +103,9 @@ class BungeeListener(val plugin: BungeePluginMain) : Listener {
         val line1 = motdConfiguration.firstLines.random()
         val line2 = motdConfiguration.secondLines.random()
 
-        response.descriptionComponent = BungeeComponentSerializer.get().serialize(TextComponent.ofChildren(MiniMessage.get()
-            .parse(plugin.proxyHandler.replaceString(line1 + "\n" + line2))))[0]
-
+        val motdComponent = this.plugin.proxyHandler
+            .getHexColorComponent(this.plugin.proxyHandler.replaceString("$line1\n$line2"))
+        response.descriptionComponent = BungeeComponentSerializer.get().serialize(motdComponent)[0]
 
         val playerInfo = motdConfiguration.playerInfo
         val onlinePlayers = plugin.proxyHandler.getOnlinePlayers()

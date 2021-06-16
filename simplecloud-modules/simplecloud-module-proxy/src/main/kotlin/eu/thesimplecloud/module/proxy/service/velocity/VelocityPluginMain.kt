@@ -49,7 +49,6 @@ class VelocityPluginMain @Inject constructor(val proxyServer: ProxyServer) {
     var tablistStarted = false
     lateinit var proxyHandler: ProxyHandler
 
-
     @Subscribe
     fun handleInit(event: ProxyInitializeEvent) {
         proxyHandler = ProxyHandler()
@@ -74,13 +73,20 @@ class VelocityPluginMain @Inject constructor(val proxyServer: ProxyServer) {
         sendHeaderAndFooter(player, headerString, footerString)
     }
 
-    fun sendHeaderAndFooter(player: Player, header: String, footer: String) {
+    private fun sendHeaderAndFooter(player: Player, header: String, footer: String) {
         val currentServer = player.currentServer
-        if (currentServer.isPresent) {
-            val serverName = currentServer.get().serverInfo.name
-            player.tabList.setHeaderAndFooter(CloudTextBuilder().build(CloudText(proxyHandler.replaceString(header, serverName))),
-                    CloudTextBuilder().build(CloudText(proxyHandler.replaceString(footer, serverName))))
+        if (!currentServer.isPresent) {
+            return
         }
+
+        val serverName = currentServer.get().serverInfo.name
+
+        val headerHexColorComponent = this.proxyHandler
+            .getHexColorComponent(this.proxyHandler.replaceString(header, serverName))
+        val footerHexColorComponent = this.proxyHandler
+            .getHexColorComponent(this.proxyHandler.replaceString(footer, serverName))
+
+        player.tabList.setHeaderAndFooter(headerHexColorComponent, footerHexColorComponent)
     }
 
 }
