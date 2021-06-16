@@ -34,9 +34,6 @@ import eu.thesimplecloud.module.proxy.service.ProxyHandler
 import eu.thesimplecloud.module.proxy.service.velocity.VelocityPluginMain
 import eu.thesimplecloud.plugin.proxy.velocity.text.CloudTextBuilder
 import eu.thesimplecloud.plugin.startup.CloudPlugin
-import net.kyori.adventure.text.TextComponent
-import net.kyori.adventure.text.minimessage.MiniMessage
-import net.md_5.bungee.event.EventHandler
 import java.util.*
 
 /**
@@ -51,8 +48,8 @@ class VelocityListener(val plugin: VelocityPluginMain) {
     fun handle(event: ServerPreConnectEvent) {
         val player = event.player
 
-        val config = plugin.proxyHandler.configHolder.getValue()
-        val proxyConfiguration = plugin.proxyHandler.getProxyConfiguration() ?: return
+        val config = ProxyHandler.configHolder.getValue()
+        val proxyConfiguration = ProxyHandler.getProxyConfiguration() ?: return
 
         if (CloudPlugin.instance.thisService().getServiceGroup().isInMaintenance()) {
             if (!player.hasPermission(ProxyHandler.JOIN_MAINTENANCE_PERMISSION) &&
@@ -67,7 +64,7 @@ class VelocityListener(val plugin: VelocityPluginMain) {
 
         val maxPlayers = CloudPlugin.instance.thisService().getServiceGroup().getMaxPlayers()
 
-        if (plugin.proxyHandler.getOnlinePlayers() > maxPlayers) {
+        if (ProxyHandler.getOnlinePlayers() > maxPlayers) {
             if (!player.hasPermission(ProxyHandler.JOIN_FULL_PERMISSION) &&
                 !proxyConfiguration.whitelist.mapToLowerCase().contains(player.username.toLowerCase())
             ) {
@@ -80,21 +77,20 @@ class VelocityListener(val plugin: VelocityPluginMain) {
     @Subscribe
     fun on(event: ServerConnectedEvent) {
         val player = event.player
-        val tablistConfiguration = plugin.proxyHandler.getCurrentTablistConfiguration() ?: return
+        val tablistConfiguration = ProxyHandler.getCurrentTablistConfiguration() ?: return
         plugin.sendHeaderAndFooter(player, tablistConfiguration)
     }
 
     @Subscribe
     fun handle(event: ProxyPingEvent) {
-        val proxyHandler = plugin.proxyHandler
-        val proxyConfiguration = proxyHandler.getProxyConfiguration() ?: return
+        val proxyConfiguration = ProxyHandler.getProxyConfiguration() ?: return
         val motdConfiguration = if (CloudPlugin.instance.thisService().getServiceGroup().isInMaintenance())
             proxyConfiguration.maintenanceMotds else proxyConfiguration.motds
 
         val line1 = motdConfiguration.firstLines.random()
         val line2 = motdConfiguration.secondLines.random()
 
-        val motd = proxyHandler.getHexColorComponent(proxyHandler.replaceString("$line1\n$line2"))
+        val motd = ProxyHandler.getHexColorComponent(ProxyHandler.replaceString("$line1\n$line2"))
 
         val ping = event.ping
         var protocol: ServerPing.Version = ping.version
@@ -103,17 +99,17 @@ class VelocityListener(val plugin: VelocityPluginMain) {
         val modinfo = if (ping.modinfo.isPresent) ping.modinfo.get() else null
 
         val playerInfo = motdConfiguration.playerInfo
-        val onlinePlayers = proxyHandler.getOnlinePlayers()
+        val onlinePlayers = ProxyHandler.getOnlinePlayers()
 
         val versionName = motdConfiguration.versionName
         if (versionName != null && versionName.isNotEmpty()) {
-            protocol = ServerPing.Version(-1, proxyHandler.replaceString(versionName))
+            protocol = ServerPing.Version(-1, ProxyHandler.replaceString(versionName))
         }
 
         val maxPlayers = CloudPlugin.instance.thisService().getServiceGroup().getMaxPlayers()
 
         val playerSamples = if (playerInfo != null && playerInfo.isNotEmpty()) {
-            val playerInfoString = proxyHandler.replaceString(playerInfo.joinToString("\n"))
+            val playerInfoString = ProxyHandler.replaceString(playerInfo.joinToString("\n"))
             listOf(ServerPing.SamplePlayer(playerInfoString, UUID.randomUUID()))
         } else {
             emptyList()

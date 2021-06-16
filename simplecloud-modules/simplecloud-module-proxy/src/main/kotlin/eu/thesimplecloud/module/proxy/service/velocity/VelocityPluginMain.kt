@@ -29,11 +29,9 @@ import com.velocitypowered.api.plugin.Dependency
 import com.velocitypowered.api.plugin.Plugin
 import com.velocitypowered.api.proxy.Player
 import com.velocitypowered.api.proxy.ProxyServer
-import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.module.proxy.config.TablistConfiguration
 import eu.thesimplecloud.module.proxy.service.ProxyHandler
 import eu.thesimplecloud.module.proxy.service.velocity.listener.VelocityListener
-import eu.thesimplecloud.plugin.proxy.velocity.text.CloudTextBuilder
 import java.util.concurrent.TimeUnit
 
 /**
@@ -48,20 +46,18 @@ class VelocityPluginMain @Inject constructor(
     private val proxyServer: ProxyServer
 ) {
 
-    lateinit var proxyHandler: ProxyHandler
 
     @Subscribe
     fun handleInit(event: ProxyInitializeEvent) {
-        proxyHandler = ProxyHandler()
 
-        proxyHandler.onEnable()
+        ProxyHandler.onEnable()
         proxyServer.eventManager.register(this, VelocityListener(this))
         startScheduler()
     }
 
     private fun startScheduler() {
         proxyServer.scheduler.buildTask(this) {
-            val tablistConfiguration = proxyHandler.getCurrentTablistConfiguration() ?: return@buildTask
+            val tablistConfiguration = ProxyHandler.getCurrentTablistConfiguration() ?: return@buildTask
             proxyServer.allPlayers.forEach {
                 sendHeaderAndFooter(it, tablistConfiguration)
             }
@@ -82,10 +78,10 @@ class VelocityPluginMain @Inject constructor(
 
         val serverName = currentServer.get().serverInfo.name
 
-        val headerHexColorComponent = this.proxyHandler
-            .getHexColorComponent(this.proxyHandler.replaceString(header, serverName, player.uniqueId))
-        val footerHexColorComponent = this.proxyHandler
-            .getHexColorComponent(this.proxyHandler.replaceString(footer, serverName, player.uniqueId))
+        val headerHexColorComponent = ProxyHandler
+            .getHexColorComponent(ProxyHandler.replaceString(header, serverName, player.uniqueId))
+        val footerHexColorComponent = ProxyHandler
+            .getHexColorComponent(ProxyHandler.replaceString(footer, serverName, player.uniqueId))
 
         player.sendPlayerListHeaderAndFooter(headerHexColorComponent, footerHexColorComponent)
     }

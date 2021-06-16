@@ -45,16 +45,16 @@ import java.util.*
  * Date: 16.05.2020
  * Time: 23:43
  */
-class ProxyHandler {
+object ProxyHandler {
 
     var configHolder: IProperty<Config> = Property(DefaultConfig.get())
 
     fun onEnable() {
         CloudAPI.instance.getGlobalPropertyHolder()
-                .requestProperty<Config>("simplecloud-module-proxy-config")
-                .addResultListener {
-                    configHolder = it
-                }
+            .requestProperty<Config>("simplecloud-module-proxy-config")
+            .addResultListener {
+                configHolder = it
+            }
     }
 
     var index = 0;
@@ -78,7 +78,9 @@ class ProxyHandler {
     }
 
     fun getProxyConfiguration(): ProxyGroupConfiguration? {
-        return configHolder.getValue().proxyGroupConfigurations.firstOrNull { it.proxyGroup == CloudPlugin.instance.thisService().getGroupName() }
+        return configHolder.getValue().proxyGroupConfigurations.firstOrNull {
+            it.proxyGroup == CloudPlugin.instance.thisService().getGroupName()
+        }
     }
 
     fun getOnlinePlayers(): Int {
@@ -86,21 +88,23 @@ class ProxyHandler {
     }
 
     fun getHexColorComponent(message: String): TextComponent {
-        return TextComponent.ofChildren(MiniMessage.get()
-            .parse(message))
+        return TextComponent.ofChildren(
+            MiniMessage.get()
+                .parse(message)
+        )
     }
 
     fun replaceString(message: String): String {
 
         return message
-                .replace("%ONLINE_PLAYERS%", getOnlinePlayers().toString())
-                .replace("%MAX_PLAYERS%", CloudPlugin.instance.thisService().getMaxPlayers().toString())
-                .replace("%PROXY%", CloudPlugin.instance.thisService().getName())
+            .replace("%ONLINE_PLAYERS%", getOnlinePlayers().toString())
+            .replace("%MAX_PLAYERS%", CloudPlugin.instance.thisService().getMaxPlayers().toString())
+            .replace("%PROXY%", CloudPlugin.instance.thisService().getName())
     }
 
     fun replaceString(message: String, serverName: String): String {
         return replaceString(message)
-                .replace("%SERVER%", serverName)
+            .replace("%SERVER%", serverName)
     }
 
     fun replaceString(message: String, serverName: String, uuid: UUID): String {
@@ -112,11 +116,11 @@ class ProxyHandler {
         val tablistInformation = getTablistInformation(uuid) ?: return replacedString
 
         return replacedString
-                .replace("%COLOR%", tablistInformation.color)
-                .replace("%PRIORITY%", tablistInformation.priority.toString())
-                .replace("%PREFIX%", tablistInformation.prefix)
-                .replace("%SUFFIX%", tablistInformation.suffix)
-                .replace("%COLOR_CODE%", ChatColor.valueOf(tablistInformation.color).toString())
+            .replace("%COLOR%", tablistInformation.color)
+            .replace("%PRIORITY%", tablistInformation.priority.toString())
+            .replace("%PREFIX%", tablistInformation.prefix)
+            .replace("%SUFFIX%", tablistInformation.suffix)
+            .replace("%COLOR_CODE%", ChatColor.valueOf(tablistInformation.color).toString())
     }
 
     private fun getTablistInformation(uuid: UUID): TablistInformation? {
@@ -129,7 +133,8 @@ class ProxyHandler {
 
     private fun getPermissionsGroupName(uuid: UUID): String? {
         try {
-            val permissionPlayer = PermissionPool.instance.getPermissionPlayerManager().getCachedPermissionPlayer(uuid) ?: return null
+            val permissionPlayer =
+                PermissionPool.instance.getPermissionPlayerManager().getCachedPermissionPlayer(uuid) ?: return null
             val permissionGroup = permissionPlayer.getHighestPermissionGroup()
             return permissionGroup.getName()
         } catch (t: Throwable) {
@@ -137,9 +142,7 @@ class ProxyHandler {
         return null
     }
 
-    companion object {
-        const val JOIN_MAINTENANCE_PERMISSION = "cloud.maintenance.join"
-        const val JOIN_FULL_PERMISSION = "cloud.full.join"
-    }
+    const val JOIN_MAINTENANCE_PERMISSION = "cloud.maintenance.join"
+    const val JOIN_FULL_PERMISSION = "cloud.full.join"
 
 }

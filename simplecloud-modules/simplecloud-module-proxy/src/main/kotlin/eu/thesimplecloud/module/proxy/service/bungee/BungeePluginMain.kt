@@ -22,11 +22,9 @@
 
 package eu.thesimplecloud.module.proxy.service.bungee
 
-import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.module.proxy.config.TablistConfiguration
 import eu.thesimplecloud.module.proxy.service.ProxyHandler
 import eu.thesimplecloud.module.proxy.service.bungee.listener.BungeeListener
-import eu.thesimplecloud.plugin.proxy.bungee.text.CloudTextBuilder
 import net.kyori.adventure.platform.bungeecord.BungeeAudiences
 import net.kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer
 import net.md_5.bungee.api.ProxyServer
@@ -44,13 +42,11 @@ import java.util.concurrent.TimeUnit
 class BungeePluginMain : Plugin() {
 
     lateinit var bungeeAudiences: BungeeAudiences
-    lateinit var proxyHandler: ProxyHandler
 
     override fun onEnable() {
-        proxyHandler = ProxyHandler()
         bungeeAudiences = BungeeAudiences.create(this)
 
-        proxyHandler.onEnable()
+        ProxyHandler.onEnable()
         proxy.pluginManager.registerListener(this, BungeeListener(this))
         startScheduler()
     }
@@ -61,7 +57,7 @@ class BungeePluginMain : Plugin() {
 
     private fun startScheduler() {
         ProxyServer.getInstance().scheduler.schedule(this, {
-            val tablistConfiguration = proxyHandler.getCurrentTablistConfiguration() ?: return@schedule
+            val tablistConfiguration = ProxyHandler.getCurrentTablistConfiguration() ?: return@schedule
             ProxyServer.getInstance().players.forEach {
                 sendHeaderAndFooter(it, tablistConfiguration)
             }
@@ -79,9 +75,9 @@ class BungeePluginMain : Plugin() {
         val serverName = player.server.info.name
 
         val headerBaseComponent = BungeeComponentSerializer.get()
-            .serialize(this.proxyHandler.getHexColorComponent(this.proxyHandler.replaceString(header, serverName, player.uniqueId)))
+            .serialize(ProxyHandler.getHexColorComponent(ProxyHandler.replaceString(header, serverName, player.uniqueId)))
         val footerBaseComponent = BungeeComponentSerializer.get()
-            .serialize(this.proxyHandler.getHexColorComponent(this.proxyHandler.replaceString(footer, serverName, player.uniqueId)))
+            .serialize(ProxyHandler.getHexColorComponent(ProxyHandler.replaceString(footer, serverName, player.uniqueId)))
 
         player.setTabHeader(headerBaseComponent, footerBaseComponent)
     }
