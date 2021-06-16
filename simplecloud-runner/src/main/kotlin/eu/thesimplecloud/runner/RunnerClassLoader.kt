@@ -31,12 +31,4 @@ import java.net.URLClassLoader
  * Time: 08:03
  * @author Frederick Baier
  */
-class RunnerClassLoader(urls: Array<URL>) : URLClassLoader(urls, getSystemClassLoader()) {
-
-    companion object {
-        init {
-            ClassLoader.registerAsParallelCapable()
-        }
-    }
-
-}
+class RunnerClassLoader(urls: Array<URL>) : URLClassLoader(urls, getSystemClassLoader())
