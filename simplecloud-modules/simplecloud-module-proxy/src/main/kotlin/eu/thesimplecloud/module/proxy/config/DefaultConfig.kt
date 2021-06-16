@@ -33,41 +33,41 @@ class DefaultConfig {
         fun get(): Config {
 
             val tablistConfiguration = TablistConfiguration(
-                    listOf("Proxy"),
-                    listOf(
-                            "§8                                                                        §8",
-                            "§bSimpleCloud §8» §7Simplify §f§oyour §7network",
-                            "§3Online §8» §7%ONLINE_PLAYERS%§8/§7%MAX_PLAYERS% §8┃ §3Server §8» §7%SERVER%",
-                            "§8",
-                    ),
-                    listOf(
-                            "§8",
-                            "§3Twitter §8» §7@theSimpleCloud",
-                            "§3Discord §8» §7discord.gg/MPZs4h8",
-                            "§3Powered by §8» §7Venocix.de",
-                            "§8",
-                    ))
+                listOf("Proxy"),
+                listOf(
+                    "§8                                                                        §8",
+                    "§bSimpleCloud §8» §7Simplify §f§oyour §7network",
+                    "§3Online §8» §7%ONLINE_PLAYERS%§8/§7%MAX_PLAYERS% §8┃ §3Server §8» §7%SERVER%",
+                    "§8",
+                ),
+                listOf(
+                    "§8",
+                    "§3Twitter §8» §7@theSimpleCloud",
+                    "§3Discord §8» §7discord.gg/MPZs4h8",
+                    "§3Powered by §8» §7Venocix.de",
+                    "§8",
+                ))
 
             val config = Config(
-                    emptyList(),
-                    listOf(tablistConfiguration),
-                    "§cThis service is in maintenance",
-                    "§cThis service is full")
+                emptyList(),
+                listOf(tablistConfiguration),
+                "§cThis service is in maintenance",
+                "§cThis service is full")
 
             return config
         }
 
         fun getDefaultProxyGroupConfiguration(groupName: String): ProxyGroupConfiguration {
             val motdConfiguration = MotdConfiguration(
-                listOf("§b§lSimpleCloud §r§8-§7 Simplyify your Network§8│§f 1.8.x §8- §f1.16.x"),
-                listOf("§3§lStatus§r§8│ §aOnline §8- §7%PROXY%"),
+                listOf("<gradient:#00fcff:#0da1a3><bold>SimpleCloud</bold></gradient> §8»§7 Simplify your network §8|<bold><#4595ff> 1.8<#545454> - <#4595ff>1.17</bold>"),
+                listOf("§8× <#178fff>Status§8: <bold><#22cc22>Online</bold> §8- <#ffffff>%PROXY%"),
                 emptyList(),
                 null)
             val maintenanceMotdConfiguration = MotdConfiguration(
-                listOf("§b§lSimpleCloud §r§8-§7 Simplyify your Network§8│§f 1.8.x §8- §f1.16.x"),
-                listOf("§3§lStatus§r§8│ §cMaintenance §8- §7%PROXY%"),
+                listOf("<gradient:#00fcff:#0da1a3><bold>SimpleCloud</bold></gradient> §8»§7 Simplify your network §8|<bold><#4595ff> 1.8<#545454> - <#4595ff>1.17</bold>"),
+                listOf("§8× <#178fff>Status§8: <bold><#c40000>Maintenance</bold> §8- §f%PROXY%"),
                 emptyList(),
-                "§8│ §c§oMaintenance")
+                "§4§oMaintenance")
 
             return ProxyGroupConfiguration(
                 groupName,

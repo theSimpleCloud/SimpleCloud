@@ -61,7 +61,7 @@ class BungeePluginMain : Plugin() {
 
     private fun startScheduler() {
         ProxyServer.getInstance().scheduler.schedule(this, {
-            val tablistConfiguration = proxyHandler.getTablistConfiguration() ?: return@schedule
+            val tablistConfiguration = proxyHandler.getCurrentTablistConfiguration() ?: return@schedule
             ProxyServer.getInstance().players.forEach {
                 sendHeaderAndFooter(it, tablistConfiguration)
             }

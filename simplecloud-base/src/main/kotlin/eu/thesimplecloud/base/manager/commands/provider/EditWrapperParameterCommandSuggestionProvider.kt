@@ -42,6 +42,8 @@ class EditWrapperParameterCommandSuggestionProvider : ICommandSuggestionProvider
                 it.name == "authenticated" ||
                 it.name == "usedMemory" ||
                 it.name == "templatesReceived" ||
+                it.name == "cpuUsage" ||
+                it.name == "wrapperUpdater" ||
                 it.name == "currentlyStartingServices" }.map { it.name }
     }
 

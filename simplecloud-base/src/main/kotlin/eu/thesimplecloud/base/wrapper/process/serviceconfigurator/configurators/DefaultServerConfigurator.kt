@@ -23,7 +23,7 @@
 package eu.thesimplecloud.base.wrapper.process.serviceconfigurator.configurators
 
 import eu.thesimplecloud.api.service.ICloudService
-import eu.thesimplecloud.api.utils.FileEditor
+import eu.thesimplecloud.api.utils.ConfigurationFileEditor
 import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.IServiceConfigurator
 import eu.thesimplecloud.launcher.utils.FileCopier
 import java.io.File
@@ -40,10 +40,10 @@ class DefaultServerConfigurator : IServiceConfigurator {
             FileCopier.copyFileOutOfJar(bukkitFile, "/files/bukkit.yml")
         if (!spigotFile.exists())
             FileCopier.copyFileOutOfJar(spigotFile, "/files/spigot.yml")
-        val fileEditor = FileEditor(propertiesFile)
-        fileEditor["server-ip"] = cloudService.getHost()
-        fileEditor["server-port"] = cloudService.getPort().toString()
-        fileEditor["max-players"] = cloudService.getMaxPlayers().toString()
-        fileEditor.save(propertiesFile)
+        val fileEditor = ConfigurationFileEditor(propertiesFile, ConfigurationFileEditor.PROPERTIES_SPLITTER)
+        fileEditor.setValue("server-ip", cloudService.getHost())
+        fileEditor.setValue("server-port", cloudService.getPort().toString())
+        fileEditor.setValue("max-players", cloudService.getMaxPlayers().toString())
+        fileEditor.saveToFile(propertiesFile)
     }
 }

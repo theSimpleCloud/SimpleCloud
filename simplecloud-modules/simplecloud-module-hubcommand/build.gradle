@@ -29,5 +29,5 @@ dependencies {
     implementation(project(":simplecloud-base"))
     implementation(project(":simplecloud-api"))
     implementation(project(":simplecloud-launcher"))
-    compileOnly 'org.spigotmc:spigot-api:1.15.1-R0.1-SNAPSHOT' // The full Spigot server with no shadowing. Requires mavenLocal.
+    compileOnly 'org.spigotmc:spigot-api:1.17-R0.1-SNAPSHOT' // The full Spigot server with no shadowing. Requires mavenLocal.
 }

@@ -1,4 +1,3 @@
-
 /*
  * MIT License
  *
@@ -21,21 +20,17 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-configurations {
-    jar.archiveName = 'SimpleCloud-Permission.jar'
-}
+package eu.thesimplecloud.module.prefix.service.velocity
 
-dependencies {
-    implementation(project(":simplecloud-base"))
-    implementation(project(":simplecloud-api"))
-    implementation(project(":simplecloud-plugin"))
-    implementation(project(":simplecloud-launcher"))
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.0.1'
+import com.google.inject.Inject
+import com.velocitypowered.api.plugin.Dependency
+import com.velocitypowered.api.plugin.Plugin
+import com.velocitypowered.api.proxy.ProxyServer
 
-    compileOnly 'org.spigotmc:spigot-api:1.17-R0.1-SNAPSHOT' // The full Spigot server with no shadowing. Requires mavenLocal.
-    compileOnly 'net.md-5:bungeecord-api:1.17-R0.1-SNAPSHOT' // The full Spigot server with no shadowing. Requires mavenLocal.
-    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
-    compileOnly 'com.velocitypowered:velocity-api:1.1.8'
-    annotationProcessor 'com.velocitypowered:velocity-api:1.1.8'
+/**
+ * @author KxmischesDomi | https://github.com/kxmischesdomi
+ */
+@Plugin(id = "simplecloud_prefix", dependencies = [Dependency(id = "simplecloud_plugin")])
+class VelocityPluginMain @Inject constructor(val proxyServer: ProxyServer) {
 
 }

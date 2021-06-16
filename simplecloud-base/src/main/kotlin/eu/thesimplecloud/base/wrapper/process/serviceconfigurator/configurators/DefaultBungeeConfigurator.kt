@@ -23,7 +23,7 @@
 package eu.thesimplecloud.base.wrapper.process.serviceconfigurator.configurators
 
 import eu.thesimplecloud.api.service.ICloudService
-import eu.thesimplecloud.api.utils.FileEditor
+import eu.thesimplecloud.api.utils.ConfigurationFileEditor
 import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.IServiceConfigurator
 import eu.thesimplecloud.launcher.utils.FileCopier
 import java.io.File
@@ -35,10 +35,10 @@ class DefaultBungeeConfigurator : IServiceConfigurator {
         if (!bungeeConfigFile.exists()) {
             FileCopier.copyFileOutOfJar(bungeeConfigFile, "/files/config.yml")
         }
-        val fileEditor = FileEditor(bungeeConfigFile)
-        fileEditor.replaceInAllLines("host: 0.0.0.0:25565", "host: 0.0.0.0:${cloudService.getPort()}")
-        fileEditor.replaceInAllLines("max_players: 1", "max_players: ${cloudService.getMaxPlayers()}")
-        fileEditor.save(bungeeConfigFile)
+        val fileEditor = ConfigurationFileEditor(bungeeConfigFile, ConfigurationFileEditor.YAML_SPLITTER)
+        fileEditor.setValue("host", "0.0.0.0:${cloudService.getPort()}")
+        fileEditor.setValue("max_players", "${cloudService.getMaxPlayers()}")
+        fileEditor.saveToFile(bungeeConfigFile)
     }
 
 
