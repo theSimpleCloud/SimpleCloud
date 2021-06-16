@@ -44,11 +44,11 @@ import java.util.concurrent.TimeUnit
  */
 
 @Plugin(id = "simplecloud_proxy", dependencies = [Dependency(id = "simplecloud_plugin")])
-class VelocityPluginMain @Inject constructor(val proxyServer: ProxyServer) {
+class VelocityPluginMain @Inject constructor(
+    private val proxyServer: ProxyServer
+) {
 
-    var tablistStarted = false
     lateinit var proxyHandler: ProxyHandler
-
 
     @Subscribe
     fun handleInit(event: ProxyInitializeEvent) {
@@ -74,13 +74,20 @@ class VelocityPluginMain @Inject constructor(val proxyServer: ProxyServer) {
         sendHeaderAndFooter(player, headerString, footerString)
     }
 
-    fun sendHeaderAndFooter(player: Player, header: String, footer: String) {
+    private fun sendHeaderAndFooter(player: Player, header: String, footer: String) {
         val currentServer = player.currentServer
-        if (currentServer.isPresent) {
-            val serverName = currentServer.get().serverInfo.name
-            player.tabList.setHeaderAndFooter(CloudTextBuilder().build(CloudText(proxyHandler.replaceString(header, serverName, player.uniqueId))),
-                    CloudTextBuilder().build(CloudText(proxyHandler.replaceString(footer, serverName, player.uniqueId))))
+        if (!currentServer.isPresent) {
+            return
         }
+
+        val serverName = currentServer.get().serverInfo.name
+
+        val headerHexColorComponent = this.proxyHandler
+            .getHexColorComponent(this.proxyHandler.replaceString(header, serverName, player.uniqueId))
+        val footerHexColorComponent = this.proxyHandler
+            .getHexColorComponent(this.proxyHandler.replaceString(footer, serverName, player.uniqueId))
+
+        player.sendPlayerListHeaderAndFooter(headerHexColorComponent, footerHexColorComponent)
     }
 
 }

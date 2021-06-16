@@ -34,6 +34,8 @@ import eu.thesimplecloud.module.proxy.config.ProxyGroupConfiguration
 import eu.thesimplecloud.module.proxy.config.TablistConfiguration
 import eu.thesimplecloud.module.proxy.extensions.mapToLowerCase
 import eu.thesimplecloud.plugin.startup.CloudPlugin
+import net.kyori.adventure.text.TextComponent
+import net.kyori.adventure.text.minimessage.MiniMessage
 import net.md_5.bungee.api.ChatColor
 import java.util.*
 
@@ -43,7 +45,7 @@ import java.util.*
  * Date: 16.05.2020
  * Time: 23:43
  */
-class ProxyHandler() {
+class ProxyHandler {
 
     var configHolder: IProperty<Config> = Property(DefaultConfig.get())
 
@@ -81,6 +83,11 @@ class ProxyHandler() {
 
     fun getOnlinePlayers(): Int {
         return CloudPlugin.instance.thisService().getServiceGroup().getOnlinePlayerCount()
+    }
+
+    fun getHexColorComponent(message: String): TextComponent {
+        return TextComponent.ofChildren(MiniMessage.get()
+            .parse(message))
     }
 
     fun replaceString(message: String): String {
@@ -129,7 +136,7 @@ class ProxyHandler() {
         }
         return null
     }
-      
+
     companion object {
         const val JOIN_MAINTENANCE_PERMISSION = "cloud.maintenance.join"
         const val JOIN_FULL_PERMISSION = "cloud.full.join"
