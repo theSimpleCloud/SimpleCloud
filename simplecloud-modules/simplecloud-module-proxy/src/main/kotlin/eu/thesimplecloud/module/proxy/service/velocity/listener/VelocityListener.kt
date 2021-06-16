@@ -47,7 +47,7 @@ import java.util.*
  */
 class VelocityListener(val plugin: VelocityPluginMain) {
 
-    @Subscribe(order = PostOrder.LATE)
+    @Subscribe(order = PostOrder.EARLY)
     fun handle(event: ServerPreConnectEvent) {
         val player = event.player
 
@@ -64,17 +64,17 @@ class VelocityListener(val plugin: VelocityPluginMain) {
             }
         }
 
-
         val maxPlayers = CloudPlugin.instance.thisService().getServiceGroup().getMaxPlayers()
 
-        if (plugin.proxyHandler.getOnlinePlayers() > maxPlayers) {
-            if (!player.hasPermission(ProxyHandler.JOIN_FULL_PERMISSION) &&
-                !proxyConfiguration.whitelist.mapToLowerCase().contains(player.username.toLowerCase())
-            ) {
-                player.disconnect(CloudTextBuilder().build(CloudText(config.fullProxyKickMessage)))
-                event.result = ServerPreConnectEvent.ServerResult.denied()
-            }
-        }
+        if (plugin.proxyHandler.getOnlinePlayers() < maxPlayers)
+            return
+
+        if (player.hasPermission(plugin.proxyHandler.JOIN_FULL_PERMISSION) &&
+                proxyConfiguration.whitelist.mapToLowerCase().contains(player.username.toLowerCase()))
+            return
+
+        player.disconnect(CloudTextBuilder().build(CloudText(config.fullProxyKickMessage)))
+        event.result = ServerPreConnectEvent.ServerResult.denied()
     }
 
     @Subscribe
@@ -91,10 +91,17 @@ class VelocityListener(val plugin: VelocityPluginMain) {
         val motdConfiguration = if (CloudPlugin.instance.thisService().getServiceGroup().isInMaintenance())
             proxyConfiguration.maintenanceMotds else proxyConfiguration.motds
 
-        val line1 = motdConfiguration.firstLines.random()
-        val line2 = motdConfiguration.secondLines.random()
+        val motdBuilder = StringBuilder();
 
-        val motd = proxyHandler.getHexColorComponent(proxyHandler.replaceString("$line1\n$line2"))
+        if (motdConfiguration.firstLines.isNotEmpty())
+            motdBuilder.append(motdConfiguration.firstLines.random()) else motdBuilder.append(" ")
+
+        motdBuilder.append("\n")
+
+        if (motdConfiguration.secondLines.isNotEmpty())
+            motdBuilder.append(motdConfiguration.secondLines.random()) else motdBuilder.append(" ")
+        
+        val motd = proxyHandler.getHexColorComponent(proxyHandler.replaceString(motdBuilder.toString()))
 
         val ping = event.ping
         var protocol: ServerPing.Version = ping.version
@@ -106,6 +113,7 @@ class VelocityListener(val plugin: VelocityPluginMain) {
         val onlinePlayers = proxyHandler.getOnlinePlayers()
 
         val versionName = motdConfiguration.versionName
+      
         if (versionName != null && versionName.isNotEmpty()) {
             protocol = ServerPing.Version(-1, proxyHandler.replaceString(versionName))
         }
