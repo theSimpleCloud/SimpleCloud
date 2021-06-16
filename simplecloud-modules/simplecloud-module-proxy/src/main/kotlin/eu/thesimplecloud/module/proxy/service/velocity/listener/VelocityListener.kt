@@ -86,15 +86,15 @@ class VelocityListener(val plugin: VelocityPluginMain) {
 
     @Subscribe
     fun handle(event: ProxyPingEvent) {
-        val proxyConfiguration = plugin.proxyHandler.getProxyConfiguration() ?: return
+        val proxyHandler = plugin.proxyHandler
+        val proxyConfiguration = proxyHandler.getProxyConfiguration() ?: return
         val motdConfiguration = if (CloudPlugin.instance.thisService().getServiceGroup().isInMaintenance())
             proxyConfiguration.maintenanceMotds else proxyConfiguration.motds
 
         val line1 = motdConfiguration.firstLines.random()
         val line2 = motdConfiguration.secondLines.random()
 
-        val motd = TextComponent.ofChildren(MiniMessage.get()
-            .parse(plugin.proxyHandler.replaceString(line1 + "\n" + line2)))
+        val motd = proxyHandler.getHexColorComponent(proxyHandler.replaceString("$line1\n$line2"))
 
         val ping = event.ping
         var protocol: ServerPing.Version = ping.version
@@ -103,17 +103,17 @@ class VelocityListener(val plugin: VelocityPluginMain) {
         val modinfo = if (ping.modinfo.isPresent) ping.modinfo.get() else null
 
         val playerInfo = motdConfiguration.playerInfo
-        val onlinePlayers = plugin.proxyHandler.getOnlinePlayers()
+        val onlinePlayers = proxyHandler.getOnlinePlayers()
 
         val versionName = motdConfiguration.versionName
         if (versionName != null && versionName.isNotEmpty()) {
-            protocol = ServerPing.Version(-1, plugin.proxyHandler.replaceString(versionName))
+            protocol = ServerPing.Version(-1, proxyHandler.replaceString(versionName))
         }
 
         val maxPlayers = CloudPlugin.instance.thisService().getServiceGroup().getMaxPlayers()
 
         val playerSamples = if (playerInfo != null && playerInfo.isNotEmpty()) {
-            val playerInfoString = plugin.proxyHandler.replaceString(playerInfo.joinToString("\n"))
+            val playerInfoString = proxyHandler.replaceString(playerInfo.joinToString("\n"))
             listOf(ServerPing.SamplePlayer(playerInfoString, UUID.randomUUID()))
         } else {
             emptyList()
