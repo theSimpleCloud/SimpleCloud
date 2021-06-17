@@ -61,7 +61,7 @@
 
 ### Requirements
 * **Java 8** or higher
-* **[MongoDB](https://www.mongodb.com/cloud/atlas/lp/try2-de?utm_source=google&utm_campaign=gs_emea_germany_search_core_brand_atlas_desktop&utm_term=mongodb&utm_medium=cpc_paid_search&utm_ad=e&utm_ad_campaign_id=12212624524&gclid=Cj0KCQjw5auGBhDEARIsAFyNm9EkpiB2K-5CMNxHkHcY7VbdNE_4HrbwDOSrMmjgNAve270Hnd9pjRoaAqFgEALw_wcB)** or **SQL** database
+* **[MongoDB](https://www.mongodb.com/cloud/atlas/lp/try2-de?utm_source=google&utm_campaign=gs_emea_germany_search_core_brand_atlas_desktop&utm_term=mongodb&utm_medium=cpc_paid_search&utm_ad=e&utm_ad_campaign_id=12212624524&gclid=Cj0KCQjw5auGBhDEARIsAFyNm9EkpiB2K-5CMNxHkHcY7VbdNE_4HrbwDOSrMmjgNAve270Hnd9pjRoaAqFgEALw_wcB)** or **[SQL](https://go.mariadb.com/download-mariadb-server-community.html?utm_source=google&utm_medium=ppc&utm_campaign=MKG-Search-Google-Branded-EMEA-bd-Server-DL&gclid=Cj0KCQjw5auGBhDEARIsAFyNm9HBSH7xv8vFObvU9Xk8-bgYskrjfU53aBSkyehaGOxQQx2veRbC6-caAtJyEALw_wcB)** database
 * min. **2GB** Memory and **2 virtual cores**
 
 ### Installation
