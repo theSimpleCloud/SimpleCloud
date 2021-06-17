@@ -2,9 +2,6 @@
   <img src="https://i.imgur.com/eTQJ1IX.png" alt="Logo">
 </p>
 
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
 [![Discord][discord-shield]][discord-url]
 [![Teamspeak][teamspeak-shield]][teamspeak-url]
 
