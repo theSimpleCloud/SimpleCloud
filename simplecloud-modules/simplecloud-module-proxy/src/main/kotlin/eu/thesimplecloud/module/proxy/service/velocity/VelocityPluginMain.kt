@@ -29,11 +29,9 @@ import com.velocitypowered.api.plugin.Dependency
 import com.velocitypowered.api.plugin.Plugin
 import com.velocitypowered.api.proxy.Player
 import com.velocitypowered.api.proxy.ProxyServer
-import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.module.proxy.config.TablistConfiguration
 import eu.thesimplecloud.module.proxy.service.ProxyHandler
 import eu.thesimplecloud.module.proxy.service.velocity.listener.VelocityListener
-import eu.thesimplecloud.plugin.proxy.velocity.text.CloudTextBuilder
 import java.util.concurrent.TimeUnit
 
 /**
@@ -44,24 +42,22 @@ import java.util.concurrent.TimeUnit
  */
 
 @Plugin(id = "simplecloud_proxy", dependencies = [Dependency(id = "simplecloud_plugin")])
-class VelocityPluginMain @Inject constructor(val proxyServer: ProxyServer) {
-
-    var tablistStarted = false
-    lateinit var proxyHandler: ProxyHandler
+class VelocityPluginMain @Inject constructor(
+    private val proxyServer: ProxyServer
+) {
 
 
     @Subscribe
     fun handleInit(event: ProxyInitializeEvent) {
-        proxyHandler = ProxyHandler()
 
-        proxyHandler.onEnable()
+        ProxyHandler.onEnable()
         proxyServer.eventManager.register(this, VelocityListener(this))
         startScheduler()
     }
 
     private fun startScheduler() {
         proxyServer.scheduler.buildTask(this) {
-            val tablistConfiguration = proxyHandler.getTablistConfiguration() ?: return@buildTask
+            val tablistConfiguration = ProxyHandler.getCurrentTablistConfiguration() ?: return@buildTask
             proxyServer.allPlayers.forEach {
                 sendHeaderAndFooter(it, tablistConfiguration)
             }
@@ -74,13 +70,20 @@ class VelocityPluginMain @Inject constructor(val proxyServer: ProxyServer) {
         sendHeaderAndFooter(player, headerString, footerString)
     }
 
-    fun sendHeaderAndFooter(player: Player, header: String, footer: String) {
+    private fun sendHeaderAndFooter(player: Player, header: String, footer: String) {
         val currentServer = player.currentServer
-        if (currentServer.isPresent) {
-            val serverName = currentServer.get().serverInfo.name
-            player.tabList.setHeaderAndFooter(CloudTextBuilder().build(CloudText(proxyHandler.replaceString(header, serverName))),
-                    CloudTextBuilder().build(CloudText(proxyHandler.replaceString(footer, serverName))))
+        if (!currentServer.isPresent) {
+            return
         }
+
+        val serverName = currentServer.get().serverInfo.name
+
+        val headerHexColorComponent = ProxyHandler
+            .getHexColorComponent(ProxyHandler.replaceString(header, serverName, player.uniqueId))
+        val footerHexColorComponent = ProxyHandler
+            .getHexColorComponent(ProxyHandler.replaceString(footer, serverName, player.uniqueId))
+
+        player.sendPlayerListHeaderAndFooter(headerHexColorComponent, footerHexColorComponent)
     }
 
 }

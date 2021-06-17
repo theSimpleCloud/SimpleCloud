@@ -22,17 +22,17 @@
 
 package eu.thesimplecloud.launcher.external.module
 
-import eu.thesimplecloud.api.depedency.CloudDependency
+import eu.thesimplecloud.runner.dependency.CloudDependency
 
 data class ModuleFileContent(
-        val name: String,
-        val author: String,
-        val mainClass: String,
-        val moduleCopyType: ModuleCopyType,
-        val repositories: List<String>,
-        val dependencies: List<CloudDependency>,
-        val depend: List<String>,
-        val softDepend: List<String>
+    val name: String,
+    val author: String,
+    val mainClass: String,
+    val moduleCopyType: ModuleCopyType,
+    val repositories: List<String>,
+    val dependencies: List<CloudDependency>,
+    val depend: List<String>,
+    val softDepend: List<String>
 ) {
 
     fun isDependencyOf(moduleFileContent: ModuleFileContent): Boolean {

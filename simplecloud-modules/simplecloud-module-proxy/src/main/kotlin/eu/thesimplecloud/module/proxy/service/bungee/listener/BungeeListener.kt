@@ -24,9 +24,11 @@ package eu.thesimplecloud.module.proxy.service.bungee.listener
 
 import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.module.proxy.extensions.mapToLowerCase
+import eu.thesimplecloud.module.proxy.service.ProxyHandler
 import eu.thesimplecloud.module.proxy.service.bungee.BungeePluginMain
 import eu.thesimplecloud.plugin.proxy.bungee.text.CloudTextBuilder
 import eu.thesimplecloud.plugin.startup.CloudPlugin
+import net.kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer
 import net.md_5.bungee.api.ServerPing
 import net.md_5.bungee.api.event.ProxyPingEvent
 import net.md_5.bungee.api.event.ServerConnectEvent
@@ -48,13 +50,13 @@ class BungeeListener(val plugin: BungeePluginMain) : Listener {
     fun on(event: ServerConnectEvent) {
         val player = event.player
 
-        val config = plugin.proxyHandler.configHolder.getValue()
-        val proxyConfiguration = plugin.proxyHandler.getProxyConfiguration()?: return
+        val config = ProxyHandler.configHolder.getValue()
+        val proxyConfiguration = ProxyHandler.getProxyConfiguration()?: return
 
         if (CloudPlugin.instance.thisService().getServiceGroup().isInMaintenance()) {
-            if (!player.hasPermission(plugin.proxyHandler.JOIN_MAINTENANCE_PERMISSION) &&
+            if (!player.hasPermission(ProxyHandler.JOIN_MAINTENANCE_PERMISSION) &&
                     !proxyConfiguration.whitelist.mapToLowerCase().contains(player.name.toLowerCase())) {
-                player.disconnect(CloudTextBuilder().build(CloudText(config.maintenanceKickMessage)))
+                player.disconnect(CloudTextBuilder().build(CloudText(ProxyHandler.replaceString(config.maintenanceKickMessage))))
                 event.isCancelled = true
                 return
             }
@@ -63,10 +65,10 @@ class BungeeListener(val plugin: BungeePluginMain) : Listener {
 
         val maxPlayers = CloudPlugin.instance.thisService().getServiceGroup().getMaxPlayers()
 
-        if (plugin.proxyHandler.getOnlinePlayers() > maxPlayers) {
-            if (!player.hasPermission(plugin.proxyHandler.JOIN_FULL_PERMISSION) &&
+        if (ProxyHandler.getOnlinePlayers() > maxPlayers) {
+            if (!player.hasPermission(ProxyHandler.JOIN_FULL_PERMISSION) &&
                     !proxyConfiguration.whitelist.mapToLowerCase().contains(player.name.toLowerCase())) {
-                player.disconnect(CloudTextBuilder().build(CloudText(config.fullProxyKickMessage)))
+                player.disconnect(CloudTextBuilder().build(CloudText(ProxyHandler.replaceString(config.fullProxyKickMessage))))
                 event.isCancelled = true
             }
         }
@@ -76,7 +78,7 @@ class BungeeListener(val plugin: BungeePluginMain) : Listener {
     @EventHandler
     fun on(event: ServerConnectedEvent) {
         val player = event.player
-        val tablistConfiguration = plugin.proxyHandler.getTablistConfiguration()?: return
+        val tablistConfiguration = ProxyHandler.getCurrentTablistConfiguration()?: return
         plugin.sendHeaderAndFooter(player, tablistConfiguration)
     }
 
@@ -84,7 +86,7 @@ class BungeeListener(val plugin: BungeePluginMain) : Listener {
     fun on(event: ServerSwitchEvent) {
         val player = event.player
 
-        val tablistConfiguration = plugin.proxyHandler.getTablistConfiguration()?: return
+        val tablistConfiguration = ProxyHandler.getCurrentTablistConfiguration()?: return
         plugin.sendHeaderAndFooter(player, tablistConfiguration)
     }
 
@@ -92,29 +94,28 @@ class BungeeListener(val plugin: BungeePluginMain) : Listener {
     fun on(event: ProxyPingEvent) {
         val response = event.response
 
-        val proxyConfiguration = plugin.proxyHandler.getProxyConfiguration() ?: return
+        val proxyConfiguration = ProxyHandler.getProxyConfiguration() ?: return
         val motdConfiguration = if (CloudPlugin.instance.thisService().getServiceGroup().isInMaintenance())
             proxyConfiguration.maintenanceMotds else proxyConfiguration.motds
 
         val line1 = motdConfiguration.firstLines.random()
         val line2 = motdConfiguration.secondLines.random()
 
-        response.descriptionComponent = CloudTextBuilder()
-                .build(CloudText(plugin.proxyHandler.replaceString(line1 + "\n" + line2)))
-
+        val motdComponent = ProxyHandler.getHexColorComponent(ProxyHandler.replaceString("$line1\n$line2"))
+        response.descriptionComponent = BungeeComponentSerializer.get().serialize(motdComponent)[0]
 
         val playerInfo = motdConfiguration.playerInfo
-        val onlinePlayers = plugin.proxyHandler.getOnlinePlayers()
+        val onlinePlayers = ProxyHandler.getOnlinePlayers()
 
         val versionName = motdConfiguration.versionName
         if (versionName != null && versionName.isNotEmpty()) {
-            response.version = ServerPing.Protocol(plugin.proxyHandler.replaceString(versionName), -1)
+            response.version = ServerPing.Protocol(ProxyHandler.replaceString(versionName), -1)
         }
 
         val maxPlayers = CloudPlugin.instance.thisService().getServiceGroup().getMaxPlayers()
 
         if (playerInfo != null && playerInfo.isNotEmpty()) {
-            val playerInfoString = plugin.proxyHandler.replaceString(playerInfo.joinToString("\n"))
+            val playerInfoString = ProxyHandler.replaceString(playerInfo.joinToString("\n"))
             val sample = arrayOf(ServerPing.PlayerInfo(playerInfoString, ""))
             response.players = ServerPing.Players(maxPlayers, onlinePlayers, sample)
 

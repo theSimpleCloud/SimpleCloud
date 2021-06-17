@@ -20,11 +20,11 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.launcher.dependency
+package eu.thesimplecloud.loader.dependency
 
-import eu.thesimplecloud.api.external.ResourceFinder
 import eu.thesimplecloud.jsonlib.JsonLib
-import eu.thesimplecloud.launcher.startup.Launcher
+import eu.thesimplecloud.runner.dependency.AdvancedCloudDependency
+import java.io.File
 import java.util.concurrent.CopyOnWriteArraySet
 
 /**
@@ -37,33 +37,45 @@ class DependencyLoader {
 
     companion object {
         val INSTANCE = DependencyLoader()
-
-        //val FORBIDDEN_DEPENDENCY_ARTIFACT_IDS = listOf("kotlin-stdlib")
     }
 
-    private val installedDependencies = CopyOnWriteArraySet<LauncherCloudDependency>()
+    private val resolvedDependencies = CopyOnWriteArraySet<AdvancedCloudDependency>()
+    private val installedDependencies = CopyOnWriteArraySet<AdvancedCloudDependency>()
+    private var loggerEnabled: Boolean = true
 
-    private val resolvedDependencies = CopyOnWriteArraySet<LauncherCloudDependency>()
+    fun disableLogger() {
+        this.loggerEnabled = false
+    }
 
-    fun loadDependencies(repositories: List<String>, dependencies: List<LauncherCloudDependency>) {
-        if (dependencies.isEmpty()) return
+    fun reset() {
+        resolvedDependencies.clear()
+    }
+
+    fun loadDependencies(repositories: List<String>, dependencies: List<AdvancedCloudDependency>): Set<File> {
+        if (dependencies.isEmpty()) return emptySet()
         val dependenciesString = dependencies.joinToString { it.getName() }
-        loggerMessage("Loading dependencies: $dependenciesString", false)
+        loggerMessage("Loading dependencies: $dependenciesString")
 
         val allDependencies = dependencies.map { collectSubDependencies(it, repositories) }.flatten()
         val dependenciesByArtifactId = allDependencies.groupBy { it.artifactId }.values
         val newestVersions = dependenciesByArtifactId.map {
             it.reduce { acc, dependency -> dependency.getDependencyWithNewerVersion(acc) }
         }
-        newestVersions.forEach {
-            installDependency(it)
-        }
+        val dependencyFiles = newestVersions.map { it.getDownloadedFile() }
 
         val installedDependenciesString = newestVersions.joinToString { it.getName() }
-        loggerMessage("Installed dependencies: $installedDependenciesString", true)
+        loggerMessage("Installed dependencies: $installedDependenciesString")
+
+        installedDependencies.addAll(newestVersions)
+
+        return dependencyFiles.toSet()
     }
 
-    private fun collectSubDependencies(dependency: LauncherCloudDependency, repositories: List<String>, list: MutableList<LauncherCloudDependency> = ArrayList()): List<LauncherCloudDependency> {
+    private fun collectSubDependencies(
+        dependency: AdvancedCloudDependency,
+        repositories: List<String>,
+        list: MutableList<AdvancedCloudDependency> = ArrayList()
+    ): List<AdvancedCloudDependency> {
         if (this.resolvedDependencies.contains(dependency)) return list
         this.resolvedDependencies.add(dependency)
         list.add(dependency)
@@ -74,44 +86,27 @@ class DependencyLoader {
         return list
     }
 
-    private fun installDependency(dependency: LauncherCloudDependency) {
-        if (this.installedDependencies.contains(dependency)) return
-        this.installedDependencies.add(dependency)
-        ResourceFinder.addToClassLoader(dependency.getDownloadedFile())
-        loggerMessage("Installed dependency ${dependency.getName()}")
-    }
-
-    private fun resolveDependencyFilesIfNotExist(dependency: LauncherCloudDependency, repositories: List<String>) {
+    private fun resolveDependencyFilesIfNotExist(dependency: AdvancedCloudDependency, repositories: List<String>) {
         if (!dependency.getDownloadedInfoFile().exists()) {
-            SimpleDependencyDownloader(repositories).downloadFiles(dependency)
+            AdvancedDependencyDownloader(repositories).downloadFiles(dependency)
         }
     }
 
-    private fun getSubDependenciesOfDependency(dependency: LauncherCloudDependency): List<LauncherCloudDependency> {
+    private fun getSubDependenciesOfDependency(dependency: AdvancedCloudDependency): List<AdvancedCloudDependency> {
         val infoFile = dependency.getDownloadedInfoFile()
         val subDependencies = JsonLib.fromJsonFile(infoFile)!!
-                .getObject(Array<LauncherCloudDependency>::class.java)
+            .getObject(Array<AdvancedCloudDependency>::class.java)
         return subDependencies.asList()
     }
 
-    private fun loggerMessage(message: String, canBeHidden: Boolean = true) {
-        if (isLoggerAvailable()) {
-            if (!canBeHidden)
-                Launcher.instance.logger.console(message)
-        } else {
+    private fun loggerMessage(message: String) {
+        if (loggerEnabled) {
             println(message)
         }
     }
 
-    private fun isLoggerAvailable() =
-            try {
-                Launcher.instance.logger
-                true
-            } catch (ex: Exception) {
-                false
-            }
-
-    fun getInstalledDependencies(): Collection<LauncherCloudDependency> {
+    fun getInstalledDependencies(): Collection<AdvancedCloudDependency> {
         return this.installedDependencies
     }
+
 }

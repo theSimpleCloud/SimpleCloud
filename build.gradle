@@ -28,7 +28,7 @@ plugins {
 allprojects {
 
     group 'eu.thesimplecloud.simplecloud'
-    version '2.1.0'
+    version '2.2.0-SNAPSHOT'
 
     repositories {
         mavenCentral()
@@ -66,12 +66,12 @@ allprojects {
     }
 
     project.ext {
-        depedencyClientServerAPIVersion = '4.1.15'
+        depedencyClientServerAPIVersion = '4.1.16'
         dependencyCommonsIOVersion = '2.8.0'
         dependencyKotlinCouroutinesVersion = '1.4.3'
         dependencyNettyVersion = '4.1.58.Final'
         dependencyGuavaVersion = '30.0-jre'
-        dependencyKMongoVersion = '4.2.3'
+        dependencyKMongoVersion = '4.2.6'
     }
 
     buildscript {

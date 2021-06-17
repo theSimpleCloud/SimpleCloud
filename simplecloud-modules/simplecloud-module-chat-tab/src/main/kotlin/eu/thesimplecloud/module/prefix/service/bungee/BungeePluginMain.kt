@@ -20,36 +20,13 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.api.utils
+package eu.thesimplecloud.module.prefix.service.bungee
 
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.net.HttpURLConnection
-import java.net.URL
+import net.md_5.bungee.api.plugin.Plugin
 
-class WebContentLoader {
-
-    fun loadContent(urlstring: String): String? {
-        return runCatching {
-            val url = URL(urlstring)
-            val connection = url.openConnection() as HttpURLConnection
-            connection.requestMethod = "GET"
-            connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:58.0) Gecko/20100101 Firefox/58.0")
-            connection.connect()
-            val responseCode = connection.responseCode
-            if (responseCode != 200) {
-                connection.disconnect()
-                return@runCatching null
-            }
-            val reader = BufferedReader(InputStreamReader(connection.inputStream))
-
-            // write the output to stdout
-            var line = ""
-            reader.lines().forEach { line += it }
-            reader.close()
-            connection.disconnect()
-            return@runCatching line
-        }.getOrNull()
-    }
+/**
+ * @author KxmischesDomi | https://github.com/kxmischesdomi
+ */
+class BungeePluginMain : Plugin() {
 
 }

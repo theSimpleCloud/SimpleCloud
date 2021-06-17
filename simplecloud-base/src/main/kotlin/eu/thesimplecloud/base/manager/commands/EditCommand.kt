@@ -47,7 +47,11 @@ class EditCommand : ICommandHandler {
     //group
 
     @CommandSubPath("group <name> <parameter>", "Shows the parameters value")
-    fun editGroup(commandSender: ICommandSender, @CommandArgument("name", ServiceGroupCommandSuggestionProvider::class) name: String, @CommandArgument("parameter", EditGroupParameterCommandSuggestionProvider::class) parameter: String) {
+    fun editGroup(
+        commandSender: ICommandSender,
+        @CommandArgument("name", ServiceGroupCommandSuggestionProvider::class) name: String,
+        @CommandArgument("parameter", EditGroupParameterCommandSuggestionProvider::class) parameter: String
+    ) {
         val fields = getFieldsOfGroup(name) ?: return
         val serviceGroup = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(name)!!
         val lowerCaseFieldNames = fields.map { it.name.toLowerCase() }
@@ -62,7 +66,12 @@ class EditCommand : ICommandHandler {
     }
 
     @CommandSubPath("group <name> <parameter> <value>", "Edits a service group")
-    fun editGroup(commandSender: ICommandSender, @CommandArgument("name", ServiceGroupCommandSuggestionProvider::class) name: String, @CommandArgument("parameter", EditGroupParameterCommandSuggestionProvider::class) parameter: String, @CommandArgument("value") value: String) {
+    fun editGroup(
+        commandSender: ICommandSender,
+        @CommandArgument("name", ServiceGroupCommandSuggestionProvider::class) name: String,
+        @CommandArgument("parameter", EditGroupParameterCommandSuggestionProvider::class) parameter: String,
+        @CommandArgument("value") value: String
+    ) {
         val fields = getFieldsOfGroup(name) ?: return
         val serviceGroup = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(name)!!
         val lowerCaseFieldNames = fields.map { it.name.toLowerCase() }
@@ -93,14 +102,22 @@ class EditCommand : ICommandHandler {
             Launcher.instance.consoleSender.sendProperty("manager.command.edit.group.not-exist")
             return null
         }
-        val allFields = serviceGroup::class.java.getAllFieldsFromClassAndSubClasses().filter { !Collection::class.java.isAssignableFrom(it.type) }
+        val allFields = serviceGroup::class.java.getAllFieldsFromClassAndSubClasses()
+            .filter { !Collection::class.java.isAssignableFrom(it.type) }
         return allFields.filterNot { it.name == "name" || it.name == "serviceVersion" }
     }
     //wrapper
 
     @CommandSubPath("wrapper <name> <parameter>", "Shows the parameters value")
-    fun editWrapper(commandSender: ICommandSender, @CommandArgument("name", WrapperCommandSuggestionProvider::class) wrapper: IWrapperInfo, @CommandArgument("parameter", EditWrapperParameterCommandSuggestionProvider::class) parameter: String) {
-        val fields = getFieldsOfWrapper(wrapper) ?: return
+    fun editWrapper(
+        commandSender: ICommandSender,
+        @CommandArgument("name", WrapperCommandSuggestionProvider::class) wrapper: IWrapperInfo,
+        @CommandArgument(
+            "parameter",
+            EditWrapperParameterCommandSuggestionProvider::class
+        ) parameter: String
+    ) {
+        val fields = getFieldsOfWrapper(wrapper)
         val lowerCaseFieldNames = fields.map { it.name.toLowerCase() }
         if (lowerCaseFieldNames.contains(parameter.toLowerCase())) {
             val field = fields[lowerCaseFieldNames.indexOf(parameter.toLowerCase())]
@@ -113,8 +130,16 @@ class EditCommand : ICommandHandler {
     }
 
     @CommandSubPath("wrapper <name> <parameter> <value>", "Edits a wrapper")
-    fun editWrapper(commandSender: ICommandSender, @CommandArgument("name", WrapperCommandSuggestionProvider::class) wrapper: IWrapperInfo, @CommandArgument("parameter", EditWrapperParameterCommandSuggestionProvider::class) parameter: String, @CommandArgument("value") value: String) {
-        val fields = getFieldsOfWrapper(wrapper) ?: return
+    fun editWrapper(
+        commandSender: ICommandSender,
+        @CommandArgument("name", WrapperCommandSuggestionProvider::class) wrapper: IWrapperInfo,
+        @CommandArgument(
+            "parameter",
+            EditWrapperParameterCommandSuggestionProvider::class
+        ) parameter: String,
+        @CommandArgument("value") value: String
+    ) {
+        val fields = getFieldsOfWrapper(wrapper)
         val lowerCaseFieldNames = fields.map { it.name.toLowerCase() }
         if (lowerCaseFieldNames.contains(parameter.toLowerCase())) {
             val field = fields[lowerCaseFieldNames.indexOf(parameter.toLowerCase())]
@@ -137,9 +162,16 @@ class EditCommand : ICommandHandler {
         }
     }
 
-    private fun getFieldsOfWrapper(wrapper: IWrapperInfo): List<Field>? {
-        val allFields = wrapper::class.java.getAllFieldsFromClassAndSubClasses().filter { !Collection::class.java.isAssignableFrom(it.type) }
-        return allFields.filterNot { it.name == "name" || it.name == "host" || it.name == "wrapperName" }
+    private fun getFieldsOfWrapper(wrapper: IWrapperInfo): List<Field> {
+        val allFields = wrapper::class.java.getAllFieldsFromClassAndSubClasses()
+            .filter { !Collection::class.java.isAssignableFrom(it.type) }
+        return allFields.filterNot {
+            it.name == "name" ||
+                    it.name == "host" ||
+                    it.name == "wrapperName" ||
+                    it.name == "wrapperUpdater" ||
+                    it.name == "cpuUsage"
+        }
     }
 
     private fun sendAllParameters(commandSender: ICommandSender, fields: List<Field>) {
@@ -148,36 +180,74 @@ class EditCommand : ICommandHandler {
     }
 
     @CommandSubPath("template <name> inheritance add <otherTemplate>", "Adds a inheritance to a template")
-    fun addInheritTemplate(commandSender: ICommandSender, @CommandArgument("name", TemplateCommandSuggestionProvider::class) template: ITemplate, @CommandArgument("otherTemplate", TemplateCommandSuggestionProvider::class) otherTemplate: ITemplate) {
+    fun addInheritTemplate(
+        commandSender: ICommandSender,
+        @CommandArgument("name", TemplateCommandSuggestionProvider::class) template: ITemplate,
+        @CommandArgument(
+            "otherTemplate",
+            TemplateCommandSuggestionProvider::class
+        ) otherTemplate: ITemplate
+    ) {
         if (template == otherTemplate) {
             commandSender.sendProperty("manager.command.edit.template.inheritance.add.both-equal")
             return
         }
         if (template.getInheritedTemplateNames().contains(otherTemplate.getName())) {
-            commandSender.sendProperty("manager.command.edit.template.inheritance.add.already-added", template.getName(), otherTemplate.getName())
+            commandSender.sendProperty(
+                "manager.command.edit.template.inheritance.add.already-added",
+                template.getName(),
+                otherTemplate.getName()
+            )
             return
         }
         template.addInheritanceTemplate(otherTemplate)
         CloudAPI.instance.getTemplateManager().update(template)
-        commandSender.sendProperty("manager.command.edit.template.inheritance.add.success", template.getName(), otherTemplate.getName())
+        commandSender.sendProperty(
+            "manager.command.edit.template.inheritance.add.success",
+            template.getName(),
+            otherTemplate.getName()
+        )
     }
 
     @CommandSubPath("template <name> inheritance remove <otherTemplate>", "Removes a inheritance from a template")
-    fun removeInheritTemplate(commandSender: ICommandSender, @CommandArgument("name", TemplateCommandSuggestionProvider::class) template: ITemplate, @CommandArgument("otherTemplate", TemplateCommandSuggestionProvider::class) otherTemplate: ITemplate) {
+    fun removeInheritTemplate(
+        commandSender: ICommandSender,
+        @CommandArgument("name", TemplateCommandSuggestionProvider::class) template: ITemplate,
+        @CommandArgument(
+            "otherTemplate",
+            TemplateCommandSuggestionProvider::class
+        ) otherTemplate: ITemplate
+    ) {
         if (!template.getInheritedTemplateNames().contains(otherTemplate.getName())) {
-            commandSender.sendProperty("manager.command.edit.template.inheritance.remove.not-added", template.getName(), otherTemplate.getName())
+            commandSender.sendProperty(
+                "manager.command.edit.template.inheritance.remove.not-added",
+                template.getName(),
+                otherTemplate.getName()
+            )
             return
         }
         template.removeInheritanceTemplate(otherTemplate)
         CloudAPI.instance.getTemplateManager().update(template)
-        commandSender.sendProperty("manager.command.edit.template.inheritance.remove.success", template.getName(), otherTemplate.getName())
+        commandSender.sendProperty(
+            "manager.command.edit.template.inheritance.remove.success",
+            template.getName(),
+            otherTemplate.getName()
+        )
     }
 
 
     @CommandSubPath("template <name> module add <module>", "Adds a module to a template")
-    fun addModuleNameToCopy(commandSender: ICommandSender, @CommandArgument("name", TemplateCommandSuggestionProvider::class) template: ITemplate, @CommandArgument("module") module: String) {
+    fun addModuleNameToCopy(
+        commandSender: ICommandSender,
+        @CommandArgument("name", TemplateCommandSuggestionProvider::class) template: ITemplate,
+        @CommandArgument("module") module: String
+    ) {
         if (template.getModuleNamesToCopy().map { it.toLowerCase() }.contains(module)) {
-            commandSender.sendProperty("manager.command.edit.template.modules.add.already-added", module, template.getName())
+            commandSender.sendProperty(
+                "manager.command.edit.template.modules.add.already-added",
+                module,
+                template.getName()
+            )
             return
         }
         template.addModuleNameToCopy(module)
@@ -186,14 +256,22 @@ class EditCommand : ICommandHandler {
     }
 
     @CommandSubPath("template <name> module remove <module>", "Removes a module from a template")
-    fun removeModuleNameToCopy(commandSender: ICommandSender, @CommandArgument("name", TemplateCommandSuggestionProvider::class) template: ITemplate, @CommandArgument("module") module: String) {
+    fun removeModuleNameToCopy(
+        commandSender: ICommandSender,
+        @CommandArgument("name", TemplateCommandSuggestionProvider::class) template: ITemplate,
+        @CommandArgument("module") module: String
+    ) {
         if (!template.getModuleNamesToCopy().map { it.toLowerCase() }.contains(module)) {
-            commandSender.sendProperty("manager.command.edit.template.modules.remove.not-added", module,  template.getName())
+            commandSender.sendProperty(
+                "manager.command.edit.template.modules.remove.not-added",
+                module,
+                template.getName()
+            )
             return
         }
         template.removeModuleNameToCopy(module)
         CloudAPI.instance.getTemplateManager().update(template)
-        commandSender.sendProperty("manager.command.edit.template.modules.remove.success",  module, template.getName())
+        commandSender.sendProperty("manager.command.edit.template.modules.remove.success", module, template.getName())
     }
 
 }

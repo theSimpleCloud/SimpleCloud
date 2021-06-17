@@ -39,12 +39,10 @@ import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
-import kotlin.math.max
 import kotlin.math.min
 
 class ServiceHandler : IServiceHandler {
 
-    private val serviceMinimumCountCalculator = ServiceMinimumCountCalculator()
     @Volatile private var serviceQueue: MutableList<ICloudService> = CopyOnWriteArrayList()
 
     override fun startServicesByGroup(cloudServiceGroup: ICloudServiceGroup, count: Int): List<ICloudService> {
@@ -109,7 +107,7 @@ class ServiceHandler : IServiceHandler {
             val inLobbyServicesWithFewPlayers = inLobbyServices.filter {
                 it.getOnlinePercentage() < serviceGroup.getPercentToStartNewService().toDouble() / 100
             }
-            val minimumServiceCount = getMinimumServiceCount(serviceGroup)
+            val minimumServiceCount = serviceGroup.getMinimumOnlineServiceCount()
             var newServicesAmount = minimumServiceCount - inLobbyServicesWithFewPlayers.size
             if (serviceGroup.getMaximumOnlineServiceCount() != -1 && newServicesAmount + inLobbyServices.size > serviceGroup.getMaximumOnlineServiceCount())
                 newServicesAmount = serviceGroup.getMaximumOnlineServiceCount() - inLobbyServices.size
@@ -127,7 +125,7 @@ class ServiceHandler : IServiceHandler {
                 .filter { it.getLastPlayerUpdate().hasTimePassed(TimeUnit.MINUTES.toMillis(3)) }
             //exclude services with percentage higher than percentage to start new service because they are not redundant
             val stoppableServices = redundantServices.filter { it.getOnlineCount() <= 0 }
-            val minimumServiceCount = getMinimumServiceCount(serviceGroup)
+            val minimumServiceCount = serviceGroup.getMinimumOnlineServiceCount()
             if (redundantServices.size > minimumServiceCount) {
                 val amountToStop = redundantServices.size - minimumServiceCount
                 for (i in 0 until min(amountToStop, stoppableServices.size)) {
@@ -194,13 +192,6 @@ class ServiceHandler : IServiceHandler {
             }
             return null
         }
-    }
-
-    fun getMinimumServiceCount(group: ICloudServiceGroup): Int {
-        return max(
-            group.getMinimumOnlineServiceCount(),
-            this.serviceMinimumCountCalculator.getCalculatedMinimumServiceCount(group)
-        )
     }
 
 

@@ -20,23 +20,22 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.api.depedency
+package eu.thesimplecloud.module.rest.util
 
-open class CloudDependency(val groupId: String, val artifactId: String, val version: String) {
+/**
+ * Created by IntelliJ IDEA.
+ * Date: 13.06.2021
+ * Time: 11:55
+ * @author Frederick Baier
+ */
 
-    fun getName() = "$artifactId-$version"
+fun executeWithDifferentContextClassLoader(classLoader: ClassLoader, runnable: Runnable) {
+    val currentContextClassLoader = Thread.currentThread().contextClassLoader
+    changedContextClassLoader(classLoader)
+    runnable.run()
+    changedContextClassLoader(currentContextClassLoader)
+}
 
-    override fun equals(other: Any?): Boolean {
-        if (other == null) return false
-        if (other !is CloudDependency) return false
-        return this.groupId == other.groupId && this.artifactId == other.artifactId && this.version == other.version
-    }
-
-    override fun hashCode(): Int {
-        var result = groupId.hashCode()
-        result = 31 * result + artifactId.hashCode()
-        result = 31 * result + version.hashCode()
-        return result
-    }
-
+private fun changedContextClassLoader(classLoader: ClassLoader) {
+    Thread.currentThread().contextClassLoader = classLoader
 }

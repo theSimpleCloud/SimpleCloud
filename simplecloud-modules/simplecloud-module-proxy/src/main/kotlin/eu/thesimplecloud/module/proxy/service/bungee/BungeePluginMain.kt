@@ -22,11 +22,11 @@
 
 package eu.thesimplecloud.module.proxy.service.bungee
 
-import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.module.proxy.config.TablistConfiguration
 import eu.thesimplecloud.module.proxy.service.ProxyHandler
 import eu.thesimplecloud.module.proxy.service.bungee.listener.BungeeListener
-import eu.thesimplecloud.plugin.proxy.bungee.text.CloudTextBuilder
+import net.kyori.adventure.platform.bungeecord.BungeeAudiences
+import net.kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import net.md_5.bungee.api.plugin.Plugin
@@ -41,21 +41,23 @@ import java.util.concurrent.TimeUnit
  */
 class BungeePluginMain : Plugin() {
 
-
-    var tablistStarted = false
-    lateinit var proxyHandler: ProxyHandler
+    lateinit var bungeeAudiences: BungeeAudiences
 
     override fun onEnable() {
-        proxyHandler = ProxyHandler()
+        bungeeAudiences = BungeeAudiences.create(this)
 
-        proxyHandler.onEnable()
+        ProxyHandler.onEnable()
         proxy.pluginManager.registerListener(this, BungeeListener(this))
         startScheduler()
     }
 
+    override fun onDisable() {
+        bungeeAudiences.close()
+    }
+
     private fun startScheduler() {
         ProxyServer.getInstance().scheduler.schedule(this, {
-            val tablistConfiguration = proxyHandler.getTablistConfiguration() ?: return@schedule
+            val tablistConfiguration = ProxyHandler.getCurrentTablistConfiguration() ?: return@schedule
             ProxyServer.getInstance().players.forEach {
                 sendHeaderAndFooter(it, tablistConfiguration)
             }
@@ -68,11 +70,16 @@ class BungeePluginMain : Plugin() {
         sendHeaderAndFooter(proxiedPlayer, headerString, footerString)
     }
 
-    fun sendHeaderAndFooter(player: ProxiedPlayer, header: String, footer: String) {
+    private fun sendHeaderAndFooter(player: ProxiedPlayer, header: String, footer: String) {
         if (player.server == null) return
         val serverName = player.server.info.name
-        player.setTabHeader(CloudTextBuilder().build(CloudText(proxyHandler.replaceString(header, serverName))),
-                CloudTextBuilder().build(CloudText(proxyHandler.replaceString(footer, serverName))))
+
+        val headerBaseComponent = BungeeComponentSerializer.get()
+            .serialize(ProxyHandler.getHexColorComponent(ProxyHandler.replaceString(header, serverName, player.uniqueId)))
+        val footerBaseComponent = BungeeComponentSerializer.get()
+            .serialize(ProxyHandler.getHexColorComponent(ProxyHandler.replaceString(footer, serverName, player.uniqueId)))
+
+        player.setTabHeader(headerBaseComponent, footerBaseComponent)
     }
 
 }

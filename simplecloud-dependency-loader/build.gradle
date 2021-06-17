@@ -1,0 +1,31 @@
+dependencies {
+    implementation 'org.eclipse.aether:aether-impl:1.1.0'
+    implementation 'org.eclipse.aether:aether-connector-basic:1.1.0'
+    implementation 'org.eclipse.aether:aether-transport-file:1.1.0'
+    implementation 'org.eclipse.aether:aether-transport-http:1.1.0'
+    implementation 'org.apache.maven:maven-aether-provider:3.3.9'
+    implementation(project(":simplecloud-runner"))
+    implementation(project(":simplecloud-api"))
+}
+
+configurations {
+    jar.archiveName = 'dependency-loader.jar'
+}
+
+jar {
+    dependsOn ':simplecloud-launcher:jar'
+    manifest {
+        attributes(
+                'Main-Class': 'eu.thesimplecloud.loader.dependency.DependencyLoaderMainKt',
+                'Implementation-Version': project.version,
+        )
+    }
+    // This line of code recursively collects and copies all of a project's files
+    // and adds them to the JAR itself. One can extend this task, to skip certain
+    // files or particular types at will
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+
+    from('../simplecloud-launcher/build/libs') {
+        include 'launcher.jar'
+    }
+}

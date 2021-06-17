@@ -52,8 +52,21 @@ public class UpdaterMain {
             fileToReplaceWith.delete();
             launcherFileToDelete.delete();
 
+            String filePathToDependencyLoader = getFilePathToDependencyLoader(args);
+            if (filePathToDependencyLoader != null) {
+                new File(filePathToDependencyLoader).delete();
+            }
+
         } catch (Exception ex) {
             ex.printStackTrace();
+        }
+    }
+
+    private static String getFilePathToDependencyLoader(String[] args) {
+        try {
+            return args[4];
+        } catch (Exception e) {
+            return null;
         }
     }
 

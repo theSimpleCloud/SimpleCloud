@@ -136,7 +136,7 @@ class CloudFlareDomainHelper(
             .append("ttl", 1)
             .append("proxied", false)
             .append("name", getFullDomainByWrapper(wrapper))
-            .append("content", Launcher.instance.launcherConfig.host)
+            .append("content", wrapper.getHost())
 
     }
 

@@ -24,8 +24,8 @@ package eu.thesimplecloud.base.wrapper.process.filehandler
 
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.service.version.ServiceVersion
-import eu.thesimplecloud.api.utils.Downloader
 import eu.thesimplecloud.api.utils.ZipUtils
+import eu.thesimplecloud.runner.utils.Downloader
 import java.io.File
 
 class ServiceVersionJarLoader {

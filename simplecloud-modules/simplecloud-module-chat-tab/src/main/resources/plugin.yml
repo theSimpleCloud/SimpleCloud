@@ -2,6 +2,6 @@ name: SimpleCloud-Chat-Tab
 version: 1.0
 author: Fllip
 
-main: eu.thesimplecloud.module.prefix.service.BukkitPluginMain
+main: eu.thesimplecloud.module.prefix.service.spigot.BukkitPluginMain
 
 depend: [SimpleCloud-Plugin]

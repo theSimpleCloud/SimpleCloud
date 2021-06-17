@@ -24,8 +24,8 @@ package eu.thesimplecloud.api.service.version.loader
 
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.service.version.ServiceVersion
-import eu.thesimplecloud.api.utils.WebContentLoader
 import eu.thesimplecloud.jsonlib.JsonLib
+import eu.thesimplecloud.runner.utils.WebContentLoader
 import java.io.File
 import java.io.FileNotFoundException
 
@@ -40,7 +40,8 @@ class ServiceVersionWebLoader : IServiceVersionLoader {
     private val file = File(DirectoryPaths.paths.storagePath + "onlineServiceVersions.json")
 
     override fun loadVersions(): List<ServiceVersion> {
-        val contentString = WebContentLoader().loadContent("https://api.thesimplecloud.eu/versions")
+        val version = this::class.java.`package`.implementationVersion.substring(0, 3)
+        val contentString = WebContentLoader().loadContent("https://api.thesimplecloud.eu/versions?implementationVersion[\$lte]=$version")
         return if (contentString == null) {
             loadFromFile()
         } else {

@@ -173,10 +173,10 @@ data class DefaultCloudService(
         this.onlineCount = updater.getOnlineCount()
         this.lastPlayerUpdate = updater.getLastPlayerUpdate()
         this.motd = updater.getMOTD()
+        this.maxPlayers = updater.getMaxPlayers()
 
         val updateService = updater.getCloudService()
         this.authenticated = updateService.isAuthenticated()
-        this.maxPlayers = updateService.getMaxPlayers()
         this.wrapperName = updateService.getWrapperName()
         this.port = updateService.getPort()
         this.usedMemory = updateService.getUsedMemory()

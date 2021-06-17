@@ -52,4 +52,5 @@ include 'simplecloud-modules:simplecloud-module-chat-tab'
 findProject(':simplecloud-modules:simplecloud-module-chat-tab')?.name = 'simplecloud-module-chat-tab'
 include 'simplecloud-modules:simplecloud-module-statistics'
 findProject(':simplecloud-modules:simplecloud-module-statistics')?.name = 'simplecloud-module-statistics'
+include 'simplecloud-dependency-loader'
 

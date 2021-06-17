@@ -22,15 +22,20 @@
 
 package eu.thesimplecloud.launcher.external.module.handler
 
+import com.google.common.collect.Maps
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.external.ICloudModule
-import eu.thesimplecloud.launcher.dependency.DependencyLoader
-import eu.thesimplecloud.launcher.dependency.LauncherCloudDependency
+import eu.thesimplecloud.launcher.application.ApplicationClassLoader
 import eu.thesimplecloud.launcher.event.module.ModuleLoadedEvent
 import eu.thesimplecloud.launcher.external.module.LoadedModule
 import eu.thesimplecloud.launcher.external.module.LoadedModuleFileContent
 import eu.thesimplecloud.launcher.external.module.ModuleFileContent
+import eu.thesimplecloud.loader.dependency.DependencyLoader
+import eu.thesimplecloud.loader.dependency.LauncherDependencyLoader
+import eu.thesimplecloud.runner.dependency.AdvancedCloudDependency
+import java.io.File
 import java.net.URL
+import java.net.URLClassLoader
 
 /**
  * Created by IntelliJ IDEA.
@@ -39,16 +44,18 @@ import java.net.URL
  * @author Frederick Baier
  */
 class UnsafeModuleLoader(
-        private val classLoaderFunction: (Array<URL>, String) -> ClassLoader
+    private val classLoaderFunction: (Array<URL>, String) -> ClassLoader
 ) {
 
     fun loadModule(loadedModuleFileContent: LoadedModuleFileContent): LoadedModule {
         val moduleFile = loadedModuleFileContent.file
         val content = loadedModuleFileContent.content
-        installRequiredDependencies(content)
-        val classLoader = this.classLoaderFunction(arrayOf(moduleFile.toURI().toURL()), content.name)
+        val loadedDependencyFiles = getRequiredDependencies(content)
+        val loadedDependencyURLs = loadedDependencyFiles.map { it.toURI().toURL() }.toTypedArray()
+        val classLoader = this.classLoaderFunction(arrayOf(moduleFile.toURI().toURL(), *loadedDependencyURLs), content.name)
         val cloudModule = this.loadModuleClassInstance(classLoader, content.mainClass)
-        val loadedModule = LoadedModule(cloudModule, moduleFile, content, loadedModuleFileContent.updaterFileContent, classLoader)
+        val loadedModule =
+            LoadedModule(cloudModule, moduleFile, content, loadedModuleFileContent.updaterFileContent, classLoader)
         CloudAPI.instance.getEventManager().call(ModuleLoadedEvent(loadedModule))
 
         return loadedModule
@@ -65,13 +72,13 @@ class UnsafeModuleLoader(
         return mainClass.asSubclass(ICloudModule::class.java)
     }
 
-    private fun installRequiredDependencies(moduleFileContent: ModuleFileContent) {
+    private fun getRequiredDependencies(moduleFileContent: ModuleFileContent): Set<File> {
         val dependencyLoader = DependencyLoader.INSTANCE
         val launcherDependencies = moduleFileContent.dependencies
-                .map { LauncherCloudDependency(it.groupId, it.artifactId, it.version) }
-        dependencyLoader.loadDependencies(
-                moduleFileContent.repositories,
-                launcherDependencies
+            .map { AdvancedCloudDependency(it.groupId, it.artifactId, it.version) }
+        return dependencyLoader.loadDependencies(
+            moduleFileContent.repositories,
+            launcherDependencies
         )
     }
 

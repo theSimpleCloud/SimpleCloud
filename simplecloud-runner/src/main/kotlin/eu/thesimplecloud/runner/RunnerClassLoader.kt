@@ -31,10 +31,4 @@ import java.net.URLClassLoader
  * Time: 08:03
  * @author Frederick Baier
  */
-class RunnerClassLoader(urls: Array<URL>) : URLClassLoader(urls, getSystemClassLoader()) {
-
-    override fun addURL(url: URL?) {
-        super.addURL(url)
-    }
-
-}
+class RunnerClassLoader(urls: Array<URL>) : URLClassLoader(urls, getSystemClassLoader())

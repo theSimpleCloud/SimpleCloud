@@ -28,6 +28,7 @@ import eu.thesimplecloud.api.eventapi.IListener
 import eu.thesimplecloud.api.service.ServiceType
 import eu.thesimplecloud.module.proxy.config.Config
 import eu.thesimplecloud.module.proxy.config.DefaultConfig
+import eu.thesimplecloud.module.proxy.service.ProxyHandler
 
 /**
  * Created by IntelliJ IDEA.
@@ -39,16 +40,17 @@ class GroupCreateListener(private val proxyModule: ProxyModule) : IListener {
 
     @CloudEventHandler
     fun handle(event: CloudServiceGroupCreatedEvent) {
+        val currentConfig = ProxyHandler.configHolder.getValue()
         val proxyGroup = event.serviceGroup
         if (proxyGroup.getServiceType() != ServiceType.PROXY)  return
         if (proxyModule.getProxyConfiguration(proxyGroup.getName()) != null) return
 
         val proxyGroupConfiguration = DefaultConfig.getDefaultProxyGroupConfiguration(proxyGroup.getName())
         val newConfig = Config(
-            proxyModule.config.proxyGroupConfigurations.union(listOf(proxyGroupConfiguration)).toList(),
-            proxyModule.config.tablistConfigurations,
-            proxyModule.config.maintenanceKickMessage,
-            proxyModule.config.fullProxyKickMessage
+            currentConfig.proxyGroupConfigurations.union(listOf(proxyGroupConfiguration)).toList(),
+            currentConfig.tablistConfigurations,
+            currentConfig.maintenanceKickMessage,
+            currentConfig.fullProxyKickMessage
         )
         proxyModule.saveConfig(newConfig)
         proxyModule.loadConfig()
