@@ -89,6 +89,17 @@
 
 <br />
 
+## Dashboard
+SimpleCloud provides a **Dashboard accessible** for every user.
+The domain for the **Dashboard** is: **http://dashboard-nossl.thesimplecloud.eu**.
+Now you have to enter the **IP-Address** of your server follwed by the port of the **REST-Module.**
+<br />
+<br />
+The default port of the **RESR-Module** ist **8585**. So an ip would be **55.55.55.55:8585**. <br />
+The username and passwort can be found in **"modules/rest/users.json"**
+
+<br />
+
 ## Modules
 SimpleCloud provides some modules by default.
 
@@ -173,14 +184,3 @@ The **Statistics Module** saves some statistics of the cloud. The data is displa
 
 ### Chat + Tab
 The **Chat + Tab Module** provides **prefixes** and **suffixes** in the tablist and adds a **chat configuration**.
-
-<br />
-
-## Dashboard
-SimpleCloud provides a **Dashboard accessible** for every user.
-The domain for the **Dashboard** is: **http://dashboard-nossl.thesimplecloud.eu**.
-Now you have to enter the **IP-Address** of your server follwed by the port of the **REST-Module.**
-<br />
-<br />
-The default port of the **RESR-Module** ist **8585**. So an ip would be **55.55.55.55:8585**. <br />
-The username and passwort can be found in **"modules/rest/users.json"**
