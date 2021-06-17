@@ -2,9 +2,6 @@
   <img src="https://i.imgur.com/eTQJ1IX.png" alt="Logo">
 </p>
 
-[![Discord][discord-shield]][discord-url]
-[![Teamspeak][teamspeak-shield]][teamspeak-url]
-
 <p>
   <p align="center">
     A simple alternative to other minecraft cloud systems
@@ -16,6 +13,10 @@
     <a href="http://dashboard-nossl.thesimplecloud.eu">Dashboard</a>
     ·
     <a href="https://ci.thesimplecloud.eu/job/SimpleCloudOrganization/job/SimpleCloud/">Jenkins</a>
+    ·
+    <a href="https://discord.gg/EzGVHXG3GE">Discord</a>
+    ·
+    <a href="https://ts3server://thesimplecloud.eu">Teamspeak</a>
   </p>
 
 </p>
@@ -183,14 +184,3 @@ Now you have to enter the **IP-Address** of your server follwed by the port of t
 <br />
 The default port of the **RESR-Module** ist **8585**. So an ip would be **55.55.55.55:8585**. <br />
 The username and passwort can be found in **"modules/rest/users.json"**
-
-[forks-shield]: https://img.shields.io/github/forks/theSimpleCloud/SimpleCloud.svg?style=for-the-badge
-[forks-url]: https://github.com/theSimpleCloud/SimpleCloud/network/members
-[stars-shield]: https://img.shields.io/github/stars/theSimpleCloud/SimpleCloud.svg?style=for-the-badge
-[stars-url]: https://github.com/theSimpleCloud/SimpleCloud/stargazers
-[issues-shield]: https://img.shields.io/github/issues/theSimpleCloud/SimpleCloud.svg?style=for-the-badge
-[issues-url]: https://github.com/theSimpleCloud/SimpleCloud/issues
-[discord-shield]: https://img.shields.io/badge/-Discord-black.svg?style=for-the-badge&logo=discord&colorB=555
-[discord-url]: https://discord.gg/EzGVHXG3GE
-[teamspeak-shield]: https://img.shields.io/badge/-Teamspeak-black.svg?style=for-the-badge&logo=teamspeak&colorB=555
-[teamspeak-url]: ts3server://thesimplecloud.eu
