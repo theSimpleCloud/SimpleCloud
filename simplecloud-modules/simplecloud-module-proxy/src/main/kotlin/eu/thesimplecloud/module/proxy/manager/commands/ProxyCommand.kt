@@ -66,7 +66,7 @@ class ProxyCommand(val module: ProxyModule) : ICommandHandler {
 
         proxyConfiguration.whitelist.add(playerName)
 
-        module.config.update()
+        module.getConfig().update()
         module.saveConfig()
 
         sender.sendProperty("${propertyPrefix}whitelist.added", playerName)
@@ -89,7 +89,7 @@ class ProxyCommand(val module: ProxyModule) : ICommandHandler {
 
         proxyConfiguration.whitelist.remove(playerName)
 
-        module.config.update()
+        module.getConfig().update()
         module.saveConfig()
 
         sender.sendProperty("${propertyPrefix}whitelist.removed", playerName)

@@ -29,6 +29,9 @@ import eu.thesimplecloud.api.eventapi.IListener
 import eu.thesimplecloud.api.player.ICloudPlayer
 import eu.thesimplecloud.api.service.ServiceType
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
+import eu.thesimplecloud.module.proxy.config.Config
+import eu.thesimplecloud.module.proxy.config.ProxyGroupConfiguration
 import eu.thesimplecloud.module.proxy.extensions.mapToLowerCase
 import eu.thesimplecloud.module.proxy.service.ProxyHandler
 
@@ -38,10 +41,9 @@ import eu.thesimplecloud.module.proxy.service.ProxyHandler
  * Time: 18:51
  * @author Frederick Baier
  */
-class MaintenanceToggleListener(private val proxyModule: ProxyModule) : IListener {
+class MaintenanceToggleListener : IListener {
 
-    private val config = proxyModule.config
-    private val proxyConfigurations = config.proxyGroupConfigurations
+    private val configHolder = ProxyHandler.configHolder
 
     @CloudEventHandler
     fun on(event: CloudServiceGroupUpdatedEvent) {
@@ -58,17 +60,34 @@ class MaintenanceToggleListener(private val proxyModule: ProxyModule) : IListene
     }
 
     private fun kickIfPermissionNotGrantedAndNotOnWhitelist(player: ICloudPlayer, serviceGroup: ICloudServiceGroup) {
-        val proxyConfig = proxyConfigurations.firstOrNull { it.proxyGroup == serviceGroup.getName() } ?: return
-        val isWhitelisted = proxyConfig.whitelist.mapToLowerCase().contains(player.getName().toLowerCase())
-        val hasPermissionPromise = player.hasPermission(ProxyHandler.JOIN_MAINTENANCE_PERMISSION)
-
-        hasPermissionPromise.then { hasPermission ->
-               if (!isWhitelisted && !hasPermission) {
-                   player.kick(config.maintenanceKickMessage)
-               }
-        }.addFailureListener {
-            player.kick(config.maintenanceKickMessage)
+        val hasPermissionPromise = isJoinPermissionGranted(player)
+        hasPermissionPromise.then { hasMaintenancePermission ->
+            if (!hasMaintenancePermission && !isPlayerOnWhitelist(player, serviceGroup))
+                kickPlayerDueToMaintenance(player)
         }
+    }
+
+    private fun kickPlayerDueToMaintenance(player: ICloudPlayer) {
+        val config = getConfig()
+        player.kick(config.maintenanceKickMessage)
+    }
+
+    private fun isPlayerOnWhitelist(player: ICloudPlayer, serviceGroup: ICloudServiceGroup): Boolean {
+        val proxyConfig =
+            getProxyConfigurations().firstOrNull { it.proxyGroup == serviceGroup.getName() } ?: return false
+        return proxyConfig.whitelist.mapToLowerCase().contains(player.getName().toLowerCase())
+    }
+
+    private fun isJoinPermissionGranted(player: ICloudPlayer): ICommunicationPromise<Boolean> {
+        return player.hasPermission(ProxyHandler.JOIN_MAINTENANCE_PERMISSION)
+    }
+
+    private fun getProxyConfigurations(): List<ProxyGroupConfiguration> {
+        return getConfig().proxyGroupConfigurations
+    }
+
+    private fun getConfig(): Config {
+        return this.configHolder.getValue()
     }
 
 }

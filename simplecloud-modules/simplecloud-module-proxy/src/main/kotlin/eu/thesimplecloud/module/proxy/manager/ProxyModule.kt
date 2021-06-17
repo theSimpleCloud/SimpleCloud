@@ -24,12 +24,14 @@ package eu.thesimplecloud.module.proxy.manager
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.external.ICloudModule
+import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.module.proxy.config.Config
 import eu.thesimplecloud.module.proxy.config.DefaultConfig
 import eu.thesimplecloud.module.proxy.config.ProxyGroupConfiguration
 import eu.thesimplecloud.module.proxy.manager.commands.ProxyCommand
+import eu.thesimplecloud.module.proxy.service.ProxyHandler
 import java.io.File
 
 /**
@@ -41,8 +43,6 @@ import java.io.File
 class ProxyModule : ICloudModule{
 
     private val configFile = File("modules/proxy", "config.json")
-    lateinit var config: Config
-        private set
 
     override fun onEnable() {
         loadConfig()
@@ -50,7 +50,7 @@ class ProxyModule : ICloudModule{
                 .registerCommand(this, ProxyCommand(this))
 
         CloudAPI.instance.getEventManager().registerListener(this, GroupCreateListener(this))
-        CloudAPI.instance.getEventManager().registerListener(this, MaintenanceToggleListener(this))
+        CloudAPI.instance.getEventManager().registerListener(this, MaintenanceToggleListener())
     }
 
     override fun onDisable() {
@@ -60,12 +60,11 @@ class ProxyModule : ICloudModule{
         if (!configFile.exists()) {
             val config = DefaultConfig.get()
             saveConfig(config)
-            this.config = config
         }
 
         val config = JsonLib.fromJsonFile(configFile)!!.getObject(Config::class.java)
+        ProxyHandler.configHolder = Property(config)
         config.update()
-        this.config = config
     }
 
     fun saveConfig(config: Config) {
@@ -73,11 +72,15 @@ class ProxyModule : ICloudModule{
     }
 
     fun saveConfig() {
-        saveConfig(config)
+        saveConfig(getConfig())
     }
 
     fun getProxyConfiguration(serviceGroupName: String): ProxyGroupConfiguration? {
-        return config.proxyGroupConfigurations.firstOrNull { it.proxyGroup == serviceGroupName }
+        return getConfig().proxyGroupConfigurations.firstOrNull { it.proxyGroup == serviceGroupName }
+    }
+
+    fun getConfig(): Config {
+        return ProxyHandler.configHolder.getValue()
     }
 
 }
