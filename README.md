@@ -126,7 +126,7 @@ The players can click on that sign and will be sent to the server. The layout of
 With the **Permission Module**, you can easily manage your permissions.
 You can define groups and add permissions to them. You can also add permissions to single users.
 
-![PermissionModule](https://i.imgur.com/5LXMwCk.jpg "PermissionModule")
+![PermissionModule](https://mrmanhd.tryhub.de/img/sc-perms.png "PermissionModule")
 
 <br />
 
@@ -159,8 +159,6 @@ The **Hub Module** provides a hub command for players to switch to a **lobby ser
 
 ### Notify
 The **Notify Module** sends notifications to players that have the required permission when a server gets **started** or **stopped**.
-
-![NotifyModule](https://i.imgur.com/7lcjXbN.jpg "NotifyModule")
 
 <br />
 
