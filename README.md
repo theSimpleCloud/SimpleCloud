@@ -185,4 +185,4 @@ The **Statistics Module** saves some statistics of the cloud. The data is displa
 ### Chat + Tab
 The **Chat + Tab Module** provides **prefixes** and **suffixes** in the tablist and adds a **chat configuration**.
 <br />
-Would you like to have the **Chat + Tab Module**? Then **download** it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-chat-tab/2.2.0/simplecloud-module-chat-tab-2.2.0.jar)
+You can **download** it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-chat-tab/2.2.0/simplecloud-module-chat-tab-2.2.0.jar)
