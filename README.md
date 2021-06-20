@@ -35,6 +35,7 @@
       </ul>
     </li>
     <li><a href="#features">Features</a></li>
+    <li><a href="#dashboard">Dashboard</a></li>
     <li>
       <a href="#modules">Modules</a>
       <ul>
@@ -49,7 +50,6 @@
         <li><a href="#chat + tab">Chat + Tab Module</a></li>
       </ul>
     </li>
-    <li><a href="#dashboard">Dashboard</a></li>
   </ol>
 </details>
 
