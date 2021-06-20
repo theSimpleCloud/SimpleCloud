@@ -96,7 +96,7 @@ Now you have to enter the **IP-Address** of your server follwed by the port of t
 <br />
 <br />
 The default port of the **RESR-Module** ist **8585**. So an ip would be **55.55.55.55:8585**. <br />
-The username and passwort can be found in **"modules/rest/users.json"**
+The username and password can be found in **"modules/rest/users.json"**
 
 <br />
 
