@@ -66,9 +66,9 @@ class PortManager {
 
     private fun isPortAvailable(port: Int): Boolean {
         try {
-            Socket("127.0.0.1", port).use { return false }
+            Socket("127.0.0.1", port).use { return true }
         } catch (ignored: IOException) {
-            return true
+            return false
         }
     }
 
