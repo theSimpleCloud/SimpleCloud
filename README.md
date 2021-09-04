@@ -35,7 +35,6 @@
       </ul>
     </li>
     <li><a href="#features">Features</a></li>
-    <li><a href="#dashboard">Dashboard</a></li>
     <li>
       <a href="#modules">Modules</a>
       <ul>
@@ -50,6 +49,7 @@
         <li><a href="#chat + tab">Chat + Tab Module</a></li>
       </ul>
     </li>
+    <li><a href="#dashboard">Dashboard</a></li>
   </ol>
 </details>
 
@@ -95,7 +95,7 @@ The domain for the **Dashboard** is: **http://dashboard-nossl.thesimplecloud.eu*
 Now you have to enter the **IP-Address** of your server follwed by the port of the **REST-Module.**
 <br />
 <br />
-The default port of the **RESR-Module** ist **8585**. So an ip would be **55.55.55.55:8585**. <br />
+The default port of the **REST-Module** ist **8585**. So an ip would be **55.55.55.55:8585**. <br />
 The username and password can be found in **"modules/rest/users.json"**
 
 <br />
@@ -126,7 +126,7 @@ The players can click on that sign and will be sent to the server. The layout of
 With the **Permission Module**, you can easily manage your permissions.
 You can define groups and add permissions to them. You can also add permissions to single users.
 
-![PermissionModule](https://mrmanhd.tryhub.de/img/sc-perms.png "PermissionModule")
+![PermissionModule](https://i.imgur.com/5LXMwCk.jpg "PermissionModule")
 
 <br />
 
@@ -160,6 +160,8 @@ The **Hub Module** provides a hub command for players to switch to a **lobby ser
 ### Notify
 The **Notify Module** sends notifications to players that have the required permission when a server gets **started** or **stopped**.
 
+![NotifyModule](https://i.imgur.com/7lcjXbN.jpg "NotifyModule")
+
 <br />
 
 **Permissions:**
@@ -182,5 +184,3 @@ The **Statistics Module** saves some statistics of the cloud. The data is displa
 
 ### Chat + Tab
 The **Chat + Tab Module** provides **prefixes** and **suffixes** in the tablist and adds a **chat configuration**.
-<br />
-You can **download** it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-chat-tab/2.2.0/simplecloud-module-chat-tab-2.2.0.jar)
