@@ -46,6 +46,7 @@ class ServiceVersionSetup : ISetup {
     private lateinit var name: String
     private lateinit var serviceAPIType: ServiceAPIType
     private lateinit var downloadURL: String
+    private lateinit var javaCommand: String
 
     @SetupQuestion(0, "manager.setup.service-versions.question.name")
     fun nameSetup(name: String): Boolean {
@@ -74,9 +75,16 @@ class ServiceVersionSetup : ISetup {
         return true
     }
 
+    @SetupQuestion(3, "manager.setup.service-versions.question.java")
+    fun javaCommandSetup(javaCommand: String): Boolean {
+        this.javaCommand = javaCommand
+        Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-versions.question.java.success")
+        return true
+    }
+
     @SetupFinished
     fun setupFinished() {
-        val serviceVersion = ServiceVersion(name, serviceAPIType, downloadURL)
+        val serviceVersion = ServiceVersion(name, serviceAPIType, downloadURL, javaCommand)
         LocalServiceVersionHandler().saveServiceVersion(serviceVersion)
         val serviceVersionHandler = CloudAPI.instance.getServiceVersionHandler() as ManagerServiceVersionHandler
         serviceVersionHandler.reloadServiceVersions()
