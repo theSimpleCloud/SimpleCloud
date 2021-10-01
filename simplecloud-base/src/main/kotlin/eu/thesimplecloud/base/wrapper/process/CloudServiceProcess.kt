@@ -164,7 +164,9 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
         val jvmArguments = Wrapper.instance.jvmArgumentsConfig.jvmArguments.filter {
             it.groups.contains("all") || it.groups.contains(this.cloudService.getGroupName()) || it.groups.contains(this.cloudService.getServiceType().name)
         }
-        val commands = mutableListOf("java")
+
+        val startCommand = this.cloudService.getServiceVersion().javaCommand;
+        val commands = mutableListOf(startCommand)
 
         jvmArguments.forEach { commands.addAll(it.arguments) }
 
