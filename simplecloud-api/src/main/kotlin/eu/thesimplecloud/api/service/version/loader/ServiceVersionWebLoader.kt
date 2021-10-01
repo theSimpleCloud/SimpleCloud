@@ -41,6 +41,7 @@ class ServiceVersionWebLoader : IServiceVersionLoader {
 
     override fun loadVersions(): List<ServiceVersion> {
         val version = this::class.java.`package`.implementationVersion.substring(0, 3)
+        //TODO add javaCommand
         val contentString = WebContentLoader().loadContent("https://api.thesimplecloud.eu/versions?implementationVersion[\$lte]=$version")
         return if (contentString == null) {
             loadFromFile()
@@ -56,7 +57,13 @@ class ServiceVersionWebLoader : IServiceVersionLoader {
 
     private fun processWebContent(contentString: String): List<ServiceVersion> {
         val jsonLib = JsonLib.fromJsonString(contentString)
+
+
         jsonLib.saveAsFile(file)
-        return jsonLib.getObject(Array<ServiceVersion>::class.java).toList()
+
+        //Can be removed if the online versions file contains "javaCommand"
+        val list = jsonLib.getObject(Array<ServiceVersion>::class.java).toList()
+        list.forEach { it.javaCommand = "java" }
+        return list
     }
 }
