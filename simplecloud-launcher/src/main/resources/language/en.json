@@ -161,6 +161,8 @@
   "manager.setup.service-versions.question.url": "Please provide the download url of this version",
   "manager.setup.service-versions.question.url.invalid": "The specified URL is invalid",
   "manager.setup.service-versions.question.url.success": "URL set",
+  "manager.setup.service-versions.question.java.success": "Java start command set",
+  "manager.setup.service-versions.question.java": "Please provide the java start command (java = default)",
   "manager.setup.service-versions.finished": "Service version %NAME% created",
   "manager.setup.wrapper.finished": "Wrapper %NAME% created",
   "manager.setup.wrapper.question.host": "On which host starts the wrapper? (this = ip of this server)",
