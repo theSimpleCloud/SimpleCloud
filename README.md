@@ -35,6 +35,7 @@
       </ul>
     </li>
     <li><a href="#features">Features</a></li>
+    <li><a href="#dashboard">Dashboard</a></li>
     <li>
       <a href="#modules">Modules</a>
       <ul>
@@ -49,7 +50,6 @@
         <li><a href="#chat + tab">Chat + Tab Module</a></li>
       </ul>
     </li>
-    <li><a href="#dashboard">Dashboard</a></li>
   </ol>
 </details>
 
@@ -95,7 +95,7 @@ The domain for the **Dashboard** is: **http://dashboard-nossl.thesimplecloud.eu*
 Now you have to enter the **IP-Address** of your server follwed by the port of the **REST-Module.**
 <br />
 <br />
-The default port of the **REST-Module** ist **8585**. So an ip would be **55.55.55.55:8585**. <br />
+The default port of the **REST-Module** is **8585**. So an ip would be **55.55.55.55:8585**. <br />
 The username and password can be found in **"modules/rest/users.json"**
 
 <br />
@@ -108,6 +108,8 @@ The **Internal-Wrapper Module** starts a wrapper every time the manager of the c
 This wrapper does only run when the manager is running. It connects **automatically** with no need to set it up.
 The wrapper will be automatically named **"InternalWrapper"** and it will have **2GB of memory**.
 <br />
+You can **download** it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-internalwrapper/2.2.0/simplecloud-module-internalwrapper-2.2.0.jar)
+<br />
 
 To edit the memory of the wrapper you can use the command: <br />
 ``edit wrapper InternalWrapper maxMemory <amount in MB>``
@@ -117,6 +119,8 @@ To edit the memory of the wrapper you can use the command: <br />
 ### Signs
 The **Sign Module** is used to show available services for players in the lobby via a **sign**.
 The players can click on that sign and will be sent to the server. The layout of the signs is **fully customizable**.
+<br />
+You can **download** it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-sign/2.2.0/simplecloud-module-sign-2.2.0.jar)
 
 ![SignModule](https://i.imgur.com/w534aZG.gif "SignModule")
 
@@ -125,8 +129,10 @@ The players can click on that sign and will be sent to the server. The layout of
 ### Permissions
 With the **Permission Module**, you can easily manage your permissions.
 You can define groups and add permissions to them. You can also add permissions to single users.
+<br />
+You can **download** it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-proxy/2.2.0/simplecloud-module-proxy-2.2.0.jar)
 
-![PermissionModule](https://i.imgur.com/5LXMwCk.jpg "PermissionModule")
+![PermissionModule](https://i.imgur.com/mjqCmjq.png"PermissionModule")
 
 <br />
 
@@ -134,6 +140,8 @@ You can define groups and add permissions to them. You can also add permissions 
 The **Proxy Module** is used to manage your proxies.
 It controls the **MOTD**, **Tablist**, **maintenance** and the **online count**.
 The online count of proxies of one group will be summed up and displayed in the player info.
+<br />
+You can **download** it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-proxy/2.2.0/simplecloud-module-proxy-2.2.0.jar)
 
 ![ProxyModuleTab](https://i.imgur.com/2djSS9l.jpg "ProxyModuleTab")
 
@@ -154,11 +162,15 @@ Full join: cloud.full.join
 
 ### Hub
 The **Hub Module** provides a hub command for players to switch to a **lobby server**.
+<br />
+You can **download** it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-hubcommand/2.2.0/simplecloud-module-hubcommand-2.2.0.jar)
 
 <br />
 
 ### Notify
 The **Notify Module** sends notifications to players that have the required permission when a server gets **started** or **stopped**.
+<br />
+You can **download** it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-notify/2.2.0/simplecloud-module-notify-2.2.0.jar)
 
 ![NotifyModule](https://i.imgur.com/7lcjXbN.jpg "NotifyModule")
 
@@ -174,13 +186,19 @@ cloud.module.notify.messages
 
 ### REST
 The **REST Module** provides a **restful API**. It is necessary for the **dashboard**.
+<br />
+You can **download** it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-rest/2.2.0/simplecloud-module-rest-2.2.0.jar)
 
 <br />
 
 ### Statistics
 The **Statistics Module** saves some statistics of the cloud. The data is displayed on the **dashboard**.
+<br />
+You can **download** it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-statistics/2.2.0/simplecloud-module-statistics-2.2.0.jar)
 
 <br />
 
 ### Chat + Tab
 The **Chat + Tab Module** provides **prefixes** and **suffixes** in the tablist and adds a **chat configuration**.
+<br />
+You can **download** it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-chat-tab/2.2.0/simplecloud-module-chat-tab-2.2.0.jar)
