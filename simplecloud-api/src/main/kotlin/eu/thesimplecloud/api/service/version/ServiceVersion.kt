@@ -34,5 +34,5 @@ data class ServiceVersion(
         val name: String,
         val serviceAPIType: ServiceAPIType,
         val downloadURL: String,
-        var javaCommand: String
+        val javaCommand: String
 )
