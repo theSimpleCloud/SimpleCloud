@@ -95,7 +95,7 @@ The domain for the **Dashboard** is: **http://dashboard-nossl.thesimplecloud.eu*
 Now you have to enter the **IP-Address** of your server follwed by the port of the **REST-Module.**
 <br />
 <br />
-The default port of the **RESR-Module** ist **8585**. So an ip would be **55.55.55.55:8585**. <br />
+The default port of the **REST-Module** is **8585**. So an ip would be **55.55.55.55:8585**. <br />
 The username and password can be found in **"modules/rest/users.json"**
 
 <br />
@@ -132,7 +132,7 @@ You can define groups and add permissions to them. You can also add permissions 
 <br />
 You can **download** it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-proxy/2.2.0/simplecloud-module-proxy-2.2.0.jar)
 
-![PermissionModule](https://mrmanhd.tryhub.de/img/sc-perms.png "PermissionModule")
+![PermissionModule](https://camo.githubusercontent.com/c21205ba06db6bc8a6f84f5e2de4522612917fe98dd9a71b1761b22620174159/68747470733a2f2f692e696d6775722e636f6d2f354c584d77436b2e6a7067 "PermissionModule")
 
 <br />
 
