@@ -132,7 +132,7 @@ You can define groups and add permissions to them. You can also add permissions 
 <br />
 You can **download** it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-proxy/2.2.0/simplecloud-module-proxy-2.2.0.jar)
 
-![PermissionModule](https://camo.githubusercontent.com/c21205ba06db6bc8a6f84f5e2de4522612917fe98dd9a71b1761b22620174159/68747470733a2f2f692e696d6775722e636f6d2f354c584d77436b2e6a7067 "PermissionModule")
+![PermissionModule](https://i.imgur.com/mjqCmjq.png"PermissionModule")
 
 <br />
 
@@ -171,6 +171,8 @@ You can **download** it [here](https://repo.thesimplecloud.eu/artifactory/gradle
 The **Notify Module** sends notifications to players that have the required permission when a server gets **started** or **stopped**.
 <br />
 You can **download** it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-notify/2.2.0/simplecloud-module-notify-2.2.0.jar)
+
+![NotifyModule](https://i.imgur.com/7lcjXbN.jpg "NotifyModule")
 
 <br />
 
