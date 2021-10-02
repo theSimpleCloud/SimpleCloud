@@ -20,6 +20,7 @@ class ChatListener : Listener {
     @EventHandler
     fun handleJoin(event: AsyncPlayerChatEvent) {
         val player = event.player
+        event.message = event.message.replace("%", "%%")
 
         val permissionPlayer = PermissionPool.instance.getPermissionPlayerManager().getCachedPermissionPlayer(player.uniqueId) ?: return
         val canWriteColored = event.player.hasPermission("cloud.module.chat.color")
@@ -39,7 +40,7 @@ class ChatListener : Listener {
     }
 
     private fun buildPrompt(information: TablistInformation): String {
-        return information.prefix + ChatColor.valueOf(information.color).toString() + "%1\$s" + information.suffix
+        return information.prefix + ChatColor.valueOf(information.color).toString() + "%1\$s"
     }
 
 }
