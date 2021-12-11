@@ -30,8 +30,8 @@ class SingleServiceVersionLoader(
     private fun downloadNormalVersion(expectedFile: File) {
         Downloader().userAgentDownload(this.serviceVersion.downloadURL, expectedFile)
         //delete json to prevent bugs in spigot version 1.8
-        ZipUtils().deletePath(expectedFile, "com/google/gson/")
-        Thread.sleep(200)
+        //ZipUtils().deletePath(expectedFile, "com/google/gson/")
+        //Thread.sleep(200)
     }
 
     private fun loadPaperClipVersion(): LoadedServiceVersion {
