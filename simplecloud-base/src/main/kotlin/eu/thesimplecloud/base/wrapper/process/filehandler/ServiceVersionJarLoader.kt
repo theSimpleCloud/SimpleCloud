@@ -22,24 +22,24 @@
 
 package eu.thesimplecloud.base.wrapper.process.filehandler
 
-import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.service.version.ServiceVersion
-import eu.thesimplecloud.api.utils.ZipUtils
-import eu.thesimplecloud.runner.utils.Downloader
-import java.io.File
+import java.util.concurrent.ConcurrentHashMap
 
 class ServiceVersionJarLoader {
 
+    private val serviceVersionToLoadedServiceVersion = ConcurrentHashMap<ServiceVersion, LoadedServiceVersion>()
+
     @Synchronized
-    fun loadVersionFile(serviceVersion: ServiceVersion): File {
-        val file = File(DirectoryPaths.paths.minecraftJarsPath + serviceVersion.name + ".jar")
-        if (!file.exists()){
-            Downloader().userAgentDownload(serviceVersion.downloadURL, file)
-            //delete json to prevent bugs in spigot version 1.8
-            ZipUtils().deletePath(file, "com/google/gson/")
-            Thread.sleep(200)
-        }
-        return file
+    fun loadVersionFile(serviceVersion: ServiceVersion): LoadedServiceVersion {
+        if (this.serviceVersionToLoadedServiceVersion.contains(serviceVersion))
+            return this.serviceVersionToLoadedServiceVersion[serviceVersion]!!
+
+        val singleServiceVersionLoader = SingleServiceVersionLoader(serviceVersion)
+        val loadedServiceVersion = singleServiceVersionLoader.load()
+        this.serviceVersionToLoadedServiceVersion[serviceVersion] = loadedServiceVersion
+        return loadedServiceVersion
     }
+
+
 
 }

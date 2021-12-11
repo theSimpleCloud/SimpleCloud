@@ -31,14 +31,12 @@ import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.service.impl.DefaultCloudService
 import eu.thesimplecloud.api.service.version.type.ServiceAPIType
 import eu.thesimplecloud.api.servicegroup.grouptype.ICloudProxyGroup
-import eu.thesimplecloud.api.utils.ManifestLoader
 import eu.thesimplecloud.base.wrapper.process.filehandler.ServiceDirectory
 import eu.thesimplecloud.base.wrapper.startup.Wrapper
 import eu.thesimplecloud.client.packets.PacketOutScreenMessage
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.loader.dependency.DependencyLoader
 import java.io.BufferedReader
 import java.io.File
 import java.io.IOException
@@ -64,17 +62,20 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
         this.cloudService.setState(ServiceState.STARTING)
         this.cloudService.update().awaitUninterruptibly()
 
-        serviceDirectory.copyTemplateFilesAndModules()
 
         val serviceConfigurator = Wrapper.instance.serviceConfigurationManager
-                .getServiceConfigurator(cloudService.getServiceVersion().serviceAPIType)
+            .getServiceConfigurator(cloudService.getServiceVersion().serviceAPIType)
         serviceConfigurator
-                ?: throw IllegalStateException("No ServiceConfiguration found by api type: ${cloudService.getServiceVersion().serviceAPIType}")
+            ?: throw IllegalStateException("No ServiceConfiguration found by api type: ${cloudService.getServiceVersion().serviceAPIType}")
 
+        serviceDirectory.copyTemplateFilesAndModules()
         serviceConfigurator.configureService(cloudService, this.serviceDirectory.serviceTmpDirectory)
-        val jarFile = Wrapper.instance.serviceVersionLoader.loadVersionFile(cloudService.getServiceVersion())
-        val processBuilder = createProcessBuilder(jarFile)
-                .directory(this.serviceDirectory.serviceTmpDirectory)
+
+        val executableJar = File(this.serviceDirectory.serviceTmpDirectory, "server.jar")
+        val processBuilder = createProcessBuilder(executableJar)
+            .directory(this.serviceDirectory.serviceTmpDirectory)
+
+
         val process = processBuilder.start()
         this.process = process
 
@@ -83,9 +84,19 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
         while (process.isAlive) {
             try {
                 val s = bufferedReader.readLine() ?: continue
-                if (!s.equals("", ignoreCase = true) && !s.equals(" ", ignoreCase = true) && !s.equals(">", ignoreCase = true)
-                        && !s.equals(" >", ignoreCase = true) && !s.contains("InitialHandler has pinged")) {
-                    Wrapper.instance.connectionToManager.sendUnitQuery(PacketOutScreenMessage(NetworkComponentType.SERVICE, getCloudService(), s))
+                if (!s.equals("", ignoreCase = true) && !s.equals(" ", ignoreCase = true) && !s.equals(
+                        ">",
+                        ignoreCase = true
+                    )
+                    && !s.equals(" >", ignoreCase = true) && !s.contains("InitialHandler has pinged")
+                ) {
+                    Wrapper.instance.connectionToManager.sendUnitQuery(
+                        PacketOutScreenMessage(
+                            NetworkComponentType.SERVICE,
+                            getCloudService(),
+                            s
+                        )
+                    )
                         .awaitUninterruptibly()
                     //Launcher.instance.logger.console("[${cloudService.getName()}]$s")
                 }
@@ -152,15 +163,6 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
     }
 
     private fun getStartCommandArgs(jarFile: File): Array<String> {
-        val allDependencyPaths = DependencyLoader.INSTANCE.getInstalledDependencies()
-                .filter { it.groupId != "org.slf4j" }
-                .filter { it.groupId != "eu.thesimplecloud.clientserverapi" }
-                .map { it.getDownloadedFile().absolutePath }
-        val classPathValueList = listOf(jarFile.absolutePath).union(allDependencyPaths)
-        val separator = if (CloudAPI.instance.isWindows()) ";" else ":"
-        val beginAndEnd = if (CloudAPI.instance.isWindows()) "\"" else ""
-        val classPathValue = beginAndEnd + classPathValueList.joinToString(separator) + beginAndEnd
-
         val jvmArguments = Wrapper.instance.jvmArgumentsConfig.jvmArguments.filter {
             it.groups.contains("all") || it.groups.contains(this.cloudService.getGroupName()) || it.groups.contains(this.cloudService.getServiceType().name)
         }
@@ -168,9 +170,14 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
 
         jvmArguments.forEach { commands.addAll(it.arguments) }
 
-        val startArguments = arrayListOf("-Dcom.mojang.eula.agree=true", "-Djline.terminal=jline.UnsupportedTerminal",
-                "-Xms" + cloudService.getMaxMemory() + "M", "-Xmx" + cloudService.getMaxMemory() + "M", "-cp", classPathValue,
-                ManifestLoader.getMainClassFromManifestFile(jarFile))
+        val startArguments = arrayListOf(
+            "-Dcom.mojang.eula.agree=true",
+            "-Djline.terminal=jline.UnsupportedTerminal",
+            "-Xms" + cloudService.getMaxMemory() + "M",
+            "-Xmx" + cloudService.getMaxMemory() + "M",
+            "-jar",
+            jarFile.absolutePath
+        )
         commands.addAll(startArguments)
 
         if (cloudService.getServiceVersion().serviceAPIType == ServiceAPIType.SPIGOT) {
@@ -202,8 +209,8 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
             }, 7, TimeUnit.SECONDS)
         }
         return cloudListener<CloudServiceUnregisteredEvent>()
-                .addCondition { it.cloudService == this.cloudService }
-                .toUnitPromise()
+            .addCondition { it.cloudService == this.cloudService }
+            .toUnitPromise()
     }
 
     override fun executeCommand(command: String) {
