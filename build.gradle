@@ -66,7 +66,7 @@ allprojects {
     }
 
     project.ext {
-        depedencyClientServerAPIVersion = '4.1.16'
+        depedencyClientServerAPIVersion = '4.1.17'
         dependencyCommonsIOVersion = '2.11.0'
         dependencyKotlinCouroutinesVersion = '1.5.2'
         dependencyNettyVersion = '4.1.71.Final'
