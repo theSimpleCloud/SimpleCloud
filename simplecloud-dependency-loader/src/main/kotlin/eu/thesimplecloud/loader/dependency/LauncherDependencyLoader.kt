@@ -36,7 +36,7 @@ class LauncherDependencyLoader {
                 "https://repo.thesimplecloud.eu/artifactory/gradle-release-local/"
             ),
             listOf(
-                AdvancedCloudDependency("eu.thesimplecloud.clientserverapi", "clientserverapi", "4.1.16"),
+                AdvancedCloudDependency("eu.thesimplecloud.clientserverapi", "clientserverapi", "4.1.17"),
                 AdvancedCloudDependency("org.apache.commons", "commons-lang3", "3.12.0"),
                 AdvancedCloudDependency("org.slf4j", "slf4j-nop", "1.7.32"),
                 AdvancedCloudDependency("org.fusesource.jansi", "jansi", "2.4.0"),
