@@ -5,5 +5,5 @@
   "authors": [
     "KxmischesDomi"
   ],
-  "main": "eu.thesimplecloud.module.prefix.proxy.velocity.VelocityPluginMain"
+  "main": "eu.thesimplecloud.module.prefix.service.velocity.VelocityPluginMain"
 }
