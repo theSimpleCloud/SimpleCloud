@@ -44,8 +44,7 @@ class VelocityPluginMain @Inject constructor(val proxyServer: ProxyServer) {
 
     @Subscribe
     fun on(event: PermissionsSetupEvent) {
-        PermissionPool(PermissionGroupManager())
-        event.provider = permissionProvider
+        event.provider = this.permissionProvider
     }
 
 }
