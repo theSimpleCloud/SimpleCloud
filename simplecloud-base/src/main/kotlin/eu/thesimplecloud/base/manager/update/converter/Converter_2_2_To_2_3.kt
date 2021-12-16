@@ -55,7 +55,7 @@ class Converter_2_2_To_2_3 : IVersionConverter {
 
 
     private fun deleteIfFileHasNoGson(file: File) {
-        if (ZipUtils().hasPath(file, "com/google/gson/")) {
+        if (!ZipUtils().hasPath(file, "com/google/gson/")) {
             file.delete()
         }
     }

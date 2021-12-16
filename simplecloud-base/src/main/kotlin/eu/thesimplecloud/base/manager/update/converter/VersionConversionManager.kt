@@ -39,14 +39,20 @@ class VersionConversionManager {
     private val lastStartedVersionFile = File(DirectoryPaths.paths.storagePath + "versions/lastStartedVersion.json")
 
     fun convertIfNecessary() {
-        val lastStartedVersion = getLastStartedVersion()
-        val currentVersion = Launcher.instance.getCurrentVersion()
-        getConvertersToExecute().forEach { version ->
-            //Launcher.instance.consoleSender.sendProperty("manager.converting", lastStartedVersion, currentVersion)
-            version.convert()
-            //Launcher.instance.consoleSender.sendProperty("manager.converted", lastStartedVersion, currentVersion)
+        getConvertersToExecute().forEach { converter ->
+            executeConverter(converter)
         }
         writeLastStartedVersion()
+    }
+
+    private fun executeConverter(converter: IVersionConverter) {
+        Launcher.instance.logger.info("Running converter to version 2.${converter.getTargetMinorVersion()}...")
+        try {
+            converter.convert()
+        } catch (e: Exception) {
+            throw ConversionException(converter.getTargetMinorVersion(), e)
+        }
+        Launcher.instance.logger.info("Converted")
     }
 
     private fun getConvertersToExecute(): ArrayList<IVersionConverter> {
