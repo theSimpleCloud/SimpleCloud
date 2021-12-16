@@ -59,12 +59,12 @@ class DefaultConfig {
 
         fun getDefaultProxyGroupConfiguration(groupName: String): ProxyGroupConfiguration {
             val motdConfiguration = MotdConfiguration(
-                listOf("<gradient:#00fcff:#0da1a3><bold>SimpleCloud</bold></gradient> §8»§7 Simplify your network §8|<bold><#4595ff> 1.8<#545454> - <#4595ff>1.17</bold>"),
+                listOf("<gradient:#00fcff:#0da1a3><bold>SimpleCloud</bold></gradient> §8»§7 Simplify your network §8|<bold><#4595ff> 1.12<#545454> - <#4595ff>1.18</bold>"),
                 listOf("§8× <#178fff>Status§8: <bold><#22cc22>Online</bold> §8- <#ffffff>%PROXY%"),
                 emptyList(),
                 null)
             val maintenanceMotdConfiguration = MotdConfiguration(
-                listOf("<gradient:#00fcff:#0da1a3><bold>SimpleCloud</bold></gradient> §8»§7 Simplify your network §8|<bold><#4595ff> 1.8<#545454> - <#4595ff>1.17</bold>"),
+                listOf("<gradient:#00fcff:#0da1a3><bold>SimpleCloud</bold></gradient> §8»§7 Simplify your network §8|<bold><#4595ff> 1.12<#545454> - <#4595ff>1.18</bold>"),
                 listOf("§8× <#178fff>Status§8: <bold><#c40000>Maintenance</bold> §8- §f%PROXY%"),
                 emptyList(),
                 "§4§oMaintenance")

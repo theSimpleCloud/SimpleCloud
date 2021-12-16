@@ -55,5 +55,27 @@ class ZipUtils {
 
     }
 
+    fun hasPath(file: File, path: String): Boolean {
+        val env = HashMap<String, String>()
+        env["create"] = "true"
+        env["encoding"] = "UTF-8"
+
+        val zipFile = ZipFile(file)
+        val entries = zipFile.entries()
+        val uri = URI.create("jar:" + file.toURI().toString())
+        val fileSystem = FileSystems.newFileSystem(uri, env)
+        while (entries.hasMoreElements()) {
+            val nextElement = entries.nextElement()
+            if (nextElement.name.startsWith(path) && !nextElement.isDirectory) {
+                zipFile.close()
+                fileSystem.close()
+                return true
+            }
+        }
+        zipFile.close()
+        fileSystem.close()
+        return false
+    }
+
 }
 

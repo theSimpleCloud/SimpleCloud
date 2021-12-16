@@ -158,6 +158,8 @@
   "manager.setup.service-versions.question.name.success": "Name set",
   "manager.setup.service-versions.question.apitype": "Please provide the API-Type of the version.",
   "manager.setup.service-versions.question.apitype.success": "API-Type set",
+  "manager.setup.service-versions.question.paperclip": "Is this a paperclip file? (yes/no)",
+  "manager.setup.service-versions.question.paperclip.success": "Paperclip state set",
   "manager.setup.service-versions.question.url": "Please provide the download url of this version",
   "manager.setup.service-versions.question.url.invalid": "The specified URL is invalid",
   "manager.setup.service-versions.question.url.success": "URL set",

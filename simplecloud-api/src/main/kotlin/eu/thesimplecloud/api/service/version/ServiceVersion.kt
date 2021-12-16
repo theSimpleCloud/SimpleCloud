@@ -33,5 +33,6 @@ import eu.thesimplecloud.api.service.version.type.ServiceAPIType
 data class ServiceVersion(
         val name: String,
         val serviceAPIType: ServiceAPIType,
-        val downloadURL: String
+        val downloadURL: String,
+        val isPaperClip: Boolean = false
 )

@@ -36,20 +36,20 @@ class LauncherDependencyLoader {
                 "https://repo.thesimplecloud.eu/artifactory/gradle-release-local/"
             ),
             listOf(
-                AdvancedCloudDependency("eu.thesimplecloud.clientserverapi", "clientserverapi", "4.1.16"),
-                AdvancedCloudDependency("org.apache.commons", "commons-lang3", "3.11"),
-                AdvancedCloudDependency("org.slf4j", "slf4j-nop", "1.7.10"),
-                AdvancedCloudDependency("org.fusesource.jansi", "jansi", "2.2.0"),
-                AdvancedCloudDependency("org.jline", "jline", "3.19.0"),
-                AdvancedCloudDependency("org.litote.kmongo", "kmongo", "4.2.6"),
-                AdvancedCloudDependency("commons-io", "commons-io", "2.8.0"),
-                AdvancedCloudDependency("org.slf4j", "slf4j-simple", "1.7.10"),
-                AdvancedCloudDependency("com.google.guava", "guava", "30.0-jre"),
-                AdvancedCloudDependency("org.jetbrains.kotlinx", "kotlinx-coroutines-core", "1.4.2"),
-                AdvancedCloudDependency("com.google.code.gson", "gson", "2.8.6"),
-                AdvancedCloudDependency("io.netty", "netty-all", "4.1.58.Final"),
+                AdvancedCloudDependency("eu.thesimplecloud.clientserverapi", "clientserverapi", "4.1.17"),
+                AdvancedCloudDependency("org.apache.commons", "commons-lang3", "3.12.0"),
+                AdvancedCloudDependency("org.slf4j", "slf4j-nop", "1.7.32"),
+                AdvancedCloudDependency("org.fusesource.jansi", "jansi", "2.4.0"),
+                AdvancedCloudDependency("org.jline", "jline", "3.21.0"),
+                AdvancedCloudDependency("org.litote.kmongo", "kmongo", "4.4.0"),
+                AdvancedCloudDependency("commons-io", "commons-io", "2.11.0"),
+                AdvancedCloudDependency("org.slf4j", "slf4j-simple", "1.7.32"),
+                AdvancedCloudDependency("com.google.guava", "guava", "31.0.1-jre"),
+                AdvancedCloudDependency("org.jetbrains.kotlinx", "kotlinx-coroutines-core", "1.5.2"),
+                AdvancedCloudDependency("com.google.code.gson", "gson", "2.8.9"),
+                AdvancedCloudDependency("io.netty", "netty-all", "4.1.71.Final"),
                 AdvancedCloudDependency("org.reflections", "reflections", "0.9.12"),
-                AdvancedCloudDependency("org.mariadb.jdbc", "mariadb-java-client", "2.7.2"),
+                AdvancedCloudDependency("org.mariadb.jdbc", "mariadb-java-client", "2.7.4"),
                 AdvancedCloudDependency("com.github.ajalt", "clikt", "2.8.0")
             )
         )
