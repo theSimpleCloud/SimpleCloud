@@ -6,7 +6,7 @@
   <p align="center">
     A simple alternative to other minecraft cloud systems
     <br />
-    <a href="https://www.spigotmc.org/resources/simplecloud-simplify-your-network.79466/o">SpigotMC</a>
+    <a href="https://www.spigotmc.org/resources/simplecloud-simplify-your-network.79466/">SpigotMC</a>
     ·
     <a href="https://repo.thesimplecloud.eu/ui/repos/tree/General/artifactory-build-info">Repository</a>
     ·
