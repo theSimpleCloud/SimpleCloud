@@ -31,7 +31,7 @@ repositories {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    implementation 'io.javalin:javalin:3.13.12'
+    implementation 'io.javalin:javalin:3.13.7'
     implementation 'com.auth0:java-jwt:3.16.0'
     implementation 'com.github.kmehrunes:javalin-jwt:v0.2'
     implementation "org.slf4j:slf4j-simple:1.7.32"

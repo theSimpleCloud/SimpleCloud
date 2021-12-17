@@ -8,7 +8,7 @@
     {
       "groupId": "io.javalin",
       "artifactId": "javalin",
-      "version": "3.13.12"
+      "version": "3.13.7"
     },
     {
       "groupId": "com.auth0",
