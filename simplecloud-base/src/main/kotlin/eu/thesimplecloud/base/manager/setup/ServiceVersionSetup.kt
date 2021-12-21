@@ -47,6 +47,7 @@ class ServiceVersionSetup : ISetup {
     private lateinit var serviceAPIType: ServiceAPIType
     private lateinit var downloadURL: String
     private lateinit var javaCommand: String
+    private var isPaperclip: Boolean = false
 
     @SetupQuestion(0, "manager.setup.service-versions.question.name")
     fun nameSetup(name: String): Boolean {
@@ -79,12 +80,17 @@ class ServiceVersionSetup : ISetup {
     fun javaCommandSetup(javaCommand: String): Boolean {
         this.javaCommand = javaCommand
         Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-versions.question.java.success")
+
+    @SetupQuestion(3, "manager.setup.service-versions.question.paperclip")
+    fun isPaperclipSetup(isPaperclip: Boolean): Boolean {
+        this.isPaperclip = isPaperclip
+        Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-versions.question.paperclip.success")
         return true
     }
 
     @SetupFinished
     fun setupFinished() {
-        val serviceVersion = ServiceVersion(name, serviceAPIType, downloadURL, javaCommand)
+        val serviceVersion = ServiceVersion(name, serviceAPIType, downloadURL, javaCommand, isPaperclip)
         LocalServiceVersionHandler().saveServiceVersion(serviceVersion)
         val serviceVersionHandler = CloudAPI.instance.getServiceVersionHandler() as ManagerServiceVersionHandler
         serviceVersionHandler.reloadServiceVersions()

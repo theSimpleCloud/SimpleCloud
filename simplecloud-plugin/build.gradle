@@ -22,19 +22,15 @@
 
 dependencies {
     implementation group: 'org.reflections', name: 'reflections', version: '0.9.12'
-    compile(group: 'io.netty', name: 'netty-all', version: "4.1.54.Final")
+    compile(group: 'io.netty', name: 'netty-all', version: "4.1.71.Final")
     compile(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion) {
-        transitive = false
     }
     compile(group: 'eu.thesimplecloud.jsonlib', name: 'json-lib', version: "1.0.8") {
-        transitive = false
     }
     compile(project(":simplecloud-api")) {
-        transitive = false
     }
 
     compile(project(":simplecloud-client")) {
-        transitive = false
     }
     compileOnly 'org.spigotmc:spigot-api:1.17-R0.1-SNAPSHOT'
     compileOnly 'net.md-5:bungeecord-api:1.17-R0.1-SNAPSHOT'
@@ -52,6 +48,7 @@ jar {
     // This line of code recursively collects and copies all of a project's files
     // and adds them to the JAR itself. One can extend this task, to skip certain
     // files or particular types at will
+    //from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     from {
         configurations.compile.collect {
             if (it.name.contains("netty")) return

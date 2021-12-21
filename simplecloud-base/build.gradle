@@ -49,7 +49,7 @@ dependencies {
     implementation group: 'org.reflections', name: 'reflections', version: '0.9.12'
     implementation group: 'org.litote.kmongo', name: 'kmongo', version: dependencyKMongoVersion
     compile(group: 'io.netty', name: 'netty-all', version: dependencyNettyVersion)
-    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
 
 
 

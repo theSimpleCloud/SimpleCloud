@@ -32,7 +32,7 @@ import eu.thesimplecloud.module.permission.PermissionPool
 class VelocityPermissionProvider : PermissionProvider {
 
     override fun createFunction(subject: PermissionSubject): PermissionFunction? {
-        if (subject !is Player) return null
+        if (subject !is Player) return PermissionFunction.ALWAYS_TRUE
         return CloudPermissionFunction(subject)
     }
 

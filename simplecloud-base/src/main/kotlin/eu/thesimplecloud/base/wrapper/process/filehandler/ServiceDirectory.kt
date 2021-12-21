@@ -43,6 +43,7 @@ class ServiceDirectory(private val cloudService: ICloudService) {
     val serviceTmpDirectory = getServiceTmpDirectory(cloudService)
 
     fun copyTemplateFilesAndModules() {
+        copyServiceVersion()
         copyTemplateFiles()
         copyModules()
     }
@@ -54,6 +55,18 @@ class ServiceDirectory(private val cloudService: ICloudService) {
     @Throws(IOException::class)
     fun deleteServiceDirectoryUnsafe() {
         FileUtils.deleteDirectory(this.serviceTmpDirectory)
+    }
+
+    private fun copyServiceVersion() {
+        val loadedServiceVersion = Wrapper.instance.serviceVersionLoader.loadVersionFile(this.cloudService.getServiceVersion())
+        loadedServiceVersion.copyToDirectory(this.serviceTmpDirectory)
+        renameExecutableJar(loadedServiceVersion)
+    }
+
+    private fun renameExecutableJar(loadedServiceVersion: LoadedServiceVersion) {
+        val executableJar = File(this.serviceTmpDirectory, loadedServiceVersion.fileNameToExecute)
+        val renamedExecutableJar = File(this.serviceTmpDirectory, "server.jar")
+        executableJar.renameTo(renamedExecutableJar)
     }
 
     private fun copyTemplateFiles() {

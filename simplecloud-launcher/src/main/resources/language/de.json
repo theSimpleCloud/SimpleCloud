@@ -157,6 +157,8 @@
   "manager.setup.service-versions.question.name.success": "Name gesetzt",
   "manager.setup.service-versions.question.apitype": "Bitte geben den API-Type dieser Version an",
   "manager.setup.service-versions.question.apitype.success": "API-Type gesetzt",
+  "manager.setup.service-versions.question.paperclip": "Ist diese Version eine Paperclip? (yes/no)",
+  "manager.setup.service-versions.question.paperclip.success": "Paperclip-Status gesetzt",
   "manager.setup.service-versions.question.url": "Bitte gebe die Donwload-URL dieser Version an",
   "manager.setup.service-versions.question.url.invalid": "Die angegebene URL ist ungültig",
   "manager.setup.service-versions.question.url.success": "URL gesetzt",

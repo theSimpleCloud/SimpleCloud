@@ -26,9 +26,9 @@ dependencies {
     // https://mvnrepository.com/artifact/org.mockito/mockito-core
     //testCompile group: 'org.mockito', name: 'mockito-core', version: '3.3.3'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    implementation group: 'org.jline', name: 'jline', version: '3.19.0'
+    implementation group: 'org.jline', name: 'jline', version: '3.21.0'
     implementation group: 'org.reflections', name: 'reflections', version: '0.9.12'
-    implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.6'
+    implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.9'
     implementation(project(":simplecloud-dependency-loader"))
     compile(project(":simplecloud-api")) {
         transitive = false
@@ -36,7 +36,7 @@ dependencies {
     implementation(project(":simplecloud-runner"))
     implementation("com.github.ajalt:clikt:2.8.0")
     implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: dependencyKotlinCouroutinesVersion
-    implementation group: 'org.fusesource.jansi', name: 'jansi', version: '2.2.0'
+    implementation group: 'org.fusesource.jansi', name: 'jansi', version: '2.4.0'
 
     implementation(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion) {
         transitive = false
@@ -53,7 +53,7 @@ dependencies {
     testCompile group: 'com.google.guava', name: 'guava', version: dependencyGuavaVersion
     testCompile group: 'io.netty', name: 'netty-all', version: dependencyNettyVersion
     testCompile group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: dependencyKotlinCouroutinesVersion
-    testCompile group: 'com.google.code.gson', name: 'gson', version: '2.8.6'
+    testCompile group: 'com.google.code.gson', name: 'gson', version: '2.8.9'
 
 }
 

@@ -56,7 +56,13 @@ class VelocityListener(val plugin: CloudVelocityPlugin) {
         val player = event.player
 
         val playerAddress = DefaultPlayerAddress(player.remoteAddress.hostString, player.remoteAddress.port)
-        val playerConnection = DefaultPlayerConnection(playerAddress, player.username, player.uniqueId, plugin.proxyServer.configuration.isOnlineMode, player.protocolVersion.protocol)
+        val playerConnection = DefaultPlayerConnection(
+            playerAddress,
+            player.username,
+            player.uniqueId,
+            plugin.proxyServer.configuration.isOnlineMode,
+            player.protocolVersion.protocol
+        )
 
 
         ProxyEventHandler.handleLogin(playerConnection) {
@@ -97,7 +103,8 @@ class VelocityListener(val plugin: CloudVelocityPlugin) {
             return
         }
         val serverNameTo = target.serverInfo.name
-        event.result = ServerPreConnectEvent.ServerResult.allowed(plugin.proxyServer.getServer(serverNameTo).orElse(null))
+        event.result =
+            ServerPreConnectEvent.ServerResult.allowed(plugin.proxyServer.getServer(serverNameTo).orElse(null))
 
         var serverNameFrom: String? = null
 
@@ -106,7 +113,11 @@ class VelocityListener(val plugin: CloudVelocityPlugin) {
             serverNameFrom = currentServer.get().serverInfo.name
         }
 
-        ProxyEventHandler.handleServerPreConnect(player.uniqueId, serverNameFrom, serverNameTo) { message, cancelMessageType ->
+        ProxyEventHandler.handleServerPreConnect(
+            player.uniqueId,
+            serverNameFrom,
+            serverNameTo
+        ) { message, cancelMessageType ->
             if (cancelMessageType == CancelType.MESSAGE) {
                 player.sendMessage(CloudTextBuilder().build(CloudText(message)))
             } else {
@@ -132,12 +143,21 @@ class VelocityListener(val plugin: CloudVelocityPlugin) {
             kickReasonString = ""
             kickReasonComponent = Optional.of(CloudTextBuilder().build(CloudText("")))
         } else {
-            kickReasonString = (kickReasonComponent.get() as TextComponent).content()
+            val component = kickReasonComponent.get()
+            kickReasonString = if (component is TextComponent) {
+                component.content()
+            } else {
+                "§cYou were kicked from the server"
+            }
         }
 
         val player = event.player
         val kickedServerName = event.server.serverInfo.name
-        ProxyEventHandler.handleServerKick(player.getCloudPlayer(), kickReasonString, kickedServerName) { message, cancelMessageType ->
+        ProxyEventHandler.handleServerKick(
+            player.getCloudPlayer(),
+            kickReasonString,
+            kickedServerName
+        ) { message, cancelMessageType ->
             if (cancelMessageType == CancelType.MESSAGE) {
                 player.sendMessage(CloudTextBuilder().build(CloudText(message)))
             } else {
@@ -147,7 +167,11 @@ class VelocityListener(val plugin: CloudVelocityPlugin) {
 
         val fallback = plugin.lobbyConnector.getLobbyServer(player, listOf(kickedServerName))
         if (fallback == null) {
-            event.result = KickedFromServerEvent.DisconnectPlayer.create(CloudTextBuilder().build(CloudText(getNoFallbackServerFoundMessage())))
+            event.result = KickedFromServerEvent.DisconnectPlayer.create(
+                CloudTextBuilder().build(
+                    CloudText(getNoFallbackServerFoundMessage())
+                )
+            )
             return
         }
 

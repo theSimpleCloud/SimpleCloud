@@ -34,14 +34,14 @@ dependencies {
     implementation 'io.javalin:javalin:3.13.7'
     implementation 'com.auth0:java-jwt:3.16.0'
     implementation 'com.github.kmehrunes:javalin-jwt:v0.2'
-    implementation "org.slf4j:slf4j-simple:1.7.30"
+    implementation "org.slf4j:slf4j-simple:1.7.32"
     implementation "org.slf4j:slf4j-api:1.8.0-beta4"
     implementation(project(":simplecloud-api"))
     implementation(project(":simplecloud-launcher")) {
         transitive = false
     }
     // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
-    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
     implementation(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion)
 }
 
