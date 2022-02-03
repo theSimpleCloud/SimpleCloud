@@ -31,6 +31,9 @@ import eu.thesimplecloud.api.eventapi.IListener
 import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.api.service.ICloudService
 
+import java.math.BigDecimal
+import java.math.RoundingMode
+
 /**
  * Created by IntelliJ IDEA.
  * User: Philipp.Eistrach
@@ -39,33 +42,52 @@ import eu.thesimplecloud.api.service.ICloudService
  */
 class CloudListener(val module: NotifyModule) : IListener {
 
+    private var message: String = ""
+    private lateinit var cloudText: CloudText
+
     private val permission = "cloud.module.notify.messages"
 
     @CloudEventHandler
     fun on(event: CloudServiceRegisteredEvent) {
-        sendMessage(event.cloudService, module.config.serviceStartingMessage, false)
+        setText(module.config.serviceStartingMessage)
+        sendCloudMessage(event.cloudService, false)
     }
 
     @CloudEventHandler
     fun on(event: CloudServiceStartedEvent) {
-        sendMessage(event.cloudService, module.config.serviceStartedMessage, true)
+        setText(module.config.serviceStartedMessage)
+        val cpuUsage = event.cloudService.getWrapper().getCpuUsage() * 100
+        val decimal = BigDecimal(cpuUsage.toString()).setScale(2, RoundingMode.HALF_EVEN)
+        setText(getMessage().replace("%WRAPPER%", event.cloudService.getWrapperName().toString()).replace("%CPUUSAGE%", "$decimal%"))
+        sendCloudMessage(event.cloudService, true)
     }
 
     @CloudEventHandler
     fun on(event: CloudServiceUnregisteredEvent) {
-        sendMessage(event.cloudService, module.config.serviceStoppedMessage, false)
+        this.setText(module.config.serviceStoppedMessage)
+        val cpuUsage = event.cloudService.getWrapper().getCpuUsage() * 100
+        val decimal = BigDecimal(cpuUsage.toString()).setScale(2, RoundingMode.HALF_EVEN)
+        setText(getMessage().replace("%WRAPPER%", event.cloudService.getWrapperName().toString()).replace("%CPUUSAGE%", "$decimal%"))
+        sendCloudMessage(event.cloudService, false)
     }
 
-    private fun sendMessage(service: ICloudService, message: String, addClick: Boolean) {
-        val serviceName = service.getName()
-        val replacedMessage = message.replace("%SERVICE%", serviceName)
+    private fun setText(message: String) {
+        this.message = message
+    }
 
-        val cloudText = CloudText(replacedMessage)
+    private fun getMessage(): String {
+        return this.message
+    }
+
+    private fun sendCloudMessage(service: ICloudService, addClick: Boolean) {
+
+        val replacedMessage = getMessage().replace("%SERVICE%", service.getName())
+        this.cloudText = CloudText(replacedMessage)
+
         if (addClick) {
             cloudText.addHover(module.config.hoverMessage)
             cloudText.addClickEvent(CloudText.ClickEventType.RUN_COMMAND, "/server " + service.getName())
         }
-
         CloudAPI.instance.getCloudPlayerManager().getAllCachedObjects().forEach { cloudPlayer ->
             cloudPlayer.hasPermission(permission).then {
                 if (it) {
@@ -74,5 +96,4 @@ class CloudListener(val module: NotifyModule) : IListener {
             }
         }
     }
-
 }
