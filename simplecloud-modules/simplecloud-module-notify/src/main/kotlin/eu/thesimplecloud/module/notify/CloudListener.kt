@@ -58,17 +58,28 @@ class CloudListener(val module: NotifyModule) : IListener {
         setText(module.config.serviceStartedMessage)
         val cpuUsage = event.cloudService.getWrapper().getCpuUsage() * 100
         val decimal = BigDecimal(cpuUsage.toString()).setScale(2, RoundingMode.HALF_EVEN)
-        setText(getMessage().replace("%WRAPPER%", event.cloudService.getWrapperName().toString()).replace("%CPUUSAGE%", "$decimal%"))
+        setText(
+            getMessage().replace("%WRAPPER%", event.cloudService.getWrapperName().toString())
+                .replace("%CPUUSAGE%", "$decimal%")
+        )
         sendCloudMessage(event.cloudService, true)
     }
 
     @CloudEventHandler
     fun on(event: CloudServiceUnregisteredEvent) {
-        this.setText(module.config.serviceStoppedMessage)
-        val cpuUsage = event.cloudService.getWrapper().getCpuUsage() * 100
-        val decimal = BigDecimal(cpuUsage.toString()).setScale(2, RoundingMode.HALF_EVEN)
-        setText(getMessage().replace("%WRAPPER%", event.cloudService.getWrapperName().toString()).replace("%CPUUSAGE%", "$decimal%"))
-        sendCloudMessage(event.cloudService, false)
+        setText(module.config.serviceStoppedMessage)
+        try {
+            val cpuUsage = event.cloudService.getWrapper().getCpuUsage() * 100
+            val decimal = BigDecimal(cpuUsage.toString()).setScale(2, RoundingMode.HALF_EVEN)
+            setText(
+                getMessage().replace("%WRAPPER%", event.cloudService.getWrapperName().toString())
+                    .replace("%CPUUSAGE%", "$decimal%")
+            )
+            sendCloudMessage(event.cloudService, false)
+        } catch (e: Exception) {
+            setText("§8[§c»§8] §c%SERVICE%")
+            //e.printStackTrace() ignored
+        }
     }
 
     private fun setText(message: String) {
