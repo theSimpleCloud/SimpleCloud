@@ -22,7 +22,6 @@
 
 package eu.thesimplecloud.launcher.application
 
-import com.google.common.collect.Maps
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.launcher.external.module.LoadedModuleFileContent
 import eu.thesimplecloud.launcher.external.module.handler.ModuleHandler
@@ -32,7 +31,6 @@ import eu.thesimplecloud.launcher.updater.BaseUpdater
 import eu.thesimplecloud.launcher.updater.UpdateExecutor
 import java.io.File
 import java.net.URL
-import java.net.URLClassLoader
 
 class ApplicationStarter {
     //TODO replace properties
@@ -41,11 +39,10 @@ class ApplicationStarter {
         Thread.currentThread().contextClassLoader = launcherClassLoader
         val moduleHandler = ModuleHandler()
         val createClassLoaderFunction: (Array<URL>, String) -> ClassLoader = { urls, name -> ApplicationClassLoader(urls, launcherClassLoader, name, moduleHandler) }
-        val moduleFileName = applicationType.name.toLowerCase() + ".json"
+        val moduleFileName = applicationType.name.lowercase() + ".json"
         val file = File(DirectoryPaths.paths.storagePath + "base.jar")
         if (!Launcher.instance.launcherStartArguments.disableAutoUpdater || !file.exists()) {
             Launcher.instance.consoleSender.sendMessage("Checking for base updates...")
-
             val updater = BaseUpdater()
             if (updater.isUpdateAvailable()) {
                 Launcher.instance.consoleSender.sendMessage("Base update found: ${updater.getVersionToInstall()!!} (current: ${updater.getCurrentVersion()})")
@@ -54,6 +51,7 @@ class ApplicationStarter {
             } else {
                 Launcher.instance.consoleSender.sendMessage("You are running the latest version of SimpleCloud.")
             }
+            Launcher.instance.consoleSender.sendMessage("Thank you for using Mischmaschine's SimpleCloud fork!")
         }
         val moduleFileContent = moduleHandler.loadModuleFileContent(file, moduleFileName)
         val loadedModuleFileContent = LoadedModuleFileContent(file, moduleFileContent, null)

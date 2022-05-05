@@ -127,7 +127,6 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
         Wrapper.instance.cloudServiceProcessManager.unregisterServiceProcess(this)
         deleteTemporaryFiles()
         if (Wrapper.instance.connectionToManager.isOpen()) {
-            //CloudAPI.instance.getCloudServiceManager().sendUpdateToConnection(this.cloudService, Wrapper.instance.communicationClient).awaitUninterruptibly()
             var tries = 0
             while (this.cloudService.isAuthenticated()) {
                 Thread.sleep(100)
@@ -152,7 +151,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
                     this.serviceDirectory.deleteServiceDirectoryUnsafe()
                 }
                 break
-            } catch (e: Exception) {
+            } catch (_: Exception) {
 
             }
         }
@@ -166,7 +165,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
         val jvmArguments = Wrapper.instance.jvmArgumentsConfig.jvmArguments.filter {
             it.groups.contains("all") || it.groups.contains(this.cloudService.getGroupName()) || it.groups.contains(this.cloudService.getServiceType().name)
         }
-        val commands = mutableListOf("java")
+        val commands = mutableListOf(cloudService.getServiceVersion().javaPath ?: "java")
 
         jvmArguments.forEach { commands.addAll(it.arguments) }
 

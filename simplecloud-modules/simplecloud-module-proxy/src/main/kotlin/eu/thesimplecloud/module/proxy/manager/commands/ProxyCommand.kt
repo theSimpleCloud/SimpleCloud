@@ -30,6 +30,7 @@ import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 import eu.thesimplecloud.module.proxy.extensions.mapToLowerCase
 import eu.thesimplecloud.module.proxy.manager.ProxyModule
+import java.util.*
 
 /**
  * Created by IntelliJ IDEA.
@@ -59,7 +60,7 @@ class ProxyCommand(val module: ProxyModule) : ICommandHandler {
             return
         }
 
-        if (proxyConfiguration.whitelist.mapToLowerCase().contains(playerName.toLowerCase())) {
+        if (proxyConfiguration.whitelist.mapToLowerCase().contains(playerName.lowercase())) {
             sender.sendProperty("${propertyPrefix}whitelist.already-whitelisted")
             return
         }

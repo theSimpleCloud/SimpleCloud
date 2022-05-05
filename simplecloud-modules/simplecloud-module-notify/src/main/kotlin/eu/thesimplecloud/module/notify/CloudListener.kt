@@ -40,9 +40,9 @@ import java.math.RoundingMode
  * Date: 13.04.2020
  * Time: 17:03
  */
-class CloudListener(val module: NotifyModule) : IListener {
+class CloudListener(private val module: NotifyModule) : IListener {
 
-    private var message: String = ""
+    private lateinit var message: String
     private lateinit var cloudText: CloudText
 
     private val permission = "cloud.module.notify.messages"
@@ -56,30 +56,25 @@ class CloudListener(val module: NotifyModule) : IListener {
     @CloudEventHandler
     fun on(event: CloudServiceStartedEvent) {
         setText(module.config.serviceStartedMessage)
-        val cpuUsage = event.cloudService.getWrapper().getCpuUsage() * 100
-        val decimal = BigDecimal(cpuUsage.toString()).setScale(2, RoundingMode.HALF_EVEN)
-        setText(
-            getMessage().replace("%WRAPPER%", event.cloudService.getWrapperName().toString())
-                .replace("%CPUUSAGE%", "$decimal%")
-        )
+        val cpuUsage = (event.cloudService.getWrapper().getCpuUsage() * 100).toString()
+        val decimal = BigDecimal(cpuUsage).setScale(2, RoundingMode.HALF_EVEN)
+        event.cloudService.getWrapperName()
+            ?.let { getMessage().replace("%WRAPPER%", it).replace("%CPUUSAGE%", "$decimal%") }?.let {
+                setText(it)
+            }
         sendCloudMessage(event.cloudService, true)
     }
 
     @CloudEventHandler
     fun on(event: CloudServiceUnregisteredEvent) {
         setText(module.config.serviceStoppedMessage)
-        try {
-            val cpuUsage = event.cloudService.getWrapper().getCpuUsage() * 100
-            val decimal = BigDecimal(cpuUsage.toString()).setScale(2, RoundingMode.HALF_EVEN)
-            setText(
-                getMessage().replace("%WRAPPER%", event.cloudService.getWrapperName().toString())
-                    .replace("%CPUUSAGE%", "$decimal%")
-            )
-            sendCloudMessage(event.cloudService, false)
-        } catch (e: Exception) {
-            setText("§8[§c»§8] §c%SERVICE%")
-            //e.printStackTrace() ignored
-        }
+        val cpuUsage = (event.cloudService.getWrapper().getCpuUsage() * 100).toString()
+        val decimal = BigDecimal(cpuUsage).setScale(2, RoundingMode.HALF_EVEN)
+        event.cloudService.getWrapperName()
+            ?.let { getMessage().replace("%WRAPPER%", it).replace("%CPUUSAGE%", "$decimal%") }?.let {
+                setText(it)
+            }
+        sendCloudMessage(event.cloudService, false)
     }
 
     private fun setText(message: String) {

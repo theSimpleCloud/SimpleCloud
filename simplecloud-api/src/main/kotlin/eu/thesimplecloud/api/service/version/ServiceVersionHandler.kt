@@ -43,7 +43,7 @@ open class ServiceVersionHandler(
 
     override fun getVersionsByPrefix(prefix: String): List<ServiceVersion> {
         if (prefix.contains("_")) return emptyList()
-        val serviceVersions = versions.filter { it.name.startsWith(prefix.toUpperCase()) }
+        val serviceVersions = versions.filter { it.name.startsWith(prefix.uppercase()) }
         if (serviceVersions.isEmpty()) return emptyList()
         //check if all versions have the same version type
         val firstVersionType = serviceVersions.first().serviceAPIType

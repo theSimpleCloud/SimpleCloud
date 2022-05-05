@@ -45,6 +45,7 @@ class ServiceVersionSetup : ISetup {
 
     private lateinit var name: String
     private lateinit var serviceAPIType: ServiceAPIType
+    private lateinit var javaPath: String
     private lateinit var downloadURL: String
     private var isPaperclip: Boolean = false
 
@@ -82,9 +83,16 @@ class ServiceVersionSetup : ISetup {
         return true
     }
 
+    @SetupQuestion(4, "Please provide a java path for the service version")
+    fun useJavaPath(path: String): Boolean {
+        this.javaPath = path
+        Launcher.instance.consoleSender.sendPropertyInSetup("You successfully set the Java-Version")
+        return true
+    }
+
     @SetupFinished
     fun setupFinished() {
-        val serviceVersion = ServiceVersion(name, serviceAPIType, downloadURL, isPaperclip)
+        val serviceVersion = ServiceVersion(name, serviceAPIType, downloadURL, javaPath, isPaperclip)
         LocalServiceVersionHandler().saveServiceVersion(serviceVersion)
         val serviceVersionHandler = CloudAPI.instance.getServiceVersionHandler() as ManagerServiceVersionHandler
         serviceVersionHandler.reloadServiceVersions()

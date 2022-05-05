@@ -44,7 +44,7 @@ import net.md_5.bungee.event.EventPriority
  * Date: 14.03.2020
  * Time: 22:14
  */
-class BungeeListener(val plugin: BungeePluginMain) : Listener {
+class BungeeListener(private val plugin: BungeePluginMain) : Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     fun on(event: ServerConnectEvent) {

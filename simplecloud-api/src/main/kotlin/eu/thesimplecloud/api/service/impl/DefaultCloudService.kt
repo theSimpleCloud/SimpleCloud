@@ -138,6 +138,7 @@ data class DefaultCloudService(
 
     override fun getMaxMemory(): Int = this.maxMemory
 
+
     override fun getUsedMemory(): Int = this.usedMemory
 
     override fun getLastPlayerUpdate(): Timestamp = this.lastPlayerUpdate

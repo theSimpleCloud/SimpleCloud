@@ -50,6 +50,7 @@ interface ICacheList<U : ICacheValueUpdater, T : ICacheValue<U>> {
             cachedValue.applyValuesFromUpdater(valueUpdater)
         }
         eventsToCall.forEach { CloudAPI.instance.getEventManager().call(it) }
+
         if (shallSpreadUpdates())
             if (!isCalledFromDelete)
                 if (CloudAPI.instance.isManager() || !fromPacket)

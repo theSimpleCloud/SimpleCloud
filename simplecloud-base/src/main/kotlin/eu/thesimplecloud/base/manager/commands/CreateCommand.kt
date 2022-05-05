@@ -81,7 +81,4 @@ class CreateCommand : ICommandHandler {
         Launcher.instance.consoleSender.sendProperty("manager.command.create.template.success", name)
 
     }
-
-
-
 }

@@ -134,7 +134,7 @@ interface ICloudAPI {
     /**
      * Returns whether the application is executed on windows.
      */
-    fun isWindows(): Boolean = System.getProperty("os.name").toLowerCase().contains("windows")
+    fun isWindows(): Boolean = System.getProperty("os.name").lowercase().contains("windows")
 
     /**
      * Returns then cloud module fot this side.

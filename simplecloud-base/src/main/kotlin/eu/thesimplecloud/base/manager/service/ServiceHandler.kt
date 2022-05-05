@@ -37,13 +37,13 @@ import eu.thesimplecloud.launcher.startup.Launcher
 import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.TimeUnit
-import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
 import kotlin.math.min
 
 class ServiceHandler : IServiceHandler {
 
-    @Volatile private var serviceQueue: MutableList<ICloudService> = CopyOnWriteArrayList()
+    @Volatile
+    private var serviceQueue: MutableList<ICloudService> = CopyOnWriteArrayList()
 
     override fun startServicesByGroup(cloudServiceGroup: ICloudServiceGroup, count: Int): List<ICloudService> {
         require(count >= 1) { "Count must be positive" }
@@ -60,7 +60,11 @@ class ServiceHandler : IServiceHandler {
         val serviceNumber = startConfiguration.serviceNumber ?: getNumberForNewService(cloudServiceGroup)
         val serviceName = cloudServiceGroup.getName() + "-" + serviceNumber
         val runningService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(serviceName)
-        if (runningService != null) throw IllegalArgumentException("Service to start ($serviceName) is already registered")
+        if (runningService != null) {
+            println("                 -----------")
+            println("Service to start ($serviceName) is already registered")
+            println("                 -----------")
+        }
         val service = DefaultCloudService(
             cloudServiceGroup.getName(),
             serviceNumber,
@@ -143,7 +147,9 @@ class ServiceHandler : IServiceHandler {
         thread(start = true, isDaemon = true) {
             while (true) {
                 this.serviceQueue =
-                    CopyOnWriteArrayList(this.serviceQueue.sortedByDescending { it.getServiceGroup().getStartPriority() })
+                    CopyOnWriteArrayList(this.serviceQueue.sortedByDescending {
+                        it.getServiceGroup().getStartPriority()
+                    })
                 queueMinServices()
                 stopRedundantServices()
 

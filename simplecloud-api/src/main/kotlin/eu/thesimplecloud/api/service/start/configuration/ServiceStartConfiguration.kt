@@ -88,5 +88,4 @@ class ServiceStartConfiguration(serviceGroup: ICloudServiceGroup) : IServiceStar
         return this
     }
 
-
 }

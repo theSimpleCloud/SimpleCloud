@@ -18,7 +18,7 @@ import java.util.*
 object TablistHelper {
 
     fun load() {
-        val scoreboard = Bukkit.getScoreboardManager()?.mainScoreboard ?: return
+        val scoreboard = Bukkit.getScoreboardManager()?.mainScoreboard ?: Bukkit.getScoreboardManager()?.newScoreboard ?: return
 
         initScoreboard(scoreboard)
 
@@ -38,8 +38,8 @@ object TablistHelper {
 
             try {
                 team.color = chatColor
-            } catch (ex: NoSuchMethodException) {}
-            catch (ex: NoSuchMethodError) {}
+            } catch (_: NoSuchMethodException) {}
+            catch (_: NoSuchMethodError) {}
         }
     }
 
