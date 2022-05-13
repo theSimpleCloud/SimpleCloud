@@ -23,6 +23,7 @@
 package eu.thesimplecloud.base.manager.setup
 
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.javaVersions.JavaVersion
 import eu.thesimplecloud.api.service.version.ServiceVersion
 import eu.thesimplecloud.api.service.version.loader.LocalServiceVersionHandler
 import eu.thesimplecloud.api.service.version.type.ServiceAPIType
@@ -83,10 +84,20 @@ class ServiceVersionSetup : ISetup {
         return true
     }
 
-    @SetupQuestion(4, "Please provide a java path for the service version")
+    @SetupQuestion(4, "manager.setup.service-versions.question.java")
     fun useJavaPath(path: String): Boolean {
-        this.javaPath = path
-        Launcher.instance.consoleSender.sendPropertyInSetup("You successfully set the Java-Version")
+        if (path.isBlank())
+            return false
+        val javaVersion: String = when(path.uppercase()) {
+            "JAVA_18" -> JavaVersion.paths.java18.toString()
+            "JAVA_17" -> JavaVersion.paths.java17.toString()
+            "JAVA_16" -> JavaVersion.paths.java16.toString()
+            "JAVA_11" -> JavaVersion.paths.java11.toString()
+            "JAVA_8" -> JavaVersion.paths.java8.toString()
+            else -> "java"
+        }
+        this.javaPath = javaVersion
+        Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-versions.question.java.success")
         return true
     }
 
@@ -96,7 +107,7 @@ class ServiceVersionSetup : ISetup {
         LocalServiceVersionHandler().saveServiceVersion(serviceVersion)
         val serviceVersionHandler = CloudAPI.instance.getServiceVersionHandler() as ManagerServiceVersionHandler
         serviceVersionHandler.reloadServiceVersions()
-        Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-versions.finished",  name)
+        Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-versions.finished", name)
     }
 
 

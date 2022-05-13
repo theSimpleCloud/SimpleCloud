@@ -109,7 +109,7 @@ class BungeeListener(private val plugin: BungeePluginMain) : Listener {
 
         val versionName = motdConfiguration.versionName
         if (versionName != null && versionName.isNotEmpty()) {
-            response.version = ServerPing.Protocol(ProxyHandler.replaceString(versionName), -1)
+            response.version = ServerPing.Protocol(ProxyHandler.replaceString(versionName), 0)
         }
 
         val maxPlayers = CloudPlugin.instance.thisService().getServiceGroup().getMaxPlayers()

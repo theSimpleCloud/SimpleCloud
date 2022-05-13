@@ -44,6 +44,7 @@ open class DefaultServerGroup(
     serviceVersion: ServiceVersion,
     startPriority: Int,
     permission: String?,
+    javaCommand: String,
     private val hiddenAtProxyGroups: List<String> = emptyList()
 ) : AbstractServiceGroup(
     name,
@@ -58,6 +59,7 @@ open class DefaultServerGroup(
     wrapperName,
     serviceVersion,
     startPriority,
+    javaCommand,
     permission
 ), ICloudServerGroup {
 

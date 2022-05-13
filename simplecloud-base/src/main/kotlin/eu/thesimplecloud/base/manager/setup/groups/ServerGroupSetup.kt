@@ -47,6 +47,7 @@ class ServerGroupSetup : DefaultGroupSetup(), ISetup {
     private var memory by Delegates.notNull<Int>()
     private lateinit var name: String
     private lateinit var templateName: String
+    private lateinit var javaCommand: String
 
     @SetupQuestion(0, "manager.setup.service-group.question.name")
     fun nameQuestion(name: String): Boolean {
@@ -151,9 +152,15 @@ class ServerGroupSetup : DefaultGroupSetup(), ISetup {
         handlePermission(permission)
     }
 
+
+    @SetupQuestion(12, "manager.setup.service-group.question.permission")
+    fun javaCommandQuestion(javaCommand: String) {
+        this.javaCommand = javaCommand
+    }
+
     @SetupFinished
     fun finished() {
-        CloudAPI.instance.getCloudServiceGroupManager().createServerGroup(name, templateName, memory, maxPlayers, minimumOnlineServices, maximumOnlineServices, false, static, percent, wrapper?.getName(), serviceVersion, 0, permission)
+        CloudAPI.instance.getCloudServiceGroupManager().createServerGroup(name, templateName, memory, maxPlayers, minimumOnlineServices, maximumOnlineServices, false, static, percent, wrapper?.getName(), serviceVersion, 0, permission, javaCommand)
         Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-group.finished", name)
     }
 

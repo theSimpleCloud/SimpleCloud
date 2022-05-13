@@ -32,34 +32,36 @@ import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.jsonlib.JsonLibExclude
 
 class DefaultProxyGroup(
-        name: String,
-        templateName: String,
-        maxMemory: Int,
-        maxPlayers: Int,
-        minimumOnlineServiceCount: Int,
-        maximumOnlineServiceCount: Int,
-        maintenance: Boolean,
-        static: Boolean,
-        percentToStartNewService: Int,
-        wrapperName: String?,
-        @Volatile private var startPort: Int,
-        serviceVersion: ServiceVersion,
-        startPriority: Int,
-        permission: String?
+    name: String,
+    templateName: String,
+    maxMemory: Int,
+    maxPlayers: Int,
+    minimumOnlineServiceCount: Int,
+    maximumOnlineServiceCount: Int,
+    maintenance: Boolean,
+    static: Boolean,
+    percentToStartNewService: Int,
+    wrapperName: String?,
+    @Volatile private var startPort: Int,
+    serviceVersion: ServiceVersion,
+    startPriority: Int,
+    javaCommand: String,
+    permission: String?
 ) : AbstractServiceGroup(
-        name,
-        templateName,
-        maxMemory,
-        maxPlayers,
-        minimumOnlineServiceCount,
-        maximumOnlineServiceCount,
-        maintenance,
-        static,
-        percentToStartNewService,
-        wrapperName,
-        serviceVersion,
-        startPriority,
-        permission
+    name,
+    templateName,
+    maxMemory,
+    maxPlayers,
+    minimumOnlineServiceCount,
+    maximumOnlineServiceCount,
+    maintenance,
+    static,
+    percentToStartNewService,
+    wrapperName,
+    serviceVersion,
+    startPriority,
+    javaCommand,
+    permission
 ), ICloudProxyGroup {
 
     @Volatile

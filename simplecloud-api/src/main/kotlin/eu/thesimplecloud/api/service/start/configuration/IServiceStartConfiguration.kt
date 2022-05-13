@@ -68,10 +68,6 @@ interface IServiceStartConfiguration {
                 ?: throw IllegalStateException("ServiceGroup by name ${getServiceGroupName()} is null")
     }
 
-    fun getJavaPath(): String {
-        return ""
-    }
-
     /**
      * Starts the service
      * @return a custom promise that completes when the new service was registered

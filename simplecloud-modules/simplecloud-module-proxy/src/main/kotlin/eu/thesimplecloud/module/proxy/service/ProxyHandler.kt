@@ -87,10 +87,7 @@ object ProxyHandler {
     }
 
     fun getHexColorComponent(message: String): TextComponent {
-        return TextComponent.ofChildren(
-            MiniMessage.get()
-                .parse(message)
-        )
+        return TextComponent.ofChildren(MiniMessage.miniMessage().deserialize(message))
     }
 
     fun replaceString(message: String): String {
@@ -98,6 +95,9 @@ object ProxyHandler {
         return message
             .replace("%ONLINE_PLAYERS%", getOnlinePlayers().toString())
             .replace("%MAX_PLAYERS%", CloudPlugin.instance.thisService().getMaxPlayers().toString())
+            .replace("%MAX_MEMORY%", CloudPlugin.instance.thisService().getMaxMemory().toString())
+            .replace("%USED_MEMORY%", CloudPlugin.instance.thisService().getUsedMemory().toString())
+            .replace("%PORT%", CloudPlugin.instance.thisService().getPort().toString())
             .replace("%PROXY%", CloudPlugin.instance.thisService().getName())
     }
 
@@ -119,13 +119,12 @@ object ProxyHandler {
             .replace("%PRIORITY%", tablistInformation.priority.toString())
             .replace("%PREFIX%", tablistInformation.prefix)
             .replace("%SUFFIX%", tablistInformation.suffix)
-            //.replace("%COLOR_CODE%", ChatColor.valueOf(tablistInformation.color).toString())
     }
 
     private fun getTablistInformation(uuid: UUID): TablistInformation? {
         try {
             return ProxyTablistHelper.getTablistInformationByUUID(uuid)
-        } catch (t: Throwable) {
+        } catch (_: Throwable) {
         }
         return null
     }
@@ -136,7 +135,7 @@ object ProxyHandler {
                 PermissionPool.instance.getPermissionPlayerManager().getCachedPermissionPlayer(uuid) ?: return null
             val permissionGroup = permissionPlayer.getHighestPermissionGroup()
             return permissionGroup.getName()
-        } catch (t: Throwable) {
+        } catch (_: Throwable) {
         }
         return null
     }

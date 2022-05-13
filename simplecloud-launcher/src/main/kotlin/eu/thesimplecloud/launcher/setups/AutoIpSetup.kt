@@ -53,7 +53,7 @@ class AutoIpSetup : ISetup {
         }
 
         val launcherConfig = Launcher.instance.launcherConfig
-        val config = LauncherConfig(ip, launcherConfig.port, launcherConfig.language, launcherConfig.directoryPaths)
+        val config = LauncherConfig(ip, launcherConfig.port, launcherConfig.language, launcherConfig.directoryPaths, launcherConfig.javaCommands)
         Launcher.instance.replaceLauncherConfig(config)
         return true
     }

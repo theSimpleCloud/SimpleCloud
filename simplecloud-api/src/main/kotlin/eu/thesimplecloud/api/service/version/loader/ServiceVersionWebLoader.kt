@@ -43,8 +43,10 @@ class ServiceVersionWebLoader : IServiceVersionLoader {
         val version = this::class.java.`package`.implementationVersion.substring(0, 3)
         val contentString = WebContentLoader().loadContent("https://api.thesimplecloud.eu/versions?implementationVersion[\$lte]=$version")
         return if (contentString == null) {
+            println(loadFromFile())
             loadFromFile()
         } else {
+            println(contentString)
             processWebContent(contentString)
         }
     }

@@ -24,6 +24,7 @@ package eu.thesimplecloud.launcher.startup
 
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.external.ICloudModule
+import eu.thesimplecloud.api.javaVersions.JavaVersion
 import eu.thesimplecloud.launcher.application.ApplicationStarter
 import eu.thesimplecloud.launcher.application.CloudApplicationType
 import eu.thesimplecloud.launcher.application.ICloudApplication
@@ -38,6 +39,7 @@ import eu.thesimplecloud.launcher.logging.LoggerProvider
 import eu.thesimplecloud.launcher.screens.IScreenManager
 import eu.thesimplecloud.launcher.screens.ScreenManagerImpl
 import eu.thesimplecloud.launcher.setups.AutoIpSetup
+import eu.thesimplecloud.launcher.setups.JavaSetup
 import eu.thesimplecloud.launcher.setups.LanguageSetup
 import eu.thesimplecloud.launcher.setups.StartSetup
 import eu.thesimplecloud.launcher.updater.RunnerUpdater
@@ -47,6 +49,7 @@ import java.io.File
 import java.io.IOException
 import java.net.URLClassLoader
 import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledExecutorService
 import kotlin.system.exitProcess
 
 
@@ -84,7 +87,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
     val consoleManager: ConsoleManager
     val setupManager = SetupManager(this)
     private val launcherConfigLoader = LauncherConfigLoader()
-    val scheduler = Executors.newScheduledThreadPool(1)
+    val scheduler: ScheduledExecutorService = Executors.newScheduledThreadPool(1)
     val currentClassLoader: ClassLoader = Thread.currentThread().contextClassLoader
     var launcherConfig: LauncherConfig
         private set
@@ -94,7 +97,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
         instance = this
         if (System.getProperty("simplecloud.version") == null)
             System.setProperty("simplecloud.version", Launcher::class.java.`package`.implementationVersion)
-        Thread.setDefaultUncaughtExceptionHandler { thread, cause ->
+        Thread.setDefaultUncaughtExceptionHandler { _, cause ->
             try {
                 this.logger.exception(cause)
             } catch (e: Exception) {
@@ -108,6 +111,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
         System.setProperty("user.language", "en")
         this.launcherConfig = this.launcherConfigLoader.loadConfig()
         DirectoryPaths.paths = launcherConfig.directoryPaths
+        JavaVersion.paths = launcherConfig.javaCommands
         this.commandManager = CommandManager()
         this.consoleManager = ConsoleManager(this.commandManager, this.consoleSender)
     }
@@ -131,6 +135,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
 
         if (LanguageFileLoader.isFirstStart)
             this.setupManager.queueSetup(LanguageSetup())
+            this.setupManager.queueSetup(JavaSetup())
         if (!this.launcherConfigLoader.doesConfigFileExist())
             this.setupManager.queueSetup(AutoIpSetup())
         if (this.launcherStartArguments.startApplication == null)
@@ -184,7 +189,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
         exitProcess(0)
     }
 
-    fun isWindows(): Boolean = System.getProperty("os.name").toLowerCase().contains("windows")
+    fun isWindows(): Boolean = System.getProperty("os.name").lowercase().contains("windows")
 
     fun getLauncherFile(): File {
         if (System.getProperty("simplecloud.launcher.update-mode") != null) {
@@ -210,7 +215,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
     }
 
     fun isSnapshotBuild(): Boolean {
-        return System.getProperty("simplecloud.version").toLowerCase().contains("snapshot")
+        return System.getProperty("simplecloud.version").lowercase().contains("snapshot")
     }
 
     fun getCurrentVersion(): String {

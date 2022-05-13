@@ -24,11 +24,13 @@ package eu.thesimplecloud.launcher.config
 
 import eu.thesimplecloud.api.config.AbstractJsonLibConfigLoader
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
+import eu.thesimplecloud.api.javaVersions.JavaVersion
+import eu.thesimplecloud.launcher.startup.Launcher
 import java.io.File
 
 class LauncherConfigLoader : AbstractJsonLibConfigLoader<LauncherConfig>(
-        LauncherConfig::class.java,
-        File("launcher.json"),
-        { LauncherConfig("127.0.0.1", 1630, "en", DirectoryPaths()) },
-        false
+    LauncherConfig::class.java,
+    File("launcher.json"),
+    { LauncherConfig("127.0.0.1", 1630, "en", DirectoryPaths(), JavaVersion()) },
+    false
 )

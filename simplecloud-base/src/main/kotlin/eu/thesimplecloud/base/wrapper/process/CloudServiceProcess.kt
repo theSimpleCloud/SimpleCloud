@@ -25,6 +25,7 @@ package eu.thesimplecloud.base.wrapper.process
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.client.NetworkComponentType
 import eu.thesimplecloud.api.event.service.CloudServiceUnregisteredEvent
+import eu.thesimplecloud.api.javaVersions.JavaVersion
 import eu.thesimplecloud.api.listenerextension.cloudListener
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
@@ -165,7 +166,18 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
         val jvmArguments = Wrapper.instance.jvmArgumentsConfig.jvmArguments.filter {
             it.groups.contains("all") || it.groups.contains(this.cloudService.getGroupName()) || it.groups.contains(this.cloudService.getServiceType().name)
         }
-        val commands = mutableListOf(cloudService.getServiceVersion().javaPath ?: "java")
+
+        var startCommand: String? = null
+
+        when (cloudService.getServiceVersion().javaPath) {
+            "java18" -> startCommand = JavaVersion.paths.java18
+            "java17" -> startCommand = JavaVersion.paths.java17
+            "java16" -> startCommand = JavaVersion.paths.java16
+            "java11" -> startCommand = JavaVersion.paths.java11
+            "java8" -> startCommand = JavaVersion.paths.java8
+        }
+
+        val commands = mutableListOf(startCommand ?: "java")
 
         jvmArguments.forEach { commands.addAll(it.arguments) }
 

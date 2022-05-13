@@ -23,6 +23,7 @@
 package eu.thesimplecloud.base.manager.setup.groups
 
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.javaVersions.JavaVersion
 import eu.thesimplecloud.api.service.version.ServiceVersion
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.base.manager.setup.groups.provider.GroupTemplateSetupAnswerProvider
@@ -48,6 +49,7 @@ class LobbyGroupSetup : DefaultGroupSetup(), ISetup {
     private var memory by Delegates.notNull<Int>()
     private lateinit var name: String
     private lateinit var templateName: String
+    private lateinit var javaCommand: String
 
     @SetupQuestion(0, "manager.setup.service-group.question.name")
     fun nameQuestion(name: String): Boolean {
@@ -163,11 +165,41 @@ class LobbyGroupSetup : DefaultGroupSetup(), ISetup {
         handlePermission(permission)
     }
 
-    @SetupFinished
-    fun finished() {
-        CloudAPI.instance.getCloudServiceGroupManager().createLobbyGroup(name, templateName, memory, maxPlayers, minimumOnlineServices, maximumOnlineServices, false, static, percent, wrapper?.getName(), priority, permission, serviceVersion, 9)
-        Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-group.finished", name)
+    @SetupQuestion(13, "manager.setup.service-group.question.permission")
+    fun javaCommandQuestion(javaCommand: String) : Boolean {
+        if (javaCommand.isBlank())
+            return false
+        val javaVersion: String = when(javaCommand.uppercase()) {
+            "JAVA_18" -> JavaVersion.paths.java18.toString()
+            "JAVA_17" -> JavaVersion.paths.java17.toString()
+            "JAVA_16" -> JavaVersion.paths.java16.toString()
+            "JAVA_11" -> JavaVersion.paths.java11.toString()
+            "JAVA_8" -> JavaVersion.paths.java8.toString()
+            else -> "java"
+        }
+        this.javaCommand = javaVersion
+        return true
     }
 
-
+    @SetupFinished
+    fun finished() {
+        CloudAPI.instance.getCloudServiceGroupManager().createLobbyGroup(
+            name,
+            templateName,
+            memory,
+            maxPlayers,
+            minimumOnlineServices,
+            maximumOnlineServices,
+            false,
+            static,
+            percent,
+            wrapper?.getName(),
+            priority,
+            permission,
+            serviceVersion,
+            9,
+            javaCommand
+        )
+        Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-group.finished", name)
+    }
 }

@@ -40,6 +40,7 @@ abstract class AbstractServiceGroup(
     @Volatile private var wrapperName: String?,
     serviceVersion: ServiceVersion,
     private val startPriority: Int,
+    @Volatile private var javaCommand: String,
     @Volatile private var permission: String?,
     @Volatile private var stateUpdating: Boolean = true
 ) : ICloudServiceGroup {
