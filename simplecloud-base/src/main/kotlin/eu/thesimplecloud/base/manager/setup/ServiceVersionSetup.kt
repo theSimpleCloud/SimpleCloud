@@ -26,9 +26,11 @@ import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.javaVersions.JavaVersion
 import eu.thesimplecloud.api.service.version.ServiceVersion
 import eu.thesimplecloud.api.service.version.loader.LocalServiceVersionHandler
+import eu.thesimplecloud.api.service.version.type.JavaCommandType
 import eu.thesimplecloud.api.service.version.type.ServiceAPIType
 import eu.thesimplecloud.base.manager.serviceversion.ManagerServiceVersionHandler
 import eu.thesimplecloud.base.manager.setup.provider.ServiceAPITypeAnswerProvider
+import eu.thesimplecloud.base.manager.setup.provider.ServiceJavaCommandAnswerProvider
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
@@ -81,23 +83,6 @@ class ServiceVersionSetup : ISetup {
     fun isPaperclipSetup(isPaperclip: Boolean): Boolean {
         this.isPaperclip = isPaperclip
         Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-versions.question.paperclip.success")
-        return true
-    }
-
-    @SetupQuestion(4, "manager.setup.service-versions.question.java")
-    fun useJavaPath(path: String): Boolean {
-        if (path.isBlank())
-            return false
-        val javaVersion: String = when(path.uppercase()) {
-            "JAVA_18" -> JavaVersion.paths.java18.toString()
-            "JAVA_17" -> JavaVersion.paths.java17.toString()
-            "JAVA_16" -> JavaVersion.paths.java16.toString()
-            "JAVA_11" -> JavaVersion.paths.java11.toString()
-            "JAVA_8" -> JavaVersion.paths.java8.toString()
-            else -> "java"
-        }
-        this.javaPath = javaVersion
-        Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-versions.question.java.success")
         return true
     }
 

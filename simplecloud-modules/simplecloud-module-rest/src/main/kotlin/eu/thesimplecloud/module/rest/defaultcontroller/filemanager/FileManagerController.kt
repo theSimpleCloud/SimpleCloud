@@ -74,7 +74,6 @@ class FileManagerController : IController {
     fun handleCreate(ctx: Context): Boolean {
         checkForSuspiciousPath(ctx)
         val file = getFileFromRequest(ctx)
-        println(file.absolutePath)
         if (file.exists() && file.isDirectory) return false
         if (file.exists()) file.delete()
         file.parentFile?.mkdirs()

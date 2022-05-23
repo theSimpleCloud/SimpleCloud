@@ -25,10 +25,12 @@ package eu.thesimplecloud.base.manager.setup.groups
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.javaVersions.JavaVersion
 import eu.thesimplecloud.api.service.version.ServiceVersion
+import eu.thesimplecloud.api.service.version.type.JavaCommandType
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.base.manager.setup.groups.provider.GroupTemplateSetupAnswerProvider
 import eu.thesimplecloud.base.manager.setup.groups.provider.GroupWrapperSetupAnswerProvider
 import eu.thesimplecloud.base.manager.setup.groups.provider.ServerVersionTypeSetupAnswerProvider
+import eu.thesimplecloud.base.manager.setup.provider.ServiceJavaCommandAnswerProvider
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
@@ -165,19 +167,10 @@ class LobbyGroupSetup : DefaultGroupSetup(), ISetup {
         handlePermission(permission)
     }
 
-    @SetupQuestion(13, "manager.setup.service-group.question.permission")
-    fun javaCommandQuestion(javaCommand: String) : Boolean {
-        if (javaCommand.isBlank())
-            return false
-        val javaVersion: String = when(javaCommand.uppercase()) {
-            "JAVA_18" -> JavaVersion.paths.java18.toString()
-            "JAVA_17" -> JavaVersion.paths.java17.toString()
-            "JAVA_16" -> JavaVersion.paths.java16.toString()
-            "JAVA_11" -> JavaVersion.paths.java11.toString()
-            "JAVA_8" -> JavaVersion.paths.java8.toString()
-            else -> "java"
-        }
-        this.javaCommand = javaVersion
+    @SetupQuestion(13, "manager.setup.service-versions.question.java", ServiceJavaCommandAnswerProvider::class)
+    fun useJavaCommand(javaCommandType: JavaCommandType): Boolean {
+        this.javaCommand = javaCommandType.javaVersion
+        Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-versions.question.java.success")
         return true
     }
 

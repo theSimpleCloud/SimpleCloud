@@ -56,15 +56,15 @@ object ProxyHandler {
             }
     }
 
-    var index = 0;
+    var index = 0
 
     fun getCurrentTablistConfiguration(): TablistConfiguration? {
         val configurations = getTabListConfigurations()
         if (configurations.isEmpty()) return null
-        index++;
+        index++
 
         if (index >= configurations.size) {
-            index = 0;
+            index = 0
         }
 
         return configurations[index]
@@ -87,7 +87,10 @@ object ProxyHandler {
     }
 
     fun getHexColorComponent(message: String): TextComponent {
-        return TextComponent.ofChildren(MiniMessage.miniMessage().deserialize(message))
+        return TextComponent.ofChildren(
+            MiniMessage.get()
+                .parse(message)
+        )
     }
 
     fun replaceString(message: String): String {
