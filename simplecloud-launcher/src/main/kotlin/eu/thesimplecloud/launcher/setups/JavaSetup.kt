@@ -9,19 +9,20 @@ import java.io.File
 
 class JavaSetup : ISetup {
 
+    private val javaVersion = JavaVersion.paths
+
+
     @SetupQuestion(0, "java8")
     fun java8(path: String): Boolean {
-        val launcherConfig = Launcher.instance.launcherConfig
-        val javaVersion = launcherConfig.javaCommands
         javaVersion.java8 = path
 
         if (path.uppercase() == "JAVA") {
-            setup(javaVersion)
+            setup()
             return true
         }
 
         return if (File(path).exists()) {
-            setup(javaVersion)
+            setup()
             true
         } else {
             Launcher.instance.consoleSender.sendMessage("Java was not found.")
@@ -31,15 +32,14 @@ class JavaSetup : ISetup {
 
     @SetupQuestion(1, "java11")
     fun java11(path: String): Boolean {
-        val launcherConfig = Launcher.instance.launcherConfig
-        val javaVersion = launcherConfig.javaCommands
+
         javaVersion.java11 = path
         if (path.uppercase() == "JAVA") {
-            setup(javaVersion)
+            setup()
             return true
         }
         return if (File(path).exists()) {
-            setup(javaVersion)
+            setup()
             true
         } else {
             Launcher.instance.consoleSender.sendMessage("Java was not found.")
@@ -50,16 +50,15 @@ class JavaSetup : ISetup {
     @SetupQuestion(2, "java16")
     fun java16(path: String): Boolean {
 
-        val launcherConfig = Launcher.instance.launcherConfig
-        val javaVersion = launcherConfig.javaCommands
         javaVersion.java16 = path
 
+
         if (path.uppercase() == "JAVA") {
-            setup(javaVersion)
+            setup()
             return true
         }
         return if (File(path).exists()) {
-            setup(javaVersion)
+            setup()
             true
 
         } else {
@@ -70,16 +69,15 @@ class JavaSetup : ISetup {
 
     @SetupQuestion(3, "java17")
     fun java17(path: String): Boolean {
-        val launcherConfig = Launcher.instance.launcherConfig
-        val javaVersion = launcherConfig.javaCommands
         javaVersion.java17 = path
 
+
         if (path.uppercase() == "JAVA") {
-            setup(javaVersion)
+            setup()
             return true
         }
         return if (File(path).exists()) {
-            setup(javaVersion)
+            setup()
             true
         } else {
             Launcher.instance.consoleSender.sendMessage("Java was not found.")
@@ -91,10 +89,8 @@ class JavaSetup : ISetup {
     fun java18(path: String): Boolean {
         val filePath = File(path)
         return if (filePath.exists()) {
-            val launcherConfig = Launcher.instance.launcherConfig
-            val javaVersion = launcherConfig.javaCommands
-            javaVersion.java18 = path
-            setup(javaVersion)
+            JavaVersion.paths.java18 = path
+            setup()
             return true
         } else {
             Launcher.instance.consoleSender.sendMessage("Java was not found.")
@@ -103,7 +99,7 @@ class JavaSetup : ISetup {
     }
 
 
-    fun setup(javaVersion: JavaVersion) {
+    fun setup() {
         val launcherConfig = Launcher.instance.launcherConfig
         val config = LauncherConfig(
             launcherConfig.host,

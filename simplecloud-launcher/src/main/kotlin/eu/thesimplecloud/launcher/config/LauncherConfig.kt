@@ -30,5 +30,5 @@ data class LauncherConfig(
         val port: Int,
         val language: String,
         val directoryPaths: DirectoryPaths,
-        val javaCommands: JavaVersion
+        val javaVersion: JavaVersion
 )

@@ -70,8 +70,8 @@ class ConsoleManager(val commandManager: CommandManager, val consoleSender: Cons
                     readLine = lineReader.readLine(prompt)
                     handleInput(readLine)
                 }
-            } catch (ex: UserInterruptException) {
-            }  catch (ex: IllegalStateException) {
+            } catch (_: UserInterruptException) {
+            }  catch (_: IllegalStateException) {
             }
         }
         thread?.start()

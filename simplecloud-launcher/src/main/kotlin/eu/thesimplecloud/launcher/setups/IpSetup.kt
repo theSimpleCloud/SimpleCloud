@@ -39,7 +39,7 @@ class IpSetup : ISetup {
         }
 
         val launcherConfig = Launcher.instance.launcherConfig
-        val config = LauncherConfig(string, launcherConfig.port, launcherConfig.language, launcherConfig.directoryPaths, launcherConfig.javaCommands)
+        val config = LauncherConfig(string, launcherConfig.port, launcherConfig.language, launcherConfig.directoryPaths, launcherConfig.javaVersion)
         Launcher.instance.replaceLauncherConfig(config)
         return true
     }

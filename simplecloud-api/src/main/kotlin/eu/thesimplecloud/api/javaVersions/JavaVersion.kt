@@ -2,11 +2,11 @@ package eu.thesimplecloud.api.javaVersions
 
 
 class JavaVersion(
-    var java8: String? = null,
-    var java11: String? = null,
-    var java16: String? = null,
-    var java17: String? = null,
-    var java18: String? = null,
+    var java8: String = "java",
+    var java11: String = "java",
+    var java16: String = "java",
+    var java17: String = "java",
+    var java18: String = "java"
 ) {
 
     companion object {

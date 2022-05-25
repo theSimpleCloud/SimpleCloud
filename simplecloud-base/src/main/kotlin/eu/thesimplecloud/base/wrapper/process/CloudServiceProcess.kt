@@ -167,17 +167,10 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
             it.groups.contains("all") || it.groups.contains(this.cloudService.getGroupName()) || it.groups.contains(this.cloudService.getServiceType().name)
         }
 
-        var startCommand: String? = null
+        Launcher.instance.logger.console(cloudService.getServiceGroup().getJavaCommand())
+        //TODO println muss noch entfernt werden
 
-        when (cloudService.getServiceVersion().javaPath) {
-            "java18" -> startCommand = JavaVersion.paths.java18
-            "java17" -> startCommand = JavaVersion.paths.java17
-            "java16" -> startCommand = JavaVersion.paths.java16
-            "java11" -> startCommand = JavaVersion.paths.java11
-            "java8" -> startCommand = JavaVersion.paths.java8
-        }
-
-        val commands = mutableListOf(startCommand ?: "java")
+        val commands = mutableListOf(cloudService.getServiceGroup().getJavaCommand())
 
         jvmArguments.forEach { commands.addAll(it.arguments) }
 

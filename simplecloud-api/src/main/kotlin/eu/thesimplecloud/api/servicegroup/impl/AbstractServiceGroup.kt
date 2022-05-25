@@ -95,6 +95,8 @@ abstract class AbstractServiceGroup(
 
     override fun isStatic(): Boolean = this.static
 
+    override fun getJavaCommand(): String = this.javaCommand
+
     override fun getPercentToStartNewService(): Int = this.percentToStartNewService
 
     override fun setPercentToStartNewService(percentage: Int) {

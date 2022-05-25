@@ -109,9 +109,10 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
             }
         }
         System.setProperty("user.language", "en")
+
         this.launcherConfig = this.launcherConfigLoader.loadConfig()
         DirectoryPaths.paths = launcherConfig.directoryPaths
-        JavaVersion.paths = launcherConfig.javaCommands
+        JavaVersion.paths = launcherConfig.javaVersion
         this.commandManager = CommandManager()
         this.consoleManager = ConsoleManager(this.commandManager, this.consoleSender)
     }
@@ -133,9 +134,10 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
         )
         this.consoleManager.startThread()
 
-        if (LanguageFileLoader.isFirstStart)
+        if (LanguageFileLoader.isFirstStart) {
             this.setupManager.queueSetup(LanguageSetup())
             this.setupManager.queueSetup(JavaSetup())
+        }
         if (!this.launcherConfigLoader.doesConfigFileExist())
             this.setupManager.queueSetup(AutoIpSetup())
         if (this.launcherStartArguments.startApplication == null)

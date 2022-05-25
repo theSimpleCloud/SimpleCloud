@@ -35,7 +35,7 @@ class DirectoryPaths(
         val languagesPath: String = storagePath + "languages/",
         val modulesPath: String = "modules/",
         val wrappersPath: String = storagePath + "wrappers/",
-        val zippedTemplatesPath: String = storagePath + "zippedTemplates/"
+        val zippedTemplatesPath: String = storagePath + "zippedTemplates/",
         ) {
     companion object {
         lateinit var paths: DirectoryPaths

@@ -48,7 +48,6 @@ class ServiceVersionSetup : ISetup {
 
     private lateinit var name: String
     private lateinit var serviceAPIType: ServiceAPIType
-    private lateinit var javaPath: String
     private lateinit var downloadURL: String
     private var isPaperclip: Boolean = false
 
@@ -88,7 +87,7 @@ class ServiceVersionSetup : ISetup {
 
     @SetupFinished
     fun setupFinished() {
-        val serviceVersion = ServiceVersion(name, serviceAPIType, downloadURL, javaPath, isPaperclip)
+        val serviceVersion = ServiceVersion(name, serviceAPIType, downloadURL, isPaperclip)
         LocalServiceVersionHandler().saveServiceVersion(serviceVersion)
         val serviceVersionHandler = CloudAPI.instance.getServiceVersionHandler() as ManagerServiceVersionHandler
         serviceVersionHandler.reloadServiceVersions()
