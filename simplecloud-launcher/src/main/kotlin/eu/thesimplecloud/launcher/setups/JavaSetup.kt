@@ -11,8 +11,7 @@ class JavaSetup : ISetup {
 
     private val javaVersion = JavaVersion.paths
 
-
-    @SetupQuestion(0, "java8")
+    @SetupQuestion(0, "Please enter Java 8 startup command (java = default)")
     fun java8(path: String): Boolean {
         javaVersion.java8 = path
 
@@ -25,12 +24,12 @@ class JavaSetup : ISetup {
             setup()
             true
         } else {
-            Launcher.instance.consoleSender.sendMessage("Java was not found.")
+            Launcher.instance.consoleSender.sendPropertyInSetup("Path does not exist.")
             false
         }
     }
 
-    @SetupQuestion(1, "java11")
+    @SetupQuestion(1, "Please enter Java 11 startup command (java = default)")
     fun java11(path: String): Boolean {
 
         javaVersion.java11 = path
@@ -42,12 +41,12 @@ class JavaSetup : ISetup {
             setup()
             true
         } else {
-            Launcher.instance.consoleSender.sendMessage("Java was not found.")
+            Launcher.instance.consoleSender.sendPropertyInSetup("Path does not exist.")
             false
         }
     }
 
-    @SetupQuestion(2, "java16")
+    @SetupQuestion(2, "Please enter Java 16 startup command (java = default)")
     fun java16(path: String): Boolean {
 
         javaVersion.java16 = path
@@ -60,18 +59,15 @@ class JavaSetup : ISetup {
         return if (File(path).exists()) {
             setup()
             true
-
         } else {
-            Launcher.instance.consoleSender.sendMessage("Java was not found.")
+            Launcher.instance.consoleSender.sendPropertyInSetup("Path does not exist.")
             false
         }
     }
 
-    @SetupQuestion(3, "java17")
+    @SetupQuestion(3, "Please enter Java 17 startup command (java = default)")
     fun java17(path: String): Boolean {
         javaVersion.java17 = path
-
-
         if (path.uppercase() == "JAVA") {
             setup()
             return true
@@ -80,26 +76,30 @@ class JavaSetup : ISetup {
             setup()
             true
         } else {
-            Launcher.instance.consoleSender.sendMessage("Java was not found.")
+            Launcher.instance.consoleSender.sendPropertyInSetup("Path does not exist.")
             false
         }
     }
 
-    @SetupQuestion(4, "java18")
+
+    @SetupQuestion(4, "Please enter Java 18 startup command (java = default)")
     fun java18(path: String): Boolean {
-        val filePath = File(path)
-        return if (filePath.exists()) {
-            JavaVersion.paths.java18 = path
+        javaVersion.java18 = path
+        if (path.uppercase() == "JAVA") {
             setup()
             return true
+        }
+        return if (File(path).exists()) {
+            setup()
+            true
         } else {
-            Launcher.instance.consoleSender.sendMessage("Java was not found.")
+            Launcher.instance.consoleSender.sendPropertyInSetup("Path does not exist.")
             false
         }
     }
 
-
     fun setup() {
+        Launcher.instance.consoleSender.sendPropertyInSetup("Java startup command set")
         val launcherConfig = Launcher.instance.launcherConfig
         val config = LauncherConfig(
             launcherConfig.host,

@@ -44,7 +44,7 @@
   "manager.command.edit.allowed-parameters": "Erlaubte Argumente sind:",
   "manager.command.edit.group.invalid-value": "Ungültige Angabe. Erwarteter Typ: %TYPE%",
   "manager.setup.service-versions.question.java.success": "Java Start Befehl gesetzt",
-  "manager.setup.service-versions.question.java": "Bitte gebe den Java start Befehl ein (java = Standart)",
+  "manager.setup.service-versions.question.java": "Bitte gebe den %JAVAVERSION%-Start Befehl ein (java = Standard)",
   "manager.command.edit.group.not-exist": "Die angegebene Gruppe existiert nicht",
   "manager.command.edit.group.success": "Gruppeneditierung erfolgreich abgeschlossen",
   "manager.command.edit.template.inheritance.add.already-added": "Das Template %NAME% erbt bereits von %OTHER_NAME%",
