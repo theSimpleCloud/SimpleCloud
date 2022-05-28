@@ -37,7 +37,7 @@ class ServerVersionTypeSetupAnswerProvider : ISetupAnswerProvider {
 
     override fun getSuggestions(sender: ICommandSender): List<String> {
         return CloudAPI.instance.getServiceVersionHandler().getVersionsByServiceVersionType(ServiceVersionType.SERVER)
-                .map { it.name }
+                .map { it.name }.toList()
     }
 
 }

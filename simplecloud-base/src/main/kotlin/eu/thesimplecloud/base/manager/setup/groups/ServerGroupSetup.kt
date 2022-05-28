@@ -24,10 +24,12 @@ package eu.thesimplecloud.base.manager.setup.groups
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.service.version.ServiceVersion
+import eu.thesimplecloud.api.service.version.type.JavaCommandType
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.base.manager.setup.groups.provider.GroupTemplateSetupAnswerProvider
 import eu.thesimplecloud.base.manager.setup.groups.provider.GroupWrapperSetupAnswerProvider
 import eu.thesimplecloud.base.manager.setup.groups.provider.ServerVersionTypeSetupAnswerProvider
+import eu.thesimplecloud.base.manager.setup.provider.ServiceJavaCommandAnswerProvider
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
@@ -152,10 +154,11 @@ class ServerGroupSetup : DefaultGroupSetup(), ISetup {
         handlePermission(permission)
     }
 
-
-    @SetupQuestion(12, "manager.setup.service-group.question.permission")
-    fun javaCommandQuestion(javaCommand: String) {
-        this.javaCommand = javaCommand
+    @SetupQuestion(12, "manager.setup.service-versions.question.java", ServiceJavaCommandAnswerProvider::class)
+    fun useJavaCommand(javaCommandType: JavaCommandType): Boolean {
+        this.javaCommand = javaCommandType.javaVersion
+        Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-versions.question.java.success")
+        return true
     }
 
     @SetupFinished
