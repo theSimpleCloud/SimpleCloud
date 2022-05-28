@@ -60,11 +60,7 @@ class ServiceHandler : IServiceHandler {
         val serviceNumber = startConfiguration.serviceNumber ?: getNumberForNewService(cloudServiceGroup)
         val serviceName = cloudServiceGroup.getName() + "-" + serviceNumber
         val runningService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(serviceName)
-        if (runningService != null) {
-            println("                 -----------")
-            println("Service to start ($serviceName) is already registered")
-            println("                 -----------")
-        }
+        if (runningService != null) throw IllegalArgumentException("Service to start ($serviceName) is already registered")
         val service = DefaultCloudService(
             cloudServiceGroup.getName(),
             serviceNumber,

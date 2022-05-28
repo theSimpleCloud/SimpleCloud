@@ -167,9 +167,6 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
             it.groups.contains("all") || it.groups.contains(this.cloudService.getGroupName()) || it.groups.contains(this.cloudService.getServiceType().name)
         }
 
-        Launcher.instance.logger.console(cloudService.getServiceGroup().getJavaCommand())
-        //TODO println muss noch entfernt werden
-
         val commands = mutableListOf(cloudService.getServiceGroup().getJavaCommand())
 
         jvmArguments.forEach { commands.addAll(it.arguments) }
