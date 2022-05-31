@@ -27,7 +27,7 @@
   "manager.command.copy.success": "Service copied",
   "manager.command.create.template.already-exist": "Template %NAME% does already exist",
   "manager.setup.service-versions.question.java.success": "Java startup command set",
-  "manager.setup.service-versions.question.java": "Please indicate the Java version you prefer.",
+  "manager.setup.service-versions.question.java": "Please specify which Java version you prefer.",
   "manager.command.create.template.name-too-long": "The specified name must be shorter than 17 characters",
   "manager.command.create.template.success": "Template %NAME% created",
   "manager.command.delete.group.not-exist": "Group %NAME% does not exist",
