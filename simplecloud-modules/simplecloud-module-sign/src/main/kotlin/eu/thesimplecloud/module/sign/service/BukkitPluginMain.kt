@@ -39,7 +39,6 @@ import eu.thesimplecloud.module.sign.service.event.BukkitCloudSignAddedEvent
 import eu.thesimplecloud.module.sign.service.event.BukkitCloudSignRemovedEvent
 import eu.thesimplecloud.module.sign.service.listener.InteractListener
 import eu.thesimplecloud.plugin.startup.CloudPlugin
-import org.bukkit.event.EventHandler
 import org.bukkit.plugin.java.JavaPlugin
 
 /**
@@ -74,7 +73,7 @@ class BukkitPluginMain : JavaPlugin() {
                     }
                 }
 
-                @EventHandler
+                @CloudEventHandler
                 fun handleServiceGroupUpdate(event: CloudServiceGroupUpdatedEvent) {
                     if (event.serviceGroup is ICloudServerGroup)
                         setupGroup(event.serviceGroup, SignModuleConfig.getConfig())
