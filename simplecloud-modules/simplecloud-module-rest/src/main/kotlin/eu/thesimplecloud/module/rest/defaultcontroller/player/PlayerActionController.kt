@@ -35,5 +35,4 @@ import eu.thesimplecloud.module.rest.controller.IController
 class PlayerActionController : IController {
 
 
-
 }

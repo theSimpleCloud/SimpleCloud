@@ -36,12 +36,15 @@ class CloudServiceManagerImpl : AbstractCloudServiceManager() {
     override fun stopService(cloudService: ICloudService): ICommunicationPromise<Unit> {
         CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketIOStopCloudService(cloudService.getName()))
         return cloudListener<CloudServiceUnregisteredEvent>()
-                .addCondition { it.cloudService == cloudService }
-                .unregisterAfterCall()
-                .toUnitPromise()
+            .addCondition { it.cloudService == cloudService }
+            .unregisterAfterCall()
+            .toUnitPromise()
     }
 
     override fun copyService(cloudService: ICloudService, path: String): ICommunicationPromise<Unit> {
-        return CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketIOCopyService(cloudService, path), 20 * 1000)
+        return CloudPlugin.instance.connectionToManager.sendUnitQuery(
+            PacketIOCopyService(cloudService, path),
+            20 * 1000
+        )
     }
 }

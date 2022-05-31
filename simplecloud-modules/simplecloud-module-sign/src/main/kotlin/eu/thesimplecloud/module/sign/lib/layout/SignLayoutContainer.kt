@@ -21,6 +21,7 @@
  */
 
 package eu.thesimplecloud.module.sign.lib.layout
+
 import java.util.concurrent.CopyOnWriteArrayList
 
 /**
@@ -30,7 +31,7 @@ import java.util.concurrent.CopyOnWriteArrayList
  * @author Frederick Baier
  */
 class SignLayoutContainer(
-        private val layouts: MutableList<SignLayout> = CopyOnWriteArrayList<SignLayout>()
+    private val layouts: MutableList<SignLayout> = CopyOnWriteArrayList<SignLayout>()
 ) {
 
     fun addLayout(signLayout: SignLayout) {

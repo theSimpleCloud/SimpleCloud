@@ -44,7 +44,13 @@ class BungeeListener : Listener {
         val connection = event.connection
 
         val playerAddress = DefaultPlayerAddress(connection.address.hostString, connection.address.port)
-        val playerConnection = DefaultPlayerConnection(playerAddress, connection.name, connection.uniqueId, connection.isOnlineMode, connection.version)
+        val playerConnection = DefaultPlayerConnection(
+            playerAddress,
+            connection.name,
+            connection.uniqueId,
+            connection.isOnlineMode,
+            connection.version
+        )
 
 
         ProxyEventHandler.handleLogin(playerConnection) {
@@ -91,7 +97,11 @@ class BungeeListener : Listener {
 
         val name: String? = proxiedPlayer.server?.info?.name
 
-        ProxyEventHandler.handleServerPreConnect(proxiedPlayer.uniqueId, name, target.name) { message, cancelMessageType ->
+        ProxyEventHandler.handleServerPreConnect(
+            proxiedPlayer.uniqueId,
+            name,
+            target.name
+        ) { message, cancelMessageType ->
             if (cancelMessageType == CancelType.MESSAGE) {
                 proxiedPlayer.sendMessage(CloudTextBuilder().build(CloudText(message)))
             } else {
@@ -121,7 +131,11 @@ class BungeeListener : Listener {
 
         val proxiedPlayer = event.player
         val kickedServerName = event.kickedFrom.name
-        ProxyEventHandler.handleServerKick(proxiedPlayer.getCloudPlayer(), kickReasonString, kickedServerName) { message, cancelMessageType ->
+        ProxyEventHandler.handleServerKick(
+            proxiedPlayer.getCloudPlayer(),
+            kickReasonString,
+            kickedServerName
+        ) { message, cancelMessageType ->
             if (cancelMessageType == CancelType.MESSAGE) {
                 proxiedPlayer.sendMessage(CloudTextBuilder().build(CloudText(message)))
             } else {

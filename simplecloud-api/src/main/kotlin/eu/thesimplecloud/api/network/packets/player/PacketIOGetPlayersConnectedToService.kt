@@ -37,7 +37,7 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
  */
 class PacketIOGetPlayersConnectedToService() : ObjectPacket<String>() {
 
-    constructor(service: ICloudService): this() {
+    constructor(service: ICloudService) : this() {
         this.value = service.getName()
     }
 

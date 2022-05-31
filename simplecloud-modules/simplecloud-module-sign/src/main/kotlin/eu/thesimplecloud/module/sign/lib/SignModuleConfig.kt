@@ -37,14 +37,14 @@ import eu.thesimplecloud.module.sign.lib.sign.CloudSignContainer
  * @author Frederick Baier
  */
 class SignModuleConfig(
-        val signLayoutContainer: SignLayoutContainer,
-        val signContainer: CloudSignContainer,
-        val groupsLayoutContainer: GroupLayoutsContainer
+    val signLayoutContainer: SignLayoutContainer,
+    val signContainer: CloudSignContainer,
+    val groupsLayoutContainer: GroupLayoutsContainer
 ) {
 
     fun getSignLayoutForGroup(layoutType: LayoutType, groupName: String): SignLayout {
         val groupLayouts = this.groupsLayoutContainer.getGroupLayoutsByGroupName(groupName)
-                ?: return getDefaultLayout(layoutType)
+            ?: return getDefaultLayout(layoutType)
         val layoutName = groupLayouts.getLayoutNameByType(layoutType)
         return this.signLayoutContainer.getLayoutByName(layoutType, layoutName)!!
     }
@@ -64,7 +64,9 @@ class SignModuleConfig(
 
         fun getConfig(): SignModuleConfig {
             if (this.property == null) {
-                this.property = CloudAPI.instance.getGlobalPropertyHolder().requestProperty<SignModuleConfig>("sign-config").getBlocking()
+                this.property =
+                    CloudAPI.instance.getGlobalPropertyHolder().requestProperty<SignModuleConfig>("sign-config")
+                        .getBlocking()
             }
             return this.property!!.getValue()
         }

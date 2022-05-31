@@ -2,7 +2,6 @@ package eu.thesimplecloud.module.prefix.config
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.property.IProperty
-import eu.thesimplecloud.api.utils.Nameable
 
 /**
  * Created by IntelliJ IDEA.
@@ -21,7 +20,8 @@ data class Config(
 
         fun getConfig(): Config {
             if (this.property == null) {
-                this.property = CloudAPI.instance.getGlobalPropertyHolder().requestProperty<Config>("prefix-config").getBlocking()
+                this.property =
+                    CloudAPI.instance.getGlobalPropertyHolder().requestProperty<Config>("prefix-config").getBlocking()
             }
             return this.property!!.getValue()
         }

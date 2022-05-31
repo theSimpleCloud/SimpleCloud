@@ -33,11 +33,12 @@ class PacketIOSendActionbarToCloudPlayer() : JsonPacket() {
 
     constructor(cloudPlayer: ICloudPlayer, actionbar: String) : this() {
         this.jsonLib.append("playerUniqueId", cloudPlayer.getUniqueId())
-                .append("actionbar", actionbar)
+            .append("actionbar", actionbar)
     }
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Unit> {
-        val playerUniqueId = this.jsonLib.getObject("playerUniqueId", UUID::class.java) ?: return contentException("playerUniqueId")
+        val playerUniqueId =
+            this.jsonLib.getObject("playerUniqueId", UUID::class.java) ?: return contentException("playerUniqueId")
         val actionbar = this.jsonLib.getString("actionbar") ?: return contentException("actionbar")
         CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(playerUniqueId)?.sendActionBar(actionbar)
         return unit()

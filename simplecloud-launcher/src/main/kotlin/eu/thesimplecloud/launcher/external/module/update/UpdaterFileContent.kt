@@ -29,8 +29,8 @@ package eu.thesimplecloud.launcher.external.module.update
  * @author Frederick Baier
  */
 class UpdaterFileContent(
-        val groupId: String,
-        val artifactId: String,
-        val repository: String,
-        val updateMethod: UpdateMethod
+    val groupId: String,
+    val artifactId: String,
+    val repository: String,
+    val updateMethod: UpdateMethod
 )

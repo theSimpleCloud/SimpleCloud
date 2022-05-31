@@ -25,7 +25,6 @@ package eu.thesimplecloud.base.wrapper.process
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.client.NetworkComponentType
 import eu.thesimplecloud.api.event.service.CloudServiceUnregisteredEvent
-import eu.thesimplecloud.api.javaVersions.JavaVersion
 import eu.thesimplecloud.api.listenerextension.cloudListener
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState

@@ -40,14 +40,14 @@ import java.io.File
  * Date: 14.03.2020
  * Time: 21:31
  */
-class ProxyModule : ICloudModule{
+class ProxyModule : ICloudModule {
 
     private val configFile = File("modules/proxy", "config.json")
 
     override fun onEnable() {
         loadConfig()
         Launcher.instance.commandManager
-                .registerCommand(this, ProxyCommand(this))
+            .registerCommand(this, ProxyCommand(this))
 
         CloudAPI.instance.getEventManager().registerListener(this, GroupCreateListener(this))
         CloudAPI.instance.getEventManager().registerListener(this, MaintenanceToggleListener())

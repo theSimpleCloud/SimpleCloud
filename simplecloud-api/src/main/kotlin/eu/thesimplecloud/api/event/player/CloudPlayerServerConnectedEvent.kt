@@ -28,4 +28,5 @@ import eu.thesimplecloud.api.service.ICloudService
 /**
  * This event is called when a player is connected to a server
  */
-class CloudPlayerServerConnectedEvent(cloudPlayer: ICloudPlayer, val server: ICloudService) : CloudPlayerEvent(cloudPlayer)
+class CloudPlayerServerConnectedEvent(cloudPlayer: ICloudPlayer, val server: ICloudService) :
+    CloudPlayerEvent(cloudPlayer)

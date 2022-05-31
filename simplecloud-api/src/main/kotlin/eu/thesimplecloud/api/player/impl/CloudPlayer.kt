@@ -35,23 +35,23 @@ import java.util.*
 import java.util.concurrent.ConcurrentMap
 
 class CloudPlayer(
-        name: String,
-        uniqueId: UUID,
-        firstLogin: Long,
-        lastLogin: Long,
-        onlineTime: Long,
-        @Volatile private var connectedProxyName: String,
-        @Volatile private var connectedServerName: String?,
-        playerConnection: DefaultPlayerConnection,
-        propertyMap: ConcurrentMap<String, Property<*>>
+    name: String,
+    uniqueId: UUID,
+    firstLogin: Long,
+    lastLogin: Long,
+    onlineTime: Long,
+    @Volatile private var connectedProxyName: String,
+    @Volatile private var connectedServerName: String?,
+    playerConnection: DefaultPlayerConnection,
+    propertyMap: ConcurrentMap<String, Property<*>>
 ) : OfflineCloudPlayer(
-        name,
-        uniqueId,
-        firstLogin,
-        lastLogin,
-        onlineTime,
-        playerConnection,
-        propertyMap
+    name,
+    uniqueId,
+    firstLogin,
+    lastLogin,
+    onlineTime,
+    playerConnection,
+    propertyMap
 ), ICloudPlayer {
 
     @Volatile
@@ -118,7 +118,8 @@ class CloudPlayer(
         this.connectedServerName = updater.getConnectedServerName()
         this.connectedProxyName = updater.getConnectedProxyName()
         this.connectState = updater.getServerConnectState()
-        this.propertyMap = getMapWithNewestProperties(updater.getCloudPlayer().getProperties())as ConcurrentMap<String, Property<*>>
+        this.propertyMap =
+            getMapWithNewestProperties(updater.getCloudPlayer().getProperties()) as ConcurrentMap<String, Property<*>>
     }
 
     @Synchronized

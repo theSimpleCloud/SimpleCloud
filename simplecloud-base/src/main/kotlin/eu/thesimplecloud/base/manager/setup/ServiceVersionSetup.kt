@@ -23,14 +23,11 @@
 package eu.thesimplecloud.base.manager.setup
 
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.javaVersions.JavaVersion
 import eu.thesimplecloud.api.service.version.ServiceVersion
 import eu.thesimplecloud.api.service.version.loader.LocalServiceVersionHandler
-import eu.thesimplecloud.api.service.version.type.JavaCommandType
 import eu.thesimplecloud.api.service.version.type.ServiceAPIType
 import eu.thesimplecloud.base.manager.serviceversion.ManagerServiceVersionHandler
 import eu.thesimplecloud.base.manager.setup.provider.ServiceAPITypeAnswerProvider
-import eu.thesimplecloud.base.manager.setup.provider.ServiceJavaCommandAnswerProvider
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion

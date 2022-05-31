@@ -163,7 +163,22 @@ class ServerGroupSetup : DefaultGroupSetup(), ISetup {
 
     @SetupFinished
     fun finished() {
-        CloudAPI.instance.getCloudServiceGroupManager().createServerGroup(name, templateName, memory, maxPlayers, minimumOnlineServices, maximumOnlineServices, false, static, percent, wrapper?.getName(), serviceVersion, 0, permission, javaCommand)
+        CloudAPI.instance.getCloudServiceGroupManager().createServerGroup(
+            name,
+            templateName,
+            memory,
+            maxPlayers,
+            minimumOnlineServices,
+            maximumOnlineServices,
+            false,
+            static,
+            percent,
+            wrapper?.getName(),
+            serviceVersion,
+            0,
+            permission,
+            javaCommand
+        )
         Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-group.finished", name)
     }
 

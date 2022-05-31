@@ -37,7 +37,12 @@ interface IEventManager {
     /**
      * Registers one event.
      */
-    fun registerEvent(cloudModule: ICloudModule, eventClass: Class<out IEvent>, listener: IListener, eventExecutor: IEventExecutor)
+    fun registerEvent(
+        cloudModule: ICloudModule,
+        eventClass: Class<out IEvent>,
+        listener: IListener,
+        eventExecutor: IEventExecutor
+    )
 
     /**
      * Unregisters all methods from the specified object that has the [CloudEventHandler] annotation.

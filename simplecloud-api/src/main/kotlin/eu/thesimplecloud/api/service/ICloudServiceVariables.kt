@@ -47,6 +47,7 @@ interface ICloudServiceVariables : IAuthenticatable {
      * Returns the last time stamp a player interacted with the server.
      */
     fun getLastPlayerUpdate(): Timestamp
+
     /**
      * Returns the maximum amount of players for this service
      */

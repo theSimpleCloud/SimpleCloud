@@ -37,7 +37,10 @@ import eu.thesimplecloud.launcher.console.command.provider.ServiceGroupCommandSu
 class StartStaticCommand : ICommandHandler {
 
     @CommandSubPath("<service>", "Starts a static service")
-    fun handleStartStatic(commandSender: ICommandSender, @CommandArgument("service", ServiceGroupCommandSuggestionProvider::class) serviceName: String) {
+    fun handleStartStatic(
+        commandSender: ICommandSender,
+        @CommandArgument("service", ServiceGroupCommandSuggestionProvider::class) serviceName: String
+    ) {
         val runningService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(serviceName)
         if (runningService != null) {
             commandSender.sendProperty("manager.command.startstatic.service-already-online")
@@ -45,7 +48,7 @@ class StartStaticCommand : ICommandHandler {
         }
         val groupName = serviceName.split("-").dropLast(1).joinToString("-")
         val numberString = serviceName.split("-").last()
-        val number  = kotlin.runCatching { numberString.toInt() }.getOrNull()
+        val number = kotlin.runCatching { numberString.toInt() }.getOrNull()
         val serviceGroup = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(groupName)
         if (number == null || serviceGroup == null) {
             commandSender.sendProperty("manager.command.startstatic.service-invalid")

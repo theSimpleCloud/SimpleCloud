@@ -42,5 +42,13 @@ fun SimpleLocation.toBukkitLocation(): Location? {
  */
 fun Location.toCloudLocation(): ServiceLocation {
     if (this.world == null) throw IllegalStateException("World must be not null.")
-    return ServiceLocation(CloudPlugin.instance.thisService(), this.world!!.name, this.x, this.y, this.z, this.yaw, this.pitch)
+    return ServiceLocation(
+        CloudPlugin.instance.thisService(),
+        this.world!!.name,
+        this.x,
+        this.y,
+        this.z,
+        this.yaw,
+        this.pitch
+    )
 }

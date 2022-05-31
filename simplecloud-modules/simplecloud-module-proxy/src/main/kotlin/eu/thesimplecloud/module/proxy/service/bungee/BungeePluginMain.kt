@@ -75,9 +75,25 @@ class BungeePluginMain : Plugin() {
         val serverName = player.server.info.name
 
         val headerBaseComponent = BungeeComponentSerializer.get()
-            .serialize(ProxyHandler.getHexColorComponent(ProxyHandler.replaceString(header, serverName, player.uniqueId)))
+            .serialize(
+                ProxyHandler.getHexColorComponent(
+                    ProxyHandler.replaceString(
+                        header,
+                        serverName,
+                        player.uniqueId
+                    )
+                )
+            )
         val footerBaseComponent = BungeeComponentSerializer.get()
-            .serialize(ProxyHandler.getHexColorComponent(ProxyHandler.replaceString(footer, serverName, player.uniqueId)))
+            .serialize(
+                ProxyHandler.getHexColorComponent(
+                    ProxyHandler.replaceString(
+                        footer,
+                        serverName,
+                        player.uniqueId
+                    )
+                )
+            )
 
         player.setTabHeader(headerBaseComponent, footerBaseComponent)
     }

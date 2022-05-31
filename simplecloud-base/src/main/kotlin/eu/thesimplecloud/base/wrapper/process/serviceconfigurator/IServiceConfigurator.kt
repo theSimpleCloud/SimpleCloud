@@ -33,5 +33,4 @@ interface IServiceConfigurator {
     fun configureService(cloudService: ICloudService, serviceTmpDirectory: File)
 
 
-
 }

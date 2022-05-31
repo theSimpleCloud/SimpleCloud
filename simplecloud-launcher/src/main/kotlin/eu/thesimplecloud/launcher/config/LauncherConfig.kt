@@ -26,9 +26,9 @@ import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.javaVersions.JavaVersion
 
 data class LauncherConfig(
-        var host: String,
-        val port: Int,
-        val language: String,
-        val directoryPaths: DirectoryPaths,
-        val javaVersion: JavaVersion
+    var host: String,
+    val port: Int,
+    val language: String,
+    val directoryPaths: DirectoryPaths,
+    val javaVersion: JavaVersion
 )

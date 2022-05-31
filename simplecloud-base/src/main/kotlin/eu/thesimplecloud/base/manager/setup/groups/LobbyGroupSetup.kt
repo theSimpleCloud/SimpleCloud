@@ -23,7 +23,6 @@
 package eu.thesimplecloud.base.manager.setup.groups
 
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.javaVersions.JavaVersion
 import eu.thesimplecloud.api.service.version.ServiceVersion
 import eu.thesimplecloud.api.service.version.type.JavaCommandType
 import eu.thesimplecloud.api.wrapper.IWrapperInfo

@@ -44,14 +44,16 @@ interface ICloudServiceProcessManager {
     /**
      * Returns the [ICloudServiceProcess] found by the specified service [name]
      */
-    fun getCloudServiceProcessByServiceName(name: String): ICloudServiceProcess? = getAllProcesses().firstOrNull { it.getCloudService().getName().equals(name, true) }
+    fun getCloudServiceProcessByServiceName(name: String): ICloudServiceProcess? =
+        getAllProcesses().firstOrNull { it.getCloudService().getName().equals(name, true) }
 
     /**
      * Returns the [ICloudServiceProcess] found by the specified service [service]
      */
-    fun getCloudServiceProcessByService(service: ICloudService): ICloudServiceProcess? = getCloudServiceProcessByServiceName(service.getName())
+    fun getCloudServiceProcessByService(service: ICloudService): ICloudServiceProcess? =
+        getCloudServiceProcessByServiceName(service.getName())
 
-        /**
+    /**
      * Stops all registered services.
      */
     fun stopAllServices() = getAllProcesses().forEach { it.shutdown() }

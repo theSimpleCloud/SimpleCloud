@@ -39,9 +39,10 @@ class PacketIOUpdateListProperty() : JsonPacket() {
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         val listName = this.jsonLib.getString("listName") ?: return contentException("listName")
         val property = this.jsonLib.getObject("property", Property::class.java) as Property<Any>?
-                ?: return contentException("property")
+            ?: return contentException("property")
         try {
-            val synchronizedObjectList: ISynchronizedObjectList<Any>? = CloudAPI.instance.getSynchronizedObjectListManager().getSynchronizedObjectList(listName)
+            val synchronizedObjectList: ISynchronizedObjectList<Any>? =
+                CloudAPI.instance.getSynchronizedObjectListManager().getSynchronizedObjectList(listName)
             synchronizedObjectList ?: return failure(NoSuchElementException())
             synchronizedObjectList.update(property, true)
 

@@ -44,7 +44,9 @@ class SpigotListener : Listener {
         val player = event.player
 
         val hostAddress = event.realAddress.hostAddress
-        if (hostAddress != "127.0.0.1" && !CloudAPI.instance.getWrapperManager().getAllCachedObjects().any { it.getHost() == hostAddress }) {
+        if (hostAddress != "127.0.0.1" && !CloudAPI.instance.getWrapperManager().getAllCachedObjects()
+                .any { it.getHost() == hostAddress }
+        ) {
             event.disallow(PlayerLoginEvent.Result.KICK_OTHER, UNKNOWN_ADRESS)
             return
         }
@@ -84,5 +86,5 @@ class SpigotListener : Listener {
         thisService.setOnlineCount(count)
         thisService.update()
     }
-    
+
 }

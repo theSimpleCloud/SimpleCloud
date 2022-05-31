@@ -27,8 +27,8 @@ import eu.thesimplecloud.api.location.TemplateLocation
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 
 data class CloudSign(
-        val templateLocation: TemplateLocation,
-        val forGroup: String
+    val templateLocation: TemplateLocation,
+    val forGroup: String
 ) {
 
     fun getGroup(): ICloudServiceGroup {

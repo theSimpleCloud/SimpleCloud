@@ -1,5 +1,3 @@
-
-
 /*
  * MIT License
  *

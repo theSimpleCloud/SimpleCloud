@@ -31,8 +31,8 @@ import eu.thesimplecloud.launcher.external.module.LoadedModuleFileContent
  * @author Frederick Baier
  */
 class RecursiveDependencyChecker(
-        private val moduleToCheck: LoadedModuleFileContent,
-        private val dependencyGetFunction: (LoadedModuleFileContent) -> Collection<LoadedModuleFileContent>
+    private val moduleToCheck: LoadedModuleFileContent,
+    private val dependencyGetFunction: (LoadedModuleFileContent) -> Collection<LoadedModuleFileContent>
 ) {
 
     fun hasRecursiveDependencies(): Boolean {
@@ -44,7 +44,10 @@ class RecursiveDependencyChecker(
         return dependency.content.dependsOrSoftDependsOn(moduleToCheck.content)
     }
 
-    fun collectAllDependencies(module: LoadedModuleFileContent, list: MutableList<LoadedModuleFileContent> = ArrayList()): MutableList<LoadedModuleFileContent> {
+    fun collectAllDependencies(
+        module: LoadedModuleFileContent,
+        list: MutableList<LoadedModuleFileContent> = ArrayList()
+    ): MutableList<LoadedModuleFileContent> {
         if (list.contains(module))
             return list
         list.add(module)

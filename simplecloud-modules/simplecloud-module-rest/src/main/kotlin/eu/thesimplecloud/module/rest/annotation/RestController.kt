@@ -31,6 +31,6 @@ package eu.thesimplecloud.module.rest.annotation
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.CLASS)
 annotation class RestController(
-        val path: String
+    val path: String
 ) {
 }

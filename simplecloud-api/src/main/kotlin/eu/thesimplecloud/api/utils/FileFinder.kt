@@ -46,7 +46,7 @@ object FileFinder {
             }
         }
         return FileUtils.listFilesAndDirs(directory, acceptAllFilter, acceptAllFilter)
-                .filter { !it.isDirectory }
+            .filter { !it.isDirectory }
     }
 
 }

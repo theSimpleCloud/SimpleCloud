@@ -33,13 +33,14 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
 abstract class PacketIOCloudServiceGroupData() : JsonPacket() {
 
-    constructor(cloudServiceGroup: ICloudServiceGroup): this() {
+    constructor(cloudServiceGroup: ICloudServiceGroup) : this() {
         this.jsonLib.append("serviceType", cloudServiceGroup.getServiceType()).append("group", cloudServiceGroup)
     }
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
-        val serviceType = this.jsonLib.getObject("serviceType", ServiceType::class.java) ?: return contentException("serviceType")
-        val serviceGroupClass = when(serviceType){
+        val serviceType =
+            this.jsonLib.getObject("serviceType", ServiceType::class.java) ?: return contentException("serviceType")
+        val serviceGroupClass = when (serviceType) {
             ServiceType.LOBBY -> DefaultLobbyGroup::class.java
             ServiceType.SERVER -> DefaultServerGroup::class.java
             ServiceType.PROXY -> DefaultProxyGroup::class.java

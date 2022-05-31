@@ -35,6 +35,6 @@ interface IPermissionPool {
     /**
      * Returns the [IPermissionPlayerManager]
      */
-    fun getPermissionPlayerManager() : IPermissionPlayerManager
+    fun getPermissionPlayerManager(): IPermissionPlayerManager
 
 }

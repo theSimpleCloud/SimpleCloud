@@ -43,27 +43,27 @@ class CreateCommand : ICommandHandler {
 
 
     @CommandSubPath("lobbygroup", "Creates a lobby group")
-    fun createLobbyGroup(){
+    fun createLobbyGroup() {
         Launcher.instance.setupManager.queueSetup(LobbyGroupSetup())
     }
 
     @CommandSubPath("proxygroup", "Creates a proxy group")
-    fun createProxyGroup(){
+    fun createProxyGroup() {
         Launcher.instance.setupManager.queueSetup(ProxyGroupSetup())
     }
 
     @CommandSubPath("servergroup", "Creates a server group")
-    fun createServerGroup(){
+    fun createServerGroup() {
         Launcher.instance.setupManager.queueSetup(ServerGroupSetup())
     }
 
     @CommandSubPath("wrapper", "Creates a wrapper")
-    fun createWrapper(){
+    fun createWrapper() {
         Launcher.instance.setupManager.queueSetup(WrapperSetup())
     }
 
     @CommandSubPath("serviceVersion", "Creates a Service Version")
-    fun createServiceVersion(){
+    fun createServiceVersion() {
         Launcher.instance.setupManager.queueSetup(ServiceVersionSetup())
     }
 

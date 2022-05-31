@@ -38,7 +38,7 @@ class DependencyLoaderStartup {
             AdvancedCloudDependency.fromCoords("org.apache.maven:maven-builder-support:3.3.9"),
             AdvancedCloudDependency.fromCoords("com.google.guava:guava:21.0"),
             AdvancedCloudDependency.fromCoords("org.apache.maven:maven-repository-metadata:3.3.9"),
-            )
+        )
 
         dependencies.forEach { downloader.downloadOnlyJar(it) }
         dependencies.forEach { createEmptyInfoFile(it) }

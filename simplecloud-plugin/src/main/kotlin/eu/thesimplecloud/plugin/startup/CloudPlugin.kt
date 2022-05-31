@@ -46,18 +46,23 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
             private set
     }
 
-    @Volatile private var thisService: ICloudService? = null
+    @Volatile
+    private var thisService: ICloudService? = null
 
-    @Volatile lateinit var communicationClient: INettyClient
+    @Volatile
+    lateinit var communicationClient: INettyClient
         private set
 
-    @Volatile lateinit var connectionToManager: IConnection
+    @Volatile
+    lateinit var connectionToManager: IConnection
         private set
 
-    @Volatile lateinit var thisServiceName: String
+    @Volatile
+    lateinit var thisServiceName: String
         private set
 
-    @Volatile private var nettyThread: Thread
+    @Volatile
+    private var nettyThread: Thread
 
     init {
         println("<---------- Starting SimpleCloud-Plugin ---------->")
@@ -76,9 +81,15 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
             println("<------Starting cloud client----------->")
             this.communicationClient.start().then {
                 println("<-------- Connection is now set up -------->")
-                this.connectionToManager.sendUnitQuery(PacketOutCloudClientLogin(NetworkComponentType.SERVICE, thisServiceName), 10000)
-                        .addFailureListener { throw it }
-            }.addFailureListener { println("<-------- Failed to connect to server -------->") }.addFailureListener { throw it }
+                this.connectionToManager.sendUnitQuery(
+                    PacketOutCloudClientLogin(
+                        NetworkComponentType.SERVICE,
+                        thisServiceName
+                    ), 10000
+                )
+                    .addFailureListener { throw it }
+            }.addFailureListener { println("<-------- Failed to connect to server -------->") }
+                .addFailureListener { throw it }
         }
 
         UsedMemoryUpdater().startUpdater()
@@ -104,9 +115,11 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
         this.connectionToManager = this.communicationClient.getConnection()
         return true
     }
+
     @Synchronized
     fun thisService(): ICloudService {
-        if (this.thisService == null) this.thisService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(thisServiceName)
+        if (this.thisService == null) this.thisService =
+            CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(thisServiceName)
         while (this.thisService == null || !this.thisService!!.isAuthenticated()) {
             Thread.sleep(10)
             if (this.thisService == null)
@@ -116,7 +129,9 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
     }
 
     override fun onEnable() {
-        if (thisService().getServiceGroup().isStateUpdatingEnabled() && thisService().getState() == ServiceState.STARTING) {
+        if (thisService().getServiceGroup()
+                .isStateUpdatingEnabled() && thisService().getState() == ServiceState.STARTING
+        ) {
             thisService().setState(ServiceState.VISIBLE)
             cloudServicePlugin.onBeforeFirstUpdate()
             updateThisService()

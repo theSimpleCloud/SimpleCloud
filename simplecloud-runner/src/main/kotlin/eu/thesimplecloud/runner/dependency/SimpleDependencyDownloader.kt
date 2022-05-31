@@ -22,8 +22,6 @@
 
 package eu.thesimplecloud.runner.dependency
 
-import java.io.IOException
-
 
 /**
  * Created by IntelliJ IDEA.

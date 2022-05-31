@@ -18,7 +18,8 @@ import java.util.*
 object TablistHelper {
 
     fun load() {
-        val scoreboard = Bukkit.getScoreboardManager()?.mainScoreboard ?: Bukkit.getScoreboardManager()?.newScoreboard ?: return
+        val scoreboard =
+            Bukkit.getScoreboardManager()?.mainScoreboard ?: Bukkit.getScoreboardManager()?.newScoreboard ?: return
 
         initScoreboard(scoreboard)
 
@@ -38,8 +39,9 @@ object TablistHelper {
 
             try {
                 team.color = chatColor
-            } catch (_: NoSuchMethodException) {}
-            catch (_: NoSuchMethodError) {}
+            } catch (_: NoSuchMethodException) {
+            } catch (_: NoSuchMethodError) {
+            }
         }
     }
 
@@ -74,8 +76,8 @@ object TablistHelper {
 
     fun getTablistInformationByUUID(uuid: UUID): TablistInformation? {
         val permissionPlayer =
-                PermissionPool.instance.getPermissionPlayerManager().getCachedPermissionPlayer(uuid)
-                        ?: return null
+            PermissionPool.instance.getPermissionPlayerManager().getCachedPermissionPlayer(uuid)
+                ?: return null
 
         val informationList = Config.getConfig().informationList
         val tablistInformation = informationList.sortedBy { it.priority }.first {

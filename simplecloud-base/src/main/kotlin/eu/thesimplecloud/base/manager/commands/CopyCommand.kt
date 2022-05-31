@@ -30,6 +30,7 @@ import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 import eu.thesimplecloud.launcher.console.command.provider.ServiceCommandSuggestionProvider
+
 /**
  * Created by IntelliJ IDEA.
  * Date: 09.06.2020
@@ -41,9 +42,9 @@ class CopyCommand : ICommandHandler {
 
     @CommandSubPath("<service> <path>", "Copies the specified directory to the template folder")
     fun handle(
-            commandSender: ICommandSender,
-            @CommandArgument("service", ServiceCommandSuggestionProvider::class) service: ICloudService,
-            @CommandArgument("path") path: String
+        commandSender: ICommandSender,
+        @CommandArgument("service", ServiceCommandSuggestionProvider::class) service: ICloudService,
+        @CommandArgument("path") path: String
     ) {
         if (!service.isActive()) {
             commandSender.sendProperty("manager.command.copy.service-inactive")
@@ -51,12 +52,12 @@ class CopyCommand : ICommandHandler {
         }
         commandSender.sendProperty("manager.command.copy.start", service.getName())
         service.copy(path)
-                .addResultListener {
-                    commandSender.sendProperty("manager.command.copy.success")
-                }.addFailureListener {
-                    val messageCause = it.message ?: it::class.java.simpleName
-                    commandSender.sendProperty("manager.command.copy.failed", messageCause)
-                }
+            .addResultListener {
+                commandSender.sendProperty("manager.command.copy.success")
+            }.addFailureListener {
+                val messageCause = it.message ?: it::class.java.simpleName
+                commandSender.sendProperty("manager.command.copy.failed", messageCause)
+            }
     }
 
 }

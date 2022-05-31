@@ -36,8 +36,8 @@ class GroupWrapperSetupAnswerProvider : ISetupAnswerProvider {
 
     override fun getSuggestions(sender: ICommandSender): Collection<String> {
         return CloudAPI.instance.getWrapperManager().getAllCachedObjects()
-                .map { it.getName() }
-                .union(listOf(""))
+            .map { it.getName() }
+            .union(listOf(""))
     }
 
 }

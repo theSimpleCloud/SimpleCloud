@@ -33,7 +33,7 @@ import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
  * @author Frederick Baier
  */
 class ServiceViewGroupManager<T : AbstractServiceViewer>(
-        val group: ICloudServiceGroup
+    val group: ICloudServiceGroup
 ) {
 
     private val serviceViewers: MutableList<T> = ArrayList()

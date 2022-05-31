@@ -70,7 +70,8 @@ class VelocityListener(val plugin: VelocityPluginMain) {
             return
 
         if (player.hasPermission(ProxyHandler.JOIN_FULL_PERMISSION) &&
-                proxyConfiguration.whitelist.mapToLowerCase().contains(player.username.toLowerCase()))
+            proxyConfiguration.whitelist.mapToLowerCase().contains(player.username.toLowerCase())
+        )
             return
 
         player.disconnect(CloudTextBuilder().build(CloudText(config.fullProxyKickMessage)))

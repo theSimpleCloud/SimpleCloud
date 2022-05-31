@@ -44,7 +44,8 @@ interface IPermissionEntity {
     /**
      * Returns the permission object of the specified [permission]
      */
-    fun getPermissionByName(permission: String): Permission? = getPermissions().firstOrNull { it.permissionString == permission }
+    fun getPermissionByName(permission: String): Permission? =
+        getPermissions().firstOrNull { it.permissionString == permission }
 
     /**
      * Returns all permissions of this entity

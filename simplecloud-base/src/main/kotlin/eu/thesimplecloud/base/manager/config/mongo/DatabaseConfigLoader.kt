@@ -29,17 +29,19 @@ import eu.thesimplecloud.base.manager.database.DatabaseType
 import java.io.File
 
 class DatabaseConfigLoader : AbstractJsonLibConfigLoader<DatabaseConnectionInformation>(
-        DatabaseConnectionInformation::class.java,
-        File(DirectoryPaths.paths.storagePath + "database.json"),
-        { DatabaseConnectionInformation(
-                "127.0.0.1",
-                45678,
-                "cloud",
-                "simplecloud",
-                "cloudpassword",
-                "",
-                DatabaseType.MONGODB
-        ) },
-        false
+    DatabaseConnectionInformation::class.java,
+    File(DirectoryPaths.paths.storagePath + "database.json"),
+    {
+        DatabaseConnectionInformation(
+            "127.0.0.1",
+            45678,
+            "cloud",
+            "simplecloud",
+            "cloudpassword",
+            "",
+            DatabaseType.MONGODB
+        )
+    },
+    false
 ) {
 }

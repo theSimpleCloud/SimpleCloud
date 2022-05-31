@@ -29,5 +29,5 @@ package eu.thesimplecloud.module.rest.defaultcontroller.dto
  * @author Frederick Baier
  */
 class PathDto(
-        val path: String
+    val path: String
 )

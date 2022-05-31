@@ -30,7 +30,6 @@ import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 import eu.thesimplecloud.module.proxy.extensions.mapToLowerCase
 import eu.thesimplecloud.module.proxy.manager.ProxyModule
-import java.util.*
 
 /**
  * Created by IntelliJ IDEA.
@@ -51,8 +50,10 @@ class ProxyCommand(val module: ProxyModule) : ICommandHandler {
     }
 
     @CommandSubPath("<proxyName> whitelist add <playerName>", "Adds a player to whitelist")
-    fun handleWhitelistAdd(sender: ICommandSender, @CommandArgument("proxyName") proxyName: String,
-                           @CommandArgument("playerName") playerName: String) {
+    fun handleWhitelistAdd(
+        sender: ICommandSender, @CommandArgument("proxyName") proxyName: String,
+        @CommandArgument("playerName") playerName: String
+    ) {
         val proxyConfiguration = module.getProxyConfiguration(proxyName)
 
         if (proxyConfiguration == null) {
@@ -74,8 +75,10 @@ class ProxyCommand(val module: ProxyModule) : ICommandHandler {
     }
 
     @CommandSubPath("<proxyName> whitelist remove <playerName>", "Removes a player from whitelist")
-    fun handleWhitelistRemove(sender: ICommandSender, @CommandArgument("proxyName") proxyName: String,
-                              @CommandArgument("playerName") playerName: String) {
+    fun handleWhitelistRemove(
+        sender: ICommandSender, @CommandArgument("proxyName") proxyName: String,
+        @CommandArgument("playerName") playerName: String
+    ) {
         val proxyConfiguration = module.getProxyConfiguration(proxyName)
 
         if (proxyConfiguration == null) {

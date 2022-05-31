@@ -34,14 +34,14 @@ class PacketIOUpdateGlobalProperty() : JsonPacket() {
 
     constructor(name: String, property: IProperty<*>) : this() {
         this.jsonLib.append("property", property)
-                .append("name", name)
+            .append("name", name)
 
     }
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         val name = this.jsonLib.getString("name") ?: return contentException("name")
         val property = this.jsonLib.getObject("property", Property::class.java)
-                ?: return contentException("property")
+            ?: return contentException("property")
         (CloudAPI.instance.getGlobalPropertyHolder() as GlobalPropertyHolder).updatePropertyFromPacket(name, property)
         return unit()
     }

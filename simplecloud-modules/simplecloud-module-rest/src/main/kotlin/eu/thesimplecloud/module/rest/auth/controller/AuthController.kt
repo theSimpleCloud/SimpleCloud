@@ -39,7 +39,7 @@ import javalinjwt.examples.JWTResponse
  */
 @RestController("auth/")
 class AuthController(
-        private val authService: AuthService
+    private val authService: AuthService
 ) : IController {
 
     @RequestMapping(RequestType.POST, "login/")

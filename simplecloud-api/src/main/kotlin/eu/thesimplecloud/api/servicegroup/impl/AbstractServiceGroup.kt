@@ -45,7 +45,8 @@ abstract class AbstractServiceGroup(
     @Volatile private var stateUpdating: Boolean = true
 ) : ICloudServiceGroup {
 
-    @Volatile private var serviceVersion = serviceVersion.name
+    @Volatile
+    private var serviceVersion = serviceVersion.name
 
     override fun getName(): String = this.name
 

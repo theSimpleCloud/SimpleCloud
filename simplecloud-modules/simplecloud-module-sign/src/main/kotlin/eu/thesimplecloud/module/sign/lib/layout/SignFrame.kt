@@ -23,7 +23,7 @@
 package eu.thesimplecloud.module.sign.lib.layout
 
 class SignFrame(
-       val lines: Array<String>
+    val lines: Array<String>
 ) {
 
     init {

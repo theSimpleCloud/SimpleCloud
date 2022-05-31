@@ -40,7 +40,10 @@ open class DefaultGroupSetup {
                 CloudAPI.instance.getTemplateManager().update(template)
                 template.getDirectory().mkdirs()
             }
-            Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-group.question.template.created", groupName)
+            Launcher.instance.consoleSender.sendPropertyInSetup(
+                "manager.setup.service-group.question.template.created",
+                groupName
+            )
             return groupName
         }
         if (CloudAPI.instance.getTemplateManager().getTemplateByName(templateName) == null) {

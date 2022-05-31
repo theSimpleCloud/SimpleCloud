@@ -33,7 +33,8 @@ import java.io.IOException
  * Time: 16:45
  * @author Frederick Baier
  */
-class AdvancedCloudDependency(groupId: String, artifactId: String, version: String) : CloudDependency(groupId, artifactId, version) {
+class AdvancedCloudDependency(groupId: String, artifactId: String, version: String) :
+    CloudDependency(groupId, artifactId, version) {
 
     private fun getDownloadURL(repoUrl: String): String {
         return getUrlWithoutExtension(repoUrl) + ".jar"

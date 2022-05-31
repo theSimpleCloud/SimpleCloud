@@ -34,7 +34,13 @@ class LanguageSetup : ISetup {
     @SetupQuestion(0, "Which language do you want to use?", LanguageSetupAnswerProvider::class)
     fun setup(answer: String): Boolean {
         val launcherConfig = Launcher.instance.launcherConfig
-        val config = LauncherConfig(launcherConfig.host, launcherConfig.port, answer.lowercase(), launcherConfig.directoryPaths, launcherConfig.javaVersion)
+        val config = LauncherConfig(
+            launcherConfig.host,
+            launcherConfig.port,
+            answer.lowercase(),
+            launcherConfig.directoryPaths,
+            launcherConfig.javaVersion
+        )
         Launcher.instance.replaceLauncherConfig(config)
         return true
     }

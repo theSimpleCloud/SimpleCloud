@@ -32,8 +32,8 @@ import eu.thesimplecloud.api.service.version.type.ServiceVersionType
  * @author Frederick Baier
  */
 open class ServiceVersionHandler(
-        @Volatile
-        var versions: List<ServiceVersion> = emptyList()
+    @Volatile
+    var versions: List<ServiceVersion> = emptyList()
 ) : IServiceVersionHandler {
 
 
@@ -58,8 +58,8 @@ open class ServiceVersionHandler(
 
     override fun getAllVersionSuffixes(prefix: String): List<String> {
         return getVersionsByPrefix(prefix)
-                .map { it.name }
-                .map { it.replace((prefix + "_").toUpperCase(), "") }
+            .map { it.name }
+            .map { it.replace((prefix + "_").toUpperCase(), "") }
     }
 
     override fun getPrefixesByServiceAPIType(serviceAPIType: ServiceAPIType): Set<String> {
@@ -72,9 +72,8 @@ open class ServiceVersionHandler(
 
     override fun getPrefixesByServiceVersionType(serviceVersionType: ServiceVersionType): Set<String> {
         return getVersionsByServiceVersionType(serviceVersionType)
-                .map { getPrefixFromFullName(it.name) }.toSet()
+            .map { getPrefixFromFullName(it.name) }.toSet()
     }
-
 
 
     override fun getServiceVersionByName(name: String): ServiceVersion? {

@@ -43,10 +43,10 @@ interface IPacketRegistry {
         for (packageName in packages) {
             val reflections = Reflections(packageName)
             val allClasses = reflections.getSubTypesOf(IPacket::class.java)
-                    .union(reflections.getSubTypesOf(JsonPacket::class.java))
-                    .union(reflections.getSubTypesOf(ObjectPacket::class.java))
-                    .union(reflections.getSubTypesOf(BytePacket::class.java))
-                    .filter { it != JsonPacket::class.java && it != BytePacket::class.java && it != ObjectPacket::class.java }
+                .union(reflections.getSubTypesOf(JsonPacket::class.java))
+                .union(reflections.getSubTypesOf(ObjectPacket::class.java))
+                .union(reflections.getSubTypesOf(BytePacket::class.java))
+                .filter { it != JsonPacket::class.java && it != BytePacket::class.java && it != ObjectPacket::class.java }
 
             allClasses.forEach { packetClass -> registerPacket(cloudModule, packetClass) }
         }

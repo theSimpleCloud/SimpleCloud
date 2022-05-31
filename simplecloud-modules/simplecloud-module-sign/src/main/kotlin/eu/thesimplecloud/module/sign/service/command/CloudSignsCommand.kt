@@ -56,7 +56,7 @@ class CloudSignsCommand : CommandExecutor {
             sender.sendMessage("§cUsage: /cloudsigns <add/remove> [group]")
             return true
         }
-        when(args[0].toLowerCase()) {
+        when (args[0].toLowerCase()) {
             "add" -> {
                 if (args.size != 2) {
                     sender.sendMessage("§cUsage: /cloudsigns <add> <group>")
@@ -74,7 +74,10 @@ class CloudSignsCommand : CommandExecutor {
                 }
                 val signModuleConfig = SignModuleConfig.getConfig()
                 val templateLocation = block.location.toCloudLocation().toTemplateLocation()
-                val cloudSignByLocation = signModuleConfig.signContainer.getCloudSignByLocation(this.thisService.getTemplate(), templateLocation)
+                val cloudSignByLocation = signModuleConfig.signContainer.getCloudSignByLocation(
+                    this.thisService.getTemplate(),
+                    templateLocation
+                )
                 if (cloudSignByLocation != null) {
                     sender.sendMessage("§cThere is already a sign registered on this location.")
                     return true
@@ -87,7 +90,10 @@ class CloudSignsCommand : CommandExecutor {
             "remove" -> {
                 val signModuleConfig = SignModuleConfig.getConfig()
                 val templateLocation = block.location.toCloudLocation().toTemplateLocation()
-                val cloudSign = signModuleConfig.signContainer.getCloudSignByLocation(this.thisService.getTemplate(), templateLocation)
+                val cloudSign = signModuleConfig.signContainer.getCloudSignByLocation(
+                    this.thisService.getTemplate(),
+                    templateLocation
+                )
                 if (cloudSign == null) {
                     sender.sendMessage("§cSign is not registered.")
                     return true

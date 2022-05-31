@@ -65,7 +65,7 @@ interface IServiceStartConfiguration {
      */
     fun getServiceGroup(): ICloudServiceGroup {
         return CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(getServiceGroupName())
-                ?: throw IllegalStateException("ServiceGroup by name ${getServiceGroupName()} is null")
+            ?: throw IllegalStateException("ServiceGroup by name ${getServiceGroupName()} is null")
     }
 
     /**

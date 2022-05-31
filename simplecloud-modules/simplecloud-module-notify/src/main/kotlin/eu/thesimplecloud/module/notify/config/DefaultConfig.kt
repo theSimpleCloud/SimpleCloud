@@ -31,10 +31,12 @@ package eu.thesimplecloud.module.notify.config
 class DefaultConfig {
     companion object {
         fun get(): Config {
-            return Config("§8[§e»§8] §f%SERVICE%",
-                    "§8[§a»§8] §f%SERVICE% §8» §6%WRAPPER% §8| §e%CPUUSAGE%/100%",
-                    "§8[§c«§8] §f%SERVICE% §8» §6%WRAPPER% §8| §e%CPUUSAGE%/100%",
-                    "§7§oClick to connect")
+            return Config(
+                "§8[§e»§8] §f%SERVICE%",
+                "§8[§a»§8] §f%SERVICE% §8» §6%WRAPPER% §8| §e%CPUUSAGE%/100%",
+                "§8[§c«§8] §f%SERVICE% §8» §6%WRAPPER% §8| §e%CPUUSAGE%/100%",
+                "§7§oClick to connect"
+            )
         }
     }
 }

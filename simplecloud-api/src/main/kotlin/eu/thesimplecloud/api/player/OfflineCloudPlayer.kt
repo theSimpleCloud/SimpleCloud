@@ -31,14 +31,14 @@ import java.util.*
 import java.util.concurrent.ConcurrentMap
 
 open class OfflineCloudPlayer(
-        name: String,
-        uniqueId: UUID,
-        private val firstLogin: Long,
-        private val lastLogin: Long,
-        private val onlineTime: Long,
-        protected val lastPlayerConnection: DefaultPlayerConnection,
-        @Volatile var propertyMap: ConcurrentMap<String, Property<*>> = Maps.newConcurrentMap()
-): SimpleCloudPlayer(name, uniqueId), IOfflineCloudPlayer {
+    name: String,
+    uniqueId: UUID,
+    private val firstLogin: Long,
+    private val lastLogin: Long,
+    private val onlineTime: Long,
+    protected val lastPlayerConnection: DefaultPlayerConnection,
+    @Volatile var propertyMap: ConcurrentMap<String, Property<*>> = Maps.newConcurrentMap()
+) : SimpleCloudPlayer(name, uniqueId), IOfflineCloudPlayer {
 
     @Volatile
     private var displayName = name
@@ -64,7 +64,15 @@ open class OfflineCloudPlayer(
     }
 
     override fun toOfflinePlayer(): IOfflineCloudPlayer {
-        return OfflineCloudPlayer(getName(), getUniqueId(), getFirstLogin(), getLastLogin(), getOnlineTime(), this.lastPlayerConnection, this.propertyMap)
+        return OfflineCloudPlayer(
+            getName(),
+            getUniqueId(),
+            getFirstLogin(),
+            getLastLogin(),
+            getOnlineTime(),
+            this.lastPlayerConnection,
+            this.propertyMap
+        )
     }
 
     override fun <T : Any> setProperty(name: String, value: T): IProperty<T> {

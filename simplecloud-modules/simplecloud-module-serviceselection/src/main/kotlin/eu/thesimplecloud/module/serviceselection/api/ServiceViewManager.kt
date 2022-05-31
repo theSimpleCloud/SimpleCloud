@@ -27,8 +27,8 @@ import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 
 open class ServiceViewManager<T : AbstractServiceViewer>(
-        private val plugin: JavaPlugin,
-        private val updateDelay: Long = 20
+    private val plugin: JavaPlugin,
+    private val updateDelay: Long = 20
 ) {
 
     private val groupNameToGroupView = HashMap<String, ServiceViewGroupManager<T>>()
