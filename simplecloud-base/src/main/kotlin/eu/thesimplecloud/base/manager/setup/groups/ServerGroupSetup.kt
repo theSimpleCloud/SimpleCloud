@@ -24,12 +24,10 @@ package eu.thesimplecloud.base.manager.setup.groups
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.service.version.ServiceVersion
-import eu.thesimplecloud.api.service.version.type.JavaCommandType
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.base.manager.setup.groups.provider.GroupTemplateSetupAnswerProvider
 import eu.thesimplecloud.base.manager.setup.groups.provider.GroupWrapperSetupAnswerProvider
 import eu.thesimplecloud.base.manager.setup.groups.provider.ServerVersionTypeSetupAnswerProvider
-import eu.thesimplecloud.base.manager.setup.provider.ServiceJavaCommandAnswerProvider
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
@@ -37,7 +35,7 @@ import eu.thesimplecloud.launcher.console.setup.provider.BooleanSetupAnswerProvi
 import eu.thesimplecloud.launcher.startup.Launcher
 import kotlin.properties.Delegates
 
-class ServerGroupSetup : DefaultGroupSetup(), ISetup {
+open class ServerGroupSetup : DefaultGroupSetup(), ISetup {
 
     private lateinit var serviceVersion: ServiceVersion
     private var wrapper: IWrapperInfo? = null
@@ -49,7 +47,7 @@ class ServerGroupSetup : DefaultGroupSetup(), ISetup {
     private var memory by Delegates.notNull<Int>()
     private lateinit var name: String
     private lateinit var templateName: String
-    private lateinit var javaCommand: String
+    var javaCommand: String = "java"
 
     @SetupQuestion(0, "manager.setup.service-group.question.name")
     fun nameQuestion(name: String): Boolean {
@@ -152,13 +150,6 @@ class ServerGroupSetup : DefaultGroupSetup(), ISetup {
     @SetupQuestion(11, "manager.setup.service-group.question.permission")
     fun permissionQuestion(permission: String) {
         handlePermission(permission)
-    }
-
-    @SetupQuestion(12, "manager.setup.service-versions.question.java", ServiceJavaCommandAnswerProvider::class)
-    fun useJavaCommand(javaCommandType: JavaCommandType): Boolean {
-        this.javaCommand = javaCommandType.javaVersion
-        Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-versions.question.java.success")
-        return true
     }
 
     @SetupFinished

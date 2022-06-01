@@ -39,7 +39,6 @@ import eu.thesimplecloud.launcher.logging.LoggerProvider
 import eu.thesimplecloud.launcher.screens.IScreenManager
 import eu.thesimplecloud.launcher.screens.ScreenManagerImpl
 import eu.thesimplecloud.launcher.setups.AutoIpSetup
-import eu.thesimplecloud.launcher.setups.JavaSetup
 import eu.thesimplecloud.launcher.setups.LanguageSetup
 import eu.thesimplecloud.launcher.setups.StartSetup
 import eu.thesimplecloud.launcher.updater.RunnerUpdater
@@ -136,7 +135,6 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
 
         if (LanguageFileLoader.isFirstStart) {
             this.setupManager.queueSetup(LanguageSetup())
-            this.setupManager.queueSetup(JavaSetup())
         }
         if (!this.launcherConfigLoader.doesConfigFileExist())
             this.setupManager.queueSetup(AutoIpSetup())

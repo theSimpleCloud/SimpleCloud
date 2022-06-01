@@ -52,7 +52,6 @@ class ApplicationStarter {
             } else {
                 Launcher.instance.consoleSender.sendMessage("You are running the latest version of SimpleCloud.")
             }
-            Launcher.instance.consoleSender.sendMessage("Thank you for using Mischmaschine's SimpleCloud fork!")
         }
         val moduleFileContent = moduleHandler.loadModuleFileContent(file, moduleFileName)
         val loadedModuleFileContent = LoadedModuleFileContent(file, moduleFileContent, null)

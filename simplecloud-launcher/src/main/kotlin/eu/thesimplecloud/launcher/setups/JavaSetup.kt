@@ -5,101 +5,37 @@ import eu.thesimplecloud.launcher.config.LauncherConfig
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
 import eu.thesimplecloud.launcher.startup.Launcher
-import java.io.File
 
 class JavaSetup : ISetup {
 
-    private val javaVersion = JavaVersion.paths
+    lateinit var name: String
+    lateinit var path: String
 
-    @SetupQuestion(0, "Please enter Java 8 startup command (java = default)")
-    fun java8(path: String): Boolean {
-        javaVersion.java8 = path
-
-        if (path.uppercase() == "JAVA") {
-            setup()
-            return true
-        }
-
-        return if (File(path).exists()) {
-            setup()
+    @SetupQuestion(0, "java name")
+    fun javaNameSetup(name: String): Boolean {
+        return if (name.isNotEmpty()) {
+            this.name = name
             true
         } else {
-            Launcher.instance.consoleSender.sendPropertyInSetup("Path does not exist.")
             false
         }
     }
 
-    @SetupQuestion(1, "Please enter Java 11 startup command (java = default)")
-    fun java11(path: String): Boolean {
-
-        javaVersion.java11 = path
-        if (path.uppercase() == "JAVA") {
-            setup()
-            return true
-        }
-        return if (File(path).exists()) {
+    @SetupQuestion(1, "manager.setup.service-versions.question.java")
+    fun javaVersionSetup(path: String): Boolean {
+        return if (path.isNotEmpty()) {
+            this.path = path
             setup()
             true
         } else {
-            Launcher.instance.consoleSender.sendPropertyInSetup("Path does not exist.")
-            false
-        }
-    }
-
-    @SetupQuestion(2, "Please enter Java 16 startup command (java = default)")
-    fun java16(path: String): Boolean {
-
-        javaVersion.java16 = path
-
-
-        if (path.uppercase() == "JAVA") {
-            setup()
-            return true
-        }
-        return if (File(path).exists()) {
-            setup()
-            true
-        } else {
-            Launcher.instance.consoleSender.sendPropertyInSetup("Path does not exist.")
-            false
-        }
-    }
-
-    @SetupQuestion(3, "Please enter Java 17 startup command (java = default)")
-    fun java17(path: String): Boolean {
-        javaVersion.java17 = path
-        if (path.uppercase() == "JAVA") {
-            setup()
-            return true
-        }
-        return if (File(path).exists()) {
-            setup()
-            true
-        } else {
-            Launcher.instance.consoleSender.sendPropertyInSetup("Path does not exist.")
-            false
-        }
-    }
-
-
-    @SetupQuestion(4, "Please enter Java 18 startup command (java = default)")
-    fun java18(path: String): Boolean {
-        javaVersion.java18 = path
-        if (path.uppercase() == "JAVA") {
-            setup()
-            return true
-        }
-        return if (File(path).exists()) {
-            setup()
-            true
-        } else {
-            Launcher.instance.consoleSender.sendPropertyInSetup("Path does not exist.")
             false
         }
     }
 
     fun setup() {
         Launcher.instance.consoleSender.sendPropertyInSetup("Java startup command set")
+        val javaVersion = JavaVersion.paths
+        javaVersion.versions[name] = path
         val launcherConfig = Launcher.instance.launcherConfig
         val config = LauncherConfig(
             launcherConfig.host,

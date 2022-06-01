@@ -63,7 +63,7 @@ interface ICloudServiceGroup : ICacheValue<ICloudServiceGroupUpdater>, ICloudSer
     /**
      * Returns the javaCommand for the ICloudServiceGroup
      */
-    fun getJavaCommand(): String
+    fun getJavaCommandName(): String
 
     /**
      * Returns the start priority services of this group will have. Services with higher priority will start first.

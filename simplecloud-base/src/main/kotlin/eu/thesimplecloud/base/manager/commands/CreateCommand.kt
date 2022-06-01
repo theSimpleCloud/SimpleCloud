@@ -23,12 +23,11 @@
 package eu.thesimplecloud.base.manager.commands
 
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.javaVersions.JavaVersion
 import eu.thesimplecloud.api.template.impl.DefaultTemplate
 import eu.thesimplecloud.base.manager.setup.ServiceVersionSetup
 import eu.thesimplecloud.base.manager.setup.WrapperSetup
-import eu.thesimplecloud.base.manager.setup.groups.LobbyGroupSetup
-import eu.thesimplecloud.base.manager.setup.groups.ProxyGroupSetup
-import eu.thesimplecloud.base.manager.setup.groups.ServerGroupSetup
+import eu.thesimplecloud.base.manager.setup.groups.*
 import eu.thesimplecloud.launcher.console.command.CommandType
 import eu.thesimplecloud.launcher.console.command.ICommandHandler
 import eu.thesimplecloud.launcher.console.command.annotations.Command
@@ -44,7 +43,11 @@ class CreateCommand : ICommandHandler {
 
     @CommandSubPath("lobbygroup", "Creates a lobby group")
     fun createLobbyGroup() {
-        Launcher.instance.setupManager.queueSetup(LobbyGroupSetup())
+        if (JavaVersion.paths.versions.isEmpty()) {
+            Launcher.instance.setupManager.queueSetup(LobbyGroupSetup())
+            return
+        }
+        Launcher.instance.setupManager.queueSetup(LobbyGroupSetupWithJava())
     }
 
     @CommandSubPath("proxygroup", "Creates a proxy group")
@@ -54,7 +57,11 @@ class CreateCommand : ICommandHandler {
 
     @CommandSubPath("servergroup", "Creates a server group")
     fun createServerGroup() {
-        Launcher.instance.setupManager.queueSetup(ServerGroupSetup())
+        if (JavaVersion.paths.versions.isEmpty()) {
+            Launcher.instance.setupManager.queueSetup(ServerGroupSetup())
+            return
+        }
+        Launcher.instance.setupManager.queueSetup(ServerGroupSetupWithJava())
     }
 
     @CommandSubPath("wrapper", "Creates a wrapper")

@@ -18,8 +18,7 @@ import java.util.*
 object TablistHelper {
 
     fun load() {
-        val scoreboard =
-            Bukkit.getScoreboardManager()?.mainScoreboard ?: Bukkit.getScoreboardManager()?.newScoreboard ?: return
+        val scoreboard = Bukkit.getScoreboardManager()?.mainScoreboard ?: return
 
         initScoreboard(scoreboard)
 
