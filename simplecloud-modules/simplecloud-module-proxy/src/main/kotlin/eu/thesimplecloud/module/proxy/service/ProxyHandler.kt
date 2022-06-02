@@ -34,6 +34,7 @@ import eu.thesimplecloud.module.proxy.config.ProxyGroupConfiguration
 import eu.thesimplecloud.module.proxy.config.TablistConfiguration
 import eu.thesimplecloud.module.proxy.extensions.mapToLowerCase
 import eu.thesimplecloud.plugin.startup.CloudPlugin
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.minimessage.MiniMessage
 import java.util.*
@@ -87,10 +88,7 @@ object ProxyHandler {
     }
 
     fun getHexColorComponent(message: String): TextComponent {
-        return TextComponent.ofChildren(
-            MiniMessage.get()
-                .parse(message)
-        )
+        return Component.textOfChildren(MiniMessage.miniMessage().deserialize(message))
     }
 
     fun replaceString(message: String): String {
