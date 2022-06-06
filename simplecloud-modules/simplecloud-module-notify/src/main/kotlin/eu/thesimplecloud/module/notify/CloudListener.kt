@@ -88,6 +88,7 @@ class CloudListener(private val module: NotifyModule) : IListener {
     private fun sendCloudMessage(service: ICloudService, addClick: Boolean) {
 
         val replacedMessage = getMessage().replace("%SERVICE%", service.getName())
+            .replace("%DISPLAYNAME%", service.getDisplayName())
         this.cloudText = CloudText(replacedMessage)
 
         if (addClick) {

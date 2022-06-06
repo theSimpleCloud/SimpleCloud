@@ -64,6 +64,7 @@ class ServiceHandler : IServiceHandler {
         val service = DefaultCloudService(
             cloudServiceGroup.getName(),
             serviceNumber,
+            cloudServiceGroup.getName() + "-" + serviceNumber,
             UUID.randomUUID(),
             startConfiguration.template,
             cloudServiceGroup.getWrapperName(),
