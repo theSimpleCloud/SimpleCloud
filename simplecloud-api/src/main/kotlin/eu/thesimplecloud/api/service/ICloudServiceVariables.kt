@@ -59,6 +59,11 @@ interface ICloudServiceVariables : IAuthenticatable {
     fun getMOTD(): String
 
     /**
+     * Returns the display name of this service.
+     */
+    fun getDisplayName(): String
+
+    /**
      * Returns weather this service is joinable for players.
      */
     fun isServiceJoinable() = getState() == ServiceState.VISIBLE || getState() == ServiceState.INVISIBLE
@@ -89,5 +94,8 @@ interface ICloudServiceVariables : IAuthenticatable {
      */
     fun setMOTD(motd: String)
 
-
+    /**
+     * Set the display name of this service.
+     */
+    fun setDisplayName(displayname: String)
 }
