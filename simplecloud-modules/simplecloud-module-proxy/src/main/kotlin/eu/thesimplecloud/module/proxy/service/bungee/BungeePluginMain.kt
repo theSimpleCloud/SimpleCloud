@@ -25,6 +25,7 @@ package eu.thesimplecloud.module.proxy.service.bungee
 import eu.thesimplecloud.module.proxy.config.TablistConfiguration
 import eu.thesimplecloud.module.proxy.service.ProxyHandler
 import eu.thesimplecloud.module.proxy.service.bungee.listener.BungeeListener
+import eu.thesimplecloud.plugin.extension.getCloudPlayer
 import net.kyori.adventure.platform.bungeecord.BungeeAudiences
 import net.kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer
 import net.md_5.bungee.api.ProxyServer
@@ -71,15 +72,14 @@ class BungeePluginMain : Plugin() {
     }
 
     private fun sendHeaderAndFooter(player: ProxiedPlayer, header: String, footer: String) {
-        if (player.server == null) return
-        val serverName = player.server.info.name
+        val server = player.getCloudPlayer().getConnectedServer() ?: return
 
         val headerBaseComponent = BungeeComponentSerializer.get()
             .serialize(
                 ProxyHandler.getHexColorComponent(
                     ProxyHandler.replaceString(
                         header,
-                        serverName,
+                        server,
                         player.uniqueId
                     )
                 )
@@ -89,7 +89,7 @@ class BungeePluginMain : Plugin() {
                 ProxyHandler.getHexColorComponent(
                     ProxyHandler.replaceString(
                         footer,
-                        serverName,
+                        server,
                         player.uniqueId
                     )
                 )

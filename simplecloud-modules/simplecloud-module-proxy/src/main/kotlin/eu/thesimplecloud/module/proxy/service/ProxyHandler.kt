@@ -25,6 +25,7 @@ package eu.thesimplecloud.module.proxy.service
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.property.IProperty
 import eu.thesimplecloud.api.property.Property
+import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.module.permission.PermissionPool
 import eu.thesimplecloud.module.prefix.config.TablistInformation
 import eu.thesimplecloud.module.prefix.service.tablist.ProxyTablistHelper
@@ -102,13 +103,14 @@ object ProxyHandler {
             .replace("%PROXY%", CloudPlugin.instance.thisService().getName())
     }
 
-    fun replaceString(message: String, serverName: String): String {
+    fun replaceString(message: String, server: ICloudService): String {
         return replaceString(message)
-            .replace("%SERVER%", serverName)
+            .replace("%SERVER%", server.getName())
+            .replace("%DISPLAYNAME%", server.getDisplayName())
     }
 
-    fun replaceString(message: String, serverName: String, uuid: UUID): String {
-        var replacedString = replaceString(message, serverName);
+    fun replaceString(message: String, server: ICloudService, uuid: UUID): String {
+        var replacedString = replaceString(message, server);
 
         val groupName = getPermissionsGroupName(uuid)
         if (groupName != null) replacedString = replacedString.replace("%GROUP%", groupName)
