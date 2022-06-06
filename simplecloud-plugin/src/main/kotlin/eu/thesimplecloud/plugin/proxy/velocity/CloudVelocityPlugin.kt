@@ -66,7 +66,6 @@ class CloudVelocityPlugin @Inject constructor(val proxyServer: ProxyServer) : IC
         private set
     val lobbyConnector = LobbyConnector()
 
-    val list: MutableList<UUID> = mutableListOf()
     init {
         instance = this
 

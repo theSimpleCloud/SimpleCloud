@@ -86,11 +86,6 @@ class VelocityListener(val plugin: CloudVelocityPlugin) {
     fun handle(event: DisconnectEvent) {
         val player = event.player
 
-        if (CloudVelocityPlugin.instance.list.contains(player.uniqueId)) {
-            CloudVelocityPlugin.instance.list.remove(player.uniqueId)
-            return
-        }
-
         ProxyEventHandler.handleDisconnect(player.uniqueId, player.username)
     }
 
