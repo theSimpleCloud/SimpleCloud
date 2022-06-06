@@ -20,7 +20,8 @@ fun main(args: Array<String>) {
     val loadedDependencyURLs = loadedDependencyFiles.map { it.toURI().toURL() }.toTypedArray()
 
     val currentContextClassLoader = Thread.currentThread().contextClassLoader
-    val classLoader = URLClassLoader(arrayOf(copiedLauncherFile.toURI().toURL(), *loadedDependencyURLs), currentContextClassLoader)
+    val classLoader =
+        URLClassLoader(arrayOf(copiedLauncherFile.toURI().toURL(), *loadedDependencyURLs), currentContextClassLoader)
 
     Thread.currentThread().contextClassLoader = classLoader
 

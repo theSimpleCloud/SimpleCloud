@@ -41,7 +41,8 @@ class VelocityPermissionProvider : PermissionProvider {
 
         override fun getPermissionValue(permission: String?): Tristate {
             if (permission == null) return Tristate.FALSE
-            val permissionPlayer = PermissionPool.instance.getPermissionPlayerManager().getCachedPermissionPlayer(player.uniqueId)
+            val permissionPlayer =
+                PermissionPool.instance.getPermissionPlayerManager().getCachedPermissionPlayer(player.uniqueId)
             if (permissionPlayer == null) {
                 println("WARNING: PermissionPlayer is NULL (${player.username})")
                 return Tristate.FALSE

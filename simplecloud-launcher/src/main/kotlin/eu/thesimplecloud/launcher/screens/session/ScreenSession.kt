@@ -31,8 +31,8 @@ import eu.thesimplecloud.launcher.screens.IScreen
  * @author Frederick Baier
  */
 class ScreenSession(
-        val screen: IScreen,
-        val screenCloseBehaviour: ScreenCloseBehaviour
+    val screen: IScreen,
+    val screenCloseBehaviour: ScreenCloseBehaviour
 ) {
 
 
@@ -43,6 +43,7 @@ class ScreenSession(
          */
 
         CLOSE,
+
         /**
          * Keeps the screen open until "leave" was typed into the console
          */
@@ -52,8 +53,6 @@ class ScreenSession(
          * Reopens the screen if the service starts again
          */
         REOPEN;
-
-
 
 
     }

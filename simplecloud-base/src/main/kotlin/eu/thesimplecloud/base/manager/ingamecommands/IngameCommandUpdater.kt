@@ -34,7 +34,8 @@ class IngameCommandUpdater : IListener {
     private var ingameCommandList: Collection<String> = emptyList()
 
     init {
-        CloudAPI.instance.getGlobalPropertyHolder().setProperty("simplecloud-ingamecommands", this.ingameCommandList.toTypedArray())
+        CloudAPI.instance.getGlobalPropertyHolder()
+            .setProperty("simplecloud-ingamecommands", this.ingameCommandList.toTypedArray())
         CloudAPI.instance.getEventManager().registerListener(Manager.instance, this)
     }
 
@@ -42,7 +43,8 @@ class IngameCommandUpdater : IListener {
     @CloudEventHandler
     fun on(event: CommandRegisteredEvent) {
         this.ingameCommandList = Launcher.instance.commandManager.getAllIngameCommandPrefixes()
-        CloudAPI.instance.getGlobalPropertyHolder().setProperty("simplecloud-ingamecommands", this.ingameCommandList.toTypedArray())
+        CloudAPI.instance.getGlobalPropertyHolder()
+            .setProperty("simplecloud-ingamecommands", this.ingameCommandList.toTypedArray())
     }
 
 

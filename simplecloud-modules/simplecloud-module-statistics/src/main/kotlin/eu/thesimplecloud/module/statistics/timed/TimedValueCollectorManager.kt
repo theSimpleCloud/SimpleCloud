@@ -59,7 +59,6 @@ class TimedValueCollectorManager {
     }
 
 
-
     fun getStoreByCollectionNameUnsafe(name: String): ITimedValueStore<out Any>? {
         return this.storeAndCollectorToLastExecutedTime.keys.firstOrNull { it.collector.collectionName() == name }?.store
     }

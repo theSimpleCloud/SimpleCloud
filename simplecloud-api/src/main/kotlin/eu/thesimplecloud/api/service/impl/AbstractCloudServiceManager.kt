@@ -34,9 +34,10 @@ import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.utils.time.Timestamp
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
-abstract class AbstractCloudServiceManager : AbstractCacheList<ICloudServiceUpdater, ICloudService>(), ICloudServiceManager {
+abstract class AbstractCloudServiceManager : AbstractCacheList<ICloudServiceUpdater, ICloudService>(),
+    ICloudServiceManager {
 
-    private val updater = object: ICacheObjectUpdateExecutor<ICloudServiceUpdater, ICloudService> {
+    private val updater = object : ICacheObjectUpdateExecutor<ICloudServiceUpdater, ICloudService> {
 
         override fun getCachedObjectByUpdateValue(value: ICloudService): ICloudService? {
             return getCloudServiceByName(value.getName())
@@ -44,13 +45,15 @@ abstract class AbstractCloudServiceManager : AbstractCacheList<ICloudServiceUpda
 
         override fun determineEventsToCall(updater: ICloudServiceUpdater, cachedValue: ICloudService?): List<IEvent> {
             val serviceToUse = cachedValue ?: updater.getCloudService()
-            if (cachedValue == null){
+            if (cachedValue == null) {
                 return listOf(CloudServiceRegisteredEvent(serviceToUse), CloudServiceUpdatedEvent(serviceToUse))
             }
-            val nowStarting = cachedValue.getState() == ServiceState.PREPARED && updater.getState() == ServiceState.STARTING
+            val nowStarting =
+                cachedValue.getState() == ServiceState.PREPARED && updater.getState() == ServiceState.STARTING
             val nowOnline = !cachedValue.isOnline() && updater.isServiceJoinable()
             val nowConnected = !cachedValue.isAuthenticated() && updater.isAuthenticated()
-            val nowInvisible = cachedValue.getState() == ServiceState.VISIBLE && updater.getState() == ServiceState.INVISIBLE
+            val nowInvisible =
+                cachedValue.getState() == ServiceState.VISIBLE && updater.getState() == ServiceState.INVISIBLE
 
             val events = ArrayList<IEvent>()
             events.add(CloudServiceUpdatedEvent(cachedValue))

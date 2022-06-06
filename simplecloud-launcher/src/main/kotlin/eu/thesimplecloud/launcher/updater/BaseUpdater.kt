@@ -26,9 +26,9 @@ import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import java.io.File
 
 class BaseUpdater : AbstractUpdater(
-        "eu.thesimplecloud.simplecloud",
-        "simplecloud-base",
-        File(DirectoryPaths.paths.storagePath + "base.jar")
+    "eu.thesimplecloud.simplecloud",
+    "simplecloud-base",
+    File(DirectoryPaths.paths.storagePath + "base.jar")
 ) {
 
     override fun getVersionToInstall(): String? {

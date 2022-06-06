@@ -11,7 +11,7 @@ import eu.thesimplecloud.module.rest.auth.user.permission.entity.PermissionEntit
  * Time: 17:07
  */
 data class User(
-        val username: String,
-        @WebExclude
-        var password: String
+    val username: String,
+    @WebExclude
+    var password: String
 ) : PermissionEntity()

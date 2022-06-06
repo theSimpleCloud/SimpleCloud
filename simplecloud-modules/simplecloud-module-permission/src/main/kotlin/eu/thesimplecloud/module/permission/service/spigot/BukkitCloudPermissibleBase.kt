@@ -30,7 +30,8 @@ import org.bukkit.permissions.Permission
 class BukkitCloudPermissibleBase(private val player: Player) : PermissibleBase(player) {
 
 
-    fun getPermissionPlayer() = PermissionPool.instance.getPermissionPlayerManager().getCachedPermissionPlayer(player.uniqueId)
+    fun getPermissionPlayer() =
+        PermissionPool.instance.getPermissionPlayerManager().getCachedPermissionPlayer(player.uniqueId)
 
     override fun isPermissionSet(name: String): Boolean {
         return getPermissionPlayer()?.hasPermission(name) ?: false

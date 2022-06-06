@@ -30,6 +30,6 @@ package eu.thesimplecloud.launcher.logging
  */
 enum class LogType {
 
-    SUCCESS, INFO, ERROR, WARNING, EMPTY , CONSOLE, SETUP
+    SUCCESS, INFO, ERROR, WARNING, EMPTY, CONSOLE, SETUP
 
 }

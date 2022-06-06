@@ -34,6 +34,7 @@ import eu.thesimplecloud.module.proxy.config.ProxyGroupConfiguration
 import eu.thesimplecloud.module.proxy.config.TablistConfiguration
 import eu.thesimplecloud.module.proxy.extensions.mapToLowerCase
 import eu.thesimplecloud.plugin.startup.CloudPlugin
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.minimessage.MiniMessage
 import java.util.*
@@ -56,15 +57,15 @@ object ProxyHandler {
             }
     }
 
-    var index = 0;
+    var index = 0
 
     fun getCurrentTablistConfiguration(): TablistConfiguration? {
         val configurations = getTabListConfigurations()
         if (configurations.isEmpty()) return null
-        index++;
+        index++
 
         if (index >= configurations.size) {
-            index = 0;
+            index = 0
         }
 
         return configurations[index]
@@ -87,10 +88,7 @@ object ProxyHandler {
     }
 
     fun getHexColorComponent(message: String): TextComponent {
-        return TextComponent.ofChildren(
-            MiniMessage.get()
-                .parse(message)
-        )
+        return Component.textOfChildren(MiniMessage.miniMessage().deserialize(message))
     }
 
     fun replaceString(message: String): String {
@@ -98,6 +96,9 @@ object ProxyHandler {
         return message
             .replace("%ONLINE_PLAYERS%", getOnlinePlayers().toString())
             .replace("%MAX_PLAYERS%", CloudPlugin.instance.thisService().getMaxPlayers().toString())
+            .replace("%MAX_MEMORY%", CloudPlugin.instance.thisService().getMaxMemory().toString())
+            .replace("%USED_MEMORY%", CloudPlugin.instance.thisService().getUsedMemory().toString())
+            .replace("%PORT%", CloudPlugin.instance.thisService().getPort().toString())
             .replace("%PROXY%", CloudPlugin.instance.thisService().getName())
     }
 
@@ -119,13 +120,12 @@ object ProxyHandler {
             .replace("%PRIORITY%", tablistInformation.priority.toString())
             .replace("%PREFIX%", tablistInformation.prefix)
             .replace("%SUFFIX%", tablistInformation.suffix)
-            //.replace("%COLOR_CODE%", ChatColor.valueOf(tablistInformation.color).toString())
     }
 
     private fun getTablistInformation(uuid: UUID): TablistInformation? {
         try {
             return ProxyTablistHelper.getTablistInformationByUUID(uuid)
-        } catch (t: Throwable) {
+        } catch (_: Throwable) {
         }
         return null
     }
@@ -136,7 +136,7 @@ object ProxyHandler {
                 PermissionPool.instance.getPermissionPlayerManager().getCachedPermissionPlayer(uuid) ?: return null
             val permissionGroup = permissionPlayer.getHighestPermissionGroup()
             return permissionGroup.getName()
-        } catch (t: Throwable) {
+        } catch (_: Throwable) {
         }
         return null
     }

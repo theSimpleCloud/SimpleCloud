@@ -39,7 +39,8 @@ interface IUpdater {
     /**
      * Returns whether an update is available
      */
-    fun isUpdateAvailable(): Boolean = getCurrentVersion().isBlank() || (getVersionToInstall() != null && getVersionToInstall() != getCurrentVersion())
+    fun isUpdateAvailable(): Boolean =
+        getCurrentVersion().isBlank() || (getVersionToInstall() != null && getVersionToInstall() != getCurrentVersion())
 
     /**
      * Downloads the jars needed to update

@@ -23,8 +23,8 @@
 package eu.thesimplecloud.api.player.connection
 
 class DefaultPlayerAddress(
-        private val hostname: String,
-        private val port: Int
+    private val hostname: String,
+    private val port: Int
 ) : IPlayerAddress {
 
     override fun getHostname(): String = this.hostname

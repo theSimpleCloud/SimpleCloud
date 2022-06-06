@@ -30,5 +30,5 @@ package eu.thesimplecloud.module.proxy.extensions
  */
 
 fun List<String>.mapToLowerCase(): List<String> {
-    return this.map { it.toLowerCase() }
+    return this.map { it.lowercase() }
 }

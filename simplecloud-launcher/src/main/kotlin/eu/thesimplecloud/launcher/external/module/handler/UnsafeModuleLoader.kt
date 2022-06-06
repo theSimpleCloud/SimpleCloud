@@ -22,20 +22,16 @@
 
 package eu.thesimplecloud.launcher.external.module.handler
 
-import com.google.common.collect.Maps
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.external.ICloudModule
-import eu.thesimplecloud.launcher.application.ApplicationClassLoader
 import eu.thesimplecloud.launcher.event.module.ModuleLoadedEvent
 import eu.thesimplecloud.launcher.external.module.LoadedModule
 import eu.thesimplecloud.launcher.external.module.LoadedModuleFileContent
 import eu.thesimplecloud.launcher.external.module.ModuleFileContent
 import eu.thesimplecloud.loader.dependency.DependencyLoader
-import eu.thesimplecloud.loader.dependency.LauncherDependencyLoader
 import eu.thesimplecloud.runner.dependency.AdvancedCloudDependency
 import java.io.File
 import java.net.URL
-import java.net.URLClassLoader
 
 /**
  * Created by IntelliJ IDEA.
@@ -52,7 +48,8 @@ class UnsafeModuleLoader(
         val content = loadedModuleFileContent.content
         val loadedDependencyFiles = getRequiredDependencies(content)
         val loadedDependencyURLs = loadedDependencyFiles.map { it.toURI().toURL() }.toTypedArray()
-        val classLoader = this.classLoaderFunction(arrayOf(moduleFile.toURI().toURL(), *loadedDependencyURLs), content.name)
+        val classLoader =
+            this.classLoaderFunction(arrayOf(moduleFile.toURI().toURL(), *loadedDependencyURLs), content.name)
         val cloudModule = this.loadModuleClassInstance(classLoader, content.mainClass)
         val loadedModule =
             LoadedModule(cloudModule, moduleFile, content, loadedModuleFileContent.updaterFileContent, classLoader)

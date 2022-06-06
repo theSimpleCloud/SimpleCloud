@@ -37,7 +37,8 @@ import java.util.concurrent.TimeUnit
  * Time: 14:18
  * @author Frederick Baier
  */
-class SQLOfflineCloudPlayerHandler(private val databaseConnectionInformation: DatabaseConnectionInformation) : AbstractOfflineCloudPlayerHandler() {
+class SQLOfflineCloudPlayerHandler(private val databaseConnectionInformation: DatabaseConnectionInformation) :
+    AbstractOfflineCloudPlayerHandler() {
 
     var connection: Connection? = null
         private set
@@ -51,7 +52,8 @@ class SQLOfflineCloudPlayerHandler(private val databaseConnectionInformation: Da
 
     private fun createDatabaseAndIndicesIfNotExist() {
         if (!doesTableExist()) {
-            val statement = connection!!.prepareStatement("CREATE TABLE IF NOT EXISTS `$playerCollectionName` (`uniqueId` varchar(36), `name` varchar(16), `data` LONGBLOB)")
+            val statement =
+                connection!!.prepareStatement("CREATE TABLE IF NOT EXISTS `$playerCollectionName` (`uniqueId` varchar(36), `name` varchar(16), `data` LONGBLOB)")
             statement.executeUpdate()
             createIndex("uniqueId")
             createIndex("name")
@@ -67,7 +69,8 @@ class SQLOfflineCloudPlayerHandler(private val databaseConnectionInformation: Da
 
     private fun reconnect() = synchronized(this) {
         closeConnection()
-        this.connection = DriverManager.getConnection("jdbc:mysql://${databaseConnectionInformation.host}:${databaseConnectionInformation.port}/${databaseConnectionInformation.databaseName}?user=${databaseConnectionInformation.userName}&password=${databaseConnectionInformation.password}&serverTimezone=UTC&autoReconnect=true")
+        this.connection =
+            DriverManager.getConnection("jdbc:mysql://${databaseConnectionInformation.host}:${databaseConnectionInformation.port}/${databaseConnectionInformation.databaseName}?user=${databaseConnectionInformation.userName}&password=${databaseConnectionInformation.password}&serverTimezone=UTC&autoReconnect=true")
     }
 
     private fun createIndex(columnName: String) {
@@ -75,7 +78,7 @@ class SQLOfflineCloudPlayerHandler(private val databaseConnectionInformation: Da
         statement.executeUpdate()
     }
 
-    override fun getOfflinePlayer(playerUniqueId: UUID): IOfflineCloudPlayer?{
+    override fun getOfflinePlayer(playerUniqueId: UUID): IOfflineCloudPlayer? {
         return loadPlayer(playerUniqueId.toString(), "uniqueId")
     }
 
@@ -85,7 +88,8 @@ class SQLOfflineCloudPlayerHandler(private val databaseConnectionInformation: Da
 
     private fun loadPlayer(value: String, fieldName: String): IOfflineCloudPlayer? = synchronized(this) {
         if (!exist(value, fieldName)) return null
-        val statement = connection!!.prepareStatement("SELECT `data` FROM `$playerCollectionName` WHERE `$fieldName` = ?")
+        val statement =
+            connection!!.prepareStatement("SELECT `data` FROM `$playerCollectionName` WHERE `$fieldName` = ?")
         statement.setString(1, value)
         val resultSet = statement.executeQuery()
         val allDataStrings = getAllDataStringsFromResultSet(resultSet)
@@ -93,7 +97,7 @@ class SQLOfflineCloudPlayerHandler(private val databaseConnectionInformation: Da
         return getPlayerWithLatestLogin(players)
     }
 
-    private fun getAllDataStringsFromResultSet(resultSet: ResultSet) : List<String> {
+    private fun getAllDataStringsFromResultSet(resultSet: ResultSet): List<String> {
         val returnList = mutableListOf<String>()
         while (resultSet.next()) {
             try {
@@ -114,13 +118,15 @@ class SQLOfflineCloudPlayerHandler(private val databaseConnectionInformation: Da
     override fun saveCloudPlayer(offlineCloudPlayer: OfflineCloudPlayer): Unit = synchronized(this) {
         val newData = JsonLib.fromObject(offlineCloudPlayer, databaseGson).getAsJsonString()
         if (!exist(offlineCloudPlayer.getUniqueId().toString(), "uniqueId")) {
-            val statement = connection!!.prepareStatement("INSERT INTO `$playerCollectionName` (`uniqueId`, `name`, `data`) VALUES (?, ?, ?)")
+            val statement =
+                connection!!.prepareStatement("INSERT INTO `$playerCollectionName` (`uniqueId`, `name`, `data`) VALUES (?, ?, ?)")
             statement.setString(1, offlineCloudPlayer.getUniqueId().toString())
             statement.setString(2, offlineCloudPlayer.getName())
             statement.setString(3, newData)
             statement.executeUpdate()
         } else {
-            val statement = connection!!.prepareStatement("UPDATE `$playerCollectionName` SET `data` = ?, `name` = ? WHERE `uniqueId` = ?")
+            val statement =
+                connection!!.prepareStatement("UPDATE `$playerCollectionName` SET `data` = ?, `name` = ? WHERE `uniqueId` = ?")
             statement.setString(1, newData)
             statement.setString(2, offlineCloudPlayer.getName())
             statement.setString(3, offlineCloudPlayer.getUniqueId().toString())
@@ -143,7 +149,8 @@ class SQLOfflineCloudPlayerHandler(private val databaseConnectionInformation: Da
     }
 
     private fun exist(searchValue: String, fieldName: String): Boolean {
-        val prepareStatement = connection!!.prepareStatement("SELECT `data` FROM `$playerCollectionName` WHERE `$fieldName` = ?")
+        val prepareStatement =
+            connection!!.prepareStatement("SELECT `data` FROM `$playerCollectionName` WHERE `$fieldName` = ?")
         prepareStatement.setString(1, searchValue)
         val resultSet = prepareStatement.executeQuery()
         return resultSet.next()

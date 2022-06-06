@@ -40,7 +40,8 @@ class EditGroupParameterCommandSuggestionProvider : ICommandSuggestionProvider {
         val groupName = fullCommandArray[fullCommandArray.lastIndex - 1]
         val group = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(groupName)
         group ?: return emptyList()
-        val allFields = group::class.java.getAllFieldsFromClassAndSubClasses().filter { !Collection::class.java.isAssignableFrom(it.type) }
+        val allFields = group::class.java.getAllFieldsFromClassAndSubClasses()
+            .filter { !Collection::class.java.isAssignableFrom(it.type) }
         return allFields.filterNot {
             it.name == "name" ||
                     it.name == "serviceVersion" ||

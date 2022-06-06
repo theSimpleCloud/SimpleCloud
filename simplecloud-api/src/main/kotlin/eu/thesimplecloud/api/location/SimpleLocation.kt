@@ -23,12 +23,12 @@
 package eu.thesimplecloud.api.location
 
 open class SimpleLocation(
-        val worldName: String,
-        val x: Double,
-        val y: Double,
-        val z: Double,
-        val yaw: Float,
-        val pitch: Float
+    val worldName: String,
+    val x: Double,
+    val y: Double,
+    val z: Double,
+    val yaw: Float,
+    val pitch: Float
 ) {
     constructor(worldName: String, x: Double, y: Double, z: Double) : this(worldName, x, y, z, 0F, 0F)
 
@@ -52,7 +52,6 @@ open class SimpleLocation(
     fun toServiceLocation(serviceName: String): ServiceLocation {
         return ServiceLocation(serviceName, worldName, x, y, z, yaw, pitch)
     }
-
 
 
     override fun hashCode(): Int {

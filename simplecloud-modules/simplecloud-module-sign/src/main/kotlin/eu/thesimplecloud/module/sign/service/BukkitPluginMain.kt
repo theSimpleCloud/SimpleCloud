@@ -39,7 +39,6 @@ import eu.thesimplecloud.module.sign.service.event.BukkitCloudSignAddedEvent
 import eu.thesimplecloud.module.sign.service.event.BukkitCloudSignRemovedEvent
 import eu.thesimplecloud.module.sign.service.listener.InteractListener
 import eu.thesimplecloud.plugin.startup.CloudPlugin
-import org.bukkit.event.EventHandler
 import org.bukkit.plugin.java.JavaPlugin
 
 /**
@@ -63,23 +62,24 @@ class BukkitPluginMain : JavaPlugin() {
         server.pluginManager.registerEvents(InteractListener(), this)
         getCommand("cloudsigns")!!.setExecutor(CloudSignsCommand())
 
-        CloudAPI.instance.getEventManager().registerListener(CloudAPI.instance.getThisSidesCloudModule(), object : IListener {
+        CloudAPI.instance.getEventManager()
+            .registerListener(CloudAPI.instance.getThisSidesCloudModule(), object : IListener {
 
-            @CloudEventHandler
-            fun handleUpdate(event: GlobalPropertyUpdatedEvent) {
-                if (event.propertyName == "sign-config") {
-                    val property = event.property as IProperty<SignModuleConfig>
-                    updateSigns(property.getValue().signContainer)
+                @CloudEventHandler
+                fun handleUpdate(event: GlobalPropertyUpdatedEvent) {
+                    if (event.propertyName == "sign-config") {
+                        val property = event.property as IProperty<SignModuleConfig>
+                        updateSigns(property.getValue().signContainer)
+                    }
                 }
-            }
 
-            @EventHandler
-            fun handleServiceGroupUpdate(event: CloudServiceGroupUpdatedEvent) {
-                if (event.serviceGroup is ICloudServerGroup)
-                    setupGroup(event.serviceGroup, SignModuleConfig.getConfig())
-            }
+                @CloudEventHandler
+                fun handleServiceGroupUpdate(event: CloudServiceGroupUpdatedEvent) {
+                    if (event.serviceGroup is ICloudServerGroup)
+                        setupGroup(event.serviceGroup, SignModuleConfig.getConfig())
+                }
 
-        })
+            })
 
     }
 
@@ -99,7 +99,7 @@ class BukkitPluginMain : JavaPlugin() {
 
         //add added BukkitCloudSigns
         val registeredCloudSigns = serverGroups.map { serviceViewManager.getGroupView(it) }
-                .map { it.getServiceViewers() }.flatten()
+            .map { it.getServiceViewers() }.flatten()
 
         signsForTemplate.forEach { cloudSign ->
             if (!isSignRegistered(cloudSign, registeredCloudSigns)) {
@@ -127,7 +127,8 @@ class BukkitPluginMain : JavaPlugin() {
     private fun setupGroup(group: ICloudServiceGroup, config: SignModuleConfig) {
         if (this.serviceViewManager.isGroupViewRegistered(group)) return
         val serviceViewGroupManager = ServiceViewGroupManager<BukkitCloudSign>(group)
-        val signsForTemplate = config.signContainer.getSignsForTemplate(CloudPlugin.instance.thisService().getTemplate())
+        val signsForTemplate =
+            config.signContainer.getSignsForTemplate(CloudPlugin.instance.thisService().getTemplate())
         val signsToRegister = signsForTemplate.filter { it.forGroup == group.getName() }
         val bukkitSigns = signsToRegister.map { BukkitCloudSign(it) }
         serviceViewGroupManager.addServiceViewers(*bukkitSigns.toTypedArray())

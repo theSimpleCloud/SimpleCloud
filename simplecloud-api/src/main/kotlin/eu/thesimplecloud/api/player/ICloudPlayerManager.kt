@@ -38,12 +38,14 @@ interface ICloudPlayerManager : ICacheList<ICloudPlayerUpdater, ICloudPlayer> {
     /**
      * Returns the cached [ICloudPlayer] found by the specified [uniqueId]
      */
-    fun getCachedCloudPlayer(uniqueId: UUID): ICloudPlayer? = getAllCachedObjects().firstOrNull { it.getUniqueId() == uniqueId }
+    fun getCachedCloudPlayer(uniqueId: UUID): ICloudPlayer? =
+        getAllCachedObjects().firstOrNull { it.getUniqueId() == uniqueId }
 
     /**
      * Returns the cached [ICloudPlayer] found by the specified [name]
      */
-    fun getCachedCloudPlayer(name: String): ICloudPlayer? = getAllCachedObjects().firstOrNull { it.getName().equals(name, true) }
+    fun getCachedCloudPlayer(name: String): ICloudPlayer? =
+        getAllCachedObjects().firstOrNull { it.getName().equals(name, true) }
 
     /**
      * Returns a promise that will be completed with the requested [ICloudPlayer]

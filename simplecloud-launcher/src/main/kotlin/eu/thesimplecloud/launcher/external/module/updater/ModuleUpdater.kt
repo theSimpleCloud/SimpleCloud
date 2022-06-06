@@ -34,12 +34,12 @@ import java.io.File
  * @author Frederick Baier
  */
 class ModuleUpdater(
-        private val updaterFileContent: UpdaterFileContent,
-        moduleFile: File
+    private val updaterFileContent: UpdaterFileContent,
+    moduleFile: File
 ) : AbstractUpdater(updaterFileContent.groupId, updaterFileContent.artifactId, moduleFile) {
 
     override fun getCurrentVersion(): String {
-       return getVersionFromManifestFile(this.updateFile)
+        return getVersionFromManifestFile(this.updateFile)
     }
 
     override fun executeJar() {

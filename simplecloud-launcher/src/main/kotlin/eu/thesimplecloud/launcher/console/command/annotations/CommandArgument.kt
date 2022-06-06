@@ -34,5 +34,8 @@ import kotlin.reflect.KClass
  */
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class CommandArgument(val name: String, val suggestionProvider: KClass<out ICommandSuggestionProvider> = EmptyCommandSuggestionProvider::class) {
+annotation class CommandArgument(
+    val name: String,
+    val suggestionProvider: KClass<out ICommandSuggestionProvider> = EmptyCommandSuggestionProvider::class
+) {
 }

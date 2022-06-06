@@ -33,7 +33,11 @@ import eu.thesimplecloud.launcher.utils.WebsiteContentLoader
 
 class AutoIpSetup : ISetup {
 
-    @SetupQuestion(0, "Do you want to retrieve your ip automatically via `ipify.org`?", BooleanSetupAnswerProvider::class)
+    @SetupQuestion(
+        0,
+        "Do you want to retrieve your ip automatically via `ipify.org`?",
+        BooleanSetupAnswerProvider::class
+    )
     fun setup(boolean: Boolean): Boolean {
         if (!boolean) {
             Launcher.instance.setupManager.queueSetup(IpSetup(), true)
@@ -53,7 +57,13 @@ class AutoIpSetup : ISetup {
         }
 
         val launcherConfig = Launcher.instance.launcherConfig
-        val config = LauncherConfig(ip, launcherConfig.port, launcherConfig.language, launcherConfig.directoryPaths)
+        val config = LauncherConfig(
+            ip,
+            launcherConfig.port,
+            launcherConfig.language,
+            launcherConfig.directoryPaths,
+            launcherConfig.javaVersion
+        )
         Launcher.instance.replaceLauncherConfig(config)
         return true
     }

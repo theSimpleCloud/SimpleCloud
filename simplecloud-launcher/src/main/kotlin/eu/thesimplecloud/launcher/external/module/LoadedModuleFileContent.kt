@@ -26,7 +26,7 @@ import eu.thesimplecloud.launcher.external.module.update.UpdaterFileContent
 import java.io.File
 
 data class LoadedModuleFileContent(
-        val file: File,
-        val content: ModuleFileContent,
-        val updaterFileContent: UpdaterFileContent?
+    val file: File,
+    val content: ModuleFileContent,
+    val updaterFileContent: UpdaterFileContent?
 )

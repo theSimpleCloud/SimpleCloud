@@ -35,7 +35,10 @@ import eu.thesimplecloud.launcher.console.command.provider.ServiceCommandSuggest
 class ShutdownCommand : ICommandHandler {
 
     @CommandSubPath("<name>", "Stops a service")
-    fun shutdown(commandSender: ICommandSender, @CommandArgument("name", ServiceCommandSuggestionProvider::class) service: ICloudService) {
+    fun shutdown(
+        commandSender: ICommandSender,
+        @CommandArgument("name", ServiceCommandSuggestionProvider::class) service: ICloudService
+    ) {
         service.shutdown()
         commandSender.sendProperty("manager.command.shutdown.success")
     }

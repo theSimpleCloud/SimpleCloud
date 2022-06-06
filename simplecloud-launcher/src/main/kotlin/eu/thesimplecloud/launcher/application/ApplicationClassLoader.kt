@@ -27,10 +27,10 @@ import eu.thesimplecloud.launcher.external.module.handler.IModuleHandler
 import java.net.URL
 
 class ApplicationClassLoader(
-        urls: Array<URL>,
-        parent: ClassLoader,
-        applicationName: String,
-        moduleHandler: IModuleHandler
+    urls: Array<URL>,
+    parent: ClassLoader,
+    applicationName: String,
+    moduleHandler: IModuleHandler
 ) : ModuleClassLoader(urls, parent, "Cloud-Application-$applicationName", moduleHandler) {
 
     companion object {

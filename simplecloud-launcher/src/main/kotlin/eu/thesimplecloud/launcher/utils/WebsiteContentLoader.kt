@@ -29,7 +29,7 @@ import java.net.URL
 class WebsiteContentLoader {
 
 
-    fun loadContent(urlstring: String): String{
+    fun loadContent(urlstring: String): String {
         val url = URL(urlstring)
         val reader = BufferedReader(InputStreamReader(url.openStream()))
 

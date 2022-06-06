@@ -58,7 +58,8 @@ class ServiceDirectory(private val cloudService: ICloudService) {
     }
 
     private fun copyServiceVersion() {
-        val loadedServiceVersion = Wrapper.instance.serviceVersionLoader.loadVersionFile(this.cloudService.getServiceVersion())
+        val loadedServiceVersion =
+            Wrapper.instance.serviceVersionLoader.loadVersionFile(this.cloudService.getServiceVersion())
         loadedServiceVersion.copyToDirectory(this.serviceTmpDirectory)
         renameExecutableJar(loadedServiceVersion)
     }
@@ -101,7 +102,12 @@ class ServiceDirectory(private val cloudService: ICloudService) {
 
     private fun copyModules() {
         val modulesForService = getModulesForService()
-        modulesForService.forEach { FileUtils.copyFile(it.file, File(this.serviceTmpDirectory, "/plugins/" + it.file.name)) }
+        modulesForService.forEach {
+            FileUtils.copyFile(
+                it.file,
+                File(this.serviceTmpDirectory, "/plugins/" + it.file.name)
+            )
+        }
         this.copiedModulesAsPlugins = getModuleFilesInService()
     }
 
@@ -114,7 +120,7 @@ class ServiceDirectory(private val cloudService: ICloudService) {
 
     private fun getModulesForService(): List<LoadedModuleFileContent> {
         val modulesByCopyType = Wrapper.instance.existingModules
-                .filter { it.content.moduleCopyType != ModuleCopyType.NONE }.toMutableList()
+            .filter { it.content.moduleCopyType != ModuleCopyType.NONE }.toMutableList()
         if (!cloudService.isLobby())
             modulesByCopyType.removeIf { it.content.moduleCopyType == ModuleCopyType.LOBBY }
         if (!cloudService.isProxy())
@@ -136,9 +142,9 @@ class ServiceDirectory(private val cloudService: ICloudService) {
         val communicationClient = Wrapper.instance.communicationClient
         communicationClient as NettyClient
         JsonLib.empty().append("managerHost", communicationClient.getHost())
-                .append("managerPort", communicationClient.getPort())
-                .append("serviceName", cloudService.getName())
-                .saveAsFile(File(this.serviceTmpDirectory, "SIMPLE-CLOUD.json"))
+            .append("managerPort", communicationClient.getPort())
+            .append("serviceName", cloudService.getName())
+            .saveAsFile(File(this.serviceTmpDirectory, "SIMPLE-CLOUD.json"))
     }
 
     private fun getDirectoriesOfTemplateAndSubTemplates(template: ITemplate): Set<File> {

@@ -25,7 +25,8 @@ package eu.thesimplecloud.api.servicegroup.impl.updater
 import eu.thesimplecloud.api.servicegroup.grouptype.ICloudLobbyGroup
 import eu.thesimplecloud.api.servicegroup.grouptype.updater.ICloudLobbyGroupUpdater
 
-class DefaultLobbyGroupUpdater(private val lobbyGroup: ICloudLobbyGroup) : DefaultServiceGroupUpdater(lobbyGroup), ICloudLobbyGroupUpdater {
+class DefaultLobbyGroupUpdater(private val lobbyGroup: ICloudLobbyGroup) : DefaultServiceGroupUpdater(lobbyGroup),
+    ICloudLobbyGroupUpdater {
 
     override fun getServiceGroup(): ICloudLobbyGroup {
         return this.lobbyGroup

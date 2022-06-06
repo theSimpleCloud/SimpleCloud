@@ -22,6 +22,8 @@
 
 package eu.thesimplecloud.module.proxy.config
 
+import eu.thesimplecloud.api.CloudAPI
+
 /**
  * Created by IntelliJ IDEA.
  * User: Philipp.Eistrach
@@ -35,45 +37,51 @@ class DefaultConfig {
             val tablistConfiguration = TablistConfiguration(
                 listOf("Proxy"),
                 listOf(
-                    "§8                                                                        §8",
-                    "§bSimpleCloud §8» §7Simplify §f§oyour §7network",
-                    "§3Online §8» §7%ONLINE_PLAYERS%§8/§7%MAX_PLAYERS% §8┃ §3Server §8» §7%SERVER%",
-                    "§8",
+                    "<dark_gray>                                                                        <dark_gray>",
+                    "<aqua>SimpleCloud <dark_gray>» <gray>Simplify <white><italic>your <gray>network",
+                    "<dark_aqua>Online <dark_gray>» <gray>%ONLINE_PLAYERS%<dark_gray>/<gray>%MAX_PLAYERS% <dark_gray>┃ <dark_aqua>Server <dark_gray>» <gray>%SERVER%",
+                    "<dark_gray>",
                 ),
                 listOf(
-                    "§8",
-                    "§3Twitter §8» §7@theSimpleCloud",
-                    "§3Discord §8» §7discord.gg/MPZs4h8",
-                    "§3Powered by §8» §7Venocix.de",
-                    "§8",
-                ))
+                    "<dark_gray>",
+                    "<dark_aqua>Twitter <dark_gray>» <gray>@theSimpleCloud",
+                    "<dark_aqua>Discord <dark_gray>» <gray>discord.gg/MPZs4h8",
+                    "<dark_aqua>Powered by <dark_gray>» <gray>Venocix.de",
+                    "<dark_gray>",
+                )
+            )
 
             val config = Config(
-                emptyList(),
+                CloudAPI.instance.getCloudServiceGroupManager().getProxyGroups()
+                    .map { getDefaultProxyGroupConfiguration(it.getName()) },
                 listOf(tablistConfiguration),
                 "§cThis service is in maintenance",
-                "§cThis service is full")
+                "§cThis service is full"
+            )
 
             return config
         }
 
         fun getDefaultProxyGroupConfiguration(groupName: String): ProxyGroupConfiguration {
             val motdConfiguration = MotdConfiguration(
-                listOf("<gradient:#00fcff:#0da1a3><bold>SimpleCloud</bold></gradient> §8»§7 Simplify your network §8|<bold><#4595ff> 1.12<#545454> - <#4595ff>1.18</bold>"),
-                listOf("§8× <#178fff>Status§8: <bold><#22cc22>Online</bold> §8- <#ffffff>%PROXY%"),
+                listOf("<gradient:#00fcff:#0da1a3><bold>SimpleCloud</bold></gradient> <dark_gray>»<gray> Simplify your network <dark_gray>|<bold><#4595ff> 1.12<#545454> - <#4595ff>1.18</bold>"),
+                listOf("<dark_gray>× <#178fff>Status<dark_gray>: <bold><#22cc22>Online</bold> <dark_gray>- <#ffffff>%PROXY%"),
                 emptyList(),
-                null)
+                null
+            )
             val maintenanceMotdConfiguration = MotdConfiguration(
-                listOf("<gradient:#00fcff:#0da1a3><bold>SimpleCloud</bold></gradient> §8»§7 Simplify your network §8|<bold><#4595ff> 1.12<#545454> - <#4595ff>1.18</bold>"),
-                listOf("§8× <#178fff>Status§8: <bold><#c40000>Maintenance</bold> §8- §f%PROXY%"),
+                listOf("<gradient:#00fcff:#0da1a3><bold>SimpleCloud</bold></gradient> <dark_gray>»<gray> Simplify your network <dark_gray>|<bold><#4595ff> 1.12<#545454> - <#4595ff>1.18</bold>"),
+                listOf("<dark_gray>× <#178fff>Status<dark_gray>: <bold><#c40000>Maintenance</bold> <dark_gray>- <white>%PROXY%"),
                 emptyList(),
-                "§4§oMaintenance")
+                "§4§oMaintenance"
+            )
 
             return ProxyGroupConfiguration(
                 groupName,
                 mutableListOf("Fllip", "Wetterbericht"),
                 motdConfiguration,
-                maintenanceMotdConfiguration)
+                maintenanceMotdConfiguration
+            )
         }
     }
 }

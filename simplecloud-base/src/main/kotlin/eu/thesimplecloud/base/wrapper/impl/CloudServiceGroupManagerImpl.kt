@@ -41,7 +41,8 @@ class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
     }
 
     override fun startNewService(serviceStartConfiguration: IServiceStartConfiguration): IServiceStartPromise {
-        val namePromise = Wrapper.instance.connectionToManager.sendQuery<String>(PacketIOStartCloudService(serviceStartConfiguration))
+        val namePromise =
+            Wrapper.instance.connectionToManager.sendQuery<String>(PacketIOStartCloudService(serviceStartConfiguration))
         val servicePromise = namePromise.then { CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(it)!! }
         return ServiceStartPromise(servicePromise)
     }

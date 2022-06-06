@@ -30,7 +30,7 @@ import eu.thesimplecloud.module.permission.player.PermissionPlayer
 class PermissionCheckListener : IListener {
 
     @CloudEventHandler
-    fun on (event: CloudPlayerPermissionCheckEvent) {
+    fun on(event: CloudPlayerPermissionCheckEvent) {
         val cloudPlayer = event.cloudPlayer
         val permissionPlayer = cloudPlayer.getProperty<PermissionPlayer>(PermissionPlayer.PROPERTY_NAME)!!.getValue()
         event.setHasPermission(permissionPlayer.hasPermission(event.permission))

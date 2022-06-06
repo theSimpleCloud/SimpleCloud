@@ -28,9 +28,9 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import java.util.*
 
 open class SimpleCloudPlayer(
-        private val name: String,
-        private val uniqueId: UUID
-): Nameable {
+    private val name: String,
+    private val uniqueId: UUID
+) : Nameable {
 
     override fun getName(): String {
         return name

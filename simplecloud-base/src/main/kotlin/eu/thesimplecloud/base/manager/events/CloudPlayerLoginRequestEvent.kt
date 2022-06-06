@@ -27,7 +27,7 @@ import eu.thesimplecloud.api.eventapi.IEvent
 import eu.thesimplecloud.api.player.ICloudPlayer
 
 class CloudPlayerLoginRequestEvent(
-        val cloudPlayer: ICloudPlayer
+    val cloudPlayer: ICloudPlayer
 ) : IEvent, ICancellable {
 
     private var cancelled: Boolean = false

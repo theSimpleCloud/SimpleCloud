@@ -30,5 +30,6 @@ class CloudServiceParser : IStringTypeParser<ICloudService> {
 
     override fun allowedTypes(): List<Class<out ICloudService>> = listOf(ICloudService::class.java)
 
-    override fun parse(string: String): ICloudService? = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(string)
+    override fun parse(string: String): ICloudService? =
+        CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(string)
 }

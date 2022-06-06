@@ -24,11 +24,11 @@ package eu.thesimplecloud.base.manager.database
 
 
 open class DatabaseConnectionInformation(
-        val host: String,
-        val port: Int,
-        val databaseName: String,
-        val userName: String,
-        val password: String,
-        val collectionPrefix: String,
-        val databaseType: DatabaseType
+    val host: String,
+    val port: Int,
+    val databaseName: String,
+    val userName: String,
+    val password: String,
+    val collectionPrefix: String,
+    val databaseType: DatabaseType
 )

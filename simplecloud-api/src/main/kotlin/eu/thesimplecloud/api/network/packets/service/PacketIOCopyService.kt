@@ -35,9 +35,9 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
  * Time: 14:21
  * @author Frederick Baier
  */
-class PacketIOCopyService(): JsonPacket() {
+class PacketIOCopyService() : JsonPacket() {
 
-    constructor(service: ICloudService, path: String): this() {
+    constructor(service: ICloudService, path: String) : this() {
         this.jsonLib.append("service", service.getName()).append("path", path)
     }
 

@@ -30,11 +30,11 @@ import java.util.*
 
 class PacketIOGetOfflinePlayer() : JsonPacket() {
 
-    constructor(uniqueId: UUID): this() {
+    constructor(uniqueId: UUID) : this() {
         this.jsonLib.append("uniqueId", uniqueId)
     }
 
-    constructor(name: String): this() {
+    constructor(name: String) : this() {
         this.jsonLib.append("name", name)
     }
 

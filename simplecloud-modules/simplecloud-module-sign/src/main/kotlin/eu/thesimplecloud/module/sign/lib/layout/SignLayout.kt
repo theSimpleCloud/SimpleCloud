@@ -26,9 +26,9 @@ import eu.thesimplecloud.api.utils.Nameable
 import eu.thesimplecloud.jsonlib.JsonLibExclude
 
 class SignLayout(
-        private val name: String,
-        val layoutType: LayoutType,
-        private val frames: List<SignFrame>
+    private val name: String,
+    val layoutType: LayoutType,
+    private val frames: List<SignFrame>
 ) : Nameable {
 
     @JsonLibExclude

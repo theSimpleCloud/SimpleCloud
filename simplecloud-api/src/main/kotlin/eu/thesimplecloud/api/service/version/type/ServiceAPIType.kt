@@ -29,8 +29,8 @@ package eu.thesimplecloud.api.service.version.type
  * @author Frederick Baier
  */
 enum class ServiceAPIType(
-        val minecraftEdition: MinecraftEdition,
-        val serviceVersionType: ServiceVersionType
+    val minecraftEdition: MinecraftEdition,
+    val serviceVersionType: ServiceVersionType
 ) {
 
     /**

@@ -79,6 +79,7 @@ data class DefaultCloudService(
 
     override fun getUniqueId(): UUID = this.uniqueId
 
+
     override fun getServiceVersion(): ServiceVersion = this.serviceVersion
 
     override fun getTemplateName(): String = this.templateName
@@ -138,6 +139,7 @@ data class DefaultCloudService(
 
     override fun getMaxMemory(): Int = this.maxMemory
 
+
     override fun getUsedMemory(): Int = this.usedMemory
 
     override fun getLastPlayerUpdate(): Timestamp = this.lastPlayerUpdate
@@ -180,7 +182,8 @@ data class DefaultCloudService(
         this.wrapperName = updateService.getWrapperName()
         this.port = updateService.getPort()
         this.usedMemory = updateService.getUsedMemory()
-        this.propertyMap = this.getMapWithNewestProperties(updateService.getProperties()) as ConcurrentMap<String, Property<*>>
+        this.propertyMap =
+            this.getMapWithNewestProperties(updateService.getProperties()) as ConcurrentMap<String, Property<*>>
 
         if (this.getOnlineCount() != updateService.getOnlineCount())
             this.lastPlayerUpdate = Timestamp()

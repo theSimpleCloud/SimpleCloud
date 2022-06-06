@@ -40,11 +40,13 @@ abstract class AbstractServiceGroup(
     @Volatile private var wrapperName: String?,
     serviceVersion: ServiceVersion,
     private val startPriority: Int,
+    @Volatile private var javaCommandName: String,
     @Volatile private var permission: String?,
     @Volatile private var stateUpdating: Boolean = true
 ) : ICloudServiceGroup {
 
-    @Volatile private var serviceVersion = serviceVersion.name
+    @Volatile
+    private var serviceVersion = serviceVersion.name
 
     override fun getName(): String = this.name
 
@@ -93,6 +95,8 @@ abstract class AbstractServiceGroup(
     }
 
     override fun isStatic(): Boolean = this.static
+
+    override fun getJavaCommandName(): String = this.javaCommandName
 
     override fun getPercentToStartNewService(): Int = this.percentToStartNewService
 

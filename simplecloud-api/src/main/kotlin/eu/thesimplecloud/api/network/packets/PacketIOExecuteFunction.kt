@@ -33,7 +33,7 @@ class PacketIOExecuteFunction<T : Any>() : BytePacket() {
 
 
     constructor(function: () -> T) : this() {
-        val noArgsFunction = object: NoArgsFunction<T> {
+        val noArgsFunction = object : NoArgsFunction<T> {
             override fun invoke(): T {
                 return function()
             }

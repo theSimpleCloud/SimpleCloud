@@ -29,7 +29,7 @@ import eu.thesimplecloud.jsonlib.JsonLibExclude
 
 
 class Property<T : Any>(
-        value: T
+    value: T
 ) : IProperty<T> {
 
     @JsonLibExclude

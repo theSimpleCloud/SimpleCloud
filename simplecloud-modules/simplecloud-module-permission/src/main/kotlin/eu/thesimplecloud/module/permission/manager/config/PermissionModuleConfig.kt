@@ -30,5 +30,5 @@ package eu.thesimplecloud.module.permission.manager.config
  */
 
 class PermissionModuleConfig(
-        val defaultPermissionGroupName: String = "default"
+    val defaultPermissionGroupName: String = "default"
 )

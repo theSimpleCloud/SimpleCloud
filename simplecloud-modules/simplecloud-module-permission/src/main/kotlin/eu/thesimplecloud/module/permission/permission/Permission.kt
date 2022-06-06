@@ -61,7 +61,10 @@ data class Permission(val permissionString: String, val timeoutTimestamp: Long, 
         }
     }
 
-    private fun areAllPermissionComponentsEqual(checkPermissionComponents: List<String>, thisPermissionComponents: List<String>): Boolean {
+    private fun areAllPermissionComponentsEqual(
+        checkPermissionComponents: List<String>,
+        thisPermissionComponents: List<String>
+    ): Boolean {
         val thisPermissionComponentsWithoutStar = thisPermissionComponents.dropLast(1)
         val checkComponentsWithLimit = checkPermissionComponents.take(thisPermissionComponentsWithoutStar.size)
         return checkComponentsWithLimit == thisPermissionComponentsWithoutStar

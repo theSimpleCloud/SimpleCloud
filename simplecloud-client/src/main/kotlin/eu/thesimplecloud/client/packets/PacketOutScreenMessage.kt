@@ -27,10 +27,15 @@ import eu.thesimplecloud.api.screen.ICommandExecutable
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
 
-class PacketOutScreenMessage(cloudClientType: NetworkComponentType, commandExecutable: ICommandExecutable, message: String) : JsonPacket() {
+class PacketOutScreenMessage(
+    cloudClientType: NetworkComponentType,
+    commandExecutable: ICommandExecutable,
+    message: String
+) : JsonPacket() {
 
     init {
-        this.jsonLib.append("cloudClientType", cloudClientType).append("name", commandExecutable.getName()).append("message", message)
+        this.jsonLib.append("cloudClientType", cloudClientType).append("name", commandExecutable.getName())
+            .append("message", message)
     }
 
     override suspend fun handle(connection: IConnection) = unit()

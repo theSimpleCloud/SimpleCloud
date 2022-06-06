@@ -41,7 +41,7 @@ import org.bukkit.block.Sign
  * @author Frederick Baier
  */
 class BukkitCloudSign(
-        val cloudSign: CloudSign
+    val cloudSign: CloudSign
 ) : AbstractServiceViewer() {
 
     val serviceGroup = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(cloudSign.forGroup)
@@ -116,21 +116,21 @@ class BukkitCloudSign(
 
     companion object {
         private val PLACEHOLDERS = listOf<Placeholder<ICloudService>>(
-                Placeholder("SERVICE") { it.getName() },
-                Placeholder("ONLINE_PLAYERS") { it.getOnlineCount().toString() },
-                Placeholder("ONLINE_COUNT") { it.getOnlineCount().toString() },
-                Placeholder("MOTD") { it.getMOTD() },
-                Placeholder("HOST") { it.getHost() },
-                Placeholder("PORT") { it.getPort().toString() },
-                Placeholder("STATE") { it.getState().name },
-                Placeholder("NUMBER") { it.getServiceNumber().toString() },
-                Placeholder("WRAPPER") { it.getWrapperName()!! },
-                Placeholder("MAX_PLAYERS") { it.getMaxPlayers().toString() }
+            Placeholder("SERVICE") { it.getName() },
+            Placeholder("ONLINE_PLAYERS") { it.getOnlineCount().toString() },
+            Placeholder("ONLINE_COUNT") { it.getOnlineCount().toString() },
+            Placeholder("MOTD") { it.getMOTD() },
+            Placeholder("HOST") { it.getHost() },
+            Placeholder("PORT") { it.getPort().toString() },
+            Placeholder("STATE") { it.getState().name },
+            Placeholder("NUMBER") { it.getServiceNumber().toString() },
+            Placeholder("WRAPPER") { it.getWrapperName()!! },
+            Placeholder("MAX_PLAYERS") { it.getMaxPlayers().toString() }
         )
 
         private val GROUP_PLACEHOLDERS = listOf<Placeholder<ICloudServiceGroup>>(
-                Placeholder("GROUP") { it.getName() },
-                Placeholder("TEMPLATE") { it.getTemplateName() }
+            Placeholder("GROUP") { it.getName() },
+            Placeholder("TEMPLATE") { it.getTemplateName() }
         )
     }
 }

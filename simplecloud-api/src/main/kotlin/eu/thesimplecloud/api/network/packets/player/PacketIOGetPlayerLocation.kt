@@ -28,7 +28,6 @@ import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.ObjectPacket
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import java.util.*
-import kotlin.NoSuchElementException
 
 class PacketIOGetPlayerLocation() : ObjectPacket<UUID>() {
 
@@ -39,7 +38,7 @@ class PacketIOGetPlayerLocation() : ObjectPacket<UUID>() {
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         val value = this.value ?: return contentException("value")
         val cloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(value)
-                ?: return failure(NoSuchElementException("Player does not exist"))
+            ?: return failure(NoSuchElementException("Player does not exist"))
         return cloudPlayer.getLocation()
     }
 

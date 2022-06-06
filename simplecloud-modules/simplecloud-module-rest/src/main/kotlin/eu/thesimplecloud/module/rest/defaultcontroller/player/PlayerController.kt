@@ -43,7 +43,7 @@ class PlayerController : IController {
     @RequestMapping(RequestType.GET, "name/:name", "web.cloud.player.get.one")
     fun handleGetOnePlayer(@RequestPathParam("name") name: String): IOfflineCloudPlayer {
         return CloudAPI.instance.getCloudPlayerManager().getOfflineCloudPlayer(name).getBlockingOrNull()
-                ?: throwNoSuchElement()
+            ?: throwNoSuchElement()
     }
 
     @RequestMapping(RequestType.GET, "", "web.cloud.player.get.all")

@@ -53,26 +53,30 @@ interface IPermissionPlayer : IPermissionEntity, Nameable {
     /**
      * Returns the permission group info list
      */
-    fun getAllNotExpiredPermissionGroupInfoList(): Collection<PlayerPermissionGroupInfo> = getPermissionGroupInfoList().filter { !it.isExpired() }
+    fun getAllNotExpiredPermissionGroupInfoList(): Collection<PlayerPermissionGroupInfo> =
+        getPermissionGroupInfoList().filter { !it.isExpired() }
 
     /**
      * Returns whether this player has the specified permission group.
      * (case insensitive)
      */
     fun hasPermissionGroup(name: String): Boolean = getPermissionGroupInfoList()
-            .map { it.permissionGroupName.toLowerCase() }
-            .contains(name.toLowerCase())
+        .map { it.permissionGroupName.toLowerCase() }
+        .contains(name.toLowerCase())
 
     /**
      * Returns the [IPermissionGroup] of this player
      */
     fun getAllNotExpiredPermissionGroups(): List<IPermissionGroup> = getAllNotExpiredPermissionGroupInfoList()
-        .mapNotNull { PermissionPool.instance.getPermissionGroupManager().getPermissionGroupByName(it.permissionGroupName) }
+        .mapNotNull {
+            PermissionPool.instance.getPermissionGroupManager().getPermissionGroupByName(it.permissionGroupName)
+        }
 
     /**
      * Returns the the [IOfflineCloudPlayer] of this permission player wrapped in a promise
      */
-    fun getOfflineCloudPlayer(): ICommunicationPromise<IOfflineCloudPlayer> = CloudAPI.instance.getCloudPlayerManager().getOfflineCloudPlayer(getUniqueId())
+    fun getOfflineCloudPlayer(): ICommunicationPromise<IOfflineCloudPlayer> =
+        CloudAPI.instance.getCloudPlayerManager().getOfflineCloudPlayer(getUniqueId())
 
     /**
      * Returns a promise that is completed when the operation is done. [ICommunicationPromise.isSuccess] indicates success or failure.

@@ -38,9 +38,8 @@ import eu.thesimplecloud.clientserverapi.server.INettyServer
 import java.util.concurrent.CopyOnWriteArrayList
 
 abstract class AbstractSynchronizedObjectList<T : Any>(
-        protected val values: CopyOnWriteArrayList<Property<T>> = CopyOnWriteArrayList()
+    protected val values: CopyOnWriteArrayList<Property<T>> = CopyOnWriteArrayList()
 ) : ISynchronizedObjectList<T> {
-
 
 
     override fun update(property: IProperty<T>, fromPacket: Boolean): ICommunicationPromise<Unit> {
@@ -55,7 +54,8 @@ abstract class AbstractSynchronizedObjectList<T : Any>(
             }
         }
         if (CloudAPI.instance.isManager() || fromPacket) {
-            CloudAPI.instance.getEventManager().call(SynchronizedListObjectUpdatedEvent(getCachedObjectByUpdateValue(property.getValue())!!))
+            CloudAPI.instance.getEventManager()
+                .call(SynchronizedListObjectUpdatedEvent(getCachedObjectByUpdateValue(property.getValue())!!))
         }
         return forwardPacketIfNecessary(PacketIOUpdateListProperty(getIdentificationName(), property), fromPacket)
     }

@@ -29,18 +29,19 @@ import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import java.util.*
-import kotlin.NoSuchElementException
 
 class PacketIOTeleportPlayer() : JsonPacket() {
 
-    constructor(cloudPlayer: ICloudPlayer, simpleLocation: SimpleLocation): this() {
+    constructor(cloudPlayer: ICloudPlayer, simpleLocation: SimpleLocation) : this() {
         this.jsonLib.append("playerUniqueId", cloudPlayer.getUniqueId())
-                .append("simpleLocation", simpleLocation)
+            .append("simpleLocation", simpleLocation)
     }
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
-        val playerUniqueId = this.jsonLib.getObject("playerUniqueId", UUID::class.java) ?: return contentException("playerUniqueId")
-        val simpleLocation = this.jsonLib.getObject("simpleLocation", SimpleLocation::class.java) ?: return contentException("simpleLocation")
+        val playerUniqueId =
+            this.jsonLib.getObject("playerUniqueId", UUID::class.java) ?: return contentException("playerUniqueId")
+        val simpleLocation = this.jsonLib.getObject("simpleLocation", SimpleLocation::class.java)
+            ?: return contentException("simpleLocation")
         val cachedCloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(playerUniqueId)
         cachedCloudPlayer ?: return failure(NoSuchElementException("Player does not exist"))
         cachedCloudPlayer.teleport(simpleLocation)

@@ -2,7 +2,6 @@ package eu.thesimplecloud.base.wrapper.process.filehandler
 
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.service.version.ServiceVersion
-import eu.thesimplecloud.api.utils.ZipUtils
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.runner.utils.Downloader
 import org.apache.commons.io.FileUtils

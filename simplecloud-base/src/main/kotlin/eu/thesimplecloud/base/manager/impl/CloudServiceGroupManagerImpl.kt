@@ -45,7 +45,11 @@ class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
         return promise
     }
 
-    override fun update(value: ICloudServiceGroup, fromPacket: Boolean, isCalledFromDelete: Boolean): ICommunicationPromise<Unit> {
+    override fun update(
+        value: ICloudServiceGroup,
+        fromPacket: Boolean,
+        isCalledFromDelete: Boolean
+    ): ICommunicationPromise<Unit> {
         Manager.instance.cloudServiceGroupFileHandler.save(value)
         return super.update(value, fromPacket, isCalledFromDelete)
     }

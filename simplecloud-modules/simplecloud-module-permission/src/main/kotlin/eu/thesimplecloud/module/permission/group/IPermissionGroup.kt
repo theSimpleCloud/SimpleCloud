@@ -48,7 +48,9 @@ interface IPermissionGroup : IPermissionEntity, Nameable {
     /**
      * Returns all permission groups this group inherits from.
      */
-    fun getAllInheritedPermissionGroups(): List<IPermissionGroup> = getAllInheritedPermissionGroupNames().mapNotNull { PermissionPool.instance.getPermissionGroupManager().getPermissionGroupByName(it) }
+    fun getAllInheritedPermissionGroups(): List<IPermissionGroup> = getAllInheritedPermissionGroupNames().mapNotNull {
+        PermissionPool.instance.getPermissionGroupManager().getPermissionGroupByName(it)
+    }
 
     /**
      * Returns the priority of this group

@@ -42,24 +42,28 @@ class CloudServiceManagerImpl : AbstractCloudServiceManager() {
             if (cloudService.getState() == ServiceState.PREPARED) {
                 Wrapper.instance.processQueue?.removeFromQueue(cloudService)
             } else {
-                val cloudServiceProcess = Wrapper.instance.cloudServiceProcessManager.getCloudServiceProcessByServiceName(cloudService.getName())
+                val cloudServiceProcess =
+                    Wrapper.instance.cloudServiceProcessManager.getCloudServiceProcessByServiceName(cloudService.getName())
                 cloudServiceProcess?.shutdown()
             }
         } else {
             Wrapper.instance.connectionToManager.sendUnitQuery(PacketIOStopCloudService(cloudService.getName()))
         }
         return cloudListener<CloudServiceUnregisteredEvent>()
-                .addCondition { it.cloudService == cloudService }
-                .toUnitPromise()
+            .addCondition { it.cloudService == cloudService }
+            .toUnitPromise()
     }
 
     override fun copyService(cloudService: ICloudService, path: String): ICommunicationPromise<Unit> {
         val selfWrapper = Wrapper.instance.getThisWrapper()
         if (selfWrapper != cloudService.getWrapper())
-            return Wrapper.instance.connectionToManager.sendUnitQuery(PacketIOCopyService(cloudService, path), 20 * 1000)
+            return Wrapper.instance.connectionToManager.sendUnitQuery(
+                PacketIOCopyService(cloudService, path),
+                20 * 1000
+            )
 
         val serviceProcess = Wrapper.instance.cloudServiceProcessManager
-                .getCloudServiceProcessByServiceName(cloudService.getName())
+            .getCloudServiceProcessByServiceName(cloudService.getName())
         serviceProcess ?: return CommunicationPromise.failed(IllegalStateException("Cannot copy inactive service"))
         return ProcessCopier(cloudService).copy(path)
     }
@@ -69,8 +73,8 @@ class CloudServiceManagerImpl : AbstractCloudServiceManager() {
         checkNotNull(processQueue) { "Process-Queue was null while trying to add a service to the queue." }
         processQueue.addToQueue(cloudService)
         return cloudListener<CloudServiceConnectedEvent>()
-                .addCondition { it.cloudService == cloudService }
-                .toUnitPromise()
+            .addCondition { it.cloudService == cloudService }
+            .toUnitPromise()
     }
 
 }

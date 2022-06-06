@@ -39,7 +39,7 @@ fallback = "127.0.0.1:0"
 
 # In what order we should try servers when a player logs in or is kicked from aserver.
 try = [
-  "fallback"
+    "fallback"
 ]
 
 [forced-hosts]

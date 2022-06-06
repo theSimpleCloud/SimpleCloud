@@ -29,5 +29,5 @@ package eu.thesimplecloud.base.core.jvm
  * Time: 18:36
  */
 data class JvmArgumentsConfig(
-        val jvmArguments: List<JvmArgument>
+    val jvmArguments: List<JvmArgument>
 )

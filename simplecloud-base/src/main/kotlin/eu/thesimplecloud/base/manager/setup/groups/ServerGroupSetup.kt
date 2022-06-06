@@ -35,7 +35,7 @@ import eu.thesimplecloud.launcher.console.setup.provider.BooleanSetupAnswerProvi
 import eu.thesimplecloud.launcher.startup.Launcher
 import kotlin.properties.Delegates
 
-class ServerGroupSetup : DefaultGroupSetup(), ISetup {
+open class ServerGroupSetup : DefaultGroupSetup(), ISetup {
 
     private lateinit var serviceVersion: ServiceVersion
     private var wrapper: IWrapperInfo? = null
@@ -47,6 +47,7 @@ class ServerGroupSetup : DefaultGroupSetup(), ISetup {
     private var memory by Delegates.notNull<Int>()
     private lateinit var name: String
     private lateinit var templateName: String
+    var javaCommand: String = "java"
 
     @SetupQuestion(0, "manager.setup.service-group.question.name")
     fun nameQuestion(name: String): Boolean {
@@ -153,7 +154,22 @@ class ServerGroupSetup : DefaultGroupSetup(), ISetup {
 
     @SetupFinished
     fun finished() {
-        CloudAPI.instance.getCloudServiceGroupManager().createServerGroup(name, templateName, memory, maxPlayers, minimumOnlineServices, maximumOnlineServices, false, static, percent, wrapper?.getName(), serviceVersion, 0, permission)
+        CloudAPI.instance.getCloudServiceGroupManager().createServerGroup(
+            name,
+            templateName,
+            memory,
+            maxPlayers,
+            minimumOnlineServices,
+            maximumOnlineServices,
+            false,
+            static,
+            percent,
+            wrapper?.getName(),
+            serviceVersion,
+            0,
+            permission,
+            javaCommand
+        )
         Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-group.finished", name)
     }
 

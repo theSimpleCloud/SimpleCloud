@@ -39,8 +39,8 @@ class PacketIOSendTablistToPlayer() : JsonPacket() {
 
     constructor(uniqueId: UUID, headers: Array<String>, footers: Array<String>) : this() {
         this.jsonLib.append("uniqueId", uniqueId)
-                .append("headers", headers)
-                .append("footers", footers)
+            .append("headers", headers)
+            .append("footers", footers)
     }
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {

@@ -32,17 +32,18 @@ import java.util.*
  * This event is called when a player logged in to the network
  */
 class CloudPlayerLoginEvent(
-        /**
-         * The unique id of the player involved in this event
-         */
-        val playerUniqueId: UUID,
+    /**
+     * The unique id of the player involved in this event
+     */
+    val playerUniqueId: UUID,
 
-        /**
-         * The name of the player involved in this event
-         */
-        val playerName: String
+    /**
+     * The name of the player involved in this event
+     */
+    val playerName: String
 ) : ISynchronizedEvent {
 
-    fun getCloudPlayer(): ICommunicationPromise<ICloudPlayer> = CloudAPI.instance.getCloudPlayerManager().getCloudPlayer(playerUniqueId)
+    fun getCloudPlayer(): ICommunicationPromise<ICloudPlayer> =
+        CloudAPI.instance.getCloudPlayerManager().getCloudPlayer(playerUniqueId)
 
 }

@@ -48,7 +48,10 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
         throw UnsupportedOperationException("Players are not supported in the wrapper")
     }
 
-    override fun connectPlayer(cloudPlayer: ICloudPlayer, cloudService: ICloudService): ICommunicationPromise<ConnectionResponse> {
+    override fun connectPlayer(
+        cloudPlayer: ICloudPlayer,
+        cloudService: ICloudService
+    ): ICommunicationPromise<ConnectionResponse> {
         throw UnsupportedOperationException("Players are not supported in the wrapper")
     }
 
@@ -56,7 +59,14 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
         throw UnsupportedOperationException("Players are not supported in the wrapper")
     }
 
-    override fun sendTitle(cloudPlayer: ICloudPlayer, title: String, subTitle: String, fadeIn: Int, stay: Int, fadeOut: Int) {
+    override fun sendTitle(
+        cloudPlayer: ICloudPlayer,
+        title: String,
+        subTitle: String,
+        fadeIn: Int,
+        stay: Int,
+        fadeOut: Int
+    ) {
         throw UnsupportedOperationException("Players are not supported in the wrapper")
     }
 

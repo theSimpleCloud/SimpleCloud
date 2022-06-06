@@ -31,7 +31,7 @@ import java.util.concurrent.CopyOnWriteArrayList
  * @author Frederick Baier
  */
 class TimeAmountMeasurer(
-        private val expireTimeInMs: Long
+    private val expireTimeInMs: Long
 ) {
 
     private val timeStamps = CopyOnWriteArrayList<Timestamp>()

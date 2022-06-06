@@ -22,5 +22,5 @@
 
 package eu.thesimplecloud.launcher.exception
 
-class DependencyException(message : String?) : Exception(message) {
+class DependencyException(message: String?) : Exception(message) {
 }

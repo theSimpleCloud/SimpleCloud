@@ -34,7 +34,8 @@ class EventManagerImpl : BasicEventManager() {
     override fun call(event: IEvent, fromPacket: Boolean) {
         super.call(event, fromPacket)
         if (event is ISynchronizedEvent)
-            Manager.instance.communicationServer.getClientManager().sendPacketToAllAuthenticatedNonWrapperClients(PacketIOCallEvent(event))
+            Manager.instance.communicationServer.getClientManager()
+                .sendPacketToAllAuthenticatedNonWrapperClients(PacketIOCallEvent(event))
     }
 
 }
