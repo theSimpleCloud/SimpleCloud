@@ -105,12 +105,12 @@ object SignModuleConfigPersistence {
             ),
             SignLayout(
                 "default", LayoutType.ONLINE, listOf(
-                    SignFrame(arrayOf("%SERVICE%", "§a%STATE%", "%MOTD%", "%ONLINE_PLAYERS%/%MAX_PLAYERS%"))
+                    SignFrame(arrayOf("%DISPLAYNAME%", "§a%STATE%", "%MOTD%", "%ONLINE_PLAYERS%/%MAX_PLAYERS%"))
                 )
             ),
             SignLayout(
                 "default", LayoutType.FULL, listOf(
-                    SignFrame(arrayOf("%SERVICE%", "§6%STATE%", "%MOTD%", "%ONLINE_PLAYERS%/%MAX_PLAYERS%"))
+                    SignFrame(arrayOf("%DISPLAYNAME%", "§6%STATE%", "%MOTD%", "%ONLINE_PLAYERS%/%MAX_PLAYERS%"))
                 )
             )
         )

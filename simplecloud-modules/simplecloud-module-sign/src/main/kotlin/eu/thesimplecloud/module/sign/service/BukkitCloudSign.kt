@@ -125,7 +125,8 @@ class BukkitCloudSign(
             Placeholder("STATE") { it.getState().name },
             Placeholder("NUMBER") { it.getServiceNumber().toString() },
             Placeholder("WRAPPER") { it.getWrapperName()!! },
-            Placeholder("MAX_PLAYERS") { it.getMaxPlayers().toString() }
+            Placeholder("MAX_PLAYERS") { it.getMaxPlayers().toString() },
+            Placeholder("DISPLAYNAME") { it.getDisplayName() }
         )
 
         private val GROUP_PLACEHOLDERS = listOf<Placeholder<ICloudServiceGroup>>(
