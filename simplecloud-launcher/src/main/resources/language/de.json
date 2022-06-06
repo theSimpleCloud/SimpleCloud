@@ -75,6 +75,7 @@
   "manager.command.screen.not-exist": "Die angegebene Konsole existiert nicht",
   "manager.command.setservicestate.fail": "Dieser State kann nicht gesetzt werden",
   "manager.command.setservicestate.success": "State gesetzt",
+  "manager.command.setdisplayname.success": "Displayname gesetzt",
   "manager.command.shutdown.success": "Stoppe Server",
   "manager.command.shutdowngroup.failure": "Zurzeit sind keine Server der Gruppe %GROUP% online",
   "manager.command.shutdowngroup.success": "Stoppe alle Server der Gruppe %GROUP%",

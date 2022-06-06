@@ -76,6 +76,7 @@
   "manager.command.screen.not-exist": "The specified screen does not exist",
   "manager.command.setservicestate.fail": "Cannot set this state",
   "manager.command.setservicestate.success": "State set",
+  "manager.command.setdisplayname.success": "Displayname set",
   "manager.command.shutdown.success": "Stopping service",
   "manager.command.shutdowngroup.failure": "There are no running services of group %GROUP%",
   "manager.command.shutdowngroup.success": "Stopping all services of group %GROUP%",
