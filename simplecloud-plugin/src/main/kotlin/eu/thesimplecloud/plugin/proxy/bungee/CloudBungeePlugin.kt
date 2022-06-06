@@ -126,6 +126,7 @@ class CloudBungeePlugin : Plugin(), ICloudProxyPlugin {
 
         synchronizeOnlineCountTask()
         runOfflinePlayerChecker()
+        CloudAPI.instance.getEventManager().registerListener(CloudPlugin.instance, eu.thesimplecloud.plugin.proxy.bungee.listener.CloudListener())
     }
 
     override fun onDisable() {
