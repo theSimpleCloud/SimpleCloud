@@ -39,10 +39,10 @@ import eu.thesimplecloud.plugin.listener.CloudListener
 import eu.thesimplecloud.plugin.proxy.ICloudProxyPlugin
 import eu.thesimplecloud.plugin.proxy.ProxyEventHandler
 import eu.thesimplecloud.plugin.proxy.velocity.commands.VelocityCommand
+import eu.thesimplecloud.plugin.proxy.velocity.listener.CloudPlayerDisconnectListener
 import eu.thesimplecloud.plugin.proxy.velocity.listener.VelocityListener
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import java.net.InetSocketAddress
-import java.util.UUID
 import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
 
@@ -96,7 +96,7 @@ class CloudVelocityPlugin @Inject constructor(val proxyServer: ProxyServer) : IC
 
         synchronizeOnlineCountTask()
         runOfflinePlayerChecker()
-        CloudAPI.instance.getEventManager().registerListener(CloudPlugin.instance, eu.thesimplecloud.plugin.proxy.velocity.listener.CloudListener())
+        CloudAPI.instance.getEventManager().registerListener(CloudPlugin.instance, CloudPlayerDisconnectListener(this.proxyServer))
     }
 
 
