@@ -307,13 +307,14 @@ class EditCommand : ICommandHandler {
         @CommandArgument("maxplayers") maxplayers: String
     ) {
 
-        if (maxplayers.toInt() == null) {
+        try {
+            service.setMaxPlayers(maxplayers.toInt())
+            service.update()
+            sender.sendProperty("manager.command.edit.service.setmaxplayers.success")
+        } catch (exception: NumberFormatException) {
             sender.sendProperty("manager.command.edit.service.setmaxplayers.fail")
+            return
         }
-
-        service.setMaxPlayers(maxplayers.toInt())
-        service.update()
-        sender.sendProperty("manager.command.edit.service.setmaxplayers.success")
     }
 
 }
