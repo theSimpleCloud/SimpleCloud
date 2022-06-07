@@ -274,22 +274,22 @@ class EditCommand : ICommandHandler {
         commandSender.sendProperty("manager.command.edit.template.modules.remove.success", module, template.getName())
     }
 
-    @CommandSubPath("service <service> setstate <state>", "Sets the state of a service")
+    @CommandSubPath("service <service> state <state>", "Sets the state of a service")
     fun setState(
         sender: ICommandSender,
         @CommandArgument("service", ServiceCommandSuggestionProvider::class) service: ICloudService,
         @CommandArgument("state", ServiceStateCommandSuggestionProvider::class) state: ServiceState
     ) {
         if (state != ServiceState.VISIBLE && state != ServiceState.INVISIBLE) {
-            sender.sendProperty("manager.command.edit.service.setstate.fail")
+            sender.sendProperty("manager.command.edit.service.state.fail")
             return
         }
         service.setState(state)
         service.update()
-        sender.sendProperty("manager.command.edit.service.setstate.success")
+        sender.sendProperty("manager.command.edit.service.state.success")
     }
 
-    @CommandSubPath("service <service> setdisplayname <displayname>", "Sets the displayname of a service")
+    @CommandSubPath("service <service> displayname <displayname>", "Sets the displayname of a service")
     fun setDisplayName(
         sender: ICommandSender,
         @CommandArgument("service", ServiceCommandSuggestionProvider::class) service: ICloudService,
@@ -300,21 +300,17 @@ class EditCommand : ICommandHandler {
         sender.sendProperty("manager.command.edit.service.displayname.success")
     }
 
-    @CommandSubPath("service <service> setmaxplayers <maxplayers>", "Sets the setmaxplayers slots of a service")
+    @CommandSubPath("service <service> maxplayers <maxplayers>", "Sets the setmaxplayers slots of a service")
     fun setMaxPlayers(
         sender: ICommandSender,
         @CommandArgument("service", ServiceCommandSuggestionProvider::class) service: ICloudService,
-        @CommandArgument("maxplayers") maxplayers: String
+        @CommandArgument("maxplayers") maxplayers: Int
     ) {
 
-        try {
-            service.setMaxPlayers(maxplayers.toInt())
-            service.update()
-            sender.sendProperty("manager.command.edit.service.setmaxplayers.success")
-        } catch (exception: NumberFormatException) {
-            sender.sendProperty("manager.command.edit.service.setmaxplayers.fail")
-            return
-        }
+        service.setMaxPlayers(maxplayers)
+        service.update()
+        sender.sendProperty("manager.command.edit.service.maxplayers.success")
+
     }
 
 }
