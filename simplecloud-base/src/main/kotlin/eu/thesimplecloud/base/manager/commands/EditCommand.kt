@@ -25,6 +25,8 @@ package eu.thesimplecloud.base.manager.commands
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.command.ICommandSender
 import eu.thesimplecloud.api.parser.string.StringParser
+import eu.thesimplecloud.api.service.ICloudService
+import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.template.ITemplate
 import eu.thesimplecloud.api.utils.getAllFieldsFromClassAndSubClasses
 import eu.thesimplecloud.api.wrapper.IWrapperInfo
@@ -35,9 +37,7 @@ import eu.thesimplecloud.launcher.console.command.ICommandHandler
 import eu.thesimplecloud.launcher.console.command.annotations.Command
 import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
-import eu.thesimplecloud.launcher.console.command.provider.ServiceGroupCommandSuggestionProvider
-import eu.thesimplecloud.launcher.console.command.provider.TemplateCommandSuggestionProvider
-import eu.thesimplecloud.launcher.console.command.provider.WrapperCommandSuggestionProvider
+import eu.thesimplecloud.launcher.console.command.provider.*
 import eu.thesimplecloud.launcher.startup.Launcher
 import java.lang.reflect.Field
 
@@ -272,6 +272,48 @@ class EditCommand : ICommandHandler {
         template.removeModuleNameToCopy(module)
         CloudAPI.instance.getTemplateManager().update(template)
         commandSender.sendProperty("manager.command.edit.template.modules.remove.success", module, template.getName())
+    }
+
+    @CommandSubPath("service <service> setstate <state>", "Sets the state of a service")
+    fun setState(
+        sender: ICommandSender,
+        @CommandArgument("service", ServiceCommandSuggestionProvider::class) service: ICloudService,
+        @CommandArgument("state", ServiceStateCommandSuggestionProvider::class) state: ServiceState
+    ) {
+        if (state != ServiceState.VISIBLE && state != ServiceState.INVISIBLE) {
+            sender.sendProperty("manager.command.edit.service.setstate.fail")
+            return
+        }
+        service.setState(state)
+        service.update()
+        sender.sendProperty("manager.command.edit.service.setstate.success")
+    }
+
+    @CommandSubPath("service <service> setdisplayname <displayname>", "Sets the displayname of a service")
+    fun setDisplayName(
+        sender: ICommandSender,
+        @CommandArgument("service", ServiceCommandSuggestionProvider::class) service: ICloudService,
+        @CommandArgument("displayname") displayname: String
+    ) {
+        service.setDisplayName(displayname)
+        service.update()
+        sender.sendProperty("manager.command.edit.service.displayname.success")
+    }
+
+    @CommandSubPath("service <service> setmaxplayers <maxplayers>", "Sets the setmaxplayers slots of a service")
+    fun setMaxPlayers(
+        sender: ICommandSender,
+        @CommandArgument("service", ServiceCommandSuggestionProvider::class) service: ICloudService,
+        @CommandArgument("maxplayers") maxplayers: String
+    ) {
+
+        if (maxplayers.toInt() == null) {
+            sender.sendProperty("manager.command.edit.service.setmaxplayers.fail")
+        }
+
+        service.setMaxPlayers(maxplayers.toInt())
+        service.update()
+        sender.sendProperty("manager.command.edit.service.setmaxplayers.success")
     }
 
 }
