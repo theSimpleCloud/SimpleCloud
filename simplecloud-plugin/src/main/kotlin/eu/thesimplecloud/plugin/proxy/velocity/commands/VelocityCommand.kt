@@ -31,6 +31,7 @@ import eu.thesimplecloud.plugin.network.packets.PacketOutPlayerExecuteCommand
 import eu.thesimplecloud.plugin.proxy.ProxyEventHandler
 import eu.thesimplecloud.plugin.proxy.velocity.CloudVelocityPlugin
 import eu.thesimplecloud.plugin.startup.CloudPlugin
+import java.util.concurrent.CompletableFuture
 
 /**
  * Created by IntelliJ IDEA.
@@ -58,10 +59,20 @@ class VelocityCommand(private val commandStart: String) : RawCommand {
             .call(CloudPlayerCommandExecuteEvent(player.uniqueId, player.username, command))
     }
 
-    override fun suggest(invocation: RawCommand.Invocation): MutableList<String> {
-        val player = invocation.source() as? Player ?: return super.suggest(invocation)
+    override fun suggestAsync(invocation: RawCommand.Invocation?): CompletableFuture<MutableList<String>> {
+        val player = invocation?.source() as? Player ?: return CompletableFuture()
         val rawCommand = "$commandStart " + invocation.arguments()
-        return ProxyEventHandler.handleTabComplete(player.uniqueId, rawCommand).toMutableList()
+        return getSuggestCompletableFuture(player, rawCommand)
+    }
+
+    private fun getSuggestCompletableFuture(
+        player: Player,
+        rawCommand: String
+    ): CompletableFuture<MutableList<String>> {
+        val completableFuture = CompletableFuture<MutableList<String>>()
+        ProxyEventHandler.handleTabComplete(player.uniqueId, rawCommand)
+            .addResultListener { completableFuture.complete(it.toMutableList()) }
+        return completableFuture
     }
 
 }

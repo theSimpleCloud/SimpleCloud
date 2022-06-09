@@ -64,7 +64,8 @@ class IngameCommandListener : Listener {
     fun on(event: TabCompleteEvent) {
         val player = event.sender as? ProxiedPlayer ?: return
 
-        event.suggestions.addAll(ProxyEventHandler.handleTabComplete(player.uniqueId, event.cursor))
+        val strings = ProxyEventHandler.handleTabComplete(player.uniqueId, event.cursor).getBlocking()
+        event.suggestions.addAll(strings)
     }
 
 }
