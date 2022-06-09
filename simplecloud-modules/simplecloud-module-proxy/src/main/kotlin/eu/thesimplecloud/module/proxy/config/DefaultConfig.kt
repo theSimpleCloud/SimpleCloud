@@ -36,7 +36,7 @@ class DefaultConfig {
                 listOf("Proxy"),
                 listOf(
                     "§8                                                                        §8",
-                    "§bSimpleCloud §8» §7Simplify §f§oyour §7network",
+                    "§bSimpleCloud §8» §7Simplify §f§oyour §r§7network",
                     "§3Online §8» §7%ONLINE_PLAYERS%§8/§7%MAX_PLAYERS% §8┃ §3Server §8» §7%SERVER%",
                     "§8",
                 ),
