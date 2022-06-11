@@ -193,7 +193,7 @@ class SetupManager(val launcher: Launcher) {
 
     private fun hasNextQuestion(setupData: SetupData) = this.currentQuestionIndex + 1 in setupData.questions.indices
 
-    fun waitFroAllSetups() {
+    fun waitForAllSetups() {
         if (this.currentSetup != null)
             this.setupsCompletedPromise.awaitUninterruptibly()
     }

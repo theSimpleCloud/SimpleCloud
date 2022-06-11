@@ -127,7 +127,7 @@ class Manager : ICloudApplication {
         this.ingameCommandUpdater = IngameCommandUpdater()
         if (!DatabaseConfigLoader().doesConfigFileExist()) {
             Launcher.instance.setupManager.queueSetup(DatabaseConnectionSetup())
-            Launcher.instance.setupManager.waitFroAllSetups()
+            Launcher.instance.setupManager.waitForAllSetups()
         }
         val mongoConnectionInformation = DatabaseConfigLoader().loadConfig()
         this.encryption = AdvancedEncryption(KeyConfigLoader().loadConfig())
@@ -194,7 +194,7 @@ class Manager : ICloudApplication {
                 "eu.thesimplecloud.base.manager.commands"
             )
         }
-        Launcher.instance.setupManager.waitFroAllSetups()
+        Launcher.instance.setupManager.waitForAllSetups()
         this.wrapperFileHandler.loadAll().forEach { CloudAPI.instance.getWrapperManager().update(it) }
         this.cloudServiceGroupFileHandler.loadAll()
             .forEach { CloudAPI.instance.getCloudServiceGroupManager().update(it) }
