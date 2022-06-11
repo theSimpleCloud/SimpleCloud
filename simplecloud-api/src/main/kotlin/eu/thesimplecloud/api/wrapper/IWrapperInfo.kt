@@ -38,6 +38,11 @@ interface IWrapperInfo : ICacheValue<IWrapperInfoUpdater>, INetworkComponent {
     fun getHost(): String
 
     /**
+     * Returns the system Memory of the Server.
+     */
+    fun getSystemMemory(): Long
+
+    /**
      * Returns the amount of services this wrapper can start simultaneously
      */
     fun getMaxSimultaneouslyStartingServices(): Int
