@@ -62,6 +62,7 @@ import eu.thesimplecloud.launcher.external.module.ModuleClassLoader
 import eu.thesimplecloud.launcher.external.module.handler.IModuleHandler
 import eu.thesimplecloud.launcher.external.module.handler.ModuleHandler
 import eu.thesimplecloud.launcher.language.LanguageFileLoader
+import eu.thesimplecloud.launcher.setups.AutoConfigureSetup
 import eu.thesimplecloud.launcher.startup.Launcher
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -222,8 +223,11 @@ class Manager : ICloudApplication {
         thread(start = true, isDaemon = false, appClassLoader) {
             this.cloudModuleHandler.loadAllUnloadedModules()
         }
-    }
 
+        if (CloudAPI.instance.getCloudServiceGroupManager().getAllCachedObjects().isEmpty()) {
+            Launcher.instance.setupManager.queueSetup(AutoConfigureSetup())
+        }
+    }
 
     private fun createDirectories() {
         for (file in listOf(
