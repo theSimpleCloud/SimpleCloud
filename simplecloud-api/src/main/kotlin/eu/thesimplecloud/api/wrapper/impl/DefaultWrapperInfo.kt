@@ -69,8 +69,6 @@ data class DefaultWrapperInfo(
 
     override fun getHost(): String = this.host
 
-    override fun getSystemMemory(): Long = Runtime.getRuntime().totalMemory()
-
     override fun getMaxSimultaneouslyStartingServices(): Int = this.maxSimultaneouslyStartingServices
 
     override fun getUsedMemory(): Int = this.usedMemory
