@@ -47,7 +47,8 @@ import eu.thesimplecloud.base.manager.packet.IPacketRegistry
 import eu.thesimplecloud.base.manager.packet.PacketRegistry
 import eu.thesimplecloud.base.manager.player.PlayerUnregisterScheduler
 import eu.thesimplecloud.base.manager.service.ServiceHandler
-import eu.thesimplecloud.base.manager.setup.AutoConfigureSetup
+import eu.thesimplecloud.base.manager.setup.CreateDefaultLobbyGroup
+import eu.thesimplecloud.base.manager.setup.CreateDefaultProxyGroup
 import eu.thesimplecloud.base.manager.setup.database.DatabaseConnectionSetup
 import eu.thesimplecloud.base.manager.startup.server.CommunicationConnectionHandlerImpl
 import eu.thesimplecloud.base.manager.startup.server.ManagerAccessHandler
@@ -225,7 +226,9 @@ class Manager : ICloudApplication {
         }
 
         if (CloudAPI.instance.getCloudServiceGroupManager().getAllCachedObjects().isEmpty()) {
-            Launcher.instance.setupManager.queueSetup(AutoConfigureSetup())
+            Launcher.instance.setupManager.queueSetup(CreateDefaultProxyGroup())
+            Launcher.instance.setupManager.waitForAllSetups()
+            Launcher.instance.setupManager.queueSetup(CreateDefaultLobbyGroup())
         }
     }
 
