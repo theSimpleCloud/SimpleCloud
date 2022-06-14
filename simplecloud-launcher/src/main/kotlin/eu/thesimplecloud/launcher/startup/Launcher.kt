@@ -141,7 +141,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
         if (this.launcherStartArguments.startApplication == null)
             this.setupManager.queueSetup(StartSetup())
 
-        this.setupManager.waitFroAllSetups()
+        this.setupManager.waitForAllSetups()
         this.launcherStartArguments.startApplication?.let { startApplication(it) }
     }
 
