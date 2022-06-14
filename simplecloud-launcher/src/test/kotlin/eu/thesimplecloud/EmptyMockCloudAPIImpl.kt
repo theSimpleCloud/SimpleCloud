@@ -34,8 +34,8 @@ import eu.thesimplecloud.api.screen.ICommandExecuteManager
 import eu.thesimplecloud.api.service.ICloudServiceManager
 import eu.thesimplecloud.api.service.version.IServiceVersionHandler
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroupManager
-import eu.thesimplecloud.api.sync.`object`.IGlobalPropertyHolder
 import eu.thesimplecloud.api.sync.list.manager.ISynchronizedObjectListManager
+import eu.thesimplecloud.api.sync.`object`.IGlobalPropertyHolder
 import eu.thesimplecloud.clientserverapi.lib.bootstrap.ICommunicationBootstrap
 import io.mockk.mockk
 

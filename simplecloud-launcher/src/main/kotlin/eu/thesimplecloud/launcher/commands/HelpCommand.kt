@@ -43,12 +43,12 @@ class HelpCommand() : ICommandHandler {
     @CommandSubPath
     fun handleCommand(sender: ICommandSender) {
         val allCommands = Launcher.instance.commandManager.commands
-                .filter { it.commandType != CommandType.INGAME }
-                .filter { !it.path.startsWith("help") }
+            .filter { it.commandType != CommandType.INGAME }
+            .filter { !it.path.startsWith("help") }
 
         if (sender is ConsoleSender) {
             val commandAmount = Launcher.instance.commandManager.commands
-                    .map { it.path.split(" ")[0] }.toSet().size - 1
+                .map { it.path.split(" ")[0] }.toSet().size - 1
             sender.sendProperty("commands.help.header", commandAmount.toString())
 
             allCommands.forEach {

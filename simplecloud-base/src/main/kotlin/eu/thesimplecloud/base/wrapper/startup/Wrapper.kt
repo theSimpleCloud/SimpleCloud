@@ -160,7 +160,8 @@ class Wrapper : ICloudApplication {
             } catch (e: InterruptedException) {
             }
         }
-        this.connectionToManager.sendUnitQuery(PacketOutCloudClientLogin(NetworkComponentType.WRAPPER), 10000).syncUninterruptibly()
+        this.connectionToManager.sendUnitQuery(PacketOutCloudClientLogin(NetworkComponentType.WRAPPER), 10000)
+            .syncUninterruptibly()
 
         if (!isStartedInManagerDirectory()) {
             val templateClient = NettyClient(launcherConfig.host, launcherConfig.port + 1, ConnectionHandlerImpl())
@@ -180,16 +181,16 @@ class Wrapper : ICloudApplication {
             templateClient.start().then {
                 Launcher.instance.consoleSender.sendProperty("wrapper.template.requesting")
                 templateClient.getConnection().sendUnitQuery(PacketOutGetTemplates(), TimeUnit.MINUTES.toMillis(15))
-                        .thenDelayed(3, TimeUnit.SECONDS) {
-                            reloadExistingModules()
-                            val wrapperUpdater = getThisWrapper().getUpdater()
-                            wrapperUpdater.setTemplatesReceived(true)
-                            wrapperUpdater.update()
-                            Launcher.instance.consoleSender.sendProperty("wrapper.template.received")
-                        }.addFailureListener {
-                            Launcher.instance.logger.severe("An error occurred while requesting templates:")
-                            Launcher.instance.logger.exception(it)
-                        }
+                    .thenDelayed(3, TimeUnit.SECONDS) {
+                        reloadExistingModules()
+                        val wrapperUpdater = getThisWrapper().getUpdater()
+                        wrapperUpdater.setTemplatesReceived(true)
+                        wrapperUpdater.update()
+                        Launcher.instance.consoleSender.sendProperty("wrapper.template.received")
+                    }.addFailureListener {
+                        Launcher.instance.logger.severe("An error occurred while requesting templates:")
+                        Launcher.instance.logger.exception(it)
+                    }
             }
         }
     }
@@ -202,7 +203,7 @@ class Wrapper : ICloudApplication {
     fun isWrapperNameSet(): Boolean = thisWrapperName != null
 
     fun getThisWrapper(): IWrapperInfo = CloudAPI.instance.getWrapperManager().getWrapperByName(this.thisWrapperName!!)
-            ?: throw IllegalStateException("Unable to find self wrapper.")
+        ?: throw IllegalStateException("Unable to find self wrapper.")
 
     /**
      * Updates the memory the wrapper currently uses according to the registered service processes.

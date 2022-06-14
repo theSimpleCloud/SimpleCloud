@@ -30,8 +30,8 @@ package eu.thesimplecloud.module.proxy.config
  */
 
 data class ProxyGroupConfiguration(
-        val proxyGroup: String,
-        val whitelist: MutableList<String>,
-        val motds: MotdConfiguration,
-        val maintenanceMotds: MotdConfiguration
+    val proxyGroup: String,
+    val whitelist: MutableList<String>,
+    val motds: MotdConfiguration,
+    val maintenanceMotds: MotdConfiguration
 )

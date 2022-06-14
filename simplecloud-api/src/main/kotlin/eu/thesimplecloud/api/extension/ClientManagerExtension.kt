@@ -33,8 +33,8 @@ import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnecte
 
 fun IClientManager<*>.getAllAuthenticatedClients(): List<IConnectedClient<out IConnectedClientValue>> {
     return this.getClients()
-            .filter { it.isOpen() }
-            .filter { it.getClientValue() != null && (it.getClientValue() as IAuthenticatable).isAuthenticated() }
+        .filter { it.isOpen() }
+        .filter { it.getClientValue() != null && (it.getClientValue() as IAuthenticatable).isAuthenticated() }
 }
 
 fun IClientManager<*>.sendPacketToAllAuthenticatedClients(packet: IPacket): ICommunicationPromise<Unit> {
@@ -42,10 +42,12 @@ fun IClientManager<*>.sendPacketToAllAuthenticatedClients(packet: IPacket): ICom
 }
 
 fun IClientManager<*>.sendPacketToAllAuthenticatedNonWrapperClients(packet: IPacket): ICommunicationPromise<Unit> {
-    return this.getAllAuthenticatedClients().filter { it.getClientValue() !is IWrapperInfo }.map { it.sendUnitQuery(packet) }
+    return this.getAllAuthenticatedClients().filter { it.getClientValue() !is IWrapperInfo }
+        .map { it.sendUnitQuery(packet) }
         .combineAllPromises()
 }
 
 fun IClientManager<*>.sendPacketToAllAuthenticatedWrapperClients(packet: IPacket) {
-    this.getAllAuthenticatedClients().filter { it.getClientValue() is IWrapperInfo }.forEach { it.sendUnitQuery(packet) }
+    this.getAllAuthenticatedClients().filter { it.getClientValue() is IWrapperInfo }
+        .forEach { it.sendUnitQuery(packet) }
 }

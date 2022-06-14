@@ -51,10 +51,10 @@ class SignCommand : ICommandHandler {
 
     @CommandSubPath("layout <group> <layoutType> <layout>", "Sets the layout for a group")
     fun handleEditLayout(
-            sender: ICommandSender,
-            @CommandArgument("group") groupName: String,
-            @CommandArgument("layoutType") layoutType: LayoutType,
-            @CommandArgument("layout") layoutName: String
+        sender: ICommandSender,
+        @CommandArgument("group") groupName: String,
+        @CommandArgument("layoutType") layoutType: LayoutType,
+        @CommandArgument("layout") layoutName: String
     ) {
         val group = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(groupName)
         if (group == null) {

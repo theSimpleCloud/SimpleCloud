@@ -29,8 +29,8 @@ package eu.thesimplecloud.module.rest.defaultcontroller.dto
  * @author Frederick Baier
  */
 class ErrorDto(
-        val errorClass: String,
-        error: String?
+    val errorClass: String,
+    error: String?
 ) {
 
     val error = error ?: ""

@@ -27,11 +27,11 @@ import eu.thesimplecloud.api.property.Property
 import java.util.*
 
 open class LoadOfflineCloudPlayer(
-        val name: String,
-        val uniqueId: UUID,
-        val firstLogin: Long,
-        val lastLogin: Long,
-        val onlineTime: Long,
-        val lastPlayerConnection: DefaultPlayerConnection,
-        var propertyMap: Map<String, Property<*>>
+    val name: String,
+    val uniqueId: UUID,
+    val firstLogin: Long,
+    val lastLogin: Long,
+    val onlineTime: Long,
+    val lastPlayerConnection: DefaultPlayerConnection,
+    var propertyMap: Map<String, Property<*>>
 )

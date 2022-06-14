@@ -41,7 +41,8 @@ class PacketIORemoveListProperty() : JsonPacket() {
         val property = this.jsonLib.getObject("property", Property::class.java) ?: return contentException("property")
         property as IProperty<Any>
         try {
-            val synchronizedObjectList: ISynchronizedObjectList<Any>? = CloudAPI.instance.getSynchronizedObjectListManager().getSynchronizedObjectList(listName)
+            val synchronizedObjectList: ISynchronizedObjectList<Any>? =
+                CloudAPI.instance.getSynchronizedObjectListManager().getSynchronizedObjectList(listName)
             synchronizedObjectList ?: return failure(NoSuchElementException())
             synchronizedObjectList.remove(property, true)
 

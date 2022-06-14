@@ -58,7 +58,7 @@ class PlayerUnregisterScheduler {
         val connectedProxy = cloudPlayer.getConnectedProxy() ?: return CommunicationPromise.of(false)
 
         val client = Manager.instance.communicationServer.getClientManager().getClientByClientValue(connectedProxy)
-                ?: return CommunicationPromise.of(false)
+            ?: return CommunicationPromise.of(false)
 
         return client.sendQuery(PacketOutGetPlayerOnlineStatus(cloudPlayer.getUniqueId()))
     }

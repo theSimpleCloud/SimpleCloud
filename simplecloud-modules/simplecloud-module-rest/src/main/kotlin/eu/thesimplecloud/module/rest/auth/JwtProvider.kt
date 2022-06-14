@@ -16,8 +16,8 @@ class JwtProvider(secret: String) {
 
     private val jwtGenerator = JWTGenerator { user: User, algorithm: Algorithm ->
         val token = JWT.create()
-                .withClaim("username", user.username)
-                .withExpiresAt(Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(7)))
+            .withClaim("username", user.username)
+            .withExpiresAt(Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(7)))
 
         token.sign(algorithm)
     }

@@ -25,6 +25,7 @@ package eu.thesimplecloud.base.wrapper.process
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.client.NetworkComponentType
 import eu.thesimplecloud.api.event.service.CloudServiceUnregisteredEvent
+import eu.thesimplecloud.api.javaVersions.JavaVersion
 import eu.thesimplecloud.api.listenerextension.cloudListener
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
@@ -127,7 +128,6 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
         Wrapper.instance.cloudServiceProcessManager.unregisterServiceProcess(this)
         deleteTemporaryFiles()
         if (Wrapper.instance.connectionToManager.isOpen()) {
-            //CloudAPI.instance.getCloudServiceManager().sendUpdateToConnection(this.cloudService, Wrapper.instance.communicationClient).awaitUninterruptibly()
             var tries = 0
             while (this.cloudService.isAuthenticated()) {
                 Thread.sleep(100)
@@ -152,7 +152,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
                     this.serviceDirectory.deleteServiceDirectoryUnsafe()
                 }
                 break
-            } catch (e: Exception) {
+            } catch (_: Exception) {
 
             }
         }
@@ -166,7 +166,13 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
         val jvmArguments = Wrapper.instance.jvmArgumentsConfig.jvmArguments.filter {
             it.groups.contains("all") || it.groups.contains(this.cloudService.getGroupName()) || it.groups.contains(this.cloudService.getServiceType().name)
         }
-        val commands = mutableListOf("java")
+
+        val commandName = cloudService.getServiceGroup().getJavaCommandName()
+        var commandNameExist = JavaVersion.paths.versions.keys.contains(commandName)
+        if (commandName == "java") commandNameExist = true
+        if (!commandNameExist) throw IllegalArgumentException("The java command for this name wasn't configured yet.")
+
+        val commands = mutableListOf(JavaVersion.paths.versions[commandName] ?: "java")
 
         jvmArguments.forEach { commands.addAll(it.arguments) }
 

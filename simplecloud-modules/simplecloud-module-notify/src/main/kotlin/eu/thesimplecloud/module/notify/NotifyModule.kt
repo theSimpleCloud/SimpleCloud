@@ -37,14 +37,12 @@ import java.io.File
  */
 class NotifyModule : ICloudModule {
 
-    val configFile = File("modules/notify", "config.json")
+    private val configFile = File("modules/notify", "config.json")
     lateinit var config: Config
 
     override fun onEnable() {
         loadConfig()
         CloudAPI.instance.getEventManager().registerListener(this, CloudListener(this))
-        //Launcher.instance.commandManager
-                //.registerCommand(this, NotifyCommand(this))
     }
 
     override fun onDisable() {

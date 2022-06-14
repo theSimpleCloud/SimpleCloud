@@ -31,8 +31,8 @@ import eu.thesimplecloud.module.sign.lib.layout.LayoutType
  * @author Frederick Baier
  */
 class GroupLayouts(
-        val groupName: String,
-        val layoutTypeToLayoutName: MutableMap<LayoutType, String>
+    val groupName: String,
+    val layoutTypeToLayoutName: MutableMap<LayoutType, String>
 ) {
 
     fun setLayout(layoutType: LayoutType, layoutName: String) {

@@ -47,7 +47,7 @@ class SetupManager(val launcher: Launcher) {
 
     fun queueSetup(setup: ISetup, first: Boolean = false) {
         val questions = ArrayList<SetupQuestionData>()
-        val methods = setup::class.java.declaredMethods
+        val methods = setup::class.java.methods
         methods.filter { it.isAnnotationPresent(SetupQuestion::class.java) }.forEach { method ->
             check(method.parameters.size == 1) { "Function marked with SetupQuestion must have one parameter." }
             questions.add(

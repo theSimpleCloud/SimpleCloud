@@ -30,9 +30,10 @@ import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.configurators.
 class ServiceConfiguratorManager {
 
     private val configurationMap = mapOf(
-            ServiceAPIType.VELOCITY to DefaultVelocityConfigurator(),
-            ServiceAPIType.BUNGEECORD to DefaultBungeeConfigurator(),
-            ServiceAPIType.SPIGOT to DefaultServerConfigurator())
+        ServiceAPIType.VELOCITY to DefaultVelocityConfigurator(),
+        ServiceAPIType.BUNGEECORD to DefaultBungeeConfigurator(),
+        ServiceAPIType.SPIGOT to DefaultServerConfigurator()
+    )
 
     /**
      * Returns the [IServiceConfigurator] found by the specified [ServiceAPIType]

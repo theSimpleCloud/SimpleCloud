@@ -25,11 +25,11 @@ package eu.thesimplecloud.api.player.connection
 import java.util.*
 
 data class DefaultPlayerConnection(
-        private val address: DefaultPlayerAddress,
-        private val name: String,
-        private val uniqueId: UUID,
-        private val onlineMode: Boolean,
-        private val version: Int
+    private val address: DefaultPlayerAddress,
+    private val name: String,
+    private val uniqueId: UUID,
+    private val onlineMode: Boolean,
+    private val version: Int
 ) : IPlayerConnection {
 
     override fun getAddress(): IPlayerAddress = this.address

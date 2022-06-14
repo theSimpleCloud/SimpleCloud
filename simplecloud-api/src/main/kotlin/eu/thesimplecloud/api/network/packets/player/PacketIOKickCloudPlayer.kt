@@ -36,7 +36,8 @@ class PacketIOKickCloudPlayer() : JsonPacket() {
     }
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Unit> {
-        val playerUniqueId = this.jsonLib.getObject("playerUniqueId", UUID::class.java) ?: return contentException("playerUniqueId")
+        val playerUniqueId =
+            this.jsonLib.getObject("playerUniqueId", UUID::class.java) ?: return contentException("playerUniqueId")
         val message = this.jsonLib.getString("message") ?: return contentException("message")
         CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(playerUniqueId)?.kick(message)
         return unit()

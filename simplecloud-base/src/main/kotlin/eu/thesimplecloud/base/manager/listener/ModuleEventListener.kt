@@ -33,14 +33,22 @@ class ModuleEventListener : IListener {
     @CloudEventHandler
     fun handleLoad(event: ModuleLoadedEvent) {
         val module = event.module
-        Launcher.instance.consoleSender.sendProperty("manager.module.loaded", module.fileContent.name, module.fileContent.author)
+        Launcher.instance.consoleSender.sendProperty(
+            "manager.module.loaded",
+            module.fileContent.name,
+            module.fileContent.author
+        )
     }
 
     @CloudEventHandler
     fun handleUnload(event: ModuleUnloadedEvent) {
         val module = event.module
         Launcher.instance.commandManager.unregisterCommands(module.cloudModule)
-        Launcher.instance.consoleSender.sendProperty("manager.module.unload", module.fileContent.name, module.fileContent.author)
+        Launcher.instance.consoleSender.sendProperty(
+            "manager.module.unload",
+            module.fileContent.name,
+            module.fileContent.author
+        )
     }
 
 }

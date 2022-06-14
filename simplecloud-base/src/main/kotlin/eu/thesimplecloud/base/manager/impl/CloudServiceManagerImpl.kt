@@ -53,15 +53,15 @@ class CloudServiceManagerImpl : AbstractCloudServiceManager() {
             ServiceState.STARTING, ServiceState.VISIBLE, ServiceState.INVISIBLE -> {
                 val wrapper = cloudService.getWrapper()
                 val wrapperClient = Manager.instance.communicationServer.getClientManager()
-                        .getClientByClientValue(wrapper)
+                    .getClientByClientValue(wrapper)
                 wrapperClient?.sendUnitQuery(PacketIOStopCloudService(cloudService.getName()))
             }
         }
 
         return cloudListener<CloudServiceUnregisteredEvent>()
-                .addCondition { it.cloudService == cloudService }
-                .unregisterAfterCall()
-                .toUnitPromise()
+            .addCondition { it.cloudService == cloudService }
+            .unregisterAfterCall()
+            .toUnitPromise()
     }
 
     override fun startService(cloudService: ICloudService): ICommunicationPromise<Unit> {
@@ -71,9 +71,9 @@ class CloudServiceManagerImpl : AbstractCloudServiceManager() {
         check(wrapperClient != null) { "Can not find client of wrapper to start service ${cloudService.getName()} on." }
         wrapperClient.sendUnitQuery(PacketIOWrapperStartService(cloudService.getName()))
         return cloudListener<CloudServiceConnectedEvent>()
-                .addCondition { it.cloudService == cloudService }
-                .unregisterAfterCall()
-                .toUnitPromise()
+            .addCondition { it.cloudService == cloudService }
+            .unregisterAfterCall()
+            .toUnitPromise()
     }
 
     override fun copyService(cloudService: ICloudService, path: String): ICommunicationPromise<Unit> {
@@ -81,7 +81,7 @@ class CloudServiceManagerImpl : AbstractCloudServiceManager() {
             return CommunicationPromise.failed(IllegalStateException("Cannot copy inactive service"))
         val wrapper = cloudService.getWrapper()
         val wrapperClient = Manager.instance.communicationServer.getClientManager()
-                .getClientByClientValue(wrapper)
+            .getClientByClientValue(wrapper)
         wrapperClient ?: return CommunicationPromise.failed(UnreachableComponentException("Wrapper is not reachable"))
         return wrapperClient.sendUnitQuery(PacketIOCopyService(cloudService, path), 20 * 1000)
     }

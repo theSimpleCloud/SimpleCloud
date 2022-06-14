@@ -29,7 +29,7 @@ package eu.thesimplecloud.api.utils.time
  * @author Frederick Baier
  */
 data class Timestamp(
-        val time: Long = System.currentTimeMillis()
+    val time: Long = System.currentTimeMillis()
 ) {
 
     fun isAfter(timestamp: Timestamp): Boolean {

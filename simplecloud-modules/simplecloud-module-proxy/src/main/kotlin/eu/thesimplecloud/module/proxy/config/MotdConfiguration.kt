@@ -30,8 +30,8 @@ package eu.thesimplecloud.module.proxy.config
  */
 
 data class MotdConfiguration(
-        val firstLines: List<String>,
-        val secondLines: List<String>,
-        val playerInfo: List<String>?,
-        val versionName: String?
+    val firstLines: List<String>,
+    val secondLines: List<String>,
+    val playerInfo: List<String>?,
+    val versionName: String?
 )

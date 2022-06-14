@@ -41,17 +41,25 @@ import eu.thesimplecloud.plugin.startup.CloudPlugin
 class VelocityCommand(private val commandStart: String) : RawCommand {
 
     override fun execute(invocation: RawCommand.Invocation) {
-        val player = invocation.source() as? Player?: return
+        val player = invocation.source() as? Player ?: return
         val command = "$commandStart " + invocation.arguments()
 
-        if (CloudVelocityPlugin.instance.synchronizedIngameCommandsProperty.getValue().contains(commandStart.toLowerCase())) {
-            CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketOutPlayerExecuteCommand(player.getCloudPlayer(), command))
+        if (CloudVelocityPlugin.instance.synchronizedIngameCommandsProperty.getValue()
+                .contains(commandStart.toLowerCase())
+        ) {
+            CloudPlugin.instance.connectionToManager.sendUnitQuery(
+                PacketOutPlayerExecuteCommand(
+                    player.getCloudPlayer(),
+                    command
+                )
+            )
         }
-        CloudAPI.instance.getEventManager().call(CloudPlayerCommandExecuteEvent(player.uniqueId, player.username, command))
+        CloudAPI.instance.getEventManager()
+            .call(CloudPlayerCommandExecuteEvent(player.uniqueId, player.username, command))
     }
 
     override fun suggest(invocation: RawCommand.Invocation): MutableList<String> {
-        val player = invocation.source() as? Player?: return super.suggest(invocation)
+        val player = invocation.source() as? Player ?: return super.suggest(invocation)
         val rawCommand = "$commandStart " + invocation.arguments()
         return ProxyEventHandler.handleTabComplete(player.uniqueId, rawCommand).toMutableList()
     }

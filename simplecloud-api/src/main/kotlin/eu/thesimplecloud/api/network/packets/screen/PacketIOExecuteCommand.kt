@@ -33,14 +33,16 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 class PacketIOExecuteCommand() : JsonPacket() {
 
     constructor(cloudClientType: NetworkComponentType, serviceName: String, command: String) : this() {
-        this.jsonLib.append("cloudClientType", cloudClientType).append("serviceName", serviceName).append("command", command)
+        this.jsonLib.append("cloudClientType", cloudClientType).append("serviceName", serviceName)
+            .append("command", command)
     }
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Unit> {
-        val cloudClientType = this.jsonLib.getObject("cloudClientType", NetworkComponentType::class.java) ?: return contentException("cloudClientType")
+        val cloudClientType = this.jsonLib.getObject("cloudClientType", NetworkComponentType::class.java)
+            ?: return contentException("cloudClientType")
         val serviceName = this.jsonLib.getString("serviceName") ?: return contentException("serviceName")
         val command = this.jsonLib.getString("command") ?: return contentException("command")
-        val commandExecutable: ICommandExecutable? = when(cloudClientType) {
+        val commandExecutable: ICommandExecutable? = when (cloudClientType) {
             NetworkComponentType.WRAPPER -> {
                 CloudAPI.instance.getWrapperManager().getWrapperByName(serviceName)
             }

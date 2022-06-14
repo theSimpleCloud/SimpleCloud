@@ -36,15 +36,18 @@ import eu.thesimplecloud.launcher.console.command.provider.ICommandSuggestionPro
 class EditWrapperParameterCommandSuggestionProvider : ICommandSuggestionProvider {
 
     override fun getSuggestions(sender: ICommandSender, fullCommand: String, lastArgument: String): List<String> {
-        val allFields = DefaultWrapperInfo::class.java.getAllFieldsFromClassAndSubClasses().filter { !Collection::class.java.isAssignableFrom(it.type) }
-        return allFields.filterNot { it.name == "name" ||
-                it.name == "host" ||
-                it.name == "authenticated" ||
-                it.name == "usedMemory" ||
-                it.name == "templatesReceived" ||
-                it.name == "cpuUsage" ||
-                it.name == "wrapperUpdater" ||
-                it.name == "currentlyStartingServices" }.map { it.name }
+        val allFields = DefaultWrapperInfo::class.java.getAllFieldsFromClassAndSubClasses()
+            .filter { !Collection::class.java.isAssignableFrom(it.type) }
+        return allFields.filterNot {
+            it.name == "name" ||
+                    it.name == "host" ||
+                    it.name == "authenticated" ||
+                    it.name == "usedMemory" ||
+                    it.name == "templatesReceived" ||
+                    it.name == "cpuUsage" ||
+                    it.name == "wrapperUpdater" ||
+                    it.name == "currentlyStartingServices"
+        }.map { it.name }
     }
 
 }

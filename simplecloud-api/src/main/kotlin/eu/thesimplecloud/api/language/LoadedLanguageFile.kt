@@ -29,7 +29,7 @@ package eu.thesimplecloud.api.language
  * @author Frederick Baier
  */
 class LoadedLanguageFile(
-        private val properties: List<LanguageProperty> = ArrayList()
+    private val properties: List<LanguageProperty> = ArrayList()
 ) {
 
     fun getProperties(): List<LanguageProperty> {

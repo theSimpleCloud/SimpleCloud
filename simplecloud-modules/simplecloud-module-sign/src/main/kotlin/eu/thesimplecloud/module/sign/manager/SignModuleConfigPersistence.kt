@@ -64,7 +64,8 @@ object SignModuleConfigPersistence {
         if (!groupLayoutsFile.exists()) return createDefaultConfig()
         if (!signsFile.exists()) return createDefaultConfig()
 
-        val groupsLayoutContainer = JsonLib.fromJsonFile(groupLayoutsFile)!!.getObject(GroupLayoutsContainer::class.java)
+        val groupsLayoutContainer =
+            JsonLib.fromJsonFile(groupLayoutsFile)!!.getObject(GroupLayoutsContainer::class.java)
         val cloudSignContainer = JsonLib.fromJsonFile(signsFile)!!.getObject(CloudSignContainer::class.java)
 
         val allLayoutDirectories = LayoutType.values().map { getLayoutsDirectoryByLayoutType(it) }
@@ -83,25 +84,35 @@ object SignModuleConfigPersistence {
 
     private fun getDefaultLayoutList(): List<SignLayout> {
         return listOf(
-                SignLayout("default", LayoutType.SEARCHING, listOf(
-                        SignFrame(arrayOf("§8--------", "Searching for", "server.", "§8--------")),
-                        SignFrame(arrayOf("§8--------", "Searching for", "server..", "§8--------")),
-                        SignFrame(arrayOf("§8--------", "Searching for", "server...", "§8--------"))
-                )),
-                SignLayout("default", LayoutType.STARTING, listOf(
-                        SignFrame(arrayOf("§6--------", "Server is", "starting.", "§6--------")),
-                        SignFrame(arrayOf("§6--------", "Server is", "starting..", "§6--------")),
-                        SignFrame(arrayOf("§6--------", "Server is", "starting...", "§6--------"))
-                )),
-                SignLayout("default", LayoutType.MAINTENANCE, listOf(
-                        SignFrame(arrayOf("§4--------", "%GROUP%", "§8Maintenance", "§4--------"))
-                )),
-                SignLayout("default", LayoutType.ONLINE, listOf(
-                        SignFrame(arrayOf("%SERVICE%", "§a%STATE%", "%MOTD%", "%ONLINE_PLAYERS%/%MAX_PLAYERS%"))
-                )),
-                SignLayout("default", LayoutType.FULL, listOf(
-                        SignFrame(arrayOf("%SERVICE%", "§6%STATE%", "%MOTD%", "%ONLINE_PLAYERS%/%MAX_PLAYERS%"))
-                ))
+            SignLayout(
+                "default", LayoutType.SEARCHING, listOf(
+                    SignFrame(arrayOf("§8--------", "Searching for", "server.", "§8--------")),
+                    SignFrame(arrayOf("§8--------", "Searching for", "server..", "§8--------")),
+                    SignFrame(arrayOf("§8--------", "Searching for", "server...", "§8--------"))
+                )
+            ),
+            SignLayout(
+                "default", LayoutType.STARTING, listOf(
+                    SignFrame(arrayOf("§6--------", "Server is", "starting.", "§6--------")),
+                    SignFrame(arrayOf("§6--------", "Server is", "starting..", "§6--------")),
+                    SignFrame(arrayOf("§6--------", "Server is", "starting...", "§6--------"))
+                )
+            ),
+            SignLayout(
+                "default", LayoutType.MAINTENANCE, listOf(
+                    SignFrame(arrayOf("§4--------", "%GROUP%", "§8Maintenance", "§4--------"))
+                )
+            ),
+            SignLayout(
+                "default", LayoutType.ONLINE, listOf(
+                    SignFrame(arrayOf("%DISPLAYNAME%", "§a%STATE%", "%MOTD%", "%ONLINE_PLAYERS%/%MAX_PLAYERS%"))
+                )
+            ),
+            SignLayout(
+                "default", LayoutType.FULL, listOf(
+                    SignFrame(arrayOf("%DISPLAYNAME%", "§6%STATE%", "%MOTD%", "%ONLINE_PLAYERS%/%MAX_PLAYERS%"))
+                )
+            )
         )
     }
 

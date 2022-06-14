@@ -34,8 +34,8 @@ import eu.thesimplecloud.api.screen.ICommandExecuteManager
 import eu.thesimplecloud.api.service.ICloudServiceManager
 import eu.thesimplecloud.api.service.version.IServiceVersionHandler
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroupManager
-import eu.thesimplecloud.api.sync.`object`.IGlobalPropertyHolder
 import eu.thesimplecloud.api.sync.list.manager.ISynchronizedObjectListManager
+import eu.thesimplecloud.api.sync.`object`.IGlobalPropertyHolder
 import eu.thesimplecloud.api.template.ITemplateManager
 import eu.thesimplecloud.api.wrapper.IWrapperManager
 import eu.thesimplecloud.clientserverapi.lib.bootstrap.ICommunicationBootstrap
@@ -134,7 +134,7 @@ interface ICloudAPI {
     /**
      * Returns whether the application is executed on windows.
      */
-    fun isWindows(): Boolean = System.getProperty("os.name").toLowerCase().contains("windows")
+    fun isWindows(): Boolean = System.getProperty("os.name").lowercase().contains("windows")
 
     /**
      * Returns then cloud module fot this side.

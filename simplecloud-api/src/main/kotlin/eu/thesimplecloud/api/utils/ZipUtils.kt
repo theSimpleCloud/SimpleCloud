@@ -45,9 +45,7 @@ class ZipUtils {
             val nextElement = entries.nextElement()
             if (nextElement.name.startsWith(path) && !nextElement.isDirectory) {
                 val pathInZipfile: Path = fileSystem.getPath(nextElement.name)
-                //println("About to delete an entry from ZIP File" + pathInZipfile.toUri())
                 Files.delete(pathInZipfile)
-                //println("File successfully deleted")
             }
         }
         zipFile.close()

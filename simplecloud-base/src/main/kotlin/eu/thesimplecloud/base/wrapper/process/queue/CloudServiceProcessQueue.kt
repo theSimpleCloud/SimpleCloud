@@ -39,7 +39,8 @@ class CloudServiceProcessQueue {
     private val queue = ConcurrentLinkedQueue<ICloudServiceProcess>()
     private val startingServices = CopyOnWriteArrayList<ICloudServiceProcess>()
 
-    private fun getMaxSimultaneouslyStartingServices() = Wrapper.instance.getThisWrapper().getMaxSimultaneouslyStartingServices()
+    private fun getMaxSimultaneouslyStartingServices() =
+        Wrapper.instance.getThisWrapper().getMaxSimultaneouslyStartingServices()
 
     fun addToQueue(cloudService: ICloudService) {
         Launcher.instance.consoleSender.sendProperty("wrapper.service.queued", cloudService.getName())
@@ -59,7 +60,8 @@ class CloudServiceProcessQueue {
                             cloudServiceProcess.getCloudService().getState() == ServiceState.INVISIBLE ||
                             cloudServiceProcess.getCloudService().getState() == ServiceState.CLOSED
                 }
-                val canStartService = queue.isNotEmpty() && startingServices.size < getMaxSimultaneouslyStartingServices()
+                val canStartService =
+                    queue.isNotEmpty() && startingServices.size < getMaxSimultaneouslyStartingServices()
                 if (canStartService) {
                     val cloudServiceProcess = queue.poll()
                     thread { cloudServiceProcess.start() }

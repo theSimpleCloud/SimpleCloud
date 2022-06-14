@@ -42,14 +42,14 @@ class ServiceGroupActionController : IController {
     @RequestMapping(RequestType.POST, "name/:name/startService", "web.cloud.action.group.startservice")
     fun handleStartNewService(@RequestPathParam("name") name: String): ICloudService? {
         val serviceGroup = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(name)
-                ?: return null
+            ?: return null
         return serviceGroup.startNewService().getBlocking()
     }
 
     @RequestMapping(RequestType.POST, "name/:name/shutdownAll", "web.cloud.action.group.shutdownall")
     fun handleStopAllServices(@RequestPathParam("name") name: String): Boolean {
         val serviceGroup = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(name)
-                ?: throwNoSuchElement()
+            ?: throwNoSuchElement()
         serviceGroup.shutdownAllServices()
         return true
     }

@@ -34,8 +34,8 @@ import java.io.File
  * @author Frederick Baier
  */
 class KeyConfigLoader : AbstractJsonLibConfigLoader<String>(
-        String::class.java,
-        File(DirectoryPaths.paths.storagePath + ".hash-key"),
-        { RandomStringUtils.random(64) },
-        true
+    String::class.java,
+    File(DirectoryPaths.paths.storagePath + ".hash-key"),
+    { RandomStringUtils.random(64) },
+    true
 )

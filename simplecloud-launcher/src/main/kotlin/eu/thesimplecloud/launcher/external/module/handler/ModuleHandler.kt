@@ -135,7 +135,12 @@ class ModuleHandler(
     }
 
     override fun loadModuleList(modulesToLoad: List<LoadedModuleFileContent>): List<LoadedModule> {
-        val moduleListLoader = ModuleListLoader(modulesToLoad, this.loadedModules, this.createModuleClassLoaderFunction, this.handleLoadError)
+        val moduleListLoader = ModuleListLoader(
+            modulesToLoad,
+            this.loadedModules,
+            this.createModuleClassLoaderFunction,
+            this.handleLoadError
+        )
         val newModules = moduleListLoader.loadModules()
         this.loadedModules.addAll(newModules)
         newModules.forEach { registerLanguageFile(it) }

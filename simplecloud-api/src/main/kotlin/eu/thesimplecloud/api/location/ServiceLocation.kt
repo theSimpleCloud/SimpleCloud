@@ -27,22 +27,46 @@ import eu.thesimplecloud.api.service.ICloudService
 
 
 class ServiceLocation(
-        val serviceName: String,
+    val serviceName: String,
+    worldName: String,
+    x: Double,
+    y: Double,
+    z: Double,
+    yaw: Float,
+    pitch: Float
+) : SimpleLocation(worldName, x, y, z, yaw, pitch) {
+
+    val groupName = serviceName.split("-").dropLast(1).joinToString("-")
+
+    constructor(
+        service: ICloudService,
         worldName: String,
         x: Double,
         y: Double,
         z: Double,
         yaw: Float,
         pitch: Float
-) : SimpleLocation(worldName, x, y, z, yaw, pitch) {
+    ) : this(service.getName(), worldName, x, y, z, yaw, pitch)
 
-    val groupName = serviceName.split("-").dropLast(1).joinToString("-")
+    constructor(service: ICloudService, worldName: String, x: Double, y: Double, z: Double) : this(
+        service,
+        worldName,
+        x,
+        y,
+        z,
+        0F,
+        0F
+    )
 
-    constructor(service: ICloudService, worldName: String, x: Double, y: Double, z: Double, yaw: Float, pitch: Float): this(service.getName(), worldName, x, y, z, yaw, pitch)
-
-    constructor(service: ICloudService, worldName: String, x: Double, y: Double, z: Double) : this(service, worldName, x, y, z, 0F, 0F)
-
-    constructor(serviceName: String, worldName: String, x: Double, y: Double, z: Double) : this(serviceName, worldName, x, y, z, 0F, 0F)
+    constructor(serviceName: String, worldName: String, x: Double, y: Double, z: Double) : this(
+        serviceName,
+        worldName,
+        x,
+        y,
+        z,
+        0F,
+        0F
+    )
 
     /**
      * Returns this location converted to a [GroupLocation]
@@ -63,7 +87,15 @@ class ServiceLocation(
     fun getService() = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(serviceName)
 
     override fun add(x: Double, y: Double, z: Double): ServiceLocation {
-        return ServiceLocation(this.serviceName, this.worldName, this.x + x, this.y + y, this.z + z, this.yaw, this.pitch)
+        return ServiceLocation(
+            this.serviceName,
+            this.worldName,
+            this.x + x,
+            this.y + y,
+            this.z + z,
+            this.yaw,
+            this.pitch
+        )
     }
 
     override fun setWorldName(worldName: String): ServiceLocation {

@@ -39,5 +39,4 @@ class CloudServiceProcessManager : ICloudServiceProcessManager {
     override fun getAllProcesses(): Set<ICloudServiceProcess> = this.registeredProcesses
 
 
-
 }

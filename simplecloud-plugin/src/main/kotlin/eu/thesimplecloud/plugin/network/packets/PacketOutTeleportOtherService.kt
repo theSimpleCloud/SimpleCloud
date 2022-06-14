@@ -28,10 +28,12 @@ import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import java.util.*
 
-class PacketOutTeleportOtherService(playerUniqueId: UUID, serviceName: String, simpleLocation: SimpleLocation) : JsonPacket() {
+class PacketOutTeleportOtherService(playerUniqueId: UUID, serviceName: String, simpleLocation: SimpleLocation) :
+    JsonPacket() {
 
     init {
-        this.jsonLib.append("playerUniqueId", playerUniqueId).append("serviceName", serviceName).append("simpleLocation", simpleLocation)
+        this.jsonLib.append("playerUniqueId", playerUniqueId).append("serviceName", serviceName)
+            .append("simpleLocation", simpleLocation)
     }
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> = unit()

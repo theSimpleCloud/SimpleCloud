@@ -35,6 +35,7 @@ interface ITemplateManager : ICacheList<ITemplateUpdater, ITemplate> {
     /**
      * Returns the first template found by the specified name
      */
-    fun getTemplateByName(name: String): ITemplate? = getAllCachedObjects().firstOrNull { it.getName().equals(name, true) }
+    fun getTemplateByName(name: String): ITemplate? =
+        getAllCachedObjects().firstOrNull { it.getName().equals(name, true) }
 
 }

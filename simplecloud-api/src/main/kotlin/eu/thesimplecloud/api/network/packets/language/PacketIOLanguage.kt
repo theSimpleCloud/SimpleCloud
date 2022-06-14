@@ -47,7 +47,10 @@ class PacketIOLanguage() : ObjectPacket<Array<LanguageProperty>>() {
         val value = this.value ?: return contentException("value")
         val languageManager = CloudAPI.instance.getLanguageManager()
         languageManager.clearAll()
-        languageManager.registerLanguageFile(CloudAPI.instance.getThisSidesCloudModule(), LoadedLanguageFile(value.toList()))
+        languageManager.registerLanguageFile(
+            CloudAPI.instance.getThisSidesCloudModule(),
+            LoadedLanguageFile(value.toList())
+        )
         return unit()
     }
 }

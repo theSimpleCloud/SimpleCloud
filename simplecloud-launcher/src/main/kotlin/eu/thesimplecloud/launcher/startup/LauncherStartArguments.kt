@@ -28,7 +28,7 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.enum
 import eu.thesimplecloud.launcher.application.CloudApplicationType
 
-class LauncherStartArguments() : CliktCommand() {
+class LauncherStartArguments : CliktCommand() {
 
     val disableAutoUpdater: Boolean by option(help = "Disables the auto updater.").flag()
     val startApplication: CloudApplicationType? by option(help = "Starts an application directly.").enum<CloudApplicationType>()

@@ -29,9 +29,9 @@ import java.io.File
 import java.util.jar.JarFile
 
 abstract class AbstractUpdater(
-        private val groupId: String,
-        private val artifactId: String,
-        protected val updateFile: File
+    private val groupId: String,
+    private val artifactId: String,
+    protected val updateFile: File
 ) : IUpdater {
 
     private var versionToInstall: String? = null
@@ -43,14 +43,14 @@ abstract class AbstractUpdater(
             this.wasVersionToInstallCalled = true
             val aetherArtifact = DefaultArtifact("${groupId}:${artifactId}:(0,]")
             this.versionToInstall = DependencyResolver(getRepositoryURL(), aetherArtifact)
-                    .determineLatestVersion()
+                .determineLatestVersion()
         }
         return this.versionToInstall
     }
 
     override fun downloadJarsForUpdate() {
         val latestVersion = getVersionToInstall()
-                ?: throw RuntimeException("Cannot perform update. Is the server down? (repo: ${getRepositoryURL()})")
+            ?: throw RuntimeException("Cannot perform update. Is the server down? (repo: ${getRepositoryURL()})")
         val dependency = AdvancedCloudDependency(groupId, artifactId, latestVersion)
         dependency.download(getRepositoryURL(), updateFile)
     }

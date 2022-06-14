@@ -36,9 +36,12 @@ class PacketIOGetAllCachedListProperties() : ObjectPacket<String>() {
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         val value = this.value ?: return contentException("value")
-        val synchronizedObjectList = CloudAPI.instance.getSynchronizedObjectListManager().getSynchronizedObjectList(value)
-        synchronizedObjectList ?: return failure(NoSuchElementException("No list object found by the specified name: $value"))
-        val allPromises = synchronizedObjectList.getAllCachedObjects().map { connection.sendUnitQuery(PacketIOUpdateListProperty(value, it)) }
+        val synchronizedObjectList =
+            CloudAPI.instance.getSynchronizedObjectListManager().getSynchronizedObjectList(value)
+        synchronizedObjectList
+            ?: return failure(NoSuchElementException("No list object found by the specified name: $value"))
+        val allPromises = synchronizedObjectList.getAllCachedObjects()
+            .map { connection.sendUnitQuery(PacketIOUpdateListProperty(value, it)) }
         return allPromises.combineAllPromises()
     }
 }

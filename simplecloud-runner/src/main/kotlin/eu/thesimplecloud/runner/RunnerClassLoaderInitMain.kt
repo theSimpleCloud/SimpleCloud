@@ -68,6 +68,6 @@ private fun executeDependencyLoaderMain(classLoader: URLClassLoader, args: Array
 
 private fun initClassLoader(loadedDependencies: Array<URL>): URLClassLoader {
     return RunnerClassLoader(
-            arrayOf(copiedDependencyLoaderFile.toURI().toURL(), *loadedDependencies)
+        arrayOf(copiedDependencyLoaderFile.toURI().toURL(), *loadedDependencies)
     )
 }

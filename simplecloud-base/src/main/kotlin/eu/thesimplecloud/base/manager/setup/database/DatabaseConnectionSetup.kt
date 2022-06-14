@@ -92,13 +92,13 @@ class DatabaseConnectionSetup : ISetup {
     @SetupFinished
     fun finished() {
         val databaseConnectionInformation = DatabaseConnectionInformation(
-                this.host!!,
-                this.port!!,
-                this.databaseName!!,
-                this.username!!,
-                this.password!!,
-                "cloud_",
-                databaseType!!
+            this.host!!,
+            this.port!!,
+            this.databaseName!!,
+            this.username!!,
+            this.password!!,
+            "cloud_",
+            databaseType!!
         )
         DatabaseConfigLoader().saveConfig(databaseConnectionInformation)
     }

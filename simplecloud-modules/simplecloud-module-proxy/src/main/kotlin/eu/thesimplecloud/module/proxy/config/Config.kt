@@ -31,10 +31,10 @@ import eu.thesimplecloud.api.CloudAPI
  * Time: 21:36
  */
 data class Config(
-        val proxyGroupConfigurations: List<ProxyGroupConfiguration>,
-        val tablistConfigurations: List<TablistConfiguration>,
-        val maintenanceKickMessage: String,
-        val fullProxyKickMessage: String
+    val proxyGroupConfigurations: List<ProxyGroupConfiguration>,
+    val tablistConfigurations: List<TablistConfiguration>,
+    val maintenanceKickMessage: String,
+    val fullProxyKickMessage: String
 ) {
 
     fun update() {

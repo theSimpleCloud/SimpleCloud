@@ -49,5 +49,4 @@ interface ICloudServiceProcess : IBootstrap {
     fun executeCommand(command: String)
 
 
-
 }

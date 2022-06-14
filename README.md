@@ -58,11 +58,15 @@
 ## Getting Started
 
 ### Requirements
+
 * **Java 8** or higher
-* **[MongoDB](https://www.mongodb.com/cloud/atlas/lp/try2-de?utm_source=google&utm_campaign=gs_emea_germany_search_core_brand_atlas_desktop&utm_term=mongodb&utm_medium=cpc_paid_search&utm_ad=e&utm_ad_campaign_id=12212624524&gclid=Cj0KCQjw5auGBhDEARIsAFyNm9EkpiB2K-5CMNxHkHcY7VbdNE_4HrbwDOSrMmjgNAve270Hnd9pjRoaAqFgEALw_wcB)** or **[SQL](https://go.mariadb.com/download-mariadb-server-community.html?utm_source=google&utm_medium=ppc&utm_campaign=MKG-Search-Google-Branded-EMEA-bd-Server-DL&gclid=Cj0KCQjw5auGBhDEARIsAFyNm9HBSH7xv8vFObvU9Xk8-bgYskrjfU53aBSkyehaGOxQQx2veRbC6-caAtJyEALw_wcB)** database
+* **[MongoDB](https://www.mongodb.com/cloud/atlas/lp/try2-de?utm_source=google&utm_campaign=gs_emea_germany_search_core_brand_atlas_desktop&utm_term=mongodb&utm_medium=cpc_paid_search&utm_ad=e&utm_ad_campaign_id=12212624524&gclid=Cj0KCQjw5auGBhDEARIsAFyNm9EkpiB2K-5CMNxHkHcY7VbdNE_4HrbwDOSrMmjgNAve270Hnd9pjRoaAqFgEALw_wcB)**
+  or **[SQL](https://go.mariadb.com/download-mariadb-server-community.html?utm_source=google&utm_medium=ppc&utm_campaign=MKG-Search-Google-Branded-EMEA-bd-Server-DL&gclid=Cj0KCQjw5auGBhDEARIsAFyNm9HBSH7xv8vFObvU9Xk8-bgYskrjfU53aBSkyehaGOxQQx2veRbC6-caAtJyEALw_wcB)**
+  database
 * min. **2GB** Memory and **2 virtual cores**
 
 ### Installation
+
 <ol>
   <li>Download the cloud on SpigotMC</li>
   <li>Unzip the folder and execute the start file</li>
@@ -76,6 +80,7 @@
 <br />
 
 ## Features
+
 * Dashboard
 * Language-System
 * Multi-Root
@@ -90,6 +95,7 @@
 <br />
 
 ## Dashboard
+
 SimpleCloud provides a **Dashboard accessible** for every user.
 The domain for the **Dashboard** is: **http://dashboard-nossl.thesimplecloud.eu**.
 Now you have to enter the **IP-Address** of your server follwed by the port of the **REST-Module.**
@@ -101,14 +107,17 @@ The username and password can be found in **"modules/rest/users.json"**
 <br />
 
 ## Modules
+
 SimpleCloud provides some modules by default.
 
 ### Internal-Wrapper
+
 The **Internal-Wrapper Module** starts a wrapper every time the manager of the cloud gets started.
 This wrapper does only run when the manager is running. It connects **automatically** with no need to set it up.
 The wrapper will be automatically named **"InternalWrapper"** and it will have **2GB of memory**.
 <br />
-You can **download** it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-internalwrapper/2.3.0/simplecloud-module-internalwrapper-2.3.0.jar)
+You can **download**
+it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-internalwrapper/2.3.0/simplecloud-module-internalwrapper-2.3.0.jar)
 <br />
 
 To edit the memory of the wrapper you can use the command: <br />
@@ -117,31 +126,37 @@ To edit the memory of the wrapper you can use the command: <br />
 <br />
 
 ### Signs
+
 The **Sign Module** is used to show available services for players in the lobby via a **sign**.
 The players can click on that sign and will be sent to the server. The layout of the signs is **fully customizable**.
 <br />
-You can **download** it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-sign/2.3.0/simplecloud-module-sign-2.3.0.jar)
+You can **download**
+it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-sign/2.3.0/simplecloud-module-sign-2.3.0.jar)
 
 ![SignModule](https://i.imgur.com/w534aZG.gif "SignModule")
 
 <br />
 
 ### Permissions
+
 With the **Permission Module**, you can easily manage your permissions.
 You can define groups and add permissions to them. You can also add permissions to single users.
 <br />
-You can **download** it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-proxy/2.3.0/simplecloud-module-proxy-2.3.0.jar)
+You can **download**
+it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-proxy/2.3.0/simplecloud-module-proxy-2.3.0.jar)
 
 ![PermissionModule](https://i.imgur.com/mjqCmjq.png"PermissionModule")
 
 <br />
 
 ### Proxy
+
 The **Proxy Module** is used to manage your proxies.
 It controls the **MOTD**, **Tablist**, **maintenance** and the **online count**.
 The online count of proxies of one group will be summed up and displayed in the player info.
 <br />
-You can **download** it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-proxy/2.3.0/simplecloud-module-proxy-2.3.0.jar)
+You can **download**
+it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-proxy/2.3.0/simplecloud-module-proxy-2.3.0.jar)
 
 ![ProxyModuleTab](https://i.imgur.com/2djSS9l.jpg "ProxyModuleTab")
 
@@ -153,6 +168,7 @@ You can **download** it [here](https://repo.thesimplecloud.eu/artifactory/gradle
 
 **Permissions:**
 <br />
+
 ````
 Maintenance join: cloud.maintenance.join
 Full join: cloud.full.join
@@ -161,16 +177,21 @@ Full join: cloud.full.join
 <br />
 
 ### Hub
+
 The **Hub Module** provides a hub command for players to switch to a **lobby server**.
 <br />
-You can **download** it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-hubcommand/2.3.0/simplecloud-module-hubcommand-2.3.0.jar)
+You can **download**
+it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-hubcommand/2.3.0/simplecloud-module-hubcommand-2.3.0.jar)
 
 <br />
 
 ### Notify
-The **Notify Module** sends notifications to players that have the required permission when a server gets **started** or **stopped**.
+
+The **Notify Module** sends notifications to players that have the required permission when a server gets **started**
+or **stopped**.
 <br />
-You can **download** it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-notify/2.3.0/simplecloud-module-notify-2.3.0.jar)
+You can **download**
+it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-notify/2.3.0/simplecloud-module-notify-2.3.0.jar)
 
 ![NotifyModule](https://i.imgur.com/7lcjXbN.jpg "NotifyModule")
 
@@ -178,6 +199,7 @@ You can **download** it [here](https://repo.thesimplecloud.eu/artifactory/gradle
 
 **Permissions:**
 <br />
+
 ````
 cloud.module.notify.messages
 ````
@@ -185,20 +207,26 @@ cloud.module.notify.messages
 <br />
 
 ### REST
+
 The **REST Module** provides a **restful API**. It is necessary for the **dashboard**.
 <br />
-You can **download** it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-rest/2.3.0/simplecloud-module-rest-2.3.0.jar)
+You can **download**
+it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-rest/2.3.0/simplecloud-module-rest-2.3.0.jar)
 
 <br />
 
 ### Statistics
+
 The **Statistics Module** saves some statistics of the cloud. The data is displayed on the **dashboard**.
 <br />
-You can **download** it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-statistics/2.3.0/simplecloud-module-statistics-2.3.0.jar)
+You can **download**
+it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-statistics/2.3.0/simplecloud-module-statistics-2.3.0.jar)
 
 <br />
 
 ### Chat + Tab
+
 The **Chat + Tab Module** provides **prefixes** and **suffixes** in the tablist and adds a **chat configuration**.
 <br />
-You can **download** it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-chat-tab/2.3.0/simplecloud-module-chat-tab-2.3.0.jar)
+You can **download**
+it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-chat-tab/2.3.0/simplecloud-module-chat-tab-2.3.0.jar)

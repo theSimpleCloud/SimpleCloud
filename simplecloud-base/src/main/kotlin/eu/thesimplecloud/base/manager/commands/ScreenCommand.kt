@@ -37,19 +37,28 @@ import eu.thesimplecloud.launcher.startup.Launcher
 class ScreenCommand : ICommandHandler {
 
     @CommandSubPath("join <name>", "Joins a screen")
-    fun screenCommand(commandSender: ICommandSender, @CommandArgument("name", ServiceCommandSuggestionProvider::class) name: String) {
+    fun screenCommand(
+        commandSender: ICommandSender,
+        @CommandArgument("name", ServiceCommandSuggestionProvider::class) name: String
+    ) {
         val screen = handleScreenNotExist(commandSender, name) ?: return
         Launcher.instance.screenManager.joinScreen(ScreenSession(screen, ScreenSession.ScreenCloseBehaviour.CLOSE))
     }
 
     @CommandSubPath("join <name> -reopen", "Joins a screen and reopens the screen every time the service restarts")
-    fun screenCommandReopen(commandSender: ICommandSender, @CommandArgument("name", ServiceCommandSuggestionProvider::class) name: String) {
+    fun screenCommandReopen(
+        commandSender: ICommandSender,
+        @CommandArgument("name", ServiceCommandSuggestionProvider::class) name: String
+    ) {
         val screen = handleScreenNotExist(commandSender, name) ?: return
         Launcher.instance.screenManager.joinScreen(ScreenSession(screen, ScreenSession.ScreenCloseBehaviour.REOPEN))
     }
 
     @CommandSubPath("join <name> -keep", "Joins a screen and keeps it open after it closes")
-    fun screenCommandKeep(commandSender: ICommandSender, @CommandArgument("name", ServiceCommandSuggestionProvider::class) name: String) {
+    fun screenCommandKeep(
+        commandSender: ICommandSender,
+        @CommandArgument("name", ServiceCommandSuggestionProvider::class) name: String
+    ) {
         val screen = handleScreenNotExist(commandSender, name) ?: return
         Launcher.instance.screenManager.joinScreen(ScreenSession(screen, ScreenSession.ScreenCloseBehaviour.KEEP_OPEN))
     }

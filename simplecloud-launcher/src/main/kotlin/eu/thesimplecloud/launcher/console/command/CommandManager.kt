@@ -38,7 +38,6 @@ import eu.thesimplecloud.launcher.event.command.CommandExecuteEvent
 import eu.thesimplecloud.launcher.event.command.CommandRegisteredEvent
 import eu.thesimplecloud.launcher.event.command.CommandUnregisteredEvent
 import eu.thesimplecloud.launcher.exception.CommandRegistrationException
-import eu.thesimplecloud.launcher.invoker.MethodInvokeHelper
 import eu.thesimplecloud.launcher.startup.Launcher
 import org.reflections.Reflections
 import java.util.concurrent.CopyOnWriteArrayList
@@ -143,7 +142,7 @@ class CommandManager {
             list.add(obj)
         }
         try {
-            MethodInvokeHelper.invoke(matchingCommandData.method, matchingCommandData.source, list.toArray())
+            matchingCommandData.method.invoke(matchingCommandData.source, *list.toArray())
         } catch (e: Exception) {
             throw e
         }
@@ -320,7 +319,7 @@ class CommandManager {
     private fun getCloudAPI(): ICloudAPI? {
         return try {
             CloudAPI.instance
-        } catch (ex: Exception) {
+        } catch (_: Exception) {
             return null
         }
     }

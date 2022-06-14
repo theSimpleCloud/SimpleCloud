@@ -22,7 +22,8 @@ class BukkitPluginMain : JavaPlugin() {
         Bukkit.getPluginManager().registerEvents(JoinListener(), this)
         Bukkit.getPluginManager().registerEvents(ChatListener(), this)
 
-        CloudAPI.instance.getEventManager().registerListener(CloudAPI.instance.getThisSidesCloudModule(), CloudListener())
+        CloudAPI.instance.getEventManager()
+            .registerListener(CloudAPI.instance.getThisSidesCloudModule(), CloudListener())
     }
 
     companion object {

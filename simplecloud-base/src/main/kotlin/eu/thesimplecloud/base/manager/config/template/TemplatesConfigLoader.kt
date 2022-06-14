@@ -27,8 +27,8 @@ import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import java.io.File
 
 class TemplatesConfigLoader : AbstractJsonLibConfigLoader<TemplatesConfig>(
-        TemplatesConfig::class.java,
-        File(DirectoryPaths.paths.storagePath + "templates.json"),
-        { TemplatesConfig(HashSet()) },
-        false
+    TemplatesConfig::class.java,
+    File(DirectoryPaths.paths.storagePath + "templates.json"),
+    { TemplatesConfig(HashSet()) },
+    false
 )

@@ -32,9 +32,9 @@ import io.netty.util.concurrent.GlobalEventExecutor
 import java.util.concurrent.TimeUnit
 
 open class AdvancedListener<T : IEvent>(
-        eventClass: Class<out IEvent>,
-        autoUnregister: Boolean = true,
-        unregisterTimeInSeconds: Long = 5 * 60
+    eventClass: Class<out IEvent>,
+    autoUnregister: Boolean = true,
+    unregisterTimeInSeconds: Long = 5 * 60
 ) : IAdvancedListener<T> {
 
     private val conditions = ArrayList<(T) -> Boolean>()
@@ -44,16 +44,16 @@ open class AdvancedListener<T : IEvent>(
     init {
 
         CloudAPI.instance.getEventManager().registerEvent(
-                CloudAPI.instance.getThisSidesCloudModule(),
-                eventClass,
-                listenerObj, object : IEventExecutor {
-            override fun execute(event: IEvent) {
-                if (!eventClass.isAssignableFrom(event.javaClass))
-                    return
-                event as T
-                if (conditions.all { it(event) }) actions.forEach { it(event) }
-            }
-        })
+            CloudAPI.instance.getThisSidesCloudModule(),
+            eventClass,
+            listenerObj, object : IEventExecutor {
+                override fun execute(event: IEvent) {
+                    if (!eventClass.isAssignableFrom(event.javaClass))
+                        return
+                    event as T
+                    if (conditions.all { it(event) }) actions.forEach { it(event) }
+                }
+            })
         if (autoUnregister) {
             GlobalEventExecutor.INSTANCE.schedule({
                 this.unregister()

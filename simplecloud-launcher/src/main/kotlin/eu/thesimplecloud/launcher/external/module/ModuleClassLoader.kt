@@ -27,7 +27,12 @@ import eu.thesimplecloud.launcher.external.module.handler.IModuleHandler
 import java.net.URL
 import java.net.URLClassLoader
 
-open class ModuleClassLoader(urls: Array<URL>, parent: ClassLoader, val moduleName: String, var moduleHandler: IModuleHandler?) : URLClassLoader(urls, parent) {
+open class ModuleClassLoader(
+    urls: Array<URL>,
+    parent: ClassLoader,
+    val moduleName: String,
+    var moduleHandler: IModuleHandler?
+) : URLClassLoader(urls, parent) {
 
     @Volatile
     private var closed: Boolean = false

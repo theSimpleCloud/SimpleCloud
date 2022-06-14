@@ -29,5 +29,5 @@ package eu.thesimplecloud.module.rest.defaultcontroller.dto
  * @author Frederick Baier
  */
 class CommandDto(
-        val command: String
+    val command: String
 )

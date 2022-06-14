@@ -42,7 +42,7 @@ class GroupCreateListener(private val proxyModule: ProxyModule) : IListener {
     fun handle(event: CloudServiceGroupCreatedEvent) {
         val currentConfig = ProxyHandler.configHolder.getValue()
         val proxyGroup = event.serviceGroup
-        if (proxyGroup.getServiceType() != ServiceType.PROXY)  return
+        if (proxyGroup.getServiceType() != ServiceType.PROXY) return
         if (proxyModule.getProxyConfiguration(proxyGroup.getName()) != null) return
 
         val proxyGroupConfiguration = DefaultConfig.getDefaultProxyGroupConfiguration(proxyGroup.getName())

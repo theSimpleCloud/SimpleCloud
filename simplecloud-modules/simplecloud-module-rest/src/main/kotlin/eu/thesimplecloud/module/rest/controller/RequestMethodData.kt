@@ -32,17 +32,17 @@ import java.lang.reflect.Method
  * @author Frederick Baier
  */
 class RequestMethodData(
-        val controller: IController,
-        val method: Method,
-        val path: String,
-        val requestType: RequestType,
-        val permission: String,
-        val parameters: List<RequestParameterData>
+    val controller: IController,
+    val method: Method,
+    val path: String,
+    val requestType: RequestType,
+    val permission: String,
+    val parameters: List<RequestParameterData>
 ) {
 
     class RequestParameterData(
-            val parameterType: Class<*>,
-            val annotation: Annotation?
+        val parameterType: Class<*>,
+        val annotation: Annotation?
     )
 
 }

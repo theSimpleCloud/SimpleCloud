@@ -26,13 +26,13 @@ import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.template.ITemplate
 
 class TemplateLocation(
-        val templateName: String,
-        worldName: String,
-        x: Double,
-        y: Double,
-        z: Double,
-        yaw: Float,
-        pitch: Float
+    val templateName: String,
+    worldName: String,
+    x: Double,
+    y: Double,
+    z: Double,
+    yaw: Float,
+    pitch: Float
 ) : SimpleLocation(worldName, x, y, z, yaw, pitch) {
 
     /**
@@ -41,7 +41,15 @@ class TemplateLocation(
     fun getTemplate(): ITemplate? = CloudAPI.instance.getTemplateManager().getTemplateByName(templateName)
 
     override fun add(x: Double, y: Double, z: Double): TemplateLocation {
-        return TemplateLocation(this.templateName, this.worldName, this.x + x, this.y + y, this.z + z, this.yaw, this.pitch)
+        return TemplateLocation(
+            this.templateName,
+            this.worldName,
+            this.x + x,
+            this.y + y,
+            this.z + z,
+            this.yaw,
+            this.pitch
+        )
     }
 
     override fun setWorldName(worldName: String): TemplateLocation {
