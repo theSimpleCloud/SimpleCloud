@@ -11,7 +11,7 @@ class JavaSetup : ISetup {
     lateinit var name: String
     lateinit var path: String
 
-    @SetupQuestion(0, "java name")
+    @SetupQuestion(0, "manager.setup.service-versions.question.javaName")
     fun javaNameSetup(name: String): Boolean {
         return if (name.isNotEmpty()) {
             this.name = name
@@ -33,7 +33,7 @@ class JavaSetup : ISetup {
     }
 
     fun setup() {
-        Launcher.instance.consoleSender.sendPropertyInSetup("Java startup command set")
+        Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-versions.question.java.success")
         val javaVersion = JavaVersion.paths
         javaVersion.versions[name] = path
         val launcherConfig = Launcher.instance.launcherConfig
