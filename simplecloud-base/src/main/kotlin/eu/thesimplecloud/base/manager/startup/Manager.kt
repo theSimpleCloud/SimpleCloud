@@ -47,6 +47,7 @@ import eu.thesimplecloud.base.manager.packet.IPacketRegistry
 import eu.thesimplecloud.base.manager.packet.PacketRegistry
 import eu.thesimplecloud.base.manager.player.PlayerUnregisterScheduler
 import eu.thesimplecloud.base.manager.service.ServiceHandler
+import eu.thesimplecloud.base.manager.setup.AutoConfigureSetup
 import eu.thesimplecloud.base.manager.setup.database.DatabaseConnectionSetup
 import eu.thesimplecloud.base.manager.startup.server.CommunicationConnectionHandlerImpl
 import eu.thesimplecloud.base.manager.startup.server.ManagerAccessHandler
@@ -62,7 +63,6 @@ import eu.thesimplecloud.launcher.external.module.ModuleClassLoader
 import eu.thesimplecloud.launcher.external.module.handler.IModuleHandler
 import eu.thesimplecloud.launcher.external.module.handler.ModuleHandler
 import eu.thesimplecloud.launcher.language.LanguageFileLoader
-import eu.thesimplecloud.launcher.setups.AutoConfigureSetup
 import eu.thesimplecloud.launcher.startup.Launcher
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
