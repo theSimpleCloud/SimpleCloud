@@ -38,7 +38,6 @@ import eu.thesimplecloud.plugin.network.packets.PacketOutCreateCloudPlayer
 import eu.thesimplecloud.plugin.network.packets.PacketOutGetTabSuggestions
 import eu.thesimplecloud.plugin.network.packets.PacketOutPlayerConnectToServer
 import eu.thesimplecloud.plugin.network.packets.PacketOutPlayerLoginRequest
-import eu.thesimplecloud.plugin.proxy.velocity.CloudVelocityPlugin
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import java.util.*
 
