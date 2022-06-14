@@ -7,7 +7,7 @@ import eu.thesimplecloud.api.service.ServiceState
 class ServiceStateCommandSuggestionProvider : ICommandSuggestionProvider {
 
     override fun getSuggestions(sender: ICommandSender, fullCommand: String, lastArgument: String): List<String> {
-        return ServiceState.values().map { it.name.lowercase() }
+        return ServiceState.values().map { it.name.uppercase() }
     }
 
 }
