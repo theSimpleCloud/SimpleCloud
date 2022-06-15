@@ -236,7 +236,7 @@ object ProxyEventHandler {
 
     fun handleTabComplete(uuid: UUID, rawCommand: String): ICommunicationPromise<Array<String>> {
         val commandString = rawCommand.replace("/", "")
-        if (commandString.isEmpty()) return CommunicationPromise()
+        if (commandString.isEmpty()) return CommunicationPromise.of(emptyArray())
 
         return CloudPlugin.instance.connectionToManager.sendQuery(
             PacketOutGetTabSuggestions(
