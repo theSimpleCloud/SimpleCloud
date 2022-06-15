@@ -101,6 +101,7 @@ object ProxyEventHandler {
     }
 
     private fun handleAlreadyRegistered(player: ICloudPlayer) {
+        CloudVelocityPlugin.instance.list.add(player.getUniqueId())
         player.kick().awaitUninterruptibly()
         CloudAPI.instance.getCloudPlayerManager()
             .sendDeleteToConnection(player, CloudPlugin.instance.connectionToManager)
