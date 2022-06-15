@@ -34,12 +34,16 @@ import eu.thesimplecloud.api.player.impl.CloudPlayerUpdater
 import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.servicegroup.grouptype.ICloudServerGroup
 import eu.thesimplecloud.clientserverapi.lib.packet.packetsender.sendQuery
+import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.plugin.network.packets.PacketOutCreateCloudPlayer
 import eu.thesimplecloud.plugin.network.packets.PacketOutGetTabSuggestions
 import eu.thesimplecloud.plugin.network.packets.PacketOutPlayerConnectToServer
 import eu.thesimplecloud.plugin.network.packets.PacketOutPlayerLoginRequest
 import eu.thesimplecloud.plugin.startup.CloudPlugin
+import net.md_5.bungee.api.ProxyServer
 import java.util.*
+import java.util.concurrent.CompletableFuture
 
 /**
  * Created by IntelliJ IDEA.
@@ -230,17 +234,16 @@ object ProxyEventHandler {
         }
     }
 
-    fun handleTabComplete(uuid: UUID, rawCommand: String): Array<String> {
+    fun handleTabComplete(uuid: UUID, rawCommand: String): ICommunicationPromise<Array<String>> {
         val commandString = rawCommand.replace("/", "")
-        if (commandString.isEmpty()) return emptyArray()
+        if (commandString.isEmpty()) return CommunicationPromise.of(emptyArray())
 
-        val suggestions = CloudPlugin.instance.connectionToManager.sendQuery<Array<String>>(
+        return CloudPlugin.instance.connectionToManager.sendQuery(
             PacketOutGetTabSuggestions(
                 uuid,
                 commandString
             )
-        ).getBlocking()
-        return suggestions
+        )
     }
 
     private fun subtractOneFromThisServiceOnlineCount() {

@@ -38,7 +38,7 @@ class DefaultConfig {
                 listOf("Proxy"),
                 listOf(
                     "<dark_gray>                                                                        <dark_gray>",
-                    "<aqua>SimpleCloud <dark_gray>» <gray>Simplify <white><italic>your <gray>network",
+                    "<aqua>SimpleCloud <dark_gray>» <gray>Simplify <white><italic>your</italic> <gray>network",
                     "<dark_aqua>Online <dark_gray>» <gray>%ONLINE_PLAYERS%<dark_gray>/<gray>%MAX_PLAYERS% <dark_gray>┃ <dark_aqua>Server <dark_gray>» <gray>%DISPLAYNAME%",
                     "<dark_gray>",
                 ),

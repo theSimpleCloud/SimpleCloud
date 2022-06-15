@@ -44,6 +44,7 @@
   "manager.command.edit.allowed-parameters": "Erlaubte Argumente sind:",
   "manager.command.edit.group.invalid-value": "Ungültige Angabe. Erwarteter Typ: %TYPE%",
   "manager.setup.service-versions.question.java.success": "Java Start Befehl gesetzt",
+  "manager.setup.service-versions.question.javaName": "Bitte geben den von dir bevorzugte Java-Namen an.",
   "manager.setup.service-versions.question.java": "Bitte gebe die von dir bevorzugte Java-Version an. (java = Standard)",
   "manager.command.edit.group.not-exist": "Die angegebene Gruppe existiert nicht",
   "manager.command.edit.group.success": "Gruppeneditierung erfolgreich abgeschlossen",
