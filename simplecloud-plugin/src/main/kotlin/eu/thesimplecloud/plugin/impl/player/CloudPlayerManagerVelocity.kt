@@ -44,6 +44,7 @@ import eu.thesimplecloud.plugin.network.packets.PacketOutTeleportOtherService
 import eu.thesimplecloud.plugin.proxy.velocity.CloudVelocityPlugin
 import eu.thesimplecloud.plugin.proxy.velocity.text.CloudTextBuilder
 import eu.thesimplecloud.plugin.startup.CloudPlugin
+import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.title.Title
 import net.kyori.adventure.util.Ticks
 
@@ -67,7 +68,7 @@ class CloudPlayerManagerVelocity : AbstractServiceCloudPlayerManager() {
 
         val player = getPlayerByCloudPlayer(cloudPlayer)
         player?.let {
-            player.sendMessage(player, CloudTextBuilder().build(cloudText))
+            player.sendMessage(player, CloudTextBuilder().build(cloudText), MessageType.CHAT)
         }
         return CommunicationPromise.of(Unit)
     }
