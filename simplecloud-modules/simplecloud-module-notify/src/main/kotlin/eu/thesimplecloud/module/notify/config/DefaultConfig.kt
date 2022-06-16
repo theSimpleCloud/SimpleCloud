@@ -33,8 +33,8 @@ class DefaultConfig {
         fun get(): Config {
             return Config(
                 "§8[§e»§8] §f%DISPLAYNAME%",
-                "§8[§a»§8] §f%DISPLAYNAME% §8» §6%WRAPPER% §8| §e%CPUUSAGE%/100%",
-                "§8[§c«§8] §f%DISPLAYNAME% §8» §6%WRAPPER% §8| §e%CPUUSAGE%/100%",
+                "§8[§a»§8] §f%DISPLAYNAME% §8(§7%WRAPPER%§8)",
+                "§8[§c«§8] §f%DISPLAYNAME% §8(§7%WRAPPER%§8)",
                 "§7§oClick to connect"
             )
         }
