@@ -96,6 +96,7 @@ class CloudVelocityPlugin @Inject constructor(val proxyServer: ProxyServer) : IC
 
         synchronizeOnlineCountTask()
         runOfflinePlayerChecker()
+        
         CloudAPI.instance.getEventManager().registerListener(CloudPlugin.instance, CloudPlayerDisconnectListener(this.proxyServer))
     }
 

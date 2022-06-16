@@ -42,6 +42,10 @@ import eu.thesimplecloud.plugin.network.packets.PacketOutTeleportOtherService
 import eu.thesimplecloud.plugin.proxy.bungee.CloudBungeePlugin
 import eu.thesimplecloud.plugin.proxy.bungee.text.CloudTextBuilder
 import eu.thesimplecloud.plugin.startup.CloudPlugin
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.TextComponent
+import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer
 import net.md_5.bungee.api.ChatMessageType
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.config.ServerInfo
@@ -188,13 +192,11 @@ class CloudPlayerManagerBungee : AbstractServiceCloudPlayerManager() {
             return
         }
 
-        val headerString = headers.joinToString("\n")
-        val footerString = footers.joinToString("\n")
+        val headerString = getHexColorComponent(headers.joinToString("\n"))
+        val footerString = getHexColorComponent(footers.joinToString("\n"))
 
-        getProxiedPlayerByCloudPlayer(cloudPlayer)?.setTabHeader(
-            CloudTextBuilder().build(CloudText(headerString)),
-            CloudTextBuilder().build(CloudText(footerString))
-        )
+        getProxiedPlayerByCloudPlayer(cloudPlayer)?.setTabHeader(BungeeComponentSerializer.get().serialize(headerString),
+            BungeeComponentSerializer.get().serialize(footerString))
     }
 
     override fun teleportPlayer(cloudPlayer: ICloudPlayer, location: SimpleLocation): ICommunicationPromise<Unit> {
@@ -250,6 +252,10 @@ class CloudPlayerManagerBungee : AbstractServiceCloudPlayerManager() {
 
     private fun getServerInfoByCloudService(cloudService: ICloudService): ServerInfo? {
         return ProxyServer.getInstance().getServerInfo(cloudService.getName())
+    }
+
+    private fun getHexColorComponent(message: String): TextComponent {
+        return Component.textOfChildren(MiniMessage.miniMessage().deserialize(message))
     }
 
 }
