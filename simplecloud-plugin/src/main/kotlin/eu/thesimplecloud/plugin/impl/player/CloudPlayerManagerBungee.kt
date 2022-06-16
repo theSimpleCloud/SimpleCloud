@@ -195,8 +195,8 @@ class CloudPlayerManagerBungee : AbstractServiceCloudPlayerManager() {
         val headerString = getHexColorComponent(headers.joinToString("\n"))
         val footerString = getHexColorComponent(footers.joinToString("\n"))
 
-        getProxiedPlayerByCloudPlayer(cloudPlayer)?.setTabHeader(BungeeComponentSerializer.get().serialize(headerString)[0],
-            BungeeComponentSerializer.get().serialize(footerString)[0])
+        getProxiedPlayerByCloudPlayer(cloudPlayer)?.setTabHeader(BungeeComponentSerializer.get().serialize(headerString),
+            BungeeComponentSerializer.get().serialize(footerString))
     }
 
     override fun teleportPlayer(cloudPlayer: ICloudPlayer, location: SimpleLocation): ICommunicationPromise<Unit> {
