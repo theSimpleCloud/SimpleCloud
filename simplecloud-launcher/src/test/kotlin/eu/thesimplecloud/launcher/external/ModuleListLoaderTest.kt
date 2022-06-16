@@ -57,7 +57,10 @@ class ModuleListLoaderTest {
     fun test() {
         val loadedModuleFileContent = generateLoadedModuleFileContent("Test")
         val modulesToLoad = listOf(loadedModuleFileContent)
-        moduleHandler = ModuleListLoader(modulesToLoad, emptyList(), { urls, name -> ModuleClassLoader(urls, ClassLoader.getSystemClassLoader(), name, null) })
+        moduleHandler = ModuleListLoader(
+            modulesToLoad,
+            emptyList(),
+            { urls, name -> ModuleClassLoader(urls, ClassLoader.getSystemClassLoader(), name, null) })
         moduleHandler.loadModules()
 
         verify { anyConstructed<UnsafeModuleLoader>().loadModule(loadedModuleFileContent) }
@@ -67,7 +70,10 @@ class ModuleListLoaderTest {
     fun testSkipSoftDependIfNotAvailable() {
         val loadedModuleFileContent = generateLoadedModuleFileContent("Test", emptyList(), listOf("Test2"))
         val modulesToLoad = listOf(loadedModuleFileContent)
-        moduleHandler = ModuleListLoader(modulesToLoad, emptyList(), { urls, name -> ModuleClassLoader(urls, ClassLoader.getSystemClassLoader(), name, null) })
+        moduleHandler = ModuleListLoader(
+            modulesToLoad,
+            emptyList(),
+            { urls, name -> ModuleClassLoader(urls, ClassLoader.getSystemClassLoader(), name, null) })
         moduleHandler.loadModules()
 
         verify { anyConstructed<UnsafeModuleLoader>().loadModule(loadedModuleFileContent) }
@@ -81,7 +87,10 @@ class ModuleListLoaderTest {
         val content2 = generateLoadedModuleFileContent("Test1")
         every { loadedModule.fileContent } returns content2.content
         val modulesToLoad = listOf(content1, content2)
-        moduleHandler = ModuleListLoader(modulesToLoad, emptyList(), { urls, name -> ModuleClassLoader(urls, ClassLoader.getSystemClassLoader(), name, null) })
+        moduleHandler = ModuleListLoader(
+            modulesToLoad,
+            emptyList(),
+            { urls, name -> ModuleClassLoader(urls, ClassLoader.getSystemClassLoader(), name, null) })
         moduleHandler.loadModules()
 
         verify { anyConstructed<UnsafeModuleLoader>().loadModule(content1) }
@@ -96,7 +105,10 @@ class ModuleListLoaderTest {
         val content2 = generateLoadedModuleFileContent("Test1")
         every { loadedModule.fileContent } returns content2.content
         val modulesToLoad = listOf(content1, content2)
-        moduleHandler = ModuleListLoader(modulesToLoad, emptyList(), { urls, name -> ModuleClassLoader(urls, ClassLoader.getSystemClassLoader(), name, null) })
+        moduleHandler = ModuleListLoader(
+            modulesToLoad,
+            emptyList(),
+            { urls, name -> ModuleClassLoader(urls, ClassLoader.getSystemClassLoader(), name, null) })
         moduleHandler.loadModules()
 
         verify { anyConstructed<UnsafeModuleLoader>().loadModule(content1) }
@@ -107,7 +119,10 @@ class ModuleListLoaderTest {
     fun testMissingDependency() {
         val loadedModuleFileContent = generateLoadedModuleFileContent("Test", listOf("Test2"))
         val modulesToLoad = listOf(loadedModuleFileContent)
-        moduleHandler = ModuleListLoader(modulesToLoad, emptyList(), { urls, name -> ModuleClassLoader(urls, ClassLoader.getSystemClassLoader(), name, null) })
+        moduleHandler = ModuleListLoader(
+            modulesToLoad,
+            emptyList(),
+            { urls, name -> ModuleClassLoader(urls, ClassLoader.getSystemClassLoader(), name, null) })
         moduleHandler.loadModules()
     }
 
@@ -119,7 +134,10 @@ class ModuleListLoaderTest {
         val content2 = generateLoadedModuleFileContent("Test1", listOf("Test2"))
         every { loadedModule.fileContent } returns content2.content
         val modulesToLoad = listOf(content1, content2)
-        moduleHandler = ModuleListLoader(modulesToLoad, emptyList(), { urls, name -> ModuleClassLoader(urls, ClassLoader.getSystemClassLoader(), name, null) })
+        moduleHandler = ModuleListLoader(
+            modulesToLoad,
+            emptyList(),
+            { urls, name -> ModuleClassLoader(urls, ClassLoader.getSystemClassLoader(), name, null) })
         moduleHandler.loadModules()
     }
 
@@ -132,12 +150,28 @@ class ModuleListLoaderTest {
         val content2 = generateLoadedModuleFileContent("Test1", emptyList(), listOf("Test2"))
         every { loadedModule.fileContent } returns content2.content
         val modulesToLoad = listOf(content1, content2)
-        moduleHandler = ModuleListLoader(modulesToLoad, emptyList(), { urls, name -> ModuleClassLoader(urls, ClassLoader.getSystemClassLoader(), name, null) })
+        moduleHandler = ModuleListLoader(
+            modulesToLoad,
+            emptyList(),
+            { urls, name -> ModuleClassLoader(urls, ClassLoader.getSystemClassLoader(), name, null) })
         moduleHandler.loadModules()
     }
 
-    private fun generateLoadedModuleFileContent(name: String, moduleDepends: List<String> = emptyList(), moduleSoftDepends: List<String> = emptyList()): LoadedModuleFileContent {
-        val fileContent = ModuleFileContent(name, RandomStringUtils.randomAlphabetic(20), "eu.thesimplecloud.mockmodule.ModuleMain", ModuleCopyType.NONE, emptyList(), emptyList(), moduleDepends, moduleSoftDepends)
+    private fun generateLoadedModuleFileContent(
+        name: String,
+        moduleDepends: List<String> = emptyList(),
+        moduleSoftDepends: List<String> = emptyList()
+    ): LoadedModuleFileContent {
+        val fileContent = ModuleFileContent(
+            name,
+            RandomStringUtils.randomAlphabetic(20),
+            "eu.thesimplecloud.mockmodule.ModuleMain",
+            ModuleCopyType.NONE,
+            emptyList(),
+            emptyList(),
+            moduleDepends,
+            moduleSoftDepends
+        )
         return LoadedModuleFileContent(File(RandomStringUtils.randomAlphabetic(20) + ".jar"), fileContent, null)
     }
 

@@ -60,7 +60,8 @@ class SQLTimedValueStore<T : Any>(
     }
 
     override fun store(timedValue: TimedValue<T>) {
-        val statement = getConnection().prepareStatement("INSERT INTO `$collectionName` (`value`, `timestamp`) VALUES (?, ?)")
+        val statement =
+            getConnection().prepareStatement("INSERT INTO `$collectionName` (`value`, `timestamp`) VALUES (?, ?)")
         statement.setString(1, timedValue.value.toString())
         statement.setLong(2, timedValue.getTimeStamp())
         statement.executeUpdate()

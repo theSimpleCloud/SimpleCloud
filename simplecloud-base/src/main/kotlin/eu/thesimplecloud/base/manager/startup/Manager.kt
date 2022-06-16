@@ -47,6 +47,8 @@ import eu.thesimplecloud.base.manager.packet.IPacketRegistry
 import eu.thesimplecloud.base.manager.packet.PacketRegistry
 import eu.thesimplecloud.base.manager.player.PlayerUnregisterScheduler
 import eu.thesimplecloud.base.manager.service.ServiceHandler
+import eu.thesimplecloud.base.manager.setup.CreateDefaultLobbyGroup
+import eu.thesimplecloud.base.manager.setup.CreateDefaultProxyGroup
 import eu.thesimplecloud.base.manager.setup.database.DatabaseConnectionSetup
 import eu.thesimplecloud.base.manager.startup.server.CommunicationConnectionHandlerImpl
 import eu.thesimplecloud.base.manager.startup.server.ManagerAccessHandler
@@ -127,7 +129,7 @@ class Manager : ICloudApplication {
         this.ingameCommandUpdater = IngameCommandUpdater()
         if (!DatabaseConfigLoader().doesConfigFileExist()) {
             Launcher.instance.setupManager.queueSetup(DatabaseConnectionSetup())
-            Launcher.instance.setupManager.waitFroAllSetups()
+            Launcher.instance.setupManager.waitForAllSetups()
         }
         val mongoConnectionInformation = DatabaseConfigLoader().loadConfig()
         this.encryption = AdvancedEncryption(KeyConfigLoader().loadConfig())
@@ -194,7 +196,7 @@ class Manager : ICloudApplication {
                 "eu.thesimplecloud.base.manager.commands"
             )
         }
-        Launcher.instance.setupManager.waitFroAllSetups()
+        Launcher.instance.setupManager.waitForAllSetups()
         this.wrapperFileHandler.loadAll().forEach { CloudAPI.instance.getWrapperManager().update(it) }
         this.cloudServiceGroupFileHandler.loadAll()
             .forEach { CloudAPI.instance.getCloudServiceGroupManager().update(it) }
@@ -222,8 +224,13 @@ class Manager : ICloudApplication {
         thread(start = true, isDaemon = false, appClassLoader) {
             this.cloudModuleHandler.loadAllUnloadedModules()
         }
-    }
 
+        if (CloudAPI.instance.getCloudServiceGroupManager().getAllCachedObjects().isEmpty()) {
+            Launcher.instance.setupManager.queueSetup(CreateDefaultProxyGroup())
+            Launcher.instance.setupManager.waitForAllSetups()
+            Launcher.instance.setupManager.queueSetup(CreateDefaultLobbyGroup())
+        }
+    }
 
     private fun createDirectories() {
         for (file in listOf(

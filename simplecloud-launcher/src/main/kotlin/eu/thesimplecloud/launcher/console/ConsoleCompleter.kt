@@ -27,7 +27,6 @@ import org.jline.reader.Candidate
 import org.jline.reader.Completer
 import org.jline.reader.LineReader
 import org.jline.reader.ParsedLine
-import java.util.*
 
 /**
  * Created by IntelliJ IDEA.
@@ -56,7 +55,10 @@ class ConsoleCompleter(private val consoleManager: ConsoleManager) : Completer {
 
     private fun getConsoleSuggestions(commandString: String): List<String> {
         if (!Launcher.instance.setupManager.hasActiveSetup()) {
-            return consoleManager.commandManager.getAvailableTabCompleteArgs("cloud $commandString", consoleManager.consoleSender)
+            return consoleManager.commandManager.getAvailableTabCompleteArgs(
+                "cloud $commandString",
+                consoleManager.consoleSender
+            )
         }
         return Launcher.instance.setupManager.getSetupSuggestions(commandString, consoleManager.consoleSender)
     }

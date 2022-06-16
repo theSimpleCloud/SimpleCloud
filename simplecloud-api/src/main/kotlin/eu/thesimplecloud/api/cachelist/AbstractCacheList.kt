@@ -29,7 +29,8 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.flatten
 import java.util.concurrent.CopyOnWriteArrayList
 
-abstract class AbstractCacheList<U : ICacheValueUpdater, T : ICacheValue<U>>(private val spreadUpdates: Boolean = true) : ICacheList<U, T> {
+abstract class AbstractCacheList<U : ICacheValueUpdater, T : ICacheValue<U>>(private val spreadUpdates: Boolean = true) :
+    ICacheList<U, T> {
 
     protected val values = CopyOnWriteArrayList<T>()
 

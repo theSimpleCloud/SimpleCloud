@@ -61,8 +61,8 @@ data class DefaultWrapperInfo(
     @Volatile
     private var cpuUsage = 0.0F
 
-    override fun setAuthenticated(boolean: Boolean) {
-        getUpdater().setAuthenticated(boolean)
+    override fun setAuthenticated(authenticated: Boolean) {
+        getUpdater().setAuthenticated(authenticated)
     }
 
     override fun getName(): String = this.name
@@ -89,7 +89,7 @@ data class DefaultWrapperInfo(
         if (this.wrapperUpdater == null) {
             this.wrapperUpdater = DefaultWrapperInfoUpdater(this)
         }
-        return this.wrapperUpdater!!
+        return this.wrapperUpdater ?: throw NullPointerException("WrapperUpdater was null")
     }
 
     override fun applyValuesFromUpdater(updater: IWrapperInfoUpdater) {

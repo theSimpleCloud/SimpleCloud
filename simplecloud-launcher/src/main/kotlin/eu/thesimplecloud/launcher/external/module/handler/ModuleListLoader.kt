@@ -36,10 +36,10 @@ import java.net.URL
  * @author Frederick Baier
  */
 class ModuleListLoader(
-        private val modulesToLoad: List<LoadedModuleFileContent>,
-        private val loadedModuleList: List<LoadedModule>,
-        private val classLoaderFunction: (Array<URL>, String) -> ClassLoader,
-        private val handleLoadError: (Throwable) -> Unit = { throw it }
+    private val modulesToLoad: List<LoadedModuleFileContent>,
+    private val loadedModuleList: List<LoadedModule>,
+    private val classLoaderFunction: (Array<URL>, String) -> ClassLoader,
+    private val handleLoadError: (Throwable) -> Unit = { throw it }
 ) {
 
     private val loadedModules: MutableList<LoadedModule> = ArrayList()
@@ -100,7 +100,10 @@ class ModuleListLoader(
     }
 
     private fun hasRecursiveDependencies(module: LoadedModuleFileContent): Boolean {
-        return RecursiveDependencyChecker(module, this::getAllHardAndAvailableSoftDependencies).hasRecursiveDependencies()
+        return RecursiveDependencyChecker(
+            module,
+            this::getAllHardAndAvailableSoftDependencies
+        ).hasRecursiveDependencies()
     }
 
     private fun getAllHardAndAvailableSoftDependencies(module: LoadedModuleFileContent): Set<LoadedModuleFileContent> {

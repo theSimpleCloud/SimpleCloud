@@ -44,18 +44,19 @@ import net.md_5.bungee.event.EventPriority
  * Date: 14.03.2020
  * Time: 22:14
  */
-class BungeeListener(val plugin: BungeePluginMain) : Listener {
+class BungeeListener(private val plugin: BungeePluginMain) : Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     fun on(event: ServerConnectEvent) {
         val player = event.player
 
         val config = ProxyHandler.configHolder.getValue()
-        val proxyConfiguration = ProxyHandler.getProxyConfiguration()?: return
+        val proxyConfiguration = ProxyHandler.getProxyConfiguration() ?: return
 
         if (CloudPlugin.instance.thisService().getServiceGroup().isInMaintenance()) {
             if (!player.hasPermission(ProxyHandler.JOIN_MAINTENANCE_PERMISSION) &&
-                    !proxyConfiguration.whitelist.mapToLowerCase().contains(player.name.toLowerCase())) {
+                !proxyConfiguration.whitelist.mapToLowerCase().contains(player.name.lowercase())
+            ) {
                 player.disconnect(CloudTextBuilder().build(CloudText(ProxyHandler.replaceString(config.maintenanceKickMessage))))
                 event.isCancelled = true
                 return
@@ -67,7 +68,8 @@ class BungeeListener(val plugin: BungeePluginMain) : Listener {
 
         if (ProxyHandler.getOnlinePlayers() > maxPlayers) {
             if (!player.hasPermission(ProxyHandler.JOIN_FULL_PERMISSION) &&
-                    !proxyConfiguration.whitelist.mapToLowerCase().contains(player.name.toLowerCase())) {
+                !proxyConfiguration.whitelist.mapToLowerCase().contains(player.name.lowercase())
+            ) {
                 player.disconnect(CloudTextBuilder().build(CloudText(ProxyHandler.replaceString(config.fullProxyKickMessage))))
                 event.isCancelled = true
             }
@@ -78,7 +80,7 @@ class BungeeListener(val plugin: BungeePluginMain) : Listener {
     @EventHandler
     fun on(event: ServerConnectedEvent) {
         val player = event.player
-        val tablistConfiguration = ProxyHandler.getCurrentTablistConfiguration()?: return
+        val tablistConfiguration = ProxyHandler.getCurrentTablistConfiguration() ?: return
         plugin.sendHeaderAndFooter(player, tablistConfiguration)
     }
 
@@ -86,7 +88,7 @@ class BungeeListener(val plugin: BungeePluginMain) : Listener {
     fun on(event: ServerSwitchEvent) {
         val player = event.player
 
-        val tablistConfiguration = ProxyHandler.getCurrentTablistConfiguration()?: return
+        val tablistConfiguration = ProxyHandler.getCurrentTablistConfiguration() ?: return
         plugin.sendHeaderAndFooter(player, tablistConfiguration)
     }
 

@@ -26,7 +26,8 @@ import eu.thesimplecloud.api.servicegroup.grouptype.ICloudProxyGroup
 import eu.thesimplecloud.api.servicegroup.grouptype.updater.ICloudProxyGroupUpdater
 import eu.thesimplecloud.jsonlib.JsonLibExclude
 
-class DefaultProxyGroupUpdater(@JsonLibExclude private val proxyGroup: ICloudProxyGroup) : DefaultServiceGroupUpdater(proxyGroup), ICloudProxyGroupUpdater {
+class DefaultProxyGroupUpdater(@JsonLibExclude private val proxyGroup: ICloudProxyGroup) :
+    DefaultServiceGroupUpdater(proxyGroup), ICloudProxyGroupUpdater {
 
     override fun getServiceGroup(): ICloudProxyGroup {
         return this.proxyGroup

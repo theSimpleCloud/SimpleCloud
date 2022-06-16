@@ -80,6 +80,10 @@ class DefaultCloudServiceUpdater(
         return getChangedValue("motd") ?: delegateService.getMOTD()
     }
 
+    override fun getDisplayName(): String {
+        return getChangedValue("displayname") ?: delegateService.getDisplayName()
+    }
+
     override fun isAuthenticated(): Boolean {
         return getChangedValue("authenticated") ?: delegateService.isAuthenticated()
     }
@@ -90,6 +94,10 @@ class DefaultCloudServiceUpdater(
 
     override fun setMOTD(motd: String) {
         changes["motd"] = motd
+    }
+
+    override fun setDisplayName(displayname: String) {
+        changes["displayname"] = displayname
     }
 
     override fun update(): ICommunicationPromise<Unit> {

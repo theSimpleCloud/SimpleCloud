@@ -103,10 +103,10 @@ class RestServer(port: Int) {
     private fun addToJavalin(requestHandler: JavalinRequestHandler) {
         val requestMethodData = requestHandler.requestMethodData
         app.addHandler(
-                HandlerType.valueOf(requestMethodData.requestType.name),
-                requestMethodData.path,
-                requestHandler,
-                setOf(Roles.ANYONE)
+            HandlerType.valueOf(requestMethodData.requestType.name),
+            requestMethodData.path,
+            requestHandler,
+            setOf(Roles.ANYONE)
         )
     }
 

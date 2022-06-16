@@ -67,7 +67,8 @@ class CloudAPIImpl(private val cloudPlayerManager: ICloudPlayerManager) : CloudA
 
     override fun getCommandExecuteManager(): ICommandExecuteManager = this.commandExecuteManagerImpl
 
-    override fun getThisSidesCommunicationBootstrap(): ICommunicationBootstrap = CloudPlugin.instance.communicationClient
+    override fun getThisSidesCommunicationBootstrap(): ICommunicationBootstrap =
+        CloudPlugin.instance.communicationClient
 
     override fun getSynchronizedObjectListManager(): ISynchronizedObjectListManager = this.synchronizedObjectListManager
 

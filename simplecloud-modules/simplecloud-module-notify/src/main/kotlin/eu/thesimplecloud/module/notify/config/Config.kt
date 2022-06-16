@@ -29,8 +29,8 @@ package eu.thesimplecloud.module.notify.config
  * Time: 16:27
  */
 data class Config(
-        val serviceStartingMessage: String,
-        val serviceStartedMessage: String,
-        val serviceStoppedMessage: String,
-        val hoverMessage: String
+    val serviceStartingMessage: String,
+    val serviceStartedMessage: String,
+    val serviceStoppedMessage: String,
+    val hoverMessage: String
 )

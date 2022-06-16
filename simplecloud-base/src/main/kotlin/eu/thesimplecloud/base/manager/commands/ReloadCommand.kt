@@ -92,7 +92,11 @@ class ReloadCommand : ICommandHandler {
 
         //enable
         Manager.instance.appClassLoader.clearCachedClasses()
-        thread(start = true, isDaemon = false, Manager.instance.appClassLoader) { Manager.instance.cloudModuleHandler.loadAllUnloadedModules() }
+        thread(
+            start = true,
+            isDaemon = false,
+            Manager.instance.appClassLoader
+        ) { Manager.instance.cloudModuleHandler.loadAllUnloadedModules() }
     }
 
     @CommandSubPath("module <name>", "Reloads a specific module")

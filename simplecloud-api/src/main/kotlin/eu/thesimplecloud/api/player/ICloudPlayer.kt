@@ -69,7 +69,8 @@ interface ICloudPlayer : ICacheValue<ICloudPlayerUpdater>, IOfflineCloudPlayer, 
      * - [NoSuchServiceException] if the proxy service the player is connected to is not reachable
      * - [IllegalArgumentException] if the specified [cloudService] is a proxy service.
      */
-    fun connect(cloudService: ICloudService): ICommunicationPromise<ConnectionResponse> = CloudAPI.instance.getCloudPlayerManager().connectPlayer(this, cloudService)
+    fun connect(cloudService: ICloudService): ICommunicationPromise<ConnectionResponse> =
+        CloudAPI.instance.getCloudPlayerManager().connectPlayer(this, cloudService)
 
     /**
      * Kicks this player form the network.
@@ -84,7 +85,8 @@ interface ICloudPlayer : ICacheValue<ICloudPlayerUpdater>, IOfflineCloudPlayer, 
     /**
      * Sends a title to this player.
      */
-    fun sendTitle(title: String, subTitle: String, fadeIn: Int, stay: Int, fadeOut: Int) = CloudAPI.instance.getCloudPlayerManager().sendTitle(this, title, subTitle, fadeIn, stay, fadeOut)
+    fun sendTitle(title: String, subTitle: String, fadeIn: Int, stay: Int, fadeOut: Int) =
+        CloudAPI.instance.getCloudPlayerManager().sendTitle(this, title, subTitle, fadeIn, stay, fadeOut)
 
     /**
      * Sends a action bar to this player
@@ -113,28 +115,33 @@ interface ICloudPlayer : ICacheValue<ICloudPlayerUpdater>, IOfflineCloudPlayer, 
     /**
      * Returns the proxy this player is connected to.
      */
-    fun getConnectedProxy(): ICloudService? = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(getConnectedProxyName())
+    fun getConnectedProxy(): ICloudService? =
+        CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(getConnectedProxyName())
 
     /**
      * Returns the server this player is connected to.
      */
-    fun getConnectedServer(): ICloudService? = getConnectedServerName()?.let { CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(it) }
+    fun getConnectedServer(): ICloudService? =
+        getConnectedServerName()?.let { CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(it) }
 
     /**
      * Tells the manager that this client wants to receive updates of this player.
      * Note, that the proxy and the server the player is connected to automatically receive updates of the player.
      */
-    fun enableUpdates() = CloudAPI.instance.getCloudPlayerManager().setUpdates(this, true, CloudAPI.instance.getThisSidesName())
+    fun enableUpdates() =
+        CloudAPI.instance.getCloudPlayerManager().setUpdates(this, true, CloudAPI.instance.getThisSidesName())
 
     /**
      * Tells the manager that this client no longer wants to receive updates of this player.
      */
-    fun disableUpdates() = CloudAPI.instance.getCloudPlayerManager().setUpdates(this, false, CloudAPI.instance.getThisSidesName())
+    fun disableUpdates() =
+        CloudAPI.instance.getCloudPlayerManager().setUpdates(this, false, CloudAPI.instance.getThisSidesName())
 
     /**
      * Lets this player executes the specified [command]
      */
-    fun forceCommandExecution(command: String) = CloudAPI.instance.getCloudPlayerManager().forcePlayerCommandExecution(this, command)
+    fun forceCommandExecution(command: String) =
+        CloudAPI.instance.getCloudPlayerManager().forcePlayerCommandExecution(this, command)
 
     /**
      * Teleports this player to the specified [location].
@@ -145,7 +152,8 @@ interface ICloudPlayer : ICacheValue<ICloudPlayerUpdater>, IOfflineCloudPlayer, 
      * - [UnreachableComponentException] if the minecraft server the player is connected is not reachable
      * - [NoSuchWorldException] if the world to teleport the player to does not exist or is not loaded.
      */
-    fun teleport(location: SimpleLocation): ICommunicationPromise<Unit> = CloudAPI.instance.getCloudPlayerManager().teleportPlayer(this, location)
+    fun teleport(location: SimpleLocation): ICommunicationPromise<Unit> =
+        CloudAPI.instance.getCloudPlayerManager().teleportPlayer(this, location)
 
     /**
      * Teleports this player to the specified [location].
@@ -161,7 +169,8 @@ interface ICloudPlayer : ICacheValue<ICloudPlayerUpdater>, IOfflineCloudPlayer, 
      * - [NoSuchPlayerException] if the player cannot be found on the proxy or the server service.
      * - [PlayerConnectException] if the proxy was unable to connect the player to the service.
      */
-    fun teleport(location: ServiceLocation): ICommunicationPromise<Unit> = CloudAPI.instance.getCloudPlayerManager().teleportPlayer(this, location)
+    fun teleport(location: ServiceLocation): ICommunicationPromise<Unit> =
+        CloudAPI.instance.getCloudPlayerManager().teleportPlayer(this, location)
 
     override fun hasPermission(permission: String): ICommunicationPromise<Boolean> {
         val event = CloudPlayerPermissionCheckEvent(this, permission, PermissionState.UNKNOWN)
@@ -181,7 +190,8 @@ interface ICloudPlayer : ICacheValue<ICloudPlayerUpdater>, IOfflineCloudPlayer, 
      * The promise will fail with:
      * - [UnreachableComponentException] if the player is not connected to a server or the server is not connected to the manager.
      */
-    fun getLocation(): ICommunicationPromise<ServiceLocation> = CloudAPI.instance.getCloudPlayerManager().getLocationOfPlayer(this)
+    fun getLocation(): ICommunicationPromise<ServiceLocation> =
+        CloudAPI.instance.getCloudPlayerManager().getLocationOfPlayer(this)
 
     /**
      * Sends this player to a lobby server

@@ -31,16 +31,16 @@ import eu.thesimplecloud.api.service.ICloudService
  * @see [ICloudPlayer.enableUpdates]
  */
 class CloudPlayerServerConnectEvent(
-        /**
-         * The player involved in this event.
-         */
-        val cloudPlayer: ICloudPlayer,
-        /**
-         * The server the player switched from. The server can be null if the player was on no server before.
-         */
-        val from: ICloudService?,
-        /**
-         * The server the player switched to.
-         */
-        val to: ICloudService
+    /**
+     * The player involved in this event.
+     */
+    val cloudPlayer: ICloudPlayer,
+    /**
+     * The server the player switched from. The server can be null if the player was on no server before.
+     */
+    val from: ICloudService?,
+    /**
+     * The server the player switched to.
+     */
+    val to: ICloudService
 ) : IEvent

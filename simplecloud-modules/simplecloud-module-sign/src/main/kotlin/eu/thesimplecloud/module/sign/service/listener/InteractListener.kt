@@ -43,7 +43,7 @@ class InteractListener : Listener {
         val state = clickedBlock.state
         if (state is Sign) {
             val bukkitCloudSign = SignAPI.instance.serviceViewManager.getBukkitCloudSignByLocation(state.location)
-                    ?: return
+                ?: return
             if (bukkitCloudSign.serviceGroup?.isInMaintenance() == true) return
             val currentServer = bukkitCloudSign.service ?: return
             if (currentServer.getState() != ServiceState.VISIBLE) return

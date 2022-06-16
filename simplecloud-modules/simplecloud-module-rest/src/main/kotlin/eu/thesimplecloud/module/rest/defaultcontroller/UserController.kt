@@ -35,7 +35,7 @@ import eu.thesimplecloud.module.rest.controller.IController
  */
 @RestController("user/")
 class UserController(
-        private val authService: AuthService
+    private val authService: AuthService
 ) : IController {
 
     @RequestMapping(RequestType.GET, "", "web.user.get.all")

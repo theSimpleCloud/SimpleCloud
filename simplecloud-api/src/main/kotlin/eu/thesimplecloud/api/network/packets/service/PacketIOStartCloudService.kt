@@ -28,9 +28,9 @@ import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.ObjectPacket
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
-class PacketIOStartCloudService(): ObjectPacket<IServiceStartConfiguration>() {
+class PacketIOStartCloudService() : ObjectPacket<IServiceStartConfiguration>() {
 
-    constructor(configuration: IServiceStartConfiguration) :this() {
+    constructor(configuration: IServiceStartConfiguration) : this() {
         this.value = configuration
     }
 

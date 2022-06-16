@@ -22,7 +22,8 @@
 
 package eu.thesimplecloud.launcher.exception.module
 
-class ModuleLoadException(moduleName: String, ex: Exception?) : Exception("An error occurred while loading module: $moduleName", ex) {
+class ModuleLoadException(moduleName: String, ex: Exception?) :
+    Exception("An error occurred while loading module: $moduleName", ex) {
 
     constructor(moduleName: String) : this(moduleName, null)
 

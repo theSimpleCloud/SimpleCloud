@@ -76,7 +76,7 @@ class GlobalPropertyHolder : IGlobalPropertyHolder {
         if (CloudAPI.instance.isManager()) throw UnsupportedOperationException("Cannot request properties from manager")
         val client = CloudAPI.instance.getThisSidesCommunicationBootstrap() as INettyClient
         return client.getConnection().sendQuery<IProperty<T>>(PacketIOGetGlobalProperty(name), 5000)
-                .addResultListener { updatePropertyFromPacket(name, it) }
+            .addResultListener { updatePropertyFromPacket(name, it) }
     }
 
     fun updatePropertyFromPacket(name: String, property: IProperty<*>) {

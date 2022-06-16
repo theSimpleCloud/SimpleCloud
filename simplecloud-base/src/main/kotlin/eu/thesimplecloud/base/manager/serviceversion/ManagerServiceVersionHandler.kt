@@ -59,7 +59,8 @@ class ManagerServiceVersionHandler : ServiceVersionHandler(CombinedServiceVersio
     }
 
     fun isVersionInUse(name: String): Boolean {
-        return CloudAPI.instance.getCloudServiceGroupManager().getAllCachedObjects().any { it.getServiceVersion().name == name }
+        return CloudAPI.instance.getCloudServiceGroupManager().getAllCachedObjects()
+            .any { it.getServiceVersion().name == name }
     }
 
     fun doesVersionExist(name: String): Boolean {

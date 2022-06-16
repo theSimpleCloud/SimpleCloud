@@ -32,9 +32,9 @@ import eu.thesimplecloud.api.player.ICloudPlayer
  * in the network.
  */
 class CloudPlayerPermissionCheckEvent(
-        val cloudPlayer: ICloudPlayer,
-        val permission: String,
-        var state: PermissionState = PermissionState.UNKNOWN
+    val cloudPlayer: ICloudPlayer,
+    val permission: String,
+    var state: PermissionState = PermissionState.UNKNOWN
 ) : IEvent {
 
 

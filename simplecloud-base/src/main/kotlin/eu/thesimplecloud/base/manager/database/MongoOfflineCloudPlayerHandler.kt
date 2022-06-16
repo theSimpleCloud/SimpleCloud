@@ -42,11 +42,13 @@ import org.litote.kmongo.findOne
 import org.litote.kmongo.getCollection
 import java.util.*
 
-class MongoOfflineCloudPlayerHandler(val databaseConnectionInformation: DatabaseConnectionInformation) : AbstractOfflineCloudPlayerHandler() {
+class MongoOfflineCloudPlayerHandler(val databaseConnectionInformation: DatabaseConnectionInformation) :
+    AbstractOfflineCloudPlayerHandler() {
 
     private val mongoClient: MongoClient = createMongoClient()
     val database: MongoDatabase = this.mongoClient.getDatabase(databaseConnectionInformation.databaseName)
-    private val collection = database.getCollection<Document>(databaseConnectionInformation.collectionPrefix + "players")
+    private val collection =
+        database.getCollection<Document>(databaseConnectionInformation.collectionPrefix + "players")
 
     init {
         //make a first request (the first request will take a very long time when using embed mongodb. Following requests will be way faster)
@@ -58,7 +60,8 @@ class MongoOfflineCloudPlayerHandler(val databaseConnectionInformation: Database
             val playerUniqueId = UUID.randomUUID()
             val dummyPlayer = getOfflinePlayer(playerUniqueId)
             if (dummyPlayer == null) {
-                val playerConnection = DefaultPlayerConnection(DefaultPlayerAddress("127.0.0.1", 0), "Test", playerUniqueId, true, 42)
+                val playerConnection =
+                    DefaultPlayerConnection(DefaultPlayerAddress("127.0.0.1", 0), "Test", playerUniqueId, true, 42)
                 saveCloudPlayer(OfflineCloudPlayer("Test", playerUniqueId, 1L, 1L, 1L, playerConnection))
                 delay(100)
                 deletePlayer(playerUniqueId)
@@ -89,7 +92,7 @@ class MongoOfflineCloudPlayerHandler(val databaseConnectionInformation: Database
 
     override fun getOfflinePlayer(playerUniqueId: UUID): IOfflineCloudPlayer? {
         val document = this.collection.findOne(Filters.eq("uniqueId", playerUniqueId.toString()))
-                ?: return null
+            ?: return null
         return JsonLib.fromObject(document, databaseGson).getObject(OfflineCloudPlayer::class.java)
     }
 
@@ -107,7 +110,10 @@ class MongoOfflineCloudPlayerHandler(val databaseConnectionInformation: Database
         val documentToSave = JsonLib.fromObject(offlineCloudPlayer, databaseGson).getObject(Document::class.java)
         if (offlineCloudPlayer::class.java != OfflineCloudPlayer::class.java) throw IllegalStateException("Cannot save player of type " + offlineCloudPlayer::class.java.simpleName)
         if (getOfflinePlayer(offlineCloudPlayer.getUniqueId()) != null) {
-            this.collection.replaceOne(Filters.eq("uniqueId", offlineCloudPlayer.getUniqueId().toString()), documentToSave)
+            this.collection.replaceOne(
+                Filters.eq("uniqueId", offlineCloudPlayer.getUniqueId().toString()),
+                documentToSave
+            )
         } else {
             this.collection.insertOne(documentToSave)
         }

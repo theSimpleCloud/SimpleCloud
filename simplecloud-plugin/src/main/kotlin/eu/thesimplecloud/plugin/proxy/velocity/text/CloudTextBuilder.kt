@@ -25,7 +25,6 @@ package eu.thesimplecloud.plugin.proxy.velocity.text
 import eu.thesimplecloud.api.player.text.CloudText
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
-import java.util.*
 import java.util.function.Consumer
 
 class CloudTextBuilder {
@@ -79,7 +78,12 @@ class CloudTextBuilder {
         }
         val click = cloudText.click
         if (click != null) {
-            component.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.valueOf(cloudText.clickEventType.toString()), click))
+            component.clickEvent(
+                ClickEvent.clickEvent(
+                    ClickEvent.Action.valueOf(cloudText.clickEventType.toString()),
+                    click
+                )
+            )
         }
 
         val appendedCloudText = cloudText.appendedCloudText

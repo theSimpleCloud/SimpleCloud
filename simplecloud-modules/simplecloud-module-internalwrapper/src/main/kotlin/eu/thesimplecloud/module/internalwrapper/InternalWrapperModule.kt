@@ -46,12 +46,18 @@ class InternalWrapperModule : ICloudModule {
 
         if (wrapperManager.getWrapperByHost(config.host) == null) {
             Launcher.instance.setupManager.queueSetup(InternalWrapperMemorySetup(config))
-            Launcher.instance.setupManager.waitFroAllSetups()
+            Launcher.instance.setupManager.waitForAllSetups()
         }
 
         thread(start = true, isDaemon = false) {
             Launcher.instance.consoleSender.sendProperty("module.internalwrapper.starting")
-            val processBuilder = ProcessBuilder("java", "-jar", RunnerFileProvider.RUNNER_FILE.path, "--start-application=WRAPPER", "--disable-auto-updater")
+            val processBuilder = ProcessBuilder(
+                "java",
+                "-jar",
+                RunnerFileProvider.RUNNER_FILE.path,
+                "--start-application=WRAPPER",
+                "--disable-auto-updater"
+            )
             processBuilder.directory(File("."))
             val process = processBuilder.start()
             this.process = process

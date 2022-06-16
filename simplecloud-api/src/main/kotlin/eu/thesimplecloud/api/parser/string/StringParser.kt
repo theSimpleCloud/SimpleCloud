@@ -29,25 +29,26 @@ import eu.thesimplecloud.api.utils.getEnumValues
 import eu.thesimplecloud.jsonlib.JsonLib
 import java.util.*
 
-class StringParser : ITypeFromClassParser<String>{
+class StringParser : ITypeFromClassParser<String> {
 
     private val parsableTypes = listOf(String::class.java, Int::class.java, UUID::class.java)
 
     private val customTypeParsers = mutableListOf(
-            CloudLobbyGroupParser(),
-            CloudProxyGroupParser(),
-            CloudServerGroupParser(),
-            CloudServiceGroupParser(),
-            CloudServiceParser(),
-            WrapperInfoParser(),
-            BooleanParser(),
-            TemplateParser(),
-            IntParser(),
-            DoubleParser(),
-            FloatParser()
+        CloudLobbyGroupParser(),
+        CloudProxyGroupParser(),
+        CloudServerGroupParser(),
+        CloudServiceGroupParser(),
+        CloudServiceParser(),
+        WrapperInfoParser(),
+        BooleanParser(),
+        TemplateParser(),
+        IntParser(),
+        DoubleParser(),
+        FloatParser()
     )
 
-    override fun supportedTypes(): Set<Class<out Any>> = customTypeParsers.map { it.allowedTypes() }.flatten().union(parsableTypes)
+    override fun supportedTypes(): Set<Class<out Any>> =
+        customTypeParsers.map { it.allowedTypes() }.flatten().union(parsableTypes)
 
     override fun <R : Any> parseToObject(string: String, clazz: Class<R>): R? {
         if (clazz.isEnum) {

@@ -4,4 +4,4 @@ author: Fllip
 
 main: eu.thesimplecloud.module.prefix.service.spigot.BukkitPluginMain
 
-depend: [SimpleCloud-Plugin]
+depend: [ SimpleCloud-Plugin ]

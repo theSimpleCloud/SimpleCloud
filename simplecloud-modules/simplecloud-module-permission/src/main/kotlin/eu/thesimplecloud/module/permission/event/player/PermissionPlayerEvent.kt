@@ -32,5 +32,5 @@ import eu.thesimplecloud.module.permission.player.IPermissionPlayer
  * @author Frederick Baier
  */
 open class PermissionPlayerEvent(
-        val player: IPermissionPlayer
+    val player: IPermissionPlayer
 ) : IEvent

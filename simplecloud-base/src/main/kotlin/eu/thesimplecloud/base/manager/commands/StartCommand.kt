@@ -35,15 +35,21 @@ import eu.thesimplecloud.launcher.console.command.provider.ServiceGroupCommandSu
 class StartCommand : ICommandHandler {
 
     @CommandSubPath("<group>", "Starts a service")
-    fun startService(commandSender: ICommandSender, @CommandArgument("group", ServiceGroupCommandSuggestionProvider::class) cloudServiceGroup: ICloudServiceGroup) {
+    fun startService(
+        commandSender: ICommandSender,
+        @CommandArgument(
+            "group",
+            ServiceGroupCommandSuggestionProvider::class
+        ) cloudServiceGroup: ICloudServiceGroup
+    ) {
         startService(commandSender, cloudServiceGroup, 1)
     }
 
     @CommandSubPath("<group> <count>", "Starts a service")
     fun startService(
-            commandSender: ICommandSender,
-            @CommandArgument("group", ServiceGroupCommandSuggestionProvider::class) cloudServiceGroup: ICloudServiceGroup,
-            @CommandArgument("count") count: Int
+        commandSender: ICommandSender,
+        @CommandArgument("group", ServiceGroupCommandSuggestionProvider::class) cloudServiceGroup: ICloudServiceGroup,
+        @CommandArgument("count") count: Int
     ) {
         for (i in 0 until count) {
             cloudServiceGroup.startNewService()

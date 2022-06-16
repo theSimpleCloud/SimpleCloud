@@ -41,7 +41,8 @@ class CommandExecuteManagerImpl : ICommandExecuteManager {
 
         val networkComponentType = commandExecutable.getNetworkComponentType()
         val wrapperClient = if (commandExecutable is ICloudService) {
-            Manager.instance.communicationServer.getClientManager().getClientByClientValue(commandExecutable.getWrapper())
+            Manager.instance.communicationServer.getClientManager()
+                .getClientByClientValue(commandExecutable.getWrapper())
         } else {
             Manager.instance.communicationServer.getClientManager().getClientByClientValue(commandExecutable)
         }

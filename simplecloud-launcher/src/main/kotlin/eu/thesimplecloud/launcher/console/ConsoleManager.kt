@@ -47,19 +47,19 @@ class ConsoleManager(val commandManager: CommandManager, val consoleSender: Cons
         val consoleCompleter = ConsoleCompleter(this)
 
         val terminal = TerminalBuilder.builder()
-                .system(true)
-                .streams(System.`in`, System.out)
-                .encoding(Charsets.UTF_8)
-                .dumb(true)
-                .build()
+            .system(true)
+            .streams(System.`in`, System.out)
+            .encoding(Charsets.UTF_8)
+            .dumb(true)
+            .build()
 
         return LineReaderBuilder.builder()
-                .completer(consoleCompleter)
-                .terminal(terminal)
-                .option(LineReader.Option.DISABLE_EVENT_EXPANSION, true)
-                .option(LineReader.Option.AUTO_REMOVE_SLASH, false)
-                .option(LineReader.Option.INSERT_TAB, false)
-                .build()
+            .completer(consoleCompleter)
+            .terminal(terminal)
+            .option(LineReader.Option.DISABLE_EVENT_EXPANSION, true)
+            .option(LineReader.Option.AUTO_REMOVE_SLASH, false)
+            .option(LineReader.Option.INSERT_TAB, false)
+            .build()
     }
 
     override fun startThread() {
@@ -70,8 +70,8 @@ class ConsoleManager(val commandManager: CommandManager, val consoleSender: Cons
                     readLine = lineReader.readLine(prompt)
                     handleInput(readLine)
                 }
-            } catch (ex: UserInterruptException) {
-            }  catch (ex: IllegalStateException) {
+            } catch (_: UserInterruptException) {
+            } catch (_: IllegalStateException) {
             }
         }
         thread?.start()

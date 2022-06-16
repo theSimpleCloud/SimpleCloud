@@ -46,6 +46,7 @@ class DefaultLobbyGroup(
     permission: String?,
     serviceVersion: ServiceVersion,
     startPriority: Int,
+    javaCommand: String,
     hiddenAtProxyGroups: List<String> = emptyList()
 ) : DefaultServerGroup(
     name,
@@ -61,6 +62,7 @@ class DefaultLobbyGroup(
     serviceVersion,
     startPriority,
     permission,
+    javaCommand,
     hiddenAtProxyGroups
 ), ICloudLobbyGroup {
 

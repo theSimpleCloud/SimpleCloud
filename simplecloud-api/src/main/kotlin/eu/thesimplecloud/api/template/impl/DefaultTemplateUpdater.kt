@@ -40,6 +40,7 @@ class DefaultTemplateUpdater(
 
     @Volatile
     private var inheritedTemplateNames: MutableSet<String> = ConcurrentHashMap.newKeySet<String>()
+
     @Volatile
     private var moduleNamesToCopy: MutableSet<String> = ConcurrentHashMap.newKeySet<String>()
 

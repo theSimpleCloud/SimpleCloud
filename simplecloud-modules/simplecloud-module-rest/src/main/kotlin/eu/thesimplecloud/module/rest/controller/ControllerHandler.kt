@@ -53,12 +53,12 @@ class ControllerHandler(private val restServer: RestServer) {
         val requestMapping = method.getAnnotation(RequestMapping::class.java)
         val parameterDataList = method.parameters.map { createParameterData(it) }
         val requestMethodData = RequestMethodData(
-                controller,
-                method,
-                restController.path + requestMapping.additionalPath,
-                requestMapping.requestType,
-                requestMapping.permission,
-                parameterDataList
+            controller,
+            method,
+            restController.path + requestMapping.additionalPath,
+            requestMapping.requestType,
+            requestMapping.permission,
+            parameterDataList
         )
         restServer.registerRequestMethod(requestMethodData)
     }

@@ -34,12 +34,16 @@ import eu.thesimplecloud.api.player.impl.CloudPlayerUpdater
 import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.servicegroup.grouptype.ICloudServerGroup
 import eu.thesimplecloud.clientserverapi.lib.packet.packetsender.sendQuery
+import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
+import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.plugin.network.packets.PacketOutCreateCloudPlayer
 import eu.thesimplecloud.plugin.network.packets.PacketOutGetTabSuggestions
 import eu.thesimplecloud.plugin.network.packets.PacketOutPlayerConnectToServer
 import eu.thesimplecloud.plugin.network.packets.PacketOutPlayerLoginRequest
 import eu.thesimplecloud.plugin.startup.CloudPlugin
+import net.md_5.bungee.api.ProxyServer
 import java.util.*
+import java.util.concurrent.CompletableFuture
 
 /**
  * Created by IntelliJ IDEA.
@@ -58,20 +62,25 @@ object ProxyEventHandler {
             return
         }
         val playerPromise = CloudAPI.instance.getCloudPlayerManager()
-                .getCloudPlayer(playerConnection.getUniqueId()).awaitUninterruptibly()
+            .getCloudPlayer(playerConnection.getUniqueId()).awaitUninterruptibly()
         if (playerPromise.isSuccess) {
             handleAlreadyRegistered(playerPromise.getNow()!!)
         }
 
         //send login request
         val createPromise = CloudPlugin.instance.connectionToManager
-                .sendQuery<CloudPlayer>(PacketOutCreateCloudPlayer(playerConnection, CloudPlugin.instance.thisServiceName), 1000).awaitUninterruptibly()
+            .sendQuery<CloudPlayer>(
+                PacketOutCreateCloudPlayer(playerConnection, CloudPlugin.instance.thisServiceName),
+                1000
+            ).awaitUninterruptibly()
         if (!createPromise.isSuccess) {
             cancelEvent("§cFailed to create player: ${createPromise.cause().message}")
             println("Failed to create CloudPlayer:")
             throw createPromise.cause()
         }
-        val loginRequestPromise = CloudPlugin.instance.connectionToManager.sendQuery<PlayerLoginRequestResult>(PacketOutPlayerLoginRequest(playerConnection.getUniqueId()), 1000).awaitUninterruptibly()
+        val loginRequestPromise = CloudPlugin.instance.connectionToManager.sendQuery<PlayerLoginRequestResult>(
+            PacketOutPlayerLoginRequest(playerConnection.getUniqueId()), 1000
+        ).awaitUninterruptibly()
         if (!loginRequestPromise.isSuccess) {
             loginRequestPromise.cause().printStackTrace()
             cancelEvent("§cLogin failed: " + loginRequestPromise.cause().message)
@@ -96,8 +105,9 @@ object ProxyEventHandler {
 
     private fun handleAlreadyRegistered(player: ICloudPlayer) {
         player.kick().awaitUninterruptibly()
-        CloudAPI.instance.getCloudPlayerManager().sendDeleteToConnection(player, CloudPlugin.instance.connectionToManager)
-                .awaitUninterruptibly()
+        CloudAPI.instance.getCloudPlayerManager()
+            .sendDeleteToConnection(player, CloudPlugin.instance.connectionToManager)
+            .awaitUninterruptibly()
     }
 
     fun handlePostLogin(uniqueId: UUID, name: String) {
@@ -119,14 +129,20 @@ object ProxyEventHandler {
             CloudAPI.instance.getCloudPlayerManager().delete(cloudPlayer)
             //send update that the player is now offline
             val connection = CloudPlugin.instance.connectionToManager
-            CloudAPI.instance.getCloudPlayerManager().sendDeleteToConnection(cloudPlayer, connection).awaitUninterruptibly()
+            CloudAPI.instance.getCloudPlayerManager().sendDeleteToConnection(cloudPlayer, connection)
+                .awaitUninterruptibly()
         }
 
         subtractOneFromThisServiceOnlineCount()
     }
 
 
-    fun handleServerPreConnect(uniqueId: UUID, serverNameFrom: String?, serverNameTo: String, cancelEvent: (String, CancelType) -> Unit) {
+    fun handleServerPreConnect(
+        uniqueId: UUID,
+        serverNameFrom: String?,
+        serverNameTo: String,
+        cancelEvent: (String, CancelType) -> Unit
+    ) {
         if (serverNameFrom == serverNameTo)
             return
 
@@ -168,10 +184,10 @@ object ProxyEventHandler {
         }
 
         CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketOutPlayerConnectToServer(uniqueId, serverNameTo))
-                .awaitUninterruptibly()
-                .addFailureListener {
-                    cancelEvent("§cCan't connect to server: " + it.message, CancelType.MESSAGE)
-                }
+            .awaitUninterruptibly()
+            .addFailureListener {
+                cancelEvent("§cCan't connect to server: " + it.message, CancelType.MESSAGE)
+            }
 
 
         val playerUpdater = cloudPlayer.getUpdater()
@@ -197,7 +213,12 @@ object ProxyEventHandler {
         playerUpdater.update().awaitUninterruptibly()
     }
 
-    fun handleServerKick(cloudPlayer: ICloudPlayer, kickReasonString: String, serverName: String, cancelEvent: (String, CancelType) -> Unit) {
+    fun handleServerKick(
+        cloudPlayer: ICloudPlayer,
+        kickReasonString: String,
+        serverName: String,
+        cancelEvent: (String, CancelType) -> Unit
+    ) {
         if (kickReasonString.isNotEmpty() && kickReasonString.contains("Outdated server") || kickReasonString.contains("Outdated client")) {
             val cloudService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(serverName)
             if (cloudService == null || cloudService.isLobby()) {
@@ -213,12 +234,16 @@ object ProxyEventHandler {
         }
     }
 
-    fun handleTabComplete(uuid: UUID, rawCommand: String): Array<String> {
+    fun handleTabComplete(uuid: UUID, rawCommand: String): ICommunicationPromise<Array<String>> {
         val commandString = rawCommand.replace("/", "")
-        if (commandString.isEmpty()) return emptyArray()
+        if (commandString.isEmpty()) return CommunicationPromise.of(emptyArray())
 
-        val suggestions = CloudPlugin.instance.connectionToManager.sendQuery<Array<String>>(PacketOutGetTabSuggestions(uuid, commandString)).getBlocking()
-        return suggestions
+        return CloudPlugin.instance.connectionToManager.sendQuery(
+            PacketOutGetTabSuggestions(
+                uuid,
+                commandString
+            )
+        )
     }
 
     private fun subtractOneFromThisServiceOnlineCount() {

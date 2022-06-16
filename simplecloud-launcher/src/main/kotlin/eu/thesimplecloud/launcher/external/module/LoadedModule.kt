@@ -27,11 +27,11 @@ import eu.thesimplecloud.launcher.external.module.update.UpdaterFileContent
 import java.io.File
 
 class LoadedModule(
-        val cloudModule: ICloudModule,
-        val file: File,
-        val fileContent: ModuleFileContent,
-        val updaterFileContent: UpdaterFileContent?,
-        val moduleClassLoader: ClassLoader
+    val cloudModule: ICloudModule,
+    val file: File,
+    val fileContent: ModuleFileContent,
+    val updaterFileContent: UpdaterFileContent?,
+    val moduleClassLoader: ClassLoader
 ) {
 
     fun getLoadedModuleFileContent(): LoadedModuleFileContent {

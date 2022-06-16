@@ -35,8 +35,8 @@ import java.io.File
  * Time: 18:38
  */
 class JvmArgumentsConfigLoader : AbstractJsonLibConfigLoader<JvmArgumentsConfig>(
-        JvmArgumentsConfig::class.java,
-        File(DirectoryPaths.paths.storagePath + "jvm-arguments.json"),
-        { JvmArgumentsConfig(listOf(JvmArgument(listOf("all"), listOf("-XX:-UseAdaptiveSizePolicy")))) },
-        true
+    JvmArgumentsConfig::class.java,
+    File(DirectoryPaths.paths.storagePath + "jvm-arguments.json"),
+    { JvmArgumentsConfig(listOf(JvmArgument(listOf("all"), listOf("-XX:-UseAdaptiveSizePolicy")))) },
+    true
 )

@@ -159,7 +159,7 @@ class CloudFlareDomainHelper(
     }
 
     private fun getFullDomainByWrapper(wrapper: IWrapperInfo): String {
-        return "${wrapper.getName()}.simplecloud.${config.domain}"
+        return "${wrapper.getName()}.${config.domain}"
     }
 }
 

@@ -30,8 +30,6 @@ import eu.thesimplecloud.api.event.player.*
 import eu.thesimplecloud.api.eventapi.IEvent
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
-import java.util.*
-import kotlin.NoSuchElementException
 
 abstract class AbstractCloudPlayerManager : AbstractCacheList<ICloudPlayerUpdater, ICloudPlayer>(spreadUpdates = false),
     ICloudPlayerManager {

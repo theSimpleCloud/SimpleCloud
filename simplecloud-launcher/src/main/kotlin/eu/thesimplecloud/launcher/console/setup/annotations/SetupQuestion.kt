@@ -29,7 +29,7 @@ import kotlin.reflect.KClass
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class SetupQuestion(
-        val number: Int,
-        val property: String,
-        val answerProvider: KClass<out ISetupAnswerProvider> = EmptySetupAnswerProvider::class
+    val number: Int,
+    val property: String,
+    val answerProvider: KClass<out ISetupAnswerProvider> = EmptySetupAnswerProvider::class
 )

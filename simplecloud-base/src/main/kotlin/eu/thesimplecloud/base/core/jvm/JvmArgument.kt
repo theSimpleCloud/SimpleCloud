@@ -29,6 +29,6 @@ package eu.thesimplecloud.base.core.jvm
  * Time: 18:47
  */
 data class JvmArgument(
-        val groups: List<String>,
-        val arguments: List<String>
+    val groups: List<String>,
+    val arguments: List<String>
 )

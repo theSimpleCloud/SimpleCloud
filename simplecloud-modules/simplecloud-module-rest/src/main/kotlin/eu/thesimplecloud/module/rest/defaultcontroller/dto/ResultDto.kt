@@ -29,5 +29,5 @@ package eu.thesimplecloud.module.rest.defaultcontroller.dto
  * @author Frederick Baier
  */
 class ResultDto(
-        val result: Any?
+    val result: Any?
 )

@@ -41,7 +41,7 @@ class FileCopier {
          */
         fun copyFileOutOfJar(fileDestination: File, filePathToCopy: String) {
             val stream = FileCopier::class.java.getResourceAsStream(filePathToCopy)
-                    ?: loadFromBaseJar(filePathToCopy)
+                ?: loadFromBaseJar(filePathToCopy)
 
             val parent = fileDestination.parentFile
             parent?.mkdirs()

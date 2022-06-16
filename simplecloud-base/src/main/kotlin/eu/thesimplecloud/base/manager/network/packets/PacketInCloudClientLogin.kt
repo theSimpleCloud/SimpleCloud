@@ -39,7 +39,7 @@ class PacketInCloudClientLogin() : JsonPacket() {
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Unit> {
         val host = connection.getHost()!!
         val cloudClientType = this.jsonLib.getObject("cloudClientType", NetworkComponentType::class.java)
-                ?: return contentException("cloudClientType")
+            ?: return contentException("cloudClientType")
         connection as IConnectedClient<IConnectedClientValue>
         CloudAPI.instance.getWrapperManager().sendAllCachedObjectsToConnection(connection).awaitCoroutine()
         CloudAPI.instance.getCloudServiceManager().sendAllCachedObjectsToConnection(connection).awaitCoroutine()
@@ -51,17 +51,18 @@ class PacketInCloudClientLogin() : JsonPacket() {
             NetworkComponentType.SERVICE -> {
                 val name = this.jsonLib.getString("name") ?: return contentException("name")
                 val cloudService = CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(name)
-                        ?: return failure(NoSuchElementException("Service not found"))
+                    ?: return failure(NoSuchElementException("Service not found"))
                 connection.setClientValue(cloudService)
                 connection.sendUnitQuery(PacketIOLanguage(CloudAPI.instance.getLanguageManager().getAllProperties()))
                 cloudService.setAuthenticated(true)
                 CloudAPI.instance.getCloudServiceManager().update(cloudService)
-                CloudAPI.instance.getCloudServiceManager().sendUpdateToConnection(cloudService, connection).awaitCoroutine()
+                CloudAPI.instance.getCloudServiceManager().sendUpdateToConnection(cloudService, connection)
+                    .awaitCoroutine()
                 Launcher.instance.consoleSender.sendProperty("manager.login.service", cloudService.getName())
             }
             NetworkComponentType.WRAPPER -> {
                 val wrapperInfo = CloudAPI.instance.getWrapperManager().getWrapperByHost(host)
-                        ?: return failure(NoSuchElementException("Wrapper not found"))
+                    ?: return failure(NoSuchElementException("Wrapper not found"))
                 connection.setClientValue(wrapperInfo)
                 wrapperInfo.setAuthenticated(true)
                 CloudAPI.instance.getWrapperManager().update(wrapperInfo)
