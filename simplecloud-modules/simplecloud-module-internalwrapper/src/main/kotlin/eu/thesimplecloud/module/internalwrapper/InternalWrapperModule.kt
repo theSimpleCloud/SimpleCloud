@@ -46,7 +46,7 @@ class InternalWrapperModule : ICloudModule {
 
         if (wrapperManager.getWrapperByHost(config.host) == null) {
             Launcher.instance.setupManager.queueSetup(InternalWrapperMemorySetup(config))
-            Launcher.instance.setupManager.waitFroAllSetups()
+            Launcher.instance.setupManager.waitForAllSetups()
         }
 
         thread(start = true, isDaemon = false) {

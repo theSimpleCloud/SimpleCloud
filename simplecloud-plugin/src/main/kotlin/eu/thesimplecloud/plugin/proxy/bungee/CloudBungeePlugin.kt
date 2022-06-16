@@ -32,6 +32,7 @@ import eu.thesimplecloud.plugin.listener.CloudListener
 import eu.thesimplecloud.plugin.proxy.ICloudProxyPlugin
 import eu.thesimplecloud.plugin.proxy.ProxyEventHandler
 import eu.thesimplecloud.plugin.proxy.bungee.listener.BungeeListener
+import eu.thesimplecloud.plugin.proxy.bungee.listener.CloudPlayerDisconnectListener
 import eu.thesimplecloud.plugin.proxy.bungee.listener.IngameCommandListener
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import net.md_5.bungee.api.ProxyServer
@@ -126,6 +127,8 @@ class CloudBungeePlugin : Plugin(), ICloudProxyPlugin {
 
         synchronizeOnlineCountTask()
         runOfflinePlayerChecker()
+        
+        CloudAPI.instance.getEventManager().registerListener(CloudPlugin.instance, CloudPlayerDisconnectListener(this.proxy))
     }
 
     override fun onDisable() {
