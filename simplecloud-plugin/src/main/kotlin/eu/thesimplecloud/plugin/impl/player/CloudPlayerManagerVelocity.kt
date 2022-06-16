@@ -45,6 +45,9 @@ import eu.thesimplecloud.plugin.proxy.velocity.CloudVelocityPlugin
 import eu.thesimplecloud.plugin.proxy.velocity.text.CloudTextBuilder
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import net.kyori.adventure.audience.MessageType
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.TextComponent
+import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.title.Title
 import net.kyori.adventure.util.Ticks
 
@@ -144,7 +147,7 @@ class CloudPlayerManagerVelocity : AbstractServiceCloudPlayerManager() {
         val titleObj = Title.title(
             CloudTextBuilder().build(CloudText(title)),
             CloudTextBuilder().build(CloudText(subTitle)),
-            Title.Times.of(
+            Title.Times.times(
                 Ticks.duration(fadeIn.toLong()),
                 Ticks.duration(stay.toLong()),
                 Ticks.duration(fadeOut.toLong())
@@ -195,10 +198,8 @@ class CloudPlayerManagerVelocity : AbstractServiceCloudPlayerManager() {
         val headerString = headers.joinToString("\n")
         val footerString = footers.joinToString("\n")
 
-        getPlayerByCloudPlayer(cloudPlayer)?.tabList?.setHeaderAndFooter(
-            CloudTextBuilder().build(CloudText(headerString)),
-            CloudTextBuilder().build(CloudText(footerString))
-        )
+        getPlayerByCloudPlayer(cloudPlayer)
+            ?.sendPlayerListHeaderAndFooter(getHexColorComponent(headerString), getHexColorComponent(footerString))
     }
 
     override fun teleportPlayer(cloudPlayer: ICloudPlayer, location: SimpleLocation): ICommunicationPromise<Unit> {
@@ -254,6 +255,10 @@ class CloudPlayerManagerVelocity : AbstractServiceCloudPlayerManager() {
 
     private fun getServerInfoByCloudService(cloudService: ICloudService): RegisteredServer? {
         return CloudVelocityPlugin.instance.proxyServer.getServer(cloudService.getName()).orElse(null)
+    }
+
+    private fun getHexColorComponent(message: String): TextComponent {
+        return Component.textOfChildren(MiniMessage.miniMessage().deserialize(message))
     }
 
 }

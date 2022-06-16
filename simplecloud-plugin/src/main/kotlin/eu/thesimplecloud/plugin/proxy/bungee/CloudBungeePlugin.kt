@@ -35,6 +35,7 @@ import eu.thesimplecloud.plugin.proxy.bungee.listener.BungeeListener
 import eu.thesimplecloud.plugin.proxy.bungee.listener.CloudPlayerDisconnectListener
 import eu.thesimplecloud.plugin.proxy.bungee.listener.IngameCommandListener
 import eu.thesimplecloud.plugin.startup.CloudPlugin
+import net.kyori.adventure.platform.bungeecord.BungeeAudiences
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.plugin.Plugin
 import java.net.InetSocketAddress
@@ -55,12 +56,16 @@ class CloudBungeePlugin : Plugin(), ICloudProxyPlugin {
         lateinit var instance: CloudBungeePlugin
     }
 
+    var bungeeAudiences: BungeeAudiences
+
     init {
         instance = this
+        bungeeAudiences = BungeeAudiences.create(this)
     }
 
     override fun shutdown() {
         ProxyServer.getInstance().stop()
+        this.bungeeAudiences.close()
     }
 
     override fun addServiceToProxy(cloudService: ICloudService) {
