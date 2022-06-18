@@ -22,7 +22,7 @@
 
 package eu.thesimplecloud.launcher.setups
 
-import eu.thesimplecloud.launcher.config.LauncherConfig
+import eu.thesimplecloud.launcher.config.launcher.LauncherConfig
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
 import eu.thesimplecloud.launcher.setups.provider.LanguageSetupAnswerProvider
@@ -38,8 +38,7 @@ class LanguageSetup : ISetup {
             launcherConfig.host,
             launcherConfig.port,
             answer.lowercase(),
-            launcherConfig.directoryPaths,
-            launcherConfig.javaVersion
+            launcherConfig.directoryPaths
         )
         Launcher.instance.replaceLauncherConfig(config)
         return true

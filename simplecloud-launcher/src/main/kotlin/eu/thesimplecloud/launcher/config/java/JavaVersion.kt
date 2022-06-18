@@ -1,4 +1,4 @@
-package eu.thesimplecloud.api.javaVersions
+package eu.thesimplecloud.launcher.config.java
 
 
 class JavaVersion(

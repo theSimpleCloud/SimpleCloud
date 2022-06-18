@@ -1,7 +1,7 @@
 package eu.thesimplecloud.base.manager.setup.provider
 
 import eu.thesimplecloud.api.command.ICommandSender
-import eu.thesimplecloud.api.javaVersions.JavaVersion
+import eu.thesimplecloud.launcher.config.java.JavaVersion
 import eu.thesimplecloud.launcher.console.setup.provider.ISetupAnswerProvider
 
 class ServiceJavaCommandAnswerProvider : ISetupAnswerProvider {
