@@ -20,33 +20,15 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.launcher.setups
+package eu.thesimplecloud.launcher.config.launcher
 
-import eu.thesimplecloud.launcher.config.launcher.LauncherConfig
-import eu.thesimplecloud.launcher.console.setup.ISetup
-import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
-import eu.thesimplecloud.launcher.startup.Launcher
-import eu.thesimplecloud.launcher.utils.IpValidator
+import eu.thesimplecloud.api.config.AbstractJsonLibConfigLoader
+import eu.thesimplecloud.api.directorypaths.DirectoryPaths
+import java.io.File
 
-class IpSetup : ISetup {
-
-
-    @SetupQuestion(0, "Please provide the ip of the manager")
-    fun setup(string: String): Boolean {
-        if (!IpValidator().validate(string)) {
-            Launcher.instance.consoleSender.sendPropertyInSetup("The specified ip is invalid.")
-            return false
-        }
-
-        val launcherConfig = Launcher.instance.launcherConfig
-        val config = LauncherConfig(
-            string,
-            launcherConfig.port,
-            launcherConfig.language,
-            launcherConfig.directoryPaths
-        )
-        Launcher.instance.replaceLauncherConfig(config)
-        return true
-    }
-
-}
+class LauncherConfigLoader : AbstractJsonLibConfigLoader<LauncherConfig>(
+    LauncherConfig::class.java,
+    File("launcher.json"),
+    { LauncherConfig("127.0.0.1", 1630, "en", DirectoryPaths()) },
+    false
+)

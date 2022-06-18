@@ -23,11 +23,11 @@
 package eu.thesimplecloud.base.manager.commands
 
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.javaVersions.JavaVersion
 import eu.thesimplecloud.api.template.impl.DefaultTemplate
 import eu.thesimplecloud.base.manager.setup.ServiceVersionSetup
 import eu.thesimplecloud.base.manager.setup.WrapperSetup
 import eu.thesimplecloud.base.manager.setup.groups.*
+import eu.thesimplecloud.launcher.config.java.JavaVersion
 import eu.thesimplecloud.launcher.console.command.CommandType
 import eu.thesimplecloud.launcher.console.command.ICommandHandler
 import eu.thesimplecloud.launcher.console.command.annotations.Command

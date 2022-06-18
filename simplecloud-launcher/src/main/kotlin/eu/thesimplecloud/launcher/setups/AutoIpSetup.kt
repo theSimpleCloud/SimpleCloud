@@ -23,7 +23,7 @@
 package eu.thesimplecloud.launcher.setups
 
 import eu.thesimplecloud.jsonlib.JsonLib
-import eu.thesimplecloud.launcher.config.LauncherConfig
+import eu.thesimplecloud.launcher.config.launcher.LauncherConfig
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
 import eu.thesimplecloud.launcher.console.setup.provider.BooleanSetupAnswerProvider
@@ -61,8 +61,7 @@ class AutoIpSetup : ISetup {
             ip,
             launcherConfig.port,
             launcherConfig.language,
-            launcherConfig.directoryPaths,
-            launcherConfig.javaVersion
+            launcherConfig.directoryPaths
         )
         Launcher.instance.replaceLauncherConfig(config)
         return true

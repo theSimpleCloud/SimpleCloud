@@ -24,7 +24,7 @@ package eu.thesimplecloud.module.internalwrapper.setup
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.wrapper.impl.DefaultWrapperInfo
-import eu.thesimplecloud.launcher.config.LauncherConfig
+import eu.thesimplecloud.launcher.config.launcher.LauncherConfig
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupCancelled
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupFinished

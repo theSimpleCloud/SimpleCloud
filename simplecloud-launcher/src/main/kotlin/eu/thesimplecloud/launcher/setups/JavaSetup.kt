@@ -1,7 +1,7 @@
 package eu.thesimplecloud.launcher.setups
 
-import eu.thesimplecloud.api.javaVersions.JavaVersion
-import eu.thesimplecloud.launcher.config.LauncherConfig
+import eu.thesimplecloud.launcher.config.java.JavaVersion
+import eu.thesimplecloud.launcher.config.java.JavaVersionConfigLoader
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
 import eu.thesimplecloud.launcher.startup.Launcher
@@ -36,15 +36,7 @@ class JavaSetup : ISetup {
         Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-versions.question.java.success")
         val javaVersion = JavaVersion.paths
         javaVersion.versions[name] = path
-        val launcherConfig = Launcher.instance.launcherConfig
-        val config = LauncherConfig(
-            launcherConfig.host,
-            launcherConfig.port,
-            launcherConfig.language,
-            launcherConfig.directoryPaths,
-            javaVersion
-        )
-        Launcher.instance.replaceLauncherConfig(config)
+        JavaVersionConfigLoader().saveConfig(javaVersion)
     }
 
 }
