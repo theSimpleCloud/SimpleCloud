@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -36,6 +36,7 @@ import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
+import net.kyori.adventure.text.Component
 
 interface ICloudPlayer : ICacheValue<ICloudPlayerUpdater>, IOfflineCloudPlayer, ICommandSender {
 
@@ -52,12 +53,18 @@ interface ICloudPlayer : ICacheValue<ICloudPlayerUpdater>, IOfflineCloudPlayer, 
     /**
      * Sends a message to this player.
      */
+    @Deprecated("Use sendMessage with component instead")
     fun sendMessage(cloudText: CloudText): ICommunicationPromise<Unit>
 
     /**
      * Sends a message to this player.
      */
-    override fun sendMessage(message: String) = sendMessage(CloudText(message))
+    fun sendMessage(component: Component): ICommunicationPromise<Unit>
+
+    /**
+     * Sends a message to this player.
+     */
+    override fun sendMessage(message: String) = sendMessage(Component.text(message))
 
     /**
      * Sends this player to the specified [cloudService]

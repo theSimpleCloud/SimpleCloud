@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -28,12 +28,11 @@ import com.velocitypowered.api.event.player.ServerConnectedEvent
 import com.velocitypowered.api.event.player.ServerPreConnectEvent
 import com.velocitypowered.api.event.proxy.ProxyPingEvent
 import com.velocitypowered.api.proxy.server.ServerPing
-import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.module.proxy.extensions.mapToLowerCase
 import eu.thesimplecloud.module.proxy.service.ProxyHandler
 import eu.thesimplecloud.module.proxy.service.velocity.VelocityPluginMain
-import eu.thesimplecloud.plugin.proxy.velocity.text.CloudTextBuilder
 import eu.thesimplecloud.plugin.startup.CloudPlugin
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import java.util.*
 
 /**
@@ -55,7 +54,7 @@ class VelocityListener(val plugin: VelocityPluginMain) {
             if (!player.hasPermission(ProxyHandler.JOIN_MAINTENANCE_PERMISSION) &&
                 !proxyConfiguration.whitelist.mapToLowerCase().contains(player.username.toLowerCase())
             ) {
-                player.disconnect(CloudTextBuilder().build(CloudText(config.maintenanceKickMessage)))
+                player.disconnect(ProxyHandler.getHexColorComponent(ProxyHandler.replaceString(config.maintenanceKickMessage)))
                 event.result = ServerPreConnectEvent.ServerResult.denied()
                 return
             }
@@ -74,7 +73,7 @@ class VelocityListener(val plugin: VelocityPluginMain) {
         )
             return
 
-        player.disconnect(CloudTextBuilder().build(CloudText(config.fullProxyKickMessage)))
+        player.disconnect(ProxyHandler.getHexColorComponent(ProxyHandler.replaceString(config.fullProxyKickMessage)))
         event.result = ServerPreConnectEvent.ServerResult.denied()
     }
 
@@ -115,14 +114,24 @@ class VelocityListener(val plugin: VelocityPluginMain) {
         val versionName = motdConfiguration.versionName
 
         if (versionName != null && versionName.isNotEmpty()) {
-            protocol = ServerPing.Version(-1, ProxyHandler.replaceString(versionName))
+            val versionColorComponent = ProxyHandler.getHexColorComponent(ProxyHandler.replaceString(versionName))
+            protocol = ServerPing.Version(
+                -1,
+                LegacyComponentSerializer.legacy('§').serialize(versionColorComponent)
+            )
         }
 
         val maxPlayers = CloudPlugin.instance.thisService().getServiceGroup().getMaxPlayers()
 
         val playerSamples = if (playerInfo != null && playerInfo.isNotEmpty()) {
             val playerInfoString = ProxyHandler.replaceString(playerInfo.joinToString("\n"))
-            listOf(ServerPing.SamplePlayer(playerInfoString, UUID.randomUUID()))
+            val playerInfoColorComponent = ProxyHandler.getHexColorComponent(playerInfoString)
+            listOf(
+                ServerPing.SamplePlayer(
+                    LegacyComponentSerializer.legacy('§').serialize(playerInfoColorComponent),
+                    UUID.randomUUID()
+                )
+            )
         } else {
             emptyList()
         }

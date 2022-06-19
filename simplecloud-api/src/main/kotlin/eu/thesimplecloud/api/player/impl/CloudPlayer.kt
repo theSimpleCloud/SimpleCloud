@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -26,11 +26,13 @@ import eu.thesimplecloud.api.player.*
 import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
 import eu.thesimplecloud.api.player.connection.IPlayerConnection
 import eu.thesimplecloud.api.player.text.CloudText
+import eu.thesimplecloud.api.player.text.CloudTextBuilder
 import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.clientserverapi.lib.json.PacketExclude
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.jsonlib.JsonLibExclude
+import net.kyori.adventure.text.Component
 import java.util.*
 import java.util.concurrent.ConcurrentMap
 
@@ -81,8 +83,13 @@ class CloudPlayer(
 
     @Synchronized
     override fun sendMessage(cloudText: CloudText): ICommunicationPromise<Unit> {
+        return sendMessage(CloudTextBuilder().build(cloudText))
+    }
+
+    @Synchronized
+    override fun sendMessage(component: Component): ICommunicationPromise<Unit> {
         if (playerMessageQueue == null) playerMessageQueue = PlayerMessageQueue(this)
-        return this.playerMessageQueue!!.queueMessage(cloudText)
+        return this.playerMessageQueue!!.queueMessage(component)
     }
 
     override fun getConnectedProxyName(): String = this.connectedProxyName

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -20,13 +20,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.plugin.proxy.velocity.text
+package eu.thesimplecloud.api.player.text
 
 import eu.thesimplecloud.api.player.text.CloudText
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
 import java.util.function.Consumer
 
+@Deprecated("Use adventure text component instead")
 class CloudTextBuilder {
 
     private val colorCodes = listOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f')

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -34,7 +34,6 @@ import eu.thesimplecloud.api.location.SimpleLocation
 import eu.thesimplecloud.api.network.packets.player.*
 import eu.thesimplecloud.api.player.ICloudPlayer
 import eu.thesimplecloud.api.player.connection.ConnectionResponse
-import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceType
 import eu.thesimplecloud.clientserverapi.lib.packet.packetsender.sendQuery
@@ -42,9 +41,9 @@ import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.plugin.network.packets.PacketOutTeleportOtherService
 import eu.thesimplecloud.plugin.proxy.velocity.CloudVelocityPlugin
-import eu.thesimplecloud.plugin.proxy.velocity.text.CloudTextBuilder
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import net.kyori.adventure.audience.MessageType
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
 import net.kyori.adventure.util.Ticks
 
@@ -56,19 +55,19 @@ import net.kyori.adventure.util.Ticks
  */
 class CloudPlayerManagerVelocity : AbstractCloudPlayerManagerProxy() {
 
-    override fun sendMessageToPlayer(cloudPlayer: ICloudPlayer, cloudText: CloudText): ICommunicationPromise<Unit> {
+    override fun sendMessageToPlayer(cloudPlayer: ICloudPlayer, component: Component): ICommunicationPromise<Unit> {
         if (cloudPlayer.getConnectedProxyName() != CloudPlugin.instance.thisServiceName) {
             return CloudPlugin.instance.connectionToManager.sendUnitQuery(
                 PacketIOSendMessageToCloudPlayer(
                     cloudPlayer,
-                    cloudText
+                    component
                 )
             )
         }
 
         val player = getPlayerByCloudPlayer(cloudPlayer)
         player?.let {
-            player.sendMessage(player, CloudTextBuilder().build(cloudText), MessageType.CHAT)
+            player.sendMessage(player, component, MessageType.CHAT)
         }
         return CommunicationPromise.of(Unit)
     }
@@ -114,7 +113,7 @@ class CloudPlayerManagerVelocity : AbstractCloudPlayerManagerProxy() {
             return CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketIOKickCloudPlayer(cloudPlayer, message))
         }
 
-        getPlayerByCloudPlayer(cloudPlayer)?.disconnect(CloudTextBuilder().build(CloudText(message)))
+        getPlayerByCloudPlayer(cloudPlayer)?.disconnect(Component.text(message))
         return CommunicationPromise.of(Unit)
     }
 
@@ -142,8 +141,8 @@ class CloudPlayerManagerVelocity : AbstractCloudPlayerManagerProxy() {
 
 
         val titleObj = Title.title(
-            CloudTextBuilder().build(CloudText(title)),
-            CloudTextBuilder().build(CloudText(subTitle)),
+            Component.text(title),
+            Component.text(subTitle),
             Title.Times.times(
                 Ticks.duration(fadeIn.toLong()),
                 Ticks.duration(stay.toLong()),
@@ -177,7 +176,7 @@ class CloudPlayerManagerVelocity : AbstractCloudPlayerManagerProxy() {
             )
             return
         }
-        getPlayerByCloudPlayer(cloudPlayer)?.sendActionBar(CloudTextBuilder().build(CloudText(actionbar)))
+        getPlayerByCloudPlayer(cloudPlayer)?.sendActionBar(Component.text(actionbar))
     }
 
     override fun sendTablist(cloudPlayer: ICloudPlayer, headers: Array<String>, footers: Array<String>) {
@@ -241,7 +240,7 @@ class CloudPlayerManagerVelocity : AbstractCloudPlayerManagerProxy() {
         val server = CloudVelocityPlugin.instance.lobbyConnector.getLobbyServer(player)
         if (server == null) {
             val message = CloudAPI.instance.getLanguageManager().getMessage("ingame.no-fallback-server-found")
-            player.disconnect(CloudTextBuilder().build(CloudText(message)))
+            player.disconnect(Component.text(message))
             return CommunicationPromise.failed(NoSuchServiceException("No fallback server found"))
         }
         player.createConnectionRequest(server).fireAndForget()

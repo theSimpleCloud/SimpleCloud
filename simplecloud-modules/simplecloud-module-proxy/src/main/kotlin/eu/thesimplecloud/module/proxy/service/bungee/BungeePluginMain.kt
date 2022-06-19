@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -26,8 +26,8 @@ import eu.thesimplecloud.module.proxy.config.TablistConfiguration
 import eu.thesimplecloud.module.proxy.service.ProxyHandler
 import eu.thesimplecloud.module.proxy.service.bungee.listener.BungeeListener
 import eu.thesimplecloud.plugin.extension.getCloudPlayer
+import eu.thesimplecloud.plugin.proxy.bungee.toBaseComponent
 import net.kyori.adventure.platform.bungeecord.BungeeAudiences
-import net.kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import net.md_5.bungee.api.plugin.Plugin
@@ -42,7 +42,7 @@ import java.util.concurrent.TimeUnit
  */
 class BungeePluginMain : Plugin() {
 
-    lateinit var bungeeAudiences: BungeeAudiences
+    private lateinit var bungeeAudiences: BungeeAudiences
 
     override fun onEnable() {
         bungeeAudiences = BungeeAudiences.create(this)
@@ -74,26 +74,21 @@ class BungeePluginMain : Plugin() {
     private fun sendHeaderAndFooter(player: ProxiedPlayer, header: String, footer: String) {
         val server = player.getCloudPlayer().getConnectedServer() ?: return
 
-        val headerBaseComponent = BungeeComponentSerializer.get()
-            .serialize(
-                ProxyHandler.getHexColorComponent(
-                    ProxyHandler.replaceString(
-                        header,
-                        server,
-                        player.uniqueId
-                    )
-                )
+        val headerBaseComponent = ProxyHandler.getHexColorComponent(
+            ProxyHandler.replaceString(
+                header,
+                server,
+                player.uniqueId
             )
-        val footerBaseComponent = BungeeComponentSerializer.get()
-            .serialize(
-                ProxyHandler.getHexColorComponent(
-                    ProxyHandler.replaceString(
-                        footer,
-                        server,
-                        player.uniqueId
-                    )
-                )
+        ).toBaseComponent()
+
+        val footerBaseComponent = ProxyHandler.getHexColorComponent(
+            ProxyHandler.replaceString(
+                footer,
+                server,
+                player.uniqueId
             )
+        ).toBaseComponent()
 
         player.setTabHeader(headerBaseComponent, footerBaseComponent)
     }
