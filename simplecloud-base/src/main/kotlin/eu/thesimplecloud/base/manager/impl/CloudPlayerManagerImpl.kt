@@ -33,7 +33,6 @@ import eu.thesimplecloud.api.network.packets.player.*
 import eu.thesimplecloud.api.network.packets.sync.cachelist.PacketIOUpdateCacheObject
 import eu.thesimplecloud.api.player.*
 import eu.thesimplecloud.api.player.connection.ConnectionResponse
-import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceType
 import eu.thesimplecloud.base.manager.startup.Manager
@@ -42,7 +41,6 @@ import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.flatten
 import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnectedClient
-import eu.thesimplecloud.launcher.startup.Launcher
 import net.kyori.adventure.text.Component
 import java.util.*
 
@@ -115,7 +113,6 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
     }
 
     override fun sendMessageToPlayer(cloudPlayer: ICloudPlayer, component: Component): ICommunicationPromise<Unit> {
-        Launcher.instance.logger.info("G ${component.toString()}")
         val proxyClient = getProxyClientOfCloudPlayer(cloudPlayer)
         return proxyClient?.sendUnitQuery(PacketIOSendMessageToCloudPlayer(cloudPlayer, component))
             ?: CommunicationPromise.failed(UnreachableComponentException("Proxy service is unreachable"))

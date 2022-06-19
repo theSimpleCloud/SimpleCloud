@@ -26,6 +26,7 @@ import eu.thesimplecloud.api.player.*
 import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
 import eu.thesimplecloud.api.player.connection.IPlayerConnection
 import eu.thesimplecloud.api.player.text.CloudText
+import eu.thesimplecloud.api.player.text.CloudTextBuilder
 import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.clientserverapi.lib.json.PacketExclude
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
@@ -82,8 +83,7 @@ class CloudPlayer(
 
     @Synchronized
     override fun sendMessage(cloudText: CloudText): ICommunicationPromise<Unit> {
-        if (playerMessageQueue == null) playerMessageQueue = PlayerMessageQueue(this)
-        return this.playerMessageQueue!!.queueMessage(cloudText)
+        return sendMessage(CloudTextBuilder().build(cloudText))
     }
 
     @Synchronized

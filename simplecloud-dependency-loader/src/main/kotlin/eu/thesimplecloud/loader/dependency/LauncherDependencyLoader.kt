@@ -50,7 +50,9 @@ class LauncherDependencyLoader {
                 AdvancedCloudDependency("io.netty", "netty-all", "4.1.71.Final"),
                 AdvancedCloudDependency("org.reflections", "reflections", "0.9.12"),
                 AdvancedCloudDependency("org.mariadb.jdbc", "mariadb-java-client", "2.7.4"),
-                AdvancedCloudDependency("com.github.ajalt", "clikt", "2.8.0")
+                AdvancedCloudDependency("com.github.ajalt", "clikt", "2.8.0"),
+                AdvancedCloudDependency("net.kyori", "adventure-api", "4.11.0"),
+                AdvancedCloudDependency("net.kyori", "adventure-text-serializer-gson", "4.11.0")
             )
         )
     }

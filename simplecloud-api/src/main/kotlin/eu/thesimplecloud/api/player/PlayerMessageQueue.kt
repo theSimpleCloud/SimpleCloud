@@ -23,8 +23,6 @@
 package eu.thesimplecloud.api.player
 
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.player.text.CloudText
-import eu.thesimplecloud.api.player.text.CloudTextBuilder
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import net.kyori.adventure.text.Component
@@ -38,11 +36,6 @@ class PlayerMessageQueue(private val player: ICloudPlayer) {
     private var lastMessagePromise: ICommunicationPromise<Unit> = CommunicationPromise.of(Unit)
 
     @Synchronized
-    fun queueMessage(cloudText: CloudText): ICommunicationPromise<Unit> {
-        return queueMessage(CloudTextBuilder().build(cloudText))
-    }
-
-    @Synchronized
     fun queueMessage(component: Component): ICommunicationPromise<Unit> {
         val promise = CommunicationPromise<Unit>(500)
         this.queue.add(QueuedComponent(component, promise))
@@ -54,7 +47,6 @@ class PlayerMessageQueue(private val player: ICloudPlayer) {
 
     private fun sendNextMessage() {
         val queuedText = queue.poll()
-        println("A ${queuedText?.component?.toString()}")
         queuedText?.let {
             val promise = CloudAPI.instance.getCloudPlayerManager().sendMessageToPlayer(player, queuedText.component)
             this.lastMessagePromise = promise
