@@ -24,24 +24,31 @@ package eu.thesimplecloud.api.network.packets.player
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.player.ICloudPlayer
-import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import java.util.*
 
 class PacketIOSendMessageToCloudPlayer() : JsonPacket() {
 
-    constructor(cloudPlayer: ICloudPlayer, cloudText: CloudText) : this() {
-        this.jsonLib.append("playerUniqueId", cloudPlayer.getUniqueId()).append("cloudText", cloudText)
+    constructor(cloudPlayer: ICloudPlayer, component: Component) : this() {
+        val value = GsonComponentSerializer.gson().serialize(component)
+        this.jsonLib
+            .append("playerUniqueId", cloudPlayer.getUniqueId())
+            .append("component", value)
     }
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Unit> {
         val playerUniqueId =
             this.jsonLib.getObject("playerUniqueId", UUID::class.java) ?: return contentException("playerUniqueId")
-        val cloudText =
-            this.jsonLib.getObject("cloudText", CloudText::class.java) ?: return contentException("cloudText")
-        CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(playerUniqueId)?.sendMessage(cloudText)
+        val componentString =
+            this.jsonLib.getString("component") ?: return contentException("component")
+
+        val component = GsonComponentSerializer.gson().deserialize(componentString)
+
+        CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(playerUniqueId)?.sendMessage(component)
         return unit()
     }
 }

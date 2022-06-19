@@ -22,12 +22,12 @@
 
 package eu.thesimplecloud.module.proxy.service.bungee.listener
 
-import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.module.proxy.extensions.mapToLowerCase
 import eu.thesimplecloud.module.proxy.service.ProxyHandler
 import eu.thesimplecloud.module.proxy.service.bungee.BungeePluginMain
-import eu.thesimplecloud.plugin.proxy.bungee.text.CloudTextBuilder
+import eu.thesimplecloud.plugin.proxy.bungee.toBaseComponent
 import eu.thesimplecloud.plugin.startup.CloudPlugin
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import net.md_5.bungee.api.ServerPing
@@ -58,7 +58,7 @@ class BungeeListener(private val plugin: BungeePluginMain) : Listener {
             if (!player.hasPermission(ProxyHandler.JOIN_MAINTENANCE_PERMISSION) &&
                 !proxyConfiguration.whitelist.mapToLowerCase().contains(player.name.lowercase())
             ) {
-                player.disconnect(CloudTextBuilder().build(CloudText(ProxyHandler.replaceString(config.maintenanceKickMessage))))
+                player.disconnect(Component.text(ProxyHandler.replaceString(config.maintenanceKickMessage)).toBaseComponent())
                 event.isCancelled = true
                 return
             }
@@ -71,7 +71,7 @@ class BungeeListener(private val plugin: BungeePluginMain) : Listener {
             if (!player.hasPermission(ProxyHandler.JOIN_FULL_PERMISSION) &&
                 !proxyConfiguration.whitelist.mapToLowerCase().contains(player.name.lowercase())
             ) {
-                player.disconnect(CloudTextBuilder().build(CloudText(ProxyHandler.replaceString(config.fullProxyKickMessage))))
+                player.disconnect(Component.text(ProxyHandler.replaceString(config.fullProxyKickMessage)).toBaseComponent())
                 event.isCancelled = true
             }
         }
