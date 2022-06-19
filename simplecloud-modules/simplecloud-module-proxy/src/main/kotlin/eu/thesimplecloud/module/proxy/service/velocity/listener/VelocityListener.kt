@@ -32,8 +32,9 @@ import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.module.proxy.extensions.mapToLowerCase
 import eu.thesimplecloud.module.proxy.service.ProxyHandler
 import eu.thesimplecloud.module.proxy.service.velocity.VelocityPluginMain
-import eu.thesimplecloud.plugin.proxy.velocity.text.CloudTextBuilder
 import eu.thesimplecloud.plugin.startup.CloudPlugin
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import java.util.*
 
 /**
@@ -55,7 +56,7 @@ class VelocityListener(val plugin: VelocityPluginMain) {
             if (!player.hasPermission(ProxyHandler.JOIN_MAINTENANCE_PERMISSION) &&
                 !proxyConfiguration.whitelist.mapToLowerCase().contains(player.username.toLowerCase())
             ) {
-                player.disconnect(CloudTextBuilder().build(CloudText(config.maintenanceKickMessage)))
+                player.disconnect(Component.text(config.maintenanceKickMessage))
                 event.result = ServerPreConnectEvent.ServerResult.denied()
                 return
             }
@@ -74,7 +75,7 @@ class VelocityListener(val plugin: VelocityPluginMain) {
         )
             return
 
-        player.disconnect(CloudTextBuilder().build(CloudText(config.fullProxyKickMessage)))
+        player.disconnect(Component.text(config.fullProxyKickMessage))
         event.result = ServerPreConnectEvent.ServerResult.denied()
     }
 
@@ -115,14 +116,24 @@ class VelocityListener(val plugin: VelocityPluginMain) {
         val versionName = motdConfiguration.versionName
 
         if (versionName != null && versionName.isNotEmpty()) {
-            protocol = ServerPing.Version(-1, ProxyHandler.replaceString(versionName))
+            val versionColorComponent = ProxyHandler.getHexColorComponent(ProxyHandler.replaceString(versionName))
+            protocol = ServerPing.Version(
+                -1,
+                LegacyComponentSerializer.legacy('§').serialize(versionColorComponent)
+            )
         }
 
         val maxPlayers = CloudPlugin.instance.thisService().getServiceGroup().getMaxPlayers()
 
         val playerSamples = if (playerInfo != null && playerInfo.isNotEmpty()) {
             val playerInfoString = ProxyHandler.replaceString(playerInfo.joinToString("\n"))
-            listOf(ServerPing.SamplePlayer(playerInfoString, UUID.randomUUID()))
+            val playerInfoColorComponent = ProxyHandler.getHexColorComponent(playerInfoString)
+            listOf(
+                ServerPing.SamplePlayer(
+                    LegacyComponentSerializer.legacy('§').serialize(playerInfoColorComponent),
+                    UUID.randomUUID()
+                )
+            )
         } else {
             emptyList()
         }

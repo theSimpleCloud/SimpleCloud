@@ -24,12 +24,13 @@ package eu.thesimplecloud.launcher.startup
 
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.external.ICloudModule
-import eu.thesimplecloud.api.javaVersions.JavaVersion
 import eu.thesimplecloud.launcher.application.ApplicationStarter
 import eu.thesimplecloud.launcher.application.CloudApplicationType
 import eu.thesimplecloud.launcher.application.ICloudApplication
-import eu.thesimplecloud.launcher.config.LauncherConfig
-import eu.thesimplecloud.launcher.config.LauncherConfigLoader
+import eu.thesimplecloud.launcher.config.java.JavaVersion
+import eu.thesimplecloud.launcher.config.java.JavaVersionConfigLoader
+import eu.thesimplecloud.launcher.config.launcher.LauncherConfig
+import eu.thesimplecloud.launcher.config.launcher.LauncherConfigLoader
 import eu.thesimplecloud.launcher.console.ConsoleManager
 import eu.thesimplecloud.launcher.console.ConsoleSender
 import eu.thesimplecloud.launcher.console.command.CommandManager
@@ -86,6 +87,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
     val consoleManager: ConsoleManager
     val setupManager = SetupManager(this)
     private val launcherConfigLoader = LauncherConfigLoader()
+    private val javaVersionConfigLoader = JavaVersionConfigLoader()
     val scheduler: ScheduledExecutorService = Executors.newScheduledThreadPool(1)
     val currentClassLoader: ClassLoader = Thread.currentThread().contextClassLoader
     var launcherConfig: LauncherConfig
@@ -111,7 +113,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
 
         this.launcherConfig = this.launcherConfigLoader.loadConfig()
         DirectoryPaths.paths = launcherConfig.directoryPaths
-        JavaVersion.paths = launcherConfig.javaVersion
+        JavaVersion.paths = javaVersionConfigLoader.loadConfig()
         this.commandManager = CommandManager()
         this.consoleManager = ConsoleManager(this.commandManager, this.consoleSender)
     }

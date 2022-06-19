@@ -22,6 +22,7 @@
 
 package eu.thesimplecloud.api.player.text
 
+@Deprecated("Use adventure text component instead")
 class CloudText(val text: String) {
 
 

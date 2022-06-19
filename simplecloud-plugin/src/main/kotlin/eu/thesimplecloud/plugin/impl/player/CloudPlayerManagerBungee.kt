@@ -32,7 +32,6 @@ import eu.thesimplecloud.api.location.SimpleLocation
 import eu.thesimplecloud.api.network.packets.player.*
 import eu.thesimplecloud.api.player.ICloudPlayer
 import eu.thesimplecloud.api.player.connection.ConnectionResponse
-import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceType
 import eu.thesimplecloud.clientserverapi.lib.packet.packetsender.sendQuery
@@ -40,11 +39,8 @@ import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.plugin.network.packets.PacketOutTeleportOtherService
 import eu.thesimplecloud.plugin.proxy.bungee.CloudBungeePlugin
-import eu.thesimplecloud.plugin.proxy.bungee.text.CloudTextBuilder
+import eu.thesimplecloud.plugin.proxy.bungee.toBaseComponent
 import eu.thesimplecloud.plugin.startup.CloudPlugin
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.TextComponent
-import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer
 import net.md_5.bungee.api.ChatMessageType
 import net.md_5.bungee.api.ProxyServer
@@ -57,19 +53,19 @@ import net.md_5.bungee.api.connection.ProxiedPlayer
  * Date: 15.05.2020
  * Time: 22:07
  */
-class CloudPlayerManagerBungee : AbstractServiceCloudPlayerManager() {
+class CloudPlayerManagerBungee : AbstractCloudPlayerManagerProxy() {
 
-    override fun sendMessageToPlayer(cloudPlayer: ICloudPlayer, cloudText: CloudText): ICommunicationPromise<Unit> {
+    override fun sendMessageToPlayer(cloudPlayer: ICloudPlayer, component: Component): ICommunicationPromise<Unit> {
         if (cloudPlayer.getConnectedProxyName() != CloudPlugin.instance.thisServiceName) {
             return CloudPlugin.instance.connectionToManager.sendUnitQuery(
                 PacketIOSendMessageToCloudPlayer(
                     cloudPlayer,
-                    cloudText
+                    component
                 )
             )
         }
 
-        getProxiedPlayerByCloudPlayer(cloudPlayer)?.sendMessage(CloudTextBuilder().build(cloudText))
+        getProxiedPlayerByCloudPlayer(cloudPlayer)?.sendMessage(component.toBaseComponent())
         return CommunicationPromise.of(Unit)
     }
 
@@ -114,7 +110,7 @@ class CloudPlayerManagerBungee : AbstractServiceCloudPlayerManager() {
             return CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketIOKickCloudPlayer(cloudPlayer, message))
         }
 
-        getProxiedPlayerByCloudPlayer(cloudPlayer)?.disconnect(CloudTextBuilder().build(CloudText(message)))
+        getProxiedPlayerByCloudPlayer(cloudPlayer)?.disconnect(Component.text(message).toBaseComponent())
         return CommunicationPromise.of(Unit)
     }
 
@@ -141,8 +137,8 @@ class CloudPlayerManagerBungee : AbstractServiceCloudPlayerManager() {
         }
 
         val titleObj = ProxyServer.getInstance().createTitle()
-        titleObj.title(CloudTextBuilder().build(CloudText(title)))
-            .subTitle(CloudTextBuilder().build(CloudText(subTitle)))
+        titleObj.title(Component.text(title).toBaseComponent())
+            .subTitle(Component.text(subTitle).toBaseComponent())
             .fadeIn(fadeIn)
             .stay(stay)
             .fadeOut(fadeOut)
@@ -176,7 +172,7 @@ class CloudPlayerManagerBungee : AbstractServiceCloudPlayerManager() {
 
         getProxiedPlayerByCloudPlayer(cloudPlayer)?.sendMessage(
             ChatMessageType.ACTION_BAR,
-            CloudTextBuilder().build(CloudText(actionbar))
+            Component.text(actionbar).toBaseComponent()
         )
     }
 
@@ -192,11 +188,13 @@ class CloudPlayerManagerBungee : AbstractServiceCloudPlayerManager() {
             return
         }
 
-        val headerString = getHexColorComponent(headers.joinToString("\n"))
-        val footerString = getHexColorComponent(footers.joinToString("\n"))
+        val headerComponent = getHexColorComponent(headers.joinToString("\n"))
+        val footerComponent = getHexColorComponent(footers.joinToString("\n"))
 
-        getProxiedPlayerByCloudPlayer(cloudPlayer)?.setTabHeader(BungeeComponentSerializer.get().serialize(headerString),
-            BungeeComponentSerializer.get().serialize(footerString))
+        getProxiedPlayerByCloudPlayer(cloudPlayer)?.setTabHeader(
+            BungeeComponentSerializer.get().serialize(headerComponent),
+            BungeeComponentSerializer.get().serialize(footerComponent)
+        )
     }
 
     override fun teleportPlayer(cloudPlayer: ICloudPlayer, location: SimpleLocation): ICommunicationPromise<Unit> {
@@ -239,7 +237,7 @@ class CloudPlayerManagerBungee : AbstractServiceCloudPlayerManager() {
         val serverInfo = CloudBungeePlugin.instance.lobbyConnector.getLobbyServer(proxiedPlayer)
         if (serverInfo == null) {
             val message = CloudAPI.instance.getLanguageManager().getMessage("ingame.no-fallback-server-found")
-            proxiedPlayer.disconnect(CloudTextBuilder().build(CloudText(message)))
+            proxiedPlayer.disconnect(Component.text(message).toBaseComponent())
             return CommunicationPromise.failed(NoSuchServiceException("No fallback server found"))
         }
         proxiedPlayer.connect(serverInfo)
@@ -252,10 +250,6 @@ class CloudPlayerManagerBungee : AbstractServiceCloudPlayerManager() {
 
     private fun getServerInfoByCloudService(cloudService: ICloudService): ServerInfo? {
         return ProxyServer.getInstance().getServerInfo(cloudService.getName())
-    }
-
-    private fun getHexColorComponent(message: String): TextComponent {
-        return Component.textOfChildren(MiniMessage.miniMessage().deserialize(message))
     }
 
 }
