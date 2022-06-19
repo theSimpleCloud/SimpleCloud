@@ -38,6 +38,7 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.plugin.extension.syncBukkit
 import eu.thesimplecloud.plugin.network.packets.PacketOutTeleportOtherService
 import eu.thesimplecloud.plugin.startup.CloudPlugin
+import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -50,11 +51,11 @@ import org.bukkit.entity.Player
  */
 class CloudPlayerManagerSpigot : AbstractServiceCloudPlayerManager() {
 
-    override fun sendMessageToPlayer(cloudPlayer: ICloudPlayer, cloudText: CloudText): ICommunicationPromise<Unit> {
+    override fun sendMessageToPlayer(cloudPlayer: ICloudPlayer, component: Component): ICommunicationPromise<Unit> {
         return CloudPlugin.instance.connectionToManager.sendUnitQuery(
             PacketIOSendMessageToCloudPlayer(
                 cloudPlayer,
-                cloudText
+                component
             )
         )
     }

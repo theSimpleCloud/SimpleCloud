@@ -59,19 +59,19 @@ import net.kyori.adventure.util.Ticks
  */
 class CloudPlayerManagerVelocity : AbstractServiceCloudPlayerManager() {
 
-    override fun sendMessageToPlayer(cloudPlayer: ICloudPlayer, cloudText: CloudText): ICommunicationPromise<Unit> {
+    override fun sendMessageToPlayer(cloudPlayer: ICloudPlayer, component: Component): ICommunicationPromise<Unit> {
         if (cloudPlayer.getConnectedProxyName() != CloudPlugin.instance.thisServiceName) {
             return CloudPlugin.instance.connectionToManager.sendUnitQuery(
                 PacketIOSendMessageToCloudPlayer(
                     cloudPlayer,
-                    cloudText
+                    component
                 )
             )
         }
 
         val player = getPlayerByCloudPlayer(cloudPlayer)
         player?.let {
-            player.sendMessage(player, CloudTextBuilder().build(cloudText), MessageType.CHAT)
+            player.sendMessage(player, component, MessageType.CHAT)
         }
         return CommunicationPromise.of(Unit)
     }

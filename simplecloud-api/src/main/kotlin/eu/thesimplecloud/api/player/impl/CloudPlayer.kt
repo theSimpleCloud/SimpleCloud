@@ -31,6 +31,7 @@ import eu.thesimplecloud.clientserverapi.lib.json.PacketExclude
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.jsonlib.JsonLibExclude
+import net.kyori.adventure.text.Component
 import java.util.*
 import java.util.concurrent.ConcurrentMap
 
@@ -83,6 +84,12 @@ class CloudPlayer(
     override fun sendMessage(cloudText: CloudText): ICommunicationPromise<Unit> {
         if (playerMessageQueue == null) playerMessageQueue = PlayerMessageQueue(this)
         return this.playerMessageQueue!!.queueMessage(cloudText)
+    }
+
+    @Synchronized
+    override fun sendMessage(component: Component): ICommunicationPromise<Unit> {
+        if (playerMessageQueue == null) playerMessageQueue = PlayerMessageQueue(this)
+        return this.playerMessageQueue!!.queueMessage(component)
     }
 
     override fun getConnectedProxyName(): String = this.connectedProxyName

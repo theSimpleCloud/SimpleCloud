@@ -23,7 +23,11 @@
 package eu.thesimplecloud.plugin.server.listener
 
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.plugin.extension.getCloudPlayer
+import eu.thesimplecloud.plugin.server.CloudSpigotPlugin
 import eu.thesimplecloud.plugin.startup.CloudPlugin
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -59,6 +63,16 @@ class SpigotListener : Listener {
     @EventHandler
     fun onJoin(event: PlayerJoinEvent) {
         updateCurrentOnlineCountTo(Bukkit.getOnlinePlayers().size)
+        println("aaaa")
+        Bukkit.getScheduler().runTaskLater(CloudSpigotPlugin.instance, Runnable {
+            event.player.getCloudPlayer().sendMessage(Component.text("Hallo ${event.player.name}", NamedTextColor.AQUA))
+                .throwFailure()
+                .addCompleteListener {
+                    println("monidfg")
+                    println(it.isSuccess)
+                    println(it.cause()?.printStackTrace())
+                }
+        }, 40)
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

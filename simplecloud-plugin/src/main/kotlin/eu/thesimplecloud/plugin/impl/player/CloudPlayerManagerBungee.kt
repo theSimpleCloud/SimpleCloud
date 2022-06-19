@@ -59,17 +59,17 @@ import net.md_5.bungee.api.connection.ProxiedPlayer
  */
 class CloudPlayerManagerBungee : AbstractServiceCloudPlayerManager() {
 
-    override fun sendMessageToPlayer(cloudPlayer: ICloudPlayer, cloudText: CloudText): ICommunicationPromise<Unit> {
+    override fun sendMessageToPlayer(cloudPlayer: ICloudPlayer, component: Component): ICommunicationPromise<Unit> {
         if (cloudPlayer.getConnectedProxyName() != CloudPlugin.instance.thisServiceName) {
             return CloudPlugin.instance.connectionToManager.sendUnitQuery(
                 PacketIOSendMessageToCloudPlayer(
                     cloudPlayer,
-                    cloudText
+                    component
                 )
             )
         }
 
-        getProxiedPlayerByCloudPlayer(cloudPlayer)?.sendMessage(CloudTextBuilder().build(cloudText))
+        getProxiedPlayerByCloudPlayer(cloudPlayer)?.sendMessage(BungeeComponentSerializer.get().serialize(component)[0])
         return CommunicationPromise.of(Unit)
     }
 
@@ -195,8 +195,10 @@ class CloudPlayerManagerBungee : AbstractServiceCloudPlayerManager() {
         val headerString = getHexColorComponent(headers.joinToString("\n"))
         val footerString = getHexColorComponent(footers.joinToString("\n"))
 
-        getProxiedPlayerByCloudPlayer(cloudPlayer)?.setTabHeader(BungeeComponentSerializer.get().serialize(headerString),
-            BungeeComponentSerializer.get().serialize(footerString))
+        getProxiedPlayerByCloudPlayer(cloudPlayer)?.setTabHeader(
+            BungeeComponentSerializer.get().serialize(headerString),
+            BungeeComponentSerializer.get().serialize(footerString)
+        )
     }
 
     override fun teleportPlayer(cloudPlayer: ICloudPlayer, location: SimpleLocation): ICommunicationPromise<Unit> {
