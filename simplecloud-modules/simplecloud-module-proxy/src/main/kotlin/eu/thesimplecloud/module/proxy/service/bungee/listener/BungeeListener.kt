@@ -29,6 +29,7 @@ import eu.thesimplecloud.module.proxy.service.bungee.BungeePluginMain
 import eu.thesimplecloud.plugin.proxy.bungee.text.CloudTextBuilder
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import net.kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import net.md_5.bungee.api.ServerPing
 import net.md_5.bungee.api.event.ProxyPingEvent
 import net.md_5.bungee.api.event.ServerConnectEvent
@@ -111,14 +112,24 @@ class BungeeListener(private val plugin: BungeePluginMain) : Listener {
 
         val versionName = motdConfiguration.versionName
         if (versionName != null && versionName.isNotEmpty()) {
-            response.version = ServerPing.Protocol(ProxyHandler.replaceString(versionName), -1)
+            val versionColorComponent = ProxyHandler.getHexColorComponent(ProxyHandler.replaceString(versionName))
+            response.version = ServerPing.Protocol(
+                LegacyComponentSerializer.legacy('§').serialize(versionColorComponent),
+                -1
+            )
         }
 
         val maxPlayers = CloudPlugin.instance.thisService().getServiceGroup().getMaxPlayers()
 
         if (playerInfo != null && playerInfo.isNotEmpty()) {
             val playerInfoString = ProxyHandler.replaceString(playerInfo.joinToString("\n"))
-            val sample = arrayOf(ServerPing.PlayerInfo(playerInfoString, ""))
+            val playerInfoComponent = ProxyHandler.getHexColorComponent(playerInfoString)
+            val sample = arrayOf(
+                ServerPing.PlayerInfo(
+                    LegacyComponentSerializer.legacy('§').serialize(playerInfoComponent),
+                    ""
+                )
+            )
             response.players = ServerPing.Players(maxPlayers, onlinePlayers, sample)
 
             return
