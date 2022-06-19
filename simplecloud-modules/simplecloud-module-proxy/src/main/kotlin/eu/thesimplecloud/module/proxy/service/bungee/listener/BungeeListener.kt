@@ -27,8 +27,6 @@ import eu.thesimplecloud.module.proxy.service.ProxyHandler
 import eu.thesimplecloud.module.proxy.service.bungee.BungeePluginMain
 import eu.thesimplecloud.plugin.proxy.bungee.toBaseComponent
 import eu.thesimplecloud.plugin.startup.CloudPlugin
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import net.md_5.bungee.api.ServerPing
 import net.md_5.bungee.api.event.ProxyPingEvent
@@ -58,7 +56,7 @@ class BungeeListener(private val plugin: BungeePluginMain) : Listener {
             if (!player.hasPermission(ProxyHandler.JOIN_MAINTENANCE_PERMISSION) &&
                 !proxyConfiguration.whitelist.mapToLowerCase().contains(player.name.lowercase())
             ) {
-                player.disconnect(Component.text(ProxyHandler.replaceString(config.maintenanceKickMessage)).toBaseComponent())
+                player.disconnect(ProxyHandler.getHexColorComponent(ProxyHandler.replaceString(config.maintenanceKickMessage)).toBaseComponent())
                 event.isCancelled = true
                 return
             }
@@ -71,7 +69,7 @@ class BungeeListener(private val plugin: BungeePluginMain) : Listener {
             if (!player.hasPermission(ProxyHandler.JOIN_FULL_PERMISSION) &&
                 !proxyConfiguration.whitelist.mapToLowerCase().contains(player.name.lowercase())
             ) {
-                player.disconnect(Component.text(ProxyHandler.replaceString(config.fullProxyKickMessage)).toBaseComponent())
+                player.disconnect(ProxyHandler.getHexColorComponent(ProxyHandler.replaceString(config.fullProxyKickMessage)).toBaseComponent())
                 event.isCancelled = true
             }
         }
@@ -105,7 +103,7 @@ class BungeeListener(private val plugin: BungeePluginMain) : Listener {
         val line2 = motdConfiguration.secondLines.random()
 
         val motdComponent = ProxyHandler.getHexColorComponent(ProxyHandler.replaceString("$line1\n$line2"))
-        response.descriptionComponent = BungeeComponentSerializer.get().serialize(motdComponent)[0]
+        response.descriptionComponent = motdComponent.toBaseComponent()
 
         val playerInfo = motdConfiguration.playerInfo
         val onlinePlayers = ProxyHandler.getOnlinePlayers()

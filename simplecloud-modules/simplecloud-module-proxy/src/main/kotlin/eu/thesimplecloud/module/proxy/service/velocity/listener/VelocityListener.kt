@@ -28,12 +28,10 @@ import com.velocitypowered.api.event.player.ServerConnectedEvent
 import com.velocitypowered.api.event.player.ServerPreConnectEvent
 import com.velocitypowered.api.event.proxy.ProxyPingEvent
 import com.velocitypowered.api.proxy.server.ServerPing
-import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.module.proxy.extensions.mapToLowerCase
 import eu.thesimplecloud.module.proxy.service.ProxyHandler
 import eu.thesimplecloud.module.proxy.service.velocity.VelocityPluginMain
 import eu.thesimplecloud.plugin.startup.CloudPlugin
-import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import java.util.*
 
@@ -56,7 +54,7 @@ class VelocityListener(val plugin: VelocityPluginMain) {
             if (!player.hasPermission(ProxyHandler.JOIN_MAINTENANCE_PERMISSION) &&
                 !proxyConfiguration.whitelist.mapToLowerCase().contains(player.username.toLowerCase())
             ) {
-                player.disconnect(Component.text(config.maintenanceKickMessage))
+                player.disconnect(ProxyHandler.getHexColorComponent(ProxyHandler.replaceString(config.maintenanceKickMessage)))
                 event.result = ServerPreConnectEvent.ServerResult.denied()
                 return
             }
@@ -75,7 +73,7 @@ class VelocityListener(val plugin: VelocityPluginMain) {
         )
             return
 
-        player.disconnect(Component.text(config.fullProxyKickMessage))
+        player.disconnect(ProxyHandler.getHexColorComponent(ProxyHandler.replaceString(config.fullProxyKickMessage)))
         event.result = ServerPreConnectEvent.ServerResult.denied()
     }
 
