@@ -40,6 +40,22 @@ class Converter_2_3_To_2_4 : IVersionConverter {
 
     override fun convert() {
         convertGroupConfigs()
+        convertLanguageFile()
+    }
+
+    private fun convertLanguageFile() {
+        val languagesDir = File(DirectoryPaths.paths.languagesPath)
+        if (!languagesDir.exists())
+            return
+        languagesDir.listFiles()?.forEach {
+            replaceAndToParagraph(it)
+        }
+    }
+
+    private fun replaceAndToParagraph(file: File) {
+        val lines = file.readLines()
+        val newLines = lines.map { it.replace("&", "§") }
+        file.writeText(newLines.joinToString("\n"))
     }
 
     private fun convertGroupConfigs() {
