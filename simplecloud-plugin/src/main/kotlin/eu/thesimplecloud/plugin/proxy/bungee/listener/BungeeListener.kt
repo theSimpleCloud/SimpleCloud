@@ -25,12 +25,12 @@ package eu.thesimplecloud.plugin.proxy.bungee.listener
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.player.connection.DefaultPlayerAddress
 import eu.thesimplecloud.api.player.connection.DefaultPlayerConnection
-import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.plugin.extension.getCloudPlayer
 import eu.thesimplecloud.plugin.proxy.CancelType
 import eu.thesimplecloud.plugin.proxy.ProxyEventHandler
 import eu.thesimplecloud.plugin.proxy.bungee.CloudBungeePlugin
-import eu.thesimplecloud.plugin.proxy.bungee.text.CloudTextBuilder
+import eu.thesimplecloud.plugin.proxy.bungee.toBaseComponent
+import net.kyori.adventure.text.Component
 import net.md_5.bungee.api.event.*
 import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.event.EventHandler
@@ -55,7 +55,7 @@ class BungeeListener : Listener {
 
         ProxyEventHandler.handleLogin(playerConnection) {
             event.isCancelled = true
-            event.setCancelReason(CloudTextBuilder().build(CloudText(it)))
+            event.setCancelReason(Component.text(it).toBaseComponent())
         }
 
     }
@@ -68,7 +68,7 @@ class BungeeListener : Listener {
         ProxyEventHandler.handlePostLogin(proxiedPlayer.uniqueId, proxiedPlayer.name)
 
         if (CloudBungeePlugin.instance.lobbyConnector.getLobbyServer(proxiedPlayer) == null) {
-            event.player.disconnect(CloudTextBuilder().build(CloudText(getNoFallbackServerFoundMessage())))
+            event.player.disconnect(Component.text(getNoFallbackServerFoundMessage()).toBaseComponent())
             return
         }
     }
@@ -89,7 +89,7 @@ class BungeeListener : Listener {
         else
             event.target
         if (target == null) {
-            event.player.disconnect(CloudTextBuilder().build(CloudText(getNoFallbackServerFoundMessage())))
+            event.player.disconnect(Component.text(getNoFallbackServerFoundMessage()).toBaseComponent())
             return
         }
         event.target = target
@@ -103,9 +103,9 @@ class BungeeListener : Listener {
             target.name
         ) { message, cancelMessageType ->
             if (cancelMessageType == CancelType.MESSAGE) {
-                proxiedPlayer.sendMessage(CloudTextBuilder().build(CloudText(message)))
+                proxiedPlayer.sendMessage(Component.text(message).toBaseComponent())
             } else {
-                proxiedPlayer.disconnect(CloudTextBuilder().build(CloudText(message)))
+                proxiedPlayer.disconnect(Component.text(message).toBaseComponent())
             }
             event.isCancelled = true
         }
@@ -115,7 +115,7 @@ class BungeeListener : Listener {
     fun on(event: ServerConnectedEvent) {
         val proxiedPlayer = event.player
         ProxyEventHandler.handleServerConnect(proxiedPlayer.uniqueId, event.server.info.name) {
-            proxiedPlayer.disconnect(CloudTextBuilder().build(CloudText("§cService does not exist.")))
+            proxiedPlayer.disconnect(Component.text("§cService does not exist.").toBaseComponent())
         }
     }
 
@@ -137,15 +137,15 @@ class BungeeListener : Listener {
             kickedServerName
         ) { message, cancelMessageType ->
             if (cancelMessageType == CancelType.MESSAGE) {
-                proxiedPlayer.sendMessage(CloudTextBuilder().build(CloudText(message)))
+                proxiedPlayer.sendMessage(Component.text(message).toBaseComponent())
             } else {
-                proxiedPlayer.disconnect(CloudTextBuilder().build(CloudText(message)))
+                proxiedPlayer.disconnect(Component.text(message).toBaseComponent())
             }
         }
 
         val fallback = CloudBungeePlugin.instance.lobbyConnector.getLobbyServer(proxiedPlayer, listOf(kickedServerName))
         if (fallback == null) {
-            proxiedPlayer.disconnect(CloudTextBuilder().build(CloudText(getNoFallbackServerFoundMessage())))
+            proxiedPlayer.disconnect(Component.text(getNoFallbackServerFoundMessage()).toBaseComponent())
             return
         }
 
