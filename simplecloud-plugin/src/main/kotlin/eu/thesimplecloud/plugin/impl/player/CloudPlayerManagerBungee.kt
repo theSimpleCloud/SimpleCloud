@@ -41,9 +41,6 @@ import eu.thesimplecloud.plugin.network.packets.PacketOutTeleportOtherService
 import eu.thesimplecloud.plugin.proxy.bungee.CloudBungeePlugin
 import eu.thesimplecloud.plugin.proxy.bungee.toBaseComponent
 import eu.thesimplecloud.plugin.startup.CloudPlugin
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.TextComponent
-import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer
 import net.md_5.bungee.api.ChatMessageType
 import net.md_5.bungee.api.ProxyServer
@@ -56,7 +53,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer
  * Date: 15.05.2020
  * Time: 22:07
  */
-class CloudPlayerManagerBungee : AbstractServiceCloudPlayerManager() {
+class CloudPlayerManagerBungee : AbstractCloudPlayerManagerProxy() {
 
     override fun sendMessageToPlayer(cloudPlayer: ICloudPlayer, component: Component): ICommunicationPromise<Unit> {
         if (cloudPlayer.getConnectedProxyName() != CloudPlugin.instance.thisServiceName) {
@@ -191,12 +188,12 @@ class CloudPlayerManagerBungee : AbstractServiceCloudPlayerManager() {
             return
         }
 
-        val headerString = getHexColorComponent(headers.joinToString("\n"))
-        val footerString = getHexColorComponent(footers.joinToString("\n"))
+        val headerComponent = getHexColorComponent(headers.joinToString("\n"))
+        val footerComponent = getHexColorComponent(footers.joinToString("\n"))
 
         getProxiedPlayerByCloudPlayer(cloudPlayer)?.setTabHeader(
-            BungeeComponentSerializer.get().serialize(headerString),
-            BungeeComponentSerializer.get().serialize(footerString)
+            BungeeComponentSerializer.get().serialize(headerComponent),
+            BungeeComponentSerializer.get().serialize(footerComponent)
         )
     }
 
@@ -253,10 +250,6 @@ class CloudPlayerManagerBungee : AbstractServiceCloudPlayerManager() {
 
     private fun getServerInfoByCloudService(cloudService: ICloudService): ServerInfo? {
         return ProxyServer.getInstance().getServerInfo(cloudService.getName())
-    }
-
-    private fun getHexColorComponent(message: String): TextComponent {
-        return Component.textOfChildren(MiniMessage.miniMessage().deserialize(message))
     }
 
 }

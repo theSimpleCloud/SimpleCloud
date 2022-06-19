@@ -43,9 +43,6 @@ import eu.thesimplecloud.plugin.network.packets.PacketOutTeleportOtherService
 import eu.thesimplecloud.plugin.proxy.velocity.CloudVelocityPlugin
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import net.kyori.adventure.audience.MessageType
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.TextComponent
-import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.title.Title
 import net.kyori.adventure.util.Ticks
 
@@ -55,7 +52,7 @@ import net.kyori.adventure.util.Ticks
  * Date: 15.05.2020
  * Time: 22:07
  */
-class CloudPlayerManagerVelocity : AbstractServiceCloudPlayerManager() {
+class CloudPlayerManagerVelocity : AbstractCloudPlayerManagerProxy() {
 
     override fun sendMessageToPlayer(cloudPlayer: ICloudPlayer, component: Component): ICommunicationPromise<Unit> {
         if (cloudPlayer.getConnectedProxyName() != CloudPlugin.instance.thisServiceName) {
@@ -196,8 +193,10 @@ class CloudPlayerManagerVelocity : AbstractServiceCloudPlayerManager() {
         val headerString = headers.joinToString("\n")
         val footerString = footers.joinToString("\n")
 
-        getPlayerByCloudPlayer(cloudPlayer)
-            ?.sendPlayerListHeaderAndFooter(getHexColorComponent(headerString), getHexColorComponent(footerString))
+        getPlayerByCloudPlayer(cloudPlayer)?.sendPlayerListHeaderAndFooter(
+            getHexColorComponent(headerString),
+            getHexColorComponent(footerString)
+        )
     }
 
     override fun teleportPlayer(cloudPlayer: ICloudPlayer, location: SimpleLocation): ICommunicationPromise<Unit> {
@@ -253,10 +252,6 @@ class CloudPlayerManagerVelocity : AbstractServiceCloudPlayerManager() {
 
     private fun getServerInfoByCloudService(cloudService: ICloudService): RegisteredServer? {
         return CloudVelocityPlugin.instance.proxyServer.getServer(cloudService.getName()).orElse(null)
-    }
-
-    private fun getHexColorComponent(message: String): TextComponent {
-        return Component.textOfChildren(MiniMessage.miniMessage().deserialize(message))
     }
 
 }

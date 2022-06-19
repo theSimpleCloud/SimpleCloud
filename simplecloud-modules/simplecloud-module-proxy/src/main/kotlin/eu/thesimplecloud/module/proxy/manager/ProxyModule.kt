@@ -31,6 +31,7 @@ import eu.thesimplecloud.module.proxy.config.Config
 import eu.thesimplecloud.module.proxy.config.DefaultConfig
 import eu.thesimplecloud.module.proxy.config.ProxyGroupConfiguration
 import eu.thesimplecloud.module.proxy.manager.commands.ProxyCommand
+import eu.thesimplecloud.module.proxy.manager.converter.ConfigConverter
 import eu.thesimplecloud.module.proxy.service.ProxyHandler
 import java.io.File
 
@@ -57,6 +58,7 @@ class ProxyModule : ICloudModule {
     }
 
     fun loadConfig() {
+        ConfigConverter().convertIfNecessary()
         if (!configFile.exists()) {
             val config = DefaultConfig.get()
             saveConfig(config)

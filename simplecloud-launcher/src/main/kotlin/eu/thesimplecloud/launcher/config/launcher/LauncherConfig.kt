@@ -20,16 +20,13 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.launcher.config
+package eu.thesimplecloud.launcher.config.launcher
 
-import eu.thesimplecloud.api.config.AbstractJsonLibConfigLoader
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
-import eu.thesimplecloud.api.javaVersions.JavaVersion
-import java.io.File
 
-class LauncherConfigLoader : AbstractJsonLibConfigLoader<LauncherConfig>(
-    LauncherConfig::class.java,
-    File("launcher.json"),
-    { LauncherConfig("127.0.0.1", 1630, "en", DirectoryPaths(), JavaVersion()) },
-    false
+data class LauncherConfig(
+    var host: String,
+    val port: Int,
+    val language: String,
+    val directoryPaths: DirectoryPaths
 )

@@ -20,15 +20,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.launcher.config
+package eu.thesimplecloud.launcher.config.java
 
-import eu.thesimplecloud.api.directorypaths.DirectoryPaths
-import eu.thesimplecloud.api.javaVersions.JavaVersion
+import eu.thesimplecloud.api.config.AbstractJsonLibConfigLoader
+import java.io.File
 
-data class LauncherConfig(
-    var host: String,
-    val port: Int,
-    val language: String,
-    val directoryPaths: DirectoryPaths,
-    val javaVersion: JavaVersion
+class JavaVersionConfigLoader : AbstractJsonLibConfigLoader<JavaVersion>(
+    JavaVersion::class.java,
+    File("storage/java-versions.json"),
+    { JavaVersion() },
+    true
 )

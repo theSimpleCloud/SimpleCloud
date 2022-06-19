@@ -28,7 +28,7 @@ import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.language.LanguageProperty
 import eu.thesimplecloud.api.language.LoadedLanguageFile
 import eu.thesimplecloud.jsonlib.JsonLib
-import eu.thesimplecloud.launcher.config.LauncherConfig
+import eu.thesimplecloud.launcher.config.launcher.LauncherConfig
 import eu.thesimplecloud.launcher.utils.FileCopier
 import java.io.File
 
