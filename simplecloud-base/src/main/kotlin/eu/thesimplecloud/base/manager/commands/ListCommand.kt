@@ -40,13 +40,13 @@ class ListCommand : ICommandHandler {
 
     @CommandSubPath("", "Lists some information about the cloud")
     fun handleList(commandSender: ICommandSender) {
-        val darkChatColor = if (commandSender is ICloudPlayer) "&8" else "&7"
+        val darkChatColor = if (commandSender is ICloudPlayer) "§8" else "§7"
 
         CloudAPI.instance.getWrapperManager().getAllCachedObjects().forEach {
-            val connectedMessage = if (it.isAuthenticated()) "&aConnected" else "§cNot Connected"
+            val connectedMessage = if (it.isAuthenticated()) "§aConnected" else "§cNot Connected"
             commandSender.sendMessage(
-                darkChatColor + ">> &3" + it.getName() + darkChatColor + " (&f" + it.getUsedMemory()
-                        + darkChatColor + "/&f"
+                darkChatColor + ">> §3" + it.getName() + darkChatColor + " (§f" + it.getUsedMemory()
+                        + darkChatColor + "/§f"
                         + it.getMaxMemory() + "MB" + darkChatColor + " | " + connectedMessage + darkChatColor + ")"
             )
         }
@@ -59,20 +59,20 @@ class ListCommand : ICommandHandler {
             val serviceName = if (groups.getRegisteredServiceCount() == 1) "Service" else "Services"
 
             commandSender.sendMessage(
-                darkChatColor + ">> &7" + groups.getName() + darkChatColor + " (&f" + groups.getMaxMemory()
-                        + "MB " + darkChatColor + "/&f "
+                darkChatColor + ">> §7" + groups.getName() + darkChatColor + " (§f" + groups.getMaxMemory()
+                        + "MB " + darkChatColor + "/§f "
                         + groups.getRegisteredServiceCount() + " " + serviceName + darkChatColor + ")"
             )
 
             groups.getAllServices().forEach {
                 val wrapperDesign =
-                    if (it.getWrapperName() != null) " " + darkChatColor + "|&3 " + it.getWrapperName() else ""
+                    if (it.getWrapperName() != null) " " + darkChatColor + "|§3 " + it.getWrapperName() else ""
                 commandSender.sendMessage(
-                    darkChatColor + "- &b" + it.getName() + " " + darkChatColor + "(&f"
+                    darkChatColor + "- §b" + it.getName() + " " + darkChatColor + "(§f"
                             + it.getUsedMemory() + "MB" + " ${darkChatColor}| "
-                            + "&f" + it.getOnlineCount()
-                            + darkChatColor + "/&f"
-                            + it.getMaxPlayers() + " " + darkChatColor + "|&3 " + it.getState() + wrapperDesign + darkChatColor + ")"
+                            + "§f" + it.getOnlineCount()
+                            + darkChatColor + "/§f"
+                            + it.getMaxPlayers() + " " + darkChatColor + "|§3 " + it.getState() + wrapperDesign + darkChatColor + ")"
                 )
             }
 
@@ -80,19 +80,19 @@ class ListCommand : ICommandHandler {
         }
 
         val unusedGroups = cloudServiceGroups.filter { it.getAllServices().isEmpty() }
-            .joinToString(darkChatColor + ",&f ") { it.getName() }
+            .joinToString("$darkChatColor,§f ") { it.getName() }
 
         val maxMemory = CloudAPI.instance.getWrapperManager().getAllCachedObjects().sumBy { it.getMaxMemory() }
         val usedMemory = CloudAPI.instance.getWrapperManager().getAllCachedObjects().sumBy { it.getUsedMemory() }
 
         if (unusedGroups.isNotEmpty()) commandSender.sendMessage(
-            darkChatColor + ">>&7 Unused Groups"
-                    + darkChatColor + ":&f " + unusedGroups
+            darkChatColor + ">>§7 Unused Groups"
+                    + darkChatColor + ":§f " + unusedGroups
         )
-        commandSender.sendMessage(darkChatColor + ">>&7 Online Services" + darkChatColor + ":&f " + cloudServices.size)
+        commandSender.sendMessage(darkChatColor + ">>§7 Online Services" + darkChatColor + ":§f " + cloudServices.size)
         commandSender.sendMessage(
-            darkChatColor + ">>&7 Memory" + darkChatColor + ":&f " + usedMemory
-                    + darkChatColor + "/&f" + maxMemory + "MB"
+            darkChatColor + ">>§7 Memory" + darkChatColor + ":§f " + usedMemory
+                    + darkChatColor + "/§f" + maxMemory + "MB"
         )
 
     }
