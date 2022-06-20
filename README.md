@@ -143,7 +143,7 @@ With the **Permission Module**, you can easily manage your permissions.
 You can define groups and add permissions to them. You can also add permissions to single users.
 <br />
 You can **download**
-it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-sign/2.4.0/simplecloud-module-sign-2.4.0.jar)
+it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-permission/2.4.0/simplecloud-module-permission-2.4.0.jar)
 
 ![PermissionModule](https://i.imgur.com/mjqCmjq.png"PermissionModule")
 
