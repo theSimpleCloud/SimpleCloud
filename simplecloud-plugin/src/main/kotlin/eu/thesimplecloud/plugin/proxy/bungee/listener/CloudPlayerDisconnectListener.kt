@@ -29,7 +29,7 @@ import net.md_5.bungee.api.ProxyServer
 
 class CloudPlayerDisconnectListener(
     private val proxyServer: ProxyServer
-): IListener {
+) : IListener {
 
     @CloudEventHandler
     fun handle(event: CloudPlayerDisconnectEvent) {

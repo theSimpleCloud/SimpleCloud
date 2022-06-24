@@ -31,7 +31,7 @@ import net.kyori.adventure.text.Component
 
 class CloudPlayerDisconnectListener(
     private val proxyServer: ProxyServer
-): IListener {
+) : IListener {
 
     @CloudEventHandler
     fun handle(event: CloudPlayerDisconnectEvent) {
