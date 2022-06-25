@@ -56,7 +56,10 @@ class BungeeListener(private val plugin: BungeePluginMain) : Listener {
             if (!player.hasPermission(ProxyHandler.JOIN_MAINTENANCE_PERMISSION) &&
                 !proxyConfiguration.whitelist.mapToLowerCase().contains(player.name.lowercase())
             ) {
-                player.disconnect(ProxyHandler.getHexColorComponent(ProxyHandler.replaceString(config.maintenanceKickMessage)).toBaseComponent())
+                player.disconnect(
+                    ProxyHandler.getHexColorComponent(ProxyHandler.replaceString(config.maintenanceKickMessage))
+                        .toBaseComponent()
+                )
                 event.isCancelled = true
                 return
             }
@@ -69,7 +72,10 @@ class BungeeListener(private val plugin: BungeePluginMain) : Listener {
             if (!player.hasPermission(ProxyHandler.JOIN_FULL_PERMISSION) &&
                 !proxyConfiguration.whitelist.mapToLowerCase().contains(player.name.lowercase())
             ) {
-                player.disconnect(ProxyHandler.getHexColorComponent(ProxyHandler.replaceString(config.fullProxyKickMessage)).toBaseComponent())
+                player.disconnect(
+                    ProxyHandler.getHexColorComponent(ProxyHandler.replaceString(config.fullProxyKickMessage))
+                        .toBaseComponent()
+                )
                 event.isCancelled = true
             }
         }

@@ -22,7 +22,6 @@
 
 package eu.thesimplecloud.api.player.text
 
-import eu.thesimplecloud.api.player.text.CloudText
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
 import java.util.function.Consumer

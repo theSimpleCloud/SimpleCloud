@@ -32,7 +32,6 @@ import eu.thesimplecloud.plugin.proxy.ProxyEventHandler
 import eu.thesimplecloud.plugin.proxy.velocity.CloudVelocityPlugin
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import java.util.concurrent.CompletableFuture
-import java.util.function.Supplier
 
 /**
  * Created by IntelliJ IDEA.

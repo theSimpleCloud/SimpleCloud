@@ -29,7 +29,6 @@ import eu.thesimplecloud.api.player.ICloudPlayer
 import eu.thesimplecloud.api.player.IOfflineCloudPlayer
 import eu.thesimplecloud.api.player.SimpleCloudPlayer
 import eu.thesimplecloud.api.player.connection.ConnectionResponse
-import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import net.kyori.adventure.text.Component
