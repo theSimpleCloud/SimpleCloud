@@ -41,9 +41,7 @@ import eu.thesimplecloud.plugin.network.packets.PacketOutGetTabSuggestions
 import eu.thesimplecloud.plugin.network.packets.PacketOutPlayerConnectToServer
 import eu.thesimplecloud.plugin.network.packets.PacketOutPlayerLoginRequest
 import eu.thesimplecloud.plugin.startup.CloudPlugin
-import net.md_5.bungee.api.ProxyServer
 import java.util.*
-import java.util.concurrent.CompletableFuture
 
 /**
  * Created by IntelliJ IDEA.

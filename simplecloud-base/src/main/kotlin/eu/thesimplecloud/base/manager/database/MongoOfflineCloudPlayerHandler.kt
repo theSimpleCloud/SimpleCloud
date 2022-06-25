@@ -76,10 +76,10 @@ class MongoOfflineCloudPlayerHandler(val databaseConnectionInformation: Database
         val userName = databaseConnectionInformation.userName
         val password = databaseConnectionInformation.password
         if (password.isBlank() || userName.isBlank()) {
-            return ConnectionString("mongodb://$host:$port/$databaseName")
+            return ConnectionString("mongodb://$host:$port/?authSource=$databaseName")
         }
 
-        return ConnectionString("mongodb://$userName:$password@$host:$port/$databaseName")
+        return ConnectionString("mongodb://$userName:$password@$host:$port/?authSource=$databaseName")
     }
 
     private fun createMongoClient(): MongoClient {
