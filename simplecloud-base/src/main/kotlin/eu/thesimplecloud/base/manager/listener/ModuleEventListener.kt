@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -33,14 +33,22 @@ class ModuleEventListener : IListener {
     @CloudEventHandler
     fun handleLoad(event: ModuleLoadedEvent) {
         val module = event.module
-        Launcher.instance.consoleSender.sendProperty("manager.module.loaded", module.fileContent.name, module.fileContent.author)
+        Launcher.instance.consoleSender.sendProperty(
+            "manager.module.loaded",
+            module.fileContent.name,
+            module.fileContent.author
+        )
     }
 
     @CloudEventHandler
     fun handleUnload(event: ModuleUnloadedEvent) {
         val module = event.module
         Launcher.instance.commandManager.unregisterCommands(module.cloudModule)
-        Launcher.instance.consoleSender.sendProperty("manager.module.unload", module.fileContent.name, module.fileContent.author)
+        Launcher.instance.consoleSender.sendProperty(
+            "manager.module.unload",
+            module.fileContent.name,
+            module.fileContent.author
+        )
     }
 
 }

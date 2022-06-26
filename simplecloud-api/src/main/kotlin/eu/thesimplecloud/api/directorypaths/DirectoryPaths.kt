@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -23,20 +23,20 @@
 package eu.thesimplecloud.api.directorypaths
 
 class DirectoryPaths(
-        val groupsPath: String = "groups/",
-        val proxyGroupsPath: String = groupsPath + "proxies/",
-        val serverGroupsPath: String = groupsPath + "servers/",
-        val lobbyGroupsPath: String = groupsPath + "lobbies/",
-        val storagePath: String = "storage/",
-        val templatesPath: String = "templates/",
-        val tempPath: String = "tmp/",
-        val staticPath: String = "static/",
-        val minecraftJarsPath: String = storagePath + "minecraftJars/",
-        val languagesPath: String = storagePath + "languages/",
-        val modulesPath: String = "modules/",
-        val wrappersPath: String = storagePath + "wrappers/",
-        val zippedTemplatesPath: String = storagePath + "zippedTemplates/"
-        ) {
+    val groupsPath: String = "groups/",
+    val proxyGroupsPath: String = groupsPath + "proxies/",
+    val serverGroupsPath: String = groupsPath + "servers/",
+    val lobbyGroupsPath: String = groupsPath + "lobbies/",
+    val storagePath: String = "storage/",
+    val templatesPath: String = "templates/",
+    val tempPath: String = "tmp/",
+    val staticPath: String = "static/",
+    val minecraftJarsPath: String = storagePath + "minecraftJars/",
+    val languagesPath: String = storagePath + "languages/",
+    val modulesPath: String = "modules/",
+    val wrappersPath: String = storagePath + "wrappers/",
+    val zippedTemplatesPath: String = storagePath + "zippedTemplates/",
+) {
     companion object {
         lateinit var paths: DirectoryPaths
     }

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -34,7 +34,7 @@ import eu.thesimplecloud.jsonlib.GsonCreator
  */
 abstract class AbstractOfflineCloudPlayerHandler : IOfflineCloudPlayerHandler {
 
-    protected val databaseGson  = GsonCreator().excludeAnnotations(DatabaseExclude::class.java).create()
+    protected val databaseGson = GsonCreator().excludeAnnotations(DatabaseExclude::class.java).create()
 
     protected fun getPlayerWithLatestLogin(players: List<IOfflineCloudPlayer>): IOfflineCloudPlayer? {
         return players.maxByOrNull { it.getLastLogin() }

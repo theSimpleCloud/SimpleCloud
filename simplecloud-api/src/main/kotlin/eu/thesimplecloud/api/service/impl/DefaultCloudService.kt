@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -39,6 +39,7 @@ import java.util.concurrent.ConcurrentMap
 data class DefaultCloudService(
     private val groupName: String,
     private val serviceNumber: Int,
+    private var displayname: String,
     private val uniqueId: UUID,
     private val templateName: String,
     @Volatile private var wrapperName: String?,
@@ -79,11 +80,17 @@ data class DefaultCloudService(
 
     override fun getUniqueId(): UUID = this.uniqueId
 
+
     override fun getServiceVersion(): ServiceVersion = this.serviceVersion
 
     override fun getTemplateName(): String = this.templateName
 
     override fun getPort(): Int = this.port
+    override fun getDisplayName(): String = this.displayname
+
+    override fun setDisplayName(displayname: String) {
+        this.displayname = displayname
+    }
 
     override fun getUpdater(): ICloudServiceUpdater {
         if (this.serviceUpdater == null) {
@@ -138,6 +145,7 @@ data class DefaultCloudService(
 
     override fun getMaxMemory(): Int = this.maxMemory
 
+
     override fun getUsedMemory(): Int = this.usedMemory
 
     override fun getLastPlayerUpdate(): Timestamp = this.lastPlayerUpdate
@@ -174,13 +182,15 @@ data class DefaultCloudService(
         this.lastPlayerUpdate = updater.getLastPlayerUpdate()
         this.motd = updater.getMOTD()
         this.maxPlayers = updater.getMaxPlayers()
+        this.displayname = updater.getDisplayName()
 
         val updateService = updater.getCloudService()
         this.authenticated = updateService.isAuthenticated()
         this.wrapperName = updateService.getWrapperName()
         this.port = updateService.getPort()
         this.usedMemory = updateService.getUsedMemory()
-        this.propertyMap = this.getMapWithNewestProperties(updateService.getProperties()) as ConcurrentMap<String, Property<*>>
+        this.propertyMap =
+            this.getMapWithNewestProperties(updateService.getProperties()) as ConcurrentMap<String, Property<*>>
 
         if (this.getOnlineCount() != updateService.getOnlineCount())
             this.lastPlayerUpdate = Timestamp()

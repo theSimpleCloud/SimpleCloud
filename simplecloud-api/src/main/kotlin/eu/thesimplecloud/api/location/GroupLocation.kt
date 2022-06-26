@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -26,22 +26,31 @@ import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 
 open class GroupLocation(
-        private val serviceGroupName: String,
-        worldName: String,
-        x: Double,
-        y: Double,
-        z: Double,
-        yaw: Float,
-        pitch: Float
+    private val serviceGroupName: String,
+    worldName: String,
+    x: Double,
+    y: Double,
+    z: Double,
+    yaw: Float,
+    pitch: Float
 ) : SimpleLocation(worldName, x, y, z, yaw, pitch) {
 
     /**
      * Returns the group this location belongs to.
      */
-    fun getGroup(): ICloudServiceGroup? = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(serviceGroupName)
+    fun getGroup(): ICloudServiceGroup? =
+        CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(serviceGroupName)
 
     override fun add(x: Double, y: Double, z: Double): GroupLocation {
-        return GroupLocation(this.serviceGroupName, this.worldName, this.x + x, this.y + y, this.z + z, this.yaw, this.pitch)
+        return GroupLocation(
+            this.serviceGroupName,
+            this.worldName,
+            this.x + x,
+            this.y + y,
+            this.z + z,
+            this.yaw,
+            this.pitch
+        )
     }
 
     override fun setWorldName(worldName: String): GroupLocation {

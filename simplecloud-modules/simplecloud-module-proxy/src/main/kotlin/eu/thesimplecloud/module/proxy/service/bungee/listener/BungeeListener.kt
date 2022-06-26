@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -22,13 +22,12 @@
 
 package eu.thesimplecloud.module.proxy.service.bungee.listener
 
-import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.module.proxy.extensions.mapToLowerCase
 import eu.thesimplecloud.module.proxy.service.ProxyHandler
 import eu.thesimplecloud.module.proxy.service.bungee.BungeePluginMain
-import eu.thesimplecloud.plugin.proxy.bungee.text.CloudTextBuilder
+import eu.thesimplecloud.plugin.proxy.bungee.toBaseComponent
 import eu.thesimplecloud.plugin.startup.CloudPlugin
-import net.kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import net.md_5.bungee.api.ServerPing
 import net.md_5.bungee.api.event.ProxyPingEvent
 import net.md_5.bungee.api.event.ServerConnectEvent
@@ -44,19 +43,23 @@ import net.md_5.bungee.event.EventPriority
  * Date: 14.03.2020
  * Time: 22:14
  */
-class BungeeListener(val plugin: BungeePluginMain) : Listener {
+class BungeeListener(private val plugin: BungeePluginMain) : Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     fun on(event: ServerConnectEvent) {
         val player = event.player
 
         val config = ProxyHandler.configHolder.getValue()
-        val proxyConfiguration = ProxyHandler.getProxyConfiguration()?: return
+        val proxyConfiguration = ProxyHandler.getProxyConfiguration() ?: return
 
         if (CloudPlugin.instance.thisService().getServiceGroup().isInMaintenance()) {
             if (!player.hasPermission(ProxyHandler.JOIN_MAINTENANCE_PERMISSION) &&
-                    !proxyConfiguration.whitelist.mapToLowerCase().contains(player.name.toLowerCase())) {
-                player.disconnect(CloudTextBuilder().build(CloudText(ProxyHandler.replaceString(config.maintenanceKickMessage))))
+                !proxyConfiguration.whitelist.mapToLowerCase().contains(player.name.lowercase())
+            ) {
+                player.disconnect(
+                    ProxyHandler.getHexColorComponent(ProxyHandler.replaceString(config.maintenanceKickMessage))
+                        .toBaseComponent()
+                )
                 event.isCancelled = true
                 return
             }
@@ -67,8 +70,12 @@ class BungeeListener(val plugin: BungeePluginMain) : Listener {
 
         if (ProxyHandler.getOnlinePlayers() > maxPlayers) {
             if (!player.hasPermission(ProxyHandler.JOIN_FULL_PERMISSION) &&
-                    !proxyConfiguration.whitelist.mapToLowerCase().contains(player.name.toLowerCase())) {
-                player.disconnect(CloudTextBuilder().build(CloudText(ProxyHandler.replaceString(config.fullProxyKickMessage))))
+                !proxyConfiguration.whitelist.mapToLowerCase().contains(player.name.lowercase())
+            ) {
+                player.disconnect(
+                    ProxyHandler.getHexColorComponent(ProxyHandler.replaceString(config.fullProxyKickMessage))
+                        .toBaseComponent()
+                )
                 event.isCancelled = true
             }
         }
@@ -78,7 +85,7 @@ class BungeeListener(val plugin: BungeePluginMain) : Listener {
     @EventHandler
     fun on(event: ServerConnectedEvent) {
         val player = event.player
-        val tablistConfiguration = ProxyHandler.getCurrentTablistConfiguration()?: return
+        val tablistConfiguration = ProxyHandler.getCurrentTablistConfiguration() ?: return
         plugin.sendHeaderAndFooter(player, tablistConfiguration)
     }
 
@@ -86,7 +93,7 @@ class BungeeListener(val plugin: BungeePluginMain) : Listener {
     fun on(event: ServerSwitchEvent) {
         val player = event.player
 
-        val tablistConfiguration = ProxyHandler.getCurrentTablistConfiguration()?: return
+        val tablistConfiguration = ProxyHandler.getCurrentTablistConfiguration() ?: return
         plugin.sendHeaderAndFooter(player, tablistConfiguration)
     }
 
@@ -102,21 +109,31 @@ class BungeeListener(val plugin: BungeePluginMain) : Listener {
         val line2 = motdConfiguration.secondLines.random()
 
         val motdComponent = ProxyHandler.getHexColorComponent(ProxyHandler.replaceString("$line1\n$line2"))
-        response.descriptionComponent = BungeeComponentSerializer.get().serialize(motdComponent)[0]
+        response.descriptionComponent = motdComponent.toBaseComponent()
 
         val playerInfo = motdConfiguration.playerInfo
         val onlinePlayers = ProxyHandler.getOnlinePlayers()
 
         val versionName = motdConfiguration.versionName
         if (versionName != null && versionName.isNotEmpty()) {
-            response.version = ServerPing.Protocol(ProxyHandler.replaceString(versionName), -1)
+            val versionColorComponent = ProxyHandler.getHexColorComponent(ProxyHandler.replaceString(versionName))
+            response.version = ServerPing.Protocol(
+                LegacyComponentSerializer.legacy('§').serialize(versionColorComponent),
+                -1
+            )
         }
 
         val maxPlayers = CloudPlugin.instance.thisService().getServiceGroup().getMaxPlayers()
 
         if (playerInfo != null && playerInfo.isNotEmpty()) {
             val playerInfoString = ProxyHandler.replaceString(playerInfo.joinToString("\n"))
-            val sample = arrayOf(ServerPing.PlayerInfo(playerInfoString, ""))
+            val playerInfoComponent = ProxyHandler.getHexColorComponent(playerInfoString)
+            val sample = arrayOf(
+                ServerPing.PlayerInfo(
+                    LegacyComponentSerializer.legacy('§').serialize(playerInfoComponent),
+                    ""
+                )
+            )
             response.players = ServerPing.Players(maxPlayers, onlinePlayers, sample)
 
             return

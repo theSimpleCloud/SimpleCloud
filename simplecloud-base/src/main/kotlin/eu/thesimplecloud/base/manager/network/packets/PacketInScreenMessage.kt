@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -33,7 +33,8 @@ import eu.thesimplecloud.launcher.startup.Launcher
 class PacketInScreenMessage : JsonPacket() {
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Unit> {
-        val cloudClientType = this.jsonLib.getObject("cloudClientType", NetworkComponentType::class.java) ?: return contentException("cloudClientType")
+        val cloudClientType = this.jsonLib.getObject("cloudClientType", NetworkComponentType::class.java)
+            ?: return contentException("cloudClientType")
         val name = this.jsonLib.getString("name") ?: return contentException("name")
         val message = this.jsonLib.getString("message") ?: return contentException("message")
 

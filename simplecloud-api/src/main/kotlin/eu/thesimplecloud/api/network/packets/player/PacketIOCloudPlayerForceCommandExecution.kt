@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -33,11 +33,12 @@ class PacketIOCloudPlayerForceCommandExecution() : JsonPacket() {
 
     constructor(cloudPlayer: ICloudPlayer, command: String) : this() {
         this.jsonLib.append("playerUniqueId", cloudPlayer.getUniqueId())
-                .append("command", command)
+            .append("command", command)
     }
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Unit> {
-        val playerUniqueId = this.jsonLib.getObject("playerUniqueId", UUID::class.java) ?: return contentException("playerUniqueId")
+        val playerUniqueId =
+            this.jsonLib.getObject("playerUniqueId", UUID::class.java) ?: return contentException("playerUniqueId")
         val command = this.jsonLib.getString("command") ?: return contentException("command")
         val cloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(playerUniqueId)
         cloudPlayer?.forceCommandExecution(command)

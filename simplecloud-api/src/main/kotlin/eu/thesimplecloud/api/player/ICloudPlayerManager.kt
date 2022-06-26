@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -28,9 +28,11 @@ import eu.thesimplecloud.api.location.ServiceLocation
 import eu.thesimplecloud.api.location.SimpleLocation
 import eu.thesimplecloud.api.player.connection.ConnectionResponse
 import eu.thesimplecloud.api.player.text.CloudText
+import eu.thesimplecloud.api.player.text.CloudTextBuilder
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.toListPromise
+import net.kyori.adventure.text.Component
 import java.util.*
 
 interface ICloudPlayerManager : ICacheList<ICloudPlayerUpdater, ICloudPlayer> {
@@ -38,12 +40,14 @@ interface ICloudPlayerManager : ICacheList<ICloudPlayerUpdater, ICloudPlayer> {
     /**
      * Returns the cached [ICloudPlayer] found by the specified [uniqueId]
      */
-    fun getCachedCloudPlayer(uniqueId: UUID): ICloudPlayer? = getAllCachedObjects().firstOrNull { it.getUniqueId() == uniqueId }
+    fun getCachedCloudPlayer(uniqueId: UUID): ICloudPlayer? =
+        getAllCachedObjects().firstOrNull { it.getUniqueId() == uniqueId }
 
     /**
      * Returns the cached [ICloudPlayer] found by the specified [name]
      */
-    fun getCachedCloudPlayer(name: String): ICloudPlayer? = getAllCachedObjects().firstOrNull { it.getName().equals(name, true) }
+    fun getCachedCloudPlayer(name: String): ICloudPlayer? =
+        getAllCachedObjects().firstOrNull { it.getName().equals(name, true) }
 
     /**
      * Returns a promise that will be completed with the requested [ICloudPlayer]
@@ -63,7 +67,16 @@ interface ICloudPlayerManager : ICacheList<ICloudPlayerUpdater, ICloudPlayer> {
      * @param cloudText the text to send.
      * @return a promise that completes when the message was sent.
      */
-    fun sendMessageToPlayer(cloudPlayer: ICloudPlayer, cloudText: CloudText): ICommunicationPromise<Unit>
+    fun sendMessageToPlayer(cloudPlayer: ICloudPlayer, cloudText: CloudText): ICommunicationPromise<Unit> =
+        sendMessageToPlayer(cloudPlayer, CloudTextBuilder().build(cloudText))
+
+    /**
+     * Sends a message to a player.
+     * @param cloudPlayer the player that shall receive the message
+     * @param component the component to send.
+     * @return a promise that completes when the message was sent.
+     */
+    fun sendMessageToPlayer(cloudPlayer: ICloudPlayer, component: Component): ICommunicationPromise<Unit>
 
     /**
      * Sends the [cloudPlayer] to the specified [cloudService]

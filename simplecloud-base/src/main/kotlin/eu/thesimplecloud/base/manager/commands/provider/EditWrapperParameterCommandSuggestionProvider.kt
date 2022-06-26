@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -36,15 +36,18 @@ import eu.thesimplecloud.launcher.console.command.provider.ICommandSuggestionPro
 class EditWrapperParameterCommandSuggestionProvider : ICommandSuggestionProvider {
 
     override fun getSuggestions(sender: ICommandSender, fullCommand: String, lastArgument: String): List<String> {
-        val allFields = DefaultWrapperInfo::class.java.getAllFieldsFromClassAndSubClasses().filter { !Collection::class.java.isAssignableFrom(it.type) }
-        return allFields.filterNot { it.name == "name" ||
-                it.name == "host" ||
-                it.name == "authenticated" ||
-                it.name == "usedMemory" ||
-                it.name == "templatesReceived" ||
-                it.name == "cpuUsage" ||
-                it.name == "wrapperUpdater" ||
-                it.name == "currentlyStartingServices" }.map { it.name }
+        val allFields = DefaultWrapperInfo::class.java.getAllFieldsFromClassAndSubClasses()
+            .filter { !Collection::class.java.isAssignableFrom(it.type) }
+        return allFields.filterNot {
+            it.name == "name" ||
+                    it.name == "host" ||
+                    it.name == "authenticated" ||
+                    it.name == "usedMemory" ||
+                    it.name == "templatesReceived" ||
+                    it.name == "cpuUsage" ||
+                    it.name == "wrapperUpdater" ||
+                    it.name == "currentlyStartingServices"
+        }.map { it.name }
     }
 
 }

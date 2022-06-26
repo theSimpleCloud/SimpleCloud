@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -36,12 +36,15 @@ class CloudServiceManagerImpl : AbstractCloudServiceManager() {
     override fun stopService(cloudService: ICloudService): ICommunicationPromise<Unit> {
         CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketIOStopCloudService(cloudService.getName()))
         return cloudListener<CloudServiceUnregisteredEvent>()
-                .addCondition { it.cloudService == cloudService }
-                .unregisterAfterCall()
-                .toUnitPromise()
+            .addCondition { it.cloudService == cloudService }
+            .unregisterAfterCall()
+            .toUnitPromise()
     }
 
     override fun copyService(cloudService: ICloudService, path: String): ICommunicationPromise<Unit> {
-        return CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketIOCopyService(cloudService, path), 20 * 1000)
+        return CloudPlugin.instance.connectionToManager.sendUnitQuery(
+            PacketIOCopyService(cloudService, path),
+            20 * 1000
+        )
     }
 }

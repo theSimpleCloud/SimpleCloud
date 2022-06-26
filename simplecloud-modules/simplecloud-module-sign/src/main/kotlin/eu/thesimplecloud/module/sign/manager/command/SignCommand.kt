@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -51,10 +51,10 @@ class SignCommand : ICommandHandler {
 
     @CommandSubPath("layout <group> <layoutType> <layout>", "Sets the layout for a group")
     fun handleEditLayout(
-            sender: ICommandSender,
-            @CommandArgument("group") groupName: String,
-            @CommandArgument("layoutType") layoutType: LayoutType,
-            @CommandArgument("layout") layoutName: String
+        sender: ICommandSender,
+        @CommandArgument("group") groupName: String,
+        @CommandArgument("layoutType") layoutType: LayoutType,
+        @CommandArgument("layout") layoutName: String
     ) {
         val group = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(groupName)
         if (group == null) {

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -39,7 +39,11 @@ import java.util.*
  */
 abstract class AbstractServiceCloudPlayerManager : AbstractCloudPlayerManager() {
 
-    override fun update(value: ICloudPlayer, fromPacket: Boolean, isCalledFromDelete: Boolean): ICommunicationPromise<Unit> {
+    override fun update(
+        value: ICloudPlayer,
+        fromPacket: Boolean,
+        isCalledFromDelete: Boolean
+    ): ICommunicationPromise<Unit> {
         super.update(value, fromPacket, isCalledFromDelete)
         if (!fromPacket)
             return sendUpdateToConnection(value, CloudPlugin.instance.connectionToManager)
@@ -64,7 +68,13 @@ abstract class AbstractServiceCloudPlayerManager : AbstractCloudPlayerManager() 
 
     override fun setUpdates(cloudPlayer: ICloudPlayer, update: Boolean, serviceName: String) {
         super.setUpdates(cloudPlayer, update, serviceName)
-        CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketIOSetCloudPlayerUpdates(cloudPlayer, update, serviceName))
+        CloudPlugin.instance.connectionToManager.sendUnitQuery(
+            PacketIOSetCloudPlayerUpdates(
+                cloudPlayer,
+                update,
+                serviceName
+            )
+        )
     }
 
     override fun getOfflineCloudPlayer(name: String): ICommunicationPromise<IOfflineCloudPlayer> {
@@ -77,19 +87,19 @@ abstract class AbstractServiceCloudPlayerManager : AbstractCloudPlayerManager() 
 
     override fun getAllOnlinePlayers(): ICommunicationPromise<List<SimpleCloudPlayer>> {
         return CloudPlugin.instance.connectionToManager.sendQuery<Array<SimpleCloudPlayer>>(PacketIOGetAllOnlinePlayers())
-                .then { it.toList() }
+            .then { it.toList() }
     }
 
     override fun savePlayerToDatabase(offlinePlayer: IOfflineCloudPlayer): ICommunicationPromise<Unit> {
         return CloudPlugin.instance.connectionToManager.sendUnitQuery(
-                PacketIOSaveOfflinePlayer(offlinePlayer as OfflineCloudPlayer),
-                1000
+            PacketIOSaveOfflinePlayer(offlinePlayer as OfflineCloudPlayer),
+            1000
         )
     }
 
     override fun getNetworkOnlinePlayerCount(): ICommunicationPromise<Int> {
         return CloudPlugin.instance.connectionToManager.sendQuery(
-                PacketIOGetNetworkOnlineCount()
+            PacketIOGetNetworkOnlineCount()
         )
     }
 

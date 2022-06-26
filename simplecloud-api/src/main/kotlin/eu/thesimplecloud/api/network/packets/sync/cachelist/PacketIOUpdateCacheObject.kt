@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -34,22 +34,22 @@ class PacketIOUpdateCacheObject() : JsonPacket() {
 
     constructor(cacheListName: String, value: Any, action: Action) : this() {
         this.jsonLib.append("cacheListName", cacheListName)
-                .append("value", value)
-                .append("valueClass", value::class.java.name)
-                .append("action", action)
+            .append("value", value)
+            .append("valueClass", value::class.java.name)
+            .append("action", action)
     }
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         val cacheListName = this.jsonLib.getString("cacheListName")
-                ?: return contentException("cacheListName")
+            ?: return contentException("cacheListName")
         val valueClassName = this.jsonLib.getString("valueClass")
-                ?: return contentException("valueClass")
+            ?: return contentException("valueClass")
         val action = this.jsonLib.getObject("action", Action::class.java)
-                ?: return contentException("action")
+            ?: return contentException("action")
         val valueClass = Class.forName(
-                valueClassName,
-                true,
-                connection.getCommunicationBootstrap().getClassLoaderToSearchObjectPacketsClasses()
+            valueClassName,
+            true,
+            connection.getCommunicationBootstrap().getClassLoaderToSearchObjectPacketsClasses()
         )
         val value = this.jsonLib.getObject("value", valueClass) ?: return contentException("value")
         value as ICacheValue<ICacheValueUpdater>
@@ -57,11 +57,11 @@ class PacketIOUpdateCacheObject() : JsonPacket() {
         return when (action) {
             Action.UPDATE -> {
                 CloudAPI.instance.getCacheListManager().getCacheListenerByName(cacheListName)
-                        ?.update(value, true) ?: CommunicationPromise.UNIT_PROMISE
+                    ?.update(value, true) ?: CommunicationPromise.UNIT_PROMISE
             }
             Action.DELETE -> {
                 CloudAPI.instance.getCacheListManager().getCacheListenerByName(cacheListName)
-                        ?.delete(value, true) ?: CommunicationPromise.UNIT_PROMISE
+                    ?.delete(value, true) ?: CommunicationPromise.UNIT_PROMISE
             }
         }
     }

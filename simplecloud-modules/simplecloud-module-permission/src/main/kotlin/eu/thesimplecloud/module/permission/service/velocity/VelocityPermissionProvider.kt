@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -41,7 +41,8 @@ class VelocityPermissionProvider : PermissionProvider {
 
         override fun getPermissionValue(permission: String?): Tristate {
             if (permission == null) return Tristate.FALSE
-            val permissionPlayer = PermissionPool.instance.getPermissionPlayerManager().getCachedPermissionPlayer(player.uniqueId)
+            val permissionPlayer =
+                PermissionPool.instance.getPermissionPlayerManager().getCachedPermissionPlayer(player.uniqueId)
             if (permissionPlayer == null) {
                 println("WARNING: PermissionPlayer is NULL (${player.username})")
                 return Tristate.FALSE

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -50,8 +50,10 @@ class ProxyCommand(val module: ProxyModule) : ICommandHandler {
     }
 
     @CommandSubPath("<proxyName> whitelist add <playerName>", "Adds a player to whitelist")
-    fun handleWhitelistAdd(sender: ICommandSender, @CommandArgument("proxyName") proxyName: String,
-                           @CommandArgument("playerName") playerName: String) {
+    fun handleWhitelistAdd(
+        sender: ICommandSender, @CommandArgument("proxyName") proxyName: String,
+        @CommandArgument("playerName") playerName: String
+    ) {
         val proxyConfiguration = module.getProxyConfiguration(proxyName)
 
         if (proxyConfiguration == null) {
@@ -59,7 +61,7 @@ class ProxyCommand(val module: ProxyModule) : ICommandHandler {
             return
         }
 
-        if (proxyConfiguration.whitelist.mapToLowerCase().contains(playerName.toLowerCase())) {
+        if (proxyConfiguration.whitelist.mapToLowerCase().contains(playerName.lowercase())) {
             sender.sendProperty("${propertyPrefix}whitelist.already-whitelisted")
             return
         }
@@ -73,8 +75,10 @@ class ProxyCommand(val module: ProxyModule) : ICommandHandler {
     }
 
     @CommandSubPath("<proxyName> whitelist remove <playerName>", "Removes a player from whitelist")
-    fun handleWhitelistRemove(sender: ICommandSender, @CommandArgument("proxyName") proxyName: String,
-                              @CommandArgument("playerName") playerName: String) {
+    fun handleWhitelistRemove(
+        sender: ICommandSender, @CommandArgument("proxyName") proxyName: String,
+        @CommandArgument("playerName") playerName: String
+    ) {
         val proxyConfiguration = module.getProxyConfiguration(proxyName)
 
         if (proxyConfiguration == null) {

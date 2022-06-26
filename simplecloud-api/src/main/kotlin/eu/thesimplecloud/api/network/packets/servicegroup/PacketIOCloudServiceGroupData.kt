@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -33,13 +33,14 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
 abstract class PacketIOCloudServiceGroupData() : JsonPacket() {
 
-    constructor(cloudServiceGroup: ICloudServiceGroup): this() {
+    constructor(cloudServiceGroup: ICloudServiceGroup) : this() {
         this.jsonLib.append("serviceType", cloudServiceGroup.getServiceType()).append("group", cloudServiceGroup)
     }
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
-        val serviceType = this.jsonLib.getObject("serviceType", ServiceType::class.java) ?: return contentException("serviceType")
-        val serviceGroupClass = when(serviceType){
+        val serviceType =
+            this.jsonLib.getObject("serviceType", ServiceType::class.java) ?: return contentException("serviceType")
+        val serviceGroupClass = when (serviceType) {
             ServiceType.LOBBY -> DefaultLobbyGroup::class.java
             ServiceType.SERVER -> DefaultServerGroup::class.java
             ServiceType.PROXY -> DefaultProxyGroup::class.java

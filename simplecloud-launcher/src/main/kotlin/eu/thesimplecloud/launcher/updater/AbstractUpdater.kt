@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -29,9 +29,9 @@ import java.io.File
 import java.util.jar.JarFile
 
 abstract class AbstractUpdater(
-        private val groupId: String,
-        private val artifactId: String,
-        protected val updateFile: File
+    private val groupId: String,
+    private val artifactId: String,
+    protected val updateFile: File
 ) : IUpdater {
 
     private var versionToInstall: String? = null
@@ -43,14 +43,14 @@ abstract class AbstractUpdater(
             this.wasVersionToInstallCalled = true
             val aetherArtifact = DefaultArtifact("${groupId}:${artifactId}:(0,]")
             this.versionToInstall = DependencyResolver(getRepositoryURL(), aetherArtifact)
-                    .determineLatestVersion()
+                .determineLatestVersion()
         }
         return this.versionToInstall
     }
 
     override fun downloadJarsForUpdate() {
         val latestVersion = getVersionToInstall()
-                ?: throw RuntimeException("Cannot perform update. Is the server down? (repo: ${getRepositoryURL()})")
+            ?: throw RuntimeException("Cannot perform update. Is the server down? (repo: ${getRepositoryURL()})")
         val dependency = AdvancedCloudDependency(groupId, artifactId, latestVersion)
         dependency.download(getRepositoryURL(), updateFile)
     }

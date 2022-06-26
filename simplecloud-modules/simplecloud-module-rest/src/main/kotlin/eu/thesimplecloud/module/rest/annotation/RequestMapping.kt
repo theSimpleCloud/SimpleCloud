@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -31,7 +31,7 @@ package eu.thesimplecloud.module.rest.annotation
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FUNCTION)
 annotation class RequestMapping(
-        val requestType: RequestType,
-        val additionalPath: String = "",
-        val permission: String = ""
+    val requestType: RequestType,
+    val additionalPath: String = "",
+    val permission: String = ""
 )

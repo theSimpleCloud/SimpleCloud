@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -38,22 +38,32 @@ class PacketInCreateCloudPlayer() : JsonPacket() {
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         val playerConnection = this.jsonLib.getObject("playerConnection", DefaultPlayerConnection::class.java)
-                ?: return contentException("playerConnection")
+            ?: return contentException("playerConnection")
         val proxyName = this.jsonLib.getString("proxyName") ?: return contentException("proxyName")
         val offlinePlayer = Manager.instance.offlineCloudPlayerHandler.getOfflinePlayer(playerConnection.getUniqueId())
         val cloudPlayer = if (offlinePlayer == null) {
-            CloudPlayer(playerConnection.getName(), playerConnection.getUniqueId(), System.currentTimeMillis(), System.currentTimeMillis(), 0L, proxyName, null, playerConnection, Maps.newConcurrentMap())
+            CloudPlayer(
+                playerConnection.getName(),
+                playerConnection.getUniqueId(),
+                System.currentTimeMillis(),
+                System.currentTimeMillis(),
+                0L,
+                proxyName,
+                null,
+                playerConnection,
+                Maps.newConcurrentMap()
+            )
         } else {
             CloudPlayer(
-                    playerConnection.getName(),
-                    playerConnection.getUniqueId(),
-                    offlinePlayer.getFirstLogin(),
-                    System.currentTimeMillis(),
-                    offlinePlayer.getOnlineTime(),
-                    proxyName,
-                    null,
-                    playerConnection,
-                    ConcurrentHashMap(offlinePlayer.getProperties() as Map<String, Property<*>>)
+                playerConnection.getName(),
+                playerConnection.getUniqueId(),
+                offlinePlayer.getFirstLogin(),
+                System.currentTimeMillis(),
+                offlinePlayer.getOnlineTime(),
+                proxyName,
+                null,
+                playerConnection,
+                ConcurrentHashMap(offlinePlayer.getProperties() as Map<String, Property<*>>)
             )
         }
         CloudAPI.instance.getCloudPlayerManager().update(cloudPlayer)

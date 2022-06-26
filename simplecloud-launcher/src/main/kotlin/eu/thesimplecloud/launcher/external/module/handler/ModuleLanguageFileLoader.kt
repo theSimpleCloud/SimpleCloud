@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -39,9 +39,9 @@ import java.util.jar.JarFile
  * @author Frederick Baier
  */
 class ModuleLanguageFileLoader(
-        private val currentLanguage: String,
-        private val moduleFile: File,
-        private val cloudModule: ICloudModule
+    private val currentLanguage: String,
+    private val moduleFile: File,
+    private val cloudModule: ICloudModule
 ) {
 
     fun registerLanguageFileIfExist() {
@@ -61,7 +61,8 @@ class ModuleLanguageFileLoader(
     }
 
     private fun loadLanguageFile(file: File, language: String): LoadedLanguageFile? {
-        val map: Map<String, String>? = runCatching { loadJsonFileInJar<HashMap<String, String>>(file, "languages/${language}.json") }.getOrNull()
+        val map: Map<String, String>? =
+            runCatching { loadJsonFileInJar<HashMap<String, String>>(file, "languages/${language}.json") }.getOrNull()
         return map?.let { LanguageFileLoader().buildFileFromMap(it) }
     }
 
@@ -70,12 +71,12 @@ class ModuleLanguageFileLoader(
         try {
             val jar = JarFile(file)
             val entry: JarEntry = jar.getJarEntry(path)
-                    ?: throw ModuleLoadException("${file.path}: No '$path' found.")
+                ?: throw ModuleLoadException("${file.path}: No '$path' found.")
             val fileStream = jar.getInputStream(entry)
             val jsonLib = JsonLib.fromInputStream(fileStream)
             jar.close()
             return jsonLib.getObjectOrNull(T::class.java)
-                    ?: throw ModuleLoadException("${file.path}: Invalid '$path'.")
+                ?: throw ModuleLoadException("${file.path}: Invalid '$path'.")
         } catch (ex: Exception) {
             throw ModuleLoadException(file.path, ex)
         }

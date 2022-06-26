@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -40,8 +40,13 @@ class PermissionPlayer(
     override fun getUniqueId(): UUID = this.uniqueId
 
     override fun getPermissionGroupInfoList(): Collection<PlayerPermissionGroupInfo> {
-        if (!permissionGroupInfoList.map { it.permissionGroupName }.contains(PermissionPool.instance.getPermissionGroupManager().getDefaultPermissionGroupName()))
-            permissionGroupInfoList.add(PlayerPermissionGroupInfo(PermissionPool.instance.getPermissionGroupManager().getDefaultPermissionGroupName(), -1))
+        if (!permissionGroupInfoList.map { it.permissionGroupName }
+                .contains(PermissionPool.instance.getPermissionGroupManager().getDefaultPermissionGroupName()))
+            permissionGroupInfoList.add(
+                PlayerPermissionGroupInfo(
+                    PermissionPool.instance.getPermissionGroupManager().getDefaultPermissionGroupName(), -1
+                )
+            )
         return permissionGroupInfoList
     }
 

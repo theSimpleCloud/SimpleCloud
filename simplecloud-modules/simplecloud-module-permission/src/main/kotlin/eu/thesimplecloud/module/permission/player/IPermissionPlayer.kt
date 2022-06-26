@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -53,26 +53,30 @@ interface IPermissionPlayer : IPermissionEntity, Nameable {
     /**
      * Returns the permission group info list
      */
-    fun getAllNotExpiredPermissionGroupInfoList(): Collection<PlayerPermissionGroupInfo> = getPermissionGroupInfoList().filter { !it.isExpired() }
+    fun getAllNotExpiredPermissionGroupInfoList(): Collection<PlayerPermissionGroupInfo> =
+        getPermissionGroupInfoList().filter { !it.isExpired() }
 
     /**
      * Returns whether this player has the specified permission group.
      * (case insensitive)
      */
     fun hasPermissionGroup(name: String): Boolean = getPermissionGroupInfoList()
-            .map { it.permissionGroupName.toLowerCase() }
-            .contains(name.toLowerCase())
+        .map { it.permissionGroupName.toLowerCase() }
+        .contains(name.toLowerCase())
 
     /**
      * Returns the [IPermissionGroup] of this player
      */
     fun getAllNotExpiredPermissionGroups(): List<IPermissionGroup> = getAllNotExpiredPermissionGroupInfoList()
-        .mapNotNull { PermissionPool.instance.getPermissionGroupManager().getPermissionGroupByName(it.permissionGroupName) }
+        .mapNotNull {
+            PermissionPool.instance.getPermissionGroupManager().getPermissionGroupByName(it.permissionGroupName)
+        }
 
     /**
      * Returns the the [IOfflineCloudPlayer] of this permission player wrapped in a promise
      */
-    fun getOfflineCloudPlayer(): ICommunicationPromise<IOfflineCloudPlayer> = CloudAPI.instance.getCloudPlayerManager().getOfflineCloudPlayer(getUniqueId())
+    fun getOfflineCloudPlayer(): ICommunicationPromise<IOfflineCloudPlayer> =
+        CloudAPI.instance.getCloudPlayerManager().getOfflineCloudPlayer(getUniqueId())
 
     /**
      * Returns a promise that is completed when the operation is done. [ICommunicationPromise.isSuccess] indicates success or failure.

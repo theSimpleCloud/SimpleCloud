@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -31,23 +31,32 @@ import java.util.*
 
 class PacketIOSendTitleToCloudPlayer() : JsonPacket() {
 
-    constructor(cloudPlayer: ICloudPlayer, title: String, subTitle: String, fadeIn: Int, stay: Int, fadeOut: Int) : this() {
+    constructor(
+        cloudPlayer: ICloudPlayer,
+        title: String,
+        subTitle: String,
+        fadeIn: Int,
+        stay: Int,
+        fadeOut: Int
+    ) : this() {
         this.jsonLib.append("playerUniqueId", cloudPlayer.getUniqueId())
-                .append("title", title)
-                .append("subTitle", subTitle)
-                .append("fadeIn", fadeIn)
-                .append("stay", stay)
-                .append("fadeOut", fadeOut)
+            .append("title", title)
+            .append("subTitle", subTitle)
+            .append("fadeIn", fadeIn)
+            .append("stay", stay)
+            .append("fadeOut", fadeOut)
     }
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Unit> {
-        val playerUniqueId = this.jsonLib.getObject("playerUniqueId", UUID::class.java) ?: return contentException("playerUniqueId")
+        val playerUniqueId =
+            this.jsonLib.getObject("playerUniqueId", UUID::class.java) ?: return contentException("playerUniqueId")
         val title = this.jsonLib.getString("title") ?: return contentException("title")
         val subTitle = this.jsonLib.getString("subTitle") ?: return contentException("subTitle")
         val fadeIn = this.jsonLib.getInt("fadeIn") ?: return contentException("fadeIn")
         val stay = this.jsonLib.getInt("stay") ?: return contentException("stay")
         val fadeOut = this.jsonLib.getInt("fadeOut") ?: return contentException("fadeOut")
-        CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(playerUniqueId)?.sendTitle(title, subTitle, fadeIn, stay, fadeOut)
+        CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(playerUniqueId)
+            ?.sendTitle(title, subTitle, fadeIn, stay, fadeOut)
         return unit()
     }
 }

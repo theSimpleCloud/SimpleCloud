@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -88,7 +88,7 @@ class ServiceVersionSetup : ISetup {
         LocalServiceVersionHandler().saveServiceVersion(serviceVersion)
         val serviceVersionHandler = CloudAPI.instance.getServiceVersionHandler() as ManagerServiceVersionHandler
         serviceVersionHandler.reloadServiceVersions()
-        Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-versions.finished",  name)
+        Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-versions.finished", name)
     }
 
 

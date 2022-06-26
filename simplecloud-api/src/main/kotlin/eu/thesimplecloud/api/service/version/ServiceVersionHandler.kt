@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -32,8 +32,8 @@ import eu.thesimplecloud.api.service.version.type.ServiceVersionType
  * @author Frederick Baier
  */
 open class ServiceVersionHandler(
-        @Volatile
-        var versions: List<ServiceVersion> = emptyList()
+    @Volatile
+    var versions: List<ServiceVersion> = emptyList()
 ) : IServiceVersionHandler {
 
 
@@ -43,7 +43,7 @@ open class ServiceVersionHandler(
 
     override fun getVersionsByPrefix(prefix: String): List<ServiceVersion> {
         if (prefix.contains("_")) return emptyList()
-        val serviceVersions = versions.filter { it.name.startsWith(prefix.toUpperCase()) }
+        val serviceVersions = versions.filter { it.name.startsWith(prefix.uppercase()) }
         if (serviceVersions.isEmpty()) return emptyList()
         //check if all versions have the same version type
         val firstVersionType = serviceVersions.first().serviceAPIType
@@ -58,8 +58,8 @@ open class ServiceVersionHandler(
 
     override fun getAllVersionSuffixes(prefix: String): List<String> {
         return getVersionsByPrefix(prefix)
-                .map { it.name }
-                .map { it.replace((prefix + "_").toUpperCase(), "") }
+            .map { it.name }
+            .map { it.replace((prefix + "_").toUpperCase(), "") }
     }
 
     override fun getPrefixesByServiceAPIType(serviceAPIType: ServiceAPIType): Set<String> {
@@ -72,9 +72,8 @@ open class ServiceVersionHandler(
 
     override fun getPrefixesByServiceVersionType(serviceVersionType: ServiceVersionType): Set<String> {
         return getVersionsByServiceVersionType(serviceVersionType)
-                .map { getPrefixFromFullName(it.name) }.toSet()
+            .map { getPrefixFromFullName(it.name) }.toSet()
     }
-
 
 
     override fun getServiceVersionByName(name: String): ServiceVersion? {

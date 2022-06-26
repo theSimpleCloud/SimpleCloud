@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -23,7 +23,7 @@
 package eu.thesimplecloud.launcher.setups
 
 import eu.thesimplecloud.jsonlib.JsonLib
-import eu.thesimplecloud.launcher.config.LauncherConfig
+import eu.thesimplecloud.launcher.config.launcher.LauncherConfig
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
 import eu.thesimplecloud.launcher.console.setup.provider.BooleanSetupAnswerProvider
@@ -33,7 +33,11 @@ import eu.thesimplecloud.launcher.utils.WebsiteContentLoader
 
 class AutoIpSetup : ISetup {
 
-    @SetupQuestion(0, "Do you want to retrieve your ip automatically via `ipify.org`?", BooleanSetupAnswerProvider::class)
+    @SetupQuestion(
+        0,
+        "Do you want to retrieve your ip automatically via `ipify.org`?",
+        BooleanSetupAnswerProvider::class
+    )
     fun setup(boolean: Boolean): Boolean {
         if (!boolean) {
             Launcher.instance.setupManager.queueSetup(IpSetup(), true)
@@ -53,7 +57,12 @@ class AutoIpSetup : ISetup {
         }
 
         val launcherConfig = Launcher.instance.launcherConfig
-        val config = LauncherConfig(ip, launcherConfig.port, launcherConfig.language, launcherConfig.directoryPaths)
+        val config = LauncherConfig(
+            ip,
+            launcherConfig.port,
+            launcherConfig.language,
+            launcherConfig.directoryPaths
+        )
         Launcher.instance.replaceLauncherConfig(config)
         return true
     }

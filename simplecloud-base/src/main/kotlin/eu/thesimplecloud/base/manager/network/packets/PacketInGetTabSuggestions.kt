@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -37,15 +37,20 @@ import java.util.*
  * Date: 14.04.2020
  * Time: 19:05
  */
-class PacketInGetTabSuggestions(): JsonPacket() {
+class PacketInGetTabSuggestions() : JsonPacket() {
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
-        val command = this.jsonLib.getString("command")?: return contentException("command")
-        val uuid = this.jsonLib.getObject("uuid", UUID::class.java)?: return contentException("uuid")
+        val command = this.jsonLib.getString("command") ?: return contentException("command")
+        val uuid = this.jsonLib.getObject("uuid", UUID::class.java) ?: return contentException("uuid")
 
-        val player = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(uuid)?: return CommunicationPromise.failed(NoSuchPlayerException(uuid.toString()))
+        val player =
+            CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(uuid) ?: return CommunicationPromise.failed(
+                NoSuchPlayerException(uuid.toString())
+            )
 
-        return CommunicationPromise.of(Launcher.instance.commandManager.getAvailableTabCompleteArgs(command, player).toTypedArray())
+        return CommunicationPromise.of(
+            Launcher.instance.commandManager.getAvailableTabCompleteArgs(command, player).toTypedArray()
+        )
     }
 
 }

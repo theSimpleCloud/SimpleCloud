@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -34,7 +34,8 @@ class BungeeListener : Listener {
     fun on(event: PermissionCheckEvent) {
         val sender = event.sender
         if (sender is ProxiedPlayer) {
-            val permissionPlayer = PermissionPool.instance.getPermissionPlayerManager().getCachedPermissionPlayer(sender.uniqueId)
+            val permissionPlayer =
+                PermissionPool.instance.getPermissionPlayerManager().getCachedPermissionPlayer(sender.uniqueId)
             if (permissionPlayer == null) {
                 println("WARNING: PermissionPlayer is NULL (${sender.name})")
                 return

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -41,7 +41,7 @@ import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.IPacket
 import eu.thesimplecloud.launcher.application.ApplicationClassLoader
 import eu.thesimplecloud.launcher.application.ICloudApplication
-import eu.thesimplecloud.launcher.config.LauncherConfig
+import eu.thesimplecloud.launcher.config.launcher.LauncherConfig
 import eu.thesimplecloud.launcher.external.module.LoadedModuleFileContent
 import eu.thesimplecloud.launcher.external.module.handler.ModuleHandler
 import eu.thesimplecloud.launcher.language.LanguageFileLoader
@@ -160,7 +160,8 @@ class Wrapper : ICloudApplication {
             } catch (e: InterruptedException) {
             }
         }
-        this.connectionToManager.sendUnitQuery(PacketOutCloudClientLogin(NetworkComponentType.WRAPPER), 10000).syncUninterruptibly()
+        this.connectionToManager.sendUnitQuery(PacketOutCloudClientLogin(NetworkComponentType.WRAPPER), 10000)
+            .syncUninterruptibly()
 
         if (!isStartedInManagerDirectory()) {
             val templateClient = NettyClient(launcherConfig.host, launcherConfig.port + 1, ConnectionHandlerImpl())
@@ -180,16 +181,16 @@ class Wrapper : ICloudApplication {
             templateClient.start().then {
                 Launcher.instance.consoleSender.sendProperty("wrapper.template.requesting")
                 templateClient.getConnection().sendUnitQuery(PacketOutGetTemplates(), TimeUnit.MINUTES.toMillis(15))
-                        .thenDelayed(3, TimeUnit.SECONDS) {
-                            reloadExistingModules()
-                            val wrapperUpdater = getThisWrapper().getUpdater()
-                            wrapperUpdater.setTemplatesReceived(true)
-                            wrapperUpdater.update()
-                            Launcher.instance.consoleSender.sendProperty("wrapper.template.received")
-                        }.addFailureListener {
-                            Launcher.instance.logger.severe("An error occurred while requesting templates:")
-                            Launcher.instance.logger.exception(it)
-                        }
+                    .thenDelayed(3, TimeUnit.SECONDS) {
+                        reloadExistingModules()
+                        val wrapperUpdater = getThisWrapper().getUpdater()
+                        wrapperUpdater.setTemplatesReceived(true)
+                        wrapperUpdater.update()
+                        Launcher.instance.consoleSender.sendProperty("wrapper.template.received")
+                    }.addFailureListener {
+                        Launcher.instance.logger.severe("An error occurred while requesting templates:")
+                        Launcher.instance.logger.exception(it)
+                    }
             }
         }
     }
@@ -202,7 +203,7 @@ class Wrapper : ICloudApplication {
     fun isWrapperNameSet(): Boolean = thisWrapperName != null
 
     fun getThisWrapper(): IWrapperInfo = CloudAPI.instance.getWrapperManager().getWrapperByName(this.thisWrapperName!!)
-            ?: throw IllegalStateException("Unable to find self wrapper.")
+        ?: throw IllegalStateException("Unable to find self wrapper.")
 
     /**
      * Updates the memory the wrapper currently uses according to the registered service processes.

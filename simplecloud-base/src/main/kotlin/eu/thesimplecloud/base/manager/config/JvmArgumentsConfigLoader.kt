@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -35,8 +35,8 @@ import java.io.File
  * Time: 18:38
  */
 class JvmArgumentsConfigLoader : AbstractJsonLibConfigLoader<JvmArgumentsConfig>(
-        JvmArgumentsConfig::class.java,
-        File(DirectoryPaths.paths.storagePath + "jvm-arguments.json"),
-        { JvmArgumentsConfig(listOf(JvmArgument(listOf("all"), listOf("-XX:-UseAdaptiveSizePolicy")))) },
-        true
+    JvmArgumentsConfig::class.java,
+    File(DirectoryPaths.paths.storagePath + "jvm-arguments.json"),
+    { JvmArgumentsConfig(listOf(JvmArgument(listOf("all"), listOf("-XX:-UseAdaptiveSizePolicy")))) },
+    true
 )

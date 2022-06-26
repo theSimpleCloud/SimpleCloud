@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -20,21 +20,15 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.launcher.invoker;
+package eu.thesimplecloud.launcher.config.java
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
-/**
- * Created by IntelliJ IDEA.
- * User: Philipp.Eistrach
- * Date: 07.09.2019
- * Time: 14:11
- */
-public class MethodInvokeHelper {
+class JavaVersion(
+    var versions: MutableMap<String, String> = mutableMapOf()
+) {
 
-    public static Object invoke(Method method, Object source, Object[] array) throws InvocationTargetException, IllegalAccessException {
-        return method.invoke(source, (Object[]) array);
+    companion object {
+        lateinit var paths: JavaVersion
     }
 
 }

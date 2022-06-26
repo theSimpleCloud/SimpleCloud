@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -22,31 +22,36 @@
 
 package eu.thesimplecloud.api.player.text
 
+@Deprecated("Use adventure text component instead")
 class CloudText(val text: String) {
 
 
     /**
      * The text shall be shown when hovering over the [text]
      */
-    @Volatile var hover: String? = null
+    @Volatile
+    var hover: String? = null
         private set
 
     /**
      * The action content to perform when the text is clicked.
      */
-    @Volatile var click: String? = null
+    @Volatile
+    var click: String? = null
         private set
 
     /**
      * The action that will be performed when the text is clicked.
      */
-    @Volatile var clickEventType: ClickEventType? = null
+    @Volatile
+    var clickEventType: ClickEventType? = null
         private set
 
     /**
      * The [CloudText] to append to this text.
      */
-    @Volatile var appendedCloudText: CloudText? = null
+    @Volatile
+    var appendedCloudText: CloudText? = null
         private set
 
     fun addHover(hover: String): CloudText {

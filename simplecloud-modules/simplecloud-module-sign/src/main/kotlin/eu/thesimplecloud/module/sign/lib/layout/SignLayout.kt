@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -26,9 +26,9 @@ import eu.thesimplecloud.api.utils.Nameable
 import eu.thesimplecloud.jsonlib.JsonLibExclude
 
 class SignLayout(
-        private val name: String,
-        val layoutType: LayoutType,
-        private val frames: List<SignFrame>
+    private val name: String,
+    val layoutType: LayoutType,
+    private val frames: List<SignFrame>
 ) : Nameable {
 
     @JsonLibExclude

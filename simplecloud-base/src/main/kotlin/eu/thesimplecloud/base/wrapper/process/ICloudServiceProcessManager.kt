@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -44,14 +44,16 @@ interface ICloudServiceProcessManager {
     /**
      * Returns the [ICloudServiceProcess] found by the specified service [name]
      */
-    fun getCloudServiceProcessByServiceName(name: String): ICloudServiceProcess? = getAllProcesses().firstOrNull { it.getCloudService().getName().equals(name, true) }
+    fun getCloudServiceProcessByServiceName(name: String): ICloudServiceProcess? =
+        getAllProcesses().firstOrNull { it.getCloudService().getName().equals(name, true) }
 
     /**
      * Returns the [ICloudServiceProcess] found by the specified service [service]
      */
-    fun getCloudServiceProcessByService(service: ICloudService): ICloudServiceProcess? = getCloudServiceProcessByServiceName(service.getName())
+    fun getCloudServiceProcessByService(service: ICloudService): ICloudServiceProcess? =
+        getCloudServiceProcessByServiceName(service.getName())
 
-        /**
+    /**
      * Stops all registered services.
      */
     fun stopAllServices() = getAllProcesses().forEach { it.shutdown() }

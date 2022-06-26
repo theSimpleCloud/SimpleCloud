@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -44,6 +44,7 @@ open class DefaultServerGroup(
     serviceVersion: ServiceVersion,
     startPriority: Int,
     permission: String?,
+    javaCommand: String,
     private val hiddenAtProxyGroups: List<String> = emptyList()
 ) : AbstractServiceGroup(
     name,
@@ -58,6 +59,7 @@ open class DefaultServerGroup(
     wrapperName,
     serviceVersion,
     startPriority,
+    javaCommand,
     permission
 ), ICloudServerGroup {
 

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -168,8 +168,10 @@ class ServiceVersionHandlerTest {
     fun suffix_test() {
         val list = JsonLib.fromJsonString(testContent).getObject(Array<ServiceVersion>::class.java).toList()
         val serviceVersionHandler = ServiceVersionHandler(list)
-        assertEquals(mutableListOf("1_7_10", "1_8_8", "1_11_2", "1_12_2", "1_13_2", "1_14_4", "1_15_2"),
-                serviceVersionHandler.getAllVersionSuffixes("PAPER"))
+        assertEquals(
+            mutableListOf("1_7_10", "1_8_8", "1_11_2", "1_12_2", "1_13_2", "1_14_4", "1_15_2"),
+            serviceVersionHandler.getAllVersionSuffixes("PAPER")
+        )
         assertEquals(7, serviceVersionHandler.getVersionsByPrefix("PAPER").size)
         assertEquals(9, serviceVersionHandler.getVersionsByPrefix("SPIGOT").size)
     }
@@ -178,7 +180,10 @@ class ServiceVersionHandlerTest {
     fun prefix_by_service_version_test() {
         val list = JsonLib.fromJsonString(testContent).getObject(Array<ServiceVersion>::class.java).toList()
         val serviceVersionHandler = ServiceVersionHandler(list)
-        assertEquals(mutableSetOf("SPIGOT", "PAPER"), serviceVersionHandler.getPrefixesByServiceVersionType(ServiceVersionType.SERVER))
+        assertEquals(
+            mutableSetOf("SPIGOT", "PAPER"),
+            serviceVersionHandler.getPrefixesByServiceVersionType(ServiceVersionType.SERVER)
+        )
     }
 
 }

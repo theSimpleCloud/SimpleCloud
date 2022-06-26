@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -41,7 +41,8 @@ class CommandExecuteManagerImpl : ICommandExecuteManager {
 
         val networkComponentType = commandExecutable.getNetworkComponentType()
         val wrapperClient = if (commandExecutable is ICloudService) {
-            Manager.instance.communicationServer.getClientManager().getClientByClientValue(commandExecutable.getWrapper())
+            Manager.instance.communicationServer.getClientManager()
+                .getClientByClientValue(commandExecutable.getWrapper())
         } else {
             Manager.instance.communicationServer.getClientManager().getClientByClientValue(commandExecutable)
         }

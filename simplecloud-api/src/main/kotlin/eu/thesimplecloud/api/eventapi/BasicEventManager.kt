@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -42,7 +42,12 @@ open class BasicEventManager : IEventManager {
         }
     }
 
-    override fun registerEvent(cloudModule: ICloudModule, eventClass: Class<out IEvent>, listener: IListener, eventExecutor: IEventExecutor) {
+    override fun registerEvent(
+        cloudModule: ICloudModule,
+        eventClass: Class<out IEvent>,
+        listener: IListener,
+        eventExecutor: IEventExecutor
+    ) {
         addRegisteredEvent(RegisteredEvent(cloudModule, eventClass, listener, eventExecutor))
     }
 
@@ -73,7 +78,11 @@ open class BasicEventManager : IEventManager {
      */
     private fun getValidMethods(listenerClass: Class<out IListener>): List<Method> {
         val methods = listenerClass.declaredMethods
-                .filter { it.isAnnotationPresent(CloudEventHandler::class.java) && it.parameterTypes.size == 1 && IEvent::class.java.isAssignableFrom(it.parameterTypes[0]) }
+            .filter {
+                it.isAnnotationPresent(CloudEventHandler::class.java) && it.parameterTypes.size == 1 && IEvent::class.java.isAssignableFrom(
+                    it.parameterTypes[0]
+                )
+            }
         methods.forEach { it.isAccessible = true }
         return methods
     }
@@ -96,10 +105,20 @@ open class BasicEventManager : IEventManager {
         this.listeners[registeredEvent.eventClass]?.remove(registeredEvent)
     }
 
-    data class RegisteredEvent(val cloudModule: ICloudModule, val eventClass: Class<out IEvent>, val listener: IListener, val eventExecutor: IEventExecutor) {
+    data class RegisteredEvent(
+        val cloudModule: ICloudModule,
+        val eventClass: Class<out IEvent>,
+        val listener: IListener,
+        val eventExecutor: IEventExecutor
+    ) {
 
         companion object {
-            fun fromEventMethod(cloudModule: ICloudModule, eventClass: Class<out IEvent>, listener: IListener, method: Method): RegisteredEvent {
+            fun fromEventMethod(
+                cloudModule: ICloudModule,
+                eventClass: Class<out IEvent>,
+                listener: IListener,
+                method: Method
+            ): RegisteredEvent {
                 return RegisteredEvent(cloudModule, eventClass, listener, object : IEventExecutor {
 
                     override fun execute(event: IEvent) {

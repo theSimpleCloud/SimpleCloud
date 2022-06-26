@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -28,7 +28,6 @@ import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.ObjectPacket
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import java.util.*
-import kotlin.NoSuchElementException
 
 class PacketIOGetPlayerLocation() : ObjectPacket<UUID>() {
 
@@ -39,7 +38,7 @@ class PacketIOGetPlayerLocation() : ObjectPacket<UUID>() {
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         val value = this.value ?: return contentException("value")
         val cloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(value)
-                ?: return failure(NoSuchElementException("Player does not exist"))
+            ?: return failure(NoSuchElementException("Player does not exist"))
         return cloudPlayer.getLocation()
     }
 

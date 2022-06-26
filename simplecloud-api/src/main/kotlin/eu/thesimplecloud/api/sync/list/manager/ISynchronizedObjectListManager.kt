@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -21,6 +21,7 @@
  */
 
 package eu.thesimplecloud.api.sync.list.manager
+
 import eu.thesimplecloud.api.network.packets.sync.list.PacketIOUpdateListProperty
 import eu.thesimplecloud.api.sync.list.ISynchronizedObjectList
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
@@ -33,7 +34,10 @@ interface ISynchronizedObjectListManager {
      * Registers a synchronized object list linked to the objects name
      * @return a promise that completes when the list was synchronized.
      */
-    fun registerSynchronizedObjectList(synchronizedObjectList: ISynchronizedObjectList<out Any>, syncContent: Boolean = true): ICommunicationPromise<Unit>
+    fun registerSynchronizedObjectList(
+        synchronizedObjectList: ISynchronizedObjectList<out Any>,
+        syncContent: Boolean = true
+    ): ICommunicationPromise<Unit>
 
     /**
      * Returns the [ISynchronizedObjectList] found by the specified [name]
@@ -48,10 +52,20 @@ interface ISynchronizedObjectListManager {
     /**
      * Synchronizes the content of a [ISynchronizedObjectList] with the specified [connection]
      */
-    fun synchronizeListWithConnection(synchronizedObjectList: ISynchronizedObjectList<out Any>, connection: IConnection): ICommunicationPromise<Unit> {
+    fun synchronizeListWithConnection(
+        synchronizedObjectList: ISynchronizedObjectList<out Any>,
+        connection: IConnection
+    ): ICommunicationPromise<Unit> {
         return synchronizedObjectList.getAllCachedObjects()
-                .map { connection.sendUnitQuery(PacketIOUpdateListProperty(synchronizedObjectList.getIdentificationName(), it)) }
-                .combineAllPromises()
+            .map {
+                connection.sendUnitQuery(
+                    PacketIOUpdateListProperty(
+                        synchronizedObjectList.getIdentificationName(),
+                        it
+                    )
+                )
+            }
+            .combineAllPromises()
     }
 
 }

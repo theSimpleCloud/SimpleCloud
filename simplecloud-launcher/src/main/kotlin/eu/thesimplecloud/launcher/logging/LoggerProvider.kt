@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -37,8 +37,6 @@ import java.util.logging.FileHandler
 import java.util.logging.Level
 import java.util.logging.Logger
 import java.util.logging.SimpleFormatter
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 
 /**
@@ -144,7 +142,8 @@ class LoggerProvider(val screenManager: IScreenManager) : Logger("SimpleCloudLog
 
     private fun printMessage(msg: String, logType: LogType, cache: Boolean = true) {
         if (cache && Launcher.instance.isBaseLoaded
-                && (logType != LogType.SETUP && logType != LogType.EMPTY && logType != LogType.WARNING)) {
+            && (logType != LogType.SETUP && logType != LogType.EMPTY && logType != LogType.WARNING)
+        ) {
             if (cachedMessages.size == 50) {
                 cachedMessages.removeAt(0)
             }
@@ -176,7 +175,8 @@ class LoggerProvider(val screenManager: IScreenManager) : Logger("SimpleCloudLog
         }
 
         if ((screenManager.hasActiveScreen() && logType != LogType.EMPTY)
-                || (Launcher.instance.setupManager.hasActiveSetup() && logType != LogType.SETUP)) {
+            || (Launcher.instance.setupManager.hasActiveSetup() && logType != LogType.SETUP)
+        ) {
             return true
         }
 

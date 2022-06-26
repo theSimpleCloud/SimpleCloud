@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -34,9 +34,9 @@ import eu.thesimplecloud.module.permission.manager.PermissionModule
 import java.util.concurrent.CopyOnWriteArrayList
 
 class PermissionGroupManager(
-        list: List<PermissionGroup> = emptyList()
+    list: List<PermissionGroup> = emptyList()
 ) : AbstractSynchronizedObjectList<PermissionGroup>(
-        CopyOnWriteArrayList(list.map { Property(it) })
+    CopyOnWriteArrayList(list.map { Property(it) })
 ), IPermissionGroupManager {
 
     @Volatile
@@ -50,7 +50,8 @@ class PermissionGroupManager(
 
     override fun getAllPermissionGroups(): Collection<IPermissionGroup> = this.values.map { it.getValue() }
 
-    override fun getPermissionGroupByName(name: String): IPermissionGroup? = this.values.firstOrNull { it.getValue().getName() == name }?.getValue()
+    override fun getPermissionGroupByName(name: String): IPermissionGroup? =
+        this.values.firstOrNull { it.getValue().getName() == name }?.getValue()
 
     override fun getDefaultPermissionGroupName(): String = this.defaultPermissionGroupName
 

@@ -12,7 +12,7 @@ dependencies {
     testCompile group: 'com.google.guava', name: 'guava', version: dependencyGuavaVersion
     testCompile group: 'io.netty', name: 'netty-all', version: dependencyNettyVersion
     testCompile group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: dependencyKotlinCouroutinesVersion
-    testImplementation "io.mockk:mockk:1.10.0"
+    testImplementation 'io.mockk:mockk:1.12.3'
 }
 
 configurations {

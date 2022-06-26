@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -25,11 +25,11 @@ package eu.thesimplecloud.api.player.connection
 import java.util.*
 
 data class DefaultPlayerConnection(
-        private val address: DefaultPlayerAddress,
-        private val name: String,
-        private val uniqueId: UUID,
-        private val onlineMode: Boolean,
-        private val version: Int
+    private val address: DefaultPlayerAddress,
+    private val name: String,
+    private val uniqueId: UUID,
+    private val onlineMode: Boolean,
+    private val version: Int
 ) : IPlayerConnection {
 
     override fun getAddress(): IPlayerAddress = this.address

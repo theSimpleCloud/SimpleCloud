@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -32,9 +32,12 @@ import java.io.File
  * Time: 07:46
  * @author Frederick Baier
  */
-class ModuleUpdaterConfigLoader : AbstractJsonLibConfigLoader<ModuleUpdaterConfig>(ModuleUpdaterConfig::class.java,
-        File(DirectoryPaths.paths.storagePath, "updateable-modules.json"),
-        { ModuleUpdaterConfig(listOf(
+class ModuleUpdaterConfigLoader : AbstractJsonLibConfigLoader<ModuleUpdaterConfig>(
+    ModuleUpdaterConfig::class.java,
+    File(DirectoryPaths.paths.storagePath, "updateable-modules.json"),
+    {
+        ModuleUpdaterConfig(
+            listOf(
                 "SimpleCloud-Chat+Tab",
                 "SimpleCloud-CloudFlare",
                 "SimpleCloud-HubCommand",
@@ -45,6 +48,8 @@ class ModuleUpdaterConfigLoader : AbstractJsonLibConfigLoader<ModuleUpdaterConfi
                 "SimpleCloud-Rest",
                 "SimpleCloud-Sign",
                 "SimpleCloud-Statistics"
-        )) },
-        true
+            )
+        )
+    },
+    true
 )

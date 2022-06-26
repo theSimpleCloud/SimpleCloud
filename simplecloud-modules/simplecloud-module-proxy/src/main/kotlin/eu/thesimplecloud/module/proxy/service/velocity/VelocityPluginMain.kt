@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -32,6 +32,7 @@ import com.velocitypowered.api.proxy.ProxyServer
 import eu.thesimplecloud.module.proxy.config.TablistConfiguration
 import eu.thesimplecloud.module.proxy.service.ProxyHandler
 import eu.thesimplecloud.module.proxy.service.velocity.listener.VelocityListener
+import eu.thesimplecloud.plugin.extension.getCloudPlayer
 import java.util.concurrent.TimeUnit
 
 /**
@@ -71,17 +72,12 @@ class VelocityPluginMain @Inject constructor(
     }
 
     private fun sendHeaderAndFooter(player: Player, header: String, footer: String) {
-        val currentServer = player.currentServer
-        if (!currentServer.isPresent) {
-            return
-        }
-
-        val serverName = currentServer.get().serverInfo.name
+        val server = player.getCloudPlayer().getConnectedServer() ?: return
 
         val headerHexColorComponent = ProxyHandler
-            .getHexColorComponent(ProxyHandler.replaceString(header, serverName, player.uniqueId))
+            .getHexColorComponent(ProxyHandler.replaceString(header, server, player.uniqueId))
         val footerHexColorComponent = ProxyHandler
-            .getHexColorComponent(ProxyHandler.replaceString(footer, serverName, player.uniqueId))
+            .getHexColorComponent(ProxyHandler.replaceString(footer, server, player.uniqueId))
 
         player.sendPlayerListHeaderAndFooter(headerHexColorComponent, footerHexColorComponent)
     }

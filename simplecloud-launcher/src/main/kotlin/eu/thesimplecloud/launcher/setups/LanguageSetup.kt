@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -22,7 +22,7 @@
 
 package eu.thesimplecloud.launcher.setups
 
-import eu.thesimplecloud.launcher.config.LauncherConfig
+import eu.thesimplecloud.launcher.config.launcher.LauncherConfig
 import eu.thesimplecloud.launcher.console.setup.ISetup
 import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
 import eu.thesimplecloud.launcher.setups.provider.LanguageSetupAnswerProvider
@@ -34,7 +34,12 @@ class LanguageSetup : ISetup {
     @SetupQuestion(0, "Which language do you want to use?", LanguageSetupAnswerProvider::class)
     fun setup(answer: String): Boolean {
         val launcherConfig = Launcher.instance.launcherConfig
-        val config = LauncherConfig(launcherConfig.host, launcherConfig.port, answer.toLowerCase(), launcherConfig.directoryPaths)
+        val config = LauncherConfig(
+            launcherConfig.host,
+            launcherConfig.port,
+            answer.lowercase(),
+            launcherConfig.directoryPaths
+        )
         Launcher.instance.replaceLauncherConfig(config)
         return true
     }

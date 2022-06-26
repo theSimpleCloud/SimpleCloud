@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -31,8 +31,8 @@ import eu.thesimplecloud.launcher.external.module.LoadedModuleFileContent
  * @author Frederick Baier
  */
 class RecursiveDependencyChecker(
-        private val moduleToCheck: LoadedModuleFileContent,
-        private val dependencyGetFunction: (LoadedModuleFileContent) -> Collection<LoadedModuleFileContent>
+    private val moduleToCheck: LoadedModuleFileContent,
+    private val dependencyGetFunction: (LoadedModuleFileContent) -> Collection<LoadedModuleFileContent>
 ) {
 
     fun hasRecursiveDependencies(): Boolean {
@@ -44,7 +44,10 @@ class RecursiveDependencyChecker(
         return dependency.content.dependsOrSoftDependsOn(moduleToCheck.content)
     }
 
-    fun collectAllDependencies(module: LoadedModuleFileContent, list: MutableList<LoadedModuleFileContent> = ArrayList()): MutableList<LoadedModuleFileContent> {
+    fun collectAllDependencies(
+        module: LoadedModuleFileContent,
+        list: MutableList<LoadedModuleFileContent> = ArrayList()
+    ): MutableList<LoadedModuleFileContent> {
         if (list.contains(module))
             return list
         list.add(module)

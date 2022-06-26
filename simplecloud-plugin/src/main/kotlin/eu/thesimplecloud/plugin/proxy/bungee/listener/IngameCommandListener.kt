@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -41,22 +41,31 @@ class IngameCommandListener : Listener {
     fun on(event: ChatEvent) {
         if (event.sender !is ProxiedPlayer) return
         val player = event.sender as ProxiedPlayer
-        if (event.isCommand){
+        if (event.isCommand) {
             val rawCommand = event.message.replaceFirst("/", "")
             val commandStart = rawCommand.split(" ")[0]
-            if (CloudBungeePlugin.instance.synchronizedIngameCommandsProperty.getValue().contains(commandStart.toLowerCase())) {
-                CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketOutPlayerExecuteCommand(player.getCloudPlayer(), rawCommand))
+            if (CloudBungeePlugin.instance.synchronizedIngameCommandsProperty.getValue()
+                    .contains(commandStart.toLowerCase())
+            ) {
+                CloudPlugin.instance.connectionToManager.sendUnitQuery(
+                    PacketOutPlayerExecuteCommand(
+                        player.getCloudPlayer(),
+                        rawCommand
+                    )
+                )
                 event.isCancelled = true
             }
-            CloudAPI.instance.getEventManager().call(CloudPlayerCommandExecuteEvent(player.uniqueId, player.name, rawCommand))
+            CloudAPI.instance.getEventManager()
+                .call(CloudPlayerCommandExecuteEvent(player.uniqueId, player.name, rawCommand))
         }
     }
 
     @EventHandler
     fun on(event: TabCompleteEvent) {
-        val player = event.sender as? ProxiedPlayer?: return
+        val player = event.sender as? ProxiedPlayer ?: return
 
-        event.suggestions.addAll(ProxyEventHandler.handleTabComplete(player.uniqueId, event.cursor))
+        val strings = ProxyEventHandler.handleTabComplete(player.uniqueId, event.cursor).getBlocking()
+        event.suggestions.addAll(strings)
     }
 
 }

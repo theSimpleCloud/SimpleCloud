@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -32,16 +32,16 @@ import java.lang.reflect.Method
  * Time: 20:10
  */
 class CommandData(
-        val cloudModule: ICloudModule,
-        val path: String,
-        val commandDescription: String,
-        val source: ICommandHandler,
-        val method: Method,
-        val commandType: CommandType,
-        val permission: String,
-        val aliases: Array<String>,
-        val isLegacy: Boolean,
-        val parameterDataList: MutableList<CommandParameterData> = ArrayList()
+    val cloudModule: ICloudModule,
+    val path: String,
+    val commandDescription: String,
+    val source: ICommandHandler,
+    val method: Method,
+    val commandType: CommandType,
+    val permission: String,
+    val aliases: Array<String>,
+    val isLegacy: Boolean,
+    val parameterDataList: MutableList<CommandParameterData> = ArrayList()
 ) {
 
     fun getParameterDataByName(name: String) = this.parameterDataList.firstOrNull { it.name == name }
@@ -50,11 +50,13 @@ class CommandData(
 
     fun getPathWithCloudPrefixIfRequired() = getPathWithCloudPrefixIfRequired(this.path)
 
-    fun getPathWithCloudPrefixIfRequired(path: String) = (if (commandType == CommandType.INGAME) "" else "cloud ") + path
+    fun getPathWithCloudPrefixIfRequired(path: String) =
+        (if (commandType == CommandType.INGAME) "" else "cloud ") + path
 
     fun getAllPathsWithAliases(): Collection<String> {
         val path = path.split(" ").drop(1).joinToString(" ")
-        return aliases.map { getPathWithCloudPrefixIfRequired("$it $path") }.union(listOf(getPathWithCloudPrefixIfRequired()))
+        return aliases.map { getPathWithCloudPrefixIfRequired("$it $path") }
+            .union(listOf(getPathWithCloudPrefixIfRequired()))
     }
 
     fun getIndexOfParameter(parameterName: String): Int {

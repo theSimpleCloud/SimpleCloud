@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -30,5 +30,6 @@ class CloudServiceGroupParser : IStringTypeParser<ICloudServiceGroup> {
 
     override fun allowedTypes(): List<Class<out ICloudServiceGroup>> = listOf(ICloudServiceGroup::class.java)
 
-    override fun parse(string: String): ICloudServiceGroup? = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(string)
+    override fun parse(string: String): ICloudServiceGroup? =
+        CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(string)
 }

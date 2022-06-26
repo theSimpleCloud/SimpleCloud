@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -34,5 +34,8 @@ import kotlin.reflect.KClass
  */
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class CommandArgument(val name: String, val suggestionProvider: KClass<out ICommandSuggestionProvider> = EmptyCommandSuggestionProvider::class) {
+annotation class CommandArgument(
+    val name: String,
+    val suggestionProvider: KClass<out ICommandSuggestionProvider> = EmptyCommandSuggestionProvider::class
+) {
 }

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -41,7 +41,8 @@ class PacketIORemoveListProperty() : JsonPacket() {
         val property = this.jsonLib.getObject("property", Property::class.java) ?: return contentException("property")
         property as IProperty<Any>
         try {
-            val synchronizedObjectList: ISynchronizedObjectList<Any>? = CloudAPI.instance.getSynchronizedObjectListManager().getSynchronizedObjectList(listName)
+            val synchronizedObjectList: ISynchronizedObjectList<Any>? =
+                CloudAPI.instance.getSynchronizedObjectListManager().getSynchronizedObjectList(listName)
             synchronizedObjectList ?: return failure(NoSuchElementException())
             synchronizedObjectList.remove(property, true)
 

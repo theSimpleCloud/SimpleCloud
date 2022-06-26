@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -24,11 +24,11 @@ package eu.thesimplecloud.base.manager.database
 
 
 open class DatabaseConnectionInformation(
-        val host: String,
-        val port: Int,
-        val databaseName: String,
-        val userName: String,
-        val password: String,
-        val collectionPrefix: String,
-        val databaseType: DatabaseType
+    val host: String,
+    val port: Int,
+    val databaseName: String,
+    val userName: String,
+    val password: String,
+    val collectionPrefix: String,
+    val databaseType: DatabaseType
 )

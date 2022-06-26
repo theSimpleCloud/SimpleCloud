@@ -5,6 +5,8 @@
   "moduleCopyType": "NONE",
   "repositories": [],
   "dependencies": [],
-  "depend": ["SimpleCloud-Rest"],
+  "depend": [
+    "SimpleCloud-Rest"
+  ],
   "softDepend": []
 }

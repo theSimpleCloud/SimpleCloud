@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -43,7 +43,7 @@ class InteractListener : Listener {
         val state = clickedBlock.state
         if (state is Sign) {
             val bukkitCloudSign = SignAPI.instance.serviceViewManager.getBukkitCloudSignByLocation(state.location)
-                    ?: return
+                ?: return
             if (bukkitCloudSign.serviceGroup?.isInMaintenance() == true) return
             val currentServer = bukkitCloudSign.service ?: return
             if (currentServer.getState() != ServiceState.VISIBLE) return

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -20,24 +20,15 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-repositories {
-    mavenCentral()
-}
+package eu.thesimplecloud.launcher.config.launcher
 
-dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile group: 'org.mongodb', name: 'mongo-java-driver', version: '3.12.5'
-}
+import eu.thesimplecloud.api.config.AbstractJsonLibConfigLoader
+import eu.thesimplecloud.api.directorypaths.DirectoryPaths
+import java.io.File
 
-jar {
-    manifest {
-        attributes(
-                'Main-Class': 'eu.thesimplecloud.mongoinstaller.MongoInstallerMain',
-                'Implementation-Version': project.version,
-        )
-    }
-    // This line of code recursively collects and copies all of a project's files
-    // and adds them to the JAR itself. One can extend this task, to skip certain
-    // files or particular types at will
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-}
+class LauncherConfigLoader : AbstractJsonLibConfigLoader<LauncherConfig>(
+    LauncherConfig::class.java,
+    File("launcher.json"),
+    { LauncherConfig("127.0.0.1", 1630, "en", DirectoryPaths()) },
+    false
+)

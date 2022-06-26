@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -29,9 +29,9 @@ import eu.thesimplecloud.api.player.ICloudPlayer
 import eu.thesimplecloud.api.player.IOfflineCloudPlayer
 import eu.thesimplecloud.api.player.SimpleCloudPlayer
 import eu.thesimplecloud.api.player.connection.ConnectionResponse
-import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
+import net.kyori.adventure.text.Component
 import java.util.*
 
 class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
@@ -44,11 +44,14 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
         throw UnsupportedOperationException("Players are not supported in the wrapper")
     }
 
-    override fun sendMessageToPlayer(cloudPlayer: ICloudPlayer, cloudText: CloudText): ICommunicationPromise<Unit> {
+    override fun sendMessageToPlayer(cloudPlayer: ICloudPlayer, component: Component): ICommunicationPromise<Unit> {
         throw UnsupportedOperationException("Players are not supported in the wrapper")
     }
 
-    override fun connectPlayer(cloudPlayer: ICloudPlayer, cloudService: ICloudService): ICommunicationPromise<ConnectionResponse> {
+    override fun connectPlayer(
+        cloudPlayer: ICloudPlayer,
+        cloudService: ICloudService
+    ): ICommunicationPromise<ConnectionResponse> {
         throw UnsupportedOperationException("Players are not supported in the wrapper")
     }
 
@@ -56,7 +59,14 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
         throw UnsupportedOperationException("Players are not supported in the wrapper")
     }
 
-    override fun sendTitle(cloudPlayer: ICloudPlayer, title: String, subTitle: String, fadeIn: Int, stay: Int, fadeOut: Int) {
+    override fun sendTitle(
+        cloudPlayer: ICloudPlayer,
+        title: String,
+        subTitle: String,
+        fadeIn: Int,
+        stay: Int,
+        fadeOut: Int
+    ) {
         throw UnsupportedOperationException("Players are not supported in the wrapper")
     }
 

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -41,7 +41,8 @@ class ServiceVersionWebLoader : IServiceVersionLoader {
 
     override fun loadVersions(): List<ServiceVersion> {
         val version = this::class.java.`package`.implementationVersion.substring(0, 3)
-        val contentString = WebContentLoader().loadContent("https://api.thesimplecloud.eu/versions?implementationVersion[\$lte]=$version")
+        val contentString =
+            WebContentLoader().loadContent("https://api.thesimplecloud.eu/versions?implementationVersion[\$lte]=$version")
         return if (contentString == null) {
             loadFromFile()
         } else {

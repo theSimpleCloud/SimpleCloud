@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -76,7 +76,7 @@ class GlobalPropertyHolder : IGlobalPropertyHolder {
         if (CloudAPI.instance.isManager()) throw UnsupportedOperationException("Cannot request properties from manager")
         val client = CloudAPI.instance.getThisSidesCommunicationBootstrap() as INettyClient
         return client.getConnection().sendQuery<IProperty<T>>(PacketIOGetGlobalProperty(name), 5000)
-                .addResultListener { updatePropertyFromPacket(name, it) }
+            .addResultListener { updatePropertyFromPacket(name, it) }
     }
 
     fun updatePropertyFromPacket(name: String, property: IProperty<*>) {

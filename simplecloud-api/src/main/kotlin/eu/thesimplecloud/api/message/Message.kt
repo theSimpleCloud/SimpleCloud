@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -25,9 +25,9 @@ package eu.thesimplecloud.api.message
 import eu.thesimplecloud.api.client.NetworkComponentReference
 
 data class Message(
-        val channel: String,
-        val className: String,
-        val messageString: String,
-        val senderReference: NetworkComponentReference,
-        val receivers: List<NetworkComponentReference>
+    val channel: String,
+    val className: String,
+    val messageString: String,
+    val senderReference: NetworkComponentReference,
+    val receivers: List<NetworkComponentReference>
 )

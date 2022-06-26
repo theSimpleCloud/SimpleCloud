@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -20,15 +20,22 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.launcher.config
+package eu.thesimplecloud.plugin.impl.player
 
-import eu.thesimplecloud.api.config.AbstractJsonLibConfigLoader
-import eu.thesimplecloud.api.directorypaths.DirectoryPaths
-import java.io.File
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.TextComponent
+import net.kyori.adventure.text.minimessage.MiniMessage
 
-class LauncherConfigLoader : AbstractJsonLibConfigLoader<LauncherConfig>(
-        LauncherConfig::class.java,
-        File("launcher.json"),
-        { LauncherConfig("127.0.0.1", 1630, "en", DirectoryPaths()) },
-        false
-)
+/**
+ * Date: 18.06.22
+ * Time: 17:52
+ * @author Frederick Baier
+ *
+ */
+abstract class AbstractCloudPlayerManagerProxy : AbstractServiceCloudPlayerManager() {
+
+    protected fun getHexColorComponent(message: String): TextComponent {
+        return Component.textOfChildren(MiniMessage.miniMessage().deserialize(message))
+    }
+
+}

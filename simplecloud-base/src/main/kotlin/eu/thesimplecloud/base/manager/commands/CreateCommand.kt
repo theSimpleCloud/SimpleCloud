@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -26,9 +26,8 @@ import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.template.impl.DefaultTemplate
 import eu.thesimplecloud.base.manager.setup.ServiceVersionSetup
 import eu.thesimplecloud.base.manager.setup.WrapperSetup
-import eu.thesimplecloud.base.manager.setup.groups.LobbyGroupSetup
-import eu.thesimplecloud.base.manager.setup.groups.ProxyGroupSetup
-import eu.thesimplecloud.base.manager.setup.groups.ServerGroupSetup
+import eu.thesimplecloud.base.manager.setup.groups.*
+import eu.thesimplecloud.launcher.config.java.JavaVersion
 import eu.thesimplecloud.launcher.console.command.CommandType
 import eu.thesimplecloud.launcher.console.command.ICommandHandler
 import eu.thesimplecloud.launcher.console.command.annotations.Command
@@ -43,27 +42,35 @@ class CreateCommand : ICommandHandler {
 
 
     @CommandSubPath("lobbygroup", "Creates a lobby group")
-    fun createLobbyGroup(){
-        Launcher.instance.setupManager.queueSetup(LobbyGroupSetup())
+    fun createLobbyGroup() {
+        if (JavaVersion.paths.versions.isEmpty()) {
+            Launcher.instance.setupManager.queueSetup(LobbyGroupSetup())
+            return
+        }
+        Launcher.instance.setupManager.queueSetup(LobbyGroupSetupWithJava())
     }
 
     @CommandSubPath("proxygroup", "Creates a proxy group")
-    fun createProxyGroup(){
+    fun createProxyGroup() {
         Launcher.instance.setupManager.queueSetup(ProxyGroupSetup())
     }
 
     @CommandSubPath("servergroup", "Creates a server group")
-    fun createServerGroup(){
-        Launcher.instance.setupManager.queueSetup(ServerGroupSetup())
+    fun createServerGroup() {
+        if (JavaVersion.paths.versions.isEmpty()) {
+            Launcher.instance.setupManager.queueSetup(ServerGroupSetup())
+            return
+        }
+        Launcher.instance.setupManager.queueSetup(ServerGroupSetupWithJava())
     }
 
     @CommandSubPath("wrapper", "Creates a wrapper")
-    fun createWrapper(){
+    fun createWrapper() {
         Launcher.instance.setupManager.queueSetup(WrapperSetup())
     }
 
     @CommandSubPath("serviceVersion", "Creates a Service Version")
-    fun createServiceVersion(){
+    fun createServiceVersion() {
         Launcher.instance.setupManager.queueSetup(ServiceVersionSetup())
     }
 
@@ -81,7 +88,4 @@ class CreateCommand : ICommandHandler {
         Launcher.instance.consoleSender.sendProperty("manager.command.create.template.success", name)
 
     }
-
-
-
 }

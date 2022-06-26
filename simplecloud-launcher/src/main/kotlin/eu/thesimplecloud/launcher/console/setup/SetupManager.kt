@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -47,7 +47,7 @@ class SetupManager(val launcher: Launcher) {
 
     fun queueSetup(setup: ISetup, first: Boolean = false) {
         val questions = ArrayList<SetupQuestionData>()
-        val methods = setup::class.java.declaredMethods
+        val methods = setup::class.java.methods
         methods.filter { it.isAnnotationPresent(SetupQuestion::class.java) }.forEach { method ->
             check(method.parameters.size == 1) { "Function marked with SetupQuestion must have one parameter." }
             questions.add(
@@ -193,7 +193,7 @@ class SetupManager(val launcher: Launcher) {
 
     private fun hasNextQuestion(setupData: SetupData) = this.currentQuestionIndex + 1 in setupData.questions.indices
 
-    fun waitFroAllSetups() {
+    fun waitForAllSetups() {
         if (this.currentSetup != null)
             this.setupsCompletedPromise.awaitUninterruptibly()
     }

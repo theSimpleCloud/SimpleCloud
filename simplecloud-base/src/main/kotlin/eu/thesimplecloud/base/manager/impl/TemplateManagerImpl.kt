@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -32,14 +32,18 @@ class TemplateManagerImpl : DefaultTemplateManager() {
 
     private val templatesConfigLoader = TemplatesConfigLoader()
 
-    override fun update(value: ITemplate, fromPacket: Boolean, isCalledFromDelete: Boolean): ICommunicationPromise<Unit> {
+    override fun update(
+        value: ITemplate,
+        fromPacket: Boolean,
+        isCalledFromDelete: Boolean
+    ): ICommunicationPromise<Unit> {
         val result = super.update(value, fromPacket, isCalledFromDelete)
         val templateConfig = this.templatesConfigLoader.loadConfig()
         templateConfig.templates.removeIf { it.getName().equals(value.getName(), true) }
         templateConfig.templates.add(value as DefaultTemplate)
         templatesConfigLoader.saveConfig(templateConfig)
 
-        if (!value.getDirectory().exists()){
+        if (!value.getDirectory().exists()) {
             value.getDirectory().mkdirs()
         }
         return result
@@ -49,7 +53,7 @@ class TemplateManagerImpl : DefaultTemplateManager() {
         val result = super.delete(value, fromPacket)
 
         val templateConfig = this.templatesConfigLoader.loadConfig()
-        templateConfig.templates.removeIf { it.getName().equals(value.getName(), true)}
+        templateConfig.templates.removeIf { it.getName().equals(value.getName(), true) }
         templatesConfigLoader.saveConfig(templateConfig)
         return result
     }

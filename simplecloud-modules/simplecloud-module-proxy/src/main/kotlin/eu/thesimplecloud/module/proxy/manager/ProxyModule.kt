@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -31,6 +31,7 @@ import eu.thesimplecloud.module.proxy.config.Config
 import eu.thesimplecloud.module.proxy.config.DefaultConfig
 import eu.thesimplecloud.module.proxy.config.ProxyGroupConfiguration
 import eu.thesimplecloud.module.proxy.manager.commands.ProxyCommand
+import eu.thesimplecloud.module.proxy.manager.converter.ConfigConverter
 import eu.thesimplecloud.module.proxy.service.ProxyHandler
 import java.io.File
 
@@ -40,14 +41,14 @@ import java.io.File
  * Date: 14.03.2020
  * Time: 21:31
  */
-class ProxyModule : ICloudModule{
+class ProxyModule : ICloudModule {
 
     private val configFile = File("modules/proxy", "config.json")
 
     override fun onEnable() {
         loadConfig()
         Launcher.instance.commandManager
-                .registerCommand(this, ProxyCommand(this))
+            .registerCommand(this, ProxyCommand(this))
 
         CloudAPI.instance.getEventManager().registerListener(this, GroupCreateListener(this))
         CloudAPI.instance.getEventManager().registerListener(this, MaintenanceToggleListener())
@@ -57,6 +58,7 @@ class ProxyModule : ICloudModule{
     }
 
     fun loadConfig() {
+        ConfigConverter().convertIfNecessary()
         if (!configFile.exists()) {
             val config = DefaultConfig.get()
             saveConfig(config)

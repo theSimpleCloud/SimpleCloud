@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -36,6 +36,7 @@ import eu.thesimplecloud.base.wrapper.startup.Wrapper
 import eu.thesimplecloud.client.packets.PacketOutScreenMessage
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
+import eu.thesimplecloud.launcher.config.java.JavaVersion
 import eu.thesimplecloud.launcher.startup.Launcher
 import java.io.BufferedReader
 import java.io.File
@@ -127,7 +128,6 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
         Wrapper.instance.cloudServiceProcessManager.unregisterServiceProcess(this)
         deleteTemporaryFiles()
         if (Wrapper.instance.connectionToManager.isOpen()) {
-            //CloudAPI.instance.getCloudServiceManager().sendUpdateToConnection(this.cloudService, Wrapper.instance.communicationClient).awaitUninterruptibly()
             var tries = 0
             while (this.cloudService.isAuthenticated()) {
                 Thread.sleep(100)
@@ -152,7 +152,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
                     this.serviceDirectory.deleteServiceDirectoryUnsafe()
                 }
                 break
-            } catch (e: Exception) {
+            } catch (_: Exception) {
 
             }
         }
@@ -166,7 +166,13 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
         val jvmArguments = Wrapper.instance.jvmArgumentsConfig.jvmArguments.filter {
             it.groups.contains("all") || it.groups.contains(this.cloudService.getGroupName()) || it.groups.contains(this.cloudService.getServiceType().name)
         }
-        val commands = mutableListOf("java")
+
+        val commandName = cloudService.getServiceGroup().getJavaCommandName()
+        var commandNameExist = JavaVersion.paths.versions.keys.contains(commandName)
+        if (commandName == "java") commandNameExist = true
+        if (!commandNameExist) throw IllegalArgumentException("The java command for this name wasn't configured yet.")
+
+        val commands = mutableListOf(JavaVersion.paths.versions[commandName] ?: "java")
 
         jvmArguments.forEach { commands.addAll(it.arguments) }
 

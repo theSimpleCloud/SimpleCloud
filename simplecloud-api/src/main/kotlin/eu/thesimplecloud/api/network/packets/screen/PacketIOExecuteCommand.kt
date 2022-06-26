@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -33,14 +33,16 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 class PacketIOExecuteCommand() : JsonPacket() {
 
     constructor(cloudClientType: NetworkComponentType, serviceName: String, command: String) : this() {
-        this.jsonLib.append("cloudClientType", cloudClientType).append("serviceName", serviceName).append("command", command)
+        this.jsonLib.append("cloudClientType", cloudClientType).append("serviceName", serviceName)
+            .append("command", command)
     }
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Unit> {
-        val cloudClientType = this.jsonLib.getObject("cloudClientType", NetworkComponentType::class.java) ?: return contentException("cloudClientType")
+        val cloudClientType = this.jsonLib.getObject("cloudClientType", NetworkComponentType::class.java)
+            ?: return contentException("cloudClientType")
         val serviceName = this.jsonLib.getString("serviceName") ?: return contentException("serviceName")
         val command = this.jsonLib.getString("command") ?: return contentException("command")
-        val commandExecutable: ICommandExecutable? = when(cloudClientType) {
+        val commandExecutable: ICommandExecutable? = when (cloudClientType) {
             NetworkComponentType.WRAPPER -> {
                 CloudAPI.instance.getWrapperManager().getWrapperByName(serviceName)
             }

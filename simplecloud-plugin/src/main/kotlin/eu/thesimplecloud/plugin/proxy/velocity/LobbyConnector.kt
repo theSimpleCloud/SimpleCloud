@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -36,10 +36,13 @@ class LobbyConnector {
 
     fun getLobbyServer(player: Player, filterServices: List<String> = emptyList()): RegisteredServer? {
         val lobbyGroups = CloudAPI.instance.getCloudServiceGroupManager().getLobbyGroups()
-        val sortedLobbyGroups = lobbyGroups.sortedByDescending { it.getPriority() }.filter { !it.isInMaintenance() || player.hasPermission("cloud.maintenance.join") }
+        val sortedLobbyGroups = lobbyGroups.sortedByDescending { it.getPriority() }
+            .filter { !it.isInMaintenance() || player.hasPermission("cloud.maintenance.join") }
         val groups = sortedLobbyGroups.filter { it.getPermission() == null || player.hasPermission(it.getPermission()) }
-        val availableServices = groups.map { group -> group.getAllServices().filter { it.isOnline() }.filter { !it.isFull() } }.flatten()
-        val serviceToConnectTo = availableServices.filter { !filterServices.contains(it.getName()) }.minByOrNull { it.getOnlineCount() }
+        val availableServices =
+            groups.map { group -> group.getAllServices().filter { it.isOnline() }.filter { !it.isFull() } }.flatten()
+        val serviceToConnectTo =
+            availableServices.filter { !filterServices.contains(it.getName()) }.minByOrNull { it.getOnlineCount() }
         if (serviceToConnectTo == null) println("WARNING: Lobby server was null.")
         return serviceToConnectTo?.let { CloudVelocityPlugin.instance.proxyServer.getServer(it.getName()).orElse(null) }
     }

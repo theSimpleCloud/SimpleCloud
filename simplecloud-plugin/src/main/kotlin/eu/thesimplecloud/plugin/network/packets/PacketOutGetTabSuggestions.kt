@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -33,12 +33,12 @@ import java.util.*
  * Date: 14.04.2020
  * Time: 19:05
  */
-class PacketOutGetTabSuggestions(): JsonPacket() {
+class PacketOutGetTabSuggestions() : JsonPacket() {
 
-    constructor(uuid: UUID, command: String): this() {
+    constructor(uuid: UUID, command: String) : this() {
         this.jsonLib
-                .append("uuid", uuid)
-                .append("command", command)
+            .append("uuid", uuid)
+            .append("command", command)
     }
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {

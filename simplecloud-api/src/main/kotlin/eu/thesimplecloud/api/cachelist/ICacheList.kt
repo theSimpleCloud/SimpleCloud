@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -39,7 +39,11 @@ interface ICacheList<U : ICacheValueUpdater, T : ICacheValue<U>> {
      * @param fromPacket whether this method was called by a packet
      * @return a promise that completes when the update was sent
      */
-    fun update(value: T, fromPacket: Boolean = false, isCalledFromDelete: Boolean = false): ICommunicationPromise<Unit> {
+    fun update(
+        value: T,
+        fromPacket: Boolean = false,
+        isCalledFromDelete: Boolean = false
+    ): ICommunicationPromise<Unit> {
         val valueUpdater = value.getUpdater()
         val updateExecutor = getUpdateExecutor()
         val cachedValue = updateExecutor.getCachedObjectByUpdateValue(value)
@@ -50,6 +54,7 @@ interface ICacheList<U : ICacheValueUpdater, T : ICacheValue<U>> {
             cachedValue.applyValuesFromUpdater(valueUpdater)
         }
         eventsToCall.forEach { CloudAPI.instance.getEventManager().call(it) }
+
         if (shallSpreadUpdates())
             if (!isCalledFromDelete)
                 if (CloudAPI.instance.isManager() || !fromPacket)
@@ -95,7 +100,13 @@ interface ICacheList<U : ICacheValueUpdater, T : ICacheValue<U>> {
      * @return the a promise that completes when the packet was handled.
      */
     fun sendUpdateToConnection(value: T, connection: IConnection): ICommunicationPromise<Unit> {
-        return connection.sendUnitQuery(PacketIOUpdateCacheObject(getUpdateExecutor().getIdentificationName(), value, PacketIOUpdateCacheObject.Action.UPDATE))
+        return connection.sendUnitQuery(
+            PacketIOUpdateCacheObject(
+                getUpdateExecutor().getIdentificationName(),
+                value,
+                PacketIOUpdateCacheObject.Action.UPDATE
+            )
+        )
     }
 
     /**
@@ -105,7 +116,13 @@ interface ICacheList<U : ICacheValueUpdater, T : ICacheValue<U>> {
      * @return the a promise that completes when the packet was handled.
      */
     fun sendDeleteToConnection(value: T, connection: IConnection): ICommunicationPromise<Unit> {
-        return connection.sendUnitQuery(PacketIOUpdateCacheObject(getUpdateExecutor().getIdentificationName(), value, PacketIOUpdateCacheObject.Action.DELETE))
+        return connection.sendUnitQuery(
+            PacketIOUpdateCacheObject(
+                getUpdateExecutor().getIdentificationName(),
+                value,
+                PacketIOUpdateCacheObject.Action.DELETE
+            )
+        )
     }
 
     /**

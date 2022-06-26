@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -33,15 +33,18 @@ class PacketIOSetCloudPlayerUpdates() : JsonPacket() {
 
     constructor(cloudPlayer: ICloudPlayer, updates: Boolean, serviceName: String) : this() {
         this.jsonLib.append("playerUniqueId", cloudPlayer.getUniqueId())
-                .append("updates", updates).append("serviceName", serviceName)
+            .append("updates", updates).append("serviceName", serviceName)
     }
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Unit> {
-        val playerUniqueId = this.jsonLib.getObject("playerUniqueId", UUID::class.java) ?: return contentException("playerUniqueId")
+        val playerUniqueId =
+            this.jsonLib.getObject("playerUniqueId", UUID::class.java) ?: return contentException("playerUniqueId")
         val updates = this.jsonLib.getBoolean("updates") ?: return contentException("updates")
         val serviceName = this.jsonLib.getString("serviceName") ?: return contentException("serviceName")
         val cachedCloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(playerUniqueId)
-        cachedCloudPlayer?.let { CloudAPI.instance.getCloudPlayerManager().setUpdates(cachedCloudPlayer, updates, serviceName) }
+        cachedCloudPlayer?.let {
+            CloudAPI.instance.getCloudPlayerManager().setUpdates(cachedCloudPlayer, updates, serviceName)
+        }
         return unit()
     }
 

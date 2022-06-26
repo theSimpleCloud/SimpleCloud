@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -53,12 +53,12 @@ class ControllerHandler(private val restServer: RestServer) {
         val requestMapping = method.getAnnotation(RequestMapping::class.java)
         val parameterDataList = method.parameters.map { createParameterData(it) }
         val requestMethodData = RequestMethodData(
-                controller,
-                method,
-                restController.path + requestMapping.additionalPath,
-                requestMapping.requestType,
-                requestMapping.permission,
-                parameterDataList
+            controller,
+            method,
+            restController.path + requestMapping.additionalPath,
+            requestMapping.requestType,
+            requestMapping.permission,
+            parameterDataList
         )
         restServer.registerRequestMethod(requestMethodData)
     }

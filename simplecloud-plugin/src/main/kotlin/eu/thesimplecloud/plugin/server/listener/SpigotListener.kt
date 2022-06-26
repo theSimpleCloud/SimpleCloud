@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -44,7 +44,9 @@ class SpigotListener : Listener {
         val player = event.player
 
         val hostAddress = event.realAddress.hostAddress
-        if (hostAddress != "127.0.0.1" && !CloudAPI.instance.getWrapperManager().getAllCachedObjects().any { it.getHost() == hostAddress }) {
+        if (hostAddress != "127.0.0.1" && !CloudAPI.instance.getWrapperManager().getAllCachedObjects()
+                .any { it.getHost() == hostAddress }
+        ) {
             event.disallow(PlayerLoginEvent.Result.KICK_OTHER, UNKNOWN_ADRESS)
             return
         }
@@ -84,5 +86,5 @@ class SpigotListener : Listener {
         thisService.setOnlineCount(count)
         thisService.update()
     }
-    
+
 }

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -20,23 +20,19 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.plugin.proxy.bungee.text
+package eu.thesimplecloud.api.player.text
 
-import eu.thesimplecloud.api.player.text.CloudText
-import net.md_5.bungee.api.chat.ClickEvent
-import net.md_5.bungee.api.chat.ComponentBuilder
-import net.md_5.bungee.api.chat.HoverEvent
-import net.md_5.bungee.api.chat.TextComponent
-import java.util.*
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.event.ClickEvent
 import java.util.function.Consumer
 
+@Deprecated("Use adventure text component instead")
 class CloudTextBuilder {
 
     private val colorCodes = listOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f')
     private val specialCodes = listOf('k', 'l', 'm', 'n', 'o')
 
-    fun build(cloudText: CloudText): TextComponent {
-        val textComponent = TextComponent()
+    fun build(cloudText: CloudText): Component {
         var text: String = cloudText.text.replace("&", "§")
         var currentColorCode = Character.MIN_VALUE
         val currentSpecialCodes: MutableList<Char> = ArrayList()
@@ -73,24 +69,29 @@ class CloudTextBuilder {
             i++
         }
         text = stringBuilder.toString()
-        textComponent.text = text
+        val component = Component.text()
+        component.content(text)
 
         val hover = cloudText.hover
         if (hover != null) {
-            textComponent.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentBuilder(hover).create())
+            component.hoverEvent(Component.text(hover))
         }
         val click = cloudText.click
         if (click != null) {
-            textComponent.clickEvent = ClickEvent(ClickEvent.Action.valueOf(cloudText.clickEventType.toString()), click)
+            component.clickEvent(
+                ClickEvent.clickEvent(
+                    ClickEvent.Action.valueOf(cloudText.clickEventType.toString()),
+                    click
+                )
+            )
         }
 
         val appendedCloudText = cloudText.appendedCloudText
         if (appendedCloudText != null) {
             val componentToAppend = build(appendedCloudText)
-            textComponent.addExtra(componentToAppend)
+            component.append(componentToAppend)
         }
 
-        return textComponent
+        return component.build()
     }
-
 }

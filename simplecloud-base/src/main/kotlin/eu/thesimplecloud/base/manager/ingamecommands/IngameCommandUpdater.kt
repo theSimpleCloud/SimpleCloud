@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -34,7 +34,8 @@ class IngameCommandUpdater : IListener {
     private var ingameCommandList: Collection<String> = emptyList()
 
     init {
-        CloudAPI.instance.getGlobalPropertyHolder().setProperty("simplecloud-ingamecommands", this.ingameCommandList.toTypedArray())
+        CloudAPI.instance.getGlobalPropertyHolder()
+            .setProperty("simplecloud-ingamecommands", this.ingameCommandList.toTypedArray())
         CloudAPI.instance.getEventManager().registerListener(Manager.instance, this)
     }
 
@@ -42,7 +43,8 @@ class IngameCommandUpdater : IListener {
     @CloudEventHandler
     fun on(event: CommandRegisteredEvent) {
         this.ingameCommandList = Launcher.instance.commandManager.getAllIngameCommandPrefixes()
-        CloudAPI.instance.getGlobalPropertyHolder().setProperty("simplecloud-ingamecommands", this.ingameCommandList.toTypedArray())
+        CloudAPI.instance.getGlobalPropertyHolder()
+            .setProperty("simplecloud-ingamecommands", this.ingameCommandList.toTypedArray())
     }
 
 

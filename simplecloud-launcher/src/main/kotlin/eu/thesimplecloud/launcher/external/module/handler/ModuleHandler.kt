@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -135,7 +135,12 @@ class ModuleHandler(
     }
 
     override fun loadModuleList(modulesToLoad: List<LoadedModuleFileContent>): List<LoadedModule> {
-        val moduleListLoader = ModuleListLoader(modulesToLoad, this.loadedModules, this.createModuleClassLoaderFunction, this.handleLoadError)
+        val moduleListLoader = ModuleListLoader(
+            modulesToLoad,
+            this.loadedModules,
+            this.createModuleClassLoaderFunction,
+            this.handleLoadError
+        )
         val newModules = moduleListLoader.loadModules()
         this.loadedModules.addAll(newModules)
         newModules.forEach { registerLanguageFile(it) }

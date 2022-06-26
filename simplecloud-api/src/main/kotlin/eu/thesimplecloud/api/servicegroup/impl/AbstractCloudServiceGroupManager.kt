@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -33,7 +33,8 @@ import eu.thesimplecloud.api.servicegroup.ICloudServiceGroupManager
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroupUpdater
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
-abstract class AbstractCloudServiceGroupManager : AbstractCacheList<ICloudServiceGroupUpdater, ICloudServiceGroup>(), ICloudServiceGroupManager {
+abstract class AbstractCloudServiceGroupManager : AbstractCacheList<ICloudServiceGroupUpdater, ICloudServiceGroup>(),
+    ICloudServiceGroupManager {
 
     private val updater = object : ICacheObjectUpdateExecutor<ICloudServiceGroupUpdater, ICloudServiceGroup> {
         override fun getIdentificationName(): String {
@@ -44,7 +45,10 @@ abstract class AbstractCloudServiceGroupManager : AbstractCacheList<ICloudServic
             return getServiceGroupByName(value.getName())
         }
 
-        override fun determineEventsToCall(updater: ICloudServiceGroupUpdater, cachedValue: ICloudServiceGroup?): List<IEvent> {
+        override fun determineEventsToCall(
+            updater: ICloudServiceGroupUpdater,
+            cachedValue: ICloudServiceGroup?
+        ): List<IEvent> {
             if (cachedValue == null) return listOf(CloudServiceGroupCreatedEvent(updater.getServiceGroup()))
             return listOf(CloudServiceGroupUpdatedEvent(cachedValue))
         }

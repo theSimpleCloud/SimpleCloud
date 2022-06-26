@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -38,9 +38,8 @@ import eu.thesimplecloud.clientserverapi.server.INettyServer
 import java.util.concurrent.CopyOnWriteArrayList
 
 abstract class AbstractSynchronizedObjectList<T : Any>(
-        protected val values: CopyOnWriteArrayList<Property<T>> = CopyOnWriteArrayList()
+    protected val values: CopyOnWriteArrayList<Property<T>> = CopyOnWriteArrayList()
 ) : ISynchronizedObjectList<T> {
-
 
 
     override fun update(property: IProperty<T>, fromPacket: Boolean): ICommunicationPromise<Unit> {
@@ -55,7 +54,8 @@ abstract class AbstractSynchronizedObjectList<T : Any>(
             }
         }
         if (CloudAPI.instance.isManager() || fromPacket) {
-            CloudAPI.instance.getEventManager().call(SynchronizedListObjectUpdatedEvent(getCachedObjectByUpdateValue(property.getValue())!!))
+            CloudAPI.instance.getEventManager()
+                .call(SynchronizedListObjectUpdatedEvent(getCachedObjectByUpdateValue(property.getValue())!!))
         }
         return forwardPacketIfNecessary(PacketIOUpdateListProperty(getIdentificationName(), property), fromPacket)
     }

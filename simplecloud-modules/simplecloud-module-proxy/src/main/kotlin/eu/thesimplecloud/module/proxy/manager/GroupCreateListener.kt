@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -42,7 +42,7 @@ class GroupCreateListener(private val proxyModule: ProxyModule) : IListener {
     fun handle(event: CloudServiceGroupCreatedEvent) {
         val currentConfig = ProxyHandler.configHolder.getValue()
         val proxyGroup = event.serviceGroup
-        if (proxyGroup.getServiceType() != ServiceType.PROXY)  return
+        if (proxyGroup.getServiceType() != ServiceType.PROXY) return
         if (proxyModule.getProxyConfiguration(proxyGroup.getName()) != null) return
 
         val proxyGroupConfiguration = DefaultConfig.getDefaultProxyGroupConfiguration(proxyGroup.getName())

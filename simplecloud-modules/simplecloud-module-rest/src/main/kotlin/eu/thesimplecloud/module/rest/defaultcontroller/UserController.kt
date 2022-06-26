@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -35,7 +35,7 @@ import eu.thesimplecloud.module.rest.controller.IController
  */
 @RestController("user/")
 class UserController(
-        private val authService: AuthService
+    private val authService: AuthService
 ) : IController {
 
     @RequestMapping(RequestType.GET, "", "web.user.get.all")

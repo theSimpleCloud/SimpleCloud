@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -20,36 +20,21 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.base.manager.commands
+package eu.thesimplecloud.launcher.commands
 
 import eu.thesimplecloud.api.command.ICommandSender
-import eu.thesimplecloud.api.service.ICloudService
-import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.launcher.console.command.CommandType
 import eu.thesimplecloud.launcher.console.command.ICommandHandler
 import eu.thesimplecloud.launcher.console.command.annotations.Command
-import eu.thesimplecloud.launcher.console.command.annotations.CommandArgument
 import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
-import eu.thesimplecloud.launcher.console.command.provider.ServiceCommandSuggestionProvider
+import eu.thesimplecloud.launcher.setups.JavaSetup
+import eu.thesimplecloud.launcher.startup.Launcher
 
-/**
- * Created by IntelliJ IDEA.
- * Date: 18.01.2021
- * Time: 12:41
- * @author Frederick Baier
- */
-@Command("setServiceState", CommandType.CONSOLE_AND_INGAME, "cloud.command.setservicestate")
-class SetServiceStateCommand : ICommandHandler {
+@Command("create", CommandType.CONSOLE)
+class CreateJavaVersion : ICommandHandler {
 
-    @CommandSubPath("<service> <state>", "Sets the state of a service")
-    fun handle(sender: ICommandSender, @CommandArgument("service", ServiceCommandSuggestionProvider::class) service: ICloudService, @CommandArgument("state") state: ServiceState) {
-        if (state != ServiceState.VISIBLE && state != ServiceState.INVISIBLE) {
-            sender.sendProperty("manager.command.setservicestate.fail")
-            return
-        }
-        service.setState(state)
-        service.update()
-        sender.sendProperty("manager.command.setservicestate.success")
+    @CommandSubPath("javaversion", "Creates a new java version")
+    fun createJavaVersion(sender: ICommandSender) {
+        Launcher.instance.setupManager.queueSetup(JavaSetup())
     }
-
 }

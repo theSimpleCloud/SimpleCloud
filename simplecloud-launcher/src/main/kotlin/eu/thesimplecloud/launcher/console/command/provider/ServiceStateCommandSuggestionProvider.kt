@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -20,33 +20,15 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.mongoinstaller.installer;
+package eu.thesimplecloud.launcher.console.command.provider
 
+import eu.thesimplecloud.api.command.ICommandSender
+import eu.thesimplecloud.api.service.ServiceState
 
-import eu.thesimplecloud.mongoinstaller.InstallerEnum;
+class ServiceStateCommandSuggestionProvider : ICommandSuggestionProvider {
 
-/**
- * Created by IntelliJ IDEA.
- * Date: 07.06.2020
- * Time: 21:05
- *
- * @author Frederick Baier
- */
-public class UniversalInstaller implements IInstaller {
-    @Override
-    public void install(InstallerEnum installerEnum) throws Exception {
-        executeCommand("apt-get install sudo");
-        executeCommand("sudo apt-get install gnupg");
-        executeCommand("wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | sudo apt-key add -");
-
-        executeCommand(installerEnum.getVersionSpecificCommand());
-
-        executeCommand("sudo apt-get update");
-        executeCommand("sudo apt-get install -y mongodb-org");
-        executeCommand("sudo systemctl daemon-reload");
-        executeCommand("sudo systemctl start mongod");
-        executeCommand("sudo systemctl enable mongod");
+    override fun getSuggestions(sender: ICommandSender, fullCommand: String, lastArgument: String): List<String> {
+        return ServiceState.values().map { it.name.uppercase() }
     }
-
 
 }

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -35,9 +35,9 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
  * Time: 14:21
  * @author Frederick Baier
  */
-class PacketIOCopyService(): JsonPacket() {
+class PacketIOCopyService() : JsonPacket() {
 
-    constructor(service: ICloudService, path: String): this() {
+    constructor(service: ICloudService, path: String) : this() {
         this.jsonLib.append("service", service.getName()).append("path", path)
     }
 

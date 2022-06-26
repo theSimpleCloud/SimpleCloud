@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -23,22 +23,22 @@
 package eu.thesimplecloud.api.player
 
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.player.text.CloudText
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
+import net.kyori.adventure.text.Component
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class PlayerMessageQueue(private val player: ICloudPlayer) {
 
-    private val queue = ConcurrentLinkedQueue<QueuedText>()
+    private val queue = ConcurrentLinkedQueue<QueuedComponent>()
 
     @Volatile
     private var lastMessagePromise: ICommunicationPromise<Unit> = CommunicationPromise.of(Unit)
 
     @Synchronized
-    fun queueMessage(cloudText: CloudText): ICommunicationPromise<Unit> {
+    fun queueMessage(component: Component): ICommunicationPromise<Unit> {
         val promise = CommunicationPromise<Unit>(500)
-        this.queue.add(QueuedText(cloudText, promise))
+        this.queue.add(QueuedComponent(component, promise))
         if (this.lastMessagePromise.isDone) {
             sendNextMessage()
         }
@@ -48,7 +48,7 @@ class PlayerMessageQueue(private val player: ICloudPlayer) {
     private fun sendNextMessage() {
         val queuedText = queue.poll()
         queuedText?.let {
-            val promise = CloudAPI.instance.getCloudPlayerManager().sendMessageToPlayer(player, queuedText.cloudText)
+            val promise = CloudAPI.instance.getCloudPlayerManager().sendMessageToPlayer(player, queuedText.component)
             this.lastMessagePromise = promise
             promise.addCompleteListener { sendNextMessage() }
             promise.addCompleteListener { queuedText.promise.trySuccess(Unit) }
@@ -56,6 +56,6 @@ class PlayerMessageQueue(private val player: ICloudPlayer) {
     }
 
 
-    private class QueuedText(val cloudText: CloudText, val promise: ICommunicationPromise<Unit>)
+    private class QueuedComponent(val component: Component, val promise: ICommunicationPromise<Unit>)
 
 }

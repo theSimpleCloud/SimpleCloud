@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -47,6 +47,7 @@ interface ICloudServiceVariables : IAuthenticatable {
      * Returns the last time stamp a player interacted with the server.
      */
     fun getLastPlayerUpdate(): Timestamp
+
     /**
      * Returns the maximum amount of players for this service
      */
@@ -56,6 +57,11 @@ interface ICloudServiceVariables : IAuthenticatable {
      * Returns the MOTD of this service.
      */
     fun getMOTD(): String
+
+    /**
+     * Returns the display name of this service.
+     */
+    fun getDisplayName(): String
 
     /**
      * Returns weather this service is joinable for players.
@@ -88,5 +94,8 @@ interface ICloudServiceVariables : IAuthenticatable {
      */
     fun setMOTD(motd: String)
 
-
+    /**
+     * Set the display name of this service.
+     */
+    fun setDisplayName(displayname: String)
 }

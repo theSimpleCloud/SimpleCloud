@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -39,7 +39,8 @@ class CloudServiceProcessQueue {
     private val queue = ConcurrentLinkedQueue<ICloudServiceProcess>()
     private val startingServices = CopyOnWriteArrayList<ICloudServiceProcess>()
 
-    private fun getMaxSimultaneouslyStartingServices() = Wrapper.instance.getThisWrapper().getMaxSimultaneouslyStartingServices()
+    private fun getMaxSimultaneouslyStartingServices() =
+        Wrapper.instance.getThisWrapper().getMaxSimultaneouslyStartingServices()
 
     fun addToQueue(cloudService: ICloudService) {
         Launcher.instance.consoleSender.sendProperty("wrapper.service.queued", cloudService.getName())
@@ -59,7 +60,8 @@ class CloudServiceProcessQueue {
                             cloudServiceProcess.getCloudService().getState() == ServiceState.INVISIBLE ||
                             cloudServiceProcess.getCloudService().getState() == ServiceState.CLOSED
                 }
-                val canStartService = queue.isNotEmpty() && startingServices.size < getMaxSimultaneouslyStartingServices()
+                val canStartService =
+                    queue.isNotEmpty() && startingServices.size < getMaxSimultaneouslyStartingServices()
                 if (canStartService) {
                     val cloudServiceProcess = queue.poll()
                     thread { cloudServiceProcess.start() }

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -29,7 +29,8 @@ import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.flatten
 import java.util.concurrent.CopyOnWriteArrayList
 
-abstract class AbstractCacheList<U : ICacheValueUpdater, T : ICacheValue<U>>(private val spreadUpdates: Boolean = true) : ICacheList<U, T> {
+abstract class AbstractCacheList<U : ICacheValueUpdater, T : ICacheValue<U>>(private val spreadUpdates: Boolean = true) :
+    ICacheList<U, T> {
 
     protected val values = CopyOnWriteArrayList<T>()
 

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -35,16 +35,21 @@ class ConnectionResponse(val playerUniqueId: UUID, val alreadyConnected: Boolean
 
     fun getCloudPlayer(): ICloudPlayer {
         return CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(playerUniqueId)
-                ?: throw IllegalStateException("Unable to find player by uuid $playerUniqueId")
+            ?: throw IllegalStateException("Unable to find player by uuid $playerUniqueId")
     }
 
     fun createConnectedPromise(): ICommunicationPromise<CloudPlayerServerConnectedEvent> {
         val cloudPlayer = this.getCloudPlayer()
         if (alreadyConnected || cloudPlayer.getServerConnectState() == PlayerServerConnectState.CONNECTED)
-            return CommunicationPromise.of(CloudPlayerServerConnectedEvent(cloudPlayer, cloudPlayer.getConnectedServer()!!))
+            return CommunicationPromise.of(
+                CloudPlayerServerConnectedEvent(
+                    cloudPlayer,
+                    cloudPlayer.getConnectedServer()!!
+                )
+            )
         return cloudListener<CloudPlayerServerConnectedEvent>()
-                .addCondition { it.cloudPlayer === cloudPlayer }
-                .toPromise()
+            .addCondition { it.cloudPlayer === cloudPlayer }
+            .toPromise()
     }
 
 }

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -43,7 +43,7 @@ class PlayerController : IController {
     @RequestMapping(RequestType.GET, "name/:name", "web.cloud.player.get.one")
     fun handleGetOnePlayer(@RequestPathParam("name") name: String): IOfflineCloudPlayer {
         return CloudAPI.instance.getCloudPlayerManager().getOfflineCloudPlayer(name).getBlockingOrNull()
-                ?: throwNoSuchElement()
+            ?: throwNoSuchElement()
     }
 
     @RequestMapping(RequestType.GET, "", "web.cloud.player.get.all")

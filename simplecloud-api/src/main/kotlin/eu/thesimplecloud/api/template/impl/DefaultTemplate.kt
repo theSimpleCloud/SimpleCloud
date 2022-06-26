@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -31,6 +31,7 @@ data class DefaultTemplate(private val name: String) : ITemplate {
 
     @Volatile
     private var inheritedTemplateNames: Set<String> = emptySet()
+
     @Volatile
     private var moduleNamesToCopy: Set<String> = emptySet()
 
@@ -70,7 +71,7 @@ data class DefaultTemplate(private val name: String) : ITemplate {
 
     override fun applyValuesFromUpdater(updater: ITemplateUpdater) {
         this.inheritedTemplateNames = HashSet(updater.getInheritedTemplateNames())
-        this.moduleNamesToCopy =  HashSet(updater.getModuleNamesToCopy())
+        this.moduleNamesToCopy = HashSet(updater.getModuleNamesToCopy())
     }
 
 

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -20,26 +20,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.mongoinstaller.installer;
+package eu.thesimplecloud.launcher.config.java
 
+import eu.thesimplecloud.api.config.AbstractJsonLibConfigLoader
+import java.io.File
 
-import eu.thesimplecloud.mongoinstaller.InstallerEnum;
-
-import java.io.IOException;
-
-/**
- * Created by IntelliJ IDEA.
- * Date: 07.06.2020
- * Time: 20:41
- *
- * @author Frederick Baier
- */
-public interface IInstaller {
-
-    void install(InstallerEnum installerEnum) throws Exception;
-
-    default void executeCommand(String command) throws IOException, InterruptedException {
-        Runtime.getRuntime().exec(command).waitFor();
-    }
-
-}
+class JavaVersionConfigLoader : AbstractJsonLibConfigLoader<JavaVersion>(
+    JavaVersion::class.java,
+    File("storage/java-versions.json"),
+    { JavaVersion() },
+    true
+)

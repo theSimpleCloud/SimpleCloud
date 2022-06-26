@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -23,12 +23,12 @@
 package eu.thesimplecloud.api.location
 
 open class SimpleLocation(
-        val worldName: String,
-        val x: Double,
-        val y: Double,
-        val z: Double,
-        val yaw: Float,
-        val pitch: Float
+    val worldName: String,
+    val x: Double,
+    val y: Double,
+    val z: Double,
+    val yaw: Float,
+    val pitch: Float
 ) {
     constructor(worldName: String, x: Double, y: Double, z: Double) : this(worldName, x, y, z, 0F, 0F)
 
@@ -52,7 +52,6 @@ open class SimpleLocation(
     fun toServiceLocation(serviceName: String): ServiceLocation {
         return ServiceLocation(serviceName, worldName, x, y, z, yaw, pitch)
     }
-
 
 
     override fun hashCode(): Int {

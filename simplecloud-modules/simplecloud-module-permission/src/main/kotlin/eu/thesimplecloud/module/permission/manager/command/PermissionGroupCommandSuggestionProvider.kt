@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -32,7 +32,7 @@ import eu.thesimplecloud.module.permission.PermissionPool
  * Date: 14.04.2020
  * Time: 18:39
  */
-class PermissionGroupCommandSuggestionProvider: ICommandSuggestionProvider {
+class PermissionGroupCommandSuggestionProvider : ICommandSuggestionProvider {
 
     override fun getSuggestions(sender: ICommandSender, fullCommand: String, lastArgument: String): List<String> {
         return PermissionPool.instance.getPermissionGroupManager().getAllPermissionGroups().map { it.getName() }

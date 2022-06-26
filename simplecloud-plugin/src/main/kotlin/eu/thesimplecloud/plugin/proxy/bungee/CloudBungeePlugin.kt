@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -32,8 +32,10 @@ import eu.thesimplecloud.plugin.listener.CloudListener
 import eu.thesimplecloud.plugin.proxy.ICloudProxyPlugin
 import eu.thesimplecloud.plugin.proxy.ProxyEventHandler
 import eu.thesimplecloud.plugin.proxy.bungee.listener.BungeeListener
+import eu.thesimplecloud.plugin.proxy.bungee.listener.CloudPlayerDisconnectListener
 import eu.thesimplecloud.plugin.proxy.bungee.listener.IngameCommandListener
 import eu.thesimplecloud.plugin.startup.CloudPlugin
+import net.kyori.adventure.platform.bungeecord.BungeeAudiences
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.plugin.Plugin
 import java.net.InetSocketAddress
@@ -54,12 +56,16 @@ class CloudBungeePlugin : Plugin(), ICloudProxyPlugin {
         lateinit var instance: CloudBungeePlugin
     }
 
+    var bungeeAudiences: BungeeAudiences
+
     init {
         instance = this
+        bungeeAudiences = BungeeAudiences.create(this)
     }
 
     override fun shutdown() {
         ProxyServer.getInstance().stop()
+        this.bungeeAudiences.close()
     }
 
     override fun addServiceToProxy(cloudService: ICloudService) {
@@ -126,6 +132,9 @@ class CloudBungeePlugin : Plugin(), ICloudProxyPlugin {
 
         synchronizeOnlineCountTask()
         runOfflinePlayerChecker()
+
+        CloudAPI.instance.getEventManager()
+            .registerListener(CloudPlugin.instance, CloudPlayerDisconnectListener(this.proxy))
     }
 
     override fun onDisable() {

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -35,7 +35,8 @@ import java.io.File
  */
 class VersionConversionManager {
 
-    private val converters = listOf<IVersionConverter>(Converter_2_0_To_2_1(), Converter_2_2_To_2_3())
+    private val converters =
+        listOf<IVersionConverter>(Converter_2_0_To_2_1(), Converter_2_2_To_2_3(), Converter_2_3_To_2_4())
     private val lastStartedVersionFile = File(DirectoryPaths.paths.storagePath + "versions/lastStartedVersion.json")
 
     fun convertIfNecessary() {

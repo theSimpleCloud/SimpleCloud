@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -36,7 +36,7 @@ import eu.thesimplecloud.launcher.startup.Launcher
  * Time: 14:15+
  */
 @Command("stop", CommandType.CONSOLE)
-class StopCommand(): ICommandHandler {
+class StopCommand() : ICommandHandler {
 
     @CommandSubPath(description = "Stops the cloud")
     fun handleCommand(sender: ICommandSender) {

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -32,21 +32,22 @@ import java.util.*
  * This event will be called when a player executes any command
  */
 class CloudPlayerCommandExecuteEvent(
-        /**
-         * The unique id of the player involved in this event
-         */
-        val playerUniqueId: UUID,
+    /**
+     * The unique id of the player involved in this event
+     */
+    val playerUniqueId: UUID,
 
-        /**
-         * The name of the player involved in this event
-         */
-        val playerName: String,
+    /**
+     * The name of the player involved in this event
+     */
+    val playerName: String,
 
-        /**
-         * The executed command
-         */
-        val command: String
+    /**
+     * The executed command
+     */
+    val command: String
 ) : ISynchronizedEvent {
 
-    fun getCloudPlayer(): ICommunicationPromise<ICloudPlayer> = CloudAPI.instance.getCloudPlayerManager().getCloudPlayer(playerUniqueId)
+    fun getCloudPlayer(): ICommunicationPromise<ICloudPlayer> =
+        CloudAPI.instance.getCloudPlayerManager().getCloudPlayer(playerUniqueId)
 }

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -27,8 +27,10 @@ import eu.thesimplecloud.api.external.ICloudModule
 import eu.thesimplecloud.launcher.application.ApplicationStarter
 import eu.thesimplecloud.launcher.application.CloudApplicationType
 import eu.thesimplecloud.launcher.application.ICloudApplication
-import eu.thesimplecloud.launcher.config.LauncherConfig
-import eu.thesimplecloud.launcher.config.LauncherConfigLoader
+import eu.thesimplecloud.launcher.config.java.JavaVersion
+import eu.thesimplecloud.launcher.config.java.JavaVersionConfigLoader
+import eu.thesimplecloud.launcher.config.launcher.LauncherConfig
+import eu.thesimplecloud.launcher.config.launcher.LauncherConfigLoader
 import eu.thesimplecloud.launcher.console.ConsoleManager
 import eu.thesimplecloud.launcher.console.ConsoleSender
 import eu.thesimplecloud.launcher.console.command.CommandManager
@@ -47,6 +49,7 @@ import java.io.File
 import java.io.IOException
 import java.net.URLClassLoader
 import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledExecutorService
 import kotlin.system.exitProcess
 
 
@@ -84,7 +87,8 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
     val consoleManager: ConsoleManager
     val setupManager = SetupManager(this)
     private val launcherConfigLoader = LauncherConfigLoader()
-    val scheduler = Executors.newScheduledThreadPool(1)
+    private val javaVersionConfigLoader = JavaVersionConfigLoader()
+    val scheduler: ScheduledExecutorService = Executors.newScheduledThreadPool(1)
     val currentClassLoader: ClassLoader = Thread.currentThread().contextClassLoader
     var launcherConfig: LauncherConfig
         private set
@@ -94,7 +98,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
         instance = this
         if (System.getProperty("simplecloud.version") == null)
             System.setProperty("simplecloud.version", Launcher::class.java.`package`.implementationVersion)
-        Thread.setDefaultUncaughtExceptionHandler { thread, cause ->
+        Thread.setDefaultUncaughtExceptionHandler { _, cause ->
             try {
                 this.logger.exception(cause)
             } catch (e: Exception) {
@@ -106,8 +110,10 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
             }
         }
         System.setProperty("user.language", "en")
+
         this.launcherConfig = this.launcherConfigLoader.loadConfig()
         DirectoryPaths.paths = launcherConfig.directoryPaths
+        JavaVersion.paths = javaVersionConfigLoader.loadConfig()
         this.commandManager = CommandManager()
         this.consoleManager = ConsoleManager(this.commandManager, this.consoleSender)
     }
@@ -129,14 +135,15 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
         )
         this.consoleManager.startThread()
 
-        if (LanguageFileLoader.isFirstStart)
+        if (LanguageFileLoader.isFirstStart) {
             this.setupManager.queueSetup(LanguageSetup())
+        }
         if (!this.launcherConfigLoader.doesConfigFileExist())
             this.setupManager.queueSetup(AutoIpSetup())
         if (this.launcherStartArguments.startApplication == null)
             this.setupManager.queueSetup(StartSetup())
 
-        this.setupManager.waitFroAllSetups()
+        this.setupManager.waitForAllSetups()
         this.launcherStartArguments.startApplication?.let { startApplication(it) }
     }
 
@@ -184,7 +191,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
         exitProcess(0)
     }
 
-    fun isWindows(): Boolean = System.getProperty("os.name").toLowerCase().contains("windows")
+    fun isWindows(): Boolean = System.getProperty("os.name").lowercase().contains("windows")
 
     fun getLauncherFile(): File {
         if (System.getProperty("simplecloud.launcher.update-mode") != null) {
@@ -210,7 +217,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
     }
 
     fun isSnapshotBuild(): Boolean {
-        return System.getProperty("simplecloud.version").toLowerCase().contains("snapshot")
+        return System.getProperty("simplecloud.version").lowercase().contains("snapshot")
     }
 
     fun getCurrentVersion(): String {

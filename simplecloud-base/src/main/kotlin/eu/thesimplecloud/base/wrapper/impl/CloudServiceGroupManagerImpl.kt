@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -41,7 +41,8 @@ class CloudServiceGroupManagerImpl : AbstractCloudServiceGroupManager() {
     }
 
     override fun startNewService(serviceStartConfiguration: IServiceStartConfiguration): IServiceStartPromise {
-        val namePromise = Wrapper.instance.connectionToManager.sendQuery<String>(PacketIOStartCloudService(serviceStartConfiguration))
+        val namePromise =
+            Wrapper.instance.connectionToManager.sendQuery<String>(PacketIOStartCloudService(serviceStartConfiguration))
         val servicePromise = namePromise.then { CloudAPI.instance.getCloudServiceManager().getCloudServiceByName(it)!! }
         return ServiceStartPromise(servicePromise)
     }

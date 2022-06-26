@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -45,7 +45,8 @@ import eu.thesimplecloud.clientserverapi.lib.promise.flatten
 import eu.thesimplecloud.clientserverapi.lib.promise.toListPromise
 import java.util.*
 
-interface ICloudService : ICacheValue<ICloudServiceUpdater>, ICloudServiceVariables, INetworkComponent, IBootstrap, IPropertyMap {
+interface ICloudService : ICacheValue<ICloudServiceUpdater>, ICloudServiceVariables, INetworkComponent, IBootstrap,
+    IPropertyMap {
 
     /**
      * Returns the service group name of this service
@@ -84,12 +85,19 @@ interface ICloudService : ICacheValue<ICloudServiceUpdater>, ICloudServiceVariab
      * Returns the template that this service uses
      * e.g. Lobby
      */
-    fun getTemplate(): ITemplate = CloudAPI.instance.getTemplateManager().getTemplateByName(getTemplateName()) ?: throw IllegalStateException("Can't find the template of an registered service (templates: ${CloudAPI.instance.getTemplateManager().getAllCachedObjects().joinToString { it.getName() }})")
+    fun getTemplate(): ITemplate = CloudAPI.instance.getTemplateManager().getTemplateByName(getTemplateName())
+        ?: throw IllegalStateException(
+            "Can't find the template of an registered service (templates: ${
+                CloudAPI.instance.getTemplateManager().getAllCachedObjects().joinToString { it.getName() }
+            })"
+        )
 
     /**
      * Returns the service group of this service
      */
-    fun getServiceGroup(): ICloudServiceGroup = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(getGroupName()) ?: throw IllegalStateException("Can't find the service group of an registered service")
+    fun getServiceGroup(): ICloudServiceGroup =
+        CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(getGroupName())
+            ?: throw IllegalStateException("Can't find the service group of an registered service")
 
     /**
      * Returns the maximum amount of RAM for this service in MB
@@ -109,7 +117,8 @@ interface ICloudService : ICacheValue<ICloudServiceUpdater>, ICloudServiceVariab
     /**
      * Returns the wrapper this service is running on
      */
-    fun getWrapper(): IWrapperInfo = getWrapperName()?.let { CloudAPI.instance.getWrapperManager().getWrapperByName(it) }
+    fun getWrapper(): IWrapperInfo =
+        getWrapperName()?.let { CloudAPI.instance.getWrapperManager().getWrapperByName(it) }
             ?: throw IllegalStateException("Can't find the wrapper where the service ${getName()} is running on. Wrapper-Name: ${getWrapperName()}")
 
     /**
@@ -153,7 +162,8 @@ interface ICloudService : ICacheValue<ICloudServiceUpdater>, ICloudServiceVariab
      *  because this function takes much longer
      */
     fun getOnlinePlayersDirect(): ICommunicationPromise<List<ICloudPlayer?>> {
-        return getOnlinePlayers().then { simplePlayers -> simplePlayers.map { it.getCloudPlayer() }.toListPromise() }.flatten()
+        return getOnlinePlayers().then { simplePlayers -> simplePlayers.map { it.getCloudPlayer() }.toListPromise() }
+            .flatten()
     }
 
     /**
@@ -175,8 +185,8 @@ interface ICloudService : ICacheValue<ICloudServiceUpdater>, ICloudServiceVariab
         if (isActive() || getState() == ServiceState.CLOSED)
             return CommunicationPromise.of(CloudServiceStartingEvent(this))
         return cloudListener<CloudServiceStartingEvent>()
-                .addCondition { it.cloudService === this@ICloudService }
-                .toPromise()
+            .addCondition { it.cloudService === this@ICloudService }
+            .toPromise()
     }
 
     /**
@@ -186,8 +196,8 @@ interface ICloudService : ICacheValue<ICloudServiceUpdater>, ICloudServiceVariab
         if (isAuthenticated() || getState() == ServiceState.CLOSED)
             return CommunicationPromise.of(CloudServiceConnectedEvent(this))
         return cloudListener<CloudServiceConnectedEvent>()
-                .addCondition { it.cloudService === this@ICloudService }
-                .toPromise()
+            .addCondition { it.cloudService === this@ICloudService }
+            .toPromise()
     }
 
     /**
@@ -197,8 +207,8 @@ interface ICloudService : ICacheValue<ICloudServiceUpdater>, ICloudServiceVariab
         if (isOnline() || getState() == ServiceState.CLOSED)
             return CommunicationPromise.of(CloudServiceStartedEvent(this))
         return cloudListener<CloudServiceStartedEvent>()
-                .addCondition { it.cloudService === this@ICloudService }
-                .toPromise()
+            .addCondition { it.cloudService === this@ICloudService }
+            .toPromise()
     }
 
     /**
@@ -208,8 +218,8 @@ interface ICloudService : ICacheValue<ICloudServiceUpdater>, ICloudServiceVariab
         if (getState() == ServiceState.CLOSED)
             return CommunicationPromise.of(CloudServiceUnregisteredEvent(this))
         return cloudListener<CloudServiceUnregisteredEvent>()
-                .addCondition { it.cloudService === this@ICloudService }
-                .toPromise()
+            .addCondition { it.cloudService === this@ICloudService }
+            .toPromise()
     }
 
     /**

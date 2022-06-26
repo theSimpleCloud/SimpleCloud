@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -20,13 +20,15 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.launcher.config
+package eu.thesimplecloud.base.manager.setup.provider
 
-import eu.thesimplecloud.api.directorypaths.DirectoryPaths
+import eu.thesimplecloud.api.command.ICommandSender
+import eu.thesimplecloud.launcher.config.java.JavaVersion
+import eu.thesimplecloud.launcher.console.setup.provider.ISetupAnswerProvider
 
-data class LauncherConfig(
-        var host: String,
-        val port: Int,
-        val language: String,
-        val directoryPaths: DirectoryPaths
-)
+class ServiceJavaCommandAnswerProvider : ISetupAnswerProvider {
+
+    override fun getSuggestions(sender: ICommandSender): Collection<String> {
+        return JavaVersion.paths.versions.keys.union(listOf("default"))
+    }
+}

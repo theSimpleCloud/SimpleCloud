@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -35,15 +35,21 @@ import eu.thesimplecloud.launcher.console.command.provider.ServiceGroupCommandSu
 class StartCommand : ICommandHandler {
 
     @CommandSubPath("<group>", "Starts a service")
-    fun startService(commandSender: ICommandSender, @CommandArgument("group", ServiceGroupCommandSuggestionProvider::class) cloudServiceGroup: ICloudServiceGroup) {
+    fun startService(
+        commandSender: ICommandSender,
+        @CommandArgument(
+            "group",
+            ServiceGroupCommandSuggestionProvider::class
+        ) cloudServiceGroup: ICloudServiceGroup
+    ) {
         startService(commandSender, cloudServiceGroup, 1)
     }
 
     @CommandSubPath("<group> <count>", "Starts a service")
     fun startService(
-            commandSender: ICommandSender,
-            @CommandArgument("group", ServiceGroupCommandSuggestionProvider::class) cloudServiceGroup: ICloudServiceGroup,
-            @CommandArgument("count") count: Int
+        commandSender: ICommandSender,
+        @CommandArgument("group", ServiceGroupCommandSuggestionProvider::class) cloudServiceGroup: ICloudServiceGroup,
+        @CommandArgument("count") count: Int
     ) {
         for (i in 0 until count) {
             cloudServiceGroup.startNewService()

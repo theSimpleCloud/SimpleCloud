@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -43,12 +43,12 @@ class HelpCommand() : ICommandHandler {
     @CommandSubPath
     fun handleCommand(sender: ICommandSender) {
         val allCommands = Launcher.instance.commandManager.commands
-                .filter { it.commandType != CommandType.INGAME }
-                .filter { !it.path.startsWith("help") }
+            .filter { it.commandType != CommandType.INGAME }
+            .filter { !it.path.startsWith("help") }
 
         if (sender is ConsoleSender) {
             val commandAmount = Launcher.instance.commandManager.commands
-                    .map { it.path.split(" ")[0] }.toSet().size - 1
+                .map { it.path.split(" ")[0] }.toSet().size - 1
             sender.sendProperty("commands.help.header", commandAmount.toString())
 
             allCommands.forEach {

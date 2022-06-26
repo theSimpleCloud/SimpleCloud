@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -34,7 +34,7 @@ import eu.thesimplecloud.launcher.updater.UpdateExecutor
  * @author Frederick Baier
  */
 class ModuleUpdateInstaller(
-        private val loadedModuleFileContent: LoadedModuleFileContent
+    private val loadedModuleFileContent: LoadedModuleFileContent
 ) {
 
     /**
@@ -46,7 +46,7 @@ class ModuleUpdateInstaller(
         if (updaterFileContent != null && !Launcher.instance.launcherStartArguments.disableAutoUpdater) {
             val updater = ModuleUpdater(updaterFileContent, loadedModuleFileContent.file)
             if (updater.isUpdateAvailable()) {
-                Launcher.instance.consoleSender.sendProperty("manager.module.updating",  content.name)
+                Launcher.instance.consoleSender.sendProperty("manager.module.updating", content.name)
                 UpdateExecutor().executeUpdate(updater)
                 Launcher.instance.consoleSender.sendProperty("manager.module.updated", content.name)
                 return true

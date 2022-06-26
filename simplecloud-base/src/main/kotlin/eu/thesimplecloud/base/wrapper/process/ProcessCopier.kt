@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -46,7 +46,7 @@ class ProcessCopier(val cloudService: ICloudService) {
 
     fun copy(path: String): ICommunicationPromise<Unit> {
         val serviceProcess = Wrapper.instance.cloudServiceProcessManager
-                .getCloudServiceProcessByServiceName(cloudService.getName())
+            .getCloudServiceProcessByServiceName(cloudService.getName())
         serviceProcess ?: return CommunicationPromise.failed(IllegalStateException("Cannot copy inactive service"))
 
         val tempDirectory = serviceProcess.getTempDirectory()
@@ -72,15 +72,19 @@ class ProcessCopier(val cloudService: ICloudService) {
         //send file
         val savePath = DirectoryPaths.paths.zippedTemplatesPath + "T-" + cloudService.getName() + ".zip"
         val dirToUnzip = cloudService.getTemplate().getDirectory().path
-        return Wrapper.instance.connectionToManager.sendFile(zipFile, savePath, 20 * 1000).thenDelayed(1200, TimeUnit.MILLISECONDS) {
-            val relativePathInTemplate = dirToCopy.path.replace(tempDirectory.path, "")
-            val dirToReplace = dirToUnzip + if (relativePathInTemplate == "/.") "" else relativePathInTemplate
-            //delete folder to replace
-            Wrapper.instance.connectionToManager.sendUnitQuery(PacketIODeleteFile(dirToReplace))
-        }.flatten(10 * 1000).thenDelayed(1000, TimeUnit.MILLISECONDS) {
-            //unzip file
-            Wrapper.instance.connectionToManager.sendUnitQuery(PacketIOUnzipZipFile(savePath, dirToUnzip), 10 * 1000)
-        }.flatten().throwFailure()
+        return Wrapper.instance.connectionToManager.sendFile(zipFile, savePath, 20 * 1000)
+            .thenDelayed(1200, TimeUnit.MILLISECONDS) {
+                val relativePathInTemplate = dirToCopy.path.replace(tempDirectory.path, "")
+                val dirToReplace = dirToUnzip + if (relativePathInTemplate == "/.") "" else relativePathInTemplate
+                //delete folder to replace
+                Wrapper.instance.connectionToManager.sendUnitQuery(PacketIODeleteFile(dirToReplace))
+            }.flatten(10 * 1000).thenDelayed(1000, TimeUnit.MILLISECONDS) {
+                //unzip file
+                Wrapper.instance.connectionToManager.sendUnitQuery(
+                    PacketIOUnzipZipFile(savePath, dirToUnzip),
+                    10 * 1000
+                )
+            }.flatten().throwFailure()
 
     }
 

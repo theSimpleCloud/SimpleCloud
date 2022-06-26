@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -30,7 +30,8 @@ import eu.thesimplecloud.jsonlib.JsonLib
 import java.util.concurrent.CopyOnWriteArraySet
 
 
-class MessageChannel<T>(val cloudModule: ICloudModule, private val name: String, private val clazz: Class<T>) : IMessageChannel<T> {
+class MessageChannel<T>(val cloudModule: ICloudModule, private val name: String, private val clazz: Class<T>) :
+    IMessageChannel<T> {
 
     companion object {
         private val GSON = GsonCreator().create()
@@ -55,7 +56,7 @@ class MessageChannel<T>(val cloudModule: ICloudModule, private val name: String,
         val jsonLib = JsonLib.fromJsonString(message.messageString)
         val msg = jsonLib.getObject(clazz)
         val networkComponent = message.senderReference.getNetworkComponent()
-                ?: throw IllegalArgumentException("Connected process of ${message.senderReference.name} is null")
+            ?: throw IllegalArgumentException("Connected process of ${message.senderReference.name} is null")
         this.listeners.forEach { it.messageReceived(msg, networkComponent) }
     }
 
@@ -70,9 +71,14 @@ class MessageChannel<T>(val cloudModule: ICloudModule, private val name: String,
     override fun sendMessage(msg: T, receivers: List<INetworkComponent>) {
         val thisComponent = CloudAPI.instance.getThisSidesNetworkComponent()
         val messageString = GSON.toJson(msg)
-        val message = Message(getName(), clazz.name, messageString, thisComponent.toNetworkComponentReference(), receivers.map { it.toNetworkComponentReference() })
+        val message = Message(
+            getName(),
+            clazz.name,
+            messageString,
+            thisComponent.toNetworkComponentReference(),
+            receivers.map { it.toNetworkComponentReference() })
         return (CloudAPI.instance.getMessageChannelManager() as MessageChannelManager)
-                .sendMessage(message)
+            .sendMessage(message)
     }
 
 }

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -20,30 +20,23 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.mongoinstaller.question;
+package eu.thesimplecloud.base.manager.setup.groups
 
-import java.util.Scanner;
+import eu.thesimplecloud.base.manager.setup.provider.ServiceJavaCommandAnswerProvider
+import eu.thesimplecloud.launcher.console.setup.annotations.SetupQuestion
+import eu.thesimplecloud.launcher.startup.Launcher
 
-/**
- * Created by IntelliJ IDEA.
- * Date: 07.06.2020
- * Time: 21:20
- *
- * @author Frederick Baier
- */
-public class UserQuestion {
+class LobbyGroupSetupWithJava : LobbyGroupSetup() {
 
-    private String question;
-
-    public UserQuestion(String question) {
-        this.question = question;
+    @SetupQuestion(13, "manager.setup.service-versions.question.java", ServiceJavaCommandAnswerProvider::class)
+    fun useJavaCommand(javaName: String): Boolean {
+        if (javaName == "default") {
+            this.javaCommand = "java"
+            Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-versions.question.java.success")
+            return true
+        }
+        this.javaCommand = javaName
+        Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-versions.question.java.success")
+        return true
     }
-
-    public String waitForResult() {
-        System.out.println(question);
-        Scanner scanner = new Scanner(System.in);
-        return scanner.nextLine();
-    }
-
-
 }

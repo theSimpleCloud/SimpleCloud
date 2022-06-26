@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -28,10 +28,12 @@ enum class ServiceType {
      * Represents a proxy service
      */
     PROXY,
+
     /**
      * Represents a normal minecraft server
      */
     SERVER,
+
     /**
      * Represents a lobby server
      */

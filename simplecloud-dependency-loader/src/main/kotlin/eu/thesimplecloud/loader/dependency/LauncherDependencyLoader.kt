@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -46,11 +46,13 @@ class LauncherDependencyLoader {
                 AdvancedCloudDependency("org.slf4j", "slf4j-simple", "1.7.32"),
                 AdvancedCloudDependency("com.google.guava", "guava", "31.0.1-jre"),
                 AdvancedCloudDependency("org.jetbrains.kotlinx", "kotlinx-coroutines-core", "1.5.2"),
-                AdvancedCloudDependency("com.google.code.gson", "gson", "2.8.9"),
+                AdvancedCloudDependency("com.google.code.gson", "gson", "2.9.0"),
                 AdvancedCloudDependency("io.netty", "netty-all", "4.1.71.Final"),
                 AdvancedCloudDependency("org.reflections", "reflections", "0.9.12"),
                 AdvancedCloudDependency("org.mariadb.jdbc", "mariadb-java-client", "2.7.4"),
-                AdvancedCloudDependency("com.github.ajalt", "clikt", "2.8.0")
+                AdvancedCloudDependency("com.github.ajalt", "clikt", "2.8.0"),
+                AdvancedCloudDependency("net.kyori", "adventure-api", "4.11.0"),
+                AdvancedCloudDependency("net.kyori", "adventure-text-serializer-gson", "4.11.0")
             )
         )
     }

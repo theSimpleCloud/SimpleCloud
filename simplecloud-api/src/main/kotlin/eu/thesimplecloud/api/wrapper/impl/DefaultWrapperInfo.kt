@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -61,8 +61,8 @@ data class DefaultWrapperInfo(
     @Volatile
     private var cpuUsage = 0.0F
 
-    override fun setAuthenticated(boolean: Boolean) {
-        getUpdater().setAuthenticated(boolean)
+    override fun setAuthenticated(authenticated: Boolean) {
+        getUpdater().setAuthenticated(authenticated)
     }
 
     override fun getName(): String = this.name
@@ -89,7 +89,7 @@ data class DefaultWrapperInfo(
         if (this.wrapperUpdater == null) {
             this.wrapperUpdater = DefaultWrapperInfoUpdater(this)
         }
-        return this.wrapperUpdater!!
+        return this.wrapperUpdater ?: throw NullPointerException("WrapperUpdater was null")
     }
 
     override fun applyValuesFromUpdater(updater: IWrapperInfoUpdater) {

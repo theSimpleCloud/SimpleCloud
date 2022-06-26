@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -45,9 +45,7 @@ class ZipUtils {
             val nextElement = entries.nextElement()
             if (nextElement.name.startsWith(path) && !nextElement.isDirectory) {
                 val pathInZipfile: Path = fileSystem.getPath(nextElement.name)
-                //println("About to delete an entry from ZIP File" + pathInZipfile.toUri())
                 Files.delete(pathInZipfile)
-                //println("File successfully deleted")
             }
         }
         zipFile.close()

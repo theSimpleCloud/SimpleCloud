@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -46,12 +46,18 @@ class InternalWrapperModule : ICloudModule {
 
         if (wrapperManager.getWrapperByHost(config.host) == null) {
             Launcher.instance.setupManager.queueSetup(InternalWrapperMemorySetup(config))
-            Launcher.instance.setupManager.waitFroAllSetups()
+            Launcher.instance.setupManager.waitForAllSetups()
         }
 
         thread(start = true, isDaemon = false) {
             Launcher.instance.consoleSender.sendProperty("module.internalwrapper.starting")
-            val processBuilder = ProcessBuilder("java", "-jar", RunnerFileProvider.RUNNER_FILE.path, "--start-application=WRAPPER", "--disable-auto-updater")
+            val processBuilder = ProcessBuilder(
+                "java",
+                "-jar",
+                RunnerFileProvider.RUNNER_FILE.path,
+                "--start-application=WRAPPER",
+                "--disable-auto-updater"
+            )
             processBuilder.directory(File("."))
             val process = processBuilder.start()
             this.process = process

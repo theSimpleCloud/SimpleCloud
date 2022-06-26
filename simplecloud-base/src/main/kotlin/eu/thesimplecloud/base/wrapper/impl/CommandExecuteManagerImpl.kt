@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -35,7 +35,8 @@ class CommandExecuteManagerImpl : ICommandExecuteManager {
 
     override fun executeCommand(commandExecutable: ICommandExecutable, command: String) {
         if (commandExecutable is ICloudService && commandExecutable.getWrapper() == Wrapper.instance.getThisWrapper()) {
-            val serviceProcess = Wrapper.instance.cloudServiceProcessManager.getCloudServiceProcessByServiceName(commandExecutable.getName())
+            val serviceProcess =
+                Wrapper.instance.cloudServiceProcessManager.getCloudServiceProcessByServiceName(commandExecutable.getName())
             serviceProcess?.executeCommand(command)
             return
         }
@@ -43,7 +44,14 @@ class CommandExecuteManagerImpl : ICommandExecuteManager {
             Launcher.instance.executeCommand(command)
             return
         }
-        val cloudClientType = if (commandExecutable is ICloudService) NetworkComponentType.SERVICE else NetworkComponentType.WRAPPER
-        Wrapper.instance.connectionToManager.sendUnitQuery(PacketIOExecuteCommand(cloudClientType, commandExecutable.getName(), command))
+        val cloudClientType =
+            if (commandExecutable is ICloudService) NetworkComponentType.SERVICE else NetworkComponentType.WRAPPER
+        Wrapper.instance.connectionToManager.sendUnitQuery(
+            PacketIOExecuteCommand(
+                cloudClientType,
+                commandExecutable.getName(),
+                command
+            )
+        )
     }
 }

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -50,7 +50,8 @@ interface ITemplateVariables {
     /**
      * Returns all templates this group inherits from.
      */
-    fun inheritedTemplates(): List<ITemplate> = getInheritedTemplateNames().mapNotNull { CloudAPI.instance.getTemplateManager().getTemplateByName(it) }
+    fun inheritedTemplates(): List<ITemplate> =
+        getInheritedTemplateNames().mapNotNull { CloudAPI.instance.getTemplateManager().getTemplateByName(it) }
 
     /**
      * Adds the specified name to the list of all module names, this template shall copy in the plugins directory of a service.

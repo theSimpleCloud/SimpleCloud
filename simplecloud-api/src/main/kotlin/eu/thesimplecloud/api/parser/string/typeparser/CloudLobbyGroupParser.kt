@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -30,5 +30,6 @@ class CloudLobbyGroupParser : IStringTypeParser<ICloudLobbyGroup> {
 
     override fun allowedTypes(): List<Class<out ICloudLobbyGroup>> = listOf(ICloudLobbyGroup::class.java)
 
-    override fun parse(string: String): ICloudLobbyGroup? = CloudAPI.instance.getCloudServiceGroupManager().getLobbyGroupByName(string)
+    override fun parse(string: String): ICloudLobbyGroup? =
+        CloudAPI.instance.getCloudServiceGroupManager().getLobbyGroupByName(string)
 }

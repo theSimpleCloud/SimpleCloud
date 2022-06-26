@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -39,9 +39,10 @@ class PacketIOUpdateListProperty() : JsonPacket() {
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         val listName = this.jsonLib.getString("listName") ?: return contentException("listName")
         val property = this.jsonLib.getObject("property", Property::class.java) as Property<Any>?
-                ?: return contentException("property")
+            ?: return contentException("property")
         try {
-            val synchronizedObjectList: ISynchronizedObjectList<Any>? = CloudAPI.instance.getSynchronizedObjectListManager().getSynchronizedObjectList(listName)
+            val synchronizedObjectList: ISynchronizedObjectList<Any>? =
+                CloudAPI.instance.getSynchronizedObjectListManager().getSynchronizedObjectList(listName)
             synchronizedObjectList ?: return failure(NoSuchElementException())
             synchronizedObjectList.update(property, true)
 

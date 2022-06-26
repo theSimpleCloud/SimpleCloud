@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -35,7 +35,11 @@ class MessageChannelManager : IMessageChannelManager {
 
     private val channels = Maps.newConcurrentMap<String, MessageChannel<*>>()
 
-    override fun <T> registerMessageChannel(cloudModule: ICloudModule, name: String, clazz: Class<T>): IMessageChannel<T> {
+    override fun <T> registerMessageChannel(
+        cloudModule: ICloudModule,
+        name: String,
+        clazz: Class<T>
+    ): IMessageChannel<T> {
         if (this.channels.containsKey(name)) throw IllegalArgumentException("Channel is already registered")
         val messageChannel = MessageChannel(cloudModule, name, clazz)
         this.channels[name] = messageChannel
@@ -51,7 +55,8 @@ class MessageChannelManager : IMessageChannelManager {
     }
 
     override fun unregisterMessageChannel(cloudModule: ICloudModule) {
-        val messageChannelNamesByModule = this.channels.entries.filter { it.value.cloudModule == cloudModule }.map { it.key }
+        val messageChannelNamesByModule =
+            this.channels.entries.filter { it.value.cloudModule == cloudModule }.map { it.key }
         messageChannelNamesByModule.forEach { unregisterMessageChannel(it) }
     }
 
@@ -60,8 +65,8 @@ class MessageChannelManager : IMessageChannelManager {
         if (CloudAPI.instance.isManager()) {
             val server = CloudAPI.instance.getThisSidesCommunicationBootstrap() as INettyServer<*>
             val allNotManagerReceivers = message.receivers
-                    .filter { it.componentType != NetworkComponentType.MANAGER }
-                    .mapNotNull { it.getNetworkComponent() }
+                .filter { it.componentType != NetworkComponentType.MANAGER }
+                .mapNotNull { it.getNetworkComponent() }
             allNotManagerReceivers.forEach {
                 val client = server.getClientManager().getClientByClientValue(it)
                 client?.sendUnitQuery(packetToSend)
@@ -74,7 +79,7 @@ class MessageChannelManager : IMessageChannelManager {
 
     fun incomingMessage(message: Message) {
         val channel = this.channels[message.channel]
-        if (CloudAPI.instance.isManager()){
+        if (CloudAPI.instance.isManager()) {
             sendMessage(message)
             if (message.receivers.contains(NetworkComponentReference.MANAGER_COMPONENT_REFERENCE))
                 channel?.notifyListeners(message)

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -20,33 +20,35 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.mongoinstaller;
-
+package eu.thesimplecloud.module.proxy.manager.converter.convert3to4
 
 /**
- * Created by IntelliJ IDEA.
- * Date: 07.06.2020
- * Time: 20:57
- *
+ * Date: 19.06.22
+ * Time: 10:01
  * @author Frederick Baier
+ *
  */
-public enum InstallerEnum {
+class SingleColorCodeReplacer(
+    private val colorCode: Char,
+    private val colorCodeName: String
+) {
 
-    DEBIAN_10("echo \"deb http://repo.mongodb.org/apt/debian buster/mongodb-org/4.2 main\" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.2.list"),
-    DEBIAN_9("echo \"deb http://repo.mongodb.org/apt/debian stretch/mongodb-org/4.2 main\" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.2.list"),
-    UBUNTU_18("echo \"deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.2 multiverse\" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.2.list"),
-    UBUNTU_16("echo \"deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/4.2 multiverse\" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.2.list")
+    private var foundColorCode: Boolean = false
 
-    ;
-
-
-    private String versionSpecificCommand;
-
-    private InstallerEnum(String versionSpecificCommand) {
-        this.versionSpecificCommand = versionSpecificCommand;
+    fun getColorCode(): Char {
+        return this.colorCode
     }
 
-    public String getVersionSpecificCommand() {
-        return versionSpecificCommand;
+    fun foundColorCode(stringBuilder: StringBuilder) {
+        stringBuilder.append("<${colorCodeName}>")
+        this.foundColorCode = true
     }
+
+    fun endIfOpen(stringBuilder: StringBuilder) {
+        if (foundColorCode) {
+            foundColorCode = false
+            stringBuilder.append("</${colorCodeName}>")
+        }
+    }
+
 }

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -56,7 +56,7 @@ class CloudSignsCommand : CommandExecutor {
             sender.sendMessage("§cUsage: /cloudsigns <add/remove> [group]")
             return true
         }
-        when(args[0].toLowerCase()) {
+        when (args[0].toLowerCase()) {
             "add" -> {
                 if (args.size != 2) {
                     sender.sendMessage("§cUsage: /cloudsigns <add> <group>")
@@ -74,7 +74,10 @@ class CloudSignsCommand : CommandExecutor {
                 }
                 val signModuleConfig = SignModuleConfig.getConfig()
                 val templateLocation = block.location.toCloudLocation().toTemplateLocation()
-                val cloudSignByLocation = signModuleConfig.signContainer.getCloudSignByLocation(this.thisService.getTemplate(), templateLocation)
+                val cloudSignByLocation = signModuleConfig.signContainer.getCloudSignByLocation(
+                    this.thisService.getTemplate(),
+                    templateLocation
+                )
                 if (cloudSignByLocation != null) {
                     sender.sendMessage("§cThere is already a sign registered on this location.")
                     return true
@@ -87,7 +90,10 @@ class CloudSignsCommand : CommandExecutor {
             "remove" -> {
                 val signModuleConfig = SignModuleConfig.getConfig()
                 val templateLocation = block.location.toCloudLocation().toTemplateLocation()
-                val cloudSign = signModuleConfig.signContainer.getCloudSignByLocation(this.thisService.getTemplate(), templateLocation)
+                val cloudSign = signModuleConfig.signContainer.getCloudSignByLocation(
+                    this.thisService.getTemplate(),
+                    templateLocation
+                )
                 if (cloudSign == null) {
                     sender.sendMessage("§cSign is not registered.")
                     return true

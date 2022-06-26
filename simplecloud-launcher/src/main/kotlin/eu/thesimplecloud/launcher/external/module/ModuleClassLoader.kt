@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -27,7 +27,12 @@ import eu.thesimplecloud.launcher.external.module.handler.IModuleHandler
 import java.net.URL
 import java.net.URLClassLoader
 
-open class ModuleClassLoader(urls: Array<URL>, parent: ClassLoader, val moduleName: String, var moduleHandler: IModuleHandler?) : URLClassLoader(urls, parent) {
+open class ModuleClassLoader(
+    urls: Array<URL>,
+    parent: ClassLoader,
+    val moduleName: String,
+    var moduleHandler: IModuleHandler?
+) : URLClassLoader(urls, parent) {
 
     @Volatile
     private var closed: Boolean = false

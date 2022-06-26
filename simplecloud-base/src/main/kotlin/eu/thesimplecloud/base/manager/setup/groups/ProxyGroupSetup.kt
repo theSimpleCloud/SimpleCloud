@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -72,7 +72,7 @@ class ProxyGroupSetup : DefaultGroupSetup(), ISetup {
     @SetupQuestion(2, "manager.setup.proxy-group.question.type", ProxyVersionTypeSetupAnswerProvider::class)
     fun typeQuestion(answer: String): Boolean {
         val serviceVersion = CloudAPI.instance.getServiceVersionHandler()
-                .getServiceVersionByName(answer)!!
+            .getServiceVersionByName(answer)!!
         this.serviceVersion = serviceVersion
         Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.proxy-group.question.type.success")
         return true
@@ -169,20 +169,20 @@ class ProxyGroupSetup : DefaultGroupSetup(), ISetup {
     @SetupFinished
     fun finished() {
         CloudAPI.instance.getCloudServiceGroupManager().createProxyGroup(
-                name,
-                templateName,
-                memory,
-                maxPlayers,
-                minimumOnlineServices,
-                maximumOnlineServices,
-                true,
-                static,
-                percent,
-                wrapper?.getName(),
-                startPort,
-                serviceVersion,
-                10,
-                this.permission
+            name,
+            templateName,
+            memory,
+            maxPlayers,
+            minimumOnlineServices,
+            maximumOnlineServices,
+            true,
+            static,
+            percent,
+            wrapper?.getName(),
+            startPort,
+            serviceVersion,
+            10,
+            this.permission
         )
         Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-group.finished", name)
     }
