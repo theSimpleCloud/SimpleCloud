@@ -47,8 +47,11 @@ class CloudServiceManagerImpl : AbstractCloudServiceManager() {
         Launcher.instance.screenManager.getScreen(cloudService.getName()).let {
             if (it != null) {
                 it.getAllSavedMessages().parallelStream().collect(Collectors.joining("\n"))?.let { screenMessage ->
+                    val groupName = cloudService.getServiceGroup().getName()
+                    val file = File("logs/$groupName/")
+                    if (!file.exists()) file.mkdirs()
                     val date = SimpleDateFormat("yyyy.MM.dd-HH:mm:ss").format(System.currentTimeMillis())
-                    File("logs/${cloudService.getName()}-$date.txt").writeText(screenMessage)
+                    File("${file.absolutePath}/${cloudService.getName()}-$date.txt").writeText(screenMessage)
                 }
             }
         }
