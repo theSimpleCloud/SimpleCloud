@@ -6,4 +6,6 @@ main: eu.thesimplecloud.plugin.server.CloudSpigotPlugin
 
 api-version: 1.13
 
+softdepend: [SimpleCloud-Permission, SimpleCloud-Signs]
+
 commands:
