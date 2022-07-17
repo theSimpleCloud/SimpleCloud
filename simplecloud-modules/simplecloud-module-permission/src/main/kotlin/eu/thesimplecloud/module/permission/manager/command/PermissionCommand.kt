@@ -272,9 +272,9 @@ class PermissionCommand : ICommandHandler {
 
     @CommandSubPath("groups", "Shows all permission groups")
     fun handleGroup(commandSender: ICommandSender) {
-        commandSender.sendMessage("&7Permission-Groups:")
+        commandSender.sendMessage("§7Permission-Groups:")
         PermissionPool.instance.getPermissionGroupManager().getAllPermissionGroups().forEach {
-            commandSender.sendMessage("&8- &e" + it.getName())
+            commandSender.sendMessage("§8- §e" + it.getName())
         }
     }
 
