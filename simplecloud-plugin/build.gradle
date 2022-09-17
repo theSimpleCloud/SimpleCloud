@@ -22,7 +22,7 @@
 
 dependencies {
     implementation group: 'org.reflections', name: 'reflections', version: '0.9.12'
-    compile(group: 'io.netty', name: 'netty-all', version: "4.1.71.Final")
+    compile(group: 'io.netty', name: 'netty-all', version: '4.1.77.Final')
     compile(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion) {
     }
     compile(group: 'eu.thesimplecloud.jsonlib', name: 'json-lib', version: "1.0.8") {
@@ -32,13 +32,13 @@ dependencies {
 
     compile(project(":simplecloud-client")) {
     }
-    compileOnly 'org.spigotmc:spigot-api:1.17-R0.1-SNAPSHOT'
-    compileOnly 'net.md-5:bungeecord-api:1.17-R0.1-SNAPSHOT'
+    compileOnly 'org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT'
+    compileOnly 'net.md-5:bungeecord-api:1.19-R0.1-SNAPSHOT'
     compileOnly 'com.velocitypowered:velocity-api:1.1.8'
     annotationProcessor 'com.velocitypowered:velocity-api:1.1.8'
 
     compile('net.kyori:adventure-text-minimessage:4.11.0')
-    compile 'net.kyori:adventure-platform-bungeecord:4.1.1'
+    compile('net.kyori:adventure-platform-bungeecord:4.1.2')
 }
 
 

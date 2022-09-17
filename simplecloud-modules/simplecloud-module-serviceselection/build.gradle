@@ -7,7 +7,7 @@ dependencies {
     implementation(project(":simplecloud-api"))
 
 
-    compileOnly 'org.spigotmc:spigot-api:1.17-R0.1-SNAPSHOT'
+    compileOnly 'org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT'
     testCompile group: 'commons-io', name: 'commons-io', version: dependencyCommonsIOVersion
     testCompile group: 'com.google.guava', name: 'guava', version: dependencyGuavaVersion
     testCompile group: 'io.netty', name: 'netty-all', version: dependencyNettyVersion

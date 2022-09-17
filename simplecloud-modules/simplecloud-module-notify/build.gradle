@@ -30,5 +30,5 @@ dependencies {
     implementation(project(":simplecloud-plugin"))
     implementation(project(":simplecloud-launcher"))
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.9.0'
-    compileOnly 'net.md-5:bungeecord-api:1.17-R0.1-SNAPSHOT'
+    compileOnly 'net.md-5:bungeecord-api:1.19-R0.1-SNAPSHOT'
 }
