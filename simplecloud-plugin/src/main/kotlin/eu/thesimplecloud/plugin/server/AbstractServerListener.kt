@@ -20,34 +20,42 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.plugin.server.listener
+package eu.thesimplecloud.plugin.server
 
-import org.bukkit.event.EventHandler
-import org.bukkit.event.Listener
-import org.bukkit.event.player.PlayerCommandPreprocessEvent
+import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.plugin.startup.CloudPlugin
+import java.util.UUID
 
 /**
  * Created by IntelliJ IDEA.
- * Date: 24.12.2020
- * Time: 10:50
- * @author Frederick Baier
+ * User: Philipp.Eistrach
+ * Date: 17.09.22
+ * Time: 20:48
  */
-class ReloadCommandBlocker : Listener {
+abstract class AbstractServerListener {
 
-    @EventHandler
-    fun handle(event: PlayerCommandPreprocessEvent) {
-        val message = event.message
-        val player = event.player
-        if (message.equals("/rl", true) ||
-            message.equals("/reload", true) ||
-            message.equals("/rl confirm", true) ||
-            message.equals("/reload confirm", true)
-        ) {
-            if (player.hasPermission("bukkit.command.reload")) {
-                event.isCancelled = true
-                player.sendMessage("§cCloud-Servers cannot be reloaded")
-            }
+    fun onPlayerDisconnected(playerUniqueId: UUID, onlinePlayers: Int) {
+        val playerManager = CloudAPI.instance.getCloudPlayerManager()
+        val cloudPlayer = playerManager.getCachedCloudPlayer(playerUniqueId)
+
+        if (cloudPlayer != null && !cloudPlayer.isUpdatesEnabled()) {
+            playerManager.delete(cloudPlayer)
         }
+        updateCurrentOnlineCountTo(onlinePlayers - 1)
     }
+
+    fun updateCurrentOnlineCountTo(count: Int) {
+        val thisService = CloudPlugin.instance.thisService()
+        thisService.setOnlineCount(count)
+        thisService.update()
+    }
+
+    companion object {
+
+        val UNKNOWN_ADRESS = "§cYou are connected from an unknown address!"
+        val NOT_REGISTERED = "§cYou are not registered on the network!"
+
+    }
+
 
 }

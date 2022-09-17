@@ -63,6 +63,11 @@ allprojects {
             url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
         }
 
+        maven {
+            name 'loohp-repo'
+            url 'https://repo.loohpjames.com/repository/'
+        }
+
     }
 
     project.ext {

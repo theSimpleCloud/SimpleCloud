@@ -32,6 +32,7 @@ dependencies {
 
     compile(project(":simplecloud-client")) {
     }
+    compileOnly 'com.loohp:Limbo:0.6.18-ALPHA'
     compileOnly 'org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT'
     compileOnly 'net.md-5:bungeecord-api:1.19-R0.1-SNAPSHOT'
     compileOnly 'com.velocitypowered:velocity-api:1.1.8'

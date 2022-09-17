@@ -20,71 +20,61 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.plugin.server.listener
+package eu.thesimplecloud.plugin.server.limbo.listener
 
+import com.loohp.limbo.Limbo
+import com.loohp.limbo.events.EventHandler
+import com.loohp.limbo.events.EventPriority
+import com.loohp.limbo.events.Listener
+import com.loohp.limbo.events.player.PlayerJoinEvent
+import com.loohp.limbo.events.player.PlayerLoginEvent
+import com.loohp.limbo.events.player.PlayerQuitEvent
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.plugin.startup.CloudPlugin
-import org.bukkit.Bukkit
-import org.bukkit.entity.Player
-import org.bukkit.event.EventHandler
-import org.bukkit.event.EventPriority
-import org.bukkit.event.Listener
-import org.bukkit.event.player.PlayerJoinEvent
+import eu.thesimplecloud.plugin.server.AbstractServerListener
+import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.event.player.PlayerKickEvent
-import org.bukkit.event.player.PlayerLoginEvent
-import org.bukkit.event.player.PlayerQuitEvent
 
-class SpigotListener : Listener {
-
-    private val UNKNOWN_ADRESS = "§cYou are connected from an unknown address!"
-    private val NOT_REGISTERED = "§cYou are not registered on the network!"
+/**
+ * Created by IntelliJ IDEA.
+ * User: Philipp.Eistrach
+ * Date: 17.09.22
+ * Time: 20:48
+ */
+class LimboListener : AbstractServerListener(), Listener {
 
     @EventHandler
     fun on(event: PlayerLoginEvent) {
-        val player = event.player
+        val player = event.connection.player
 
-        val hostAddress = event.realAddress.hostAddress
+        val hostAddress = event.connection.inetAddress.hostAddress
         if (hostAddress != "127.0.0.1" && !CloudAPI.instance.getWrapperManager().getAllCachedObjects()
                 .any { it.getHost() == hostAddress }
         ) {
-            event.disallow(PlayerLoginEvent.Result.KICK_OTHER, UNKNOWN_ADRESS)
+            event.setCancelReason(TextComponent(UNKNOWN_ADRESS))
+            event.isCancelled = true
             return
         }
 
         if (CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(player.uniqueId) == null) {
-            event.disallow(PlayerLoginEvent.Result.KICK_OTHER, NOT_REGISTERED)
+            event.setCancelReason(TextComponent(NOT_REGISTERED))
+            event.isCancelled = true
         }
     }
 
     @EventHandler
     fun onJoin(event: PlayerJoinEvent) {
-        updateCurrentOnlineCountTo(Bukkit.getOnlinePlayers().size)
+        updateCurrentOnlineCountTo(Limbo.getInstance().players.size)
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     fun on(event: PlayerQuitEvent) {
-        onPlayerDisconnected(event.player)
+        onPlayerDisconnected(event.player.uniqueId, Limbo.getInstance().players.size)
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     fun on(event: PlayerKickEvent) {
-        onPlayerDisconnected(event.player)
+        onPlayerDisconnected(event.player.uniqueId, Limbo.getInstance().players.size)
     }
 
-    private fun onPlayerDisconnected(player: Player) {
-        val playerManager = CloudAPI.instance.getCloudPlayerManager()
-        val cloudPlayer = playerManager.getCachedCloudPlayer(player.uniqueId)
-
-        if (cloudPlayer != null && !cloudPlayer.isUpdatesEnabled()) {
-            playerManager.delete(cloudPlayer)
-        }
-        updateCurrentOnlineCountTo(Bukkit.getOnlinePlayers().size - 1)
-    }
-
-    private fun updateCurrentOnlineCountTo(count: Int) {
-        val thisService = CloudPlugin.instance.thisService()
-        thisService.setOnlineCount(count)
-        thisService.update()
-    }
 
 }

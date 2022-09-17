@@ -2,7 +2,7 @@ name: SimpleCloud-Plugin
 version: 1.0
 author: Wetterbericht
 
-main: eu.thesimplecloud.plugin.server.CloudSpigotPlugin
+main: eu.thesimplecloud.plugin.server.spigot.CloudSpigotPlugin
 
 api-version: 1.13
 

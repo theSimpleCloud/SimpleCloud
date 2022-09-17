@@ -1,0 +1,4 @@
+name: SimpleCloud-Plugin
+version: 1.0
+author: Fllip
+main: eu.thesimplecloud.plugin.server.limbo.CloudLimboPlugin
