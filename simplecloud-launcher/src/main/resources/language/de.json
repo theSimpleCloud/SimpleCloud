@@ -76,6 +76,8 @@
   "manager.command.reload.module.not-exists": "Das neuzuladende Modul existiert nicht",
   "manager.command.reload.wrapper-changed": "Es ist ein Fehler beim Neuladen des Wrappers %WRAPPER% aufgetreten, da sich der Host geändert hat",
   "manager.command.reload.wrapper-success": "Neuladen des Wrappers %WRAPPER% erfolgreich abgeschlossen",
+  "manager.command.reload.server.version": "Alle Server Versions wurden neu geladen.",
+  "manager.command.reload.jvm.arguments": "Alle Java Argumente wurden neu geladen.",
   "manager.command.screen.list": "Zurzeit sind folgende Konsolen verfügbar:",
   "manager.command.screen.not-exist": "Die angegebene Konsole existiert nicht",
   "manager.command.shutdown.success": "Stoppe Server",
