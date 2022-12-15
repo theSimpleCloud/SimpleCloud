@@ -42,11 +42,63 @@ class ReloadCommand : ICommandHandler {
 
     @CommandSubPath("", "Reloads the cloud")
     fun handleReload(commandSender: ICommandSender) {
-        //disable
+        this.reloadModules()
+
+        this.reloadWrappers(commandSender)
+
+        this.reloadServiceVersion()
+
+        this.reloadJvmArguments()
+
+        this.reloadGroups(commandSender)
+    }
+
+    @CommandSubPath("module <name>", "Reloads a specific module")
+    fun handleReloadModule(commandSender: ICommandSender, @CommandArgument("name") moduleName: String) {
+        val module = Manager.instance.cloudModuleHandler.getLoadedModuleByName(moduleName)
+
+        if (module == null) {
+            commandSender.sendProperty("manager.command.reload.module.not-exists")
+            return
+        }
+
+        Manager.instance.cloudModuleHandler.unloadModule(module.cloudModule)
+        Manager.instance.cloudModuleHandler.loadSingleModuleFromFile(module.file)
+    }
+
+    private fun reloadGroups(commandSender: ICommandSender) {
+        val loadedGroups = Manager.instance.cloudServiceGroupFileHandler.loadAll().toMutableList()
+        val unknownGroups = loadedGroups.filter {
+            CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(it.getName()) == null
+        }
+        if (unknownGroups.isNotEmpty()) {
+            unknownGroups.forEach {
+                commandSender.sendProperty("manager.command.reload.group-changed", it.getName())
+            }
+        }
+        loadedGroups.toMutableList().removeAll(unknownGroups)
+        loadedGroups.forEach { CloudAPI.instance.getCloudServiceGroupManager().update(it) }
+        loadedGroups.forEach { commandSender.sendProperty("manager.command.reload.group-success", it.getName()) }
+    }
+
+    private fun reloadModules() {
         Manager.instance.cloudModuleHandler.unloadAllReloadableModules()
         Manager.instance.appClassLoader.clearCachedClasses()
         DependencyLoader.INSTANCE.reset()
 
+        Manager.instance.communicationServer.getClientManager()
+            .sendPacketToAllAuthenticatedWrapperClients(PacketOutReloadExistingModules())
+
+        //enable
+        Manager.instance.appClassLoader.clearCachedClasses()
+        thread(
+            start = true,
+            isDaemon = false,
+            Manager.instance.appClassLoader
+        ) { Manager.instance.cloudModuleHandler.loadAllUnloadedModules() }
+    }
+
+    private fun reloadWrappers(commandSender: ICommandSender) {
         val loadedWrappers = Manager.instance.wrapperFileHandler.loadAll().toMutableList()
         val unknownWrappers =
             loadedWrappers.filter { CloudAPI.instance.getWrapperManager().getWrapperByHost(it.getHost()) == null }
@@ -64,52 +116,14 @@ class ReloadCommand : ICommandHandler {
             wrapperUpdater.update()
         }
         loadedWrappers.forEach { commandSender.sendProperty("manager.command.reload.wrapper-success", it.getName()) }
+    }
 
-        //service versions
+    private fun reloadServiceVersion() {
         (CloudAPI.instance.getServiceVersionHandler() as ManagerServiceVersionHandler).reloadServiceVersions()
+    }
 
-        //jvm-arguments
+    private fun reloadJvmArguments() {
         val jvmArgumentsConfigLoader = JvmArgumentsConfigLoader()
         Manager.instance.jvmArgumentsConfig = jvmArgumentsConfigLoader.loadConfig()
-
-        //groups
-        val loadedGroups = Manager.instance.cloudServiceGroupFileHandler.loadAll().toMutableList()
-        val unknownGroups = loadedGroups.filter {
-            CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(it.getName()) == null
-        }
-        if (unknownGroups.isNotEmpty()) {
-            unknownGroups.forEach {
-                commandSender.sendProperty("manager.command.reload.group-changed", it.getName())
-            }
-        }
-        loadedGroups.toMutableList().removeAll(unknownGroups)
-        loadedGroups.forEach { CloudAPI.instance.getCloudServiceGroupManager().update(it) }
-        loadedGroups.forEach { commandSender.sendProperty("manager.command.reload.group-success", it.getName()) }
-
-        //send all wrappers a packet to reload the modules list
-        Manager.instance.communicationServer.getClientManager()
-            .sendPacketToAllAuthenticatedWrapperClients(PacketOutReloadExistingModules())
-
-        //enable
-        Manager.instance.appClassLoader.clearCachedClasses()
-        thread(
-            start = true,
-            isDaemon = false,
-            Manager.instance.appClassLoader
-        ) { Manager.instance.cloudModuleHandler.loadAllUnloadedModules() }
     }
-
-    @CommandSubPath("module <name>", "Reloads a specific module")
-    fun handleReloadModule(commandSender: ICommandSender, @CommandArgument("name") moduleName: String) {
-        val module = Manager.instance.cloudModuleHandler.getLoadedModuleByName(moduleName)
-
-        if (module == null) {
-            commandSender.sendProperty("manager.command.reload.module.not-exists")
-            return
-        }
-
-        Manager.instance.cloudModuleHandler.unloadModule(module.cloudModule)
-        Manager.instance.cloudModuleHandler.loadSingleModuleFromFile(module.file)
-    }
-
 }
