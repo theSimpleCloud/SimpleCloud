@@ -40,16 +40,39 @@ import kotlin.concurrent.thread
 @Command("reload", CommandType.CONSOLE, "cloud.command.reload", ["rl"])
 class ReloadCommand : ICommandHandler {
 
-    @CommandSubPath("", "Reloads the cloud")
-    fun handleReload(commandSender: ICommandSender) {
+    @CommandSubPath("all", "Reload everything (recommended)")
+    fun handleReloadAll(commandSender: ICommandSender) {
         this.reloadModules()
-
         this.reloadWrappers(commandSender)
-
         this.reloadServiceVersion()
-
         this.reloadJvmArguments()
+        this.reloadGroups(commandSender)
+    }
 
+    @CommandSubPath("modules", "Reload all modules")
+    fun handleReloadModules(commandSender: ICommandSender) {
+        this.reloadModules()
+    }
+
+    @CommandSubPath("wrappers", "Reload all wrappers")
+    fun handleReloadWrappers(commandSender: ICommandSender) {
+        this.reloadWrappers(commandSender)
+    }
+
+    @CommandSubPath("serverVersion", "Reload all server versions")
+    fun handleReloadServerVersions(commandSender: ICommandSender) {
+        this.reloadServiceVersion()
+        commandSender.sendProperty("manager.command.reload.server.version")
+    }
+
+    @CommandSubPath("jvm-arguments", "Reload jvm-arguments")
+    fun handleReloadJvmArguments(commandSender: ICommandSender) {
+        this.reloadJvmArguments()
+        commandSender.sendProperty("manager.command.reload.jvm.arguments")
+    }
+
+    @CommandSubPath("groups", "Reload all groups")
+    fun handleReloadGroups(commandSender: ICommandSender) {
         this.reloadGroups(commandSender)
     }
 
