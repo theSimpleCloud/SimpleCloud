@@ -77,6 +77,8 @@
   "manager.command.reload.module.not-exists": "Module to reload does not exists",
   "manager.command.reload.wrapper-changed": "Failed to reload wrapper %WRAPPER% because the host has changed",
   "manager.command.reload.wrapper-success": "Reloaded wrapper %WRAPPER%",
+  "manager.command.reload.server.version": "All server versions have been reloaded.",
+  "manager.command.reload.jvm.arguments": "All Java arguments have been reloaded.",
   "manager.command.screen.list": "There are following screens available:",
   "manager.command.screen.not-exist": "The specified screen does not exist",
   "manager.command.shutdown.success": "Stopping service",
