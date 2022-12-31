@@ -46,16 +46,24 @@ jobs:
       env:
         MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
         MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
+        
+    - name: Copy files
+      run: |
+        mkdir -p temp
+        mkdir temp/modules/
+        mkdir temp/storage/
+        cp start-files/*.* temp/
+        cp simplecloud-modules/**/build/libs/*.jar temp/modules/
+        cp simplecloud-runner/build/libs/runner.jar temp/runner.jar
+        cp simplecloud-base/build/libs/base.jar temp/storage/base.jar
+        rm temp/modules/SimpleCloud-Chat+Tab.jar'
+        rm temp/modules/SimpleCloud-ServiceSelection.jar
+        rm temp/modules/SimpleCloud-CloudFlare.jar
+    
     - name: Upload
       uses: actions/upload-artifact@v3
       with:
         name: SimpleCloud-Latest
-        path: |
-          simplecloud-modules/**/build/libs/*.jar
-          simplecloud-runner/build/libs/runner.jar
-          simplecloud-base/build/libs/base.jar
-          !simplecloud-modules/**/build/libs/SimpleCloud-Chat+Tab.jar
-          !simplecloud-modules/**/build/libs/SimpleCloud-ServiceSelection.jar
-          !simplecloud-modules/**/build/libs/SimpleCloud-CloudFlare.jar
+        path: temp/
   
   
