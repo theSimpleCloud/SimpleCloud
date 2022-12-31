@@ -36,16 +36,6 @@ jobs:
       uses: gradle/gradle-build-action@v2
       with:
         arguments: build
-
-    # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
-    # the publishing section of your build.gradle
-    - name: Publish
-      uses: gradle/gradle-build-action@v2
-      with:
-        arguments: publish
-      env:
-        MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
-        MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
         
     - name: Copy files
       run: |
@@ -60,10 +50,20 @@ jobs:
         rm temp/modules/SimpleCloud-ServiceSelection.jar
         rm temp/modules/SimpleCloud-CloudFlare.jar
     
-    - name: Upload
+    - name: Upload zip
       uses: actions/upload-artifact@v3
       with:
         name: SimpleCloud-Latest
         path: temp/
+
+    # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
+    # the publishing section of your build.gradle
+    - name: Publish
+      uses: gradle/gradle-build-action@v2
+      with:
+        arguments: publish
+      env:
+        MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+        MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
   
   
