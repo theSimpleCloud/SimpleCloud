@@ -68,7 +68,7 @@ class RestServer(port: Int) {
     init {
         instance = this
 
-        app._conf.accessManager(JWTAccessManager("role", createRolesMapping(), Roles.ANYONE))
+        app.config.accessManager(JWTAccessManager("role", createRolesMapping(), Roles.ANYONE))
         app.before(JavalinJWT.createHeaderDecodeHandler(JwtProvider.instance.provider))
         app.before { ctx ->
             ctx.header("Access-Control-Allow-Headers", "*")
@@ -79,7 +79,7 @@ class RestServer(port: Int) {
 
         app.options("/*", {
             it.status(200)
-        }, Roles.ANYONE)
+        }, SecurityUtil.roles(Roles.ANYONE))
 
         controllerHandler.registerController(AuthController(this.authService))
         controllerHandler.registerController(UserController(this.authService))
@@ -106,7 +106,7 @@ class RestServer(port: Int) {
             HandlerType.valueOf(requestMethodData.requestType.name),
             requestMethodData.path,
             requestHandler,
-            Roles.ANYONE
+            setOf(Roles.ANYONE)
         )
     }
 

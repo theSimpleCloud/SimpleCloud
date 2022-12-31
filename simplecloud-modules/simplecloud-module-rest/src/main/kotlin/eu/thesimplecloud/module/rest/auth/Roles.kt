@@ -22,16 +22,16 @@
 
 package eu.thesimplecloud.module.rest.auth
 
-import io.javalin.core.security.RouteRole
+import io.javalin.core.security.Role
 
-enum class Roles : RouteRole {
+enum class Roles : Role {
 
     ANYONE, USER
 
 }
 
-fun createRolesMapping(): HashMap<String, RouteRole> {
-    val rolesMapping = HashMap<String, RouteRole>()
+fun createRolesMapping(): HashMap<String, Role> {
+    val rolesMapping = HashMap<String, Role>()
     Roles.values().forEach {
         rolesMapping[it.toString()] = it
     }
