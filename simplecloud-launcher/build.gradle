@@ -27,7 +27,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation group: 'org.jline', name: 'jline', version: '3.21.0'
     implementation group: 'org.reflections', name: 'reflections', version: '0.9.12'
-    implementation group: 'com.google.code.gson', name: 'gson', version: '2.9.0'
+    implementation group: 'com.google.code.gson', name: 'gson', version: '2.10'
     implementation(project(":simplecloud-dependency-loader"))
     compile(project(":simplecloud-api")) {
         transitive = false
@@ -40,7 +40,7 @@ dependencies {
     implementation(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion) {
         transitive = false
     }
-    implementation(group: 'eu.thesimplecloud.jsonlib', name: 'json-lib', version: "1.0.8")
+    implementation(group: 'eu.thesimplecloud.jsonlib', name: 'json-lib', version: "1.0.10")
 
     implementation 'org.eclipse.aether:aether-impl:1.1.0'
     implementation 'org.eclipse.aether:aether-connector-basic:1.1.0'
@@ -52,7 +52,7 @@ dependencies {
     testCompile group: 'com.google.guava', name: 'guava', version: dependencyGuavaVersion
     testCompile group: 'io.netty', name: 'netty-all', version: dependencyNettyVersion
     testCompile group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: dependencyKotlinCouroutinesVersion
-    testCompile group: 'com.google.code.gson', name: 'gson', version: '2.9.0'
+    testCompile group: 'com.google.code.gson', name: 'gson', version: '2.10'
 
 }
 

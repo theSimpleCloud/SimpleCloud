@@ -25,7 +25,7 @@ dependencies {
     compile(group: 'io.netty', name: 'netty-all', version: "4.1.71.Final")
     compile(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion) {
     }
-    compile(group: 'eu.thesimplecloud.jsonlib', name: 'json-lib', version: "1.0.8") {
+    compile(group: 'eu.thesimplecloud.jsonlib', name: 'json-lib', version: "1.0.10") {
     }
     compile(project(":simplecloud-api")) {
     }
