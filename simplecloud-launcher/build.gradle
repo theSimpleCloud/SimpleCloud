@@ -40,7 +40,7 @@ dependencies {
     implementation(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion) {
         transitive = false
     }
-    implementation(group: 'eu.thesimplecloud.jsonlib', name: 'json-lib', version: "1.0.8")
+    implementation(group: 'eu.thesimplecloud.jsonlib', name: 'json-lib', version: "1.0.10")
 
     implementation 'org.eclipse.aether:aether-impl:1.1.0'
     implementation 'org.eclipse.aether:aether-connector-basic:1.1.0'

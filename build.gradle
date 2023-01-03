@@ -104,18 +104,18 @@ subprojects {
         compileOnly(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion) {
             transitive = false
         }
-        compileOnly(group: 'eu.thesimplecloud.jsonlib', name: 'json-lib', version: "1.0.8") {
+        compileOnly(group: 'eu.thesimplecloud.jsonlib', name: 'json-lib', version: "1.0.10") {
             transitive = false
         }
 
         testCompile(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion)
-        testCompile(group: 'eu.thesimplecloud.jsonlib', name: 'json-lib', version: "1.0.8")
+        testCompile(group: 'eu.thesimplecloud.jsonlib', name: 'json-lib', version: "1.0.10")
 
         compileOnly group: 'commons-io', name: 'commons-io', version: dependencyCommonsIOVersion
         compileOnly group: 'com.google.guava', name: 'guava', version: dependencyGuavaVersion
         compileOnly group: 'io.netty', name: 'netty-all', version: dependencyNettyVersion
         compileOnly group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: dependencyKotlinCouroutinesVersion
-        compileOnly group: 'com.google.code.gson', name: 'gson', version: '2.9.0'
+        compileOnly group: 'com.google.code.gson', name: 'gson', version: '2.10'
 
     }
 
