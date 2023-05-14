@@ -28,7 +28,7 @@ plugins {
 allprojects {
 
     group 'eu.thesimplecloud.simplecloud'
-    version '2.4.1'
+    version '2.4.1-SNAPSHOT'
 
     repositories {
         mavenCentral()
@@ -154,8 +154,8 @@ subprojects {
                 }
 
                 credentials {
-                    username = project.hasProperty("mavenUser") ? project.property("mavenUser") : ""
-                    password = project.hasProperty("mavenPassword") ? project.property("mavenPassword") : ""
+                    username = project.hasProperty("mavenUser") ? project.property("mavenUser") : System.getenv("MAVEN_USERNAME")
+                    password = project.hasProperty("mavenPassword") ? project.property("mavenPassword") : System.getenv("MAVEN_PASSWORD")
                 }
             }
         }

@@ -90,6 +90,8 @@ class Manager : ICloudApplication {
     val appClassLoader: ApplicationClassLoader
     val encryption: AdvancedEncryption
 
+    private val profileFile = ProfileFile()
+
     lateinit var jvmArgumentsConfig: JvmArgumentsConfig
 
     companion object {
@@ -230,6 +232,8 @@ class Manager : ICloudApplication {
             Launcher.instance.setupManager.waitForAllSetups()
             Launcher.instance.setupManager.queueSetup(CreateDefaultLobbyGroup())
         }
+
+        this.profileFile.create()
     }
 
     private fun createDirectories() {
@@ -253,7 +257,7 @@ class Manager : ICloudApplication {
 
     override fun onDisable() {
         this.cloudModuleHandler.unloadAllModules()
+        this.profileFile.create()
     }
-
 
 }

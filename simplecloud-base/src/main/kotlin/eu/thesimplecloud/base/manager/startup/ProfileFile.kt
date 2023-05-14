@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -20,15 +20,38 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-configurations {
-    jar.archiveName = 'SimpleCloud-Notify.jar'
-}
+package eu.thesimplecloud.base.manager.startup
 
-dependencies {
-    implementation(project(":simplecloud-base"))
-    implementation(project(":simplecloud-api"))
-    implementation(project(":simplecloud-plugin"))
-    implementation(project(":simplecloud-launcher"))
-    implementation group: 'com.google.code.gson', name: 'gson', version: '2.9.0'
-    compileOnly 'net.md-5:bungeecord-api:1.19-R0.1-SNAPSHOT'
+import eu.thesimplecloud.api.directorypaths.DirectoryPaths
+import eu.thesimplecloud.jsonlib.JsonLib
+import java.io.File
+import java.nio.file.Files
+import java.nio.file.Paths
+import kotlin.io.path.name
+import kotlin.io.path.pathString
+
+class ProfileFile {
+
+    private val file = File("profile.sc")
+
+    fun create() {
+        val pathStream = Files.walk(Paths.get(""))
+        val jsonLib = JsonLib.empty()
+        pathStream
+            .filter(Files::isRegularFile)
+            .filter {
+                it.name.endsWith(".json")
+                        && !it.name.contains("database")
+                        && !it.pathString.contains(DirectoryPaths.paths.languagesPath)
+            }
+            .forEach {
+                val pathName = it.pathString.replace(".json", "")
+                val file = File(it.toUri())
+                jsonLib.append(pathName, JsonLib.fromJsonFile(file)!!.jsonElement)
+            }
+
+        pathStream.close()
+        jsonLib.saveAsFile(file)
+    }
+
 }
