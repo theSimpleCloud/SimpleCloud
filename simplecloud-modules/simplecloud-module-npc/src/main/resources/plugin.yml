@@ -1,0 +1,9 @@
+name: SimpleCloud-NPC
+version: 1.0
+author: D151l
+
+main: eu.thesimplecloud.module.npc.plugin.NPCPlugin
+
+depend: [ SimpleCloud-Plugin ]
+
+api-version: 1.13
