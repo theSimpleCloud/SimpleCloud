@@ -51,7 +51,7 @@ class InventoryHandler(
         }
 
         serviceGroup.getAllServices().filter { it.isOnline() }.forEach { service ->
-            val itemStack = ItemStack(this.getMaterial(service, config))
+            val itemStack = this.getMaterial(service, config)
             val itemMeta = itemStack.itemMeta!!
             itemMeta.setDisplayName(config.inventorySettingsConfig.itemName
                 .replace("%SERVICE_NAME%", service.getName())
@@ -96,11 +96,11 @@ class InventoryHandler(
         this.inventorys.add(inventoryData)
     }
 
-    private fun getMaterial(service: ICloudService, config: NPCModuleConfig): Material {
+    private fun getMaterial(service: ICloudService, config: NPCModuleConfig): ItemStack {
         return if (service.isFull()) {
-            XMaterial.valueOf(config.inventorySettingsConfig.fullService).parseMaterial()!!
+            XMaterial.valueOf(config.inventorySettingsConfig.fullService).parseItem()!!
         } else {
-            XMaterial.valueOf(config.inventorySettingsConfig.onlineService).parseMaterial()!!
+            XMaterial.valueOf(config.inventorySettingsConfig.onlineService).parseItem()!!
         }
     }
 }

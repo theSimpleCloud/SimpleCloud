@@ -81,11 +81,11 @@ class PlayerNPC(
         this.updateNPCStatus()
 
         if (config.npcItem.rightHand != null)
-            packetFactory.createEquipmentPacket(ItemSlot.MAIN_HAND, ItemStack(XMaterial.valueOf(config.npcItem.rightHand!!).parseMaterial()!!))
+            packetFactory.createEquipmentPacket(ItemSlot.MAIN_HAND, XMaterial.valueOf(config.npcItem.rightHand!!).parseItem()!!)
                 .scheduleForTracked(npc)
 
         if (config.npcItem.leftHand != null)
-            packetFactory.createEquipmentPacket(ItemSlot.OFF_HAND, ItemStack(XMaterial.valueOf(config.npcItem.leftHand!!).parseMaterial()!!))
+            packetFactory.createEquipmentPacket(ItemSlot.OFF_HAND, XMaterial.valueOf(config.npcItem.leftHand!!).parseItem()!!)
                 .scheduleForTracked(npc)
     }
 
