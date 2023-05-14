@@ -363,7 +363,7 @@ class CloudNPCCommand(
             return
         }
 
-        this.npcModule.mineSkinHandler.getSkinConfigByID(mineskinID).thenAccept {
+        this.npcModule.skinHandler.getSkinConfigByID(mineskinID).thenAccept {
             if (it != null) {
                 val cloudNPCData = config.npcsConfig.npcs.first { it.id.lowercase() == id.lowercase() }
                 cloudNPCData.npcSettings.playerNPCData.skinData.value = it.value
@@ -393,7 +393,7 @@ class CloudNPCCommand(
             return
         }
 
-        this.npcModule.mineSkinHandler.getSkinConfigByName(name).thenAccept {
+        this.npcModule.skinHandler.getSkinConfigByName(name).thenAccept {
             if (it != null) {
                 val cloudNPCData = config.npcsConfig.npcs.first { it.id.lowercase() == id.lowercase() }
                 cloudNPCData.npcSettings.playerNPCData.skinData.value = it.value

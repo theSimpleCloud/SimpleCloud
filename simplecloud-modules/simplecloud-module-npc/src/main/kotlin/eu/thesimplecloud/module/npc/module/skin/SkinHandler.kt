@@ -12,7 +12,7 @@ import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 
-class MineSkinHandler() {
+class SkinHandler() {
 
     private val requestExecutor: Executor
     private val okHttpClient: OkHttpClient

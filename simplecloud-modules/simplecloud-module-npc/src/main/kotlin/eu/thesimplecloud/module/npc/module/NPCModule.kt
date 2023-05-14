@@ -12,12 +12,12 @@ import eu.thesimplecloud.module.npc.lib.config.NPCModuleConfigHandler
 import eu.thesimplecloud.module.npc.lib.type.MaterialType
 import eu.thesimplecloud.module.npc.lib.type.MobType
 import eu.thesimplecloud.module.npc.module.command.CloudNPCCommand
-import eu.thesimplecloud.module.npc.module.skin.MineSkinHandler
+import eu.thesimplecloud.module.npc.module.skin.SkinHandler
 
 class NPCModule: ICloudModule {
 
     val npcModuleConfigHandler = NPCModuleConfigHandler()
-    val mineSkinHandler = MineSkinHandler()
+    val skinHandler = SkinHandler()
 
     override fun onEnable() {
         instance = this
