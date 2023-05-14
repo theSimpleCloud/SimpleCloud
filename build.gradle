@@ -44,8 +44,8 @@ allprojects {
         }
 
         maven {
-            name 'velocity'
-            url 'https://nexus.velocitypowered.com/repository/maven-public/'
+            name = "papermc"
+            url = uri("https://repo.papermc.io/repository/maven-public/")
         }
 
         maven {
