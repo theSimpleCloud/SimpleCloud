@@ -20,37 +20,25 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.base.manager.config.updater
+package eu.thesimplecloud.base.manager.update.converter
 
-import eu.thesimplecloud.api.config.AbstractJsonLibConfigLoader
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import java.io.File
 
 /**
- * Created by IntelliJ IDEA.
- * Date: 13.06.2020
- * Time: 07:46
+ * Date: 18.06.22
+ * Time: 16:44
  * @author Frederick Baier
+ *
  */
-class ModuleUpdaterConfigLoader : AbstractJsonLibConfigLoader<ModuleUpdaterConfig>(
-    ModuleUpdaterConfig::class.java,
-    File(DirectoryPaths.paths.storagePath, "updateable-modules.json"),
-    {
-        ModuleUpdaterConfig(
-            listOf(
-                "SimpleCloud-Chat+Tab",
-                "SimpleCloud-CloudFlare",
-                "SimpleCloud-HubCommand",
-                "SimpleCloud-InternalWrapper",
-                "SimpleCloud-Notify",
-                "SimpleCloud-Permission",
-                "SimpleCloud-Proxy",
-                "SimpleCloud-Rest",
-                "SimpleCloud-Sign",
-                "SimpleCloud-Statistics",
-                "SimpleCloud-NPC"
-            )
-        )
-    },
-    true
-)
+class Converter_2_4_To_2_5 : IVersionConverter {
+
+    override fun getTargetMinorVersion(): Int {
+        return 5
+    }
+
+    override fun convert() {
+        File(DirectoryPaths.paths.storagePath, "updateable-modules.json").delete()
+    }
+
+}
