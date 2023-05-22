@@ -31,10 +31,10 @@ dependencies {
     implementation(project(":simplecloud-launcher"))
     implementation(project(":simplecloud-modules:simplecloud-module-permission"))
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.9.0'
-    implementation 'org.spigotmc:spigot-api:1.17-R0.1-SNAPSHOT'
-    compileOnly 'net.md-5:bungeecord-api:1.17-R0.1-SNAPSHOT'
+    implementation 'org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT'
+    compileOnly 'net.md-5:bungeecord-api:1.19-R0.1-SNAPSHOT'
     // The full Spigot server with no shadowing. Requires mavenLocal.
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
-    compileOnly 'com.velocitypowered:velocity-api:1.1.8'
-    annotationProcessor 'com.velocitypowered:velocity-api:1.1.8'
+    compileOnly 'com.velocitypowered:velocity-api:3.1.1'
+    annotationProcessor 'com.velocitypowered:velocity-api:3.1.1'
 }

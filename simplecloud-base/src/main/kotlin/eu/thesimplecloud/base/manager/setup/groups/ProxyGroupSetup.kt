@@ -52,7 +52,7 @@ class ProxyGroupSetup : DefaultGroupSetup(), ISetup {
     @SetupQuestion(0, "manager.setup.service-group.question.name")
     fun nameQuestion(name: String): Boolean {
         this.name = name
-        if (name.length > 16) {
+        if (name.length > 32) {
             Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-group.question.name.too-long")
             return false
         }

@@ -47,7 +47,8 @@ class ModuleUpdaterConfigLoader : AbstractJsonLibConfigLoader<ModuleUpdaterConfi
                 "SimpleCloud-Proxy",
                 "SimpleCloud-Rest",
                 "SimpleCloud-Sign",
-                "SimpleCloud-Statistics"
+                "SimpleCloud-Statistics",
+                "SimpleCloud-NPC"
             )
         )
     },
