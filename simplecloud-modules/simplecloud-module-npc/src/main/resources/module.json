@@ -1,0 +1,10 @@
+{
+  "name": "SimpleCloud-NPC",
+  "author": "D151l",
+  "mainClass": "eu.thesimplecloud.module.npc.module.NPCModule",
+  "moduleCopyType": "LOBBY",
+  "repositories": [],
+  "dependencies": [],
+  "depend": [],
+  "softDepend": []
+}
