@@ -107,7 +107,7 @@ object ProxyHandler {
         return replaceString(message)
             .replace("%SERVER%", server.getName())
             .replace("%DISPLAYNAME%", server.getDisplayName())
-            .replace("%SERVER_GROUP%", server.getDisplayName())
+            .replace("%SERVER_GROUP%", server.getGroupName())
     }
 
     fun replaceString(message: String, server: ICloudService, uuid: UUID): String {
