@@ -46,6 +46,10 @@ class NPCModule: ICloudModule {
 
     }
 
+    override fun isReloadable(): Boolean {
+        return false
+    }
+
     fun getMobCollection(): MobType? {
         val globalPropertyHolder = CloudAPI.instance.getGlobalPropertyHolder()
         if (globalPropertyHolder.hasProperty("npc-type-list")) {
