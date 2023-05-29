@@ -40,6 +40,7 @@ import org.litote.kmongo.KMongo
 import org.litote.kmongo.find
 import org.litote.kmongo.findOne
 import org.litote.kmongo.getCollection
+import java.net.URLEncoder
 import java.util.*
 
 class MongoOfflineCloudPlayerHandler(val databaseConnectionInformation: DatabaseConnectionInformation) :
@@ -72,9 +73,9 @@ class MongoOfflineCloudPlayerHandler(val databaseConnectionInformation: Database
     private fun getConnectionString(): ConnectionString {
         val host = databaseConnectionInformation.host
         val port = databaseConnectionInformation.port
-        val databaseName = databaseConnectionInformation.databaseName
-        val userName = databaseConnectionInformation.userName
-        val password = databaseConnectionInformation.password
+        val databaseName = URLEncoder.encode(databaseConnectionInformation.databaseName,"utf-8")
+        val userName = URLEncoder.encode(databaseConnectionInformation.userName, "utf-8")
+        val password = URLEncoder.encode(databaseConnectionInformation.password,"utf-8")
         if (password.isBlank() || userName.isBlank()) {
             return ConnectionString("mongodb://$host:$port/?authSource=$databaseName")
         }
