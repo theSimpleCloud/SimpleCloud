@@ -73,7 +73,7 @@ interface IPermissionPlayer : IPermissionEntity, Nameable {
         }
 
     /**
-     * Returns the the [IOfflineCloudPlayer] of this permission player wrapped in a promise
+     * Returns the [IOfflineCloudPlayer] of this permission player wrapped in a promise
      */
     fun getOfflineCloudPlayer(): ICommunicationPromise<IOfflineCloudPlayer> =
         CloudAPI.instance.getCloudPlayerManager().getOfflineCloudPlayer(getUniqueId())
