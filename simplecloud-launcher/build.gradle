@@ -21,43 +21,45 @@
  */
 
 dependencies {
-    testImplementation "io.mockk:mockk:1.10.2"
-    // https://mvnrepository.com/artifact/org.mockito/mockito-core
-    //testCompile group: 'org.mockito', name: 'mockito-core', version: '3.3.3'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    implementation group: 'org.jline', name: 'jline', version: '3.21.0'
-    implementation group: 'org.reflections', name: 'reflections', version: '0.9.12'
-    implementation group: 'com.google.code.gson', name: 'gson', version: '2.9.0'
-    implementation(project(":simplecloud-dependency-loader"))
-    compile(project(":simplecloud-api")) {
+    testCompileOnly "io.mockk:mockk:1.10.2"
+    compileOnly group: 'org.jline', name: 'jline', version: '3.21.0'
+    compileOnly group: 'org.reflections', name: 'reflections', version: '0.9.12'
+    compileOnly group: 'com.google.code.gson', name: 'gson', version: '2.9.0'
+    compileOnly(project(":simplecloud-dependency-loader"))
+    compileOnly(project(":simplecloud-runner"))
+    api(project(":simplecloud-api")) {
         transitive = false
     }
-    implementation(project(":simplecloud-runner"))
-    implementation("com.github.ajalt:clikt:2.8.0")
-    implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: dependencyKotlinCouroutinesVersion
-    implementation group: 'org.fusesource.jansi', name: 'jansi', version: '2.4.0'
+    compileOnly("com.github.ajalt:clikt:2.8.0")
+    compileOnly group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: dependencyKotlinCouroutinesVersion
+    compileOnly group: 'org.fusesource.jansi', name: 'jansi', version: '2.4.0'
 
-    implementation(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion) {
+    compileOnly(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion) {
         transitive = false
     }
-    implementation(group: 'eu.thesimplecloud.jsonlib', name: 'json-lib', version: "1.0.8")
+    compileOnly(group: 'eu.thesimplecloud.jsonlib', name: 'json-lib', version: "1.0.8")
 
-    implementation 'org.eclipse.aether:aether-impl:1.1.0'
-    implementation 'org.eclipse.aether:aether-connector-basic:1.1.0'
-    implementation 'org.eclipse.aether:aether-transport-file:1.1.0'
-    implementation 'org.eclipse.aether:aether-transport-http:1.1.0'
-    implementation 'org.apache.maven:maven-aether-provider:3.3.9'
+    compileOnly 'org.eclipse.aether:aether-impl:1.1.0'
+    compileOnly 'org.eclipse.aether:aether-connector-basic:1.1.0'
+    compileOnly 'org.eclipse.aether:aether-transport-file:1.1.0'
+    compileOnly 'org.eclipse.aether:aether-transport-http:1.1.0'
+    compileOnly 'org.apache.maven:maven-aether-provider:3.3.9'
 
-    testCompile group: 'commons-io', name: 'commons-io', version: dependencyCommonsIOVersion
-    testCompile group: 'com.google.guava', name: 'guava', version: dependencyGuavaVersion
-    testCompile group: 'io.netty', name: 'netty-all', version: dependencyNettyVersion
-    testCompile group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: dependencyKotlinCouroutinesVersion
-    testCompile group: 'com.google.code.gson', name: 'gson', version: '2.9.0'
+    testApi group: 'commons-io', name: 'commons-io', version: dependencyCommonsIOVersion
+    testApi group: 'com.google.guava', name: 'guava', version: dependencyGuavaVersion
+    testApi group: 'io.netty', name: 'netty-all', version: dependencyNettyVersion
+    testApi group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: dependencyKotlinCouroutinesVersion
+    testApi group: 'com.google.code.gson', name: 'gson', version: '2.9.0'
+    testApi group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
 
 }
 
-configurations {
-    jar.archiveName = 'launcher.jar'
+jar {
+    archiveFileName.set("launcher-old.jar")
+}
+
+shadowJar {
+    archiveFileName.set("launcher.jar")
 }
 
 jar {
@@ -67,9 +69,4 @@ jar {
                 'Implementation-Version': project.version,
         )
     }
-    dependsOn ':simplecloud-api:jar'
-    // This line of code recursively collects and copies all of a project's files
-    // and adds them to the JAR itself. One can extend this task, to skip certain
-    // files or particular types at will
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }

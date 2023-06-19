@@ -20,28 +20,23 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-configurations {
-    jar.archiveName = 'SimpleCloud-Proxy.jar'
+jar {
+    archiveFileName.set('SimpleCloud-Proxy-old.jar')
+}
+
+shadowJar {
+    archiveFileName.set("SimpleCloud-Proxy.jar")
 }
 
 dependencies {
-    implementation(project(":simplecloud-base"))
-    implementation(project(":simplecloud-api"))
-    implementation(project(":simplecloud-plugin"))
-    implementation(project(":simplecloud-launcher"))
-    implementation(project(":simplecloud-modules:simplecloud-module-permission"))
-    implementation(project(":simplecloud-modules:simplecloud-module-chat-tab"))
-    implementation group: 'com.google.code.gson', name: 'gson', version: '2.9.0'
+    compileOnly(project(":simplecloud-base"))
+    compileOnly(project(":simplecloud-api"))
+    compileOnly(project(":simplecloud-plugin"))
+    compileOnly(project(":simplecloud-launcher"))
+    compileOnly(project(":simplecloud-modules:simplecloud-module-permission"))
+    compileOnly(project(":simplecloud-modules:simplecloud-module-chat-tab"))
+    compileOnly group: 'com.google.code.gson', name: 'gson', version: '2.9.0'
     compileOnly 'net.md-5:bungeecord-api:1.17-R0.1-SNAPSHOT'
     compileOnly 'com.velocitypowered:velocity-api:3.1.1'
     annotationProcessor 'com.velocitypowered:velocity-api:3.1.1'
-}
-
-jar {
-    from {
-        configurations.compile.collect {
-            if (it.name.contains("netty")) return
-            it.isDirectory() ? it : zipTree(it)
-        }
-    }
 }

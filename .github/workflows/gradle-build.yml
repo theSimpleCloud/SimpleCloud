@@ -46,6 +46,7 @@ jobs:
         cp simplecloud-modules/**/build/libs/*.jar temp/modules/
         cp simplecloud-runner/build/libs/runner.jar temp/runner.jar
         cp simplecloud-base/build/libs/base.jar temp/storage/base.jar
+        cp simplecloud-plugin/build/libs/SimpleCloud-Plugin.jar temp/storage/SimpleCloud-Plugin.jar
         rm temp/modules/SimpleCloud-Chat+Tab.jar
         rm temp/modules/SimpleCloud-ServiceSelection.jar
         rm temp/modules/SimpleCloud-CloudFlare.jar

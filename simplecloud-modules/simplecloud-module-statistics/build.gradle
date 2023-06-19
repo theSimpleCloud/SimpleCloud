@@ -20,27 +20,29 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-configurations {
-    jar.archiveName = 'SimpleCloud-Statistics.jar'
+jar {
+    archiveFileName.set('SimpleCloud-Statistics-old.jar')
+}
+
+shadowJar {
+    archiveFileName.set("SimpleCloud-Statistics.jar")
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib"
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-    implementation group: 'org.litote.kmongo', name: 'kmongo', version: dependencyKMongoVersion
-    compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.7.4'
+    compileOnly "org.jetbrains.kotlin:kotlin-stdlib"
+    compileOnly group: 'org.litote.kmongo', name: 'kmongo', version: dependencyKMongoVersion
+    api group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.7.4'
 
 
-    implementation(project(":simplecloud-base")) {
+    compileOnly(project(":simplecloud-base")) {
         transitive = false
     }
-    implementation(project(":simplecloud-api"))
-    implementation(project(":simplecloud-modules:simplecloud-module-rest"))
-    implementation(project(":simplecloud-plugin")) {
+    compileOnly(project(":simplecloud-api"))
+    compileOnly(project(":simplecloud-modules:simplecloud-module-rest"))
+    compileOnly(project(":simplecloud-plugin")) {
         transitive = false
     }
-    implementation(project(":simplecloud-launcher")) {
+    compileOnly(project(":simplecloud-launcher")) {
         transitive = false
     }
 }

@@ -20,8 +20,12 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-configurations {
-    jar.archiveName = 'SimpleCloud-NPC.jar'
+jar {
+    archiveFileName.set('SimpleCloud-NPC-old.jar')
+}
+
+shadowJar {
+    archiveFileName.set("SimpleCloud-NPC.jar")
 }
 
 dependencies {
@@ -32,17 +36,7 @@ dependencies {
 
     compileOnly 'org.spigotmc:spigot-api:1.17-R0.1-SNAPSHOT'
 
-    compile 'com.github.juliarn.NPC-Lib:npc-lib-bukkit:3.0.0-beta4'
-    compile 'com.github.cryptomorin:XSeries:9.2.0'
-    compile 'com.squareup.okhttp3:okhttp:4.10.0'
-}
-
-jar {
-    from {
-        configurations.compile.collect {
-            it.isDirectory() ? it : zipTree(it).matching {
-                exclude("plugin.yml")
-            }
-        }
-    }
+    api 'com.github.juliarn.NPC-Lib:npc-lib-bukkit:3.0.0-beta4'
+    api 'com.github.cryptomorin:XSeries:9.2.0'
+    api 'com.squareup.okhttp3:okhttp:4.10.0'
 }

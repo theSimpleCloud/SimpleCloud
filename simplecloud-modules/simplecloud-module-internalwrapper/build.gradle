@@ -20,13 +20,17 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-configurations {
-    jar.archiveName = 'SimpleCloud-InternalWrapper.jar'
+jar {
+    archiveFileName.set('SimpleCloud-InternalWrapper-old.jar')
+}
+
+shadowJar {
+    archiveFileName.set("SimpleCloud-InternalWrapper.jar")
 }
 
 dependencies {
-    implementation(project(":simplecloud-base"))
-    implementation(project(":simplecloud-api"))
-    implementation(project(":simplecloud-launcher"))
-    implementation(project(":simplecloud-runner"))
+    compileOnly(project(":simplecloud-base"))
+    compileOnly(project(":simplecloud-api"))
+    compileOnly(project(":simplecloud-launcher"))
+    compileOnly(project(":simplecloud-runner"))
 }

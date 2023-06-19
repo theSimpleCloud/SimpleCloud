@@ -24,44 +24,42 @@ plugins {
     id 'java'
     id 'org.jetbrains.kotlin.jvm'
     id 'maven-publish'
-    id 'maven'
 }
 
 repositories {
     mavenLocal()
     mavenCentral()
-    maven { url("http://oss.sonatype.org/content/repositories/snapshots") }
-    maven { url("http://xbib.org/repository/") }
+    maven { url("https://xbib.org/repository/") }
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    implementation project(":simplecloud-api")
-    implementation project(":simplecloud-runner")
-    implementation project(":simplecloud-dependency-loader")
-    implementation project(":simplecloud-launcher")
-    compile(project(":simplecloud-client")) {
+    testApi group: 'junit', name: 'junit', version: '4.12'
+    compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    compileOnly project(":simplecloud-api")
+    compileOnly project(":simplecloud-runner")
+    compileOnly project(":simplecloud-dependency-loader")
+    compileOnly project(":simplecloud-launcher")
+    api(project(":simplecloud-client")) {
         transitive = false
     }
-    implementation group: 'commons-io', name: 'commons-io', version: dependencyCommonsIOVersion
-    implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: dependencyKotlinCouroutinesVersion
-    implementation group: 'org.reflections', name: 'reflections', version: '0.9.12'
-    implementation group: 'org.litote.kmongo', name: 'kmongo', version: dependencyKMongoVersion
-    compile(group: 'io.netty', name: 'netty-all', version: dependencyNettyVersion)
-    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
-
-
+    compileOnly group: 'commons-io', name: 'commons-io', version: dependencyCommonsIOVersion
+    compileOnly group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: dependencyKotlinCouroutinesVersion
+    compileOnly group: 'org.reflections', name: 'reflections', version: '0.9.12'
+    compileOnly group: 'org.litote.kmongo', name: 'kmongo', version: dependencyKMongoVersion
+    compileOnly(group: 'io.netty', name: 'netty-all', version: dependencyNettyVersion)
+    compileOnly group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
 }
 
-configurations {
-    jar.archiveName = 'base.jar'
+jar {
+    archiveFileName.set("base-old.jar")
 }
 
 compileKotlin {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
+    kotlinOptions.jvmTarget = 11
+}
+
+shadowJar {
+    archiveFileName.set("base.jar")
 }
 
 jar {
@@ -70,19 +68,4 @@ jar {
                 'Implementation-Version': project.version,
         )
     }
-    dependsOn ':simplecloud-plugin:jar'
-    // This line of code recursively collects and copies all of a project's files
-    // and adds them to the JAR itself. One can extend this task, to skip certain
-    // files or particular types at will
-    from {
-        configurations.compile.collect {
-            if (it.name.contains("netty")) return
-            it.isDirectory() ? it : zipTree(it)
-        }
-    }
-
-    from('../simplecloud-plugin/build/libs') {
-        include 'SimpleCloud-Plugin.jar'
-    }
 }
-

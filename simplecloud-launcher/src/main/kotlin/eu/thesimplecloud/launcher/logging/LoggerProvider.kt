@@ -45,7 +45,6 @@ import java.util.logging.SimpleFormatter
  * Date: 05.09.2019
  * Time: 17:02
  */
-@Suppress("NON_EXHAUSTIVE_WHEN")
 class LoggerProvider(val screenManager: IScreenManager) : Logger("SimpleCloudLogger", null) {
 
     private val dataFormat = SimpleDateFormat("[HH:mm:ss]")
@@ -210,6 +209,7 @@ class LoggerProvider(val screenManager: IScreenManager) : Logger("SimpleCloudLog
                 logType = "§3SETUP§7"
             }
 
+            else -> {}
         }
 
         var message = "§r$text§r"

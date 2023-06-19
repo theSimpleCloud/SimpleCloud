@@ -95,7 +95,7 @@ class ServiceDirectory(private val cloudService: ICloudService) {
         }
 
         val cloudPluginFile = File(this.serviceTmpDirectory, "/plugins/SimpleCloud-Plugin.jar")
-        FileCopier.copyFileOutOfJar(cloudPluginFile, "/SimpleCloud-Plugin.jar")
+        File(DirectoryPaths.paths.storagePath + "SimpleCloud-Plugin.jar").copyTo(cloudPluginFile, true)
 
         generateServiceFile()
     }

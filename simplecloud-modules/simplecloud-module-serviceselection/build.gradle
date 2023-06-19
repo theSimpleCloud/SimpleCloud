@@ -3,18 +3,23 @@ repositories {
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-    implementation(project(":simplecloud-api"))
+    testApi group: 'junit', name: 'junit', version: '4.12'
+    compileOnly(project(":simplecloud-api"))
+    testCompileOnly(project(":simplecloud-api"))
 
 
     compileOnly 'org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT'
-    testCompile group: 'commons-io', name: 'commons-io', version: dependencyCommonsIOVersion
-    testCompile group: 'com.google.guava', name: 'guava', version: dependencyGuavaVersion
-    testCompile group: 'io.netty', name: 'netty-all', version: dependencyNettyVersion
-    testCompile group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: dependencyKotlinCouroutinesVersion
-    testImplementation 'io.mockk:mockk:1.12.3'
+    testApi group: 'commons-io', name: 'commons-io', version: dependencyCommonsIOVersion
+    testApi group: 'com.google.guava', name: 'guava', version: dependencyGuavaVersion
+    testApi group: 'io.netty', name: 'netty-all', version: dependencyNettyVersion
+    testApi group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: dependencyKotlinCouroutinesVersion
+    testCompileOnly 'io.mockk:mockk:1.12.3'
 }
 
 configurations {
-    jar.archiveName = 'SimpleCloud-ServiceSelection.jar'
+    archivesBaseName('SimpleCloud-ServiceSelection-old.jar')
+}
+
+shadowJar {
+    archivesBaseName("SimpleCloud-ServiceSelection.jar")
 }

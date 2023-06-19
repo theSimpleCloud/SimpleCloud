@@ -21,7 +21,8 @@
  */
 
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.5.32'
+    id 'org.jetbrains.kotlin.jvm' version '1.8.22'
+    id "com.github.johnrengelman.shadow" version "8.1.1"
     id 'org.jetbrains.dokka' version '0.10.1'
 }
 
@@ -85,13 +86,13 @@ subprojects {
 
     apply plugin: 'java'
     apply plugin: 'java-library'
-    apply plugin: 'maven'
     apply plugin: 'maven-publish'
     apply plugin: 'org.jetbrains.kotlin.jvm'
     apply plugin: 'org.jetbrains.dokka'
+    apply plugin: "com.github.johnrengelman.shadow"
 
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+    sourceCompatibility = 11
+    targetCompatibility = 11
 
     task sourcesJar(type: Jar, dependsOn: classes) {
         archiveClassifier.set('sources')
@@ -99,8 +100,9 @@ subprojects {
     }
 
     dependencies {
-        testCompile group: 'junit', name: 'junit', version: '4.13'
-        implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+        testApi group: 'junit', name: 'junit', version: '4.13'
+        compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+        testCompileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
         compileOnly(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion) {
             transitive = false
         }
@@ -108,8 +110,8 @@ subprojects {
             transitive = false
         }
 
-        testCompile(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion)
-        testCompile(group: 'eu.thesimplecloud.jsonlib', name: 'json-lib', version: "1.0.8")
+        testApi(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion)
+        testApi(group: 'eu.thesimplecloud.jsonlib', name: 'json-lib', version: "1.0.8")
 
         compileOnly group: 'commons-io', name: 'commons-io', version: dependencyCommonsIOVersion
         compileOnly group: 'com.google.guava', name: 'guava', version: dependencyGuavaVersion
@@ -120,14 +122,10 @@ subprojects {
     }
 
     compileKotlin {
-        kotlinOptions {
-            jvmTarget = "1.8"
-        }
+        kotlinOptions.jvmTarget = "11"
     }
     compileTestKotlin {
-        kotlinOptions {
-            jvmTarget = "1.8"
-        }
+        kotlinOptions.jvmTarget = "11"
     }
 
     jar {
