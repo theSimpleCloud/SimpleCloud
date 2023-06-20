@@ -44,7 +44,7 @@ jar {
 }
 
 shadowJar {
-    archiveFileName.set("SimpleCloud-Plugin.jar")
+    archiveFileName.set("SimpleCloud-Plugin-${version}.jar")
 }
 
 jar {
