@@ -31,9 +31,9 @@ import eu.thesimplecloud.plugin.impl.player.CloudPlayerManagerBungee
 import eu.thesimplecloud.plugin.listener.CloudListener
 import eu.thesimplecloud.plugin.proxy.ICloudProxyPlugin
 import eu.thesimplecloud.plugin.proxy.ProxyEventHandler
+import eu.thesimplecloud.plugin.proxy.bungee.command.BungeeCommand
 import eu.thesimplecloud.plugin.proxy.bungee.listener.BungeeListener
 import eu.thesimplecloud.plugin.proxy.bungee.listener.CloudPlayerDisconnectListener
-import eu.thesimplecloud.plugin.proxy.bungee.listener.IngameCommandListener
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import net.kyori.adventure.platform.bungeecord.BungeeAudiences
 import net.md_5.bungee.api.ProxyServer
@@ -44,6 +44,8 @@ import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
 
 class CloudBungeePlugin : Plugin(), ICloudProxyPlugin {
+
+    private val registeredIngameCommands = arrayListOf<BungeeCommand>()
 
     val lobbyConnector = LobbyConnector()
 
@@ -128,8 +130,8 @@ class CloudBungeePlugin : Plugin(), ICloudProxyPlugin {
             .forEach { addServiceToProxy(it) }
         CloudAPI.instance.getEventManager().registerListener(CloudPlugin.instance, CloudListener())
         ProxyServer.getInstance().pluginManager.registerListener(this, BungeeListener())
-        ProxyServer.getInstance().pluginManager.registerListener(this, IngameCommandListener())
 
+        registerIngameCommands()
         synchronizeOnlineCountTask()
         runOfflinePlayerChecker()
 
@@ -139,6 +141,28 @@ class CloudBungeePlugin : Plugin(), ICloudProxyPlugin {
 
     override fun onDisable() {
         CloudPlugin.instance.onDisable()
+    }
+
+    private fun registerIngameCommands() {
+        val synchronizedObjectPromise =
+            CloudAPI.instance.getGlobalPropertyHolder().requestProperty<Array<String>>("simplecloud-ingamecommands")
+        synchronizedObjectPromise.addResultListener { property ->
+            this.synchronizedIngameCommandsProperty = property
+
+            this.synchronizedIngameCommandsProperty.getValue().forEach { commandName ->
+                val pluginManager = ProxyServer.getInstance().pluginManager
+                val bungeeCommand = this.registeredIngameCommands
+                    .firstOrNull { it.commandStart == commandName } ?: return@forEach
+                pluginManager.unregisterCommand(bungeeCommand)
+            }
+
+            this.synchronizedIngameCommandsProperty.getValue().forEach {
+                val pluginManager = ProxyServer.getInstance().pluginManager
+                val bungeeCommand = BungeeCommand(it)
+                pluginManager.registerCommand(this, bungeeCommand)
+                this.registeredIngameCommands.add(bungeeCommand)
+            }
+        }.throwFailure()
     }
 
     private fun runOfflinePlayerChecker() {
