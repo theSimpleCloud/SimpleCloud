@@ -74,7 +74,7 @@ object ProxyHandler {
 
     fun getTabListConfigurations(): List<TablistConfiguration> {
         return configHolder.getValue().tablistConfigurations.filter {
-            it.proxies.mapToLowerCase().contains(CloudPlugin.instance.thisService().getGroupName().toLowerCase())
+            it.proxies.mapToLowerCase().contains(CloudPlugin.instance.thisService().getGroupName().lowercase())
         }
     }
 
@@ -124,6 +124,7 @@ object ProxyHandler {
             .replace("%PREFIX%", tablistInformation.prefix)
             .replace("%SUFFIX%", tablistInformation.suffix)
             .replace("%PING%", (cloudPlayer?.getPing()?.get() ?: -1).toString())
+            .replace("%PLAYER_NAME%", cloudPlayer?.getName() ?: "unknown")
     }
 
     private fun getTablistInformation(uuid: UUID): TablistInformation? {
