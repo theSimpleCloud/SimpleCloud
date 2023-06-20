@@ -19,6 +19,9 @@ jar {
 
 shadowJar {
     archiveFileName.set("runner.jar")
+    dependencies {
+        relocate 'kotlin', 'eu.thesimplecloud.external'
+    }
 }
 
 compileKotlin {
