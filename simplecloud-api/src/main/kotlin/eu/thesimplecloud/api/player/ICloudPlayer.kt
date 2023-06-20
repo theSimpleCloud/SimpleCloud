@@ -110,6 +110,13 @@ interface ICloudPlayer : ICacheValue<ICloudPlayerUpdater>, IOfflineCloudPlayer, 
     }
 
     /**
+     * Returns the ping of the player
+     */
+    fun getPing(): ICommunicationPromise<Int> {
+        return CloudAPI.instance.getCloudPlayerManager().getPlayerPing(this)
+    }
+
+    /**
      * Returns the name of the proxy the player is connected to.
      */
     fun getConnectedProxyName(): String
