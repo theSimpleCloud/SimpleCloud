@@ -106,6 +106,10 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
         throw UnsupportedOperationException("Players are not supported in the wrapper")
     }
 
+    override fun getPlayerPing(cloudPlayer: ICloudPlayer): ICommunicationPromise<Int> {
+        throw UnsupportedOperationException("Players are not supported in the wrapper")
+    }
+
     override fun getOfflineCloudPlayer(name: String): ICommunicationPromise<IOfflineCloudPlayer> {
         throw UnsupportedOperationException("Players are not supported in the wrapper")
     }
