@@ -35,7 +35,6 @@ dependencies {
 
     api('net.kyori:adventure-text-minimessage:4.11.0')
     api('net.kyori:adventure-platform-bungeecord:4.1.2')
-    api group: 'com.google.code.gson', name: 'gson', version: '2.9.0'
 }
 
 
@@ -45,6 +44,9 @@ jar {
 
 shadowJar {
     archiveFileName.set("SimpleCloud-Plugin-${version}.jar")
+    dependencies {
+        relocate 'com.google.gson', 'eu.thesimplecloud.external'
+    }
 }
 
 jar {
