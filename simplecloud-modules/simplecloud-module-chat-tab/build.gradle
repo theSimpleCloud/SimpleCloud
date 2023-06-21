@@ -20,18 +20,18 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-configurations {
-    jar.archiveName = 'SimpleCloud-Chat+Tab.jar'
+shadowJar {
+    archiveFileName.set("SimpleCloud-Chat+Tab.jar")
 }
 
 dependencies {
-    implementation(project(":simplecloud-base"))
-    implementation(project(":simplecloud-api"))
-    implementation(project(":simplecloud-plugin"))
-    implementation(project(":simplecloud-launcher"))
-    implementation(project(":simplecloud-modules:simplecloud-module-permission"))
-    implementation group: 'com.google.code.gson', name: 'gson', version: '2.9.0'
-    implementation 'org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT'
+    compileOnly(project(":simplecloud-base"))
+    compileOnly(project(":simplecloud-api"))
+    compileOnly(project(":simplecloud-plugin"))
+    compileOnly(project(":simplecloud-launcher"))
+    compileOnly(project(":simplecloud-modules:simplecloud-module-permission"))
+    compileOnly group: 'com.google.code.gson', name: 'gson', version: '2.9.0'
+    compileOnly 'org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT'
     compileOnly 'net.md-5:bungeecord-api:1.19-R0.1-SNAPSHOT'
     // The full Spigot server with no shadowing. Requires mavenLocal.
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind

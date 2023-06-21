@@ -20,14 +20,13 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-configurations {
-    jar.archiveName = 'SimpleCloud-HubCommand.jar'
+shadowJar {
+    archiveFileName.set("SimpleCloud-HubCommand.jar")
 }
 
 dependencies {
-    implementation(project(":simplecloud-base"))
-    implementation(project(":simplecloud-api"))
-    implementation(project(":simplecloud-launcher"))
+    compileOnly(project(":simplecloud-base"))
+    compileOnly(project(":simplecloud-api"))
+    compileOnly(project(":simplecloud-launcher"))
     compileOnly 'org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT'
-    // The full Spigot server with no shadowing. Requires mavenLocal.
 }

@@ -1,38 +1,26 @@
-dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib"
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-}
 
-configurations {
-    jar.archiveName = 'SimpleCloud-Sign.jar'
+shadowJar {
+    archiveFileName.set("SimpleCloud-Sign.jar")
 }
 
 dependencies {
-    implementation(project(":simplecloud-base")) {
+    compileOnly(project(":simplecloud-base")) {
         transitive = false
     }
-    implementation(project(":simplecloud-api")) {
+    compileOnly(project(":simplecloud-api")) {
         transitive = false
     }
-    implementation(project(":simplecloud-plugin")) {
+    compileOnly(project(":simplecloud-plugin")) {
         transitive = false
     }
-    implementation(project(":simplecloud-launcher")) {
+    compileOnly(project(":simplecloud-launcher")) {
         transitive = false
     }
-    compile(project(":simplecloud-modules:simplecloud-module-serviceselection")) {
+    api(project(":simplecloud-modules:simplecloud-module-serviceselection")) {
         transitive = false
     }
 
     compileOnly 'org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT'
-    implementation(group: 'commons-io', name: 'commons-io', version: dependencyCommonsIOVersion)
+    compileOnly(group: 'commons-io', name: 'commons-io', version: dependencyCommonsIOVersion)
 
-}
-
-jar {
-    dependsOn ':simplecloud-modules:simplecloud-module-serviceselection:jar'
-    // This line of code recursively collects and copies all of a project's files
-    // and adds them to the JAR itself. One can extend this task, to skip certain
-    // files or particular types at will
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }

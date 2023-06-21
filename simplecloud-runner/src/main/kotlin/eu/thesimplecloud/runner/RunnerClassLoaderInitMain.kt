@@ -22,11 +22,11 @@
 
 package eu.thesimplecloud.runner
 
+import eu.thesimplecloud.runner.dependency.AdvancedCloudDependency
 import eu.thesimplecloud.runner.dependency.DependencyLoaderStartup
 import java.io.File
 import java.net.URL
 import java.net.URLClassLoader
-import java.nio.file.Files
 
 /**
  * Created by IntelliJ IDEA.
@@ -36,9 +36,16 @@ import java.nio.file.Files
  */
 
 private val copiedDependencyLoaderFile = File("storage", "dependency-loader.jar")
+private val copiedSimpleCloudPluginFile = File("storage/pluginJars", "SimpleCloud-Plugin-${getCloudVersion()}.jar")
 
 fun main(args: Array<String>) {
-    copyDependencyLoaderOutOfJar()
+    val version = getCloudVersion()
+    if (!version.contains("SNAPSHOT")) {
+        if (!copiedDependencyLoaderFile.exists())
+            downloadJarFromDependency("simplecloud-dependency-loader", copiedDependencyLoaderFile)
+        if (!copiedSimpleCloudPluginFile.exists())
+            downloadJarFromDependency("simplecloud-plugin", copiedSimpleCloudPluginFile)
+    }
 
     val dependencyLoaderStartup = DependencyLoaderStartup()
 
@@ -51,12 +58,13 @@ fun main(args: Array<String>) {
     executeDependencyLoaderMain(classLoader, args)
 }
 
-fun copyDependencyLoaderOutOfJar() {
-    val launcherResource = RunnerClassLoader::class.java.getResourceAsStream("/dependency-loader.jar")
-    if (!copiedDependencyLoaderFile.exists()) {
-        copiedDependencyLoaderFile.parentFile.mkdirs()
-        Files.copy(launcherResource, copiedDependencyLoaderFile.toPath())
-    }
+private fun getCloudVersion(): String {
+    return RunnerClassLoader::class.java.`package`.implementationVersion
+}
+
+private fun downloadJarFromDependency(artifactId: String, file: File) {
+    val dependency = AdvancedCloudDependency("eu.thesimplecloud.simplecloud", artifactId, getCloudVersion())
+    dependency.download("https://repo.thesimplecloud.eu/artifactory/gradle-release-local/", file)
 }
 
 private fun executeDependencyLoaderMain(classLoader: URLClassLoader, args: Array<String>) {
@@ -64,7 +72,6 @@ private fun executeDependencyLoaderMain(classLoader: URLClassLoader, args: Array
     val method = loadedClass.getMethod("main", Array<String>::class.java)
     method.invoke(null, args)
 }
-
 
 private fun initClassLoader(loadedDependencies: Array<URL>): URLClassLoader {
     return RunnerClassLoader(

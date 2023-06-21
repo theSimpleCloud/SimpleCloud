@@ -34,7 +34,7 @@ class CloudNPCCommand(
     fun handleCreate(
         sender: ICommandSender,
         @CommandArgument("id") id: String,
-        @CommandArgument("targetGroup", ServiceGroupCommandSuggestionProvider::class) targetGroup: String,
+        @CommandArgument("targetGroup", ServiceGroupWithoutProxiesCommandSuggestionProvider::class) targetGroup: String,
         @CommandArgument("displayName") displayName: String
     ) {
         val player = sender as ICloudPlayer
@@ -80,7 +80,7 @@ class CloudNPCCommand(
         sender: ICommandSender,
         @CommandArgument("type", CloudNPCMobTypeCommandSuggestionProvider::class) type: String,
         @CommandArgument("id") id: String,
-        @CommandArgument("targetGroup", ServiceGroupCommandSuggestionProvider::class) targetGroup: String,
+        @CommandArgument("targetGroup", ServiceGroupWithoutProxiesCommandSuggestionProvider::class) targetGroup: String,
         @CommandArgument("displayName") displayName: String
     ) {
         val player = sender as ICloudPlayer
@@ -150,7 +150,7 @@ class CloudNPCCommand(
     fun handleEditTargetGroup(
         sender: ICommandSender,
         @CommandArgument("id", CloudNPCIDCommandSuggestionProvider::class) id: String,
-        @CommandArgument("targetGroup", ServiceGroupCommandSuggestionProvider::class) targetGroup: String
+        @CommandArgument("targetGroup", ServiceGroupWithoutProxiesCommandSuggestionProvider::class) targetGroup: String
     ) {
         val player = sender as ICloudPlayer
         val config = this.npcModule.npcModuleConfigHandler.load()

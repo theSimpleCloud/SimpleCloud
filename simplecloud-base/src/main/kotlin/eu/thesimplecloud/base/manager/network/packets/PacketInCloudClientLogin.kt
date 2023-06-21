@@ -34,6 +34,7 @@ import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnecte
 import eu.thesimplecloud.clientserverapi.server.client.connectedclient.IConnectedClientValue
 import eu.thesimplecloud.launcher.startup.Launcher
 
+@Suppress("UNCHECKED_CAST")
 class PacketInCloudClientLogin() : JsonPacket() {
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Unit> {
@@ -71,6 +72,8 @@ class PacketInCloudClientLogin() : JsonPacket() {
                 connection.sendUnitQuery(PacketOutSetWrapperName(wrapperInfo.getName())).awaitCoroutine()
                 Launcher.instance.consoleSender.sendProperty("manager.login.wrapper", wrapperInfo.getName())
             }
+
+            else -> {}
         }
 
         return unit()

@@ -20,16 +20,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-configurations {
-    jar.archiveName = 'SimpleCloud-Permission.jar'
+shadowJar {
+    archiveFileName.set("SimpleCloud-Permission.jar")
 }
 
 dependencies {
-    implementation(project(":simplecloud-base"))
-    implementation(project(":simplecloud-api"))
-    implementation(project(":simplecloud-plugin"))
-    implementation(project(":simplecloud-launcher"))
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.6.1'
+    compileOnly(project(":simplecloud-base"))
+    compileOnly(project(":simplecloud-api"))
+    compileOnly(project(":simplecloud-plugin"))
+    compileOnly(project(":simplecloud-launcher"))
+    compileOnly group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.6.1'
 
     compileOnly 'org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT'
     // The full Spigot server with no shadowing. Requires mavenLocal.

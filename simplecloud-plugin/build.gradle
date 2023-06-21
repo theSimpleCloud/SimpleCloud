@@ -21,41 +21,29 @@
  */
 
 dependencies {
-    implementation group: 'org.reflections', name: 'reflections', version: '0.9.12'
-    compile(group: 'io.netty', name: 'netty-all', version: '4.1.77.Final')
-    compile(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion) {
-    }
-    compile(group: 'eu.thesimplecloud.jsonlib', name: 'json-lib', version: "1.0.8") {
-    }
-    compile(project(":simplecloud-api")) {
-    }
+    compileOnly group: 'org.reflections', name: 'reflections', version: '0.9.12'
+    compileOnly(group: 'io.netty', name: 'netty-all', version: '4.1.77.Final')
+    api(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion)
+    api(group: 'eu.thesimplecloud.jsonlib', name: 'json-lib', version: "1.0.8")
+    api(project(":simplecloud-api"))
 
-    compile(project(":simplecloud-client")) {
-    }
+    api(project(":simplecloud-client"))
     compileOnly 'org.spigotmc:spigot-api:1.17-R0.1-SNAPSHOT'
     compileOnly 'net.md-5:bungeecord-api:1.17-R0.1-SNAPSHOT'
     compileOnly 'com.velocitypowered:velocity-api:3.1.1'
     annotationProcessor 'com.velocitypowered:velocity-api:3.1.1'
 
-    compile('net.kyori:adventure-text-minimessage:4.11.0')
-    compile('net.kyori:adventure-platform-bungeecord:4.1.2')
+    api('net.kyori:adventure-text-minimessage:4.11.0')
+    api('net.kyori:adventure-platform-bungeecord:4.1.2')
 }
 
-
-configurations {
-    jar.archiveName = 'SimpleCloud-Plugin.jar'
+shadowJar {
+    archiveFileName.set("SimpleCloud-Plugin-${version}.jar")
+    dependencies {
+        relocate 'com.google.gson', 'eu.thesimplecloud.external'
+    }
 }
 
 jar {
     dependsOn ':simplecloud-client:jar'
-    // This line of code recursively collects and copies all of a project's files
-    // and adds them to the JAR itself. One can extend this task, to skip certain
-    // files or particular types at will
-    //from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-    from {
-        configurations.compile.collect {
-            if (it.name.contains("netty")) return
-            it.isDirectory() ? it : zipTree(it)
-        }
-    }
 }

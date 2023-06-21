@@ -26,10 +26,10 @@ abstract class AbstractServerNPC(
     fun spawnHolograms() {
         val locationData = this.config.locationData
 
-        val location = Location(Bukkit.getWorld(locationData.world), locationData.x, locationData.y + this.getEntityHigh(), locationData.z)
+        val location = Location(Bukkit.getWorld(locationData.world), locationData.x, (locationData.y + this.getEntityHigh()) - 0.3, locationData.z)
 
         this.config.lines.forEach { _ ->
-            val armorStand = location.world?.spawn(location.add(0.0, 0.30, 0.0), ArmorStand::class.java)
+            val armorStand = location.world?.spawn(location.add(0.0, 0.3, 0.0), ArmorStand::class.java)
             armorStand?.setGravity(false)
             armorStand?.isInvulnerable = true
             armorStand?.isInvisible = true
