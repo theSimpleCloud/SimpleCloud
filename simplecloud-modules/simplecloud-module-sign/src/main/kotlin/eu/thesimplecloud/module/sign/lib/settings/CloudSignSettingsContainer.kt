@@ -6,5 +6,5 @@ package eu.thesimplecloud.module.sign.lib.settings
  */
 
 class CloudSignSettingsContainer(
-    val updateSignDelay: Long
+    val updateSignInterval: Long
 )
