@@ -147,6 +147,7 @@
   "manager.setup.service-group.question.name": "Which name shall the group have?",
   "manager.setup.service-group.question.name.success": "Name set",
   "manager.setup.service-group.question.name.too-long": "The specified name is too long",
+  "manager.setup.service-group.question.name.is-empty": "The specified name is empty",
   "manager.setup.service-group.question.percent": "How full shall a service of this server group be until a new service starts? (in percent)",
   "manager.setup.service-group.question.percent.out-of-range": "The specified number is out of range",
   "manager.setup.service-group.question.percent.success": "Percent to start a new service set",
