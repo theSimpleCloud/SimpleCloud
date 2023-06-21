@@ -13,6 +13,7 @@ import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.Player
+import org.bukkit.metadata.FixedMetadataValue
 
 abstract class AbstractServerNPC(
     val serverNPCHandler: ServerNPCHandler,
@@ -31,11 +32,11 @@ abstract class AbstractServerNPC(
         this.config.lines.forEach { _ ->
             val armorStand = location.world?.spawn(location.add(0.0, 0.3, 0.0), ArmorStand::class.java)
             armorStand?.setGravity(false)
-            armorStand?.isInvulnerable = true
-            armorStand?.isInvisible = true
             armorStand?.isMarker = true
+            armorStand?.isInvulnerable = true
             armorStand?.isCustomNameVisible = true
             armorStand?.customName = "Loading"
+            armorStand?.isVisible = false
 
             if (armorStand != null) {
                 this.holograms.add(armorStand)
