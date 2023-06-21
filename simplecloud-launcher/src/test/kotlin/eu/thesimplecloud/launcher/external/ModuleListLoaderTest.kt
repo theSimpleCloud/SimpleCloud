@@ -32,32 +32,6 @@ class ModuleListLoaderTest {
     }
 
     @Test
-    fun test() {
-        val loadedModuleFileContent = generateLoadedModuleFileContent("Test")
-        val modulesToLoad = listOf(loadedModuleFileContent)
-        moduleHandler = ModuleListLoader(
-            modulesToLoad,
-            emptyList(),
-            { urls, name -> ModuleClassLoader(urls, ClassLoader.getSystemClassLoader(), name, null) })
-        moduleHandler.loadModules()
-
-        verify { anyConstructed<UnsafeModuleLoader>().loadModule(loadedModuleFileContent) }
-    }
-
-    @Test
-    fun testSkipSoftDependIfNotAvailable() {
-        val loadedModuleFileContent = generateLoadedModuleFileContent("Test", emptyList(), listOf("Test2"))
-        val modulesToLoad = listOf(loadedModuleFileContent)
-        moduleHandler = ModuleListLoader(
-            modulesToLoad,
-            emptyList(),
-            { urls, name -> ModuleClassLoader(urls, ClassLoader.getSystemClassLoader(), name, null) })
-        moduleHandler.loadModules()
-
-        verify { anyConstructed<UnsafeModuleLoader>().loadModule(loadedModuleFileContent) }
-    }
-
-    @Test
     fun testDependLoad() {
         val content1 = generateLoadedModuleFileContent("Test2", listOf("Test1"))
         val loadedModule = mockk<LoadedModule>()

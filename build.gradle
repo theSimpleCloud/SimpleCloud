@@ -134,6 +134,8 @@ subprojects {
                     'Implementation-Version': project.version,
             )
         }
+
+        dependsOn("shadowJar")
     }
 
     publishing {
