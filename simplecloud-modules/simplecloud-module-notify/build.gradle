@@ -20,10 +20,6 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-jar {
-    archiveFileName.set('SimpleCloud-Notify-old.jar')
-}
-
 shadowJar {
     archiveFileName.set("SimpleCloud-Notify.jar")
 }

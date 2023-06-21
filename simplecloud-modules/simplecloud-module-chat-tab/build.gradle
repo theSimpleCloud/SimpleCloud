@@ -20,10 +20,6 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-jar {
-    archiveFileName.set("SimpleCloud-Chat+Tab-old.jar")
-}
-
 shadowJar {
     archiveFileName.set("SimpleCloud-Chat+Tab.jar")
 }

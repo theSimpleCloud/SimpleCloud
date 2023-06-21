@@ -20,10 +20,6 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-jar {
-    archiveFileName.set('SimpleCloud-Statistics-old.jar')
-}
-
 shadowJar {
     archiveFileName.set("SimpleCloud-Statistics.jar")
 }

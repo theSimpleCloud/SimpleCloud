@@ -13,15 +13,8 @@ dependencies {
     api(group: 'eu.thesimplecloud.jsonlib', name: 'json-lib', version: "1.0.8")
 }
 
-jar {
-    archiveFileName.set('runner-old.jar')
-}
-
 shadowJar {
     archiveFileName.set("runner.jar")
-    dependencies {
-        relocate 'kotlin', 'eu.thesimplecloud.external'
-    }
 }
 
 compileKotlin {

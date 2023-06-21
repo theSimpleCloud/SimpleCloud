@@ -16,10 +16,6 @@ dependencies {
     testCompileOnly 'io.mockk:mockk:1.12.3'
 }
 
-configurations {
-    archivesBaseName('SimpleCloud-ServiceSelection-old.jar')
-}
-
 shadowJar {
     archivesBaseName("SimpleCloud-ServiceSelection.jar")
 }

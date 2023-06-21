@@ -20,10 +20,6 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-jar {
-    archiveFileName.set('SimpleCloud-Permission-old.jar')
-}
-
 shadowJar {
     archiveFileName.set("SimpleCloud-Permission.jar")
 }

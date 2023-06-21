@@ -50,10 +50,6 @@ dependencies {
     compileOnly group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
 }
 
-jar {
-    archiveFileName.set("base-old.jar")
-}
-
 compileKotlin {
     kotlinOptions.jvmTarget = 1.8
 }

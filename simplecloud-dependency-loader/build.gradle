@@ -9,10 +9,6 @@ dependencies {
     compileOnly(project(":simplecloud-api"))
 }
 
-jar {
-    archiveFileName.set("dependency-loader-old.jar")
-}
-
 shadowJar {
     archiveFileName.set("dependency-loader.jar")
 }

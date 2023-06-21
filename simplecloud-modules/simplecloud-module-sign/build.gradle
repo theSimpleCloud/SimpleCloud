@@ -1,6 +1,3 @@
-jar {
-    archiveFileName.set('SimpleCloud-Sign-old.jar')
-}
 
 shadowJar {
     archiveFileName.set("SimpleCloud-Sign.jar")

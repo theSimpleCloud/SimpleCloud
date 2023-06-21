@@ -54,10 +54,6 @@ dependencies {
 
 }
 
-jar {
-    archiveFileName.set("launcher-old.jar")
-}
-
 shadowJar {
     archiveFileName.set("launcher.jar")
 }
