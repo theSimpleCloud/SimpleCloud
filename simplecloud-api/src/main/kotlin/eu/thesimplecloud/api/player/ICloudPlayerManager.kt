@@ -207,6 +207,16 @@ interface ICloudPlayerManager : ICacheList<ICloudPlayerUpdater, ICloudPlayer> {
     fun sendPlayerToLobby(cloudPlayer: ICloudPlayer): ICommunicationPromise<Unit>
 
     /**
+     * Returns the current ping of a [cloudPlayer]
+     * @return a promise that is completed when the [cloudPlayer] is available, or
+     * when an exception is encountered. [ICommunicationPromise.isSuccess] indicates success
+     * or failure.
+     * The promise will fail with:
+     * - [NoSuchPlayerException] if the player cannot be found on the proxy.
+     */
+    fun getPlayerPing(cloudPlayer: ICloudPlayer): ICommunicationPromise<Int>
+
+    /**
      * Returns the current location of this player
      * @return a promise that is completed when the [IOfflineCloudPlayer] is available, or
      * when an exception is encountered. [ICommunicationPromise.isSuccess] indicates success
