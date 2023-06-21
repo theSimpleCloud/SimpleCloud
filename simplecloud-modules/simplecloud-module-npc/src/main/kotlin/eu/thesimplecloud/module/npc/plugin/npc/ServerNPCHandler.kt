@@ -3,7 +3,6 @@ package eu.thesimplecloud.module.npc.plugin.npc
 import com.github.juliarn.npclib.api.Platform
 import com.github.juliarn.npclib.bukkit.BukkitPlatform
 import com.github.juliarn.npclib.bukkit.BukkitWorldAccessor
-import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.module.npc.lib.config.NPCModuleConfig
 import eu.thesimplecloud.module.npc.plugin.NPCPlugin
 import eu.thesimplecloud.module.npc.plugin.npc.type.AbstractServerNPC
@@ -33,7 +32,7 @@ class ServerNPCHandler(
     val serverNPC: MutableMap<String, AbstractServerNPC> = mutableMapOf()
 
     fun createNPCs() {
-        config.npcsConfig.npcs.forEach { npcInformation ->
+        config.npcsConfig.getNpcsFromTargetGroup().forEach { npcInformation ->
             val npc: AbstractServerNPC = if (npcInformation.isMob) {
                 MobNPC(this, npcInformation)
             } else {
@@ -62,13 +61,6 @@ class ServerNPCHandler(
             }
         }
         this.serverNPC.clear()
-    }
-
-    fun updateHologramsOnGroup(group: ICloudServiceGroup) {
-        this.serverNPC.forEach {
-            if (it.value.config.targetGroup == group.getName())
-                it.value.updateHolograms(group)
-        }
     }
 
     fun updateScoreboardTeam(scoreboard: Scoreboard, npcName: String) {
