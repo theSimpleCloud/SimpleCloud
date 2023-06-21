@@ -146,6 +146,7 @@
   "manager.setup.service-group.question.name": "Welchen Namen soll diese Gruppe haben?",
   "manager.setup.service-group.question.name.success": "Der Name wurde gesetzt",
   "manager.setup.service-group.question.name.too-long": "Der angegebene Name ist zu lang",
+  "manager.setup.service-group.question.name.is-empty": "Der angegebene Name ist leer",
   "manager.setup.service-group.question.percent": "Wie voll muss ein Server dieser Gruppe sein, damit automatisch ein neuer Server gestartet werden soll? (Angabe in Prozent)",
   "manager.setup.service-group.question.percent.out-of-range": "Die angegebene Zahl befindet sich außerhalb des zulässigen Prozentbereiches",
   "manager.setup.service-group.question.percent.success": "Die Prozentangabe wurde gesetzt",
