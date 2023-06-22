@@ -25,7 +25,6 @@ package eu.thesimplecloud.api.network.packets.event
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.eventapi.ISynchronizedEvent
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
-import eu.thesimplecloud.clientserverapi.lib.packet.exception.PacketException
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.ObjectPacket
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
