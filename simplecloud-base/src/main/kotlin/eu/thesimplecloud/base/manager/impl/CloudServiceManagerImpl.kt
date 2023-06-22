@@ -36,10 +36,26 @@ import eu.thesimplecloud.api.service.impl.AbstractCloudServiceManager
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
+import eu.thesimplecloud.launcher.startup.Launcher
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.stream.Collectors
 
 class CloudServiceManagerImpl : AbstractCloudServiceManager() {
 
     override fun stopService(cloudService: ICloudService): ICommunicationPromise<Unit> {
+        Launcher.instance.screenManager.getScreen(cloudService.getName()).let {
+            if (it != null) {
+                it.getAllSavedMessages().parallelStream().collect(Collectors.joining("\n"))?.let { screenMessage ->
+                    val groupName = cloudService.getServiceGroup().getName()
+                    val file = File("logs/$groupName/")
+                    if (!file.exists()) file.mkdirs()
+                    val date = SimpleDateFormat("yyyy.MM.dd-HH:mm:ss").format(System.currentTimeMillis())
+                    File("${file.absolutePath}/${cloudService.getName()}-$date.txt").writeText(screenMessage)
+                }
+            }
+        }
+
         when (cloudService.getState()) {
             ServiceState.CLOSED -> {
                 return CommunicationPromise.failed(IllegalStateException("Service is already closed"))
