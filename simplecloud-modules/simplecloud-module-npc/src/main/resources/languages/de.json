@@ -21,6 +21,7 @@
   "manager.command.npc.edit.action.right.click.successfully": "§7Du hast die rechte Action des NPCs erfolgreich bearbeitet.",
   "manager.command.npc.edit.toggle.glowing.successfully": "§7Du hast das lüchten des NPCs erfolgreich bearbeitet.",
   "manager.command.npc.edit.toggle.fire.successfully": "§7Du hast das Feuer des NPCs erfolgreich bearbeitet.",
+  "manager.command.npc.edit.run-command.successfully": "§7Du hast den Command erfolgreich bearbeitet.",
   "manager.command.npc.edit.toggle.lookAtPlayer.successfully": "§7Du hast die lookAtPlayer des NPCs erfolgreich bearbeitet.",
   "manager.command.npc.edit.toggle.hitWhenPlayerHits.successfully": "§7Du hast die hitWhenPlayerHits des NPCs erfolgreich bearbeitet.",
   "manager.command.npc.edit.toggle.sneakWhenPlayerSneaks.successfully": "§7Du hast die sneakWhenPlayerSneaks des NPCs erfolgreich bearbeitet.",

@@ -8,6 +8,7 @@ import eu.thesimplecloud.module.npc.plugin.NPCPlugin
 import eu.thesimplecloud.module.npc.plugin.npc.type.AbstractServerNPC
 import eu.thesimplecloud.module.npc.plugin.npc.type.MobNPC
 import eu.thesimplecloud.module.npc.plugin.npc.type.PlayerNPC
+import eu.thesimplecloud.plugin.startup.CloudPlugin
 import org.bukkit.Bukkit
 import org.bukkit.World
 import org.bukkit.entity.Player
@@ -32,7 +33,10 @@ class ServerNPCHandler(
     val serverNPC: MutableMap<String, AbstractServerNPC> = mutableMapOf()
 
     fun createNPCs() {
-        config.npcsConfig.getNpcsFromTargetGroup().forEach { npcInformation ->
+        val groupName = CloudPlugin.instance.thisService().getGroupName()
+        config.npcsConfig.npcs
+            .filter { it.targetGroup == groupName }
+            .forEach { npcInformation ->
             val npc: AbstractServerNPC = if (npcInformation.isMob) {
                 MobNPC(this, npcInformation)
             } else {

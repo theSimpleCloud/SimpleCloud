@@ -21,6 +21,7 @@
   "manager.command.npc.edit.action.right.click.successfully": "§7You have successfully edited the NPC's right-click action.",
   "manager.command.npc.edit.toggle.glowing.successfully": "§7You have successfully edited the NPC's glowing state.",
   "manager.command.npc.edit.toggle.fire.successfully": "§7You have successfully edited the NPC's fire state.",
+  "manager.command.npc.edit.run-command.successfully": "§7You have successfully edited the command.",
   "manager.command.npc.edit.toggle.lookAtPlayer.successfully": "§7You have successfully edited the NPC's lookAtPlayer state.",
   "manager.command.npc.edit.toggle.hitWhenPlayerHits.successfully": "§7You have successfully edited the NPC's hitWhenPlayerHits state.",
   "manager.command.npc.edit.toggle.sneakWhenPlayerSneaks.successfully": "§7You have successfully edited the NPC's sneakWhenPlayerSneaks state.",
