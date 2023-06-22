@@ -5,7 +5,7 @@ repositories {
 dependencies {
     testApi group: 'junit', name: 'junit', version: '4.12'
     compileOnly(project(":simplecloud-api"))
-    testCompileOnly(project(":simplecloud-api"))
+    testApi(project(":simplecloud-api"))
 
 
     compileOnly 'org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT'
@@ -13,7 +13,7 @@ dependencies {
     testApi group: 'com.google.guava', name: 'guava', version: dependencyGuavaVersion
     testApi group: 'io.netty', name: 'netty-all', version: dependencyNettyVersion
     testApi group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: dependencyKotlinCouroutinesVersion
-    testCompileOnly 'io.mockk:mockk:1.12.3'
+    testApi 'io.mockk:mockk:1.12.3'
 }
 
 shadowJar {
