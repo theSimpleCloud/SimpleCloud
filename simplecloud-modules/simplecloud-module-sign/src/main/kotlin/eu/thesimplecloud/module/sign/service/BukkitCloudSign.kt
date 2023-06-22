@@ -46,8 +46,6 @@ class BukkitCloudSign(
 
     val serviceGroup = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(cloudSign.forGroup)
     val location = cloudSign.templateLocation.toBukkitLocation()
-    val templateLocation = cloudSign.templateLocation
-
 
     override fun updateView() {
         if (serviceGroup == null) {

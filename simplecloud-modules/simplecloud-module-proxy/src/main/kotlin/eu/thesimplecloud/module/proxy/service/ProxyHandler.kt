@@ -74,7 +74,7 @@ object ProxyHandler {
 
     fun getTabListConfigurations(): List<TablistConfiguration> {
         return configHolder.getValue().tablistConfigurations.filter {
-            it.proxies.mapToLowerCase().contains(CloudPlugin.instance.thisService().getGroupName().toLowerCase())
+            it.proxies.mapToLowerCase().contains(CloudPlugin.instance.thisService().getGroupName().lowercase())
         }
     }
 
@@ -93,7 +93,6 @@ object ProxyHandler {
     }
 
     fun replaceString(message: String): String {
-
         return message
             .replace("%ONLINE_PLAYERS%", getOnlinePlayers().toString())
             .replace("%MAX_PLAYERS%", CloudPlugin.instance.thisService().getMaxPlayers().toString())
@@ -111,7 +110,8 @@ object ProxyHandler {
     }
 
     fun replaceString(message: String, server: ICloudService, uuid: UUID): String {
-        var replacedString = replaceString(message, server);
+        val cloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(uuid)
+        var replacedString = replaceString(message, server)
 
         val groupName = getPermissionsGroupName(uuid)
         if (groupName != null) replacedString = replacedString.replace("%GROUP%", groupName)
@@ -123,6 +123,8 @@ object ProxyHandler {
             .replace("%PRIORITY%", tablistInformation.priority.toString())
             .replace("%PREFIX%", tablistInformation.prefix)
             .replace("%SUFFIX%", tablistInformation.suffix)
+            .replace("%PING%", (cloudPlayer?.getPing()?.get() ?: -1).toString())
+            .replace("%PLAYER_NAME%", cloudPlayer?.getName() ?: "unknown")
     }
 
     private fun getTablistInformation(uuid: UUID): TablistInformation? {

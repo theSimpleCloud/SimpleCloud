@@ -245,6 +245,10 @@ class CloudPlayerManagerBungee : AbstractCloudPlayerManagerProxy() {
         return CommunicationPromise.of(Unit)
     }
 
+    override fun getPlayerPing(cloudPlayer: ICloudPlayer): ICommunicationPromise<Int> {
+        return CommunicationPromise.of(getProxiedPlayerByCloudPlayer(cloudPlayer)?.ping ?: -1)
+    }
+
     private fun getProxiedPlayerByCloudPlayer(cloudPlayer: ICloudPlayer): ProxiedPlayer? {
         return ProxyServer.getInstance().getPlayer(cloudPlayer.getUniqueId())
     }

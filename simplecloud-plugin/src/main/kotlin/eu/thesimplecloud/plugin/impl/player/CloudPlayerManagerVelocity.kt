@@ -247,6 +247,10 @@ class CloudPlayerManagerVelocity : AbstractCloudPlayerManagerProxy() {
         return CommunicationPromise.of(Unit)
     }
 
+    override fun getPlayerPing(cloudPlayer: ICloudPlayer): ICommunicationPromise<Int> {
+        return CommunicationPromise.of(getPlayerByCloudPlayer(cloudPlayer)?.ping?.toInt() ?: -1)
+    }
+
     private fun getPlayerByCloudPlayer(cloudPlayer: ICloudPlayer): Player? {
         return CloudVelocityPlugin.instance.proxyServer.getPlayer(cloudPlayer.getUniqueId()).orElse(null)
     }

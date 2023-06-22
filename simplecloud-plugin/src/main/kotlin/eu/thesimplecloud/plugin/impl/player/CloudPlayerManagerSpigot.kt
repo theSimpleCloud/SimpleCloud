@@ -180,6 +180,10 @@ class CloudPlayerManagerSpigot : AbstractServiceCloudPlayerManager() {
         return CloudPlugin.instance.connectionToManager.sendQuery(PacketIOSendPlayerToLobby(cloudPlayer.getUniqueId()))
     }
 
+    override fun getPlayerPing(cloudPlayer: ICloudPlayer): ICommunicationPromise<Int> {
+        return CommunicationPromise.of(getPlayerByCloudPlayer(cloudPlayer)?.ping ?: -1)
+    }
+
     private fun getLocationBySimpleLocation(simpleLocation: SimpleLocation): Location? {
         val world = Bukkit.getWorld(simpleLocation.worldName) ?: return null
         return Location(

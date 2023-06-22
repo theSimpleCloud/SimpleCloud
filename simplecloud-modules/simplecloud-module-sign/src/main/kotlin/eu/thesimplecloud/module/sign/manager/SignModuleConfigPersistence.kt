@@ -29,6 +29,7 @@ import eu.thesimplecloud.module.sign.lib.layout.LayoutType
 import eu.thesimplecloud.module.sign.lib.layout.SignFrame
 import eu.thesimplecloud.module.sign.lib.layout.SignLayout
 import eu.thesimplecloud.module.sign.lib.layout.SignLayoutContainer
+import eu.thesimplecloud.module.sign.lib.settings.CloudSignSettingsContainer
 import eu.thesimplecloud.module.sign.lib.sign.CloudSignContainer
 import java.io.File
 
@@ -43,11 +44,13 @@ object SignModuleConfigPersistence {
     private val layoutsDir = File("modules/sign/layouts/")
 
     private val signsFile = File("modules/sign/signs.json")
+    private val signSettingsFile = File("modules/sign/signSettings.json")
     private val groupLayoutsFile = File("modules/sign/groupLayouts.json")
 
     fun save(signModuleConfig: SignModuleConfig) {
         JsonLib.fromObject(signModuleConfig.groupsLayoutContainer).saveAsFile(groupLayoutsFile)
         JsonLib.fromObject(signModuleConfig.signContainer).saveAsFile(signsFile)
+        JsonLib.fromObject(signModuleConfig.cloudSignSettingsContainer).saveAsFile(signSettingsFile)
 
         val allLayouts = signModuleConfig.signLayoutContainer.getAllLayouts()
         allLayouts.forEach {
@@ -57,29 +60,37 @@ object SignModuleConfigPersistence {
     }
 
     private fun getLayoutsDirectoryByLayoutType(layoutType: LayoutType): File {
-        return File(layoutsDir, layoutType.name.toLowerCase() + "/")
+        return File(layoutsDir, layoutType.name.lowercase() + "/")
     }
 
     fun load(): SignModuleConfig {
         if (!groupLayoutsFile.exists()) return createDefaultConfig()
         if (!signsFile.exists()) return createDefaultConfig()
+        if (!signSettingsFile.exists()) return createDefaultConfig()
 
         val groupsLayoutContainer =
             JsonLib.fromJsonFile(groupLayoutsFile)!!.getObject(GroupLayoutsContainer::class.java)
         val cloudSignContainer = JsonLib.fromJsonFile(signsFile)!!.getObject(CloudSignContainer::class.java)
+        val cloudSignSettingsContainer = JsonLib.fromJsonFile(signSettingsFile)!!.getObject(CloudSignSettingsContainer::class.java)
 
         val allLayoutDirectories = LayoutType.values().map { getLayoutsDirectoryByLayoutType(it) }
         val allFiles = allLayoutDirectories.map { it.listFiles().toList() }.flatten()
 
         val layouts = allFiles.map { JsonLib.fromJsonFile(it)!!.getObject(SignLayout::class.java) }
-        return SignModuleConfig(SignLayoutContainer(layouts.toMutableList()), cloudSignContainer, groupsLayoutContainer)
+        return SignModuleConfig(
+            SignLayoutContainer(layouts.toMutableList()),
+            cloudSignContainer,
+            groupsLayoutContainer,
+            cloudSignSettingsContainer
+        )
     }
 
     private fun createDefaultConfig(): SignModuleConfig {
         val groupsLayoutContainer = GroupLayoutsContainer()
         val cloudSignContainer = CloudSignContainer()
         val layoutsContainer = SignLayoutContainer(getDefaultLayoutList().toMutableList())
-        return SignModuleConfig(layoutsContainer, cloudSignContainer, groupsLayoutContainer)
+        val cloudSignSettingsContainer = CloudSignSettingsContainer(20)
+        return SignModuleConfig(layoutsContainer, cloudSignContainer, groupsLayoutContainer, cloudSignSettingsContainer)
     }
 
     private fun getDefaultLayoutList(): List<SignLayout> {

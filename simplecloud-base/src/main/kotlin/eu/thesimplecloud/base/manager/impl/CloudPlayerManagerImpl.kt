@@ -216,6 +216,13 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
         return proxyClient.sendQuery(PacketIOSendPlayerToLobby(cloudPlayer.getUniqueId()))
     }
 
+    override fun getPlayerPing(cloudPlayer: ICloudPlayer): ICommunicationPromise<Int> {
+        val proxyClient = getProxyClientOfCloudPlayer(cloudPlayer)
+        proxyClient
+            ?: return CommunicationPromise.failed(UnreachableComponentException("The proxy the player is connected to is not reachable"))
+        return proxyClient.sendQuery(PacketIOGetPlayerPing(cloudPlayer))
+    }
+
     override fun getOfflineCloudPlayer(name: String): ICommunicationPromise<IOfflineCloudPlayer> {
         val onlineCloudPlayer = getCachedCloudPlayer(name)
         if (onlineCloudPlayer != null) return CommunicationPromise.of(onlineCloudPlayer)
