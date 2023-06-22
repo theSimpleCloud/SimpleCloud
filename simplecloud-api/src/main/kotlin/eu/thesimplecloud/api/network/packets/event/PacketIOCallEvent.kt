@@ -25,6 +25,7 @@ package eu.thesimplecloud.api.network.packets.event
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.eventapi.ISynchronizedEvent
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
+import eu.thesimplecloud.clientserverapi.lib.packet.exception.PacketException
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.ObjectPacket
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
 
@@ -36,7 +37,13 @@ class PacketIOCallEvent() : ObjectPacket<ISynchronizedEvent>() {
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         val value = this.value ?: return contentException("value")
-        CloudAPI.instance.getEventManager().call(value, fromPacket = true)
+        try {
+            CloudAPI.instance.getEventManager().call(value, fromPacket = true)
+        } catch (exception: PacketException) {
+            println("wasn hier passiert")
+        } catch (exception: IllegalStateException) {
+            println("wasn hier passiert 2")
+        }
         return unit()
     }
 }
