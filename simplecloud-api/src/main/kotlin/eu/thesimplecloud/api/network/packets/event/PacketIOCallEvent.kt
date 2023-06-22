@@ -37,13 +37,7 @@ class PacketIOCallEvent() : ObjectPacket<ISynchronizedEvent>() {
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Any> {
         val value = this.value ?: return contentException("value")
-        try {
-            CloudAPI.instance.getEventManager().call(value, fromPacket = true)
-        } catch (exception: PacketException) {
-            println("wasn hier passiert")
-        } catch (exception: IllegalStateException) {
-            println("wasn hier passiert 2")
-        }
+        CloudAPI.instance.getEventManager().call(value, fromPacket = true)
         return unit()
     }
 }
