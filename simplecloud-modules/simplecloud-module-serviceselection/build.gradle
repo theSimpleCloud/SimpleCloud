@@ -17,5 +17,5 @@ dependencies {
 }
 
 shadowJar {
-    archivesBaseName("SimpleCloud-ServiceSelection.jar")
+    archiveFileName.set("SimpleCloud-ServiceSelection.jar")
 }
