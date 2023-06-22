@@ -9,6 +9,8 @@ import eu.thesimplecloud.module.npc.lib.extension.translateColorCodesFromString
 import eu.thesimplecloud.module.npc.plugin.NPCPlugin
 import eu.thesimplecloud.module.npc.plugin.npc.ServerNPCHandler
 import eu.thesimplecloud.plugin.extension.getCloudPlayer
+import eu.thesimplecloud.plugin.extension.syncBukkit
+import eu.thesimplecloud.plugin.server.CloudSpigotPlugin
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.ArmorStand
@@ -70,17 +72,27 @@ abstract class AbstractServerNPC(
     }
 
     fun handlingInteract(player: Player, rightClicked: Boolean) {
+        val action = this.config.npcAction
         if (rightClicked) {
-            if (this.config.npcAction.rightClick == Action.QUICK_JOIN)
-                handleQuickJoin(player)
-            else
-                handleInventory(player)
-            return
+            handleClickInteract(player, action.rightClick)
+        } else {
+            handleClickInteract(player, action.leftClick)
         }
-        if (this.config.npcAction.leftClick == Action.QUICK_JOIN)
-            handleQuickJoin(player)
-        else
-            handleInventory(player)
+    }
+
+    private fun handleClickInteract(player: Player, clickAction: Action){
+        when (clickAction) {
+            Action.QUICK_JOIN -> handleQuickJoin(player)
+            Action.OPEN_INVENTORY -> handleInventory(player)
+            Action.RUN_COMMAND -> handleRunCommand(player)
+        }
+    }
+
+    private fun handleRunCommand(player: Player) {
+        val runCommandName = this.config.npcSettings.mobNPCSettings.runCommandName ?: return
+        Bukkit.getScheduler().runTask(NPCPlugin.instance, kotlinx.coroutines.Runnable {
+            Bukkit.dispatchCommand(player, runCommandName)
+        })
     }
 
     private fun handleQuickJoin(player: Player) {

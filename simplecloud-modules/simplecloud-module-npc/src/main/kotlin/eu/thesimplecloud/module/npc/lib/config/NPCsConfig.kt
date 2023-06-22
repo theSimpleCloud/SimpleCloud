@@ -5,11 +5,4 @@ import eu.thesimplecloud.plugin.startup.CloudPlugin
 
 data class NPCsConfig(
     val npcs: MutableList<CloudNPCData>,
-) {
-
-    fun getNpcsFromTargetGroup(): List<CloudNPCData> {
-        val groupName = CloudPlugin.instance.thisService().getGroupName()
-        return this.npcs.filter { it.targetGroup == groupName }
-    }
-
-}
+)

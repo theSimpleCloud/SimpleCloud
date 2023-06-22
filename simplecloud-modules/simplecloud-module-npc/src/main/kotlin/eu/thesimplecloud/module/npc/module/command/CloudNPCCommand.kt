@@ -52,7 +52,7 @@ class CloudNPCCommand(
 
         player.getLocation().addResultListener {
             val npcSettings = NPCSettings(
-                mobNPCSettings = MobNPCSettings(""),
+                mobNPCSettings = MobNPCSettings("", ""),
                 playerNPCData = PlayerNPCSettings(
                     SkinData("ewogICJ0aW1lc3RhbXAiIDogMTYyNDUyNjI0NjM2MywKICAicHJvZmlsZUlkIiA6ICIwNjlhNzlmNDQ0ZTk0NzI2YTViZWZjYTkwZTM4YWFmNSIsCiAgInByb2ZpbGVOYW1lIiA6ICJOb3RjaCIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8yOTIwMDlhNDkyNWI1OGYwMmM3N2RhZGMzZWNlZjA3ZWE0Yzc0NzJmNjRlMGZkYzMyY2U1NTIyNDg5MzYyNjgwIgogICAgfQogIH0KfQ==", "K76X+5wYgbcKhUxr5ZJuF4MXquYNPM5ypUf6DdNz2k0+XaJlobLVVdETe2LotlHyj6ABoU3//8mGZnfwhdj2BiulOErpB6cQR4pMmIrW6T3TLCt4L8d9juQy7xy7Dw9sQngXWm2h3Cazm+205qa0apnvA/i+IGv+WeutP52kfGhJBAN7uBUQaut0NWBfFPL8Jo7DhwBvWf/KWVpcT9UcVQuS/dVP/VE0rrTTSf3x2/jGI0ksBEdOz5lROARCHwOA1sRDvP1nQHhZD1Uekj4Bmo6rsAjJCrzr++nK2IcaPMv1uTLv0sbsGe4JF884rqWHYzs7/Cc5lGv8FNy+QjHmTcISfjnlxwJIkI48KOmAjuaova+tU1gBHRFHqJR186Vw8gtIGHusitFr6rUuutODaHyJ1C9VnItyk5RF3eznsh+uUHSkT9NOCTAhx11UhaFjlIHgqHG3rRVmeFWyEKHE8Pk2yEAlROGPedp+oYEwMFbM97Q+og7W/RtSH+kYl9vNwpLrQEG2F0bQUtulwQrWzk8T2fKgPHncZIDS2YvQjrrHjjlG0bLbiakHGvRrMrLbrVtmQrKjOjLuc5j4M/quMoZpFz98q4uftCmNOyN9ZmoEjgFv5fOdsJDGJawSaug9VEieCWhuuPnXPx19GpT1TRzGRjDW9DqO08kNeCcRxq0=")
                 )
@@ -103,7 +103,7 @@ class CloudNPCCommand(
 
         player.getLocation().addResultListener {
             val npcSettings = NPCSettings(
-                mobNPCSettings = MobNPCSettings(type.uppercase()),
+                mobNPCSettings = MobNPCSettings(type.uppercase(), ""),
                 playerNPCData = PlayerNPCSettings(
                     SkinData("", ""),
                 )
@@ -457,11 +457,6 @@ class CloudNPCCommand(
 
         val cloudNPCData = config.npcsConfig.npcs.first { it.id.lowercase() == id.lowercase() }
 
-        if (!cloudNPCData.isMob) {
-            player.sendProperty("manager.command.npc.is.not.mob")
-            return
-        }
-
         if (!Action.values().map { it.name }.contains(action.uppercase())) {
             player.sendProperty("manager.command.npc.could.not.find.action")
             return
@@ -471,6 +466,29 @@ class CloudNPCCommand(
         config.update()
         this.npcModule.npcModuleConfigHandler.save(config)
         player.sendProperty("manager.command.npc.edit.action.left.click.successfully")
+    }
+
+    @CommandSubPath("edit general <id> setRunCommand <commandName>", "Edit the run command of mob.")
+    fun handleEditRunCommand(
+        sender: ICommandSender,
+        @CommandArgument("id", CloudNPCIDCommandSuggestionProvider::class) id: String,
+        @CommandArgument("commandName") commandName: String
+    ) {
+        val player = sender as ICloudPlayer
+        val config = this.npcModule.npcModuleConfigHandler.load()
+
+        if (config.npcsConfig.npcs.none { it.id.lowercase() == id.lowercase() }) {
+            player.sendProperty("manager.command.npc.id.not.found.")
+            return
+        }
+
+        val cloudNPCData = config.npcsConfig.npcs.first { it.id.lowercase() == id.lowercase() }
+
+        cloudNPCData.npcSettings.mobNPCSettings.runCommandName = commandName
+
+        config.update()
+        this.npcModule.npcModuleConfigHandler.save(config)
+        player.sendProperty("manager.command.npc.edit.run-command.successfully")
     }
 
     @CommandSubPath("edit general <id> setAction rightClick <action>", "Edit the action of mob.")
@@ -488,11 +506,6 @@ class CloudNPCCommand(
         }
 
         val cloudNPCData = config.npcsConfig.npcs.first { it.id.lowercase() == id.lowercase() }
-
-        if (!cloudNPCData.isMob) {
-            player.sendProperty("manager.command.npc.is.not.mob")
-            return
-        }
 
         if (!Action.values().map { it.name }.contains(action.uppercase())) {
             player.sendProperty("manager.command.npc.could.not.find.action")

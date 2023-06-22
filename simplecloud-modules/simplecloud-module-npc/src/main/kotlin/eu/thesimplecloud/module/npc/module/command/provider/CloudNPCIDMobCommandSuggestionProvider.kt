@@ -7,6 +7,6 @@ import eu.thesimplecloud.module.npc.module.NPCModule
 class CloudNPCIDMobCommandSuggestionProvider: ICommandSuggestionProvider {
 
     override fun getSuggestions(sender: ICommandSender, fullCommand: String, lastArgument: String): List<String> {
-        return NPCModule.instance.npcModuleConfigHandler.load().npcsConfig.getNpcsFromTargetGroup().filter { it.isMob }.map { it.id }
+        return NPCModule.instance.npcModuleConfigHandler.load().npcsConfig.npcs.filter { it.isMob }.map { it.id }
     }
 }
