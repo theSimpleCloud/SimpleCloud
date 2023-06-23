@@ -37,6 +37,7 @@ class LanguageSetup : ISetup {
         val config = LauncherConfig(
             launcherConfig.host,
             launcherConfig.port,
+            50000,
             answer.lowercase(),
             launcherConfig.directoryPaths
         )
