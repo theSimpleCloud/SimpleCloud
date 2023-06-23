@@ -23,12 +23,14 @@
 package eu.thesimplecloud.plugin.server.listener
 
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.event.player.CloudPlayerMessageEvent
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
+import org.bukkit.event.player.AsyncPlayerChatEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerKickEvent
 import org.bukkit.event.player.PlayerLoginEvent
@@ -54,6 +56,14 @@ class SpigotListener : Listener {
         if (CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(player.uniqueId) == null) {
             event.disallow(PlayerLoginEvent.Result.KICK_OTHER, NOT_REGISTERED)
         }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    fun handleAsyncChat(event: AsyncPlayerChatEvent) {
+        val cloudPlayer = CloudAPI.instance.getCloudPlayerManager()
+            .getCachedCloudPlayer(event.player.uniqueId) ?: return
+        val event = CloudPlayerMessageEvent(cloudPlayer, event.message, CloudPlugin.instance.thisService())
+        CloudAPI.instance.getEventManager().call(event)
     }
 
     @EventHandler
