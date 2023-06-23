@@ -7,6 +7,7 @@ data class CloudNPCData(
     var displayName: String,
     val id: String,
     val isMob: Boolean,
+    val createdInThisGroup: String?,
     var targetGroup: String,
     var locationData: LocationData,
     val npcAction: NPCAction,

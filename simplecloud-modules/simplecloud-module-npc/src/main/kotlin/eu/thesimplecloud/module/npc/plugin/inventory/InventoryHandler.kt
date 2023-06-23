@@ -18,8 +18,8 @@ class InventoryHandler(
     private val npcPlugin: NPCPlugin
 ) {
 
-    val cache: MutableMap<UUID, Long> = mutableMapOf()
-    val inventorys: MutableList<InventoryData> = mutableListOf()
+    private val cache: MutableMap<UUID, Long> = mutableMapOf()
+    val inventories: MutableList<InventoryData> = mutableListOf()
 
     fun open(player: Player, group: String) {
         if (this.cache.contains(player.uniqueId)) {
@@ -28,7 +28,12 @@ class InventoryHandler(
         }
         this.cache[player.uniqueId] = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(1)
 
-        val serviceGroup = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(group)!!
+        val serviceGroup = CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(group)
+        if (serviceGroup == null) {
+            Bukkit.getLogger().warning("[SimpleCloud-NPC] The inventory is not supported for CloudServices!")
+            return
+        }
+
         val config = this.npcPlugin.serverNPCHandler!!.config
         val inventory = Bukkit.createInventory(player,
             9 * config.inventorySettingsConfig.rows,
@@ -93,7 +98,7 @@ class InventoryHandler(
 
         player.openInventory(inventory)
         player.playSound(player.location, Sound.BLOCK_CHEST_OPEN, 0.8F, 0.8F)
-        this.inventorys.add(inventoryData)
+        this.inventories.add(inventoryData)
     }
 
     private fun getMaterial(service: ICloudService, config: NPCModuleConfig): ItemStack {
