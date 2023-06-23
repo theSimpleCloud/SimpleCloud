@@ -34,7 +34,6 @@ import eu.thesimplecloud.clientserverapi.lib.promise.flatten
 import eu.thesimplecloud.clientserverapi.lib.util.ZipUtils
 import org.apache.commons.io.FileUtils
 import java.io.File
-import java.io.FileFilter
 import java.util.concurrent.TimeUnit
 
 /**
