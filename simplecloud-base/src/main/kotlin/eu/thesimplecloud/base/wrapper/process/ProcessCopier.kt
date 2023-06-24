@@ -46,11 +46,7 @@ class ProcessCopier(val cloudService: ICloudService) {
 
     private val blockedCopyFileNames = arrayListOf(
         "SIMPLE-CLOUD.json",
-        "SimpleCloud-Chat+Tab.jar",
-        "SimpleCloud-NPC.jar",
-        "SimpleCloud-Permission.jar",
-        "SimpleCloud-Plugin.jar",
-        "SimpleCloud-Sign.jar"
+        "SimpleCloud-Plugin.jar"
     )
 
     fun copy(path: String): ICommunicationPromise<Unit> {
@@ -72,12 +68,11 @@ class ProcessCopier(val cloudService: ICloudService) {
     }
 
     private fun copyUsingNetty(dirToCopy: File, tempDirectory: File): ICommunicationPromise<Unit> {
-
         val zippedTemplatesDir = File(DirectoryPaths.paths.zippedTemplatesPath)
         val zipFile = File(zippedTemplatesDir, cloudService.getName() + ".zip")
         zipFile.parentFile.mkdirs()
         ZipUtils.zipFiles(zipFile, FileFinder.getAllFiles(dirToCopy)
-            .filter { !this.blockedCopyFileNames.contains(it.name) }, tempDirectory.path + "/")
+            .filter { !isBlockedCopyFile(it.name) }, tempDirectory.path + "/")
 
         //send file
         val savePath = DirectoryPaths.paths.zippedTemplatesPath + "T-" + cloudService.getName() + ".zip"
@@ -102,8 +97,13 @@ class ProcessCopier(val cloudService: ICloudService) {
         val templateDir = cloudService.getTemplate().getDirectory()
         val relativePathInTemplate = dirToCopy.path.replace(tempDirectory.path, "")
         val dirToCopyTo = File(templateDir, relativePathInTemplate)
-        FileUtils.copyDirectory(dirToCopy, dirToCopyTo) { !this.blockedCopyFileNames.contains(it.name) }
+        FileUtils.copyDirectory(dirToCopy, dirToCopyTo) { !isBlockedCopyFile(it.name) }
         return CommunicationPromise.of(Unit)
+    }
+
+    private fun isBlockedCopyFile(fileName: String): Boolean {
+        return this.blockedCopyFileNames.contains(fileName)
+                || Wrapper.instance.existingModules.map { it.file.name }.contains(fileName)
     }
 
 }
