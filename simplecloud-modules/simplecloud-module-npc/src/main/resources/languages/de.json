@@ -1,5 +1,5 @@
 {
-  "manager.command.npc.failed.group.not.found": "§7Diese Server Gruppe konnte nicht gefunden werden!",
+  "manager.command.npc.failed.group.not.found": "§7Dieser Service konnte nicht gefunden werden!",
   "manager.command.npc.id.not.found.": "§7Dieser NPC konnte nicht gefunden werden.",
   "manager.command.npc.is.not.mob": "§7Dieser NPC ist kein Mob.",
   "manager.command.npc.could.not.find.type": "§7Es konnte kein passender Mob gefunden werden.",

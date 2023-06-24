@@ -33,11 +33,10 @@ class ServerNPCHandler(
     val serverNPC: MutableMap<String, AbstractServerNPC> = mutableMapOf()
 
     fun createNPCs() {
-        val groupName = CloudPlugin.instance.thisService().getGroupName()
         config.npcsConfig.npcs
-            .filter { it.targetGroup == groupName }
+            .filter { isRightService(it.createdInThisGroup) }
             .forEach { npcInformation ->
-            val npc: AbstractServerNPC = if (npcInformation.isMob) {
+            val npc = if (npcInformation.isMob) {
                 MobNPC(this, npcInformation)
             } else {
                 PlayerNPC(this, npcInformation)
@@ -49,9 +48,9 @@ class ServerNPCHandler(
             this.serverNPC[npcInformation.id] = npc
 
             if (!npcInformation.isMob) {
-                val playerNPC: PlayerNPC = npc as PlayerNPC
+                val playerNPC = npc as PlayerNPC
                 Bukkit.getOnlinePlayers().forEach {
-                    this.updateScoreboardTeam(it.scoreboard, playerNPC.npc.profile().name())
+                    updateScoreboardTeam(it.scoreboard, playerNPC.npc.profile().name())
                 }
             }
         }
@@ -69,8 +68,16 @@ class ServerNPCHandler(
 
     fun updateScoreboardTeam(scoreboard: Scoreboard, npcName: String) {
         var team = scoreboard.getTeam("simpleCloudNpc")
-        if (team == null) team = scoreboard.registerNewTeam("simpleCloudNpc")
+            ?: scoreboard.registerNewTeam("simpleCloudNpc")
         team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER)
         team.addEntry(npcName)
+    }
+
+    private fun isRightService(serviceName: String?): Boolean {
+        if (serviceName == null)
+            return true
+        val thisService = CloudPlugin.instance.thisService()
+        return thisService.getName() == serviceName
+                || thisService.getGroupName() == serviceName
     }
 }

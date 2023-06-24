@@ -12,6 +12,8 @@ import eu.thesimplecloud.module.npc.lib.config.NPCModuleConfigHandler
 import eu.thesimplecloud.module.npc.lib.type.MaterialType
 import eu.thesimplecloud.module.npc.lib.type.MobType
 import eu.thesimplecloud.module.npc.module.command.CloudNPCCommand
+import eu.thesimplecloud.module.npc.module.command.CreateNpcCommand
+import eu.thesimplecloud.module.npc.module.command.EditGeneralNpcCommand
 import eu.thesimplecloud.module.npc.module.skin.SkinHandler
 
 class NPCModule: ICloudModule {
@@ -23,6 +25,8 @@ class NPCModule: ICloudModule {
         instance = this
 
         Launcher.instance.commandManager.registerCommand(this, CloudNPCCommand(this))
+        Launcher.instance.commandManager.registerCommand(this, CreateNpcCommand())
+        Launcher.instance.commandManager.registerCommand(this, EditGeneralNpcCommand())
 
         val npcListConfig = this.npcModuleConfigHandler.load()
         this.npcModuleConfigHandler.save(npcListConfig)

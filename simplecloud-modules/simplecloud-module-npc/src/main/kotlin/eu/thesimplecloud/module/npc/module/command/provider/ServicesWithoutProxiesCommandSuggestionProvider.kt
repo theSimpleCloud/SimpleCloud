@@ -10,12 +10,17 @@ import eu.thesimplecloud.launcher.console.command.provider.ICommandSuggestionPro
  * Class create at 19.06.2023 23:11
  */
 
-class ServiceGroupWithoutProxiesCommandSuggestionProvider : ICommandSuggestionProvider {
+class ServicesWithoutProxiesCommandSuggestionProvider : ICommandSuggestionProvider {
 
     override fun getSuggestions(sender: ICommandSender, fullCommand: String, lastArgument: String): List<String> {
-        return CloudAPI.instance.getCloudServiceGroupManager().getAllCachedObjects()
+        val mutableList = CloudAPI.instance.getCloudServiceGroupManager().getAllCachedObjects()
             .filter { it.getServiceType() != ServiceType.PROXY }
+            .map { it.getName() }.toMutableList()
+        val elements = CloudAPI.instance.getCloudServiceManager().getAllCachedObjects()
+            .filter { !it.isProxy() }
             .map { it.getName() }
+        mutableList.addAll(elements)
+        return mutableList
     }
 
 }

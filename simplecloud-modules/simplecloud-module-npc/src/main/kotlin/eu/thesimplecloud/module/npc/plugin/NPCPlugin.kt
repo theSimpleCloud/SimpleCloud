@@ -49,9 +49,7 @@ class NPCPlugin: JavaPlugin() {
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, Runnable {
             this.serverNPCHandler!!.serverNPC.forEach {
-                val group =
-                    CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(it.value.config.targetGroup)!!
-                it.value.updateHolograms(group)
+                it.value.handleHologramUpdating(it.value.config.targetGroup)
             }
         }, 20, 20)
     }
