@@ -189,13 +189,15 @@ class ServiceHandler : IServiceHandler {
         } else {
             val requiredWrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(service.getWrapperName()!!)
                 ?: return null
-            if (requiredWrapper.hasEnoughMemory(service.getMaxMemory()) && requiredWrapper.isAuthenticated()
+            val hasEnoughMemory = requiredWrapper.hasEnoughMemory(service.getMaxMemory())
+            if (!hasEnoughMemory) {
+                handleNotEnoughMemoryForService(service.getName())
+            }
+            if (hasEnoughMemory && requiredWrapper.isAuthenticated()
                 && requiredWrapper.hasTemplatesReceived()
                 && requiredWrapper.getCurrentlyStartingServices() != requiredWrapper.getMaxSimultaneouslyStartingServices()
             ) {
                 return requiredWrapper
-            } else {
-                handleNotEnoughMemoryForService(service.getName())
             }
             return null
         }
@@ -208,7 +210,7 @@ class ServiceHandler : IServiceHandler {
         Launcher.instance.logger.warning("The cloud does not have enough ram to start the $serviceName service")
         Launcher.instance.scheduler.schedule({
             this.messageSendetForServices.remove(serviceName)
-        }, 30, TimeUnit.SECONDS)
+        }, 60, TimeUnit.SECONDS)
     }
 
 }
