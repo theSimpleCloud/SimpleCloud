@@ -34,7 +34,7 @@ import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
  * Time: 17:14
  * @author Frederick Baier
  */
-@Command("version", CommandType.CONSOLE)
+@Command("version", CommandType.CONSOLE_AND_INGAME)
 class VersionCommand : ICommandHandler {
 
     @CommandSubPath("", "Shows the version")

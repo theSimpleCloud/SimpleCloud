@@ -37,7 +37,7 @@ import eu.thesimplecloud.launcher.console.command.annotations.CommandSubPath
 import eu.thesimplecloud.loader.dependency.DependencyLoader
 import kotlin.concurrent.thread
 
-@Command("reload", CommandType.CONSOLE, "cloud.command.reload", ["rl"])
+@Command("reload", CommandType.CONSOLE_AND_INGAME, "cloud.command.reload", ["rl"])
 class ReloadCommand : ICommandHandler {
 
     @CommandSubPath("all", "Reload everything (recommended)")
