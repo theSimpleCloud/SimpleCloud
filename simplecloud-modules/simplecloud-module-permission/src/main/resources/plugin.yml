@@ -1,6 +1,7 @@
 name: SimpleCloud-Permission
 version: 1.0
 author: Wetterbericht
+folia-supported: true
 
 main: eu.thesimplecloud.module.permission.service.spigot.SpigotPluginMain
 

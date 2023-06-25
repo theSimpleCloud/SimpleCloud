@@ -1,6 +1,7 @@
 name: SimpleCloud-Chat-Tab
 version: 1.0
 author: Fllip
+folia-supported: true
 
 main: eu.thesimplecloud.module.prefix.service.spigot.BukkitPluginMain
 
