@@ -23,10 +23,12 @@
 package eu.thesimplecloud.module.prefix.service.spigot
 
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.module.prefix.config.Config
 import eu.thesimplecloud.module.prefix.service.spigot.listener.ChatListener
 import eu.thesimplecloud.module.prefix.service.spigot.listener.CloudListener
 import eu.thesimplecloud.module.prefix.service.spigot.listener.JoinListener
 import eu.thesimplecloud.module.prefix.service.tablist.TablistHelper
+import eu.thesimplecloud.plugin.startup.CloudPlugin
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -40,6 +42,14 @@ class BukkitPluginMain : JavaPlugin() {
 
     override fun onEnable() {
         instance = this
+
+        val groupName = CloudPlugin.instance.thisService().getGroupName()
+        if (Config.getConfig().disabledServerGroups.contains(groupName)) {
+            Bukkit.getLogger().info("[SimpleCloud] The Chat+Tab module is deactivated on this service!")
+            Bukkit.getPluginManager().disablePlugin(this)
+            return
+        }
+
         TablistHelper.load()
         Bukkit.getPluginManager().registerEvents(JoinListener(), this)
         Bukkit.getPluginManager().registerEvents(ChatListener(), this)
