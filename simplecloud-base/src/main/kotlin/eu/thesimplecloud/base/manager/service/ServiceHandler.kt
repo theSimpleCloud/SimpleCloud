@@ -42,7 +42,7 @@ import kotlin.math.min
 
 class ServiceHandler : IServiceHandler {
 
-    private val messageSendetForServices = arrayListOf<String>()
+    private val messageSentForServices = arrayListOf<String>()
 
     @Volatile
     private var serviceQueue: MutableList<ICloudService> = CopyOnWriteArrayList()
@@ -185,7 +185,10 @@ class ServiceHandler : IServiceHandler {
 
     private fun getWrapperForService(service: ICloudService): IWrapperInfo? {
         if (service.getWrapperName() == null) {
-            return CloudAPI.instance.getWrapperManager().getWrapperByUnusedMemory(service.getMaxMemory())
+            val wrapper = CloudAPI.instance.getWrapperManager().getWrapperByUnusedMemory(service.getMaxMemory())
+            if (wrapper == null)
+                handleNotEnoughMemoryForService(service.getName())
+            return wrapper
         } else {
             val requiredWrapper = CloudAPI.instance.getWrapperManager().getWrapperByName(service.getWrapperName()!!)
                 ?: return null
@@ -204,12 +207,12 @@ class ServiceHandler : IServiceHandler {
     }
 
     private fun handleNotEnoughMemoryForService(serviceName: String) {
-        if (this.messageSendetForServices.contains(serviceName))
+        if (this.messageSentForServices.contains(serviceName))
             return
-        this.messageSendetForServices.add(serviceName)
-        Launcher.instance.logger.warning("The cloud does not have enough ram to start the $serviceName service")
+        this.messageSentForServices.add(serviceName)
+        Launcher.instance.logger.warning("The cloud does not have enough ram to start the service $serviceName")
         Launcher.instance.scheduler.schedule({
-            this.messageSendetForServices.remove(serviceName)
+            this.messageSentForServices.remove(serviceName)
         }, 60, TimeUnit.SECONDS)
     }
 
