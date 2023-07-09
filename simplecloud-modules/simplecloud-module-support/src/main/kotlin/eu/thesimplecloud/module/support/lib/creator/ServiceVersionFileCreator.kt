@@ -1,7 +1,7 @@
 package eu.thesimplecloud.module.support.lib.creator
 
+import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.service.version.ServiceVersion
-import eu.thesimplecloud.api.service.version.loader.LocalServiceVersionHandler
 import eu.thesimplecloud.module.support.lib.DumpFile
 
 /**
@@ -13,7 +13,7 @@ class ServiceVersionFileCreator {
 
     fun create(): String {
         val stringBuilder = StringBuilder()
-        LocalServiceVersionHandler().loadVersions().forEach {
+        CloudAPI.instance.getServiceVersionHandler().getAllVersions().forEach {
             stringBuilder.append("\n${getServiceFile(it)}")
         }
         return stringBuilder.toString()
