@@ -29,17 +29,13 @@ import java.util.concurrent.ConcurrentHashMap
 
 class PortManager {
 
-    companion object {
-        const val START_PORT = 50_000
-    }
-
     private val usedPorts = ConcurrentHashMap.newKeySet<Int>()
 
     private val blockedPorts = ConcurrentHashMap.newKeySet<Int>()
 
 
     @Synchronized
-    fun getUnusedPort(startPort: Int = START_PORT): Int {
+    fun getUnusedPort(startPort: Int): Int {
         var port = startPort
         while (isInUse(port) || isPortBlockedByOtherApp(port)) {
             port++

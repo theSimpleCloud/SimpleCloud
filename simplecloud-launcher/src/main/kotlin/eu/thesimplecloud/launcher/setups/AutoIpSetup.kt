@@ -60,6 +60,7 @@ class AutoIpSetup : ISetup {
         val config = LauncherConfig(
             ip,
             launcherConfig.port,
+            50000,
             launcherConfig.language,
             launcherConfig.directoryPaths
         )
