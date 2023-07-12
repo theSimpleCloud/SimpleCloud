@@ -24,7 +24,9 @@ package eu.thesimplecloud.module.prefix.manager
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.external.ICloudModule
+import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.module.prefix.config.ConfigLoader
+import java.io.File
 
 /**
  * Created by IntelliJ IDEA.
@@ -35,12 +37,21 @@ import eu.thesimplecloud.module.prefix.config.ConfigLoader
 class PrefixModule : ICloudModule {
 
     override fun onEnable() {
+        migrateOldConfigFile()
         val configLoader = ConfigLoader()
         val config = configLoader.loadConfig()
         CloudAPI.instance.getGlobalPropertyHolder().setProperty("prefix-config", config)
     }
 
-    override fun onDisable() {
+    override fun onDisable() {}
+
+    private fun migrateOldConfigFile() {
+        val path = "modules/chat+tablist/config.json"
+        val jsonLib = JsonLib.fromJsonFile(File(path)) ?: return
+        if (jsonLib.getObject("disabledServerGroups", List::class.java) != null)
+            return
+        jsonLib.append("disabledServerGroups", ArrayList<String>())
+        jsonLib.saveAsFile(path)
     }
 
 }

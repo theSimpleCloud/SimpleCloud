@@ -32,6 +32,7 @@ import eu.thesimplecloud.api.property.IProperty
  * Time: 13:36
  */
 data class Config(
+    val disabledServerGroups: List<String> = emptyList(),
     val chatFormat: String = "%PLAYER% §8» §7%MESSAGE%",
     val informationList: List<TablistInformation> = listOf(TablistInformation())
 ) {
