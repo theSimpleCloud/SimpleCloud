@@ -34,6 +34,7 @@ allprojects {
         mavenCentral()
         jcenter()
 
+        maven { url 'https://repository.derklaro.dev/releases' }
         maven { url 'https://jitpack.io' }
         maven {
             url "https://repo.thesimplecloud.eu/artifactory/gradle-release-local/"
