@@ -33,7 +33,37 @@ import eu.thesimplecloud.api.property.IProperty
  */
 data class Config(
     val chatFormat: String = "%PLAYER% §8» §7%MESSAGE%",
-    val informationList: List<TablistInformation> = listOf(TablistInformation())
+    val messages: MutableMap<String, String> = mutableMapOf(
+        Pair(
+            "prefix",
+            "§bChat Tab §8|§7"
+        ),
+        Pair(
+            "noPermissions",
+            "%PREFIX% You don't have enough permissions to execute this command!"
+        ),
+        Pair(
+            "commandSyntax",
+            "%PREFIX% Wrong syntax: §e/chat-tab <info|reload|save|set <delay>>"
+        ),
+        Pair(
+            "reloadSuccess",
+            "%PREFIX% You §asuccessfully §ereloaded §7the delay."
+        ),
+        Pair(
+            "saveSuccess",
+            "%PREFIX% You §asuccessfully §esaved §7the delay."
+        ),
+        Pair(
+            "modifySuccess",
+            "%PREFIX% You §asuccessfully §eset §7the delay to §b§n%DELAY%§7 ticks."
+        ),
+        Pair(
+            "currentDelay",
+            "%PREFIX% Current delay: §b§n%DELAY%§7 ticks§8/§b§n%SECONDS%§7 seconds."
+        )
+    ),
+    val informationList: List<TablistInformation> = listOf(TablistInformation()),
 ) {
     companion object {
 
