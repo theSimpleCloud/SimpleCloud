@@ -3,5 +3,7 @@ version: 1.0
 author: Fllip
 
 main: eu.thesimplecloud.module.prefix.service.spigot.BukkitPluginMain
+commands:
+  chat-tab:
 
 depend: [ SimpleCloud-Plugin ]

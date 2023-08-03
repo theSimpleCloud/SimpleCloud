@@ -23,6 +23,8 @@
 package eu.thesimplecloud.module.prefix.service.spigot
 
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.module.prefix.service.command.ChatTabCommand
+import eu.thesimplecloud.module.prefix.service.spigot.configuration.DelayConfiguration
 import eu.thesimplecloud.module.prefix.service.spigot.listener.ChatListener
 import eu.thesimplecloud.module.prefix.service.spigot.listener.CloudListener
 import eu.thesimplecloud.module.prefix.service.spigot.listener.JoinListener
@@ -39,9 +41,11 @@ import org.bukkit.plugin.java.JavaPlugin
 class BukkitPluginMain : JavaPlugin() {
 
     override fun onEnable() {
-        instance = this
         TablistHelper.load()
-        Bukkit.getPluginManager().registerEvents(JoinListener(), this)
+
+        getCommand("chat-tab")?.setExecutor(ChatTabCommand(this))
+
+        Bukkit.getPluginManager().registerEvents(JoinListener(this), this)
         Bukkit.getPluginManager().registerEvents(ChatListener(), this)
 
         CloudAPI.instance.getEventManager()
