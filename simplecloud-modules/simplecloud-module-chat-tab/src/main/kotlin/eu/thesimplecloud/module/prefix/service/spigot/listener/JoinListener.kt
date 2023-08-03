@@ -40,7 +40,10 @@ class JoinListener(val plugin: BukkitPluginMain) : Listener {
     @EventHandler
     fun handleJoin(event: PlayerJoinEvent) {
 
-        TablistHelper.updateScoreboardForAllPlayers()
+        Bukkit.getScheduler().runTaskLater(plugin, Runnable {
+            TablistHelper.updateScoreboardForAllPlayers()
+        }, plugin.delayConfiguration.delay)
+
     }
 
 }
