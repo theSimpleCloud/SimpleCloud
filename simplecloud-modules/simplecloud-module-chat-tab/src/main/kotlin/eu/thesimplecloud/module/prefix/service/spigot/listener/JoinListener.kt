@@ -39,7 +39,6 @@ class JoinListener(val plugin: BukkitPluginMain) : Listener {
 
     @EventHandler
     fun handleJoin(event: PlayerJoinEvent) {
-        val player = event.player
 
         TablistHelper.updateScoreboardForAllPlayers()
     }
