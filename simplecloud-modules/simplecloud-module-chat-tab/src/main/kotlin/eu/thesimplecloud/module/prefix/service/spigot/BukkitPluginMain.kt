@@ -40,6 +40,8 @@ import org.bukkit.plugin.java.JavaPlugin
  */
 class BukkitPluginMain : JavaPlugin() {
 
+    val delayConfiguration: DelayConfiguration = DelayConfiguration()
+
     override fun onEnable() {
         TablistHelper.load()
 
@@ -50,10 +52,6 @@ class BukkitPluginMain : JavaPlugin() {
 
         CloudAPI.instance.getEventManager()
             .registerListener(CloudAPI.instance.getThisSidesCloudModule(), CloudListener())
-    }
-
-    companion object {
-        lateinit var instance: BukkitPluginMain
     }
 
 }
