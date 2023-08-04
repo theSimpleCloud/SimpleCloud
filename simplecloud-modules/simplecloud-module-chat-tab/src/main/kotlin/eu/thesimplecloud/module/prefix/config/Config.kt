@@ -64,6 +64,7 @@ data class Config(
         )
     ),
     val informationList: List<TablistInformation> = listOf(TablistInformation()),
+    val disabledServerGroups: List<String> = emptyList()
 ) {
     companion object {
 
