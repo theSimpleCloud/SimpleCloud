@@ -28,6 +28,7 @@ import com.velocitypowered.api.event.player.ServerConnectedEvent
 import com.velocitypowered.api.event.player.ServerPreConnectEvent
 import com.velocitypowered.api.event.proxy.ProxyPingEvent
 import com.velocitypowered.api.proxy.server.ServerPing
+import com.velocitypowered.api.proxy.server.ServerPing.SamplePlayer
 import eu.thesimplecloud.module.proxy.extensions.mapToLowerCase
 import eu.thesimplecloud.module.proxy.service.ProxyHandler
 import eu.thesimplecloud.module.proxy.service.velocity.VelocityPluginMain
@@ -124,14 +125,21 @@ class VelocityListener(val plugin: VelocityPluginMain) {
         val maxPlayers = CloudPlugin.instance.thisService().getServiceGroup().getMaxPlayers()
 
         val playerSamples = if (playerInfo != null && playerInfo.isNotEmpty()) {
-            val playerInfoString = ProxyHandler.replaceString(playerInfo.joinToString("\n"))
-            val playerInfoColorComponent = ProxyHandler.getHexColorComponent(playerInfoString)
-            listOf(
-                ServerPing.SamplePlayer(
-                    LegacyComponentSerializer.legacy('§').serialize(playerInfoColorComponent),
-                    UUID.randomUUID()
+            val sample = mutableListOf<SamplePlayer>()
+
+            playerInfo.forEach {
+                val playerInfoString = ProxyHandler.replaceString(it)
+                val playerInfoComponent = ProxyHandler.getHexColorComponent(playerInfoString)
+
+                sample.add(
+                    SamplePlayer(
+                        LegacyComponentSerializer.legacy('§').serialize(playerInfoComponent),
+                        UUID.randomUUID()
+                    )
                 )
-            )
+            }
+
+            sample
         } else {
             emptyList()
         }
