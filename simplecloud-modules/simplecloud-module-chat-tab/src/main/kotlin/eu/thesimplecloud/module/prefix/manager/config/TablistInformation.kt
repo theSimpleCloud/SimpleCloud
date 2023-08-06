@@ -20,7 +20,7 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.prefix.config
+package eu.thesimplecloud.module.prefix.manager.config
 
 /**
  * Created by IntelliJ IDEA.
