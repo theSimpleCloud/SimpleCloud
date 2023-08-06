@@ -20,61 +20,40 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.prefix.config
+package eu.thesimplecloud.module.prefix.manager.config
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.property.IProperty
 
 /**
  * Created by IntelliJ IDEA.
- * User: Philipp.Eistrach
- * Date: 19.12.2020
- * Time: 13:36
+ * Date: 10.10.2020
+ * Time: 17:01
+ * @author Frederick Baier
  */
-data class Config(
-    val chatFormat: String = "%PLAYER% §8» §7%MESSAGE%",
-    val messages: MutableMap<String, String> = mutableMapOf(
-        Pair(
-            "prefix",
-            "§bChat Tab §8|§7"
-        ),
-        Pair(
-            "noPermissions",
-            "%PREFIX% You don't have enough permissions to execute this command!"
-        ),
-        Pair(
-            "commandSyntax",
-            "%PREFIX% Wrong syntax: §e/chat-tab <info|reload|save|set <delay>>"
-        ),
-        Pair(
-            "reloadSuccess",
-            "%PREFIX% You §asuccessfully §ereloaded §7the delay."
-        ),
-        Pair(
-            "saveSuccess",
-            "%PREFIX% You §asuccessfully §esaved §7the delay."
-        ),
-        Pair(
-            "modifySuccess",
-            "%PREFIX% You §asuccessfully §eset §7the delay to §b§n%DELAY%§7 ticks."
-        ),
-        Pair(
-            "currentDelay",
-            "%PREFIX% Current delay: §b§n%DELAY%§7 ticks§8/§b§n%SECONDS%§7 seconds."
+class ChatTabConfig(
+        val chatFormat: String = "%PLAYER% §8» §7%MESSAGE%",
+        val informationList: List<TablistInformation> = listOf(TablistInformation()),
+        val disabledServerGroups: List<String> = emptyList(),
+        val delay: MutableMap<String, Long> = mutableMapOf(
+                Pair("Lobby", 0L)
         )
-    ),
-    val informationList: List<TablistInformation> = listOf(TablistInformation()),
-    val disabledServerGroups: List<String> = emptyList()
 ) {
+
+    fun update() {
+        property = CloudAPI.instance.getGlobalPropertyHolder().setProperty("prefix-config", this)
+        ChatTabModuleConfigPersistence.save(this)
+    }
+
     companion object {
 
         @Volatile
-        private var property: IProperty<Config>? = null
+        private var property: IProperty<ChatTabConfig>? = null
 
-        fun getConfig(): Config {
+        fun getConfig(): ChatTabConfig {
             if (this.property == null) {
                 this.property =
-                    CloudAPI.instance.getGlobalPropertyHolder().requestProperty<Config>("prefix-config").getBlocking()
+                    CloudAPI.instance.getGlobalPropertyHolder().getProperty("prefix-config")
             }
             return this.property!!.getValue()
         }
