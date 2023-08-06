@@ -53,7 +53,8 @@ class ChatTabConfig(
         fun getConfig(): ChatTabConfig {
             if (this.property == null) {
                 this.property =
-                    CloudAPI.instance.getGlobalPropertyHolder().getProperty("prefix-config")
+                        CloudAPI.instance.getGlobalPropertyHolder().requestProperty<ChatTabConfig>("prefix-config")
+                                .getBlocking()
             }
             return this.property!!.getValue()
         }
