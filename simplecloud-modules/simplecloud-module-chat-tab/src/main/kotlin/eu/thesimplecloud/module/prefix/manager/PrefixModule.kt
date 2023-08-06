@@ -37,10 +37,11 @@ import eu.thesimplecloud.module.prefix.manager.command.ChatTabCommand
 class PrefixModule : ICloudModule {
 
     override fun onEnable() {
-        Launcher.instance.commandManager.registerCommand(this, ChatTabCommand())
         val chatTabConfig = ChatTabModuleConfigPersistence.load()
         ChatTabModuleConfigPersistence.save(chatTabConfig)
+
         CloudAPI.instance.getGlobalPropertyHolder().setProperty("prefix-config", chatTabConfig)
+        Launcher.instance.commandManager.registerCommand(this, ChatTabCommand())
     }
 
     override fun onDisable() {
