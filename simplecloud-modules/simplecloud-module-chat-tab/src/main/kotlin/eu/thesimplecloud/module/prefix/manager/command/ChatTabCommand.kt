@@ -27,7 +27,7 @@ class ChatTabCommand : ICommandHandler {
             return
         }
 
-        val config = ChatTabConfig.getConfig()
+        val config = CloudAPI.instance.getGlobalPropertyHolder().getProperty<ChatTabConfig>("prefix-config")?.getValue() ?: return
         config.delay[group] = delay.toLongOrNull() ?: 0L
         config.update()
 
