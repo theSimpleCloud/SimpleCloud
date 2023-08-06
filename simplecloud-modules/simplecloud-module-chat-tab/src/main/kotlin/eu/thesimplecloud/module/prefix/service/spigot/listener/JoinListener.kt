@@ -22,8 +22,10 @@
 
 package eu.thesimplecloud.module.prefix.service.spigot.listener
 
+import eu.thesimplecloud.module.prefix.manager.config.ChatTabConfig
 import eu.thesimplecloud.module.prefix.service.spigot.BukkitPluginMain
 import eu.thesimplecloud.module.prefix.service.tablist.TablistHelper
+import eu.thesimplecloud.plugin.startup.CloudPlugin
 import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -42,7 +44,7 @@ class JoinListener(val plugin: BukkitPluginMain) : Listener {
 
         Bukkit.getScheduler().runTaskLater(plugin, Runnable {
             TablistHelper.updateScoreboardForAllPlayers()
-        }, plugin.delayConfiguration.delay)
+        }, ChatTabConfig.getConfig().delay[CloudPlugin.instance.thisService().getGroupName()] ?: 0L)
 
     }
 
