@@ -1,0 +1,12 @@
+shadowJar {
+    archiveFileName.set("SimpleCloud-Placeholders.jar")
+}
+
+dependencies {
+    compileOnly(project(":simplecloud-base"))
+    compileOnly(project(":simplecloud-api"))
+    compileOnly(project(":simplecloud-plugin"))
+    compileOnly(project(":simplecloud-launcher"))
+    compileOnly group: 'com.google.code.gson', name: 'gson', version: '2.9.0'
+    compileOnly 'net.md-5:bungeecord-api:1.19-R0.1-SNAPSHOT'
+}
