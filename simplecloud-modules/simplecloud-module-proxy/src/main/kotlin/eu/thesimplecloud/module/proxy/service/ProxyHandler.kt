@@ -27,7 +27,7 @@ import eu.thesimplecloud.api.property.IProperty
 import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.module.permission.PermissionPool
-import eu.thesimplecloud.module.prefix.config.TablistInformation
+import eu.thesimplecloud.module.prefix.manager.config.TablistInformation
 import eu.thesimplecloud.module.prefix.service.tablist.ProxyTablistHelper
 import eu.thesimplecloud.module.proxy.config.Config
 import eu.thesimplecloud.module.proxy.config.DefaultConfig

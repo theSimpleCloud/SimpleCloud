@@ -20,31 +20,41 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.prefix.config
+package eu.thesimplecloud.module.prefix.manager.config
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.property.IProperty
 
 /**
  * Created by IntelliJ IDEA.
- * User: Philipp.Eistrach
- * Date: 19.12.2020
- * Time: 13:36
+ * Date: 10.10.2020
+ * Time: 17:01
+ * @author Frederick Baier
  */
-data class Config(
-    val disabledServerGroups: List<String> = emptyList(),
-    val chatFormat: String = "%PLAYER% §8» §7%MESSAGE%",
-    val informationList: List<TablistInformation> = listOf(TablistInformation())
+class ChatTabConfig(
+        val chatFormat: String = "%PLAYER% §8» §7%MESSAGE%",
+        val informationList: List<TablistInformation> = listOf(TablistInformation()),
+        val disabledServerGroups: List<String> = emptyList(),
+        val delay: MutableMap<String, Long> = mutableMapOf(
+                Pair("Lobby", 0L)
+        )
 ) {
+
+    fun update() {
+        property = CloudAPI.instance.getGlobalPropertyHolder().setProperty("prefix-config", this)
+        ChatTabModuleConfigPersistence.save(this)
+    }
+
     companion object {
 
         @Volatile
-        private var property: IProperty<Config>? = null
+        private var property: IProperty<ChatTabConfig>? = null
 
-        fun getConfig(): Config {
+        fun getConfig(): ChatTabConfig {
             if (this.property == null) {
                 this.property =
-                    CloudAPI.instance.getGlobalPropertyHolder().requestProperty<Config>("prefix-config").getBlocking()
+                        CloudAPI.instance.getGlobalPropertyHolder().requestProperty<ChatTabConfig>("prefix-config")
+                                .getBlocking()
             }
             return this.property!!.getValue()
         }

@@ -20,22 +20,32 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.prefix.config
+package eu.thesimplecloud.module.prefix.manager.config
 
-import eu.thesimplecloud.api.config.AbstractJsonLibConfigLoader
+import eu.thesimplecloud.jsonlib.JsonLib
 import java.io.File
 
 /**
  * Created by IntelliJ IDEA.
- * User: Philipp.Eistrach
- * Date: 19.12.2020
- * Time: 13:36
+ * Date: 10.10.2020
+ * Time: 17:11
+ * @author Frederick Baier
  */
-class ConfigLoader : AbstractJsonLibConfigLoader<Config>(
-    Config::class.java,
-    File("modules/chat+tablist/config.json"),
-    {
-        Config()
-    },
-    true
-)
+object ChatTabModuleConfigPersistence {
+
+    private val configFile = File("modules/chat+tablist/config.json")
+
+    fun save(chatTabConfig: ChatTabConfig) {
+        JsonLib.fromObject(chatTabConfig).saveAsFile(configFile)
+    }
+
+    fun load(): ChatTabConfig {
+        if (!configFile.exists()) return createDefaultConfig()
+        return JsonLib.fromJsonFile(configFile)!!.getObject(ChatTabConfig::class.java)
+    }
+
+    private fun createDefaultConfig(): ChatTabConfig {
+        return ChatTabConfig()
+    }
+
+}

@@ -23,8 +23,8 @@
 package eu.thesimplecloud.module.prefix.service.tablist
 
 import eu.thesimplecloud.module.permission.PermissionPool
-import eu.thesimplecloud.module.prefix.config.Config
-import eu.thesimplecloud.module.prefix.config.TablistInformation
+import eu.thesimplecloud.module.prefix.manager.config.ChatTabConfig
+import eu.thesimplecloud.module.prefix.manager.config.TablistInformation
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.entity.Player
@@ -50,7 +50,7 @@ object TablistHelper {
     }
 
     private fun initScoreboard(scoreboard: Scoreboard) {
-        Config.getConfig().informationList.forEach {
+        ChatTabConfig.getConfig().informationList.forEach {
             val team = scoreboard.getTeam(it.priority.toString()) ?: scoreboard.registerNewTeam(it.priority.toString())
 
             val chatColor = ChatColor.valueOf(it.color)
@@ -100,7 +100,7 @@ object TablistHelper {
             PermissionPool.instance.getPermissionPlayerManager().getCachedPermissionPlayer(uuid)
                 ?: return null
 
-        val informationList = Config.getConfig().informationList
+        val informationList = ChatTabConfig.getConfig().informationList
         val tablistInformation = informationList.sortedBy { it.priority }.first {
             permissionPlayer.hasPermissionGroup(it.groupName)
         }

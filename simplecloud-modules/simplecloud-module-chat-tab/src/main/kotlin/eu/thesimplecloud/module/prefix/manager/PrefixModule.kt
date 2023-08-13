@@ -24,9 +24,9 @@ package eu.thesimplecloud.module.prefix.manager
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.external.ICloudModule
-import eu.thesimplecloud.jsonlib.JsonLib
-import eu.thesimplecloud.module.prefix.config.ConfigLoader
-import java.io.File
+import eu.thesimplecloud.launcher.startup.Launcher
+import eu.thesimplecloud.module.prefix.manager.config.ChatTabModuleConfigPersistence
+import eu.thesimplecloud.module.prefix.manager.command.ChatTabCommand
 
 /**
  * Created by IntelliJ IDEA.
@@ -37,21 +37,14 @@ import java.io.File
 class PrefixModule : ICloudModule {
 
     override fun onEnable() {
-        migrateOldConfigFile()
-        val configLoader = ConfigLoader()
-        val config = configLoader.loadConfig()
-        CloudAPI.instance.getGlobalPropertyHolder().setProperty("prefix-config", config)
+        val chatTabConfig = ChatTabModuleConfigPersistence.load()
+        ChatTabModuleConfigPersistence.save(chatTabConfig)
+
+        CloudAPI.instance.getGlobalPropertyHolder().setProperty("prefix-config", chatTabConfig)
+        Launcher.instance.commandManager.registerCommand(this, ChatTabCommand())
     }
 
-    override fun onDisable() {}
-
-    private fun migrateOldConfigFile() {
-        val path = "modules/chat+tablist/config.json"
-        val jsonLib = JsonLib.fromJsonFile(File(path)) ?: return
-        if (jsonLib.getObject("disabledServerGroups", List::class.java) != null)
-            return
-        jsonLib.append("disabledServerGroups", ArrayList<String>())
-        jsonLib.saveAsFile(path)
+    override fun onDisable() {
     }
 
 }
