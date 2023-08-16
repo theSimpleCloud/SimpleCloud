@@ -99,7 +99,7 @@ fun String.replaceChatTabModule(uuid: UUID): String {
             .replace("%RANK_COLOR%", tablistInformation?.color.toString())
             .replace("%RANK_PREFIX%", tablistInformation?.prefix.toString())
             .replace("%RANK_SUFFIX%", tablistInformation?.suffix.toString())
-            .replace("%RANK_PRIORITY%", tablistInformation?.priority.toString())
+            .replace("%RANK_TAB_PRIORITY%", tablistInformation?.priority.toString())
     } catch (_: Exception) {
     }
 
