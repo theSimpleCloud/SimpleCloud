@@ -82,6 +82,7 @@ fun String.replacePermissionModule(uuid: UUID): String {
 
         replacedString = replacedString
             .replace("%RANK_NAME%", permissionPlayer?.getHighestPermissionGroup()?.getName().toString())
+            .replace("%RANK_PRIORITY%", permissionPlayer?.getHighestPermissionGroup()?.getPriority().toString())
     } catch (_: Exception) {
     }
 
