@@ -6,7 +6,7 @@ import org.bukkit.plugin.java.JavaPlugin
 
 class BukkitPluginMain : JavaPlugin() {
 
-    val replacePermissionModule = Bukkit.getPluginManager().getPlugin("SimpleCloud-Permission") != null
+    val replacePermissionModule by lazy { Bukkit.getPluginManager().getPlugin("SimpleCloud-Permission") != null }
     val replaceChatTabModule by lazy { Bukkit.getPluginManager().getPlugin("SimpleCloud-Chat-Tab") != null }
 
     override fun onEnable() {
