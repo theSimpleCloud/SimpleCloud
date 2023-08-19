@@ -6,9 +6,6 @@ authors:
 
 main: eu.thesimplecloud.module.placeholders.spigot.BukkitPluginMain
 
-commands:
-  test:
-
 depend:
   - SimpleCloud-Plugin
   - PlaceholderAPI
