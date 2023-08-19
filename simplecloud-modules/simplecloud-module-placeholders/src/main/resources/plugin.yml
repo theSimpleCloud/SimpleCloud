@@ -6,9 +6,10 @@ authors:
 
 main: eu.thesimplecloud.module.placeholders.spigot.BukkitPluginMain
 
-commands:
-  test:
-
 depend:
   - SimpleCloud-Plugin
   - PlaceholderAPI
+
+softdepend:
+  - SimpleCloud-Permission
+  - SimpleCloud-Chat-Tab
