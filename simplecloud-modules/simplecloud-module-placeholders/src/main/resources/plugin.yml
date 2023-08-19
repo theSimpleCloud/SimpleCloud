@@ -12,3 +12,7 @@ commands:
 depend:
   - SimpleCloud-Plugin
   - PlaceholderAPI
+
+softdepend:
+  - SimpleCloud-Permission
+  - SimpleCloud-Chat-Tab
