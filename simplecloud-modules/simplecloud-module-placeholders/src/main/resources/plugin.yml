@@ -1,0 +1,14 @@
+name: SimpleCloud-Placeholders
+version: 1.0
+authors:
+  - rlqu
+  - Panda
+
+main: eu.thesimplecloud.module.placeholders.spigot.BukkitPluginMain
+
+commands:
+  test:
+
+depend:
+  - SimpleCloud-Plugin
+  - PlaceholderAPI
