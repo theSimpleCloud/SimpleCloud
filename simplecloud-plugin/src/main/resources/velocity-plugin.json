@@ -1,9 +1,0 @@
-{
-  "id": "simplecloud_plugin",
-  "name": "SimpleCloud-Plugin",
-  "version": "1.0",
-  "authors": [
-    "Fllip"
-  ],
-  "main": "eu.thesimplecloud.plugin.proxy.velocity.CloudVelocityPlugin"
-}

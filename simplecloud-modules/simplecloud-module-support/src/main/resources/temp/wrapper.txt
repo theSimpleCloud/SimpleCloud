@@ -1,4 +1,0 @@
-  %WRAPPER_NAME%:
-    - host: %ADDRESS%
-    - maxSimultaneouslyStartingServices: %MAX_SIM_SERVICE%
-    - maxMemory: %MAX_MEMORY%

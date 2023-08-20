@@ -1,9 +1,0 @@
-{
-  "id": "simplecloud_proxy",
-  "name": "SimpleCloud-Proxy",
-  "version": "1.0",
-  "authors": [
-    "Fllip"
-  ],
-  "main": "eu.thesimplecloud.module.proxy.service.velocity.VelocityPluginMain"
-}

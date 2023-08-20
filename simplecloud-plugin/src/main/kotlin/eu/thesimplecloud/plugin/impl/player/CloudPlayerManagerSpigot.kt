@@ -102,7 +102,7 @@ class CloudPlayerManagerSpigot : AbstractServiceCloudPlayerManager() {
         )
     }
 
-    override fun sendActionbar(cloudPlayer: ICloudPlayer, actionbar: String) {
+    override fun sendActionbar(cloudPlayer: ICloudPlayer, actionbar: Component) {
         CloudPlugin.instance.connectionToManager.sendUnitQuery(
             PacketIOSendActionbarToCloudPlayer(
                 cloudPlayer,

@@ -1,9 +1,0 @@
-name: SimpleCloud-Plugin
-version: 1.0
-author: Wetterbericht
-
-main: eu.thesimplecloud.plugin.server.CloudSpigotPlugin
-
-api-version: 1.13
-
-commands:

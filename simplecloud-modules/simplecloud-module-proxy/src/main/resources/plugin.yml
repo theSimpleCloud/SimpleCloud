@@ -1,8 +1,0 @@
-name: SimpleCloud-Proxy
-version: 1.0
-author: Fllip
-
-main: eu.thesimplecloud.module.proxy.service.bungee.BungeePluginMain
-
-softdepend: [ SimpleCloud-Permissions, SimpleCloud-Chat-Tab ]
-depend: [ SimpleCloud-Plugin ]

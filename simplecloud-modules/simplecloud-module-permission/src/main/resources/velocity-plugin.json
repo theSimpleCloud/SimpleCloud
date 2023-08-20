@@ -1,9 +1,0 @@
-{
-  "id": "simplecloud_permission",
-  "name": "SimpleCloud-Permission",
-  "version": "1.0",
-  "authors": [
-    "Wetterbericht"
-  ],
-  "main": "eu.thesimplecloud.module.permission.service.velocity.VelocityPluginMain"
-}

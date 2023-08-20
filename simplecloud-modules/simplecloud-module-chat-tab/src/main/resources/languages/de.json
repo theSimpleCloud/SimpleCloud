@@ -1,6 +1,0 @@
-{
-  "module.chat-tab.command.chat-tab.group-not-exist": "§cDie Gruppe wurde nicht gefunden.",
-  "module.chat-tab.command.chat-tab.delay-set-success": "§7Setze die Verzögerung für %SERVICE% auf %DELAY% ticks.",
-  "module.chat-tab.command.chat-tab.no-player": "§cHierfür musst du ein Spieler sein.",
-  "module.chat-tab.command.chat-tab.get-group-failed": "§cKonnte die Gruppe nicht finden, auf dem du online bist."
-}

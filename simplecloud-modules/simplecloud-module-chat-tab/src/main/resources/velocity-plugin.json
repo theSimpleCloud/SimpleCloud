@@ -1,9 +1,0 @@
-{
-  "id": "simplecloud_chat_tab",
-  "name": "SimpleCloud-Chat-Tab",
-  "version": "1.0",
-  "authors": [
-    "KxmischesDomi"
-  ],
-  "main": "eu.thesimplecloud.module.prefix.service.velocity.VelocityPluginMain"
-}

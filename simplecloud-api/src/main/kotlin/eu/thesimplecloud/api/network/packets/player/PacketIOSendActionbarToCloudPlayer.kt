@@ -27,20 +27,26 @@ import eu.thesimplecloud.api.player.ICloudPlayer
 import eu.thesimplecloud.clientserverapi.lib.connection.IConnection
 import eu.thesimplecloud.clientserverapi.lib.packet.packettype.JsonPacket
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import java.util.*
 
 class PacketIOSendActionbarToCloudPlayer() : JsonPacket() {
 
-    constructor(cloudPlayer: ICloudPlayer, actionbar: String) : this() {
+    constructor(cloudPlayer: ICloudPlayer, component: Component) : this() {
+        val value = GsonComponentSerializer.gson().serialize(component)
         this.jsonLib.append("playerUniqueId", cloudPlayer.getUniqueId())
-            .append("actionbar", actionbar)
+            .append("component", value)
     }
 
     override suspend fun handle(connection: IConnection): ICommunicationPromise<Unit> {
         val playerUniqueId =
             this.jsonLib.getObject("playerUniqueId", UUID::class.java) ?: return contentException("playerUniqueId")
-        val actionbar = this.jsonLib.getString("actionbar") ?: return contentException("actionbar")
-        CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(playerUniqueId)?.sendActionBar(actionbar)
+        val componentString = this.jsonLib.getString("component") ?: return contentException("component")
+
+        val component = GsonComponentSerializer.gson().deserialize(componentString)
+
+        CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(playerUniqueId)?.sendActionBar(component)
         return unit()
     }
 

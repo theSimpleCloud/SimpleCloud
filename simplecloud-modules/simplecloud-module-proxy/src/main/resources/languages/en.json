@@ -1,8 +1,0 @@
-{
-  "module.proxy.command.reload": "Reloaded proxy config.",
-  "module.proxy.command.whitelist.proxy-not-found": "Proxy not found.",
-  "module.proxy.command.whitelist.already-whitelisted": "The specified player is already whitelisted.",
-  "module.proxy.command.whitelist.added": "Added player %PLAYER% to the whitelist.",
-  "module.proxy.command.whitelist.not-whitelisted": "The specified player is not whitelisted.",
-  "module.proxy.command.whitelist.removed": "Removed player %PLAYER% from the whitelist."
-}

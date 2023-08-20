@@ -1,5 +1,0 @@
-{
-  "module.cloudflare.proxy-config.loaded": "Loaded CloudFlare config for proxy %PROXY%",
-  "module.cloudflare.domain.active": "The CloudFlare Module is active for domain %DOMAIN%",
-  "module.cloudflare.domain.invalid": "The CloudFlare Module is not configured correctly for domain %DOMAIN%"
-}

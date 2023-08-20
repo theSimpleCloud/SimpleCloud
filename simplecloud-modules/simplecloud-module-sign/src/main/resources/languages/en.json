@@ -1,6 +1,0 @@
-{
-  "manager.command.sign.group-not-found": "§cGroup not found",
-  "manager.command.sign.layout-not-found": "§cLayout not found",
-  "manager.command.sign.layout-set": "§7Group §e%GROUP% §7is now using the layout §e%LAYOUT%§7",
-  "manager.command.sign.reload": "§aConfig reloaded"
-}
