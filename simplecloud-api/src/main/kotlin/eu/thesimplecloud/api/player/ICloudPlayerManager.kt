@@ -122,7 +122,7 @@ interface ICloudPlayerManager : ICacheList<ICloudPlayerUpdater, ICloudPlayer> {
      * @param cloudPlayer the [ICloudPlayer] that shall receive the [actionbar]
      * @param actionbar the actionbar content
      */
-    fun sendActionbar(cloudPlayer: ICloudPlayer, actionbar: String)
+    fun sendActionbar(cloudPlayer: ICloudPlayer, actionbar: Component)
 
     /**
      * Sends a tablist to the specified player
