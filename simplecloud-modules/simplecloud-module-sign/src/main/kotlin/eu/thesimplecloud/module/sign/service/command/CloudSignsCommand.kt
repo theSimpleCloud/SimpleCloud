@@ -33,6 +33,7 @@ import org.bukkit.block.Sign
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
+import org.bukkit.command.TabCompleter
 import org.bukkit.entity.Player
 
 /**
@@ -41,7 +42,7 @@ import org.bukkit.entity.Player
  * Time: 12:05
  * @author Frederick Baier
  */
-class CloudSignsCommand : CommandExecutor {
+class CloudSignsCommand : CommandExecutor, TabCompleter {
 
     private val thisService = CloudPlugin.instance.thisService()
 
@@ -56,7 +57,7 @@ class CloudSignsCommand : CommandExecutor {
             sender.sendMessage("§cUsage: /cloudsigns <add/remove> [group]")
             return true
         }
-        when (args[0].toLowerCase()) {
+        when (args[0].lowercase()) {
             "add" -> {
                 if (args.size != 2) {
                     sender.sendMessage("§cUsage: /cloudsigns <add> <group>")
@@ -108,5 +109,21 @@ class CloudSignsCommand : CommandExecutor {
             }
         }
         return true
+    }
+
+    override fun onTabComplete(
+        sender: CommandSender,
+        command: Command,
+        label: String,
+        args: Array<out String>
+    ): MutableList<String> {
+        return when (args.size) {
+            1 -> mutableListOf("add", "remove")
+            2 -> CloudAPI.instance.getCloudServiceGroupManager().getAllCachedObjects()
+                .filter { it.getServiceType() != ServiceType.PROXY }
+                .map { it.getName() }
+                .toMutableList()
+            else -> mutableListOf()
+        }
     }
 }

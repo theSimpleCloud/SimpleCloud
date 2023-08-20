@@ -42,8 +42,18 @@ class WrapperFileHandler : IFileHandler<IWrapperInfo> {
     }
 
     override fun loadAll(): Set<IWrapperInfo> =
-        directory.listFiles().mapNotNull { JsonLib.fromJsonFile(it)?.getObject(DefaultWrapperInfo::class.java) }.toSet()
+        directory.listFiles().mapNotNull { getWrapperInfoFromFile(it) }.toSet()
 
 
     fun getFile(wrapperInfo: IWrapperInfo): File = File(directory, wrapperInfo.getName() + ".json")
+
+    private fun getWrapperInfoFromFile(file: File): IWrapperInfo? {
+       return try {
+           JsonLib.fromJsonFile(file)?.getObject(DefaultWrapperInfo::class.java)
+       } catch (exception: IllegalArgumentException) {
+           file.delete()
+           null
+       }
+    }
+
 }

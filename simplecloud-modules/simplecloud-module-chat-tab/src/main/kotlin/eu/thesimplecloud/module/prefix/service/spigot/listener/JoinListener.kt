@@ -22,7 +22,11 @@
 
 package eu.thesimplecloud.module.prefix.service.spigot.listener
 
+import eu.thesimplecloud.module.prefix.manager.config.ChatTabConfig
+import eu.thesimplecloud.module.prefix.service.spigot.BukkitPluginMain
 import eu.thesimplecloud.module.prefix.service.tablist.TablistHelper
+import eu.thesimplecloud.plugin.startup.CloudPlugin
+import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
@@ -33,13 +37,15 @@ import org.bukkit.event.player.PlayerJoinEvent
  * Date: 19.12.2020
  * Time: 15:36
  */
-class JoinListener : Listener {
+class JoinListener(val plugin: BukkitPluginMain) : Listener {
 
     @EventHandler
     fun handleJoin(event: PlayerJoinEvent) {
-        val player = event.player
 
-        TablistHelper.updateScoreboardForAllPlayers()
+        Bukkit.getScheduler().runTaskLater(plugin, Runnable {
+            TablistHelper.updateScoreboardForAllPlayers()
+        }, ChatTabConfig.getConfig().delay[CloudPlugin.instance.thisService().getGroupName()] ?: 0L)
+
     }
 
 }

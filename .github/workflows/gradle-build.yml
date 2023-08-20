@@ -26,6 +26,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+
+    - name: Make gradlew executable
+      run: chmod +x ./gradlew
+    
     - name: Set up JDK 8
       uses: actions/setup-java@v3
       with:
@@ -35,20 +39,25 @@ jobs:
     - name: Build with Gradle
       uses: gradle/gradle-build-action@v2
       with:
-        arguments: build
+        arguments: shadowJar
         
     - name: Copy files
       run: |
         mkdir -p temp
         mkdir temp/modules/
         mkdir temp/storage/
+        mkdir temp/storage/pluginJars/
         cp start-files/*.* temp/
-        cp simplecloud-modules/**/build/libs/*.jar temp/modules/
+        cp simplecloud-modules/**/build/libs/SimpleCloud-*.jar temp/modules/
         cp simplecloud-runner/build/libs/runner.jar temp/runner.jar
         cp simplecloud-base/build/libs/base.jar temp/storage/base.jar
+        cp simplecloud-plugin/build/libs/*.jar temp/storage/pluginJars/
+        cp simplecloud-dependency-loader/build/libs/dependency-loader.jar temp/storage/dependency-loader.jar
+        cp simplecloud-launcher/build/libs/launcher.jar temp/launcher.jar
         rm temp/modules/SimpleCloud-Chat+Tab.jar
         rm temp/modules/SimpleCloud-ServiceSelection.jar
         rm temp/modules/SimpleCloud-CloudFlare.jar
+        rm temp/modules/SimpleCloud-Placeholders.jar
     
     - name: Upload zip
       uses: actions/upload-artifact@v3

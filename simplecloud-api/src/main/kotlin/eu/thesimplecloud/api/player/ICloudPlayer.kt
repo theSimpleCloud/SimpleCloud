@@ -98,7 +98,17 @@ interface ICloudPlayer : ICacheValue<ICloudPlayerUpdater>, IOfflineCloudPlayer, 
     /**
      * Sends a action bar to this player
      */
-    fun sendActionBar(actionbar: String) = CloudAPI.instance.getCloudPlayerManager().sendActionbar(this, actionbar)
+    @Deprecated("Use sendActionBar with component instead",
+        ReplaceWith("sendActionBar(Component.text(actionbar))", "net.kyori.adventure.text.Component")
+    )
+    fun sendActionBar(actionbar: String) {
+        sendActionBar(Component.text(actionbar))
+    }
+
+    /**
+     * Sends a action bar to this player
+     */
+    fun sendActionBar(actionbar: Component) = CloudAPI.instance.getCloudPlayerManager().sendActionbar(this, actionbar)
 
     /**
      * Sends a tablist to this player
@@ -107,6 +117,13 @@ interface ICloudPlayer : ICacheValue<ICloudPlayerUpdater>, IOfflineCloudPlayer, 
      */
     fun sendTablist(headers: Array<String>, footers: Array<String>) {
         CloudAPI.instance.getCloudPlayerManager().sendTablist(this, headers, footers)
+    }
+
+    /**
+     * Returns the ping of the player
+     */
+    fun getPing(): ICommunicationPromise<Int> {
+        return CloudAPI.instance.getCloudPlayerManager().getPlayerPing(this)
     }
 
     /**

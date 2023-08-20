@@ -3,12 +3,12 @@ package eu.thesimplecloud.module.npc.plugin.npc
 import com.github.juliarn.npclib.api.Platform
 import com.github.juliarn.npclib.bukkit.BukkitPlatform
 import com.github.juliarn.npclib.bukkit.BukkitWorldAccessor
-import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.module.npc.lib.config.NPCModuleConfig
 import eu.thesimplecloud.module.npc.plugin.NPCPlugin
 import eu.thesimplecloud.module.npc.plugin.npc.type.AbstractServerNPC
 import eu.thesimplecloud.module.npc.plugin.npc.type.MobNPC
 import eu.thesimplecloud.module.npc.plugin.npc.type.PlayerNPC
+import eu.thesimplecloud.plugin.startup.CloudPlugin
 import org.bukkit.Bukkit
 import org.bukkit.World
 import org.bukkit.entity.Player
@@ -33,8 +33,10 @@ class ServerNPCHandler(
     val serverNPC: MutableMap<String, AbstractServerNPC> = mutableMapOf()
 
     fun createNPCs() {
-        config.npcsConfig.npcs.forEach { npcInformation ->
-            val npc: AbstractServerNPC = if (npcInformation.isMob) {
+        config.npcsConfig.npcs
+            .filter { isRightService(it.createdInThisGroup) }
+            .forEach { npcInformation ->
+            val npc = if (npcInformation.isMob) {
                 MobNPC(this, npcInformation)
             } else {
                 PlayerNPC(this, npcInformation)
@@ -46,9 +48,9 @@ class ServerNPCHandler(
             this.serverNPC[npcInformation.id] = npc
 
             if (!npcInformation.isMob) {
-                val playerNPC: PlayerNPC = npc as PlayerNPC
+                val playerNPC = npc as PlayerNPC
                 Bukkit.getOnlinePlayers().forEach {
-                    this.updateScoreboardTeam(it.scoreboard, playerNPC.npc.profile().name())
+                    updateScoreboardTeam(it.scoreboard, playerNPC.npc.profile().name())
                 }
             }
         }
@@ -64,17 +66,18 @@ class ServerNPCHandler(
         this.serverNPC.clear()
     }
 
-    fun updateHologramsOnGroup(group: ICloudServiceGroup) {
-        this.serverNPC.forEach {
-            if (it.value.config.targetGroup == group.getName())
-                it.value.updateHolograms(group)
-        }
-    }
-
     fun updateScoreboardTeam(scoreboard: Scoreboard, npcName: String) {
         var team = scoreboard.getTeam("simpleCloudNpc")
-        if (team == null) team = scoreboard.registerNewTeam("simpleCloudNpc")
+            ?: scoreboard.registerNewTeam("simpleCloudNpc")
         team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER)
         team.addEntry(npcName)
+    }
+
+    private fun isRightService(serviceName: String?): Boolean {
+        if (serviceName == null)
+            return true
+        val thisService = CloudPlugin.instance.thisService()
+        return thisService.getName() == serviceName
+                || thisService.getGroupName() == serviceName
     }
 }

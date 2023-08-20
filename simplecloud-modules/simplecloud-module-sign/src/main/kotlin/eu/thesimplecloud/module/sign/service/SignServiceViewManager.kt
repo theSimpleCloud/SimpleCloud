@@ -33,7 +33,10 @@ import org.bukkit.plugin.java.JavaPlugin
  * Time: 18:53
  * @author Frederick Baier
  */
-class SignServiceViewManager(plugin: JavaPlugin) : ServiceViewManager<BukkitCloudSign>(plugin) {
+class SignServiceViewManager(plugin: JavaPlugin) : ServiceViewManager<BukkitCloudSign>(
+    plugin,
+    SignModuleConfig.getConfig().cloudSignSettingsContainer.updateSignInterval
+) {
 
     override fun performUpdate() {
         super.performUpdate()

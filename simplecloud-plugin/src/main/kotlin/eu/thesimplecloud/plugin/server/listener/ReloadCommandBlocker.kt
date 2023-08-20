@@ -23,8 +23,10 @@
 package eu.thesimplecloud.plugin.server.listener
 
 import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerCommandPreprocessEvent
+import org.bukkit.event.server.ServerCommandEvent
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,20 +36,30 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent
  */
 class ReloadCommandBlocker : Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     fun handle(event: PlayerCommandPreprocessEvent) {
         val message = event.message
         val player = event.player
-        if (message.equals("/rl", true) ||
-            message.equals("/reload", true) ||
-            message.equals("/rl confirm", true) ||
-            message.equals("/reload confirm", true)
-        ) {
+        if (isCommandBlocked("/$message")) {
             if (player.hasPermission("bukkit.command.reload")) {
                 event.isCancelled = true
                 player.sendMessage("§cCloud-Servers cannot be reloaded")
             }
         }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    fun handle(event: ServerCommandEvent) {
+        if (isCommandBlocked(event.command)) {
+            event.isCancelled = true
+        }
+    }
+
+    private fun isCommandBlocked(message: String): Boolean {
+        return message.equals("rl", true) ||
+                message.equals("reload", true) ||
+                message.equals("rl confirm", true) ||
+                message.equals("reload confirm", true)
     }
 
 }

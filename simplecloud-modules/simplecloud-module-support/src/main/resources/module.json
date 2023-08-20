@@ -1,0 +1,10 @@
+{
+  "name": "SimpleCloud-Support",
+  "author": "MrManHD",
+  "mainClass": "eu.thesimplecloud.module.support.manager.SupportModule",
+  "moduleCopyType": "NONE",
+  "repositories": [],
+  "dependencies": [],
+  "depend": [],
+  "softDepend": []
+}

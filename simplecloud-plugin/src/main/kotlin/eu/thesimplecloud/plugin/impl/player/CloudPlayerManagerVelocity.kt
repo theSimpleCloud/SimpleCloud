@@ -166,7 +166,7 @@ class CloudPlayerManagerVelocity : AbstractCloudPlayerManagerProxy() {
         getPlayerByCloudPlayer(cloudPlayer)?.spoofChatInput("/$command")
     }
 
-    override fun sendActionbar(cloudPlayer: ICloudPlayer, actionbar: String) {
+    override fun sendActionbar(cloudPlayer: ICloudPlayer, actionbar: Component) {
         if (cloudPlayer.getConnectedProxyName() != CloudPlugin.instance.thisServiceName) {
             CloudPlugin.instance.connectionToManager.sendUnitQuery(
                 PacketIOSendActionbarToCloudPlayer(
@@ -176,7 +176,7 @@ class CloudPlayerManagerVelocity : AbstractCloudPlayerManagerProxy() {
             )
             return
         }
-        getPlayerByCloudPlayer(cloudPlayer)?.sendActionBar(Component.text(actionbar))
+        getPlayerByCloudPlayer(cloudPlayer)?.sendActionBar(actionbar)
     }
 
     override fun sendTablist(cloudPlayer: ICloudPlayer, headers: Array<String>, footers: Array<String>) {
@@ -245,6 +245,10 @@ class CloudPlayerManagerVelocity : AbstractCloudPlayerManagerProxy() {
         }
         player.createConnectionRequest(server).fireAndForget()
         return CommunicationPromise.of(Unit)
+    }
+
+    override fun getPlayerPing(cloudPlayer: ICloudPlayer): ICommunicationPromise<Int> {
+        return CommunicationPromise.of(getPlayerByCloudPlayer(cloudPlayer)?.ping?.toInt() ?: -1)
     }
 
     private fun getPlayerByCloudPlayer(cloudPlayer: ICloudPlayer): Player? {

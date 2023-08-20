@@ -1,0 +1,4 @@
+  %JAR_NAME%:
+    - url: %URL_NAME%
+    - serviceType: %SERVICE_TYPE%
+    - paperClip: %PAPER_CLIP%

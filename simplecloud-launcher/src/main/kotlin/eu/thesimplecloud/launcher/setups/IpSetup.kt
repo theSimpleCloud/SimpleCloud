@@ -42,6 +42,7 @@ class IpSetup : ISetup {
         val config = LauncherConfig(
             string,
             launcherConfig.port,
+            50000,
             launcherConfig.language,
             launcherConfig.directoryPaths
         )

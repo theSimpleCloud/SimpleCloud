@@ -160,7 +160,7 @@ class CloudPlayerManagerBungee : AbstractCloudPlayerManagerProxy() {
         getProxiedPlayerByCloudPlayer(cloudPlayer)?.chat("/$command")
     }
 
-    override fun sendActionbar(cloudPlayer: ICloudPlayer, actionbar: String) {
+    override fun sendActionbar(cloudPlayer: ICloudPlayer, actionbar: Component) {
         if (cloudPlayer.getConnectedProxyName() != CloudPlugin.instance.thisServiceName) {
             CloudPlugin.instance.connectionToManager.sendUnitQuery(
                 PacketIOSendActionbarToCloudPlayer(
@@ -173,7 +173,7 @@ class CloudPlayerManagerBungee : AbstractCloudPlayerManagerProxy() {
 
         getProxiedPlayerByCloudPlayer(cloudPlayer)?.sendMessage(
             ChatMessageType.ACTION_BAR,
-            Component.text(actionbar).toBaseComponent()
+            actionbar.toBaseComponent()
         )
     }
 
@@ -243,6 +243,10 @@ class CloudPlayerManagerBungee : AbstractCloudPlayerManagerProxy() {
         }
         proxiedPlayer.connect(serverInfo)
         return CommunicationPromise.of(Unit)
+    }
+
+    override fun getPlayerPing(cloudPlayer: ICloudPlayer): ICommunicationPromise<Int> {
+        return CommunicationPromise.of(getProxiedPlayerByCloudPlayer(cloudPlayer)?.ping ?: -1)
     }
 
     private fun getProxiedPlayerByCloudPlayer(cloudPlayer: ICloudPlayer): ProxiedPlayer? {

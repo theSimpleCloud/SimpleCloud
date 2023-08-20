@@ -20,8 +20,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-configurations {
-    jar.archiveName = 'SimpleCloud-Rest.jar'
+shadowJar {
+    archiveFileName.set("SimpleCloud-Rest.jar")
 }
 
 repositories {
@@ -29,25 +29,18 @@ repositories {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib"
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-    implementation 'io.javalin:javalin:3.13.7'
-    implementation 'com.auth0:java-jwt:3.16.0'
-    implementation 'com.github.kmehrunes:javalin-jwt:v0.2'
-    implementation 'org.slf4j:slf4j-simple:1.7.36'
-    implementation "org.slf4j:slf4j-api:1.8.0-beta4"
-    implementation(project(":simplecloud-api"))
-    implementation(project(":simplecloud-launcher")) {
+    compileOnly "org.jetbrains.kotlin:kotlin-stdlib"
+    testApi group: 'junit', name: 'junit', version: '4.12'
+    compileOnly 'io.javalin:javalin:3.13.7'
+    compileOnly 'com.auth0:java-jwt:3.16.0'
+    compileOnly 'com.github.kmehrunes:javalin-jwt:v0.2'
+    compileOnly 'org.slf4j:slf4j-simple:1.7.36'
+    compileOnly "org.slf4j:slf4j-api:1.8.0-beta4"
+    compileOnly(project(":simplecloud-api"))
+    compileOnly(project(":simplecloud-launcher")) {
         transitive = false
     }
     // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
-    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
-    implementation(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion)
-}
-
-jar {
-    // This line of code recursively collects and copies all of a project's files
-    // and adds them to the JAR itself. One can extend this task, to skip certain
-    // files or particular types at will
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    compileOnly group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
+    compileOnly(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion)
 }

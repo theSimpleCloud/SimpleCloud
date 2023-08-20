@@ -28,6 +28,7 @@ import eu.thesimplecloud.module.sign.lib.group.GroupLayoutsContainer
 import eu.thesimplecloud.module.sign.lib.layout.LayoutType
 import eu.thesimplecloud.module.sign.lib.layout.SignLayout
 import eu.thesimplecloud.module.sign.lib.layout.SignLayoutContainer
+import eu.thesimplecloud.module.sign.lib.settings.CloudSignSettingsContainer
 import eu.thesimplecloud.module.sign.lib.sign.CloudSignContainer
 
 /**
@@ -39,7 +40,8 @@ import eu.thesimplecloud.module.sign.lib.sign.CloudSignContainer
 class SignModuleConfig(
     val signLayoutContainer: SignLayoutContainer,
     val signContainer: CloudSignContainer,
-    val groupsLayoutContainer: GroupLayoutsContainer
+    val groupsLayoutContainer: GroupLayoutsContainer,
+    val cloudSignSettingsContainer: CloudSignSettingsContainer
 ) {
 
     fun getSignLayoutForGroup(layoutType: LayoutType, groupName: String): SignLayout {

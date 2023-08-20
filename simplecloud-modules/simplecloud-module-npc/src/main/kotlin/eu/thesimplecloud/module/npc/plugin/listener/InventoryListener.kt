@@ -17,7 +17,7 @@ class InventoryListener(
     @EventHandler
     fun onClick(event: InventoryInteractEvent) {
         val inventory = event.inventory
-        this.npcPlugin.inventoryHandler.inventorys.find { it.inventory == inventory } ?: return
+        this.npcPlugin.inventoryHandler.inventories.find { it.inventory == inventory } ?: return
         event.isCancelled = true
     }
 
@@ -25,7 +25,7 @@ class InventoryListener(
     fun onClick(event: InventoryClickEvent) {
         val inventory = event.inventory
         val player = event.whoClicked as Player
-        val inventoryData = this.npcPlugin.inventoryHandler.inventorys.find { it.inventory == inventory } ?: return
+        val inventoryData = this.npcPlugin.inventoryHandler.inventories.find { it.inventory == inventory } ?: return
 
         event.isCancelled = true
         val currentItem = event.currentItem ?: return

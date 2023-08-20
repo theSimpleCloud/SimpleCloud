@@ -47,7 +47,8 @@ class ProfileFile {
             .forEach {
                 val pathName = it.pathString.replace(".json", "")
                 val file = File(it.toUri())
-                jsonLib.append(pathName, JsonLib.fromJsonFile(file)!!.jsonElement)
+                val jsonFile = JsonLib.fromJsonFile(file) ?: return@forEach
+                jsonLib.append(pathName, jsonFile.jsonElement)
             }
 
         pathStream.close()

@@ -32,6 +32,7 @@ import eu.thesimplecloud.clientserverapi.client.NettyClient
 import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.launcher.external.module.LoadedModuleFileContent
 import eu.thesimplecloud.launcher.external.module.ModuleCopyType
+import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.launcher.utils.FileCopier
 import org.apache.commons.io.FileUtils
 import java.io.File
@@ -95,7 +96,8 @@ class ServiceDirectory(private val cloudService: ICloudService) {
         }
 
         val cloudPluginFile = File(this.serviceTmpDirectory, "/plugins/SimpleCloud-Plugin.jar")
-        FileCopier.copyFileOutOfJar(cloudPluginFile, "/SimpleCloud-Plugin.jar")
+        val version = Launcher.instance.getCurrentVersion().replace("-SNAPSHOT", "")
+        File(DirectoryPaths.paths.storagePath + "pluginJars/SimpleCloud-Plugin-$version.jar").copyTo(cloudPluginFile, true)
 
         generateServiceFile()
     }

@@ -20,34 +20,32 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.module.prefix.config
+package eu.thesimplecloud.module.prefix.manager.config
 
-import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.property.IProperty
+import eu.thesimplecloud.jsonlib.JsonLib
+import java.io.File
 
 /**
  * Created by IntelliJ IDEA.
- * User: Philipp.Eistrach
- * Date: 19.12.2020
- * Time: 13:36
+ * Date: 10.10.2020
+ * Time: 17:11
+ * @author Frederick Baier
  */
-data class Config(
-    val chatFormat: String = "%PLAYER% §8» §7%MESSAGE%",
-    val informationList: List<TablistInformation> = listOf(TablistInformation())
-) {
-    companion object {
+object ChatTabModuleConfigPersistence {
 
-        @Volatile
-        private var property: IProperty<Config>? = null
+    private val configFile = File("modules/chat+tablist/config.json")
 
-        fun getConfig(): Config {
-            if (this.property == null) {
-                this.property =
-                    CloudAPI.instance.getGlobalPropertyHolder().requestProperty<Config>("prefix-config").getBlocking()
-            }
-            return this.property!!.getValue()
-        }
+    fun save(chatTabConfig: ChatTabConfig) {
+        JsonLib.fromObject(chatTabConfig).saveAsFile(configFile)
+    }
 
+    fun load(): ChatTabConfig {
+        if (!configFile.exists()) return createDefaultConfig()
+        return JsonLib.fromJsonFile(configFile)!!.getObject(ChatTabConfig::class.java)
+    }
+
+    private fun createDefaultConfig(): ChatTabConfig {
+        return ChatTabConfig()
     }
 
 }

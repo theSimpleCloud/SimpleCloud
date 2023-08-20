@@ -27,7 +27,7 @@ import eu.thesimplecloud.api.property.IProperty
 import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.module.permission.PermissionPool
-import eu.thesimplecloud.module.prefix.config.TablistInformation
+import eu.thesimplecloud.module.prefix.manager.config.TablistInformation
 import eu.thesimplecloud.module.prefix.service.tablist.ProxyTablistHelper
 import eu.thesimplecloud.module.proxy.config.Config
 import eu.thesimplecloud.module.proxy.config.DefaultConfig
@@ -74,7 +74,7 @@ object ProxyHandler {
 
     fun getTabListConfigurations(): List<TablistConfiguration> {
         return configHolder.getValue().tablistConfigurations.filter {
-            it.proxies.mapToLowerCase().contains(CloudPlugin.instance.thisService().getGroupName().toLowerCase())
+            it.proxies.mapToLowerCase().contains(CloudPlugin.instance.thisService().getGroupName().lowercase())
         }
     }
 
@@ -93,7 +93,6 @@ object ProxyHandler {
     }
 
     fun replaceString(message: String): String {
-
         return message
             .replace("%ONLINE_PLAYERS%", getOnlinePlayers().toString())
             .replace("%MAX_PLAYERS%", CloudPlugin.instance.thisService().getMaxPlayers().toString())
@@ -107,10 +106,13 @@ object ProxyHandler {
         return replaceString(message)
             .replace("%SERVER%", server.getName())
             .replace("%DISPLAYNAME%", server.getDisplayName())
+            .replace("%SERVER_GROUP%", server.getGroupName())
+            .replace("%LOCAL_ONLINE_PLAYERS%", server.getOnlineCount().toString())
     }
 
     fun replaceString(message: String, server: ICloudService, uuid: UUID): String {
-        var replacedString = replaceString(message, server);
+        val cloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(uuid)
+        var replacedString = replaceString(message, server)
 
         val groupName = getPermissionsGroupName(uuid)
         if (groupName != null) replacedString = replacedString.replace("%GROUP%", groupName)
@@ -122,6 +124,8 @@ object ProxyHandler {
             .replace("%PRIORITY%", tablistInformation.priority.toString())
             .replace("%PREFIX%", tablistInformation.prefix)
             .replace("%SUFFIX%", tablistInformation.suffix)
+            .replace("%PING%", (cloudPlayer?.getPing()?.get() ?: -1).toString())
+            .replace("%PLAYER_NAME%", cloudPlayer?.getName() ?: "unknown")
     }
 
     private fun getTablistInformation(uuid: UUID): TablistInformation? {

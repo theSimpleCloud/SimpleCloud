@@ -122,7 +122,7 @@ interface ICloudPlayerManager : ICacheList<ICloudPlayerUpdater, ICloudPlayer> {
      * @param cloudPlayer the [ICloudPlayer] that shall receive the [actionbar]
      * @param actionbar the actionbar content
      */
-    fun sendActionbar(cloudPlayer: ICloudPlayer, actionbar: String)
+    fun sendActionbar(cloudPlayer: ICloudPlayer, actionbar: Component)
 
     /**
      * Sends a tablist to the specified player
@@ -205,6 +205,16 @@ interface ICloudPlayerManager : ICacheList<ICloudPlayerUpdater, ICloudPlayer> {
      * - [NoSuchServiceException] if no lobby was available to send the player to.
      */
     fun sendPlayerToLobby(cloudPlayer: ICloudPlayer): ICommunicationPromise<Unit>
+
+    /**
+     * Returns the current ping of a [cloudPlayer]
+     * @return a promise that is completed when the [cloudPlayer] is available, or
+     * when an exception is encountered. [ICommunicationPromise.isSuccess] indicates success
+     * or failure.
+     * The promise will fail with:
+     * - [NoSuchPlayerException] if the player cannot be found on the proxy.
+     */
+    fun getPlayerPing(cloudPlayer: ICloudPlayer): ICommunicationPromise<Int>
 
     /**
      * Returns the current location of this player

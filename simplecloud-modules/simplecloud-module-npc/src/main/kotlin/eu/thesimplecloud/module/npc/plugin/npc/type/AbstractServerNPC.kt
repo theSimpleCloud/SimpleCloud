@@ -1,6 +1,7 @@
 package eu.thesimplecloud.module.npc.plugin.npc.type
 
 import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceState
 import eu.thesimplecloud.api.servicegroup.ICloudServiceGroup
 import eu.thesimplecloud.module.npc.lib.config.npc.CloudNPCData
@@ -9,10 +10,13 @@ import eu.thesimplecloud.module.npc.lib.extension.translateColorCodesFromString
 import eu.thesimplecloud.module.npc.plugin.NPCPlugin
 import eu.thesimplecloud.module.npc.plugin.npc.ServerNPCHandler
 import eu.thesimplecloud.plugin.extension.getCloudPlayer
+import eu.thesimplecloud.plugin.extension.syncBukkit
+import eu.thesimplecloud.plugin.server.CloudSpigotPlugin
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.Player
+import org.bukkit.metadata.FixedMetadataValue
 
 abstract class AbstractServerNPC(
     val serverNPCHandler: ServerNPCHandler,
@@ -26,16 +30,21 @@ abstract class AbstractServerNPC(
     fun spawnHolograms() {
         val locationData = this.config.locationData
 
-        val location = Location(Bukkit.getWorld(locationData.world), locationData.x, locationData.y + this.getEntityHigh(), locationData.z)
+        val location = Location(
+            Bukkit.getWorld(locationData.world),
+            locationData.x,
+            (locationData.y + this.getEntityHigh()) - 0.3,
+            locationData.z
+        )
 
-        this.config.lines.forEach { _ ->
-            val armorStand = location.world?.spawn(location.add(0.0, 0.30, 0.0), ArmorStand::class.java)
+        repeat(this.config.lines.size) {
+            val armorStand = location.world?.spawn(location.add(0.0, 0.3, 0.0), ArmorStand::class.java)
             armorStand?.setGravity(false)
-            armorStand?.isInvulnerable = true
-            armorStand?.isInvisible = true
             armorStand?.isMarker = true
+            armorStand?.isInvulnerable = true
             armorStand?.isCustomNameVisible = true
             armorStand?.customName = "Loading"
+            armorStand?.isVisible = false
 
             if (armorStand != null) {
                 this.holograms.add(armorStand)
@@ -43,20 +52,28 @@ abstract class AbstractServerNPC(
                 println("Can not spawn hologram for the npc ${this.config.id}")
             }
         }
-        val serviceGroupByName =
-            CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(this.config.targetGroup) ?: return
-        this.updateHolograms(serviceGroupByName)
+        handleHologramUpdating(this.config.targetGroup)
     }
 
-    fun updateHolograms(group: ICloudServiceGroup) {
+    fun handleHologramUpdating(serviceName: String) {
+        val serviceGroup = CloudAPI.instance.getCloudServiceGroupManager()
+            .getServiceGroupByName(serviceName)
+        serviceGroup?.let { updateHolograms(it.getOnlinePlayerCount(), it.getOnlineServiceCount(), it.getTemplateName()) }
+
+        val cloudService = CloudAPI.instance.getCloudServiceManager()
+            .getCloudServiceByName(serviceName)
+        cloudService?.let { updateHolograms(it.getOnlineCount(), 1, it.getTemplateName()) }
+    }
+
+    private fun updateHolograms(onlinePlayersCount: Int, servicesOnlineCount: Int, templateName: String) {
         var i = 0
         this.holograms.forEach { armorStand ->
             armorStand.customName = this.config.lines[i]
-                .replace("%PLAYERS_ONLINE%", "${group.getAllServices().sumOf { it.getOnlineCount() }}")
-                .replace("%SERVICES_ONLINE%", "${group.getOnlineServiceCount()}")
+                .replace("%PLAYERS_ONLINE%", onlinePlayersCount.toString())
+                .replace("%SERVICES_ONLINE%", servicesOnlineCount.toString())
                 .replace("%DISPLAYNAME%", this.config.displayName)
-                .replace("%GROUP%", this.config.targetGroup)
-                .replace("%TEAMPLATE%", group.getTemplateName())
+                .replace("%SERVICE%", this.config.targetGroup)
+                .replace("%TEMPLATE%", templateName)
                 .translateColorCodesFromString()
             i++
         }
@@ -69,38 +86,56 @@ abstract class AbstractServerNPC(
     }
 
     fun handlingInteract(player: Player, rightClicked: Boolean) {
+        val action = this.config.npcAction
         if (rightClicked) {
-            if (this.config.npcAction.rightClick == Action.QUICK_JOIN)
-                handleQuickJoin(player)
-            else
-                handleInventory(player)
-            return
+            handleClickInteract(player, action.rightClick)
+        } else {
+            handleClickInteract(player, action.leftClick)
         }
-        if (this.config.npcAction.leftClick == Action.QUICK_JOIN)
-            handleQuickJoin(player)
-        else
-            handleInventory(player)
+    }
+
+    private fun handleClickInteract(player: Player, clickAction: Action){
+        when (clickAction) {
+            Action.QUICK_JOIN -> handleQuickJoin(player)
+            Action.OPEN_INVENTORY -> handleInventory(player)
+            Action.RUN_COMMAND -> handleRunCommand(player)
+        }
+    }
+
+    private fun handleRunCommand(player: Player) {
+        val runCommandName = this.config.npcSettings.mobNPCSettings.runCommandName ?: return
+        Bukkit.getScheduler().runTask(NPCPlugin.instance, kotlinx.coroutines.Runnable {
+            Bukkit.dispatchCommand(player, runCommandName)
+        })
     }
 
     private fun handleQuickJoin(player: Player) {
-        val serviceGroup =
-            CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(this.config.targetGroup) ?: return
+        val serviceName = this.config.targetGroup
+        val serviceGroup = CloudAPI.instance.getCloudServiceGroupManager()
+            .getServiceGroupByName(serviceName)
+        serviceGroup?.let { handleGroupQuickJoin(player, it) }
 
-        val iCloudServiceList =
-            serviceGroup.getAllServices()
-                .filter { it.getState() == ServiceState.VISIBLE }
-                .filter { !it.isFull() }
-                .sortedBy { it.getOnlineCount() }
+        val cloudService = CloudAPI.instance.getCloudServiceManager()
+            .getCloudServiceByName(serviceName)
+        cloudService?.let { handleServiceQuickJoin(player, it) }
+    }
 
-        val iCloudService = iCloudServiceList.firstOrNull()
+    private fun handleServiceQuickJoin(player: Player, cloudService: ICloudService) {
         val cloudPlayer = player.getCloudPlayer()
+        cloudPlayer.connect(cloudService)
+    }
 
-        if (iCloudService == null) {
+    private fun handleGroupQuickJoin(player: Player, serviceGroup: ICloudServiceGroup) {
+        val cloudPlayer = player.getCloudPlayer()
+        val randomService = serviceGroup.getAllServices()
+            .filter { it.getState() == ServiceState.VISIBLE }
+            .firstOrNull { !it.isFull() }
+
+        if (randomService == null) {
             cloudPlayer.sendProperty("service.interact.no.free.service.found")
             return
         }
-
-        cloudPlayer.connect(iCloudService)
+        cloudPlayer.connect(randomService)
     }
 
     private fun handleInventory(player: Player) {

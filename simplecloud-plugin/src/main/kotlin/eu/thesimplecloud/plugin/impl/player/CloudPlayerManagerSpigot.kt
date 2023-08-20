@@ -102,7 +102,7 @@ class CloudPlayerManagerSpigot : AbstractServiceCloudPlayerManager() {
         )
     }
 
-    override fun sendActionbar(cloudPlayer: ICloudPlayer, actionbar: String) {
+    override fun sendActionbar(cloudPlayer: ICloudPlayer, actionbar: Component) {
         CloudPlugin.instance.connectionToManager.sendUnitQuery(
             PacketIOSendActionbarToCloudPlayer(
                 cloudPlayer,
@@ -178,6 +178,10 @@ class CloudPlayerManagerSpigot : AbstractServiceCloudPlayerManager() {
 
     override fun sendPlayerToLobby(cloudPlayer: ICloudPlayer): ICommunicationPromise<Unit> {
         return CloudPlugin.instance.connectionToManager.sendQuery(PacketIOSendPlayerToLobby(cloudPlayer.getUniqueId()))
+    }
+
+    override fun getPlayerPing(cloudPlayer: ICloudPlayer): ICommunicationPromise<Int> {
+        return CommunicationPromise.of(getPlayerByCloudPlayer(cloudPlayer)?.ping ?: -1)
     }
 
     private fun getLocationBySimpleLocation(simpleLocation: SimpleLocation): Location? {

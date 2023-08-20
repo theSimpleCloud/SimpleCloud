@@ -56,6 +56,10 @@ open class ServerGroupSetup : DefaultGroupSetup(), ISetup {
             Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-group.question.name.too-long")
             return false
         }
+        if (name.isEmpty()) {
+            Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-group.question.name.is-empty")
+            return false
+        }
         Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-group.question.name.success")
         return true
     }
