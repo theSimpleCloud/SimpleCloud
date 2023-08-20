@@ -156,7 +156,7 @@ class CloudPlayerManagerImpl : AbstractCloudPlayerManager() {
         proxyClient?.sendUnitQuery(PacketIOCloudPlayerForceCommandExecution(cloudPlayer, command))
     }
 
-    override fun sendActionbar(cloudPlayer: ICloudPlayer, actionbar: String) {
+    override fun sendActionbar(cloudPlayer: ICloudPlayer, actionbar: Component) {
         val proxyClient = getProxyClientOfCloudPlayer(cloudPlayer)
         proxyClient?.sendUnitQuery(PacketIOSendActionbarToCloudPlayer(cloudPlayer, actionbar))
     }
