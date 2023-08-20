@@ -24,6 +24,7 @@ package eu.thesimplecloud.runner
 
 import eu.thesimplecloud.runner.dependency.AdvancedCloudDependency
 import eu.thesimplecloud.runner.dependency.DependencyLoaderStartup
+import eu.thesimplecloud.runner.utils.Downloader
 import java.io.File
 import java.net.URL
 import java.net.URLClassLoader
@@ -36,16 +37,25 @@ import java.net.URLClassLoader
  */
 
 private val copiedDependencyLoaderFile = File("storage", "dependency-loader.jar")
+private val copiedLauncherFile = File("launcher.jar")
 private val copiedSimpleCloudPluginFile = File("storage/pluginJars", "SimpleCloud-Plugin-${getCloudVersion()}.jar")
 
 fun main(args: Array<String>) {
-    val version = getCloudVersion()
+    val version = getCloudVersion().take(getCloudVersion().length - 9)
+
     if (!version.contains("SNAPSHOT")) {
         if (!copiedDependencyLoaderFile.exists())
             downloadJarFromDependency("simplecloud-dependency-loader", copiedDependencyLoaderFile)
         if (!copiedSimpleCloudPluginFile.exists())
             downloadJarFromDependency("simplecloud-plugin", copiedSimpleCloudPluginFile)
+        if (!copiedLauncherFile.exists())
+            Downloader().userAgentDownload(
+                "https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-launcher/$version/simplecloud-launcher-$version-all.jar",
+                copiedLauncherFile
+            )
     }
+
+   // Downloader().userAgentDownload(url, copiedLauncherFile)
 
     val dependencyLoaderStartup = DependencyLoaderStartup()
 
@@ -55,7 +65,7 @@ fun main(args: Array<String>) {
     val classLoader = initClassLoader(loadedDependencyUrls)
     Thread.currentThread().contextClassLoader = classLoader
 
-    executeDependencyLoaderMain(classLoader, args)
+   executeDependencyLoaderMain(classLoader, args)
 }
 
 private fun getCloudVersion(): String {
