@@ -1,0 +1,168 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2020 The SimpleCloud authors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.8.22'
+    id "com.github.johnrengelman.shadow" version "8.1.1"
+    id 'org.jetbrains.dokka' version '0.10.1'
+}
+
+allprojects {
+
+    group 'eu.thesimplecloud.simplecloud'
+    version '2.5.0-SNAPSHOT'
+
+    repositories {
+        mavenCentral()
+        jcenter()
+
+        maven { url 'https://repository.derklaro.dev/releases' }
+        maven { url 'https://jitpack.io' }
+        maven {
+            url "https://repo.thesimplecloud.eu/artifactory/gradle-release-local/"
+        }
+
+        maven {
+            url "https://libraries.minecraft.net"
+        }
+
+        maven {
+            name = "papermc"
+            url = uri("https://repo.papermc.io/repository/maven-public/")
+        }
+
+        maven {
+            name 'spongepowered'
+            url 'https://repo.spongepowered.org/maven'
+        }
+
+        maven {
+            name 'bungeecord-repo'
+            url 'https://oss.sonatype.org/content/repositories/snapshots'
+        }
+
+        maven {
+            name 'spigotmc-repo'
+            url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+        }
+
+    }
+
+    project.ext {
+        depedencyClientServerAPIVersion = '4.1.17'
+        dependencyCommonsIOVersion = '2.11.0'
+        dependencyKotlinCouroutinesVersion = '1.5.2'
+        dependencyNettyVersion = '4.1.71.Final'
+        dependencyGuavaVersion = '31.0.1-jre'
+        dependencyKMongoVersion = '4.4.0'
+    }
+
+    buildscript {
+        repositories {
+            mavenLocal()
+        }
+    }
+}
+
+subprojects {
+
+    apply plugin: 'java'
+    apply plugin: 'java-library'
+    apply plugin: 'maven-publish'
+    apply plugin: 'org.jetbrains.kotlin.jvm'
+    apply plugin: 'org.jetbrains.dokka'
+    apply plugin: "com.github.johnrengelman.shadow"
+
+    sourceCompatibility = 8
+    targetCompatibility = 8
+
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        archiveClassifier.set('sources')
+        from sourceSets.main.allSource
+    }
+
+    dependencies {
+        testApi group: 'junit', name: 'junit', version: '4.13'
+        compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+        testCompileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+        compileOnly(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion) {
+            transitive = false
+        }
+        compileOnly(group: 'eu.thesimplecloud.jsonlib', name: 'json-lib', version: "1.0.8") {
+            transitive = false
+        }
+
+        testApi(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion)
+        testApi(group: 'eu.thesimplecloud.jsonlib', name: 'json-lib', version: "1.0.8")
+
+        compileOnly group: 'commons-io', name: 'commons-io', version: dependencyCommonsIOVersion
+        compileOnly group: 'com.google.guava', name: 'guava', version: dependencyGuavaVersion
+        compileOnly group: 'io.netty', name: 'netty-all', version: dependencyNettyVersion
+        compileOnly group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: dependencyKotlinCouroutinesVersion
+        compileOnly group: 'com.google.code.gson', name: 'gson', version: '2.9.0'
+
+    }
+
+    compileKotlin {
+        kotlinOptions.jvmTarget = "1.8"
+    }
+    compileTestKotlin {
+        kotlinOptions.jvmTarget = "1.8"
+    }
+
+    jar {
+        manifest {
+            attributes(
+                    'Implementation-Version': project.version,
+            )
+        }
+    }
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+                artifact sourcesJar
+            }
+        }
+        repositories {
+            maven {
+                if (project.version.endsWith("SNAPSHOT")) {
+                    url 'https://repo.thesimplecloud.eu/artifactory/list/gradle-dev-local/'
+                } else {
+                    url 'https://repo.thesimplecloud.eu/artifactory/list/gradle-release-local//'
+                }
+
+                credentials {
+                    username = project.hasProperty("mavenUser") ? project.property("mavenUser") : System.getenv("MAVEN_USERNAME")
+                    password = project.hasProperty("mavenPassword") ? project.property("mavenPassword") : System.getenv("MAVEN_PASSWORD")
+                }
+            }
+        }
+    }
+
+    dokka {
+        outputFormat = 'html'
+        outputDirectory = "$buildDir/dokka"
+    }
+
+}

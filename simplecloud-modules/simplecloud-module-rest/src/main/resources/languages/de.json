@@ -1,0 +1,3 @@
+{
+  "module.rest.loaded": "Der REST-Server lauscht auf Port %PORT%"
+}

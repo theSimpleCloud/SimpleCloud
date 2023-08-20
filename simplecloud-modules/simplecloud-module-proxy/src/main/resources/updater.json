@@ -1,0 +1,6 @@
+{
+  "groupId": "eu.thesimplecloud.simplecloud",
+  "artifactId": "simplecloud-module-proxy",
+  "repository": "CLOUD",
+  "updateMethod": "CLOUD"
+}

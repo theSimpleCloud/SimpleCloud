@@ -1,0 +1,13 @@
+name: SimpleCloud-Sign
+version: 1.0
+author: Wetterbericht
+
+main: eu.thesimplecloud.module.sign.service.BukkitPluginMain
+
+depend: [ SimpleCloud-Plugin ]
+
+api-version: 1.13
+
+commands:
+  cloudsigns:
+    permission: cloud.command.signs

@@ -1,0 +1,10 @@
+{
+  "name": "SimpleCloud-InternalWrapper",
+  "author": "Wetterbericht",
+  "mainClass": "eu.thesimplecloud.module.internalwrapper.InternalWrapperModule",
+  "moduleCopyType": "NONE",
+  "repositories": [],
+  "dependencies": [],
+  "depend": [],
+  "softDepend": []
+}

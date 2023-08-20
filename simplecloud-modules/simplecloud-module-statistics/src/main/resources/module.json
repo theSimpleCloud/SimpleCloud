@@ -1,0 +1,12 @@
+{
+  "name": "SimpleCloud-Statistics",
+  "author": "Wetterbericht",
+  "mainClass": "eu.thesimplecloud.module.statistics.StatisticsModule",
+  "moduleCopyType": "NONE",
+  "repositories": [],
+  "dependencies": [],
+  "depend": [
+    "SimpleCloud-Rest"
+  ],
+  "softDepend": []
+}

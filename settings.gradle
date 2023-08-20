@@ -1,0 +1,63 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2020 The SimpleCloud authors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
+rootProject.name = 'simplecloud-v2'
+include 'simplecloud-api'
+include 'simplecloud-client'
+include 'simplecloud-launcher'
+include 'simplecloud-plugin'
+include 'simplecloud-base'
+include 'simplecloud-modules'
+include 'simplecloud-modules:simplecloud-module-permission'
+findProject(':simplecloud-modules:simplecloud-module-permission')?.name = 'simplecloud-module-permission'
+include 'simplecloud-modules:simplecloud-module-cloudflare'
+findProject(':simplecloud-modules:simplecloud-module-cloudflare')?.name = 'simplecloud-module-cloudflare'
+include 'simplecloud-modules:simplecloud-module-proxy'
+findProject(':simplecloud-modules:simplecloud-module-proxy')?.name = 'simplecloud-module-proxy'
+include 'simplecloud-modules:simplecloud-module-sign'
+findProject(':simplecloud-modules:simplecloud-module-sign')?.name = 'simplecloud-module-sign'
+include 'simplecloud-modules:simplecloud-module-internalwrapper'
+findProject(':simplecloud-modules:simplecloud-module-internalwrapper')?.name = 'simplecloud-module-internalwrapper'
+include 'simplecloud-updater'
+include 'simplecloud-modules:simplecloud-module-notify'
+findProject(':simplecloud-modules:simplecloud-module-notify')?.name = 'simplecloud-module-notify'
+include 'simplecloud-modules:simplecloud-module-hubcommand'
+findProject(':simplecloud-modules:simplecloud-module-hubcommand')?.name = 'simplecloud-module-hubcommand'
+include 'simplecloud-runner'
+include 'simplecloud-modules:simplecloud-module-serviceselection'
+findProject(':simplecloud-modules:simplecloud-module-serviceselection')?.name = 'simplecloud-module-serviceselection'
+include 'simplecloud-modules:simplecloud-module-rest'
+findProject(':simplecloud-modules:simplecloud-module-rest')?.name = 'simplecloud-module-rest'
+include 'simplecloud-modules:simplecloud-module-chat-tab'
+findProject(':simplecloud-modules:simplecloud-module-chat-tab')?.name = 'simplecloud-module-chat-tab'
+include 'simplecloud-modules:simplecloud-module-statistics'
+findProject(':simplecloud-modules:simplecloud-module-statistics')?.name = 'simplecloud-module-statistics'
+include 'simplecloud-dependency-loader'
+include 'simplecloud-modules:simplecloud-module-npc'
+findProject(':simplecloud-modules:simplecloud-module-npc')?.name = 'simplecloud-module-npc'
+include 'simplecloud-modules:simplecloud-module-support'
+findProject(':simplecloud-modules:simplecloud-module-support')?.name = 'simplecloud-module-support'
+include 'simplecloud-modules:simplecloud-module-placeholders'
+findProject(':simplecloud-modules:simplecloud-module-placeholders')?.name = 'simplecloud-module-placeholders'
+include 'simplecloud-modules:simplecloud-module-placeholders'
+findProject(':simplecloud-modules:simplecloud-module-placeholders')?.name = 'simplecloud-module-placeholders'
+

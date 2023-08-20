@@ -1,0 +1,6 @@
+{
+  "groupId": "eu.thesimplecloud.simplecloud",
+  "artifactId": "simplecloud-module-cloudflare",
+  "repository": "CLOUD",
+  "updateMethod": "CLOUD"
+}

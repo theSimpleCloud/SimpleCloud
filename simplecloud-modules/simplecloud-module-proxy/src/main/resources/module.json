@@ -1,0 +1,10 @@
+{
+  "name": "SimpleCloud-Proxy",
+  "author": "Fllip",
+  "mainClass": "eu.thesimplecloud.module.proxy.manager.ProxyModule",
+  "moduleCopyType": "PROXY",
+  "repositories": [],
+  "dependencies": [],
+  "depend": [],
+  "softDepend": []
+}

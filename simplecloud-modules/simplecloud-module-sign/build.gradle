@@ -1,0 +1,26 @@
+
+shadowJar {
+    archiveFileName.set("SimpleCloud-Sign.jar")
+}
+
+dependencies {
+    compileOnly(project(":simplecloud-base")) {
+        transitive = false
+    }
+    compileOnly(project(":simplecloud-api")) {
+        transitive = false
+    }
+    compileOnly(project(":simplecloud-plugin")) {
+        transitive = false
+    }
+    compileOnly(project(":simplecloud-launcher")) {
+        transitive = false
+    }
+    api(project(":simplecloud-modules:simplecloud-module-serviceselection")) {
+        transitive = false
+    }
+
+    compileOnly 'org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT'
+    compileOnly(group: 'commons-io', name: 'commons-io', version: dependencyCommonsIOVersion)
+
+}
