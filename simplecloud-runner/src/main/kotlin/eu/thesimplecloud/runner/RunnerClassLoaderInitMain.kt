@@ -41,7 +41,7 @@ private val copiedLauncherFile = File("launcher.jar")
 private val copiedSimpleCloudPluginFile = File("storage/pluginJars", "SimpleCloud-Plugin-${getCloudVersion()}.jar")
 
 fun main(args: Array<String>) {
-    val version = getCloudVersion().take(getCloudVersion().length - 9)
+    val version = getCloudVersion()
 
     if (!version.contains("SNAPSHOT")) {
         if (!copiedDependencyLoaderFile.exists())
@@ -54,8 +54,6 @@ fun main(args: Array<String>) {
                 copiedLauncherFile
             )
     }
-
-   // Downloader().userAgentDownload(url, copiedLauncherFile)
 
     val dependencyLoaderStartup = DependencyLoaderStartup()
 
