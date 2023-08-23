@@ -34,5 +34,4 @@ dependencies {
 
     api 'com.github.juliarn.NPC-Lib:npc-lib-bukkit:3.0.0-beta4'
     api 'com.github.cryptomorin:XSeries:9.2.0'
-    api 'com.squareup.okhttp3:okhttp:4.10.0'
 }
