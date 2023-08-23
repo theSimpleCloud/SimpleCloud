@@ -46,8 +46,12 @@ fun main(args: Array<String>) {
     if (!version.contains("SNAPSHOT")) {
         if (!copiedDependencyLoaderFile.exists())
             downloadJarFromDependency("simplecloud-dependency-loader", copiedDependencyLoaderFile)
-        if (!copiedSimpleCloudPluginFile.exists())
-            downloadJarFromDependency("simplecloud-plugin", copiedSimpleCloudPluginFile)
+        if (!copiedSimpleCloudPluginFile.exists()) {
+            Downloader().userAgentDownload(
+                "https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-plugin/$version/simplecloud-plugin-$version-all.jar",
+                copiedLauncherFile
+            )
+        }
         if (!copiedLauncherFile.exists())
             Downloader().userAgentDownload(
                 "https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-launcher/$version/simplecloud-launcher-$version-all.jar",
