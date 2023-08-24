@@ -1,135 +1,96 @@
 package eu.thesimplecloud.module.npc.module.skin
 
-import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
+import java.net.HttpURLConnection
+import java.net.URL
 import java.util.*
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
+class SkinHandler {
 
-class SkinHandler() {
-
-    private val requestExecutor: Executor
-    private val okHttpClient: OkHttpClient
+    private val requestExecutor: Executor = Executors.newSingleThreadExecutor()
 
     private val endpointGetSkinByID = "https://api.mineskin.org/get/uuid/%s"
     private val endpointGetUUIDByName = "https://api.mineskin.org/validate/name/%s"
     private val endpointGetSkinByUUID = "https://sessionserver.mojang.com/session/minecraft/profile/%s?unsigned=false"
 
-    init {
-        requestExecutor = Executors.newSingleThreadExecutor()
-        okHttpClient = OkHttpClient()
+    fun getSkinConfigByID(id: String): CompletableFuture<SkinConfig?> {
+        return processRequest(id, endpointGetSkinByID, this::parseSkinConfigByID)
     }
 
-    fun getSkinConfigByID(id: String): CompletableFuture<SkinConfig> {
+    fun getSkinConfigByName(name: String): CompletableFuture<SkinConfig?> {
+        val uuid = getUUIDFromName(name)?.toString() ?: return CompletableFuture.completedFuture(null)
+        return processRequest(uuid, endpointGetSkinByUUID, this::parseSkinConfigByName)
+    }
+
+    private fun processRequest(
+        param: String,
+        endpointTemplate: String,
+        parser: (JsonObject) -> SkinConfig?,
+    ): CompletableFuture<SkinConfig?> {
+        val endpoint = String.format(endpointTemplate, param)
         return CompletableFuture.supplyAsync({
             try {
-                val endpoint = String.format(endpointGetSkinByID, id)
-
-                val request: Request = Request.Builder()
-                    .addHeader("Content-Type", "application/json")
-                    .url(endpoint)
-                    .get().build()
-
-                val response: Response = okHttpClient.newCall(request).execute()
-                assert(response.body != null)
-
-                val result: String = response.body!!.string()
-
-                val jsonElement: JsonElement = JsonParser.parseString(result)
-                val jsonObject: JsonObject = jsonElement.asJsonObject
-
-                if (jsonObject.getAsJsonObject("data") == null)
-                    return@supplyAsync null
-
-                val texture: JsonObject = jsonObject.getAsJsonObject("data").getAsJsonObject("texture")
-
-                return@supplyAsync SkinConfig(
-                    texture.get("value").asString,
-                    texture.get("signature").asString
-                )
+                val jsonObject = getJsonObjectFromEndpoint(endpoint)
+                parser(jsonObject)
             } catch (exception: Exception) {
                 exception.printStackTrace()
-                return@supplyAsync null
+                null
             }
         }, requestExecutor)
     }
 
-    fun getSkinConfigByName(name: String): CompletableFuture<SkinConfig> {
-        return CompletableFuture.supplyAsync({
-            try {
-                val uuid = this.getUUIDFromName(name) ?: return@supplyAsync null
+    private fun getJsonObjectFromEndpoint(endpoint: String): JsonObject {
+        val result = getRequestResponse(endpoint)
+        val jsonElement = JsonParser.parseString(result)
+        return jsonElement.asJsonObject
+    }
 
-                val endpoint = String.format(endpointGetSkinByUUID, uuid.toString())
+    private fun getRequestResponse(endpoint: String): String {
+        val url = URL(endpoint)
+        val connection = url.openConnection() as HttpURLConnection
 
-                val request: Request = Request.Builder()
-                    .addHeader("Content-Type", "application/json")
-                    .url(endpoint)
-                    .get().build()
+        connection.requestMethod = "GET"
+        connection.setRequestProperty("Content-Type", "application/json")
+        connection.doOutput = true
 
-                val response: Response = okHttpClient.newCall(request).execute()
-                assert(response.body != null)
+        val responseCode = connection.responseCode
+        if (responseCode != HttpURLConnection.HTTP_OK) {
+            throw RuntimeException("Failed : HTTP error code : $responseCode")
+        }
 
-                val result: String = response.body!!.string()
+        val input = connection.inputStream.bufferedReader().use { it.readText() }
+        connection.disconnect()
+        return input
+    }
 
-                val jsonElement: JsonElement = JsonParser.parseString(result)
-                val jsonObject: JsonObject = jsonElement.asJsonObject
+    private fun parseSkinConfigByID(jsonObject: JsonObject): SkinConfig? {
+        val texture = jsonObject.getAsJsonObject("data")?.getAsJsonObject("texture")
+        return texture?.let { SkinConfig(it["value"].asString, it["signature"].asString) }
+    }
 
-                if (jsonObject.getAsJsonArray("properties") == null)
-                    return@supplyAsync null
-
-                val properties = jsonObject.getAsJsonArray("properties")
-                val firstProperty = properties[0].asJsonObject
-
-                val skinValue = firstProperty["value"].asString
-                val signature = firstProperty["signature"].asString
-
-                return@supplyAsync SkinConfig(
-                    skinValue,
-                    signature
-                )
-            } catch (exception: Exception) {
-                exception.printStackTrace()
-                return@supplyAsync null
-            }
-        }, requestExecutor)
+    private fun parseSkinConfigByName(jsonObject: JsonObject): SkinConfig? {
+        val properties = jsonObject.getAsJsonArray("properties")?.get(0)?.asJsonObject
+        return properties?.let { SkinConfig(it["value"].asString, it["signature"].asString) }
     }
 
     private fun getUUIDFromName(name: String): UUID? {
         val endpoint = String.format(endpointGetUUIDByName, name)
+        val jsonObject = getJsonObjectFromEndpoint(endpoint)
+        if (!jsonObject["valid"].asBoolean) return null
+        val uuidString = jsonObject["uuid"].asString
+        return formatUuid(uuidString)
+    }
 
-        val request: Request = Request.Builder()
-            .addHeader("Content-Type", "application/json")
-            .url(endpoint)
-            .get().build()
-
-        val response: Response = okHttpClient.newCall(request).execute()
-        assert(response.body != null)
-
-        val result: String = response.body!!.string()
-
-        val jsonElement: JsonElement = JsonParser.parseString(result)
-        val jsonObject: JsonObject = jsonElement.asJsonObject
-
-        if (!jsonObject.get("valid").asBoolean)
-            return null
-
-        val string = jsonObject.get("uuid").asString
-        val formattedUuid = string.replace(
+    private fun formatUuid(uuidString: String): UUID {
+        val formattedUuid = uuidString.replace(
             "(.{8})(.{4})(.{4})(.{4})(.{12})".toRegex(), "$1-$2-$3-$4-$5"
         )
-
         return UUID.fromString(formattedUuid)
     }
 
-
-    class SkinConfig(
-        val value: String,
-        val signature: String
-    ) {}
+    data class SkinConfig(val value: String, val signature: String)
 }
