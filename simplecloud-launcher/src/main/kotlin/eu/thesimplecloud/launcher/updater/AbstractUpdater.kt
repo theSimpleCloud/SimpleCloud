@@ -29,8 +29,8 @@ import java.io.File
 import java.util.jar.JarFile
 
 abstract class AbstractUpdater(
-    private val groupId: String,
-    private val artifactId: String,
+    protected val groupId: String,
+    protected val artifactId: String,
     protected val updateFile: File
 ) : IUpdater {
 

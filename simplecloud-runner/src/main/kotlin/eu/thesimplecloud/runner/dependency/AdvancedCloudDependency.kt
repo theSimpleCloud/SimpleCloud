@@ -36,7 +36,7 @@ import java.io.IOException
 class AdvancedCloudDependency(groupId: String, artifactId: String, version: String) :
     CloudDependency(groupId, artifactId, version) {
 
-    private fun getDownloadURL(repoUrl: String): String {
+    fun getDownloadURL(repoUrl: String): String {
         return getUrlWithoutExtension(repoUrl) + ".jar"
     }
 
@@ -66,7 +66,7 @@ class AdvancedCloudDependency(groupId: String, artifactId: String, version: Stri
         return repoUrl + groupId.replace("\\.".toRegex(), "/") + "/" + artifactId + "/"
     }
 
-    private fun getUrlWithoutExtension(repoUrl: String): String {
+    fun getUrlWithoutExtension(repoUrl: String): String {
         return getMainURL(repoUrl) + version + "/" + artifactId + "-" + version
     }
 
