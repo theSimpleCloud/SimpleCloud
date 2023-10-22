@@ -179,6 +179,7 @@ open class LobbyGroupSetup : DefaultGroupSetup(), ISetup {
             maximumOnlineServices,
             false,
             static,
+            false,
             percent,
             wrapper?.getName(),
             priority,
