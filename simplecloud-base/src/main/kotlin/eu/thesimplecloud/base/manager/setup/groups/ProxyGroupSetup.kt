@@ -181,6 +181,7 @@ class ProxyGroupSetup : DefaultGroupSetup(), ISetup {
             maximumOnlineServices,
             true,
             static,
+            false,
             percent,
             wrapper?.getName(),
             startPort,
