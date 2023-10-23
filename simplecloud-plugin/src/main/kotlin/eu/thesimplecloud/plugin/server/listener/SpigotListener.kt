@@ -23,7 +23,7 @@
 package eu.thesimplecloud.plugin.server.listener
 
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.event.player.CloudPlayerMessageEvent
+import eu.thesimplecloud.api.event.player.CloudPlayerChatEvent
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -62,8 +62,8 @@ class SpigotListener : Listener {
     fun handleAsyncChat(event: AsyncPlayerChatEvent) {
         val cloudPlayer = CloudAPI.instance.getCloudPlayerManager()
             .getCachedCloudPlayer(event.player.uniqueId) ?: return
-        val event = CloudPlayerMessageEvent(cloudPlayer, event.message, CloudPlugin.instance.thisService())
-        CloudAPI.instance.getEventManager().call(event)
+        val playerChatEvent = CloudPlayerChatEvent(cloudPlayer, event.message, CloudPlugin.instance.thisService())
+        CloudAPI.instance.getEventManager().call(playerChatEvent)
     }
 
     @EventHandler
