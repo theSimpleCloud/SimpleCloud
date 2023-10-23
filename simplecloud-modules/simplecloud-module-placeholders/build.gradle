@@ -16,7 +16,7 @@ dependencies {
     compileOnly(project(":simplecloud-modules:simplecloud-module-permission"))
     compileOnly(project(":simplecloud-modules:simplecloud-module-chat-tab"))
 
-    compileOnly group: 'com.google.code.gson', name: 'gson', version: '2.9.0'
+    compileOnly group: 'com.google.code.gson', name: 'gson', version: '2.10.1'
     compileOnly 'org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT'
 
     compileOnly 'me.clip:placeholderapi:2.11.1'

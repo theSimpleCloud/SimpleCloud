@@ -9,7 +9,7 @@ repositories {
 
 dependencies {
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    testApi group: 'junit', name: 'junit', version: '4.12'
+    testApi group: 'junit', name: 'junit', version: '4.13.1'
     api(group: 'eu.thesimplecloud.jsonlib', name: 'json-lib', version: "1.0.8")
 }
 
