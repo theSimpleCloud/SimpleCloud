@@ -27,7 +27,7 @@ import eu.thesimplecloud.api.property.IProperty
 import eu.thesimplecloud.api.property.Property
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.module.permission.PermissionPool
-import eu.thesimplecloud.module.prefix.config.TablistInformation
+import eu.thesimplecloud.module.prefix.manager.config.TablistInformation
 import eu.thesimplecloud.module.prefix.service.tablist.ProxyTablistHelper
 import eu.thesimplecloud.module.proxy.config.Config
 import eu.thesimplecloud.module.proxy.config.DefaultConfig
@@ -107,6 +107,7 @@ object ProxyHandler {
             .replace("%SERVER%", server.getName())
             .replace("%DISPLAYNAME%", server.getDisplayName())
             .replace("%SERVER_GROUP%", server.getGroupName())
+            .replace("%LOCAL_ONLINE_PLAYERS%", server.getOnlineCount().toString())
     }
 
     fun replaceString(message: String, server: ICloudService, uuid: UUID): String {

@@ -98,7 +98,17 @@ interface ICloudPlayer : ICacheValue<ICloudPlayerUpdater>, IOfflineCloudPlayer, 
     /**
      * Sends a action bar to this player
      */
-    fun sendActionBar(actionbar: String) = CloudAPI.instance.getCloudPlayerManager().sendActionbar(this, actionbar)
+    @Deprecated("Use sendActionBar with component instead",
+        ReplaceWith("sendActionBar(Component.text(actionbar))", "net.kyori.adventure.text.Component")
+    )
+    fun sendActionBar(actionbar: String) {
+        sendActionBar(Component.text(actionbar))
+    }
+
+    /**
+     * Sends a action bar to this player
+     */
+    fun sendActionBar(actionbar: Component) = CloudAPI.instance.getCloudPlayerManager().sendActionbar(this, actionbar)
 
     /**
      * Sends a tablist to this player

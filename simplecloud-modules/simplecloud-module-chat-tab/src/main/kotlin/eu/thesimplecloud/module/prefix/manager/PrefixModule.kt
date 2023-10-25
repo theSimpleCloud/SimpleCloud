@@ -24,7 +24,9 @@ package eu.thesimplecloud.module.prefix.manager
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.external.ICloudModule
-import eu.thesimplecloud.module.prefix.config.ConfigLoader
+import eu.thesimplecloud.launcher.startup.Launcher
+import eu.thesimplecloud.module.prefix.manager.config.ChatTabModuleConfigPersistence
+import eu.thesimplecloud.module.prefix.manager.command.ChatTabCommand
 
 /**
  * Created by IntelliJ IDEA.
@@ -35,9 +37,11 @@ import eu.thesimplecloud.module.prefix.config.ConfigLoader
 class PrefixModule : ICloudModule {
 
     override fun onEnable() {
-        val configLoader = ConfigLoader()
-        val config = configLoader.loadConfig()
-        CloudAPI.instance.getGlobalPropertyHolder().setProperty("prefix-config", config)
+        val chatTabConfig = ChatTabModuleConfigPersistence.load()
+        ChatTabModuleConfigPersistence.save(chatTabConfig)
+
+        CloudAPI.instance.getGlobalPropertyHolder().setProperty("prefix-config", chatTabConfig)
+        Launcher.instance.commandManager.registerCommand(this, ChatTabCommand())
     }
 
     override fun onDisable() {

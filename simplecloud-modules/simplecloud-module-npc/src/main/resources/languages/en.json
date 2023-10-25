@@ -28,7 +28,7 @@
   "manager.command.npc.edit.toggle.flyingWithElytra.successfully": "§7You have successfully edited the NPC's flyingWithElytra state.",
   "manager.command.npc.edit.skin.mineskin.successfully": "§7You have successfully edited the NPC's skin.",
   "manager.command.npc.edit.skin.mineskin.failed": "§7There was an error loading the skin.",
-  "manager.command.npc.delete.successfully": "§7The npc was successfully removed.",
+  "manager.command.npc.delete.successfully": "§7The NPC was successfully removed.",
   "service.interact.service.not.available": "$7This service is not available at this time.",
   "service.interact.service.in.game": "§7This service is currently in-game.",
   "service.interact.no.free.service.found": "§7Currently, there are no free services available."

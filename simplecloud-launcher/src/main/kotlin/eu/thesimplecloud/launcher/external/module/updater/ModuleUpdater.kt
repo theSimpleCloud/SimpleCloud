@@ -25,7 +25,10 @@ package eu.thesimplecloud.launcher.external.module.updater
 import eu.thesimplecloud.launcher.external.module.update.UpdateMethod
 import eu.thesimplecloud.launcher.external.module.update.UpdaterFileContent
 import eu.thesimplecloud.launcher.updater.AbstractUpdater
+import eu.thesimplecloud.runner.dependency.AdvancedCloudDependency
+import eu.thesimplecloud.runner.utils.Downloader
 import java.io.File
+import java.io.IOException
 
 /**
  * Created by IntelliJ IDEA.
@@ -43,6 +46,31 @@ class ModuleUpdater(
     }
 
     override fun executeJar() {
+    }
+
+    override fun downloadJarsForUpdate() {
+        val latestVersion = getVersionToInstall()
+            ?: throw RuntimeException("Cannot perform update. Is the server down? (repo: ${getRepositoryURL()})")
+        val dependency = AdvancedCloudDependency(groupId, artifactId, latestVersion)
+
+        tryDownloadJarFromAllUrl(dependency)
+    }
+
+    private fun tryDownloadJarFromAllUrl(dependency: AdvancedCloudDependency) {
+        try {
+            Downloader().userAgentDownload(getAllDownloadURL(dependency), this.updateFile)
+        } catch (e: IOException) {
+            downloadFileWithoutAllExtension()
+        }
+    }
+
+    private fun downloadFileWithoutAllExtension() {
+        super.downloadJarsForUpdate()
+    }
+
+    private fun getAllDownloadURL(dependency: AdvancedCloudDependency): String {
+        val downloadUrlWithoutExt = dependency.getUrlWithoutExtension(getRepositoryURL())
+        return "$downloadUrlWithoutExt-all.jar"
     }
 
     override fun getVersionToInstall(): String? {

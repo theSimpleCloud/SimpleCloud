@@ -36,6 +36,7 @@ import net.md_5.bungee.api.event.ServerSwitchEvent
 import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.event.EventHandler
 import net.md_5.bungee.event.EventPriority
+import java.util.*
 
 /**
  * Created by IntelliJ IDEA.
@@ -126,15 +127,21 @@ class BungeeListener(private val plugin: BungeePluginMain) : Listener {
         val maxPlayers = CloudPlugin.instance.thisService().getServiceGroup().getMaxPlayers()
 
         if (playerInfo != null && playerInfo.isNotEmpty()) {
-            val playerInfoString = ProxyHandler.replaceString(playerInfo.joinToString("\n"))
-            val playerInfoComponent = ProxyHandler.getHexColorComponent(playerInfoString)
-            val sample = arrayOf(
-                ServerPing.PlayerInfo(
-                    LegacyComponentSerializer.legacy('§').serialize(playerInfoComponent),
-                    ""
+            val sample = mutableListOf<ServerPing.PlayerInfo>()
+
+            playerInfo.forEach {
+                val playerInfoString = ProxyHandler.replaceString(it)
+                val playerInfoComponent = ProxyHandler.getHexColorComponent(playerInfoString)
+
+                sample.add(
+                    ServerPing.PlayerInfo(
+                        LegacyComponentSerializer.legacy('§').serialize(playerInfoComponent),
+                        UUID.randomUUID()
+                    )
                 )
-            )
-            response.players = ServerPing.Players(maxPlayers, onlinePlayers, sample)
+            }
+
+            response.players = ServerPing.Players(maxPlayers, onlinePlayers, sample.toTypedArray())
 
             return
         }

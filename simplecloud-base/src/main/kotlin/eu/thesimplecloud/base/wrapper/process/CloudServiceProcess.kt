@@ -58,7 +58,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
             proxyGroup as ICloudProxyGroup
             this.cloudService.setPort(Wrapper.instance.portManager.getUnusedPort(proxyGroup.getStartPort()))
         } else {
-            this.cloudService.setPort(Wrapper.instance.portManager.getUnusedPort())
+            this.cloudService.setPort(Wrapper.instance.portManager.getUnusedPort(Launcher.instance.launcherConfig.startServicePort))
         }
         this.cloudService.setState(ServiceState.STARTING)
         this.cloudService.update().awaitUninterruptibly()

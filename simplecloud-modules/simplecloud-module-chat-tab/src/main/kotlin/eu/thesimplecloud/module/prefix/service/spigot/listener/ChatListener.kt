@@ -23,8 +23,8 @@
 package eu.thesimplecloud.module.prefix.service.spigot.listener
 
 import eu.thesimplecloud.module.permission.PermissionPool
-import eu.thesimplecloud.module.prefix.config.Config
-import eu.thesimplecloud.module.prefix.config.TablistInformation
+import eu.thesimplecloud.module.prefix.manager.config.ChatTabConfig
+import eu.thesimplecloud.module.prefix.manager.config.TablistInformation
 import eu.thesimplecloud.module.prefix.service.tablist.TablistHelper
 import org.bukkit.ChatColor
 import org.bukkit.event.EventHandler
@@ -48,7 +48,7 @@ class ChatListener : Listener {
             PermissionPool.instance.getPermissionPlayerManager().getCachedPermissionPlayer(player.uniqueId) ?: return
         val canWriteColored = event.player.hasPermission("cloud.module.chat.color")
         val tablistInformation = TablistHelper.getTablistInformationByUUID(player.uniqueId) ?: return
-        val format = ChatColor.translateAlternateColorCodes('&', Config.getConfig().chatFormat)
+        val format = ChatColor.translateAlternateColorCodes('&', ChatTabConfig.getConfig().chatFormat)
             .replace("%PLAYER%", buildPrompt(tablistInformation))
             .replace("%NAME%", event.player.name)
             .replace("%PRIORITY%", tablistInformation.priority.toString())

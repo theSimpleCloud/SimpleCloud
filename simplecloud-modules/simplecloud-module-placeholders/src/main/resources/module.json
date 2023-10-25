@@ -1,0 +1,10 @@
+{
+  "name": "SimpleCloud-Placeholders",
+  "author": "rlqu, Panda",
+  "mainClass": "eu.thesimplecloud.module.placeholders.manager.PlaceholdersModule",
+  "moduleCopyType": "SERVER",
+  "repositories": [],
+  "dependencies": [],
+  "depend": [],
+  "softDepend": []
+}

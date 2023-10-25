@@ -24,6 +24,7 @@ package eu.thesimplecloud.launcher.startup
 
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.external.ICloudModule
+import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.launcher.application.ApplicationStarter
 import eu.thesimplecloud.launcher.application.CloudApplicationType
 import eu.thesimplecloud.launcher.application.ICloudApplication
@@ -110,6 +111,7 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
             }
         }
         System.setProperty("user.language", "en")
+        migrateOldLauncherFile()
 
         this.launcherConfig = this.launcherConfigLoader.loadConfig()
         DirectoryPaths.paths = launcherConfig.directoryPaths
@@ -145,6 +147,14 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
 
         this.setupManager.waitForAllSetups()
         this.launcherStartArguments.startApplication?.let { startApplication(it) }
+    }
+
+    private fun migrateOldLauncherFile() {
+        val jsonLib = JsonLib.fromJsonFile(File("launcher.json")) ?: return
+        if (jsonLib.getInt("startServicePort") != null)
+            return
+        jsonLib.append("startServicePort", 50000)
+        jsonLib.saveAsFile("launcher.json")
     }
 
     private fun executeUpdateIfAvailable(): Boolean {
