@@ -32,7 +32,7 @@ enum class DatabaseType {
 
     MYSQL,
 
-    MONGODB
+    MONGODB,
 
-
+    SQLITE;
 }

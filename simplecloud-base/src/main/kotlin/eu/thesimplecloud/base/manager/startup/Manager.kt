@@ -32,10 +32,7 @@ import eu.thesimplecloud.base.manager.config.encryption.KeyConfigLoader
 import eu.thesimplecloud.base.manager.config.mongo.DatabaseConfigLoader
 import eu.thesimplecloud.base.manager.config.template.TemplatesConfigLoader
 import eu.thesimplecloud.base.manager.config.updater.ModuleUpdaterConfigLoader
-import eu.thesimplecloud.base.manager.database.DatabaseType
-import eu.thesimplecloud.base.manager.database.IOfflineCloudPlayerHandler
-import eu.thesimplecloud.base.manager.database.MongoOfflineCloudPlayerHandler
-import eu.thesimplecloud.base.manager.database.SQLOfflineCloudPlayerHandler
+import eu.thesimplecloud.base.manager.database.*
 import eu.thesimplecloud.base.manager.database.aes.AdvancedEncryption
 import eu.thesimplecloud.base.manager.filehandler.CloudServiceGroupFileHandler
 import eu.thesimplecloud.base.manager.filehandler.WrapperFileHandler
@@ -169,6 +166,7 @@ class Manager : ICloudApplication {
         this.offlineCloudPlayerHandler = when (mongoConnectionInformation.databaseType) {
             DatabaseType.MONGODB -> MongoOfflineCloudPlayerHandler(mongoConnectionInformation)
             DatabaseType.MYSQL -> SQLOfflineCloudPlayerHandler(mongoConnectionInformation)
+            DatabaseType.SQLITE -> SQLiteOfflineCloudPlayerHandler(mongoConnectionInformation)
         }
         Launcher.instance.logger.console("Connected to the database")
 
