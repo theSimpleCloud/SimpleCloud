@@ -51,7 +51,7 @@ class HelpCommand() : ICommandHandler {
                 .map { it.path.split(" ")[0] }.toSet().size - 1
             sender.sendProperty("commands.help.header", commandAmount.toString())
 
-            allCommands.forEach {
+            allCommands.sortedBy { it.path.trim() }.forEach {
                 sender.sendProperty("commands.help.command", it.path.trim(), it.commandDescription)
             }
         } else {
