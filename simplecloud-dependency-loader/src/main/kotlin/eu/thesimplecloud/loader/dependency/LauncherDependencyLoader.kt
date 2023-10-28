@@ -52,7 +52,8 @@ class LauncherDependencyLoader {
                 AdvancedCloudDependency("org.mariadb.jdbc", "mariadb-java-client", "2.7.4"),
                 AdvancedCloudDependency("com.github.ajalt", "clikt", "2.8.0"),
                 AdvancedCloudDependency("net.kyori", "adventure-api", "4.14.0"),
-                AdvancedCloudDependency("net.kyori", "adventure-text-serializer-gson", "4.14.0")
+                AdvancedCloudDependency("net.kyori", "adventure-text-serializer-gson", "4.14.0"),
+                AdvancedCloudDependency("org.xerial", "sqlite-jdbc", "3.43.2.1")
             )
         )
     }
