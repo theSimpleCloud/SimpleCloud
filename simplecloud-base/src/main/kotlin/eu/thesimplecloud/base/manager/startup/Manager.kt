@@ -231,7 +231,11 @@ class Manager : ICloudApplication {
             Launcher.instance.setupManager.queueSetup(CreateDefaultLobbyGroup())
         }
 
-        this.profileFile.create()
+        try {
+            this.profileFile.create()
+        } catch (exception: Exception) {
+            Launcher.instance.logger.warning("An error occurred while creating the profile file: ${exception.message}")
+        }
     }
 
     private fun createDirectories() {
