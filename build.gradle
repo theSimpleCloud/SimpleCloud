@@ -29,7 +29,7 @@ plugins {
 allprojects {
 
     group 'eu.thesimplecloud.simplecloud'
-    version '2.6.0'
+    version '2.6.0-SNAPSHOT'
 
     repositories {
         mavenCentral()
@@ -68,7 +68,7 @@ allprojects {
     }
 
     project.ext {
-        depedencyClientServerAPIVersion = '4.1.17'
+        depedencyClientServerAPIVersion = '4.1.18'
         dependencyCommonsIOVersion = '2.14.0'
         dependencyKotlinCouroutinesVersion = '1.7.3'
         dependencyNettyVersion = '4.1.86.Final'

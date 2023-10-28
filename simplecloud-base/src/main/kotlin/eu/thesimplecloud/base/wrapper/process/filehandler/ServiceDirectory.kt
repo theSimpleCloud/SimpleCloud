@@ -80,7 +80,7 @@ class ServiceDirectory(private val cloudService: ICloudService) {
             File(DirectoryPaths.paths.templatesPath + "EVERY_SERVER")
         val templateDirectories = getDirectoriesOfTemplateAndSubTemplates(template)
 
-        val dontCopyTemplates = cloudService.isStatic() && this.serviceTmpDirectory.exists()
+        val dontCopyTemplates = cloudService.isStatic() && !cloudService.isForceCopyTemplates() && this.serviceTmpDirectory.exists()
         if (!dontCopyTemplates) {
             if (everyDir.exists())
                 FileUtils.copyDirectory(everyDir, this.serviceTmpDirectory)

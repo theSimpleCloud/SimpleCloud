@@ -99,6 +99,16 @@ interface ICloudServiceGroupVariables {
     fun setMaintenance(maintenance: Boolean)
 
     /**
+     * Returns whether the templates should be copied even if the group is static
+     */
+    fun isForceCopyTemplates(): Boolean
+
+    /**
+     * Sets the force copy templates of this group
+     */
+    fun setForceCopyTemplates(forceCopyTemplates: Boolean)
+
+    /**
      * Returns the percent of online players that a service must reach until a new service starts.
      */
     fun getPercentToStartNewService(): Int

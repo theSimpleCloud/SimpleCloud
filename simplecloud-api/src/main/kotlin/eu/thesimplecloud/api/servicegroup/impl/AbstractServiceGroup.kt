@@ -36,6 +36,7 @@ abstract class AbstractServiceGroup(
     @Volatile private var maximumOnlineServiceCount: Int,
     @Volatile private var maintenance: Boolean,
     private val static: Boolean,
+    @Volatile private var forceCopyTemplates: Boolean,
     @Volatile private var percentToStartNewService: Int,
     @Volatile private var wrapperName: String?,
     serviceVersion: ServiceVersion,
@@ -96,6 +97,12 @@ abstract class AbstractServiceGroup(
 
     override fun isStatic(): Boolean = this.static
 
+    override fun isForceCopyTemplates(): Boolean = this.forceCopyTemplates
+
+    override fun setForceCopyTemplates(forceCopyTemplates: Boolean) {
+        getUpdater().setForceCopyTemplates(forceCopyTemplates)
+    }
+
     override fun getJavaCommandName(): String = this.javaCommandName
 
     override fun getPercentToStartNewService(): Int = this.percentToStartNewService
@@ -135,6 +142,7 @@ abstract class AbstractServiceGroup(
         this.minimumOnlineServiceCount = updater.getMinimumOnlineServiceCount()
         this.maximumOnlineServiceCount = updater.getMaximumOnlineServiceCount()
         this.maintenance = updater.isInMaintenance()
+        this.forceCopyTemplates = updater.isForceCopyTemplates()
         this.percentToStartNewService = updater.getPercentToStartNewService()
         this.wrapperName = updater.getWrapperName()
         this.permission = updater.getPermission()
