@@ -53,7 +53,7 @@ class SQLiteOfflineCloudPlayerHandler(private val databaseConnectionInformation:
     }
 
     private fun createIndex(columnName: String) {
-        val statement = connection!!.prepareStatement("ALTER TABLE $playerCollectionName ADD INDEX ($columnName)")
+        val statement = connection!!.prepareStatement("CREATE INDEX ${columnName} ON $playerCollectionName ($columnName)")
         statement.executeUpdate()
     }
 
