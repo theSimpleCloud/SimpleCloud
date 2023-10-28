@@ -167,6 +167,7 @@ open class ServerGroupSetup : DefaultGroupSetup(), ISetup {
             maximumOnlineServices,
             false,
             static,
+            false,
             percent,
             wrapper?.getName(),
             serviceVersion,

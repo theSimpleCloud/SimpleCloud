@@ -137,6 +137,11 @@ interface ICloudService : ICacheValue<ICloudServiceUpdater>, ICloudServiceVariab
     fun isStatic(): Boolean = getServiceGroup().isStatic()
 
     /**
+     * Returns whether this service has force copy templates enabled.
+     */
+    fun isForceCopyTemplates(): Boolean = getServiceGroup().isForceCopyTemplates()
+
+    /**
      * Returns the percentage of occupied slots
      */
     fun getOnlinePercentage(): Double {
