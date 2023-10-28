@@ -34,5 +34,5 @@ enum class DatabaseType {
 
     MONGODB,
 
-    SQLITE;
+    SQLITE
 }

@@ -15,11 +15,17 @@ class SQLiteOfflineCloudPlayerHandler(private val databaseConnectionInformation:
     var connection: Connection? = null
         private set
 
-    private val databaseFile: File = File("storage/database.db")
+    private val databaseFile = File("storage/database.db")
 
     private val playerCollectionName = databaseConnectionInformation.collectionPrefix + "players"
 
     init {
+        if (!databaseFile.exists()) {
+            databaseFile.createNewFile()
+        }
+
+        //Class.forName("org.sqlite.JDBC");
+
         runReconnectLoop()
         createDatabaseAndIndicesIfNotExist()
     }
@@ -43,7 +49,7 @@ class SQLiteOfflineCloudPlayerHandler(private val databaseConnectionInformation:
 
     private fun reconnect() = synchronized(this) {
         closeConnection()
-        this.connection = DriverManager.getConnection("jdbc:sqlite:${databaseFile.absolutePath}")
+        this.connection = DriverManager.getConnection("jdbc:sqlite:${databaseFile.path}")
     }
 
     private fun createIndex(columnName: String) {

@@ -43,6 +43,17 @@ class DatabaseConnectionSetup : ISetup {
     fun type(type: DatabaseType): Boolean {
         this.databaseType = type
         Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.database-connection.question.type.success")
+
+        if (type == DatabaseType.SQLITE) {
+            this.host = "localhost"
+            this.port = 3306
+            this.databaseName = "cloud"
+            this.username = "root"
+            this.password = "password"
+
+            Launcher.instance.setupManager.finishCurrentSetup()
+            return true
+        }
         return true
     }
 
@@ -102,6 +113,4 @@ class DatabaseConnectionSetup : ISetup {
         )
         DatabaseConfigLoader().saveConfig(databaseConnectionInformation)
     }
-
-
 }
