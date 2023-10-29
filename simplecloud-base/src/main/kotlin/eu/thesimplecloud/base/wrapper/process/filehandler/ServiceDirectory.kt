@@ -44,8 +44,8 @@ class ServiceDirectory(private val cloudService: ICloudService) {
     val serviceTmpDirectory = getServiceTmpDirectory(cloudService)
 
     fun copyTemplateFilesAndModules() {
-        copyServiceVersion()
         copyTemplateFiles()
+        copyServiceVersionIfNotExist()
         copyModules()
     }
 
@@ -58,7 +58,12 @@ class ServiceDirectory(private val cloudService: ICloudService) {
         FileUtils.deleteDirectory(this.serviceTmpDirectory)
     }
 
-    private fun copyServiceVersion() {
+    private fun copyServiceVersionIfNotExist() {
+        val expectedExecutableJar = File(this.serviceTmpDirectory, "server.jar")
+        if (expectedExecutableJar.exists()) {
+            return
+        }
+
         val loadedServiceVersion =
             Wrapper.instance.serviceVersionLoader.loadVersionFile(this.cloudService.getServiceVersion())
         loadedServiceVersion.copyToDirectory(this.serviceTmpDirectory)
