@@ -1,0 +1,3 @@
+  %TEMPLATE_NAME%:
+    - inheritedTemplateNames: %INHERITED_TEMPLATES%
+    - moduleNamesToCopy: %MODULE_NAMES%

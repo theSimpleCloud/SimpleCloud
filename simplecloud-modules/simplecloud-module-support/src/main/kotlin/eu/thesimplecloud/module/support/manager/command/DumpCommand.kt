@@ -18,7 +18,7 @@ class DumpCommand : ICommandHandler {
 
     private val uploadHandler = UploadHandler()
 
-    @CommandSubPath
+    @CommandSubPath(description = "Creates and uploads a new dump")
     fun execute(sender: ICommandSender) {
         sender.sendMessage("A new dump is being created... This can take a few seconds!")
         this.uploadHandler.uploadFile(DumpFileCreator().create())
