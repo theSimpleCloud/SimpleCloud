@@ -47,6 +47,9 @@ class ServiceHandler : IServiceHandler {
     @Volatile
     private var serviceQueue: MutableList<ICloudService> = CopyOnWriteArrayList()
 
+    @Volatile
+    private var threadRunning = true
+
     override fun startServicesByGroup(cloudServiceGroup: ICloudServiceGroup, count: Int): List<ICloudService> {
         require(count >= 1) { "Count must be positive" }
         val list = ArrayList<ICloudService>()
@@ -144,7 +147,7 @@ class ServiceHandler : IServiceHandler {
 
     fun startThread() {
         thread(start = true, isDaemon = true) {
-            while (true) {
+            while (this.threadRunning) {
                 this.serviceQueue =
                     CopyOnWriteArrayList(this.serviceQueue.sortedByDescending {
                         it.getServiceGroup().getStartPriority()
@@ -206,6 +209,9 @@ class ServiceHandler : IServiceHandler {
         }
     }
 
+    fun stopThread() {
+        this.threadRunning = false
+    }
 
 
 }

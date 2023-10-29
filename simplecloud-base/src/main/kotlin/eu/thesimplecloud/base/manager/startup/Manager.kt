@@ -258,6 +258,7 @@ class Manager : ICloudApplication {
     }
 
     override fun onDisable() {
+        this.serviceHandler.stopThread()
         this.cloudModuleHandler.unloadAllModules()
         this.profileFile.create()
     }
