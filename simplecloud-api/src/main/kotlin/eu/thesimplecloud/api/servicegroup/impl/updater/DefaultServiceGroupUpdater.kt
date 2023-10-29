@@ -98,6 +98,14 @@ open class DefaultServiceGroupUpdater(
         changes["maintenance"] = maintenance
     }
 
+    override fun isForceCopyTemplates(): Boolean {
+        return getChangedValue("forceCopyTemplates") ?: serviceGroup.isForceCopyTemplates()
+    }
+
+    override fun setForceCopyTemplates(forceCopyTemplates: Boolean) {
+        changes["forceCopyTemplates"] = forceCopyTemplates
+    }
+
     override fun getPercentToStartNewService(): Int {
         return getChangedValue("percentToStartNewService") ?: serviceGroup.getPercentToStartNewService()
     }

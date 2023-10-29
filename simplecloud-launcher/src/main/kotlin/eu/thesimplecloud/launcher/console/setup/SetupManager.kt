@@ -145,7 +145,7 @@ class SetupManager(val launcher: Launcher) {
         printCurrentQuestion()
     }
 
-    private fun finishCurrentSetup() {
+    fun finishCurrentSetup() {
         Launcher.instance.clearConsole()
 
         val currentSetupReference = this.currentSetup

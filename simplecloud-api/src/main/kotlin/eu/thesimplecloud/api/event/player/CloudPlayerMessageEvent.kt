@@ -11,7 +11,7 @@ import eu.thesimplecloud.api.service.ICloudService
 /**
  * This event is called when a player sends a chat message
  */
-class CloudPlayerMessageEvent(
+class CloudPlayerChatEvent(
     cloudPlayer: ICloudPlayer,
 
     /**
