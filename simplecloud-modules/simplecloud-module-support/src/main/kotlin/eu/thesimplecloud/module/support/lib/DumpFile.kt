@@ -19,7 +19,7 @@ class DumpFile(
         .replace("%JVM_ARGUMENTS%", getJvmArgumentsString())
         .replace("%WRAPPERS%", WrapperFileCreator().create())
         .replace("%SERVICES%", ServiceFileCreator().create())
-        .replace("%TEMPLATES%", getTemplatesString())
+        .replace("%TEMPLATES%", TemplateFileCreator().create())
         .replace("%GROUPS%", GroupFileCreator().create())
         .replace("%STATIC_JARS%", ServiceVersionFileCreator().create())
         .replace("%LOG%", getCloudLogs())
