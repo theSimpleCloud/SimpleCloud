@@ -50,7 +50,7 @@ class CloudServiceManagerImpl : AbstractCloudServiceManager() {
                     val groupName = cloudService.getServiceGroup().getName()
                     val file = File("logs/$groupName/")
                     if (!file.exists()) file.mkdirs()
-                    val date = SimpleDateFormat("yyyy.MM.dd-HH:mm:ss").format(System.currentTimeMillis())
+                    val date = SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(System.currentTimeMillis())
                     File("${file.absolutePath}/${cloudService.getName()}-$date.txt").writeText(screenMessage)
                 }
             }
