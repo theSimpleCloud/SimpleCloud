@@ -9,7 +9,7 @@ Modules: %MODULES%
 
 JVM-Arguments: %JVM_ARGUMENTS%
 
-Static-Minecraft-Jars: %STATIC_JARS%
+Service-Versions: %STATIC_JARS%
 
 Wrappers: %WRAPPERS%
 

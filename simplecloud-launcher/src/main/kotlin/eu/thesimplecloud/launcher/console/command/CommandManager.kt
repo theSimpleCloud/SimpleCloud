@@ -40,6 +40,7 @@ import eu.thesimplecloud.launcher.event.command.CommandUnregisteredEvent
 import eu.thesimplecloud.launcher.exception.CommandRegistrationException
 import eu.thesimplecloud.launcher.startup.Launcher
 import org.reflections.Reflections
+import org.reflections.util.ConfigurationBuilder
 import java.util.concurrent.CopyOnWriteArrayList
 
 
@@ -234,8 +235,13 @@ class CommandManager {
 
     fun registerAllCommands(cloudModule: ICloudModule, classLoader: ClassLoader, vararg packages: String) {
         packages.forEach { pack ->
-            val reflection = Reflections(pack, Launcher.instance.getNewClassLoaderWithLauncherAndBase())
-            reflection.getSubTypesOf(ICommandHandler::class.java).forEach {
+            val baseClassLoader = Launcher.instance.getNewClassLoaderWithLauncherAndBase()
+            val reflections = Reflections(
+                ConfigurationBuilder()
+                    .forPackage(pack, baseClassLoader)
+                    .setClassLoaders(arrayOf(baseClassLoader))
+            )
+            reflections.getSubTypesOf(ICommandHandler::class.java).forEach {
                 val classToUse = Class.forName(it.name, true, classLoader) as Class<out ICommandHandler>
                 try {
                     registerCommand(cloudModule, classToUse.getDeclaredConstructor().newInstance())
@@ -247,7 +253,7 @@ class CommandManager {
             }
         }
 
-        val size = commands.size
+        val size = this.commands.size
         Launcher.instance.logger.success("Loaded $size command" + (if (size == 1) "" else "s"))
 
     }

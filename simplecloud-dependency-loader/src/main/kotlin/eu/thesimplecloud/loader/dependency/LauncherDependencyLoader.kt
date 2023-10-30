@@ -47,12 +47,13 @@ class LauncherDependencyLoader {
                 AdvancedCloudDependency("com.google.guava", "guava", "32.1.3-jre"),
                 AdvancedCloudDependency("org.jetbrains.kotlinx", "kotlinx-coroutines-core", "1.7.3"),
                 AdvancedCloudDependency("com.google.code.gson", "gson", "2.10.1"),
-                AdvancedCloudDependency("io.netty", "netty-all", "4.1.86.Final"),
+                AdvancedCloudDependency("io.netty", "netty-all", "4.1.100.Final"),
                 AdvancedCloudDependency("org.reflections", "reflections", "0.10.2"),
                 AdvancedCloudDependency("org.mariadb.jdbc", "mariadb-java-client", "2.7.4"),
                 AdvancedCloudDependency("com.github.ajalt", "clikt", "2.8.0"),
                 AdvancedCloudDependency("net.kyori", "adventure-api", "4.14.0"),
-                AdvancedCloudDependency("net.kyori", "adventure-text-serializer-gson", "4.14.0")
+                AdvancedCloudDependency("net.kyori", "adventure-text-serializer-gson", "4.14.0"),
+                AdvancedCloudDependency("org.xerial", "sqlite-jdbc", "3.43.2.1")
             )
         )
     }
