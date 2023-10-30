@@ -28,6 +28,7 @@ import eu.thesimplecloud.runner.utils.Downloader
 import java.io.File
 import java.net.URL
 import java.net.URLClassLoader
+import java.nio.charset.StandardCharsets
 
 /**
  * Created by IntelliJ IDEA.
@@ -40,8 +41,18 @@ private val copiedDependencyLoaderFile = File("storage", "dependency-loader.jar"
 private val copiedLauncherFile = File("launcher.jar")
 private val copiedSimpleCloudPluginFile = File("storage/pluginJars", "SimpleCloud-Plugin-${getCloudVersion()}.jar")
 
+private val lastStartedVersionFile = File("storage/versions", "lastStartedVersion.json")
+private val dependenciesDir = File("dependencies/")
+
 fun main(args: Array<String>) {
     val version = getCloudVersion()
+    val lastStartedVersion = getLastStartedVersion()
+
+    if (version != lastStartedVersion && dependenciesDir.exists()) {
+        println("Deleting dependencies directory...")
+        dependenciesDir.deleteRecursively()
+    }
+
 
     if (!version.contains("SNAPSHOT")) {
         if (!copiedDependencyLoaderFile.exists())
@@ -69,7 +80,15 @@ fun main(args: Array<String>) {
     val classLoader = initClassLoader(loadedDependencyUrls)
     Thread.currentThread().contextClassLoader = classLoader
 
-   executeDependencyLoaderMain(classLoader, args)
+    executeDependencyLoaderMain(classLoader, args)
+}
+
+private fun getLastStartedVersion(): String? {
+    if (!lastStartedVersionFile.exists()) {
+        return null
+    }
+    val lastStartedVersion = lastStartedVersionFile.readLines(StandardCharsets.UTF_8).first()
+    return lastStartedVersion.replace("\"", "")
 }
 
 private fun getCloudVersion(): String {
