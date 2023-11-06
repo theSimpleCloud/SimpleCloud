@@ -17,10 +17,6 @@ shadowJar {
     archiveFileName.set("runner.jar")
 }
 
-compileKotlin {
-    kotlinOptions.jvmTarget = 1.8
-}
-
 jar {
     dependsOn ':simplecloud-dependency-loader:jar'
     manifest {

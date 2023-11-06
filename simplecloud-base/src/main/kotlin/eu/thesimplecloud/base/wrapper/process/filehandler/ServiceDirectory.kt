@@ -26,6 +26,7 @@ import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.service.ICloudService
 import eu.thesimplecloud.api.service.ServiceType
+import eu.thesimplecloud.api.service.version.type.ServiceAPIType
 import eu.thesimplecloud.api.template.ITemplate
 import eu.thesimplecloud.base.wrapper.startup.Wrapper
 import eu.thesimplecloud.clientserverapi.client.NettyClient
@@ -100,7 +101,7 @@ class ServiceDirectory(private val cloudService: ICloudService) {
                 FileCopier.copyFileOutOfJar(destServerIconFile, "/files/server-icon.png")
         }
 
-        val cloudPluginFile = File(this.serviceTmpDirectory, "/plugins/SimpleCloud-Plugin.jar")
+        val cloudPluginFile = File(this.serviceTmpDirectory, "/${getPluginDirectoryName()}/SimpleCloud-Plugin.jar")
         val version = Launcher.instance.getCurrentVersion().replace("-SNAPSHOT", "")
         File(DirectoryPaths.paths.storagePath + "pluginJars/SimpleCloud-Plugin-$version.jar").copyTo(cloudPluginFile, true)
 
@@ -112,7 +113,7 @@ class ServiceDirectory(private val cloudService: ICloudService) {
         modulesForService.forEach {
             FileUtils.copyFile(
                 it.file,
-                File(this.serviceTmpDirectory, "/plugins/" + it.file.name)
+                File(this.serviceTmpDirectory, "/${getPluginDirectoryName()}/" + it.file.name)
             )
         }
         this.copiedModulesAsPlugins = getModuleFilesInService()
@@ -142,7 +143,7 @@ class ServiceDirectory(private val cloudService: ICloudService) {
 
     fun getModuleFilesInService(): List<File> {
         val modulesForService = getModulesForService()
-        return modulesForService.map { File(this.serviceTmpDirectory, "/plugins/" + it.file.name) }
+        return modulesForService.map { File(this.serviceTmpDirectory, "/${getPluginDirectoryName()}/" + it.file.name) }
     }
 
     private fun generateServiceFile() {
@@ -173,4 +174,13 @@ class ServiceDirectory(private val cloudService: ICloudService) {
         set.addAll(template.getModuleNamesToCopy())
         return set
     }
+    
+    private fun getPluginDirectoryName(): String {
+        if (cloudService.getServiceVersion().serviceAPIType == ServiceAPIType.MINESTOM) {
+            return "extensions"
+        }
+        
+        return "plugins"
+    }
+    
 }

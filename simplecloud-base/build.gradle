@@ -50,10 +50,6 @@ dependencies {
     compileOnly group: 'org.apache.commons', name: 'commons-lang3', version: '3.13.0'
 }
 
-compileKotlin {
-    kotlinOptions.jvmTarget = 1.8
-}
-
 shadowJar {
     archiveFileName.set("base.jar")
 }

@@ -20,7 +20,7 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.plugin.server.listener
+package eu.thesimplecloud.plugin.server.spigot.listener
 
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority

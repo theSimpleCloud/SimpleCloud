@@ -20,37 +20,11 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.api.service.version.type
+package eu.thesimplecloud.plugin.server
 
-/**
- * Created by IntelliJ IDEA.
- * Date: 14.06.2020
- * Time: 10:58
- * @author Frederick Baier
- */
-enum class ServiceAPIType(
-    val minecraftEdition: MinecraftEdition,
-    val serviceVersionType: ServiceVersionType
-) {
+object ServerMessages {
 
-    /**
-     * Represents a jar with the spigot api
-     */
-    SPIGOT(MinecraftEdition.JAVA, ServiceVersionType.SERVER),
-
-    /**
-     * Represents a jar with the bungeecord api
-     */
-    BUNGEECORD(MinecraftEdition.JAVA, ServiceVersionType.PROXY),
-
-    /**
-     * Represents a jar with the velocity api
-     */
-    VELOCITY(MinecraftEdition.JAVA, ServiceVersionType.PROXY),
-
-    /**
-     * Represents a jar with the minestom api
-     */
-    MINESTOM(MinecraftEdition.JAVA, ServiceVersionType.SERVER);
+    const val UNKNOWN_ADRESS = "§cYou are connected from an unknown address!"
+    const val NOT_REGISTERED = "§cYou are not registered on the network!"
 
 }

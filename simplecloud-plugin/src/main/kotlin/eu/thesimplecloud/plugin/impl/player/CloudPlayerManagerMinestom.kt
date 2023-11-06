@@ -32,11 +32,11 @@ import eu.thesimplecloud.api.player.ICloudPlayer
 import eu.thesimplecloud.clientserverapi.lib.packet.packetsender.sendQuery
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
-import eu.thesimplecloud.plugin.extension.syncBukkit
 import eu.thesimplecloud.plugin.startup.CloudPlugin
-import org.bukkit.Bukkit
-import org.bukkit.Location
-import org.bukkit.entity.Player
+import net.minestom.server.MinecraftServer
+import net.minestom.server.coordinate.Pos
+import net.minestom.server.entity.Player
+import java.util.*
 
 /**
  * Created by IntelliJ IDEA.
@@ -44,20 +44,21 @@ import org.bukkit.entity.Player
  * Date: 15.05.2020
  * Time: 21:58
  */
-class CloudPlayerManagerSpigot : AbstractCloudPlayerManagerServer() {
+class CloudPlayerManagerMinestom : AbstractCloudPlayerManagerServer() {
 
     override fun teleportPlayer(cloudPlayer: ICloudPlayer, location: SimpleLocation): ICommunicationPromise<Unit> {
         if (CloudPlugin.instance.thisServiceName != cloudPlayer.getConnectedServerName()) {
             return CloudPlugin.instance.connectionToManager.sendUnitQuery(PacketIOTeleportPlayer(cloudPlayer, location))
         }
 
-        val bukkitPlayer = getPlayerByCloudPlayer(cloudPlayer)
-        bukkitPlayer
+        val minestomPlayer = getPlayerByCloudPlayer(cloudPlayer)
+        minestomPlayer
             ?: return CommunicationPromise.failed(NoSuchPlayerException("Unable to find the player on the server service"))
-        val bukkitLocation = getLocationBySimpleLocation(location)
-        bukkitLocation
+        val minestomLocation = getLocationBySimpleLocation(location)
+        val instance = MinecraftServer.getInstanceManager().getInstance(UUID.fromString(location.worldName))
             ?: return CommunicationPromise.failed(NoSuchWorldException("Unable to find world: ${location.worldName}"))
-        syncBukkit { bukkitPlayer.teleport(bukkitLocation) }
+
+        minestomPlayer.setInstance(instance, minestomLocation)
         return CommunicationPromise.of(Unit)
     }
 
@@ -66,32 +67,33 @@ class CloudPlayerManagerSpigot : AbstractCloudPlayerManagerServer() {
             return CloudPlugin.instance.connectionToManager.sendQuery(PacketIOGetPlayerLocation(cloudPlayer))
         }
 
-        val bukkitPlayer = getPlayerByCloudPlayer(cloudPlayer)
-        bukkitPlayer ?: return CommunicationPromise.failed(NoSuchPlayerException("Unable to find bukkit player"))
-        val playerLocation = bukkitPlayer.location
-        playerLocation.world
+        val minestomPlayer = getPlayerByCloudPlayer(cloudPlayer)
+        minestomPlayer ?: return CommunicationPromise.failed(NoSuchPlayerException("Unable to find bukkit player"))
+
+        val playerLocation = minestomPlayer.position
+        val instance = minestomPlayer.instance
             ?: return CommunicationPromise.failed(NoSuchWorldException("The world the player is on is null"))
+
         return CommunicationPromise.of(
             ServiceLocation(
                 CloudPlugin.instance.thisService(),
-                playerLocation.world!!.name,
-                playerLocation.x,
-                playerLocation.y,
-                playerLocation.z,
-                playerLocation.yaw,
-                playerLocation.pitch
+                instance.uniqueId.toString(),
+                playerLocation.x(),
+                playerLocation.y(),
+                playerLocation.z(),
+                playerLocation.yaw(),
+                playerLocation.pitch()
             )
         )
     }
 
     override fun getPlayerPing(cloudPlayer: ICloudPlayer): ICommunicationPromise<Int> {
-        return CommunicationPromise.of(getPlayerByCloudPlayer(cloudPlayer)?.ping ?: -1)
+        //TODO: Check if latency is the same as ping
+        return CommunicationPromise.of(getPlayerByCloudPlayer(cloudPlayer)?.latency ?: -1)
     }
 
-    private fun getLocationBySimpleLocation(simpleLocation: SimpleLocation): Location? {
-        val world = Bukkit.getWorld(simpleLocation.worldName) ?: return null
-        return Location(
-            world,
+    private fun getLocationBySimpleLocation(simpleLocation: SimpleLocation): Pos {
+        return Pos(
             simpleLocation.x,
             simpleLocation.y,
             simpleLocation.z,
@@ -101,7 +103,7 @@ class CloudPlayerManagerSpigot : AbstractCloudPlayerManagerServer() {
     }
 
     private fun getPlayerByCloudPlayer(cloudPlayer: ICloudPlayer): Player? {
-        return Bukkit.getPlayer(cloudPlayer.getUniqueId())
+        return MinecraftServer.getConnectionManager().getPlayer(cloudPlayer.getUniqueId())
     }
 
 }

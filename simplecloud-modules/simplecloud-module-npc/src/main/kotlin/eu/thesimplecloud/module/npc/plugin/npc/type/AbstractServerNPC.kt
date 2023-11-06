@@ -10,13 +10,10 @@ import eu.thesimplecloud.module.npc.lib.extension.translateColorCodesFromString
 import eu.thesimplecloud.module.npc.plugin.NPCPlugin
 import eu.thesimplecloud.module.npc.plugin.npc.ServerNPCHandler
 import eu.thesimplecloud.plugin.extension.getCloudPlayer
-import eu.thesimplecloud.plugin.extension.syncBukkit
-import eu.thesimplecloud.plugin.server.CloudSpigotPlugin
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.Player
-import org.bukkit.metadata.FixedMetadataValue
 
 abstract class AbstractServerNPC(
     val serverNPCHandler: ServerNPCHandler,

@@ -24,6 +24,7 @@ package eu.thesimplecloud.base.wrapper.process.serviceconfigurator
 
 import eu.thesimplecloud.api.service.version.type.ServiceAPIType
 import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.configurators.DefaultBungeeConfigurator
+import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.configurators.DefaultMinestomConfigurator
 import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.configurators.DefaultServerConfigurator
 import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.configurators.DefaultVelocityConfigurator
 
@@ -32,7 +33,8 @@ class ServiceConfiguratorManager {
     private val configurationMap = mapOf(
         ServiceAPIType.VELOCITY to DefaultVelocityConfigurator(),
         ServiceAPIType.BUNGEECORD to DefaultBungeeConfigurator(),
-        ServiceAPIType.SPIGOT to DefaultServerConfigurator()
+        ServiceAPIType.SPIGOT to DefaultServerConfigurator(),
+        ServiceAPIType.MINESTOM to DefaultMinestomConfigurator()
     )
 
     /**

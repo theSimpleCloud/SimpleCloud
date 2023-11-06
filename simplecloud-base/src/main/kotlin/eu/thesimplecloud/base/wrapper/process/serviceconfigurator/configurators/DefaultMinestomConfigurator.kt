@@ -20,37 +20,32 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.api.service.version.type
+package eu.thesimplecloud.base.wrapper.process.serviceconfigurator.configurators
 
-/**
- * Created by IntelliJ IDEA.
- * Date: 14.06.2020
- * Time: 10:58
- * @author Frederick Baier
- */
-enum class ServiceAPIType(
-    val minecraftEdition: MinecraftEdition,
-    val serviceVersionType: ServiceVersionType
-) {
+import eu.thesimplecloud.api.service.ICloudService
+import eu.thesimplecloud.base.wrapper.process.serviceconfigurator.IServiceConfigurator
+import eu.thesimplecloud.jsonlib.JsonLib
+import eu.thesimplecloud.launcher.utils.FileCopier
+import java.io.File
 
-    /**
-     * Represents a jar with the spigot api
-     */
-    SPIGOT(MinecraftEdition.JAVA, ServiceVersionType.SERVER),
+class DefaultMinestomConfigurator : IServiceConfigurator {
 
-    /**
-     * Represents a jar with the bungeecord api
-     */
-    BUNGEECORD(MinecraftEdition.JAVA, ServiceVersionType.PROXY),
+    override fun configureService(cloudService: ICloudService, serviceTmpDirectory: File) {
+       tryToConfigureRocket(cloudService, serviceTmpDirectory)
+    }
 
-    /**
-     * Represents a jar with the velocity api
-     */
-    VELOCITY(MinecraftEdition.JAVA, ServiceVersionType.PROXY),
+    private fun tryToConfigureRocket(cloudService: ICloudService, serviceTmpDirectory: File) {
+        val configFile = File(serviceTmpDirectory, "config.json")
+        if (!configFile.exists()) {
+            FileCopier.copyFileOutOfJar(configFile, "/files/rocket.config.json")
+        }
 
-    /**
-     * Represents a jar with the minestom api
-     */
-    MINESTOM(MinecraftEdition.JAVA, ServiceVersionType.SERVER);
+        val jsonElement = JsonLib.fromJsonFile(configFile)!!
+        jsonElement.append("address", cloudService.getHost())
+        jsonElement.append("port", cloudService.getPort())
+        jsonElement.append("proxyMode", "BUNGEECORD")
+
+        jsonElement.saveAsFile(configFile)
+    }
 
 }
