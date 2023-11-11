@@ -32,5 +32,5 @@ import eu.thesimplecloud.module.permission.group.IPermissionGroup
  * @author Frederick Baier
  */
 open class PermissionGroupEvent(
-    val player: IPermissionGroup
+    val permissionGroup: IPermissionGroup
 ) : IEvent
