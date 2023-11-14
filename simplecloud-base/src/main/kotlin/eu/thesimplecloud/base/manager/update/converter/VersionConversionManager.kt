@@ -35,11 +35,12 @@ import java.io.File
  */
 class VersionConversionManager {
 
-    private val converters = listOf<IVersionConverter>(
+    private val converters = listOf(
         Converter_2_0_To_2_1(),
         Converter_2_2_To_2_3(),
         Converter_2_3_To_2_4(),
-        Converter_2_4_To_2_5()
+        Converter_2_4_To_2_5(),
+        Converter_2_6_To_2_7()
     )
 
     private val lastStartedVersionFile = File(DirectoryPaths.paths.storagePath + "versions/lastStartedVersion.json")
