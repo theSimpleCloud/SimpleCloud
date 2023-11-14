@@ -33,6 +33,7 @@ import eu.thesimplecloud.module.rest.auth.createRolesMapping
 import eu.thesimplecloud.module.rest.controller.ControllerHandler
 import eu.thesimplecloud.module.rest.controller.RequestMethodData
 import eu.thesimplecloud.module.rest.defaultcontroller.UserController
+import eu.thesimplecloud.module.rest.defaultcontroller.dump.DumpController
 import eu.thesimplecloud.module.rest.defaultcontroller.filemanager.FileManagerController
 import eu.thesimplecloud.module.rest.defaultcontroller.group.ServiceGroupActionController
 import eu.thesimplecloud.module.rest.defaultcontroller.group.ServiceGroupController
@@ -84,6 +85,7 @@ class RestServer(port: Int) {
         controllerHandler.registerController(AuthController(this.authService))
         controllerHandler.registerController(UserController(this.authService))
         controllerHandler.registerController(ServiceGroupController())
+        controllerHandler.registerController(DumpController())
         controllerHandler.registerController(ServiceGroupActionController())
         controllerHandler.registerController(ServiceController())
         controllerHandler.registerController(ServiceActionController())
