@@ -1,7 +1,6 @@
 package eu.thesimplecloud.base.manager.dump.creator
 
 import eu.thesimplecloud.api.CloudAPI
-import eu.thesimplecloud.api.wrapper.IWrapperInfo
 import eu.thesimplecloud.base.manager.dump.DumpFile
 
 /**
