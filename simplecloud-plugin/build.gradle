@@ -39,9 +39,6 @@ dependencies {
 
 shadowJar {
     archiveFileName.set("SimpleCloud-Plugin-${version}.jar")
-    dependencies {
-        relocate 'com.google.gson', 'eu.thesimplecloud.external'
-    }
 }
 
 jar {
