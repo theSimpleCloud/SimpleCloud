@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2020 The SimpleCloud authors
+ * Copyright (C) 2020-2022 The SimpleCloud authors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -20,13 +20,30 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-shadowJar {
-    archiveFileName.set("SimpleCloud-Support.jar")
-}
+package eu.thesimplecloud.base.manager.update.converter
 
-dependencies {
-    compileOnly project(":simplecloud-base")
-    compileOnly project(":simplecloud-api")
-    compileOnly project(":simplecloud-plugin")
-    compileOnly project(":simplecloud-launcher")
+import eu.thesimplecloud.api.directorypaths.DirectoryPaths
+import java.io.File
+
+/**
+ * Date: 18.06.22
+ * Time: 16:44
+ * @author Frederick Baier
+ *
+ */
+class Converter_2_6_To_2_7 : IVersionConverter {
+
+    override fun getTargetMinorVersion(): Int {
+        return 7
+    }
+
+    override fun convert() {
+        val modulesPath = DirectoryPaths.paths.modulesPath
+        File(modulesPath, "support").deleteRecursively()
+        File(modulesPath).listFiles()!!
+            .filter { !it.isDirectory }
+            .filter { it.name.lowercase().contains("simplecloud-support") }
+            .forEach { it.deleteRecursively() }
+    }
+
 }

@@ -38,6 +38,7 @@ class LanguageSetup : ISetup {
             launcherConfig.host,
             launcherConfig.port,
             50000,
+            "https://haste.simplecloud.app",
             answer.lowercase(),
             launcherConfig.directoryPaths
         )

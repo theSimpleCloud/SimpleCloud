@@ -1,6 +1,6 @@
-package eu.thesimplecloud.module.support.manager.handler
+package eu.thesimplecloud.base.manager.dump
 
-import eu.thesimplecloud.module.support.lib.config.UploadConfigLoader
+import eu.thesimplecloud.launcher.startup.Launcher
 import java.io.BufferedReader
 import java.io.DataOutputStream
 import java.io.InputStreamReader
@@ -8,14 +8,9 @@ import java.net.URL
 import java.net.URLConnection
 import java.util.concurrent.CompletableFuture
 
-/**
- * Created by MrManHD
- * Class create at 07.07.2023 20:02
- */
+object DumpUploader {
 
-class UploadHandler {
-
-    private val uploadUrl = UploadConfigLoader().loadConfig().uploadUrl + "/"
+    private val uploadUrl = Launcher.instance.launcherConfig.uploadDumpFileUrl + "/"
     private val url = URL("${uploadUrl}documents")
 
     fun uploadFile(message: String): CompletableFuture<String> {
