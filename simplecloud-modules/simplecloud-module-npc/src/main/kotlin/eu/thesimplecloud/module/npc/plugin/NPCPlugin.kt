@@ -7,6 +7,7 @@ import eu.thesimplecloud.module.npc.lib.type.MaterialType
 import eu.thesimplecloud.module.npc.lib.type.MobType
 import eu.thesimplecloud.module.npc.plugin.inventory.InventoryHandler
 import eu.thesimplecloud.module.npc.plugin.listener.CloudListener
+import eu.thesimplecloud.module.npc.plugin.listener.EntityListener
 import eu.thesimplecloud.module.npc.plugin.listener.InventoryListener
 import eu.thesimplecloud.module.npc.plugin.listener.PlayerConnectionListener
 import eu.thesimplecloud.module.npc.plugin.npc.ServerNPCHandler
@@ -31,6 +32,7 @@ class NPCPlugin: JavaPlugin() {
         val pluginManager = Bukkit.getPluginManager()
         pluginManager.registerEvents(PlayerConnectionListener(this), this)
         pluginManager.registerEvents(InventoryListener(this), this)
+        pluginManager.registerEvents(EntityListener(this), this)
 
         if (!globalPropertyHolder.hasProperty("npc-type-list")) {
             globalPropertyHolder.setProperty("npc-type-list", MobType(
