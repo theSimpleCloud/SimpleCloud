@@ -40,6 +40,7 @@ import java.nio.charset.StandardCharsets
 private val copiedDependencyLoaderFile = File("storage", "dependency-loader.jar")
 private val copiedLauncherFile = File("launcher.jar")
 private val copiedSimpleCloudPluginFile = File("storage/pluginJars", "SimpleCloud-Plugin-${getCloudVersion()}.jar")
+private val copiedSimpleCloudExtensionFile = File("storage/pluginJars", "SimpleCloud-Extension-${getCloudVersion()}.jar")
 
 private val lastStartedVersionFile = File("storage/versions", "lastStartedVersion.json")
 private val dependenciesDir = File("dependencies/")
@@ -62,6 +63,13 @@ fun main(args: Array<String>) {
             Downloader().userAgentDownload(
                 "https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-plugin/$version/simplecloud-plugin-$version-all.jar",
                 copiedSimpleCloudPluginFile
+            )
+        }
+
+        if (!copiedSimpleCloudExtensionFile.exists()) {
+            Downloader().userAgentDownload(
+                "https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-extension/$version/simplecloud-extension-$version-all.jar",
+                copiedSimpleCloudExtensionFile
             )
         }
 

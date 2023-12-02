@@ -11,7 +11,7 @@ on:
   #schedule:
   #  - cron: '37 7 * * *'
   push:
-    branches: [ "dev/2.0", "master" ]
+    branches: [ "dev/2.0", "master", "feature/minestom"]
     # Publish semver tags as releases.
     #tags: [ 'v*.*.*' ]
   #pull_request:
@@ -52,6 +52,7 @@ jobs:
         cp simplecloud-runner/build/libs/runner.jar temp/runner.jar
         cp simplecloud-base/build/libs/base.jar temp/storage/base.jar
         cp simplecloud-plugin/build/libs/*.jar temp/storage/pluginJars/
+        cp simplecloud-minestom-extension/build/libs/*.jar temp/storage/pluginJars/
         cp simplecloud-dependency-loader/build/libs/dependency-loader.jar temp/storage/dependency-loader.jar
         cp simplecloud-launcher/build/libs/launcher.jar temp/launcher.jar
         rm temp/modules/SimpleCloud-Chat+Tab.jar

@@ -33,13 +33,17 @@ abstract class AbstractServerListener {
     protected fun checkAddress(
         uniqueId: UUID,
         hostAddress: String,
+        disableHostCheck: Boolean = false,
         kickCallback: (String) -> Unit,
     ) {
-        if (hostAddress != "127.0.0.1" && !CloudAPI.instance.getWrapperManager().getAllCachedObjects()
-                .any { it.getHost() == hostAddress }
-        ) {
-            kickCallback(ServerMessages.UNKNOWN_ADRESS)
-            return
+        if (!disableHostCheck) {
+            if (hostAddress != "127.0.0.1" && !CloudAPI.instance.getWrapperManager().getAllCachedObjects()
+                    .any { it.getHost() == hostAddress }
+            ) {
+                println("Unknown address $hostAddress")
+                kickCallback(ServerMessages.UNKNOWN_ADRESS)
+                return
+            }
         }
 
         if (CloudAPI.instance.getCloudPlayerManager().getCachedCloudPlayer(uniqueId) == null) {
