@@ -1,9 +1,9 @@
-package eu.simplecloud.extension
+package eu.thesimplecloud.extension
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.player.ICloudPlayerManager
-import eu.simplecloud.extension.listener.MinestomListener
-import eu.simplecloud.extension.impl.player.CloudPlayerManagerMinestom
+import eu.thesimplecloud.extension.listener.MinestomListener
+import eu.thesimplecloud.extension.impl.player.CloudPlayerManagerMinestom
 import eu.thesimplecloud.plugin.listener.CloudListener
 import eu.thesimplecloud.plugin.server.ICloudServerPlugin
 import eu.thesimplecloud.plugin.startup.CloudPlugin

@@ -20,7 +20,7 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.simplecloud.extension.impl.player
+package eu.thesimplecloud.extension.impl.player
 
 import eu.thesimplecloud.api.exception.NoSuchPlayerException
 import eu.thesimplecloud.api.exception.NoSuchWorldException

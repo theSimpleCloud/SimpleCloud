@@ -20,7 +20,7 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.simplecloud.extension.listener
+package eu.thesimplecloud.extension.listener
 
 import eu.thesimplecloud.plugin.server.AbstractServerListener
 import net.minestom.server.MinecraftServer
