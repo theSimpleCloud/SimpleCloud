@@ -11,7 +11,7 @@ on:
   #schedule:
   #  - cron: '37 7 * * *'
   push:
-    branches: [ "dev/2.0", "master", "feature/minestom"]
+    branches: [ "dev/2.0", "master" ]
     # Publish semver tags as releases.
     #tags: [ 'v*.*.*' ]
   #pull_request:
