@@ -101,9 +101,15 @@ class ServiceDirectory(private val cloudService: ICloudService) {
                 FileCopier.copyFileOutOfJar(destServerIconFile, "/files/server-icon.png")
         }
 
-        val cloudPluginFile = File(this.serviceTmpDirectory, "/${getPluginDirectoryName()}/SimpleCloud-Plugin.jar")
-        val version = Launcher.instance.getCurrentVersion().replace("-SNAPSHOT", "")
-        File(DirectoryPaths.paths.storagePath + "pluginJars/SimpleCloud-Plugin-$version.jar").copyTo(cloudPluginFile, true)
+        if (cloudService.getServiceVersion().serviceAPIType == ServiceAPIType.MINESTOM) {
+            val cloudPluginFile = File(this.serviceTmpDirectory, "/${getPluginDirectoryName()}/SimpleCloud-Extension.jar")
+            val version = Launcher.instance.getCurrentVersion().replace("-SNAPSHOT", "")
+            File(DirectoryPaths.paths.storagePath + "pluginJars/SimpleCloud-Extension-$version.jar").copyTo(cloudPluginFile, true)
+        } else {
+            val cloudPluginFile = File(this.serviceTmpDirectory, "/${getPluginDirectoryName()}/SimpleCloud-Plugin.jar")
+            val version = Launcher.instance.getCurrentVersion().replace("-SNAPSHOT", "")
+            File(DirectoryPaths.paths.storagePath + "pluginJars/SimpleCloud-Plugin-$version.jar").copyTo(cloudPluginFile, true)
+        }
 
         generateServiceFile()
     }

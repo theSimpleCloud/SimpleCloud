@@ -25,18 +25,18 @@ repositories {
 }
 
 dependencies {
-    compileOnly group: 'org.reflections', name: 'reflections', version: '0.10.2'
+    compileOnly(group: 'org.reflections', name: 'reflections', version: '0.10.2')
     compileOnly(group: 'io.netty', name: 'netty-all', version: '4.1.100.Final')
+
     api(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion)
     api(group: 'eu.thesimplecloud.jsonlib', name: 'json-lib', version: "1.0.8")
-    api(project(":simplecloud-api"))
 
+    api(project(":simplecloud-api"))
     api(project(":simplecloud-client"))
+
     compileOnly 'org.spigotmc:spigot-api:1.17-R0.1-SNAPSHOT'
     compileOnly 'net.md-5:bungeecord-api:1.17-R0.1-SNAPSHOT'
     compileOnly 'com.velocitypowered:velocity-api:3.1.1'
-    compileOnly 'dev.hollowcube:minestom-ce:438338381e'
-    compileOnly 'dev.hollowcube:minestom-ce-extensions:1.2.0'
     annotationProcessor 'com.velocitypowered:velocity-api:3.1.1'
 
     api('net.kyori:adventure-text-minimessage:4.14.0')

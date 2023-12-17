@@ -46,7 +46,8 @@ class ProcessCopier(val cloudService: ICloudService) {
 
     private val blockedCopyFileNames = arrayListOf(
         "SIMPLE-CLOUD.json",
-        "SimpleCloud-Plugin.jar"
+        "SimpleCloud-Plugin.jar",
+        "SimpleCloud-Extension.jar"
     )
 
     fun copy(path: String): ICommunicationPromise<Unit> {

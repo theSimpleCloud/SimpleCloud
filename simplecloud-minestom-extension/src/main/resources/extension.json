@@ -1,0 +1,5 @@
+{
+  "entrypoint": "eu.thesimplecloud.extension.CloudMinestomExtension",
+  "name": "SimpleCloudExtension",
+  "version": "1.0"
+}

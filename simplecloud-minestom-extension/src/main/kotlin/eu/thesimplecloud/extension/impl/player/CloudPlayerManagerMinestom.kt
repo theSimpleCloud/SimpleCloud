@@ -20,7 +20,7 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.plugin.impl.player
+package eu.thesimplecloud.extension.impl.player
 
 import eu.thesimplecloud.api.exception.NoSuchPlayerException
 import eu.thesimplecloud.api.exception.NoSuchWorldException
@@ -32,6 +32,7 @@ import eu.thesimplecloud.api.player.ICloudPlayer
 import eu.thesimplecloud.clientserverapi.lib.packet.packetsender.sendQuery
 import eu.thesimplecloud.clientserverapi.lib.promise.CommunicationPromise
 import eu.thesimplecloud.clientserverapi.lib.promise.ICommunicationPromise
+import eu.thesimplecloud.plugin.impl.player.AbstractCloudPlayerManagerServer
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import net.minestom.server.MinecraftServer
 import net.minestom.server.coordinate.Pos

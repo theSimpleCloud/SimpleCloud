@@ -1,5 +1,0 @@
-{
-  "entrypoint": "eu.thesimplecloud.plugin.server.minestom.CloudMinestomExtension",
-  "name": "SimpleCloudPlugin",
-  "version": "1.0"
-}

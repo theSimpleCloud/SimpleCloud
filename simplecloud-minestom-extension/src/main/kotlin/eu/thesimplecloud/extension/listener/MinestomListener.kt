@@ -20,7 +20,7 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package eu.thesimplecloud.plugin.server.minestom.listener
+package eu.thesimplecloud.extension.listener
 
 import eu.thesimplecloud.plugin.server.AbstractServerListener
 import net.minestom.server.MinecraftServer
@@ -47,7 +47,7 @@ object MinestomListener : AbstractServerListener() {
             val remoteAddress = player.playerConnection.remoteAddress as? InetSocketAddress ?: return@addListener
             val hostAddress = remoteAddress.address.hostAddress
 
-            checkAddress(player.uuid, hostAddress) { message ->
+            checkAddress(player.uuid, hostAddress, true) { message ->
                 player.kick(message)
             }
         }

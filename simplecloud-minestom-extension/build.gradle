@@ -1,0 +1,28 @@
+dependencies {
+    api(project(":simplecloud-plugin"))
+
+    compileOnly 'dev.hollowcube:minestom-ce:438338381e'
+    compileOnly 'dev.hollowcube:minestom-ce-extensions:1.2.0'
+}
+
+shadowJar {
+    archiveFileName.set("SimpleCloud-Extension-${version}.jar")
+    dependencies {
+        relocate 'com.google.gson', 'eu.thesimplecloud.external'
+    }
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "17"
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "17"
+}
+
+sourceCompatibility = 17
+targetCompatibility = 17
+
+jar {
+    dependsOn ':simplecloud-plugin:jar'
+}
