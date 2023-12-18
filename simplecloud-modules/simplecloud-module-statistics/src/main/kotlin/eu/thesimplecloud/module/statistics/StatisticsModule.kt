@@ -29,6 +29,7 @@ import eu.thesimplecloud.base.manager.database.SQLOfflineCloudPlayerHandler
 import eu.thesimplecloud.base.manager.database.SQLiteOfflineCloudPlayerHandler
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.module.rest.javalin.RestServer
+import eu.thesimplecloud.module.statistics.rest.overview.OverviewController
 import eu.thesimplecloud.module.statistics.rest.timed.TimedValueController
 import eu.thesimplecloud.module.statistics.timed.TimedValueCollectorManager
 import eu.thesimplecloud.module.statistics.timed.collector.CPUUsageTimedCollector
@@ -67,6 +68,7 @@ class StatisticsModule : ICloudModule {
         timedValueCollectorManager.start()
 
         RestServer.instance.controllerHandler.registerController(TimedValueController())
+        RestServer.instance.controllerHandler.registerController(OverviewController())
     }
 
     override fun onDisable() {
