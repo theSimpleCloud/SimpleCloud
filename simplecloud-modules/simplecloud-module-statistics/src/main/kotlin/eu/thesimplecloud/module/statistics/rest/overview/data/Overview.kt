@@ -68,8 +68,7 @@ data class Overview(
                 }
 
                 //Calculate new player and server records
-                if (playerRecord.value < uniqueJoins.size)
-                {
+                if (playerRecord.value < uniqueJoins.size) {
                     playerRecord = TimedValue(uniqueJoins.size, date.time)
                 }
                 if (serversRecord.value < starts) {
