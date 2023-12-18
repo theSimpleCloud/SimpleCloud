@@ -6,16 +6,14 @@ data class DayAverage(
     var players: Int,
 ) {
     private var totalDays = 0
-    fun addAverage(serverStarts: Int, playerJoins: Int, players: Int)
-    {
+    fun addAverage(serverStarts: Int, playerJoins: Int, players: Int) {
         this.serverStarts += serverStarts
         this.players += players
         this.playerJoins += playerJoins
         totalDays++
     }
 
-    fun calculateAverage()
-    {
+    fun calculateAverage() {
         this.serverStarts /= totalDays
         this.playerJoins /= totalDays
         this.players /= totalDays

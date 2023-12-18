@@ -76,15 +76,13 @@ data class Overview(
             val uniquePlayers = playerUniqueJoins.keys
             val playerAverage = uniquePlayers.size / dates.size
 
-            for(day in 0..7)
-            {
+            for(day in 0..7) {
                 weekAverage[day].calculateAverage()
             }
 
             val topServersHashMap = hashMapOf<LabyServer, Int>()
             val client = OkHttpClient()
-            for(player in uniquePlayers)
-            {
+            for(player in uniquePlayers) {
                 val server = requestTopServer(player, client) ?: continue
                 topServersHashMap[server] = topServersHashMap.getOrDefault(server, 0) + 1
             }
@@ -94,8 +92,7 @@ data class Overview(
             return Overview(ServerPersonality.NEWCOMER, installDate, startedServers, playerRecord, uniquePlayers.size, playerAverage, playerRecord, topPlayers, topServers, joins, weekAverage)
         }
 
-        private fun requestTopServer(uuid: UUID, client: OkHttpClient) : LabyServer?
-        {
+        private fun requestTopServer(uuid: UUID, client: OkHttpClient) : LabyServer? {
             val request = Request.Builder()
                 .url(USER_STATS_FORMAT.format("%s", uuid.toString()))
                 .get()
