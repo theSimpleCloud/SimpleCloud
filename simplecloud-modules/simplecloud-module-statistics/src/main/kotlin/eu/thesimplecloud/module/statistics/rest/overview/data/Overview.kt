@@ -7,6 +7,7 @@ import eu.thesimplecloud.module.statistics.timed.store.ITimedValueStore
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.util.*
+import kotlin.collections.HashMap
 
 
 data class Overview(
@@ -29,41 +30,56 @@ data class Overview(
         fun create() : Overview {
             val playerJoins: ITimedValueStore<UUID> = (StatisticsModule.instance.getValueStoreByName("cloud_stats_player_connects") as ITimedValueStore<UUID>?)!!
             val joins = playerJoins.count()
+
             val serverStarts: ITimedValueStore<String> = (StatisticsModule.instance.getValueStoreByName("cloud_stats_service_starts") as ITimedValueStore<String>?)!!
             val startedServers = serverStarts.count()
+
             var playerRecord = TimedValue(-1)
             var serversRecord = TimedValue(-1)
+
             val currentYear: Long = (Calendar.getInstance().get(Calendar.YEAR) - 1900) * 365 * 24 * 60L * 60L * 1000L
             val currentTime = System.currentTimeMillis()
+
             val dates = getDates(currentYear, currentTime)
             val installDate = serverStarts.get(0, currentTime)[0].getTimeStamp()
+
             val playerUniqueJoins = hashMapOf<UUID, Int>()
             val weekAverage = arrayOf(DayAverage.empty(), DayAverage.empty(), DayAverage.empty(), DayAverage.empty(), DayAverage.empty(), DayAverage.empty(), DayAverage.empty())
 
             dates.forEach { date ->
+                // Generate player record, server record, ... for every day in the past year
+                val nextDate = date.time + 24L * 60L * 60L * 1000L
+
+                val uniqueJoins = mutableListOf<UUID>()
+                val allJoins = playerJoins.get(date.time, nextDate)
+                val starts = serverStarts.get(date.time, nextDate).count()
+
+                // Get the average for the current week day
                 val calendar = Calendar.getInstance()
                 calendar.time = date
                 val currentWeekDay = calendar.get(Calendar.DAY_OF_WEEK)
                 val currentAverage = weekAverage[currentWeekDay - 1]
-                val nextDate = date.time + 24L * 60L * 60L * 1000L
-                val uniqueJoins = mutableListOf<UUID>()
-                val allJoins = playerJoins.get(date.time, nextDate)
-                val starts = serverStarts.get(date.time, nextDate).count()
+
+                //Handle joins for each day
                 allJoins.forEach { join ->
-                    if(!uniqueJoins.contains(join.value))
+                    if (!uniqueJoins.contains(join.value))
                         uniqueJoins.add(join.value)
                     playerUniqueJoins[join.value] = playerUniqueJoins.getOrDefault(join.value, 0) + 1
                 }
-                if(playerRecord.value < uniqueJoins.size)
+
+                //Calculate new player and server records
+                if (playerRecord.value < uniqueJoins.size)
                 {
                     playerRecord = TimedValue(uniqueJoins.size, date.time)
                 }
-
-                if(serversRecord.value < starts) {
+                if (serversRecord.value < starts) {
                     serversRecord = TimedValue(starts, date.time)
                 }
+
                 currentAverage.addAverage(starts, allJoins.size, uniqueJoins.size)
             }
+
+            //Sort players according to most joins
             playerUniqueJoins.toSortedMap { o1, o2 ->
                 if (playerUniqueJoins.getOrDefault(
                         o1,
@@ -71,26 +87,33 @@ data class Overview(
                     ) > playerUniqueJoins.getOrDefault(o2, 0)
                 ) 1 else if (playerUniqueJoins.getOrDefault(o1, 0) < playerUniqueJoins.getOrDefault(o2, 0)) -1 else 0
             }
+
+            //Cleanup player calculations
             val playerUniqueJoinsArray: Array<out UUID> = playerUniqueJoins.keys.stream().toArray() as Array<out UUID>
-            val topPlayers = arrayOf(if(playerUniqueJoinsArray.isNotEmpty()) playerUniqueJoinsArray[0] else null, if(playerUniqueJoinsArray.size > 1) playerUniqueJoinsArray[1] else null, if(playerUniqueJoinsArray.size > 2) playerUniqueJoinsArray[2] else null)
+            val topPlayers = arrayOf(if (playerUniqueJoinsArray.isNotEmpty()) playerUniqueJoinsArray[0] else null, if (playerUniqueJoinsArray.size > 1) playerUniqueJoinsArray[1] else null, if (playerUniqueJoinsArray.size > 2) playerUniqueJoinsArray[2] else null)
             val uniquePlayers = playerUniqueJoins.keys
             val playerAverage = uniquePlayers.size / dates.size
 
-            for(day in 0..7) {
-                weekAverage[day].calculateAverage()
+
+            for (day in weekAverage) {
+                day.calculateAverage()
             }
 
+            //Retrieve the players top servers according to laby.net
             val topServersHashMap = hashMapOf<LabyServer, Int>()
             val client = OkHttpClient()
-            for(player in uniquePlayers) {
+            for (player in uniquePlayers) {
                 val server = requestTopServer(player, client) ?: continue
                 topServersHashMap[server] = topServersHashMap.getOrDefault(server, 0) + 1
             }
+
+            //Cleanup top server calculations
             val topServersArray: Array<out LabyServer> = topServersHashMap.keys.stream().toArray() as Array<out LabyServer>
-            val topServers = arrayOf(if(topServersArray.isNotEmpty()) topServersArray[0] else null, if(topServersArray.size > 1) topServersArray[1] else null, if(topServersArray.size > 2) topServersArray[2] else null)
+            val topServers = arrayOf(if (topServersArray.isNotEmpty()) topServersArray[0] else null, if (topServersArray.size > 1) topServersArray[1] else null, if (topServersArray.size > 2) topServersArray[2] else null)
 
             return Overview(ServerPersonality.NEWCOMER, installDate, startedServers, playerRecord, uniquePlayers.size, playerAverage, playerRecord, topPlayers, topServers, joins, weekAverage)
         }
+
 
         private fun requestTopServer(uuid: UUID, client: OkHttpClient) : LabyServer? {
             val request = Request.Builder()
@@ -121,40 +144,5 @@ data class Overview(
             }
             return dates
         }
-    }
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as Overview
-
-        if (personality != other.personality) return false
-        if (installDate != other.installDate) return false
-        if (startedServers != other.startedServers) return false
-        if (startedServerRecord != other.startedServerRecord) return false
-        if (players != other.players) return false
-        if (playerAverage != other.playerAverage) return false
-        if (playerRecord != other.playerRecord) return false
-        if (!topPlayers.contentEquals(other.topPlayers)) return false
-        if (joins != other.joins) return false
-        if (!weekAverage.contentEquals(other.weekAverage)) return false
-        if(!topFavoriteServers.contentEquals(other.topFavoriteServers)) return false;
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = personality.hashCode()
-        result = 31 * result + installDate.hashCode()
-        result = 31 * result + startedServers
-        result = 31 * result + startedServerRecord.hashCode()
-        result = 31 * result + players
-        result = 31 * result + playerAverage
-        result = 31 * result + playerRecord.hashCode()
-        result = 31 * result + topPlayers.contentHashCode()
-        result = 31 * result + joins
-        result = 31 * result + weekAverage.contentHashCode()
-        result = 31 * result + topFavoriteServers.contentHashCode()
-        return result
     }
 }
