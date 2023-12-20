@@ -5,3 +5,5 @@ enum class ServerPersonality {
     STABLE,
     NEWCOMER,
 }
+
+//TODO: Add ServerPersonality detection

@@ -1,13 +1,21 @@
 package eu.thesimplecloud.module.statistics.rest.overview.data
 
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
+import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.module.statistics.StatisticsModule
 import eu.thesimplecloud.module.statistics.timed.TimedValue
 import eu.thesimplecloud.module.statistics.timed.store.ITimedValueStore
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import java.io.File
+import java.io.FileReader
+import java.io.FileWriter
+import java.lang.Exception
 import java.util.*
 import kotlin.collections.HashMap
+import kotlin.math.max
 
 
 data class Overview(
@@ -18,8 +26,8 @@ data class Overview(
     val players: Int,
     val playerAverage: Int,
     val playerRecord: TimedValue<Int>,
-    val topPlayers: Array<UUID?>,
-    val topFavoriteServers: Array<LabyServer?>,
+    val topPlayers: SortedMap<UUID, Int>,
+    val topFavoriteServer: Array<LabyServer?>,
     val joins: Int,
     val weekAverage: Array<DayAverage>,
 ) {
@@ -27,25 +35,36 @@ data class Overview(
     companion object {
 
         private const val USER_STATS_FORMAT = "https://laby.net/api/v3/user/%s/game-stats"
-        fun create() : Overview {
-            val playerJoins: ITimedValueStore<UUID> = (StatisticsModule.instance.getValueStoreByName("cloud_stats_player_connects") as ITimedValueStore<UUID>?)!!
+        fun create(force: Boolean) : Overview {
+
+            if (!force)
+            {
+                val saved = get()
+                if(saved != null) return saved
+            }
+
+            val playerJoins: ITimedValueStore<*> = (StatisticsModule.instance.getValueStoreByName("cloud_stats_player_connects"))!!
             val joins = playerJoins.count()
 
-            val serverStarts: ITimedValueStore<String> = (StatisticsModule.instance.getValueStoreByName("cloud_stats_service_starts") as ITimedValueStore<String>?)!!
+            val serverStarts: ITimedValueStore<*> = (StatisticsModule.instance.getValueStoreByName("cloud_stats_service_starts"))!!
             val startedServers = serverStarts.count()
 
             var playerRecord = TimedValue(-1)
             var serversRecord = TimedValue(-1)
 
-            val currentYear: Long = (Calendar.getInstance().get(Calendar.YEAR) - 1900) * 365 * 24 * 60L * 60L * 1000L
+            val currentYear: Long = GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR), 0, 0).timeInMillis
             val currentTime = System.currentTimeMillis()
 
-            val dates = getDates(currentYear, currentTime)
-            val installDate = serverStarts.get(0, currentTime)[0].getTimeStamp()
+            val calender = Calendar.getInstance()
+            var installDate = serverStarts.get(0, currentTime)[0].getTimeStamp()
+            calender.time = Date(installDate)
+            installDate = calender.get(Calendar.DAY_OF_YEAR) * 24L * 60L * 60 * 1000L + currentYear
+            val dates = getDates(currentYear.coerceAtLeast(installDate), currentTime)
+
 
             val playerUniqueJoins = hashMapOf<UUID, Int>()
             val weekAverage = arrayOf(DayAverage.empty(), DayAverage.empty(), DayAverage.empty(), DayAverage.empty(), DayAverage.empty(), DayAverage.empty(), DayAverage.empty())
-
+            var averageUniqueJoins = 0
             dates.forEach { date ->
                 // Generate player record, server record, ... for every day in the past year
                 val nextDate = date.time + 24L * 60L * 60L * 1000L
@@ -63,8 +82,8 @@ data class Overview(
                 //Handle joins for each day
                 allJoins.forEach { join ->
                     if (!uniqueJoins.contains(join.value))
-                        uniqueJoins.add(join.value)
-                    playerUniqueJoins[join.value] = playerUniqueJoins.getOrDefault(join.value, 0) + 1
+                        uniqueJoins.add(UUID.fromString(join.value.toString()))
+                    playerUniqueJoins[UUID.fromString(join.value.toString())] = playerUniqueJoins.getOrDefault(join.value, 0) + 1
                 }
 
                 //Calculate new player and server records
@@ -76,57 +95,102 @@ data class Overview(
                 }
 
                 currentAverage.addAverage(starts, allJoins.size, uniqueJoins.size)
+                averageUniqueJoins += uniqueJoins.size
             }
+
 
             //Sort players according to most joins
-            playerUniqueJoins.toSortedMap { o1, o2 ->
-                if (playerUniqueJoins.getOrDefault(
-                        o1,
-                        0
-                    ) > playerUniqueJoins.getOrDefault(o2, 0)
-                ) 1 else if (playerUniqueJoins.getOrDefault(o1, 0) < playerUniqueJoins.getOrDefault(o2, 0)) -1 else 0
-            }
+            val sortedUniquePlayers = playerUniqueJoins.toSortedMap (
+                compareBy<UUID> { -playerUniqueJoins.getOrDefault(it, 0) }.thenBy { it }
+            )
 
             //Cleanup player calculations
-            val playerUniqueJoinsArray: Array<out UUID> = playerUniqueJoins.keys.stream().toArray() as Array<out UUID>
-            val topPlayers = arrayOf(if (playerUniqueJoinsArray.isNotEmpty()) playerUniqueJoinsArray[0] else null, if (playerUniqueJoinsArray.size > 1) playerUniqueJoinsArray[1] else null, if (playerUniqueJoinsArray.size > 2) playerUniqueJoinsArray[2] else null)
-            val uniquePlayers = playerUniqueJoins.keys
-            val playerAverage = uniquePlayers.size / dates.size
+            val playerUniqueJoinsArray: Array<out UUID> = playerUniqueJoins.keys.toTypedArray()
+            val uniquePlayers = playerUniqueJoinsArray.size
 
-
-            for (day in weekAverage) {
-                day.calculateAverage()
+            val playerAverage = averageUniqueJoins / if (dates.isNotEmpty()) dates.size else 1
+            val topPlayers = hashMapOf<UUID, Int>()
+            val sortedPlayersIterator = sortedUniquePlayers.keys.iterator()
+            for(maxTopPlayers in 0..4) {
+                if(!sortedPlayersIterator.hasNext()) {
+                    continue
+                }
+                if(sortedUniquePlayers.size > maxTopPlayers) {
+                    val key = sortedPlayersIterator.next()
+                    topPlayers[key] = playerUniqueJoins.getOrDefault(key, -1)
+                }
             }
+            val topPlayersSorted = topPlayers.toSortedMap(
+                compareBy<UUID> { -topPlayers.getOrDefault(it, 0) }.thenBy { it }
+            )
+
 
             //Retrieve the players top servers according to laby.net
             val topServersHashMap = hashMapOf<LabyServer, Int>()
             val client = OkHttpClient()
-            for (player in uniquePlayers) {
+            for (player in playerUniqueJoinsArray) {
                 val server = requestTopServer(player, client) ?: continue
                 topServersHashMap[server] = topServersHashMap.getOrDefault(server, 0) + 1
             }
 
             //Cleanup top server calculations
-            val topServersArray: Array<out LabyServer> = topServersHashMap.keys.stream().toArray() as Array<out LabyServer>
-            val topServers = arrayOf(if (topServersArray.isNotEmpty()) topServersArray[0] else null, if (topServersArray.size > 1) topServersArray[1] else null, if (topServersArray.size > 2) topServersArray[2] else null)
+            val topServersArray: Array<out LabyServer> = topServersHashMap.keys.toTypedArray()
+            val topServer = arrayOf(if (topServersArray.isNotEmpty()) topServersArray[0] else null)
 
-            return Overview(ServerPersonality.NEWCOMER, installDate, startedServers, playerRecord, uniquePlayers.size, playerAverage, playerRecord, topPlayers, topServers, joins, weekAverage)
+            for(average in weekAverage) {
+                average.calculateAverage()
+            }
+
+            //TODO: Add ServerPersonality detection
+            val generatedOverview = Overview(ServerPersonality.NEWCOMER, installDate, startedServers, playerRecord, uniquePlayers, playerAverage, playerRecord, topPlayersSorted, topServer, joins, weekAverage)
+            save(generatedOverview)
+            return generatedOverview
+        }
+
+        private fun save(overview: Overview)
+        {
+            val file = File("modules/statistics/overview_latest.json")
+            if(!file.exists()) {
+                if(!file.parentFile.exists()) file.parentFile.mkdirs()
+                file.createNewFile()
+            }
+            val gson = GsonBuilder().setPrettyPrinting().create()
+            val writer = FileWriter(file)
+            gson.toJson(overview, writer)
+            writer.close()
+        }
+
+        private fun get() : Overview? {
+            try{
+                val file = File("modules/statistics/overview_latest.json")
+                if (!file.exists()) return null
+                val gson = Gson()
+                return gson.fromJson(FileReader(file), Overview::class.java)
+            }catch (e: Exception)
+            {
+                return null
+            }
         }
 
 
         private fun requestTopServer(uuid: UUID, client: OkHttpClient) : LabyServer? {
             val request = Request.Builder()
-                .url(USER_STATS_FORMAT.format("%s", uuid.toString()))
+                .url(USER_STATS_FORMAT.format(uuid.toString()))
                 .get()
                 .build()
             val response = client.newCall(request).execute()
             if(response.body == null || response.code != 200) return null
             val body = response.body!!.string()
             val bodyJson = JsonParser.parseString(body).asJsonObject
+            response.close()
             if(!bodyJson.has("most_played_server")) return null
             val serverObject = bodyJson.getAsJsonObject("most_played_server")
             if(!serverObject.has("nice_name") || !serverObject.has("direct_ip")) return null
-            return LabyServer(serverObject.get("nice_name").asString, serverObject.get("direct_ip").asString)
+            val serverIp = serverObject.get("direct_ip").asString
+            val niceName = serverObject.get("nice_name").asString
+            if(serverIp.equals("unknown") || niceName.equals("unknown")) return null
+
+            return LabyServer(niceName, serverIp)
         }
 
         private fun getDates(date1Millis: Long, date2Millis: Long): List<Date> {
