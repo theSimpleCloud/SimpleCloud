@@ -2,38 +2,37 @@ package eu.thesimplecloud.module.statistics.rest.overview.data
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.google.gson.JsonParser
-import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.module.statistics.StatisticsModule
 import eu.thesimplecloud.module.statistics.timed.TimedValue
 import eu.thesimplecloud.module.statistics.timed.store.ITimedValueStore
 import okhttp3.OkHttpClient
-import okhttp3.Request
 import java.io.File
-import java.io.FileReader
 import java.io.FileWriter
-import java.lang.Exception
 import java.util.*
-import kotlin.collections.HashMap
-import kotlin.math.max
 
 
 data class Overview(
-    val personality: ServerPersonality,
+    var personality: ServerPersonality = ServerPersonality.DEVELOPING_NETWORK,
     val installDate: Long,
     val startedServers: Int,
+    val averageStartedServers: Int,
     val startedServerRecord: TimedValue<Int>,
     val players: Int,
     val playerAverage: Int,
     val playerRecord: TimedValue<Int>,
-    val topPlayers: SortedMap<UUID, Int>,
-    val topFavoriteServer: Array<LabyServer?>,
+    val topPlayers: SortedSet<LabyPlayer>,
+    val topFavoriteServer: LabyServer?,
     val joins: Int,
+    val averageScore: Int,
+    val averageScoreName: String,
+    val averageScoreColor: String,
     val weekAverage: Array<DayAverage>,
 ) {
 
     companion object {
 
+        val client = OkHttpClient()
         private const val USER_STATS_FORMAT = "https://laby.net/api/v3/user/%s/game-stats"
         fun create(force: Boolean) : Overview {
 
@@ -56,10 +55,12 @@ data class Overview(
             val currentTime = System.currentTimeMillis()
 
             val calender = Calendar.getInstance()
-            var installDate = serverStarts.get(0, currentTime)[0].getTimeStamp()
+            val allStarts = serverStarts.get(0, currentTime)
+            var installDate = if (allStarts.isNotEmpty()) serverStarts.get(0, currentTime)[0].getTimeStamp() else System.currentTimeMillis()
             calender.time = Date(installDate)
             installDate = calender.get(Calendar.DAY_OF_YEAR) * 24L * 60L * 60 * 1000L + currentYear
             val dates = getDates(currentYear.coerceAtLeast(installDate), currentTime)
+            val averageStartedServers = startedServers / dates.size
 
 
             val playerUniqueJoins = hashMapOf<UUID, Int>()
@@ -124,25 +125,63 @@ data class Overview(
                 compareBy<UUID> { -topPlayers.getOrDefault(it, 0) }.thenBy { it }
             )
 
+            val topLabyPlayers = mutableListOf<LabyPlayer>()
+            topPlayersSorted.keys.toList().forEach {uuid ->
+                val player = LabyPlayer()
+                player.createRequestURL(uuid)
+                player.retrieve(client)
+                player.joins = topPlayersSorted.getOrDefault(uuid, 0)
+                topLabyPlayers.add(player)
+            }
+            val topLabyPlayersSorted = topLabyPlayers.toSortedSet(
+                compareBy<LabyPlayer> { -it.joins }.thenBy { it.name }
+            )
+
 
             //Retrieve the players top servers according to laby.net
             val topServersHashMap = hashMapOf<LabyServer, Int>()
-            val client = OkHttpClient()
             for (player in playerUniqueJoinsArray) {
-                val server = requestTopServer(player, client) ?: continue
+                val server = LabyServer()
+                server.createRequestURL(player)
+                if(!server.retrieve(client)) continue
                 topServersHashMap[server] = topServersHashMap.getOrDefault(server, 0) + 1
             }
 
             //Cleanup top server calculations
             val topServersArray: Array<out LabyServer> = topServersHashMap.keys.toTypedArray()
-            val topServer = arrayOf(if (topServersArray.isNotEmpty()) topServersArray[0] else null)
+            val topServer = if (topServersArray.isNotEmpty()) topServersArray[0] else null
 
             for(average in weekAverage) {
                 average.calculateAverage()
             }
 
+            var scoreAverage = 0
+            weekAverage.forEach { average ->
+                scoreAverage += average.score
+            }
+            scoreAverage /= weekAverage.size
+            var scoreAverageName = ""
+            var scoreAverageColor = ""
+            if(scoreAverage > 375) {
+                scoreAverageName = "Insane"
+                scoreAverageColor = "#1c4d78"
+            } else if(scoreAverage > 200) {
+                scoreAverageName = "Epic"
+                scoreAverageColor = "#781c73"
+            } else if(scoreAverage > 100) {
+                scoreAverageName = "Good"
+                scoreAverageColor = "#106633"
+            } else if(scoreAverage > 50) {
+                scoreAverageName = "Average"
+                scoreAverageColor = "#995a08"
+            } else {
+                scoreAverageName = "Casual"
+                scoreAverageColor = "#474747"
+            }
+
             //TODO: Add ServerPersonality detection
-            val generatedOverview = Overview(ServerPersonality.NEWCOMER, installDate, startedServers, playerRecord, uniquePlayers, playerAverage, playerRecord, topPlayersSorted, topServer, joins, weekAverage)
+            val generatedOverview = Overview(ServerPersonality.DEVELOPING_NETWORK, installDate, startedServers, averageStartedServers, playerRecord, uniquePlayers, playerAverage, playerRecord, topLabyPlayersSorted, topServer, joins, scoreAverage, scoreAverageName, scoreAverageColor, weekAverage)
+            generatedOverview.personality = ServerPersonality.calculate(generatedOverview)
             save(generatedOverview)
             return generatedOverview
         }
@@ -165,32 +204,13 @@ data class Overview(
                 val file = File("modules/statistics/overview_latest.json")
                 if (!file.exists()) return null
                 val gson = Gson()
-                return gson.fromJson(FileReader(file), Overview::class.java)
+                val overview = JsonLib.fromJsonFile(file, gson)!!.getObject(Overview::class.java)
+                return overview
             }catch (e: Exception)
             {
+                e.printStackTrace()
                 return null
             }
-        }
-
-
-        private fun requestTopServer(uuid: UUID, client: OkHttpClient) : LabyServer? {
-            val request = Request.Builder()
-                .url(USER_STATS_FORMAT.format(uuid.toString()))
-                .get()
-                .build()
-            val response = client.newCall(request).execute()
-            if(response.body == null || response.code != 200) return null
-            val body = response.body!!.string()
-            val bodyJson = JsonParser.parseString(body).asJsonObject
-            response.close()
-            if(!bodyJson.has("most_played_server")) return null
-            val serverObject = bodyJson.getAsJsonObject("most_played_server")
-            if(!serverObject.has("nice_name") || !serverObject.has("direct_ip")) return null
-            val serverIp = serverObject.get("direct_ip").asString
-            val niceName = serverObject.get("nice_name").asString
-            if(serverIp.equals("unknown") || niceName.equals("unknown")) return null
-
-            return LabyServer(niceName, serverIp)
         }
 
         private fun getDates(date1Millis: Long, date2Millis: Long): List<Date> {
