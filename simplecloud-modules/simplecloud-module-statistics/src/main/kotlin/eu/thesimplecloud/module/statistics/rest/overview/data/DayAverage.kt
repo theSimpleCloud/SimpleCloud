@@ -16,14 +16,14 @@ data class DayAverage(
     }
 
     fun calculateAverage() {
-        this.serverStarts /= if(totalDays > 0) totalDays else 1
-        this.playerJoins /= if(totalDays > 0) totalDays else 1
-        this.players /= if(totalDays > 0) totalDays else 1
-        this.score /= if(totalDays > 0) totalDays else 1
+        this.serverStarts /= if (totalDays > 0) totalDays else 1
+        this.playerJoins /= if (totalDays > 0) totalDays else 1
+        this.players /= if (totalDays > 0) totalDays else 1
+        this.score /= if (totalDays > 0) totalDays else 1
     }
 
     companion object {
-        fun empty() : DayAverage {
+        fun empty(): DayAverage {
             return DayAverage(0, 0, 0, 0)
         }
     }

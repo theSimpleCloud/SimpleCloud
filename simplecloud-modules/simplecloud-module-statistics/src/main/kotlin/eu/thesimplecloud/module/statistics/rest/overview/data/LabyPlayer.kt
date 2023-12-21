@@ -13,7 +13,8 @@ data class LabyPlayer(
     var uuid: UUID? = null,
 ) : LabyResource<UUID>, Comparable<LabyPlayer> {
 
-    @Transient private var apiUrl = "https://laby.net/api/v3/user/%s/profile"
+    @Transient
+    private var apiUrl = "https://laby.net/api/v3/user/%s/profile"
 
     override fun createRequestURL(args: UUID): String {
         apiUrl = apiUrl.format(args)
@@ -31,7 +32,7 @@ data class LabyPlayer(
         val body = response.body!!.string()
         val bodyJson = JsonParser.parseString(body).asJsonObject
         response.close()
-        if(!bodyJson.has("username")) return false
+        if (!bodyJson.has("username")) return false
         this.name = bodyJson.get("username").asString
         if (!bodyJson.has("textures")) return false
         val textures = bodyJson.getAsJsonObject("textures")
@@ -41,12 +42,11 @@ data class LabyPlayer(
         var activeSkin = JsonObject()
         skins.forEach { skin ->
             val skinObj = skin.asJsonObject
-            if (skinObj.has("active") && skinObj.get("active").asBoolean)
-            {
+            if (skinObj.has("active") && skinObj.get("active").asBoolean) {
                 activeSkin = skinObj
             }
         }
-        if(!activeSkin.has("image_hash")) return false
+        if (!activeSkin.has("image_hash")) return false
         this.image = activeSkin.get("image_hash").asString
 
 

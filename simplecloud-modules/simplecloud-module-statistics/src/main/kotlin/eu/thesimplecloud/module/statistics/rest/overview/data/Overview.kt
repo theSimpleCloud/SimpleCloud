@@ -34,18 +34,19 @@ data class Overview(
 
         val client = OkHttpClient()
         private const val USER_STATS_FORMAT = "https://laby.net/api/v3/user/%s/game-stats"
-        fun create(force: Boolean) : Overview {
+        fun create(force: Boolean): Overview {
 
-            if (!force)
-            {
+            if (!force) {
                 val saved = get()
-                if(saved != null) return saved
+                if (saved != null) return saved
             }
 
-            val playerJoins: ITimedValueStore<*> = (StatisticsModule.instance.getValueStoreByName("cloud_stats_player_connects"))!!
+            val playerJoins: ITimedValueStore<*> =
+                (StatisticsModule.instance.getValueStoreByName("cloud_stats_player_connects"))!!
             val joins = playerJoins.count()
 
-            val serverStarts: ITimedValueStore<*> = (StatisticsModule.instance.getValueStoreByName("cloud_stats_service_starts"))!!
+            val serverStarts: ITimedValueStore<*> =
+                (StatisticsModule.instance.getValueStoreByName("cloud_stats_service_starts"))!!
             val startedServers = serverStarts.count()
 
             var playerRecord = TimedValue(-1)
@@ -56,7 +57,10 @@ data class Overview(
 
             val calender = Calendar.getInstance()
             val allStarts = serverStarts.get(0, currentTime)
-            var installDate = if (allStarts.isNotEmpty()) serverStarts.get(0, currentTime)[0].getTimeStamp() else System.currentTimeMillis()
+            var installDate = if (allStarts.isNotEmpty()) serverStarts.get(
+                0,
+                currentTime
+            )[0].getTimeStamp() else System.currentTimeMillis()
             calender.time = Date(installDate)
             installDate = calender.get(Calendar.DAY_OF_YEAR) * 24L * 60L * 60 * 1000L + currentYear
             val dates = getDates(currentYear.coerceAtLeast(installDate), currentTime)
@@ -64,7 +68,15 @@ data class Overview(
 
 
             val playerUniqueJoins = hashMapOf<UUID, Int>()
-            val weekAverage = arrayOf(DayAverage.empty(), DayAverage.empty(), DayAverage.empty(), DayAverage.empty(), DayAverage.empty(), DayAverage.empty(), DayAverage.empty())
+            val weekAverage = arrayOf(
+                DayAverage.empty(),
+                DayAverage.empty(),
+                DayAverage.empty(),
+                DayAverage.empty(),
+                DayAverage.empty(),
+                DayAverage.empty(),
+                DayAverage.empty()
+            )
             var averageUniqueJoins = 0
             dates.forEach { date ->
                 // Generate player record, server record, ... for every day in the past year
@@ -84,7 +96,8 @@ data class Overview(
                 allJoins.forEach { join ->
                     if (!uniqueJoins.contains(join.value))
                         uniqueJoins.add(UUID.fromString(join.value.toString()))
-                    playerUniqueJoins[UUID.fromString(join.value.toString())] = playerUniqueJoins.getOrDefault(join.value, 0) + 1
+                    playerUniqueJoins[UUID.fromString(join.value.toString())] =
+                        playerUniqueJoins.getOrDefault(join.value, 0) + 1
                 }
 
                 //Calculate new player and server records
@@ -101,7 +114,7 @@ data class Overview(
 
 
             //Sort players according to most joins
-            val sortedUniquePlayers = playerUniqueJoins.toSortedMap (
+            val sortedUniquePlayers = playerUniqueJoins.toSortedMap(
                 compareBy<UUID> { -playerUniqueJoins.getOrDefault(it, 0) }.thenBy { it }
             )
 
@@ -112,11 +125,11 @@ data class Overview(
             val playerAverage = averageUniqueJoins / if (dates.isNotEmpty()) dates.size else 1
             val topPlayers = hashMapOf<UUID, Int>()
             val sortedPlayersIterator = sortedUniquePlayers.keys.iterator()
-            for(maxTopPlayers in 0..4) {
-                if(!sortedPlayersIterator.hasNext()) {
+            for (maxTopPlayers in 0..4) {
+                if (!sortedPlayersIterator.hasNext()) {
                     continue
                 }
-                if(sortedUniquePlayers.size > maxTopPlayers) {
+                if (sortedUniquePlayers.size > maxTopPlayers) {
                     val key = sortedPlayersIterator.next()
                     topPlayers[key] = playerUniqueJoins.getOrDefault(key, -1)
                 }
@@ -126,7 +139,7 @@ data class Overview(
             )
 
             val topLabyPlayers = mutableListOf<LabyPlayer>()
-            topPlayersSorted.keys.toList().forEach {uuid ->
+            topPlayersSorted.keys.toList().forEach { uuid ->
                 val player = LabyPlayer()
                 player.createRequestURL(uuid)
                 player.retrieve(client)
@@ -143,7 +156,7 @@ data class Overview(
             for (player in playerUniqueJoinsArray) {
                 val server = LabyServer()
                 server.createRequestURL(player)
-                if(!server.retrieve(client)) continue
+                if (!server.retrieve(client)) continue
                 topServersHashMap[server] = topServersHashMap.getOrDefault(server, 0) + 1
             }
 
@@ -151,7 +164,7 @@ data class Overview(
             val topServersArray: Array<out LabyServer> = topServersHashMap.keys.toTypedArray()
             val topServer = if (topServersArray.isNotEmpty()) topServersArray[0] else null
 
-            for(average in weekAverage) {
+            for (average in weekAverage) {
                 average.calculateAverage()
             }
 
@@ -162,16 +175,16 @@ data class Overview(
             scoreAverage /= weekAverage.size
             var scoreAverageName = ""
             var scoreAverageColor = ""
-            if(scoreAverage > 375) {
+            if (scoreAverage > 375) {
                 scoreAverageName = "Insane"
                 scoreAverageColor = "#1c4d78"
-            } else if(scoreAverage > 200) {
+            } else if (scoreAverage > 200) {
                 scoreAverageName = "Epic"
                 scoreAverageColor = "#781c73"
-            } else if(scoreAverage > 100) {
+            } else if (scoreAverage > 100) {
                 scoreAverageName = "Good"
                 scoreAverageColor = "#106633"
-            } else if(scoreAverage > 50) {
+            } else if (scoreAverage > 50) {
                 scoreAverageName = "Average"
                 scoreAverageColor = "#995a08"
             } else {
@@ -180,17 +193,32 @@ data class Overview(
             }
 
             //TODO: Add ServerPersonality detection
-            val generatedOverview = Overview(ServerPersonality.DEVELOPING_NETWORK, installDate, startedServers, averageStartedServers, playerRecord, uniquePlayers, playerAverage, playerRecord, topLabyPlayersSorted, topServer, joins, scoreAverage, scoreAverageName, scoreAverageColor, weekAverage)
+            val generatedOverview = Overview(
+                ServerPersonality.DEVELOPING_NETWORK,
+                installDate,
+                startedServers,
+                averageStartedServers,
+                playerRecord,
+                uniquePlayers,
+                playerAverage,
+                playerRecord,
+                topLabyPlayersSorted,
+                topServer,
+                joins,
+                scoreAverage,
+                scoreAverageName,
+                scoreAverageColor,
+                weekAverage
+            )
             generatedOverview.personality = ServerPersonality.calculate(generatedOverview)
             save(generatedOverview)
             return generatedOverview
         }
 
-        private fun save(overview: Overview)
-        {
+        private fun save(overview: Overview) {
             val file = File("modules/statistics/overview_latest.json")
-            if(!file.exists()) {
-                if(!file.parentFile.exists()) file.parentFile.mkdirs()
+            if (!file.exists()) {
+                if (!file.parentFile.exists()) file.parentFile.mkdirs()
                 file.createNewFile()
             }
             val gson = GsonBuilder().setPrettyPrinting().create()
@@ -199,15 +227,14 @@ data class Overview(
             writer.close()
         }
 
-        private fun get() : Overview? {
-            try{
+        private fun get(): Overview? {
+            try {
                 val file = File("modules/statistics/overview_latest.json")
                 if (!file.exists()) return null
                 val gson = Gson()
                 val overview = JsonLib.fromJsonFile(file, gson)!!.getObject(Overview::class.java)
                 return overview
-            }catch (e: Exception)
-            {
+            } catch (e: Exception) {
                 e.printStackTrace()
                 return null
             }
