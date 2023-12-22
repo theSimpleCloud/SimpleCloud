@@ -23,6 +23,8 @@
 package eu.thesimplecloud.base.manager.update.converter
 
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
+import eu.thesimplecloud.base.manager.update.converter.IVersionConverter
+import eu.thesimplecloud.jsonlib.JsonLib
 import java.io.File
 
 /**
@@ -38,12 +40,34 @@ class Converter_2_6_To_2_7 : IVersionConverter {
     }
 
     override fun convert() {
+        convertGroupsInDirectory(File(DirectoryPaths.paths.proxyGroupsPath))
+        convertGroupsInDirectory(File(DirectoryPaths.paths.lobbyGroupsPath))
+        convertGroupsInDirectory(File(DirectoryPaths.paths.serverGroupsPath))
+
         val modulesPath = DirectoryPaths.paths.modulesPath
         File(modulesPath, "support").deleteRecursively()
         File(modulesPath).listFiles()!!
             .filter { !it.isDirectory }
             .filter { it.name.lowercase().contains("simplecloud-support") }
             .forEach { it.deleteRecursively() }
+    }
+
+    private fun convertGroupsInDirectory(dir: File) {
+        dir.listFiles()?.forEach {
+            convertSingleGroupByFile(it)
+        }
+    }
+
+    private fun convertSingleGroupByFile(file: File) {
+        val groupJsonLib = JsonLib.fromJsonFile(file) ?: return
+
+        val maxMemory = groupJsonLib.jsonElement.asJsonObject.get("maxMemory").asInt
+
+        if (!groupJsonLib.jsonElement.asJsonObject.has("minimumMemory")) {
+            groupJsonLib.jsonElement.asJsonObject.addProperty("minimumMemory", maxMemory / 2)
+        }
+
+        groupJsonLib.saveAsFile(file)
     }
 
 }

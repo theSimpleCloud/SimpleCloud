@@ -41,6 +41,13 @@ interface IServiceStartConfiguration {
     fun setMaxPlayers(maxPlayers: Int): IServiceStartConfiguration
 
     /**
+     * Sets the minimum amount of memory
+     * @param memory the amount of memory in MB
+     * @return this [IServiceStartConfiguration]
+     */
+    fun setMinimumMemory(memory: Int): IServiceStartConfiguration
+
+    /**
      * Sets the maximum amount of memory
      * @param memory the amount of memory in MB
      * @return this [IServiceStartConfiguration]
