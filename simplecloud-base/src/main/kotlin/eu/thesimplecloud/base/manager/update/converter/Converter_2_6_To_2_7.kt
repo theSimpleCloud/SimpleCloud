@@ -27,7 +27,7 @@ class Converter_2_6_To_2_7: IVersionConverter {
         if (groupJsonLib.jsonElement.asJsonObject.has("minimumMemory")) {
             return
         }
-        val memory: Int = groupJsonLib.getInt("memory") ?: 0
+        val memory: Int = groupJsonLib.getInt("maxMemory") ?: 0
 
         groupJsonLib.append("minimumMemory", memory / 2)
         groupJsonLib.saveAsFile(file)
