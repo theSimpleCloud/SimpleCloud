@@ -30,4 +30,4 @@ import eu.thesimplecloud.module.permission.group.IPermissionGroup
  * Time: 18:23
  * @author Frederick Baier
  */
-class PermissionGroupUpdatedEvent(player: IPermissionGroup) : PermissionGroupEvent(player)
+class PermissionGroupUpdatedEvent(permissionGroup: IPermissionGroup) : PermissionGroupEvent(permissionGroup)

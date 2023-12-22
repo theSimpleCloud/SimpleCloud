@@ -30,4 +30,4 @@ import eu.thesimplecloud.module.permission.group.IPermissionGroup
  * Time: 18:23
  * @author Frederick Baier
  */
-class PermissionGroupDeletedEvent(player: IPermissionGroup) : PermissionGroupEvent(player)
+class PermissionGroupDeletedEvent(permissionGroup: IPermissionGroup) : PermissionGroupEvent(permissionGroup)

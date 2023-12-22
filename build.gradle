@@ -29,14 +29,20 @@ plugins {
 allprojects {
 
     group 'eu.thesimplecloud.simplecloud'
-    version '2.6.0'
+    version '2.6.1-SNAPSHOT'
 
     repositories {
         mavenCentral()
         jcenter()
 
-        maven { url 'https://repository.derklaro.dev/releases' }
-        maven { url 'https://jitpack.io' }
+        maven {
+            url 'https://jitpack.io'
+        }
+
+        maven {
+            url 'https://repository.derklaro.dev/releases/'
+        }
+
         maven {
             url "https://repo.thesimplecloud.eu/artifactory/gradle-release-local/"
         }
@@ -64,7 +70,6 @@ allprojects {
             name 'spigotmc-repo'
             url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
         }
-
     }
 
     project.ext {

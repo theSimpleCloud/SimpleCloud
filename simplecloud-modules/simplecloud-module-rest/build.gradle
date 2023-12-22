@@ -40,6 +40,9 @@ dependencies {
     compileOnly(project(":simplecloud-launcher")) {
         transitive = false
     }
+    compileOnly(project(":simplecloud-base")) {
+        transitive = false
+    }
     // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
     compileOnly group: 'org.apache.commons', name: 'commons-lang3', version: '3.13.0'
     compileOnly(group: 'eu.thesimplecloud.clientserverapi', name: 'clientserverapi', version: depedencyClientServerAPIVersion)

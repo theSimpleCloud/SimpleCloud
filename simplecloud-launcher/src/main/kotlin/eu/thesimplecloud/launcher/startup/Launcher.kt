@@ -151,9 +151,12 @@ class Launcher(val launcherStartArguments: LauncherStartArguments) {
 
     private fun migrateOldLauncherFile() {
         val jsonLib = JsonLib.fromJsonFile(File("launcher.json")) ?: return
-        if (jsonLib.getInt("startServicePort") != null)
-            return
-        jsonLib.append("startServicePort", 50000)
+        if (jsonLib.getInt("startServicePort") == null) {
+            jsonLib.append("startServicePort", 50000)
+        }
+        if (jsonLib.getString("uploadDumpFileUrl") == null) {
+            jsonLib.append("uploadDumpFileUrl", "https://haste.simplecloud.app")
+        }
         jsonLib.saveAsFile("launcher.json")
     }
 
