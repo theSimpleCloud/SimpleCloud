@@ -74,6 +74,7 @@ class ServiceHandler : IServiceHandler {
             startConfiguration.template,
             cloudServiceGroup.getWrapperName(),
             -1,
+            startConfiguration.minimumMemory,
             startConfiguration.maxMemory,
             startConfiguration.maxPlayers,
             "Cloud-Service",

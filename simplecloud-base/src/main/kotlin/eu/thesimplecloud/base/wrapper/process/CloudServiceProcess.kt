@@ -179,7 +179,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
         val startArguments = arrayListOf(
             "-Dcom.mojang.eula.agree=true",
             "-Djline.terminal=jline.UnsupportedTerminal",
-            "-Xms" + cloudService.getMaxMemory() + "M",
+            "-Xms" + cloudService.getMinimumMemory() + "M",
             "-Xmx" + cloudService.getMaxMemory() + "M",
             "-jar",
             jarFile.absolutePath

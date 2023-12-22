@@ -29,7 +29,7 @@ dependencies {
     compileOnly group: 'org.litote.kmongo', name: 'kmongo', version: dependencyKMongoVersion
     api group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.7.4'
 
-
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
     compileOnly(project(":simplecloud-base")) {
         transitive = false
     }

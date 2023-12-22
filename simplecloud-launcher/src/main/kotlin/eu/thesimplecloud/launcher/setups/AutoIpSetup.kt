@@ -61,6 +61,7 @@ class AutoIpSetup : ISetup {
             ip,
             launcherConfig.port,
             50000,
+            "https://haste.simplecloud.app",
             launcherConfig.language,
             launcherConfig.directoryPaths
         )

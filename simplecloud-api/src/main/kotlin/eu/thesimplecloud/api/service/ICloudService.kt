@@ -100,6 +100,11 @@ interface ICloudService : ICacheValue<ICloudServiceUpdater>, ICloudServiceVariab
             ?: throw IllegalStateException("Can't find the service group of an registered service")
 
     /**
+     * Returns the minimum amount of RAM for this service in MB
+     */
+    fun getMinimumMemory(): Int
+
+    /**
      * Returns the maximum amount of RAM for this service in MB
      */
     fun getMaxMemory(): Int

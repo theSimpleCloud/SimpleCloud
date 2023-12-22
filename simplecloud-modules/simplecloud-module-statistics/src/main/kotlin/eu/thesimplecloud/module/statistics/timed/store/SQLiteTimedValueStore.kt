@@ -34,7 +34,7 @@ import java.sql.ResultSet
  * Time: 12:43
  * @author Frederick Baier
  */
-class SQLTimedValueStore<T : Any>(
+class SQLiteTimedValueStore<T : Any>(
     private val classOfT: Class<T>,
     private val collectionName: String,
     private val connection: Connection,
@@ -47,7 +47,7 @@ class SQLTimedValueStore<T : Any>(
     private fun createDatabaseAndIndicesIfNotExist() {
         if (!doesTableExist()) {
             val statement =
-                this.connection.prepareStatement("CREATE TABLE IF NOT EXISTS `$collectionName` (`value` varchar(36), `timestamp` BIGINT(20))")
+                this.connection.prepareStatement("CREATE TABLE IF NOT EXISTS `$collectionName` (`value` varchar(36), `timestamp` INTEGER)")
             statement.executeUpdate()
             createIndex("timestamp")
         }
@@ -63,7 +63,7 @@ class SQLTimedValueStore<T : Any>(
 
 
     private fun createIndex(columnName: String) {
-        val statement = this.connection.prepareStatement("ALTER TABLE $collectionName ADD INDEX ($columnName)")
+        val statement = this.connection.prepareStatement("CREATE INDEX ${columnName + "_" + collectionName} ON $collectionName ($columnName)")
         statement.executeUpdate()
     }
 

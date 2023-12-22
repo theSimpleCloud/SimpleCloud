@@ -43,6 +43,7 @@ class IpSetup : ISetup {
             string,
             launcherConfig.port,
             50000,
+            "https://haste.simplecloud.app",
             launcherConfig.language,
             launcherConfig.directoryPaths
         )

@@ -40,6 +40,7 @@
   "manager.command.delete.template.success": "Das Template %NAME% wurde gelöscht",
   "manager.command.delete.wrapper.group-must-start": "Der Wrapper %NAME% konnte nicht gelöscht werden, da noch Gruppen existieren, die auf ihm Server starten",
   "manager.command.delete.wrapper.not-exist": "Der Wrapper %NAME% existiert nicht",
+  "manager.command.delete.wrapper.success": "Der Wrapper %NAME% wurde erfolgreich gelöscht",
   "manager.command.delete.wrapper.services-running": "Der Wrapper %NAME% konnte nicht gelöscht werden, da noch Server auf ihm laufen",
   "manager.command.edit.allowed-parameters": "Erlaubte Argumente sind:",
   "manager.command.edit.group.invalid-value": "Ungültige Angabe. Erwarteter Typ: %TYPE%",
