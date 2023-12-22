@@ -24,12 +24,13 @@ class Converter_2_6_To_2_7: IVersionConverter {
 
     private fun convertSingleGroupByFile(file: File) {
         val groupJsonLib = JsonLib.fromJsonFile(file) ?: return
-        if (groupJsonLib.jsonElement.asJsonObject.has("minimumMemory")) {
-            return
-        }
-        val memory: Int = groupJsonLib.getInt("maxMemory") ?: 0
 
-        groupJsonLib.append("minimumMemory", memory / 2)
+        val maxMemory = groupJsonLib.jsonElement.asJsonObject.get("maxMemory").asInt
+
+        if (!groupJsonLib.jsonElement.asJsonObject.has("minimumMemory")) {
+            groupJsonLib.jsonElement.asJsonObject.addProperty("minimumMemory", maxMemory / 2)
+        }
+
         groupJsonLib.saveAsFile(file)
     }
 }
