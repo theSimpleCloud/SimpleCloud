@@ -44,6 +44,7 @@ data class DefaultCloudService(
     private val templateName: String,
     @Volatile private var wrapperName: String?,
     @Volatile private var port: Int,
+    private val minimumMemory: Int,
     private val maxMemory: Int,
     @Volatile private var maxPlayers: Int,
     @Volatile private var motd: String,
@@ -142,6 +143,8 @@ data class DefaultCloudService(
     override fun setAuthenticated(authenticated: Boolean) {
         this.authenticated = authenticated
     }
+
+    override fun getMinimumMemory(): Int = this.minimumMemory
 
     override fun getMaxMemory(): Int = this.maxMemory
 

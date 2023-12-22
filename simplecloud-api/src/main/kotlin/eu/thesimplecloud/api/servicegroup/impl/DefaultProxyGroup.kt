@@ -34,6 +34,7 @@ import eu.thesimplecloud.jsonlib.JsonLibExclude
 class DefaultProxyGroup(
     name: String,
     templateName: String,
+    minimumMemory: Int,
     maxMemory: Int,
     maxPlayers: Int,
     minimumOnlineServiceCount: Int,
@@ -51,6 +52,7 @@ class DefaultProxyGroup(
 ) : AbstractServiceGroup(
     name,
     templateName,
+    minimumMemory,
     maxMemory,
     maxPlayers,
     minimumOnlineServiceCount,

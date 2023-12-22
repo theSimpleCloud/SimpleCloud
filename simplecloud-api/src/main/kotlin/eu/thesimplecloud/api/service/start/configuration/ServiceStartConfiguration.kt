@@ -35,6 +35,10 @@ class ServiceStartConfiguration(serviceGroup: ICloudServiceGroup) : IServiceStar
      */
     val groupName = serviceGroup.getName()
 
+    @Volatile
+    var minimumMemory = serviceGroup.getMinimumMemory()
+        private set
+
     /**
      * The memory amount in MB for the new service.
      */
@@ -69,9 +73,17 @@ class ServiceStartConfiguration(serviceGroup: ICloudServiceGroup) : IServiceStar
         return this.groupName
     }
 
+    override fun setMinimumMemory(memory: Int): IServiceStartConfiguration {
+        this.minimumMemory = memory
+        return this
+    }
+
     override fun setMaxMemory(memory: Int): ServiceStartConfiguration {
         require(memory >= 100) { "The specified memory must be at least 100" }
         this.maxMemory = memory
+
+        if (this.minimumMemory == 0)
+            this.minimumMemory = memory / 2
         return this
     }
 
