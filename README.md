@@ -117,7 +117,7 @@ This wrapper does only run when the manager is running. It connects **automatica
 The wrapper will be automatically named **"InternalWrapper"** and it will have **2GB of memory**.
 <br />
 You can **download**
-it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-internalwrapper/2.6.0/simplecloud-module-internalwrapper-2.6.0.jar)
+it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-internalwrapper/2.7.0/simplecloud-module-internalwrapper-2.7.0.jar)
 <br />
 
 To edit the memory of the wrapper you can use the command: <br />
@@ -131,7 +131,7 @@ The **Sign Module** is used to show available services for players in the lobby 
 The players can click on that sign and will be sent to the server. The layout of the signs is **fully customizable**.
 <br />
 You can **download**
-it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-sign/2.6.0/simplecloud-module-sign-2.6.0.jar)
+it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-sign/2.7.0/simplecloud-module-sign-2.7.0.jar)
 
 ![SignModule](https://i.imgur.com/w534aZG.gif "SignModule")
 
@@ -143,7 +143,7 @@ With the **Permission Module**, you can easily manage your permissions.
 You can define groups and add permissions to them. You can also add permissions to single users.
 <br />
 You can **download**
-it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-permission/2.6.0/simplecloud-module-permission-2.6.0.jar)
+it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-permission/2.7.0/simplecloud-module-permission-2.7.0.jar)
 
 ![PermissionModule](https://i.imgur.com/mjqCmjq.png"PermissionModule")
 
@@ -156,7 +156,7 @@ It controls the **MOTD**, **Tablist**, **maintenance** and the **online count**.
 The online count of proxies of one group will be summed up and displayed in the player info.
 <br />
 You can **download**
-it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-proxy/2.6.0/simplecloud-module-proxy-2.6.0.jar)
+it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-proxy/2.7.0/simplecloud-module-proxy-2.7.0.jar)
 
 ![ProxyModuleTab](https://i.imgur.com/2djSS9l.jpg "ProxyModuleTab")
 
@@ -181,7 +181,7 @@ Full join: cloud.full.join
 The **Hub Module** provides a hub command for players to switch to a **lobby server**.
 <br />
 You can **download**
-it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-hubcommand/2.6.0/simplecloud-module-hubcommand-2.6.0.jar)
+it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-hubcommand/2.7.0/simplecloud-module-hubcommand-2.7.0.jar)
 
 <br />
 
@@ -191,7 +191,7 @@ The **Notify Module** sends notifications to players that have the required perm
 or **stopped**.
 <br />
 You can **download**
-it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-notify/2.6.0/simplecloud-module-notify-2.6.0.jar)
+it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-notify/2.7.0/simplecloud-module-notify-2.7.0.jar)
 
 ![NotifyModule](https://i.imgur.com/7lcjXbN.jpg "NotifyModule")
 
@@ -211,7 +211,7 @@ cloud.module.notify.messages
 The **REST Module** provides a **restful API**. It is necessary for the **dashboard**.
 <br />
 You can **download**
-it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-rest/2.6.0/simplecloud-module-rest-2.6.0.jar)
+it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-rest/2.7.0/simplecloud-module-rest-2.7.0.jar)
 
 <br />
 
@@ -220,7 +220,7 @@ it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/the
 The **Statistics Module** saves some statistics of the cloud. The data is displayed on the **dashboard**.
 <br />
 You can **download**
-it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-statistics/2.6.0/simplecloud-module-statistics-2.6.0.jar)
+it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-statistics/2.7.0/simplecloud-module-statistics-2.7.0.jar)
 
 <br />
 
@@ -229,7 +229,7 @@ it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/the
 The **Chat + Tab Module** provides **prefixes** and **suffixes** in the tablist and adds a **chat configuration**.
 <br />
 You can **download**
-it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-chat-tab/2.6.0/simplecloud-module-chat-tab-2.6.0.jar)
+it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-chat-tab/2.7.0/simplecloud-module-chat-tab-2.7.0.jar)
 
 Special Thanks To:
 -------------
