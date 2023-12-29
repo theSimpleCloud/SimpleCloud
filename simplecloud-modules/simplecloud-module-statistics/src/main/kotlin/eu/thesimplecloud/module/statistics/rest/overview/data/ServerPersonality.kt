@@ -29,12 +29,12 @@ enum class ServerPersonality {
                 }
             }
             if (isEveryDayEveryNight) return EVERY_DAY_EVERY_NIGHT
-            val fridayScore = overview.weekAverage[5].score
-            if (fridayScore >= (overview.averageScore + overview.averageScore / 10) && overview.averageScore > 0) return FRIDAY_CLUB
             var highestScore = 0
             overview.weekAverage.forEach { average ->
                 if (highestScore < average.score) highestScore = average.score
             }
+            val fridayScore = overview.weekAverage[5].score
+            if (fridayScore >= highestScore && fridayScore >= overview.averageScore + (overview.averageScore / 4)) return FRIDAY_CLUB
             if (highestScore > (overview.averageScore + overview.averageScore / 3)) return MAYFLY
             var underWeekAverage = 0
             overview.weekAverage.forEach { average ->
@@ -46,7 +46,7 @@ enum class ServerPersonality {
             underWeekAverage /= 5
             if (overview.averageScore < underWeekAverage) return WORKAHOLIC
             if (overview.players >= 10 && overview.players < overview.averageStartedServers) return STARTUP_NETWORK
-            if (overview.players * 15 > overview.startedServers) return DISHWASHER
+            if (overview.players * 10 < overview.startedServers) return DISHWASHER
             var averageJoins = 0
             var averagePlayers = 0
             overview.weekAverage.forEach { average ->
