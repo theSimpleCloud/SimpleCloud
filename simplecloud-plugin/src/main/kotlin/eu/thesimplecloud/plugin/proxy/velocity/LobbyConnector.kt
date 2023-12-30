@@ -24,7 +24,7 @@ package eu.thesimplecloud.plugin.proxy.velocity
 
 import com.velocitypowered.api.proxy.Player
 import com.velocitypowered.api.proxy.server.RegisteredServer
-import eu.thesimplecloud.api.CloudAPI
+import eu.thesimplecloud.plugin.proxy.LobbyServerFinder
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,16 +34,10 @@ import eu.thesimplecloud.api.CloudAPI
  */
 class LobbyConnector {
 
+    private val lobbyServerFinder = LobbyServerFinder()
+
     fun getLobbyServer(player: Player, filterServices: List<String> = emptyList()): RegisteredServer? {
-        val lobbyGroups = CloudAPI.instance.getCloudServiceGroupManager().getLobbyGroups()
-        val sortedLobbyGroups = lobbyGroups.sortedByDescending { it.getPriority() }
-            .filter { !it.isInMaintenance() || player.hasPermission("cloud.maintenance.join") }
-        val groups = sortedLobbyGroups.filter { it.getPermission() == null || player.hasPermission(it.getPermission()) }
-        val availableServices =
-            groups.map { group -> group.getAllServices().filter { it.isOnline() }.filter { !it.isFull() } }.flatten()
-        val serviceToConnectTo =
-            availableServices.filter { !filterServices.contains(it.getName()) }.minByOrNull { it.getOnlineCount() }
-        if (serviceToConnectTo == null) println("WARNING: Lobby server was null.")
+        val serviceToConnectTo = this.lobbyServerFinder.findLobbyServer(filterServices) { player.hasPermission(it) }
         return serviceToConnectTo?.let { CloudVelocityPlugin.instance.proxyServer.getServer(it.getName()).orElse(null) }
     }
 
