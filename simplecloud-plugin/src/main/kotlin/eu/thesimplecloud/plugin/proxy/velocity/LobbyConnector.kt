@@ -35,14 +35,24 @@ import eu.thesimplecloud.api.CloudAPI
 class LobbyConnector {
 
     fun getLobbyServer(player: Player, filterServices: List<String> = emptyList()): RegisteredServer? {
+
         val lobbyGroups = CloudAPI.instance.getCloudServiceGroupManager().getLobbyGroups()
-        val sortedLobbyGroups = lobbyGroups.sortedByDescending { it.getPriority() }
-            .filter { !it.isInMaintenance() || player.hasPermission("cloud.maintenance.join") }
-        val groups = sortedLobbyGroups.filter { it.getPermission() == null || player.hasPermission(it.getPermission()) }
-        val availableServices =
-            groups.map { group -> group.getAllServices().filter { it.isOnline() }.filter { !it.isFull() } }.flatten()
-        val serviceToConnectTo =
-            availableServices.filter { !filterServices.contains(it.getName()) }.minByOrNull { it.getOnlineCount() }
+        
+        val sortedLobbyGroups = lobbyGroups.sortedWith(compareByDescending<ICloudLobbyGroup> { it.getPriority() }
+                .thenByDescending { it.getOnlinePlayerCount() })
+                .filter {
+            !it.isInMaintenance() || player.hasPermission("cloud.maintenance.join")
+        }
+
+        val groups = sortedLobbyGroups.filter {
+            it.getPermission() == null || player.hasPermission(it.getPermission())
+        }
+
+        val availableServices = groups.map { group -> group.getAllServices().filter { it.isOnline() }.filter { !it.isFull() } }
+                .flatten()
+
+        val serviceToConnectTo = availableServices.firstOrNull { !filterServices.contains(it.getName()) }
+
         if (serviceToConnectTo == null) println("WARNING: Lobby server was null.")
         return serviceToConnectTo?.let { CloudVelocityPlugin.instance.proxyServer.getServer(it.getName()).orElse(null) }
     }
