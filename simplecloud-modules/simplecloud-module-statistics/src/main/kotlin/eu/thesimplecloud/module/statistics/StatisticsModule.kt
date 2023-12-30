@@ -30,6 +30,7 @@ import eu.thesimplecloud.base.manager.database.SQLiteOfflineCloudPlayerHandler
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.module.rest.javalin.RestServer
 import eu.thesimplecloud.module.statistics.rest.overview.OverviewController
+import eu.thesimplecloud.module.statistics.rest.overview.data.Overview
 import eu.thesimplecloud.module.statistics.rest.timed.TimedValueController
 import eu.thesimplecloud.module.statistics.timed.TimedValueCollectorManager
 import eu.thesimplecloud.module.statistics.timed.collector.CPUUsageTimedCollector
@@ -41,6 +42,7 @@ import eu.thesimplecloud.module.statistics.timed.store.ITimedValueStore
 import eu.thesimplecloud.module.statistics.timed.store.MongoTimedValueStore
 import eu.thesimplecloud.module.statistics.timed.store.SQLTimedValueStore
 import eu.thesimplecloud.module.statistics.timed.store.SQLiteTimedValueStore
+import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
 
 /**
@@ -69,6 +71,7 @@ class StatisticsModule : ICloudModule {
 
         RestServer.instance.controllerHandler.registerController(TimedValueController())
         RestServer.instance.controllerHandler.registerController(OverviewController())
+        Overview.create(false, 2023)
     }
 
     override fun onDisable() {
