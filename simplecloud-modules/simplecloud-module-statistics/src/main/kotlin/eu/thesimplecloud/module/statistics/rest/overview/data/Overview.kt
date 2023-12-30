@@ -32,9 +32,9 @@ data class Overview(
 
     companion object {
 
-        val client = OkHttpClient()
+        private val client = OkHttpClient()
         private const val USER_STATS_FORMAT = "https://laby.net/api/v3/user/%s/game-stats"
-        fun create(force: Boolean): Overview {
+        fun create(force: Boolean, year: Int): Overview {
 
             if (!force) {
                 val saved = get()
@@ -52,7 +52,7 @@ data class Overview(
             var playerRecord = TimedValue(-1)
             var serversRecord = TimedValue(-1)
 
-            val currentYear: Long = GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR), 0, 0).timeInMillis
+            val currentYear: Long = GregorianCalendar(year, 0, 0).timeInMillis
             val currentTime = System.currentTimeMillis()
 
             val calender = Calendar.getInstance()
@@ -192,7 +192,6 @@ data class Overview(
                 scoreAverageColor = "#474747"
             }
 
-            //TODO: Add ServerPersonality detection
             val generatedOverview = Overview(
                 ServerPersonality.DEVELOPING_NETWORK,
                 installDate,
