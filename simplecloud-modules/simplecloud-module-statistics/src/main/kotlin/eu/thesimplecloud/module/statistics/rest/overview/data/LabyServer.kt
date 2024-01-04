@@ -23,9 +23,10 @@ data class LabyServer(
             .build()
         val response = client.newCall(request).execute()
         if(response.body == null || response.code != 200) return false
-        val body = response.body!!.string()
-        val bodyJson = JsonParser.parseString(body).asJsonObject
+        val body = response.body!!
+        val bodyJson = JsonParser.parseString(body.string()).asJsonObject
         response.close()
+        body.close()
         if(!bodyJson.has("most_played_server")) return false
         val serverObject = bodyJson.getAsJsonObject("most_played_server")
         if(!serverObject.has("nice_name") || !serverObject.has("direct_ip")) return false

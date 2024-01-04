@@ -29,9 +29,10 @@ data class LabyPlayer(
             .build()
         val response = client.newCall(request).execute()
         if (response.body == null || response.code != 200) return false
-        val body = response.body!!.string()
-        val bodyJson = JsonParser.parseString(body).asJsonObject
+        val body = response.body!!
+        val bodyJson = JsonParser.parseString(body.string()).asJsonObject
         response.close()
+        body.close()
         if (!bodyJson.has("username")) return false
         this.name = bodyJson.get("username").asString
         if (!bodyJson.has("textures")) return false
