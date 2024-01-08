@@ -51,6 +51,11 @@ class ServiceVersionSetup : ISetup {
     @SetupQuestion(0, "manager.setup.service-versions.question.name")
     fun nameSetup(name: String): Boolean {
         this.name = name
+        if (name.contains(" ")) {
+            Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-versions.question.name.contains-spaces")
+            return false
+        }
+
         Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-versions.question.name.success")
         return true
     }

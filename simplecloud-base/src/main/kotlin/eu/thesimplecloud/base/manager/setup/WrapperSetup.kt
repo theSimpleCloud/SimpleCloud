@@ -43,6 +43,14 @@ class WrapperSetup : ISetup {
             Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.wrapper.question.name.too-long")
             return false
         }
+        if (name.isEmpty()) {
+            Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.wrapper.question.name.empty")
+            return false
+        }
+        if (name.contains(" ")) {
+            Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.wrapper.question.name.contains-spaces")
+            return false
+        }
         this.name = name
         Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.wrapper.question.name.success")
         return true

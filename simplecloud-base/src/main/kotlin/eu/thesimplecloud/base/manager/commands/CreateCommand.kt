@@ -83,6 +83,10 @@ class CreateCommand : ICommandHandler {
             Launcher.instance.consoleSender.sendProperty("manager.command.create.template.already-exist", name)
             return
         }
+        if (name.contains(" ")) {
+            Launcher.instance.consoleSender.sendProperty("manager.command.create.template.name-no-spaces")
+            return
+        }
         val template = DefaultTemplate(name)
         templateManager.update(template)
         Launcher.instance.consoleSender.sendProperty("manager.command.create.template.success", name)

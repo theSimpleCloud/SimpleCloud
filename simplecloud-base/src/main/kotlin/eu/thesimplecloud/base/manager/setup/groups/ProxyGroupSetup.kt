@@ -61,6 +61,10 @@ class ProxyGroupSetup : DefaultGroupSetup(), ISetup {
             Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-group.question.name.is-empty")
             return false
         }
+        if (name.contains(" ")) {
+            Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-group.question.name.contains-spaces")
+            return false
+        }
         Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-group.question.name.success")
         return true
     }
