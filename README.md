@@ -229,12 +229,16 @@ The **Chat + Tab Module** provides **prefixes** and **suffixes** in the tablist 
 You can **download**
 it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-chat-tab/2.7.1/simplecloud-module-chat-tab-2.7.1.jar)
 
+<br />
+
 ### Placeholders
 
 With the **Placeholders Module** you can bring cloud related things like player names, proxy name, cpu usage and much more to holograms or other plugins like a scoreboard which **has** PlaceholderAPI support.
 <br />
 You can **download**
 it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-placeholders/2.7.1/simplecloud-module-placeholders-2.7.1.jar)
+
+<br />
 
 ### NPC
 
