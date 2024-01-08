@@ -47,11 +47,8 @@ class WrapperSetup : ISetup {
             Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.wrapper.question.name.empty")
             return false
         }
-        if (name.contains(" ")) {
-            Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.wrapper.question.name.contains-spaces")
-            return false
-        }
-        this.name = name
+        val split = name.split(" ")
+        this.name = split.joinToString("-")
         Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.wrapper.question.name.success")
         return true
     }

@@ -53,17 +53,14 @@ open class LobbyGroupSetup : DefaultGroupSetup(), ISetup {
 
     @SetupQuestion(0, "manager.setup.service-group.question.name")
     fun nameQuestion(name: String): Boolean {
-        this.name = name
+        val split = name.split(" ")
+        this.name = split.joinToString("-")
         if (name.length > 32) {
             Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-group.question.name.too-long")
             return false
         }
         if (name.isEmpty()) {
             Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-group.question.name.is-empty")
-            return false
-        }
-        if (name.contains(" ")) {
-            Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-group.question.name.contains-spaces")
             return false
         }
         Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-group.question.name.success")
