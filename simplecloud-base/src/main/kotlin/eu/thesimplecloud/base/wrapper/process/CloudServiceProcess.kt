@@ -165,6 +165,7 @@ class CloudServiceProcess(private val cloudService: ICloudService) : ICloudServi
     private fun getStartCommandArgs(jarFile: File): Array<String> {
         val jvmArguments = Wrapper.instance.jvmArgumentsConfig.jvmArguments.filter {
             it.groups.contains("all") || it.groups.contains(this.cloudService.getGroupName()) || it.groups.contains(this.cloudService.getServiceType().name)
+                    || (it.groups.any { s -> cloudService.getGroupName().startsWith(s.split("*")[0]) })
         }
 
         val commandName = cloudService.getServiceGroup().getJavaCommandName()
