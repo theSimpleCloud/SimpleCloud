@@ -177,6 +177,8 @@
   "manager.setup.wrapper.question.memory": "Wie viel Arbeitsspeicher soll dem Wrapper zugewiesen werden? (Angaben in Megabyte [Base 2])",
   "manager.setup.wrapper.question.memory.success": "Die Arbeitsspeicherangabe wurde gesetzt",
   "manager.setup.wrapper.question.name": "Welchen Namen soll der Wrapper haben?",
+  "manager.setup.wrapper.question.name.success": "Der Name wurde gesetzt",
+  "manager.setup.wrapper.question.name.too-long": "Der angegebene Name ist zu lang",
   "manager.setup.wrapper.question.start-services": "Wie viele Server soll der Wrapper gleichzeitig starten?",
   "manager.setup.wrapper.question.start-services.success": "Die Anzahl der gleichzeitig zu startenden Server wurde gesetzt",
   "manager.setup.wrapper.question.start-services.too-low": "Die angegebene Zahl ist zu gering",

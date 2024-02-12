@@ -177,6 +177,8 @@
   "manager.setup.wrapper.question.memory": "How much memory does the wrapper have? (value as megabyte [base 2])",
   "manager.setup.wrapper.question.memory.success": "Memory set",
   "manager.setup.wrapper.question.name": "Which name shall the wrapper have?",
+  "manager.setup.wrapper.question.name.success": "Name set",
+  "manager.setup.wrapper.question.name.too-long": "The specified name is too long",
   "manager.setup.wrapper.question.start-services": "How much services shall the wrapper can start simultaneously?",
   "manager.setup.wrapper.question.start-services.success": "Max simultaneously starting services set",
   "manager.setup.wrapper.question.start-services.too-low": "The specified amount is too low",
