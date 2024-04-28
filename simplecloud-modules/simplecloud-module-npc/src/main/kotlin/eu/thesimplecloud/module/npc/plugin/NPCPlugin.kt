@@ -23,6 +23,10 @@ class NPCPlugin: JavaPlugin() {
     override fun onEnable() {
         instance = this
 
+        if (!Bukkit.getPluginManager().isPluginEnabled("ProtocolLib")) {
+            Bukkit.getLogger().warning("We recommend using the ProtocolLib plugin to ensure that the NPCs function smoothly. You can download the plugin here: https://www.spigotmc.org/resources/protocollib.1997/")
+        }
+
         this.serverNPCHandler = ServerNPCHandler(this)
 
         CloudAPI.instance.getEventManager().registerListener(CloudAPI.instance.getThisSidesCloudModule(), CloudListener(this))

@@ -22,6 +22,10 @@
 
 shadowJar {
     archiveFileName.set("SimpleCloud-NPC.jar")
+    dependencies {
+        relocate("io.github.retrooper", "com.github.juliarn.npclib.relocate.io.packetevents")
+        relocate("com.github.retrooper", "com.github.juliarn.npclib.relocate.com.packetevents")
+    }
 }
 
 dependencies {
@@ -30,8 +34,8 @@ dependencies {
     compileOnly project(":simplecloud-plugin")
     compileOnly project(":simplecloud-launcher")
 
-    compileOnly 'org.spigotmc:spigot-api:1.17-R0.1-SNAPSHOT'
-    compileOnly 'com.github.retrooper.packetevents:spigot:b48a91bcee'
+    compileOnly 'org.spigotmc:spigot-api:1.20.4-R0.1-SNAPSHOT'
+    api 'com.github.retrooper.packetevents:spigot:2.2.1'
 
     api 'io.github.juliarn:npc-lib-api:3.0.0-beta6'
     api 'io.github.juliarn:npc-lib-common:3.0.0-beta6'
