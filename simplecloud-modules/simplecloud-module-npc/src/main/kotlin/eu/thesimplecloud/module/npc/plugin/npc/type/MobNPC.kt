@@ -34,7 +34,6 @@ class MobNPC(
     override fun onSetup() {
         val location = this.config.locationData
         this.npcLocation = Location(Bukkit.getWorld(location.world), location.x, location.y, location.z, location.yaw, location.pitch)
-        println("Create NPC as mob " + this.config.id)
         this.entity = this.npcLocation.world?.spawnEntity(this.npcLocation, EntityType.valueOf(this.config.npcSettings.mobNPCSettings.mobType))!!
 
         this.entity.setGravity(false)
