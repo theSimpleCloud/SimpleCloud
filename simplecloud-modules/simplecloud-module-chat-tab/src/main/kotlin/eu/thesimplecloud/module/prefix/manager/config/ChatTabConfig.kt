@@ -33,6 +33,7 @@ import eu.thesimplecloud.api.property.IProperty
  */
 class ChatTabConfig(
         val chatFormat: String = "%PLAYER% §8» §7%MESSAGE%",
+        val chatFormats: MutableMap<String, String> = mutableMapOf("Admin" to "§r\n%PLAYER% §8» §7%MESSAGE%\n§r"),
         val informationList: List<TablistInformation> = listOf(TablistInformation()),
         val disabledServerGroups: List<String> = emptyList(),
         val delay: MutableMap<String, Long> = mutableMapOf(
