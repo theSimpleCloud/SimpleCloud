@@ -107,7 +107,7 @@
   "manager.service.queued": "Service %SERVICE% is now queued",
   "manager.service.start": "Told Wrapper %WRAPPER% to start service %SERVICE%",
   "manager.service.stopped": "Service %SERVICE% was stopped",
-  "manager.setup.auto-ip.question": "Do you want to automatically set up your ip via \"ipify.org\" (This does not work on your local machine)",
+  "manager.setup.auto-ip.question": "Do you want to automatically set up your ip via \"ipify.org\" (This does not work in local use)",
   "manager.setup.database-connection.host-invalid": "The entered host is invalid",
   "manager.setup.database-connection.port-invalid": "The entered port is invalid",
   "manager.setup.database-connection.question.database": "Please provide the database name of the database",
