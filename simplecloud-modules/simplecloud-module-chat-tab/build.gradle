@@ -31,7 +31,7 @@ dependencies {
     compileOnly(project(":simplecloud-launcher"))
     compileOnly(project(":simplecloud-modules:simplecloud-module-permission"))
     compileOnly group: 'com.google.code.gson', name: 'gson', version: '2.10.1'
-    compileOnly 'org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT'
+    compileOnly 'org.spigotmc:spigot-api:1.21-R0.1-SNAPSHOT'
     compileOnly 'net.md-5:bungeecord-api:1.19-R0.1-SNAPSHOT'
     // The full Spigot server with no shadowing. Requires mavenLocal.
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind

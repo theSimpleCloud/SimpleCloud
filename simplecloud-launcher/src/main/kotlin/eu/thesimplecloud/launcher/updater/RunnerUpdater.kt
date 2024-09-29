@@ -51,6 +51,7 @@ class RunnerUpdater(
 
     override fun getVersionToInstall(): String? {
         if (versionToInstall != null) return versionToInstall
+        //TODO update to new url
         val urlstring =
             "https://update.thesimplecloud.eu/latestVersion/${getCurrentVersion()}?channel=${updateChannel.toChannelString()}"
         val content =

@@ -44,7 +44,7 @@ allprojects {
         }
 
         maven {
-            url "https://repo.thesimplecloud.eu/artifactory/gradle-release-local/"
+            url "https://repo.simplecloud.app/releases/"
         }
 
         maven {
