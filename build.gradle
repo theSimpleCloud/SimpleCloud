@@ -70,6 +70,14 @@ allprojects {
             name 'spigotmc-repo'
             url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
         }
+
+        // packetevents
+        maven {
+            url "https://repo.codemc.io/repository/maven-releases/"
+            mavenContent {
+                includeGroup("com.github.retrooper")
+            }
+        }
     }
 
     project.ext {

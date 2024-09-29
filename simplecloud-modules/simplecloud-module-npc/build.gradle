@@ -22,7 +22,22 @@
 
 shadowJar {
     archiveFileName.set("SimpleCloud-NPC.jar")
+
+    relocate("net.kyori", "eu.thesimplecloud.simplecloud.relocate.net.kyori")
+    relocate("io.papermc.lib", "eu.thesimplecloud.simplecloud.relocate.paperlib")
+    relocate("io.leangen.geantyref", "eu.thesimplecloud.simplecloud.relocate.geantyref")
+    relocate("io.github.retrooper", "eu.thesimplecloud.simplecloud.relocate.io.packetevents")
+    relocate("com.github.retrooper", "eu.thesimplecloud.simplecloud.relocate.com.packetevents")
+    relocate("com.github.juliarn.npclib", "eu.thesimplecloud.simplecloud.relocate.com.github.juliarn.npclib")
+
+    dependencies {
+        exclude("plugin.yml")
+        // excludes the META-INF directory, module infos & html files of all dependencies
+        // this includes for example maven lib files & multi-release module-json files
+        exclude("META-INF/**", "**/*.html", "module-info.*")
+    }
 }
+
 
 dependencies {
     compileOnly project(":simplecloud-base")
@@ -30,12 +45,12 @@ dependencies {
     compileOnly project(":simplecloud-plugin")
     compileOnly project(":simplecloud-launcher")
 
-    compileOnly 'org.spigotmc:spigot-api:1.17-R0.1-SNAPSHOT'
-    compileOnly 'com.github.retrooper.packetevents:spigot:b48a91bcee'
+    compileOnly 'org.spigotmc:spigot-api:1.21-R0.1-SNAPSHOT'
 
-    api 'io.github.juliarn:npc-lib-api:3.0.0-beta7'
-    api 'io.github.juliarn:npc-lib-common:3.0.0-beta7'
-    api 'io.github.juliarn:npc-lib-bukkit:3.0.0-beta7'
+    api 'io.github.juliarn:npc-lib-api:3.0.0-beta9'
+    api 'io.github.juliarn:npc-lib-common:3.0.0-beta9'
+    api 'io.github.juliarn:npc-lib-bukkit:3.0.0-beta9'
 
     api 'com.github.cryptomorin:XSeries:9.2.0'
 }
+

@@ -4,6 +4,6 @@ author: Wetterbericht
 
 main: eu.thesimplecloud.plugin.server.CloudSpigotPlugin
 
-api-version: 1.13
+api-version: 1.21
 
 commands:

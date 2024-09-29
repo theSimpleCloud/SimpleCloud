@@ -57,7 +57,7 @@ jobs:
         rm temp/modules/SimpleCloud-Chat+Tab.jar
         rm temp/modules/SimpleCloud-ServiceSelection.jar
         rm temp/modules/SimpleCloud-CloudFlare.jar
-#        rm temp/modules/SimpleCloud-Placeholders.jar
+        rm temp/modules/SimpleCloud-Placeholders.jar
     
     - name: Upload zip
       uses: actions/upload-artifact@v3
