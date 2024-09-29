@@ -33,7 +33,9 @@ import java.net.URLClassLoader
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 
-class RunnerUpdater : AbstractUpdater(
+class RunnerUpdater(
+    private val updateChannel: UpdateChannel
+) : AbstractUpdater(
     "eu.thesimplecloud.simplecloud",
     "simplecloud-runner",
     File("runner-update.jar")
@@ -49,8 +51,10 @@ class RunnerUpdater : AbstractUpdater(
 
     override fun getVersionToInstall(): String? {
         if (versionToInstall != null) return versionToInstall
+        val urlstring =
+            "https://update.thesimplecloud.eu/latestVersion/${getCurrentVersion()}?channel=${updateChannel.toChannelString()}"
         val content =
-            WebContentLoader().loadContent("https://update.thesimplecloud.eu/latestVersion/${getCurrentVersion()}")
+            WebContentLoader().loadContent(urlstring)
                 ?: return null
         this.versionToInstall = JsonLib.fromJsonString(content).getString("latestVersion")
         return this.versionToInstall

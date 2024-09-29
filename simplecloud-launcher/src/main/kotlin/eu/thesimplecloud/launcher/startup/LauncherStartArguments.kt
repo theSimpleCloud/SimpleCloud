@@ -24,10 +24,12 @@ package eu.thesimplecloud.launcher.startup
 
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.associate
+import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.enum
 import eu.thesimplecloud.launcher.application.CloudApplicationType
+import eu.thesimplecloud.launcher.updater.UpdateChannel
 
 class LauncherStartArguments : CliktCommand() {
 
@@ -35,6 +37,8 @@ class LauncherStartArguments : CliktCommand() {
     val startApplication: CloudApplicationType? by option(help = "Starts an application directly.").enum<CloudApplicationType>()
     //--system-prop size=small
     val wrapperRam: Map<String, String> by option("--wrapper-ram").associate()
+
+    val updateChannel: UpdateChannel by option(help = "The update channel to use.").enum<UpdateChannel>().default(UpdateChannel.RELEASE)
 
     override fun run() {
         WrapperRamWriter(wrapperRam).write()
