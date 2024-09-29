@@ -24,7 +24,7 @@ fun String.replace(
     }
 
     val cloudPlayer = CloudAPI.instance.getCloudPlayerManager().getCloudPlayer(uuid).getBlockingOrNull()
-    val proxy = CloudAPI.instance.getCloudPlayerManager().getCloudPlayer(uuid).getBlockingOrNull()?.getConnectedProxy()
+    val proxy = cloudPlayer?.getConnectedProxy()
     val thisService = CloudPlugin.instance.thisService()
     val wrapper = proxy?.getWrapper()
     val cloudPlayerManager = CloudAPI.instance.getCloudPlayerManager()
