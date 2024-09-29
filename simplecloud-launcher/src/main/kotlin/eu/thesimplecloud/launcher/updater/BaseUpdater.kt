@@ -36,7 +36,7 @@ class BaseUpdater : AbstractUpdater(
     }
 
     override fun getCurrentVersion(): String {
-        //return empty string because it will be unequal to the newest base version
+        //return "NOT_INSTALLED" because it will be unequal to the newest base version
         if (!this.updateFile.exists()) return "NOT_INSTALLED"
         return getVersionFromManifestFile(this.updateFile)
     }
