@@ -152,9 +152,9 @@ subprojects {
         repositories {
             maven {
                 if (project.version.endsWith("SNAPSHOT")) {
-                    url 'https://repo.thesimplecloud.eu/artifactory/list/gradle-dev-local/'
+                    url 'https://repo.simplecloud.app/snapshots/'
                 } else {
-                    url 'https://repo.thesimplecloud.eu/artifactory/list/gradle-release-local//'
+                    url 'https://repo.simplecloud.app/releases/'
                 }
 
                 credentials {
