@@ -23,6 +23,7 @@
 package eu.thesimplecloud.launcher.updater
 
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
+import eu.thesimplecloud.runner.utils.Downloader
 import java.io.File
 
 class BaseUpdater : AbstractUpdater(
@@ -39,6 +40,18 @@ class BaseUpdater : AbstractUpdater(
         //return "NOT_INSTALLED" because it will be unequal to the newest base version
         if (!this.updateFile.exists()) return "NOT_INSTALLED"
         return getVersionFromManifestFile(this.updateFile)
+    }
+
+    override fun downloadJarsForUpdate() {
+        val file = File(DirectoryPaths.paths.storagePath + "base.jar")
+
+        val version = getVersionToInstall()
+            ?: throw RuntimeException("Cannot perform update. Is the update server down?")
+
+        Downloader().userAgentDownload(
+            "https://repo.simplecloud.app/releases/eu/thesimplecloud/simplecloud/simplecloud-base/$version/simplecloud-base-$version-all.jar",
+            file
+        )
     }
 
     override fun executeJar() {
