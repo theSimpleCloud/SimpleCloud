@@ -24,6 +24,7 @@ package eu.thesimplecloud.api.service.version.loader
 
 import eu.thesimplecloud.api.directorypaths.DirectoryPaths
 import eu.thesimplecloud.api.service.version.ServiceVersion
+import eu.thesimplecloud.api.service.version.v3.ServiceVersionManifest
 import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.runner.utils.WebContentLoader
 import java.io.File
@@ -40,14 +41,14 @@ class ServiceVersionWebLoader : IServiceVersionLoader {
     private val file = File(DirectoryPaths.paths.storagePath + "onlineServiceVersions.json")
 
     override fun loadVersions(): List<ServiceVersion> {
-        val version = this::class.java.`package`.implementationVersion.substring(0, 3)
-        val contentString =
-            WebContentLoader().loadContent("https://api.thesimplecloud.eu/versions?implementationVersion[\$lte]=$version")
+        val contentString = WebContentLoader().loadContent("https://raw.githubusercontent.com/theSimpleCloud/simplecloud-manifest/main/server_versions.json")
         return if (contentString == null) {
             loadFromFile()
         } else {
             processWebContent(contentString)
-        }
+                .map { it.toServiceVersions() }
+                .flatten()
+        }.filter { !it.name.startsWith("VANILLA") }
     }
 
     private fun loadFromFile(): List<ServiceVersion> {
@@ -55,9 +56,9 @@ class ServiceVersionWebLoader : IServiceVersionLoader {
         return JsonLib.fromJsonFile(file)!!.getObject(Array<ServiceVersion>::class.java).toList()
     }
 
-    private fun processWebContent(contentString: String): List<ServiceVersion> {
+    private fun processWebContent(contentString: String): List<ServiceVersionManifest> {
         val jsonLib = JsonLib.fromJsonString(contentString)
         jsonLib.saveAsFile(file)
-        return jsonLib.getObject(Array<ServiceVersion>::class.java).toList()
+        return jsonLib.getObject(Array<ServiceVersionManifest>::class.java).toList()
     }
 }

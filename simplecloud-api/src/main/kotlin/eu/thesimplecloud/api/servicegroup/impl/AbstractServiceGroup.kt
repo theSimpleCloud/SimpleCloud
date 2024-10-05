@@ -129,7 +129,8 @@ abstract class AbstractServiceGroup(
     }
 
     override fun getServiceVersion(): ServiceVersion {
-        return CloudAPI.instance.getServiceVersionHandler().getServiceVersionByName(serviceVersion)!!
+        return CloudAPI.instance.getServiceVersionHandler().getServiceVersionByName(serviceVersion)
+            ?: throw NullPointerException("failed to find service version $serviceVersion")
     }
 
     override fun isStateUpdatingEnabled(): Boolean {

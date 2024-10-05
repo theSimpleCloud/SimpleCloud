@@ -62,6 +62,13 @@ allprojects {
         }
 
         maven {
+            url 'https://repo.codemc.io/repository/maven-releases/'
+            mavenContent {
+                includeGroup("com.github.retrooper.packetevents")
+            }
+        }
+
+        maven {
             name 'bungeecord-repo'
             url 'https://oss.sonatype.org/content/repositories/snapshots'
         }
