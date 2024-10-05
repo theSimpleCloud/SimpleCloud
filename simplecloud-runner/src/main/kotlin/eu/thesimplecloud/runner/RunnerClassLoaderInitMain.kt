@@ -60,14 +60,14 @@ fun main(args: Array<String>) {
 
         if (!copiedSimpleCloudPluginFile.exists()) {
             Downloader().userAgentDownload(
-                "https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-plugin/$version/simplecloud-plugin-$version-all.jar",
+                "https://repo.simplecloud.app/releases/eu/thesimplecloud/simplecloud/simplecloud-plugin/$version/simplecloud-plugin-$version-all.jar",
                 copiedSimpleCloudPluginFile
             )
         }
 
         if (!copiedLauncherFile.exists())
             Downloader().userAgentDownload(
-                "https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-launcher/$version/simplecloud-launcher-$version-all.jar",
+                "https://repo.simplecloud.app/releases/eu/thesimplecloud/simplecloud/simplecloud-launcher/$version/simplecloud-launcher-$version-all.jar",
                 copiedLauncherFile
             )
     }
@@ -97,7 +97,7 @@ private fun getCloudVersion(): String {
 
 private fun downloadJarFromDependency(artifactId: String, file: File) {
     val dependency = AdvancedCloudDependency("eu.thesimplecloud.simplecloud", artifactId, getCloudVersion())
-    dependency.download("https://repo.thesimplecloud.eu/artifactory/gradle-release-local/", file)
+    dependency.download("https://repo.simplecloud.app/releases/", file)
 }
 
 private fun executeDependencyLoaderMain(classLoader: URLClassLoader, args: Array<String>) {

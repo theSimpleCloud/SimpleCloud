@@ -29,7 +29,7 @@ plugins {
 allprojects {
 
     group 'eu.thesimplecloud.simplecloud'
-    version '2.8.0-SNAPSHOT'
+    version '2.8.0-pre.2'
 
     repositories {
         mavenCentral()
@@ -44,7 +44,7 @@ allprojects {
         }
 
         maven {
-            url "https://repo.thesimplecloud.eu/artifactory/gradle-release-local/"
+            url "https://repo.simplecloud.app/releases/"
         }
 
         maven {
@@ -76,6 +76,14 @@ allprojects {
         maven {
             name 'spigotmc-repo'
             url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+        }
+
+        // packetevents
+        maven {
+            url "https://repo.codemc.io/repository/maven-releases/"
+            mavenContent {
+                includeGroup("com.github.retrooper")
+            }
         }
     }
 
@@ -159,9 +167,9 @@ subprojects {
         repositories {
             maven {
                 if (project.version.endsWith("SNAPSHOT")) {
-                    url 'https://repo.thesimplecloud.eu/artifactory/list/gradle-dev-local/'
+                    url 'https://repo.simplecloud.app/snapshots/'
                 } else {
-                    url 'https://repo.thesimplecloud.eu/artifactory/list/gradle-release-local//'
+                    url 'https://repo.simplecloud.app/releases/'
                 }
 
                 credentials {

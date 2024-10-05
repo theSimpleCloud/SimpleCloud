@@ -6,4 +6,4 @@ main: eu.thesimplecloud.module.npc.plugin.NPCPlugin
 
 depend: [ SimpleCloud-Plugin ]
 
-api-version: 1.13
+api-version: 1.21

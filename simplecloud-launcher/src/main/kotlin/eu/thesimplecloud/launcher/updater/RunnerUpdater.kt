@@ -27,6 +27,7 @@ import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.launcher.startup.Launcher
 import eu.thesimplecloud.runner.RunnerFileProvider
 import eu.thesimplecloud.runner.dependency.AdvancedCloudDependency
+import eu.thesimplecloud.runner.utils.Downloader
 import eu.thesimplecloud.runner.utils.WebContentLoader
 import java.io.File
 import java.net.URLClassLoader
@@ -51,13 +52,24 @@ class RunnerUpdater(
 
     override fun getVersionToInstall(): String? {
         if (versionToInstall != null) return versionToInstall
+        //TODO update to new url
         val urlstring =
             "https://update.thesimplecloud.eu/latestVersion/${getCurrentVersion()}?channel=${updateChannel.toChannelString()}"
-        val content =
-            WebContentLoader().loadContent(urlstring)
-                ?: return null
+        val content = WebContentLoader().loadContent(urlstring) ?: return null
         this.versionToInstall = JsonLib.fromJsonString(content).getString("latestVersion")
         return this.versionToInstall
+    }
+
+    override fun downloadJarsForUpdate() {
+        val file = File("runner-update.jar")
+
+        val version = getVersionToInstall()
+            ?: throw RuntimeException("Cannot perform update. Is the update server down?")
+
+        Downloader().userAgentDownload(
+            "https://repo.simplecloud.app/releases/eu/thesimplecloud/simplecloud/simplecloud-runner/$version/simplecloud-runner-$version-all.jar",
+            file
+        )
     }
 
     override fun executeJar() {
