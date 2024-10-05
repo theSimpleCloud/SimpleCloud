@@ -17,14 +17,19 @@ class Converter_2_7_To_2_8 : IVersionConverter {
         val serviceVersionsFile = File(DirectoryPaths.paths.storagePath, "onlineServiceVersions.json")
         serviceVersionsFile.delete()
 
-        val velocityGroupFiles = File(DirectoryPaths.paths.proxyGroupsPath).listFiles()!!
-            .filter { JsonLib.fromJsonString(it.readText()).getString("serviceVersion") == "VELOCITY_3" }
+        changeProxyGroupServiceVersion("VELOCITY", "VELOCITY_1_1_9")
+        changeProxyGroupServiceVersion("VELOCITY_3", "VELOCITY_3_4_0")
+    }
 
-        velocityGroupFiles.forEach {
+    private fun changeProxyGroupServiceVersion(from: String, to: String) {
+        val groupFiles = File(DirectoryPaths.paths.proxyGroupsPath).listFiles()!!
+            .filter { JsonLib.fromJsonString(it.readText()).getString("serviceVersion") == from }
+
+        groupFiles.forEach {
             val jsonLib = JsonLib.fromJsonString(it.readText())
-            jsonLib.append("serviceVersion", "VELOCITY")
+            jsonLib.append("serviceVersion", to)
             jsonLib.saveAsFile(it)
-            Launcher.instance.logger.info("Convert ${jsonLib.getString("name")} serviceVersion VELOCITY_3 to VELOCITY")
+            Launcher.instance.logger.info("Convert ${jsonLib.getString("name")} serviceVersion $from to $to")
         }
     }
 

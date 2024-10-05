@@ -36,6 +36,7 @@ data class ServiceVersionManifest(
     private fun getServiceName(downloadLink: DownloadLink): String {
         return "${name}_${downloadLink.version}"
             .replace("_latest", "")
+            .replace("-SNAPSHOT", "")
             .replace(" ", "_")
             .replace(".", "_")
             .uppercase()
