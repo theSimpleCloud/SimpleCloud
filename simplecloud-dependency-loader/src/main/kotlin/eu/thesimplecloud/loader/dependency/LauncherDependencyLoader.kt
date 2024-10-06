@@ -33,7 +33,7 @@ class LauncherDependencyLoader {
         return dependencyLoader.loadDependencies(
             listOf(
                 "https://repo.maven.apache.org/maven2/",
-                "https://repo.thesimplecloud.eu/artifactory/gradle-release-local/"
+                "https://repo.simplecloud.app/releases/"
             ),
             listOf(
                 AdvancedCloudDependency("eu.thesimplecloud.clientserverapi", "clientserverapi", "4.1.18"),

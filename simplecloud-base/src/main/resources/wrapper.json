@@ -4,7 +4,6 @@
   "mainClass": "eu.thesimplecloud.base.wrapper.startup.Wrapper",
   "moduleCopyType": "NONE",
   "repositories": [
-    "https://repo.thesimplecloud.eu/artifactory/gradle-dev/",
     "https://repo.maven.apache.org/maven2/"
   ],
   "dependencies": [

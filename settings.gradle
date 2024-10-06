@@ -56,6 +56,4 @@ include 'simplecloud-modules:simplecloud-module-npc'
 findProject(':simplecloud-modules:simplecloud-module-npc')?.name = 'simplecloud-module-npc'
 include 'simplecloud-modules:simplecloud-module-placeholders'
 findProject(':simplecloud-modules:simplecloud-module-placeholders')?.name = 'simplecloud-module-placeholders'
-include 'simplecloud-modules:simplecloud-module-placeholders'
-findProject(':simplecloud-modules:simplecloud-module-placeholders')?.name = 'simplecloud-module-placeholders'
 

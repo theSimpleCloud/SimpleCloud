@@ -22,7 +22,7 @@
 
 dependencies {
     testApi group: 'io.netty', name: 'netty-all', version: dependencyNettyVersion
-    testApi group: 'org.mockito', name: 'mockito-core', version: '2.1.0'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.14.0'
     compileOnly group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.6.1'
     compileOnly(project(":simplecloud-runner"))
 

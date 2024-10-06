@@ -6,6 +6,6 @@ main: eu.thesimplecloud.module.permission.service.spigot.SpigotPluginMain
 
 depend: [ SimpleCloud-Plugin ]
 
-api-version: 1.13
+api-version: 1.21
 
 commands:

@@ -8,15 +8,11 @@
     <br />
     <a href="https://www.spigotmc.org/resources/simplecloud-simplify-your-network.79466/">SpigotMC</a>
     ·
-    <a href="https://repo.thesimplecloud.eu/ui/repos/tree/General/artifactory-build-info">Repository</a>
+    <a href="https://repo.simplecloud.app/">Repository</a>
     ·
-    <a href="http://dashboard-nossl.thesimplecloud.eu">Dashboard</a>
-    ·
-    <a href="https://ci.thesimplecloud.eu/job/SimpleCloudOrganization/job/SimpleCloud/">Jenkins</a>
+    <a href="http://dashboard.simplecloud.app">Dashboard</a>
     ·
     <a href="https://discord.gg/EzGVHXG3GE">Discord</a>
-    ·
-    <a href="https://ts3server://thesimplecloud.eu">Teamspeak</a>
   </p>
 
 </p>
@@ -48,6 +44,8 @@
         <li><a href="#rest">REST Module</a></li>
         <li><a href="#statistics">Statistics Module</a></li>
         <li><a href="#chat + tab">Chat + Tab Module</a></li>
+        <li><a href="#placeholders">Placeholders Module</a></li>
+        <li><a href="#npc">NPC Module</a></li>
       </ul>
     </li>
   </ol>
@@ -60,19 +58,15 @@
 ### Requirements
 
 * **Java 8** or higher
-* **[MongoDB](https://www.mongodb.com/cloud/atlas/lp/try2-de?utm_source=google&utm_campaign=gs_emea_germany_search_core_brand_atlas_desktop&utm_term=mongodb&utm_medium=cpc_paid_search&utm_ad=e&utm_ad_campaign_id=12212624524&gclid=Cj0KCQjw5auGBhDEARIsAFyNm9EkpiB2K-5CMNxHkHcY7VbdNE_4HrbwDOSrMmjgNAve270Hnd9pjRoaAqFgEALw_wcB)**
-  or **[SQL](https://go.mariadb.com/download-mariadb-server-community.html?utm_source=google&utm_medium=ppc&utm_campaign=MKG-Search-Google-Branded-EMEA-bd-Server-DL&gclid=Cj0KCQjw5auGBhDEARIsAFyNm9HBSH7xv8vFObvU9Xk8-bgYskrjfU53aBSkyehaGOxQQx2veRbC6-caAtJyEALw_wcB)**
-  database
 * min. **2GB** Memory and **2 virtual cores**
 
 ### Installation
 
 <ol>
-  <li>Download the cloud on SpigotMC</li>
+  <li>Download the cloud on <a href="https://www.spigotmc.org/resources/simplecloud-simplify-your-network.79466/">SpigotMC</a></li>
   <li>Unzip the folder and execute the start file</li>
   <li>Follow the setup instructions</li>
   <li>Connect a wrapper to your manager. It is recommended to use the InternalWrapperModule for this. You can find it below.</li>
-  <li>Create your first group by typing create into the console</li>
   <li>For more information type help</li>
   <li>Have fun :D</li>
 </ol>
@@ -97,7 +91,7 @@
 ## Dashboard
 
 SimpleCloud provides a **Dashboard accessible** for every user.
-The domain for the **Dashboard** is: **http://dashboard-nossl.thesimplecloud.eu**.
+The domain for the **Dashboard** is: **http://dashboard.simplecloud.app**.
 Now you have to enter the **IP-Address** of your server follwed by the port of the **REST-Module.**
 <br />
 <br />
@@ -117,7 +111,7 @@ This wrapper does only run when the manager is running. It connects **automatica
 The wrapper will be automatically named **"InternalWrapper"** and it will have **2GB of memory**.
 <br />
 You can **download**
-it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-internalwrapper/2.7.0/simplecloud-module-internalwrapper-2.7.0.jar)
+it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-internalwrapper/2.7.1/simplecloud-module-internalwrapper-2.7.1.jar)
 <br />
 
 To edit the memory of the wrapper you can use the command: <br />
@@ -131,7 +125,7 @@ The **Sign Module** is used to show available services for players in the lobby 
 The players can click on that sign and will be sent to the server. The layout of the signs is **fully customizable**.
 <br />
 You can **download**
-it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-sign/2.7.0/simplecloud-module-sign-2.7.0.jar)
+it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-sign/2.7.1/simplecloud-module-sign-2.7.1.jar)
 
 ![SignModule](https://i.imgur.com/w534aZG.gif "SignModule")
 
@@ -143,7 +137,7 @@ With the **Permission Module**, you can easily manage your permissions.
 You can define groups and add permissions to them. You can also add permissions to single users.
 <br />
 You can **download**
-it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-permission/2.7.0/simplecloud-module-permission-2.7.0.jar)
+it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-permission/2.7.1/simplecloud-module-permission-2.7.1.jar)
 
 ![PermissionModule](https://i.imgur.com/mjqCmjq.png"PermissionModule")
 
@@ -156,7 +150,7 @@ It controls the **MOTD**, **Tablist**, **maintenance** and the **online count**.
 The online count of proxies of one group will be summed up and displayed in the player info.
 <br />
 You can **download**
-it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-proxy/2.7.0/simplecloud-module-proxy-2.7.0.jar)
+it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-proxy/2.7.1/simplecloud-module-proxy-2.7.1.jar)
 
 ![ProxyModuleTab](https://i.imgur.com/2djSS9l.jpg "ProxyModuleTab")
 
@@ -181,7 +175,7 @@ Full join: cloud.full.join
 The **Hub Module** provides a hub command for players to switch to a **lobby server**.
 <br />
 You can **download**
-it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-hubcommand/2.7.0/simplecloud-module-hubcommand-2.7.0.jar)
+it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-hubcommand/2.7.1/simplecloud-module-hubcommand-2.7.1.jar)
 
 <br />
 
@@ -191,7 +185,7 @@ The **Notify Module** sends notifications to players that have the required perm
 or **stopped**.
 <br />
 You can **download**
-it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-notify/2.7.0/simplecloud-module-notify-2.7.0.jar)
+it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-notify/2.7.1/simplecloud-module-notify-2.7.1.jar)
 
 ![NotifyModule](https://i.imgur.com/7lcjXbN.jpg "NotifyModule")
 
@@ -211,7 +205,7 @@ cloud.module.notify.messages
 The **REST Module** provides a **restful API**. It is necessary for the **dashboard**.
 <br />
 You can **download**
-it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-rest/2.7.0/simplecloud-module-rest-2.7.0.jar)
+it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-rest/2.7.1/simplecloud-module-rest-2.7.1.jar)
 
 <br />
 
@@ -220,7 +214,7 @@ it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/the
 The **Statistics Module** saves some statistics of the cloud. The data is displayed on the **dashboard**.
 <br />
 You can **download**
-it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-statistics/2.7.0/simplecloud-module-statistics-2.7.0.jar)
+it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-statistics/2.7.1/simplecloud-module-statistics-2.7.1.jar)
 
 <br />
 
@@ -229,7 +223,28 @@ it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/the
 The **Chat + Tab Module** provides **prefixes** and **suffixes** in the tablist and adds a **chat configuration**.
 <br />
 You can **download**
-it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-chat-tab/2.7.0/simplecloud-module-chat-tab-2.7.0.jar)
+it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-chat-tab/2.7.1/simplecloud-module-chat-tab-2.7.1.jar)
+
+<br />
+
+### Placeholders
+
+With the **Placeholders Module** you can bring cloud related things like player names, proxy name, cpu usage and much more to holograms or other plugins like a scoreboard which **has** PlaceholderAPI support.
+<br />
+You can **download**
+it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-placeholders/2.7.1/simplecloud-module-placeholders-2.7.1.jar)
+
+<br />
+
+### NPC
+
+With an **NPC**, your players can now connect to another server not only through a classic sign. They can decorate their NPC with items and add a new title line to mark updates. You can choose between a mob like a villager or a fake player with a skin of your choice. Customize your NPC to your mode with the numerous features.
+<br />
+You can **download**
+it [here](https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-module-npc/2.7.1/simplecloud-module-npc-2.7.1.jar)
+
+![NPCs](https://i.imgur.com/2f7uXtG.png "NPCs")
+![NPCInventory](https://i.imgur.com/b3GTxqj.png "NPCInventory")
 
 Special Thanks To:
 -------------
