@@ -22,8 +22,8 @@ class Converter_2_7_To_2_8 : IVersionConverter {
     }
 
     private fun changeProxyGroupServiceVersion(from: String, to: String) {
-        val groupFiles = File(DirectoryPaths.paths.proxyGroupsPath).listFiles()!!
-            .filter { JsonLib.fromJsonString(it.readText()).getString("serviceVersion") == from }
+        val groupFiles = File(DirectoryPaths.paths.proxyGroupsPath).listFiles()
+            ?.filter { JsonLib.fromJsonString(it.readText()).getString("serviceVersion") == from } ?: return
 
         groupFiles.forEach {
             val jsonLib = JsonLib.fromJsonString(it.readText())
