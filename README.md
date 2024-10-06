@@ -8,15 +8,11 @@
     <br />
     <a href="https://www.spigotmc.org/resources/simplecloud-simplify-your-network.79466/">SpigotMC</a>
     ·
-    <a href="https://repo.thesimplecloud.eu/ui/repos/tree/General/artifactory-build-info">Repository</a>
+    <a href="https://repo.simplecloud.app/">Repository</a>
     ·
-    <a href="http://dashboard-nossl.thesimplecloud.eu">Dashboard</a>
-    ·
-    <a href="https://ci.thesimplecloud.eu/job/SimpleCloudOrganization/job/SimpleCloud/">Jenkins</a>
+    <a href="http://dashboard.simplecloud.app">Dashboard</a>
     ·
     <a href="https://discord.gg/EzGVHXG3GE">Discord</a>
-    ·
-    <a href="https://ts3server://thesimplecloud.eu">Teamspeak</a>
   </p>
 
 </p>
