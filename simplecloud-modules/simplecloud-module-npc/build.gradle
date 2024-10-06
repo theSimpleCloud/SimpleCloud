@@ -31,7 +31,6 @@ shadowJar {
     relocate("com.github.juliarn.npclib", "eu.thesimplecloud.simplecloud.relocate.com.github.juliarn.npclib")
 
     dependencies {
-        exclude("plugin.yml")
         // excludes the META-INF directory, module infos & html files of all dependencies
         // this includes for example maven lib files & multi-release module-json files
         exclude("META-INF/**", "**/*.html", "module-info.*")
