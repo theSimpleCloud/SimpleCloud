@@ -4,9 +4,9 @@ author: Wetterbericht
 
 main: eu.thesimplecloud.module.sign.service.BukkitPluginMain
 
-depend: [ SimpleCloud-Plugin ]
+depend: [SimpleCloud-Plugin]
 
-api-version: 1.21
+api-version: 1.13
 
 commands:
   cloudsigns:
