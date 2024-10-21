@@ -19,6 +19,7 @@ class Converter_2_7_To_2_8 : IVersionConverter {
 
         changeProxyGroupServiceVersion("VELOCITY", "VELOCITY_1_1_9")
         changeProxyGroupServiceVersion("VELOCITY_3", "VELOCITY_3_4_0")
+        changeProxyGroupServiceVersion("WATERFALL", "WATERFALL_1_21")
     }
 
     private fun changeProxyGroupServiceVersion(from: String, to: String) {
