@@ -29,16 +29,22 @@ plugins {
 allprojects {
 
     group 'eu.thesimplecloud.simplecloud'
-    version '2.6.0'
+    version '2.8.1'
 
     repositories {
         mavenCentral()
         jcenter()
 
-        maven { url 'https://repository.derklaro.dev/releases' }
-        maven { url 'https://jitpack.io' }
         maven {
-            url "https://repo.thesimplecloud.eu/artifactory/gradle-release-local/"
+            url 'https://jitpack.io'
+        }
+
+        maven {
+            url 'https://repository.derklaro.dev/releases/'
+        }
+
+        maven {
+            url "https://repo.simplecloud.app/releases/"
         }
 
         maven {
@@ -56,6 +62,13 @@ allprojects {
         }
 
         maven {
+            url 'https://repo.codemc.io/repository/maven-releases/'
+            mavenContent {
+                includeGroup("com.github.retrooper.packetevents")
+            }
+        }
+
+        maven {
             name 'bungeecord-repo'
             url 'https://oss.sonatype.org/content/repositories/snapshots'
         }
@@ -65,6 +78,13 @@ allprojects {
             url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
         }
 
+        // packetevents
+        maven {
+            url "https://repo.codemc.io/repository/maven-releases/"
+            mavenContent {
+                includeGroup("com.github.retrooper")
+            }
+        }
     }
 
     project.ext {
@@ -147,9 +167,9 @@ subprojects {
         repositories {
             maven {
                 if (project.version.endsWith("SNAPSHOT")) {
-                    url 'https://repo.thesimplecloud.eu/artifactory/list/gradle-dev-local/'
+                    url 'https://repo.simplecloud.app/snapshots/'
                 } else {
-                    url 'https://repo.thesimplecloud.eu/artifactory/list/gradle-release-local//'
+                    url 'https://repo.simplecloud.app/releases/'
                 }
 
                 credentials {

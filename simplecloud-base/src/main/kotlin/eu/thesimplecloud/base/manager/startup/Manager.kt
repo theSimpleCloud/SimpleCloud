@@ -260,7 +260,11 @@ class Manager : ICloudApplication {
     override fun onDisable() {
         this.serviceHandler.stopThread()
         this.cloudModuleHandler.unloadAllModules()
-        this.profileFile.create()
+        try {
+            this.profileFile.create()
+        } catch (e: Exception) {
+            Launcher.instance.logger.warning("An error occurred while creating the profile file: ${e.message}")
+        }
     }
 
 }

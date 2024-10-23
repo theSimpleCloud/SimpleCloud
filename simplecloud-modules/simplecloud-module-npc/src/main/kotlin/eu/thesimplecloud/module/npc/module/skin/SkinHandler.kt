@@ -45,7 +45,7 @@ class SkinHandler {
 
     private fun getJsonObjectFromEndpoint(endpoint: String): JsonObject {
         val result = getRequestResponse(endpoint)
-        val jsonElement = JsonParser.parseString(result)
+        val jsonElement = JsonParser().parse(result)
         return jsonElement.asJsonObject
     }
 

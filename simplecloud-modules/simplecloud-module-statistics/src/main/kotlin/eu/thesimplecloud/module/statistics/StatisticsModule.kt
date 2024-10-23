@@ -26,8 +26,11 @@ import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.external.ICloudModule
 import eu.thesimplecloud.base.manager.database.MongoOfflineCloudPlayerHandler
 import eu.thesimplecloud.base.manager.database.SQLOfflineCloudPlayerHandler
+import eu.thesimplecloud.base.manager.database.SQLiteOfflineCloudPlayerHandler
 import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.module.rest.javalin.RestServer
+import eu.thesimplecloud.module.statistics.rest.overview.OverviewController
+import eu.thesimplecloud.module.statistics.rest.overview.data.Overview
 import eu.thesimplecloud.module.statistics.rest.timed.TimedValueController
 import eu.thesimplecloud.module.statistics.timed.TimedValueCollectorManager
 import eu.thesimplecloud.module.statistics.timed.collector.CPUUsageTimedCollector
@@ -38,6 +41,8 @@ import eu.thesimplecloud.module.statistics.timed.listener.PlayerConnectListener
 import eu.thesimplecloud.module.statistics.timed.store.ITimedValueStore
 import eu.thesimplecloud.module.statistics.timed.store.MongoTimedValueStore
 import eu.thesimplecloud.module.statistics.timed.store.SQLTimedValueStore
+import eu.thesimplecloud.module.statistics.timed.store.SQLiteTimedValueStore
+import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
 
 /**
@@ -65,6 +70,8 @@ class StatisticsModule : ICloudModule {
         timedValueCollectorManager.start()
 
         RestServer.instance.controllerHandler.registerController(TimedValueController())
+        RestServer.instance.controllerHandler.registerController(OverviewController())
+        Overview.create(false, 2023)
     }
 
     override fun onDisable() {
@@ -82,7 +89,7 @@ class StatisticsModule : ICloudModule {
     fun <T : Any> createTimedValueStore(collectionName: String, clazz: Class<T>): ITimedValueStore<T> {
         val offlineCloudPlayerHandler = Manager.instance.offlineCloudPlayerHandler
         if (offlineCloudPlayerHandler is SQLOfflineCloudPlayerHandler) {
-            val sqlTimedValueStore = SQLTimedValueStore<T>(clazz, collectionName)
+            val sqlTimedValueStore = SQLTimedValueStore<T>(clazz, collectionName, offlineCloudPlayerHandler.connection!!)
             valueStores.add(sqlTimedValueStore)
             return sqlTimedValueStore
         } else if (offlineCloudPlayerHandler is MongoOfflineCloudPlayerHandler) {
@@ -90,6 +97,10 @@ class StatisticsModule : ICloudModule {
                 MongoTimedValueStore<T>(clazz, collectionName, offlineCloudPlayerHandler.database)
             valueStores.add(mongoTimedValueStore)
             return mongoTimedValueStore
+        } else if (offlineCloudPlayerHandler is SQLiteOfflineCloudPlayerHandler) {
+            val sqlTimedValueStore = SQLiteTimedValueStore<T>(clazz, collectionName, offlineCloudPlayerHandler.connection!!)
+            valueStores.add(sqlTimedValueStore)
+            return sqlTimedValueStore
         }
 
         throw IllegalStateException("OfflineCloudPlayerManager was not SQL or MongoDB")

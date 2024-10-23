@@ -54,9 +54,9 @@ class PlayerNPC(
             )
             .buildAndTrack()
 
-        this.serverNPCHandler.platform.eventBus().subscribe(DefaultInteractNpcEvent::class.java, this::onDefaultInteractNpc)
-        this.serverNPCHandler.platform.eventBus().subscribe(DefaultAttackNpcEvent::class.java, this::onDefaultAttackNpc)
-        this.serverNPCHandler.platform.eventBus().subscribe(ShowNpcEvent.Post::class.java, this::onShowNpc)
+        this.serverNPCHandler.platform.eventManager().registerEventHandler(DefaultInteractNpcEvent::class.java, this::onDefaultInteractNpc)
+        this.serverNPCHandler.platform.eventManager().registerEventHandler(DefaultAttackNpcEvent::class.java, this::onDefaultAttackNpc)
+        this.serverNPCHandler.platform.eventManager().registerEventHandler(ShowNpcEvent.Post::class.java, this::onShowNpc)
     }
 
     override fun onRemove() {
@@ -70,14 +70,14 @@ class PlayerNPC(
         if (this.config.npcSettings.onFire) entityStatuses.add(EntityStatus.ON_FIRE)
         val packetFactory = npc.platform().packetFactory()
         packetFactory.createEntityMetaPacket(
-            entityStatuses,
-            EntityMetadataFactory.entityStatusMetaFactory()
+            EntityMetadataFactory.entityStatusMetaFactory(),
+            entityStatuses
         ).scheduleForTracked(npc)
     }
 
     private fun onShowNpc(event: ShowNpcEvent.Post) {
         val packetFactory = npc.platform().packetFactory()
-        packetFactory.createEntityMetaPacket(true, EntityMetadataFactory.skinLayerMetaFactory()).scheduleForTracked(npc)
+        packetFactory.createEntityMetaPacket(EntityMetadataFactory.skinLayerMetaFactory(), true).scheduleForTracked(npc)
         this.updateNPCStatus()
 
         if (config.npcItem.rightHand != null)

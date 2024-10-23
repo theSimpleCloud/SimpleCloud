@@ -45,13 +45,15 @@ class ProxyGroupSetup : DefaultGroupSetup(), ISetup {
     private var maximumOnlineServices by Delegates.notNull<Int>()
     private var minimumOnlineServices by Delegates.notNull<Int>()
     private var maxPlayers by Delegates.notNull<Int>()
+    private var minimumMemory by Delegates.notNull<Int>()
     private var memory by Delegates.notNull<Int>()
     private lateinit var name: String
     private lateinit var templateName: String
 
     @SetupQuestion(0, "manager.setup.service-group.question.name")
     fun nameQuestion(name: String): Boolean {
-        this.name = name
+        val split = name.split(" ")
+        this.name = split.joinToString("-")
         if (name.length > 32) {
             Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-group.question.name.too-long")
             return false
@@ -90,6 +92,7 @@ class ProxyGroupSetup : DefaultGroupSetup(), ISetup {
         }
         Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-group.question.memory.success")
         this.memory = memory
+        this.minimumMemory = memory / 2
         return true
     }
 
@@ -175,6 +178,7 @@ class ProxyGroupSetup : DefaultGroupSetup(), ISetup {
         CloudAPI.instance.getCloudServiceGroupManager().createProxyGroup(
             name,
             templateName,
+            minimumMemory,
             memory,
             maxPlayers,
             minimumOnlineServices,

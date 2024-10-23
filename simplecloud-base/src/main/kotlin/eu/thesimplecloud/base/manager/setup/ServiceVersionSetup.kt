@@ -50,7 +50,9 @@ class ServiceVersionSetup : ISetup {
 
     @SetupQuestion(0, "manager.setup.service-versions.question.name")
     fun nameSetup(name: String): Boolean {
-        this.name = name
+        val split = name.split(" ")
+        this.name = split.joinToString("-")
+
         Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-versions.question.name.success")
         return true
     }

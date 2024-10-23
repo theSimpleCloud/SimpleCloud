@@ -1,0 +1,3 @@
+  %WRAPPER_NAME%:
+    - maxSimultaneouslyStartingServices: %MAX_SIM_SERVICE%
+    - maxMemory: %MAX_MEMORY%

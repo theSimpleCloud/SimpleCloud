@@ -45,6 +45,7 @@ open class LobbyGroupSetup : DefaultGroupSetup(), ISetup {
     private var maximumOnlineServices by Delegates.notNull<Int>()
     private var minimumOnlineServices by Delegates.notNull<Int>()
     private var maxPlayers by Delegates.notNull<Int>()
+    private var minimumMemory by Delegates.notNull<Int>()
     private var memory by Delegates.notNull<Int>()
     private lateinit var name: String
     private lateinit var templateName: String
@@ -52,7 +53,8 @@ open class LobbyGroupSetup : DefaultGroupSetup(), ISetup {
 
     @SetupQuestion(0, "manager.setup.service-group.question.name")
     fun nameQuestion(name: String): Boolean {
-        this.name = name
+        val split = name.split(" ")
+        this.name = split.joinToString("-")
         if (name.length > 32) {
             Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-group.question.name.too-long")
             return false
@@ -88,6 +90,7 @@ open class LobbyGroupSetup : DefaultGroupSetup(), ISetup {
         }
         Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.service-group.question.memory.success")
         this.memory = memory
+        this.minimumMemory = memory / 2
         return true
     }
 
@@ -173,6 +176,7 @@ open class LobbyGroupSetup : DefaultGroupSetup(), ISetup {
         CloudAPI.instance.getCloudServiceGroupManager().createLobbyGroup(
             name,
             templateName,
+            minimumMemory,
             memory,
             maxPlayers,
             minimumOnlineServices,

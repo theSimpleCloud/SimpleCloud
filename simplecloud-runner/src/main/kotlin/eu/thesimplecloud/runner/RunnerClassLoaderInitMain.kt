@@ -28,6 +28,7 @@ import eu.thesimplecloud.runner.utils.Downloader
 import java.io.File
 import java.net.URL
 import java.net.URLClassLoader
+import java.nio.charset.StandardCharsets
 
 /**
  * Created by IntelliJ IDEA.
@@ -40,8 +41,18 @@ private val copiedDependencyLoaderFile = File("storage", "dependency-loader.jar"
 private val copiedLauncherFile = File("launcher.jar")
 private val copiedSimpleCloudPluginFile = File("storage/pluginJars", "SimpleCloud-Plugin-${getCloudVersion()}.jar")
 
+private val lastStartedVersionFile = File("storage/versions", "lastStartedVersion.json")
+private val dependenciesDir = File("dependencies/")
+
 fun main(args: Array<String>) {
     val version = getCloudVersion()
+    val lastStartedVersion = getLastStartedVersion()
+
+    if (version != lastStartedVersion && dependenciesDir.exists()) {
+        println("Deleting dependencies directory...")
+        dependenciesDir.deleteRecursively()
+    }
+
 
     if (!version.contains("SNAPSHOT")) {
         if (!copiedDependencyLoaderFile.exists())
@@ -49,14 +60,14 @@ fun main(args: Array<String>) {
 
         if (!copiedSimpleCloudPluginFile.exists()) {
             Downloader().userAgentDownload(
-                "https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-plugin/$version/simplecloud-plugin-$version-all.jar",
+                "https://repo.simplecloud.app/releases/eu/thesimplecloud/simplecloud/simplecloud-plugin/$version/simplecloud-plugin-$version-all.jar",
                 copiedSimpleCloudPluginFile
             )
         }
 
         if (!copiedLauncherFile.exists())
             Downloader().userAgentDownload(
-                "https://repo.thesimplecloud.eu/artifactory/gradle-release-local/eu/thesimplecloud/simplecloud/simplecloud-launcher/$version/simplecloud-launcher-$version-all.jar",
+                "https://repo.simplecloud.app/releases/eu/thesimplecloud/simplecloud/simplecloud-launcher/$version/simplecloud-launcher-$version-all.jar",
                 copiedLauncherFile
             )
     }
@@ -69,7 +80,15 @@ fun main(args: Array<String>) {
     val classLoader = initClassLoader(loadedDependencyUrls)
     Thread.currentThread().contextClassLoader = classLoader
 
-   executeDependencyLoaderMain(classLoader, args)
+    executeDependencyLoaderMain(classLoader, args)
+}
+
+private fun getLastStartedVersion(): String? {
+    if (!lastStartedVersionFile.exists()) {
+        return null
+    }
+    val lastStartedVersion = lastStartedVersionFile.readLines(StandardCharsets.UTF_8).first()
+    return lastStartedVersion.replace("\"", "")
 }
 
 private fun getCloudVersion(): String {
@@ -78,7 +97,7 @@ private fun getCloudVersion(): String {
 
 private fun downloadJarFromDependency(artifactId: String, file: File) {
     val dependency = AdvancedCloudDependency("eu.thesimplecloud.simplecloud", artifactId, getCloudVersion())
-    dependency.download("https://repo.thesimplecloud.eu/artifactory/gradle-release-local/", file)
+    dependency.download("https://repo.simplecloud.app/releases/", file)
 }
 
 private fun executeDependencyLoaderMain(classLoader: URLClassLoader, args: Array<String>) {

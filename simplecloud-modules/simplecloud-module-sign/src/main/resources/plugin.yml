@@ -5,7 +5,7 @@ folia-supported: true
 
 main: eu.thesimplecloud.module.sign.service.BukkitPluginMain
 
-depend: [ SimpleCloud-Plugin ]
+depend: [SimpleCloud-Plugin]
 
 api-version: 1.13
 

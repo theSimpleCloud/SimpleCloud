@@ -46,6 +46,7 @@ interface ICloudServiceGroupManager : ICacheList<ICloudServiceGroupUpdater, IClo
     fun createServerGroup(
         groupName: String,
         templateName: String,
+        minimumMemory: Int,
         memory: Int,
         maxPlayers: Int,
         minimumOnlineServiceCount: Int,
@@ -65,6 +66,7 @@ interface ICloudServiceGroupManager : ICacheList<ICloudServiceGroupUpdater, IClo
             DefaultServerGroup(
                 groupName,
                 templateName,
+                minimumMemory,
                 memory,
                 maxPlayers,
                 minimumOnlineServiceCount,
@@ -88,6 +90,7 @@ interface ICloudServiceGroupManager : ICacheList<ICloudServiceGroupUpdater, IClo
     fun createLobbyGroup(
         groupName: String,
         templateName: String,
+        minimumMemory: Int,
         memory: Int,
         maxPlayers: Int,
         minimumOnlineServiceCount: Int,
@@ -108,6 +111,7 @@ interface ICloudServiceGroupManager : ICacheList<ICloudServiceGroupUpdater, IClo
             DefaultLobbyGroup(
                 groupName,
                 templateName,
+                minimumMemory,
                 memory,
                 maxPlayers,
                 minimumOnlineServiceCount,
@@ -132,6 +136,7 @@ interface ICloudServiceGroupManager : ICacheList<ICloudServiceGroupUpdater, IClo
     fun createProxyGroup(
         groupName: String,
         templateName: String,
+        minimumMemory: Int,
         memory: Int,
         maxPlayers: Int,
         minimumOnlineServiceCount: Int,
@@ -150,6 +155,7 @@ interface ICloudServiceGroupManager : ICacheList<ICloudServiceGroupUpdater, IClo
             DefaultProxyGroup(
                 groupName,
                 templateName,
+                minimumMemory,
                 memory,
                 maxPlayers,
                 minimumOnlineServiceCount,

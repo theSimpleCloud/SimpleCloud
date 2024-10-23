@@ -49,6 +49,16 @@ interface ICloudServiceGroupVariables {
     fun setServiceVersion(serviceVersion: ServiceVersion)
 
     /**
+     * Returns the minimum amount of RAM for the services of this service group in MB
+     */
+    fun getMinimumMemory(): Int
+
+    /**
+     * Sets minimum amount of RAM for the services of this service group in MB
+     */
+    fun setMinimumMemory(memory: Int)
+
+    /**
      * Returns the maximum amount of RAM for the services of this service group in MB
      */
     fun getMaxMemory(): Int

@@ -64,9 +64,9 @@ interface IUpdater {
      */
     fun getRepositoryURL(): String {
         return if (Launcher.instance.isSnapshotBuild()) {
-            "https://repo.thesimplecloud.eu/artifactory/list/gradle-dev-local/"
+            "https://repo.simplecloud.app/snapshots/"
         } else {
-            "https://repo.thesimplecloud.eu/artifactory/list/gradle-release-local/"
+            "https://repo.simplecloud.app/releases/"
         }
     }
 

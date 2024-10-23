@@ -22,8 +22,6 @@
 
 package eu.thesimplecloud.module.statistics.timed.store
 
-import eu.thesimplecloud.base.manager.database.SQLOfflineCloudPlayerHandler
-import eu.thesimplecloud.base.manager.startup.Manager
 import eu.thesimplecloud.jsonlib.JsonLib
 import eu.thesimplecloud.module.statistics.timed.TimedValue
 import java.sql.Connection
@@ -38,22 +36,18 @@ import java.sql.ResultSet
  */
 class SQLTimedValueStore<T : Any>(
     private val classOfT: Class<T>,
-    private val collectionName: String
+    private val collectionName: String,
+    private val connection: Connection,
 ) : ITimedValueStore<T> {
 
     init {
         createDatabaseAndIndicesIfNotExist()
     }
 
-    private fun getConnection(): Connection {
-        val playerHandler = Manager.instance.offlineCloudPlayerHandler as SQLOfflineCloudPlayerHandler
-        return playerHandler.connection!!
-    }
-
     private fun createDatabaseAndIndicesIfNotExist() {
         if (!doesTableExist()) {
             val statement =
-                getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS `$collectionName` (`value` varchar(36), `timestamp` BIGINT(20))")
+                this.connection.prepareStatement("CREATE TABLE IF NOT EXISTS `$collectionName` (`value` varchar(36), `timestamp` BIGINT(20))")
             statement.executeUpdate()
             createIndex("timestamp")
         }
@@ -61,7 +55,7 @@ class SQLTimedValueStore<T : Any>(
 
     override fun store(timedValue: TimedValue<T>) {
         val statement =
-            getConnection().prepareStatement("INSERT INTO `$collectionName` (`value`, `timestamp`) VALUES (?, ?)")
+            this.connection.prepareStatement("INSERT INTO `$collectionName` (`value`, `timestamp`) VALUES (?, ?)")
         statement.setString(1, timedValue.value.toString())
         statement.setLong(2, timedValue.getTimeStamp())
         statement.executeUpdate()
@@ -69,25 +63,25 @@ class SQLTimedValueStore<T : Any>(
 
 
     private fun createIndex(columnName: String) {
-        val statement = getConnection().prepareStatement("ALTER TABLE $collectionName ADD INDEX ($columnName)")
+        val statement = this.connection.prepareStatement("ALTER TABLE $collectionName ADD INDEX ($columnName)")
         statement.executeUpdate()
     }
 
     private fun doesTableExist(): Boolean {
-        val meta: DatabaseMetaData = getConnection().metaData
+        val meta: DatabaseMetaData = this.connection.metaData
         val res = meta.getTables(null, null, this.collectionName, arrayOf("TABLE"))
         return res.next()
     }
 
     override fun getAll(): List<TimedValue<T>> {
-        val statement = getConnection().prepareStatement("SELECT * FROM `$collectionName`")
+        val statement = this.connection.prepareStatement("SELECT * FROM `$collectionName`")
         val resultSet = statement.executeQuery()
         return getAllTimedValuesFromResultSet(resultSet)
     }
 
     override fun get(fromTimeStamp: Long, toTimeStamp: Long): List<TimedValue<T>> {
         val statement =
-            getConnection().prepareStatement("SELECT * FROM `$collectionName` WHERE timestamp BETWEEN $fromTimeStamp and $toTimeStamp ORDER BY timestamp ASC")
+            this.connection.prepareStatement("SELECT * FROM `$collectionName` WHERE timestamp BETWEEN $fromTimeStamp and $toTimeStamp ORDER BY timestamp ASC")
         val resultSet = statement.executeQuery()
         return getAllTimedValuesFromResultSet(resultSet)
     }
@@ -107,7 +101,7 @@ class SQLTimedValueStore<T : Any>(
     }
 
     override fun count(): Int {
-        val statement = getConnection().prepareStatement("SELECT COUNT(*) FROM `$collectionName`")
+        val statement = this.connection.prepareStatement("SELECT COUNT(*) FROM `$collectionName`")
         val resultSet = statement.executeQuery()
         return if (!resultSet.next()) {
             0

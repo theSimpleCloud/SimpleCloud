@@ -43,7 +43,12 @@ class WrapperSetup : ISetup {
             Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.wrapper.question.name.too-long")
             return false
         }
-        this.name = name
+        if (name.isEmpty()) {
+            Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.wrapper.question.name.empty")
+            return false
+        }
+        val split = name.split(" ")
+        this.name = split.joinToString("-")
         Launcher.instance.consoleSender.sendPropertyInSetup("manager.setup.wrapper.question.name.success")
         return true
     }

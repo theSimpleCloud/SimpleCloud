@@ -30,6 +30,7 @@ import eu.thesimplecloud.api.servicegroup.ICloudServiceGroupUpdater
 abstract class AbstractServiceGroup(
     private val name: String,
     @Volatile private var templateName: String,
+    @Volatile private var minimumMemory: Int,
     @Volatile private var maxMemory: Int,
     @Volatile private var maxPlayers: Int,
     @Volatile private var minimumOnlineServiceCount: Int,
@@ -63,6 +64,12 @@ abstract class AbstractServiceGroup(
 
     override fun setTemplateName(name: String) {
         getUpdater().setTemplateName(name)
+    }
+
+    override fun getMinimumMemory(): Int = this.minimumMemory
+
+    override fun setMinimumMemory(memory: Int) {
+        getUpdater().setMinimumMemory(memory)
     }
 
     override fun getMaxMemory(): Int = this.maxMemory
@@ -122,7 +129,8 @@ abstract class AbstractServiceGroup(
     }
 
     override fun getServiceVersion(): ServiceVersion {
-        return CloudAPI.instance.getServiceVersionHandler().getServiceVersionByName(serviceVersion)!!
+        return CloudAPI.instance.getServiceVersionHandler().getServiceVersionByName(serviceVersion)
+            ?: throw NullPointerException("failed to find service version $serviceVersion")
     }
 
     override fun isStateUpdatingEnabled(): Boolean {

@@ -58,6 +58,14 @@ open class DefaultServiceGroupUpdater(
         changes["serviceVersion"] = serviceVersion
     }
 
+    override fun getMinimumMemory(): Int {
+        return getChangedValue("minimumMemory") ?: serviceGroup.getMinimumMemory()
+    }
+
+    override fun setMinimumMemory(memory: Int) {
+        changes["minimumMemory"] = memory
+    }
+
     override fun getMaxMemory(): Int {
         return getChangedValue("maxMemory") ?: serviceGroup.getMaxMemory()
     }
