@@ -20,4 +20,9 @@
 # DEALINGS IN THE SOFTWARE.
 #
 
-screen -S SimpleCloud java -XX:+UseG1GC -XX:MaxGCPauseMillis=50 -XX:CompileThreshold=100 -XX:+UnlockExperimentalVMOptions -XX:+UseCompressedOops -Xmx512m -Xms256m -jar runner.jar
+if screen -ls | grep -q "SimpleCloud"; then
+  echo "A SimpleCloud screen is already running."
+else
+  # Start a new SimpleCloud screen
+  screen -S SimpleCloud java -XX:+UseG1GC -XX:MaxGCPauseMillis=50 -XX:CompileThreshold=100 -XX:+UnlockExperimentalVMOptions -XX:+UseCompressedOops -Xmx512m -Xms256m -jar runner.jar
+fi
