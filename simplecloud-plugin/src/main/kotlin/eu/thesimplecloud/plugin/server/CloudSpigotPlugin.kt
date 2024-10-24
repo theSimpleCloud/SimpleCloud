@@ -54,7 +54,7 @@ class CloudSpigotPlugin : JavaPlugin(), ICloudServerPlugin {
         CloudAPI.instance.getEventManager().registerListener(CloudPlugin.instance, CloudListener())
         server.pluginManager.registerEvents(SpigotListener(), this)
         server.pluginManager.registerEvents(ReloadCommandBlocker(), this)
-        synchronizeOnlineCountTask()
+        //synchronizeOnlineCountTask()
     }
 
     override fun onBeforeFirstUpdate() {
@@ -76,18 +76,26 @@ class CloudSpigotPlugin : JavaPlugin(), ICloudServerPlugin {
     }
 
     private fun synchronizeOnlineCountTask() {
-        // Create a task that runs periodically
+        // Erstelle eine Aufgabe, die regelmäßig ausgeführt wird
         object : BukkitRunnable() {
             override fun run() {
-                // Ensure that the task runs on the main thread
+                // Sicherstellen, dass die Aufgabe im Haupt-Thread läuft
                 val service = CloudPlugin.instance.thisService()
-                // Check the online player count and update the service if it has changed
-                if (service.getOnlineCount() != Bukkit.getOnlinePlayers().size) {
-                    service.setOnlineCount(Bukkit.getOnlinePlayers().size)
+
+                // Überprüfen, ob der Dienst null ist
+                if (service == null) {
+                    println("Service ist null, kann die Online-Zahl nicht synchronisieren.")
+                    return
+                }
+
+                // Überprüfen der Anzahl der Online-Spieler und Aktualisieren des Dienstes, falls sich die Anzahl geändert hat
+                val onlineCount = Bukkit.getOnlinePlayers().size
+                if (service.getOnlineCount() != onlineCount) {
+                    service.setOnlineCount(onlineCount)
                     service.update()
                 }
             }
-        }.runTaskTimer(this, 20 * 30, 20 * 30) // Run every 30 seconds
+        }.runTaskTimer(this, 20 * 30, 20 * 30) // Alle 30 Sekunden ausführen
     }
 
 }
