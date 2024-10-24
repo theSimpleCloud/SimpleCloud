@@ -22,6 +22,8 @@
 
 package eu.thesimplecloud.plugin.server
 
+import com.cjcrafter.foliascheduler.FoliaCompatibility
+import com.cjcrafter.foliascheduler.TaskImplementation
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.player.ICloudPlayerManager
 import eu.thesimplecloud.plugin.impl.player.CloudPlayerManagerSpigot
@@ -31,8 +33,8 @@ import eu.thesimplecloud.plugin.server.listener.SpigotListener
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
-import org.bukkit.scheduler.BukkitRunnable
 import kotlin.reflect.KClass
+
 
 class CloudSpigotPlugin : JavaPlugin(), ICloudServerPlugin {
 
@@ -54,7 +56,7 @@ class CloudSpigotPlugin : JavaPlugin(), ICloudServerPlugin {
         CloudAPI.instance.getEventManager().registerListener(CloudPlugin.instance, CloudListener())
         server.pluginManager.registerEvents(SpigotListener(), this)
         server.pluginManager.registerEvents(ReloadCommandBlocker(), this)
-        //synchronizeOnlineCountTask()
+        synchronizeOnlineCountTask()
     }
 
     override fun onBeforeFirstUpdate() {
@@ -75,27 +77,31 @@ class CloudSpigotPlugin : JavaPlugin(), ICloudServerPlugin {
         return CloudPlayerManagerSpigot::class
     }
 
+
     private fun synchronizeOnlineCountTask() {
-        // Erstelle eine Aufgabe, die regelmäßig ausgeführt wird
-        object : BukkitRunnable() {
-            override fun run() {
-                // Sicherstellen, dass die Aufgabe im Haupt-Thread läuft
-                val service = CloudPlugin.instance.thisService()
+        val scheduler = FoliaCompatibility(this).serverImplementation
+        scheduler.async().runDelayed({ task: TaskImplementation<Void?> ->
+            this.getLogger().info("This is the scheduled task! I'm async! $task")
 
-                // Überprüfen, ob der Dienst null ist
-                if (service == null) {
-                    println("Service ist null, kann die Online-Zahl nicht synchronisieren.")
-                    return
-                }
+            val service = CloudPlugin.instance.thisService()
 
-                // Überprüfen der Anzahl der Online-Spieler und Aktualisieren des Dienstes, falls sich die Anzahl geändert hat
-                val onlineCount = Bukkit.getOnlinePlayers().size
-                if (service.getOnlineCount() != onlineCount) {
-                    service.setOnlineCount(onlineCount)
-                    service.update()
-                }
+            // Early return if service is null
+            if (service == null) {
+                this.getLogger().warning("Service is null, unable to synchronize online count.")
+                return@runDelayed
             }
-        }.runTaskTimer(this, 20 * 30, 20 * 30) // Alle 30 Sekunden ausführen
+
+            val onlineCount = Bukkit.getOnlinePlayers().size
+
+            // Update the service if the online player count has changed
+            if (service.getOnlineCount() != onlineCount) {
+                service.setOnlineCount(onlineCount)
+                service.update()
+                this.getLogger().info("Updated online count to $onlineCount")
+            }
+
+        }, 5 * 20L)
+
     }
 
 }
