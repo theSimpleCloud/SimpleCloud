@@ -28,6 +28,8 @@ dependencies {
     api(project(":simplecloud-api"))
 
     api(project(":simplecloud-client"))
+
+    compileOnly 'org.folia:folia-api:1.20.6-R0.1-SNAPSHOT' // Stellen Sie sicher, dass Sie die korrekte Version verwenden
     compileOnly 'org.spigotmc:spigot-api:1.21-R0.1-SNAPSHOT'
     compileOnly 'net.md-5:bungeecord-api:1.17-R0.1-SNAPSHOT'
     compileOnly 'com.velocitypowered:velocity-api:3.1.1'
@@ -35,6 +37,7 @@ dependencies {
 
     api('net.kyori:adventure-text-minimessage:4.14.0')
     api('net.kyori:adventure-platform-bungeecord:4.1.2')
+
 }
 
 shadowJar {
