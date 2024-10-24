@@ -1,6 +1,7 @@
 name: SimpleCloud-Proxy
 version: 1.0
 author: Fllip
+folia-supported: true
 
 main: eu.thesimplecloud.module.proxy.service.bungee.BungeePluginMain
 
