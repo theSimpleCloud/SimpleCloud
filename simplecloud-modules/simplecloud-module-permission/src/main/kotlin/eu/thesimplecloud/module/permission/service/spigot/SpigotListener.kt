@@ -22,7 +22,6 @@
 
 package eu.thesimplecloud.module.permission.service.spigot
 
-import eu.thesimplecloud.module.permission.service.spigot.util.ReflectionUtils
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
@@ -31,30 +30,51 @@ import java.lang.reflect.Field
 
 class SpigotListener : Listener {
 
+    @Volatile
+    private var permField: Field? = null
+    private val permFieldLock = Any()
 
     @EventHandler(priority = EventPriority.LOWEST)
     fun on(event: PlayerLoginEvent) {
         try {
-            val clazz: Class<*>? = ReflectionUtils.reflectCraftClazz(".entity.CraftHumanEntity")
-            var field: Field? = null
-            if (clazz != null) {
-                field = clazz.getDeclaredField("perm")
-            }
+            val field = getPermField(event.player.javaClass)
             if (field == null) {
-                println("WARNING: Permission field was null")
+                println("WARNING: Could not find 'perm' field in player class hierarchy (${event.player.javaClass.name})")
                 return
             }
-            field.isAccessible = true
+
             field[event.player] = BukkitCloudPermissibleBase(event.player)
-        } catch (ex: NoSuchFieldException) {
-            ex.printStackTrace()
-        } catch (ex: SecurityException) {
-            ex.printStackTrace()
-        } catch (ex: IllegalArgumentException) {
-            ex.printStackTrace()
-        } catch (ex: IllegalAccessException) {
-            ex.printStackTrace()
+        } catch (t: Throwable) {
+            // catches IllegalAccessException / InaccessibleObjectException etc.
+            t.printStackTrace()
         }
     }
 
+    private fun getPermField(playerClass: Class<*>): Field? {
+        // fast path
+        permField?.let { return it }
+
+        // slow path
+        synchronized(permFieldLock) {
+            permField?.let { return it }
+
+            val found = findFieldInHierarchy(playerClass, "perm") ?: return null
+            found.isAccessible = true
+            permField = found
+            return found
+        }
+    }
+
+    private fun findFieldInHierarchy(start: Class<*>, name: String): Field? {
+        var c: Class<*>? = start
+        while (c != null) {
+            try {
+                return c.getDeclaredField(name)
+            } catch (_: NoSuchFieldException) {
+                // keep walking
+            }
+            c = c.superclass
+        }
+        return null
+    }
 }
