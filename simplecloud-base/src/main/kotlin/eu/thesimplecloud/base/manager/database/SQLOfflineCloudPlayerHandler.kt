@@ -25,10 +25,8 @@ package eu.thesimplecloud.base.manager.database
 import eu.thesimplecloud.api.player.IOfflineCloudPlayer
 import eu.thesimplecloud.api.player.OfflineCloudPlayer
 import eu.thesimplecloud.jsonlib.JsonLib
-import eu.thesimplecloud.launcher.startup.Launcher
 import java.sql.*
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 
 /**
@@ -40,42 +38,36 @@ import java.util.concurrent.TimeUnit
 class SQLOfflineCloudPlayerHandler(private val databaseConnectionInformation: DatabaseConnectionInformation) :
     AbstractOfflineCloudPlayerHandler() {
 
-    var connection: Connection? = null
-        private set
-
     private val playerCollectionName = databaseConnectionInformation.collectionPrefix + "players"
 
     init {
-        runReconnectLoop()
         createDatabaseAndIndicesIfNotExist()
     }
 
     private fun createDatabaseAndIndicesIfNotExist() {
         if (!doesTableExist()) {
-            val statement =
-                connection!!.prepareStatement("CREATE TABLE IF NOT EXISTS `$playerCollectionName` (`uniqueId` varchar(36), `name` varchar(16), `data` LONGBLOB)")
-            statement.executeUpdate()
-            createIndex("uniqueId")
-            createIndex("name")
+            getConnection().use { connection ->
+                connection.prepareStatement("CREATE TABLE IF NOT EXISTS `$playerCollectionName` (`uniqueId` varchar(36), `name` varchar(16), `data` LONGBLOB)")
+                    .use { statement ->
+                        statement.executeUpdate()
+                        createIndex("uniqueId")
+                        createIndex("name")
+                    }
+            }
         }
     }
 
-    private fun runReconnectLoop() {
-        reconnect()
-        Launcher.instance.scheduler.scheduleAtFixedRate({
-            reconnect()
-        }, 1, 1, TimeUnit.HOURS)
-    }
-
-    private fun reconnect() = synchronized(this) {
-        closeConnection()
-        this.connection =
-            DriverManager.getConnection("jdbc:mysql://${databaseConnectionInformation.host}:${databaseConnectionInformation.port}/${databaseConnectionInformation.databaseName}?user=${databaseConnectionInformation.userName}&password=${databaseConnectionInformation.password}&serverTimezone=UTC&autoReconnect=true")
+    private fun getConnection(): Connection {
+        return DriverManager.getConnection("jdbc:mysql://${databaseConnectionInformation.host}:${databaseConnectionInformation.port}/${databaseConnectionInformation.databaseName}?user=${databaseConnectionInformation.userName}&password=${databaseConnectionInformation.password}&serverTimezone=UTC&autoReconnect=true")
     }
 
     private fun createIndex(columnName: String) {
-        val statement = connection!!.prepareStatement("ALTER TABLE $playerCollectionName ADD INDEX ($columnName)")
-        statement.executeUpdate()
+        getConnection().use { connection ->
+            connection.prepareStatement("ALTER TABLE $playerCollectionName ADD INDEX ($columnName)")
+                .use { statement ->
+                    statement.executeUpdate()
+                }
+        }
     }
 
     override fun getOfflinePlayer(playerUniqueId: UUID): IOfflineCloudPlayer? {
@@ -88,13 +80,17 @@ class SQLOfflineCloudPlayerHandler(private val databaseConnectionInformation: Da
 
     private fun loadPlayer(value: String, fieldName: String): IOfflineCloudPlayer? = synchronized(this) {
         if (!exist(value, fieldName)) return null
-        val statement =
-            connection!!.prepareStatement("SELECT `data` FROM `$playerCollectionName` WHERE `$fieldName` = ?")
-        statement.setString(1, value)
-        val resultSet = statement.executeQuery()
-        val allDataStrings = getAllDataStringsFromResultSet(resultSet)
-        val players = allDataStrings.mapNotNull { loadPlayerFromJsonString(it) }
-        return getPlayerWithLatestLogin(players)
+
+        getConnection().use { conn ->
+            conn.prepareStatement("SELECT `data` FROM `$playerCollectionName` WHERE `$fieldName` = ?")
+                .use { statement ->
+                    statement.setString(1, value)
+                    val resultSet = statement.executeQuery()
+                    val allDataStrings = getAllDataStringsFromResultSet(resultSet)
+                    val players = allDataStrings.mapNotNull { loadPlayerFromJsonString(it) }
+                    return getPlayerWithLatestLogin(players)
+                }
+        }
     }
 
     private fun getAllDataStringsFromResultSet(resultSet: ResultSet): List<String> {
@@ -117,50 +113,62 @@ class SQLOfflineCloudPlayerHandler(private val databaseConnectionInformation: Da
 
     override fun saveCloudPlayer(offlineCloudPlayer: OfflineCloudPlayer): Unit = synchronized(this) {
         val newData = JsonLib.fromObject(offlineCloudPlayer, databaseGson).getAsJsonString()
-        if (!exist(offlineCloudPlayer.getUniqueId().toString(), "uniqueId")) {
-            val statement =
-                connection!!.prepareStatement("INSERT INTO `$playerCollectionName` (`uniqueId`, `name`, `data`) VALUES (?, ?, ?)")
-            statement.setString(1, offlineCloudPlayer.getUniqueId().toString())
-            statement.setString(2, offlineCloudPlayer.getName())
-            statement.setString(3, newData)
-            statement.executeUpdate()
-        } else {
-            val statement =
-                connection!!.prepareStatement("UPDATE `$playerCollectionName` SET `data` = ?, `name` = ? WHERE `uniqueId` = ?")
-            statement.setString(1, newData)
-            statement.setString(2, offlineCloudPlayer.getName())
-            statement.setString(3, offlineCloudPlayer.getUniqueId().toString())
-            statement.executeUpdate()
+
+        getConnection().use { connection ->
+            if (!exist(offlineCloudPlayer.getUniqueId().toString(), "uniqueId")) {
+                connection.prepareStatement("INSERT INTO `$playerCollectionName` (`uniqueId`, `name`, `data`) VALUES (?, ?, ?)")
+                    .use { statement ->
+                        statement.setString(1, offlineCloudPlayer.getUniqueId().toString())
+                        statement.setString(2, offlineCloudPlayer.getName())
+                        statement.setString(3, newData)
+                        statement.executeUpdate()
+                    }
+            } else {
+                connection.prepareStatement("UPDATE `$playerCollectionName` SET `data` = ?, `name` = ? WHERE `uniqueId` = ?")
+                    .use { statement ->
+                        statement.setString(1, newData)
+                        statement.setString(2, offlineCloudPlayer.getName())
+                        statement.setString(3, offlineCloudPlayer.getUniqueId().toString())
+                        statement.executeUpdate()
+                    }
+            }
         }
     }
 
     override fun getRegisteredPlayerCount(): Int {
-        val statement = connection!!.prepareStatement("SELECT COUNT(*) FROM `$playerCollectionName`")
-        val resultSet = statement.executeQuery()
-        return if (!resultSet.next()) {
-            0
-        } else {
-            resultSet.getInt(1)
+        getConnection().use { connection ->
+            connection.prepareStatement("SELECT COUNT(*) FROM `$playerCollectionName`").use { statement ->
+                val resultSet = statement.executeQuery()
+                return if (!resultSet.next()) {
+                    0
+                } else {
+                    resultSet.getInt(1)
+                }
+            }
         }
     }
 
     override fun closeConnection() {
-        connection?.close()
+        //nothing to do
     }
 
     private fun exist(searchValue: String, fieldName: String): Boolean {
-        val prepareStatement =
-            connection!!.prepareStatement("SELECT `data` FROM `$playerCollectionName` WHERE `$fieldName` = ?")
-        prepareStatement.setString(1, searchValue)
-        val resultSet = prepareStatement.executeQuery()
-        return resultSet.next()
+        getConnection().use { connection ->
+            connection.prepareStatement("SELECT `data` FROM `$playerCollectionName` WHERE `$fieldName` = ?")
+                .use { statement ->
+                    statement.setString(1, searchValue)
+                    val resultSet = statement.executeQuery()
+                    return resultSet.next()
+                }
+        }
     }
 
     private fun doesTableExist(): Boolean {
-        val meta: DatabaseMetaData = connection!!.metaData
-        val res = meta.getTables(null, null, this.playerCollectionName, arrayOf("TABLE"))
-        return res.next()
+        getConnection().use { connection ->
+            val meta: DatabaseMetaData = connection.metaData
+            val res = meta.getTables(null, null, this.playerCollectionName, arrayOf("TABLE"))
+            return res.next()
+        }
     }
-
 
 }
