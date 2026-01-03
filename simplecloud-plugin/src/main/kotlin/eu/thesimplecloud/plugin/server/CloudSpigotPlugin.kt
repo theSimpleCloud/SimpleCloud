@@ -22,6 +22,8 @@
 
 package eu.thesimplecloud.plugin.server
 
+import com.cjcrafter.foliascheduler.FoliaCompatibility
+import com.cjcrafter.foliascheduler.TaskImplementation
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.player.ICloudPlayerManager
 import eu.thesimplecloud.plugin.impl.player.CloudPlayerManagerSpigot
@@ -31,8 +33,8 @@ import eu.thesimplecloud.plugin.server.listener.SpigotListener
 import eu.thesimplecloud.plugin.startup.CloudPlugin
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
-import org.bukkit.scheduler.BukkitRunnable
 import kotlin.reflect.KClass
+
 
 class CloudSpigotPlugin : JavaPlugin(), ICloudServerPlugin {
 
@@ -75,16 +77,31 @@ class CloudSpigotPlugin : JavaPlugin(), ICloudServerPlugin {
         return CloudPlayerManagerSpigot::class
     }
 
+
     private fun synchronizeOnlineCountTask() {
-        object : BukkitRunnable() {
-            override fun run() {
-                val service = CloudPlugin.instance.thisService()
-                if (service.getOnlineCount() != server.onlinePlayers.size) {
-                    service.setOnlineCount(server.onlinePlayers.size)
-                    service.update()
-                }
+        val scheduler = FoliaCompatibility(this).serverImplementation
+        scheduler.async().runDelayed({ task: TaskImplementation<Void?> ->
+            this.getLogger().info("This is the scheduled task! I'm async! $task")
+
+            val service = CloudPlugin.instance.thisService()
+
+            // Early return if service is null
+            if (service == null) {
+                this.getLogger().warning("Service is null, unable to synchronize online count.")
+                return@runDelayed
             }
-        }.runTaskTimerAsynchronously(this, 20 * 30, 20 * 30)
+
+            val onlineCount = Bukkit.getOnlinePlayers().size
+
+            // Update the service if the online player count has changed
+            if (service.getOnlineCount() != onlineCount) {
+                service.setOnlineCount(onlineCount)
+                service.update()
+                this.getLogger().info("Updated online count to $onlineCount")
+            }
+
+        }, 5 * 20L)
+
     }
 
 }

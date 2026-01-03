@@ -1,6 +1,7 @@
 name: SimpleCloud-Sign
 version: 1.0
 author: Wetterbericht
+folia-supported: true
 
 main: eu.thesimplecloud.module.sign.service.BukkitPluginMain
 

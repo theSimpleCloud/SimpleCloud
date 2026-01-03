@@ -1,6 +1,7 @@
 name: SimpleCloud-Plugin
 version: 1.0
 author: Wetterbericht
+folia-supported: true
 
 main: eu.thesimplecloud.plugin.server.CloudSpigotPlugin
 
